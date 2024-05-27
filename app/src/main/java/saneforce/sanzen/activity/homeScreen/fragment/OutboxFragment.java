@@ -1,8 +1,5 @@
 package saneforce.sanzen.activity.homeScreen.fragment;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -77,7 +74,7 @@ public class OutboxFragment extends Fragment {
     ApiInterface apiInterface;
     boolean isCallAvailable;
     CommonUtilsMethods commonUtilsMethods;
-
+    private static Context context;
     private RoomDB db;
     private MasterDataDao masterDataDao;
     private OfflineCheckInOutDataDao offlineCheckInOutDataDao;
@@ -105,6 +102,7 @@ public class OutboxFragment extends Fragment {
         listDates = callsUtil.getOutBoxDate();
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+        OutboxFragment.context = context;
         outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
         outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
         outBoxHeaderAdapter.notifyDataSetChanged();

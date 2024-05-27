@@ -805,7 +805,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode1);
             } else {
                 callOfflineWorkTypeDataDao.insert(new CallOfflineWorkTypeDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), mWTName2, mWTCode2, jsonObject.toString(), "", 0));
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.save_wt_locally));
                 OutboxFragment.SetupOutBoxAdapter(requireActivity(), requireContext());
                 if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                     SharedPref.saveHq(requireContext(), mHQName2, mHQCode2);
@@ -1706,6 +1705,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                 }
             }else {
+                SharedPref.setDayPlanStartedDate(requireContext(), "");
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, "[]", 0));
                 binding.txtWorktype1.setText("");
                 binding.txtCluster1.setText("");

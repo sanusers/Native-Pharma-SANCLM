@@ -135,7 +135,7 @@ public class MyDayPlanEntriesNeeded {
             LocalDate dateBefore;
             LocalDate currentDate = LocalDate.now().plusDays(1);
             LocalDate limitDate = LocalDate.now().minusDays(91);
-            boolean isTodayPresent = false;
+            boolean isTodayPresent = false, isTodayNotFinished = false;
 
             JSONArray dcrdatas = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
             if(dcrdatas.length()>0) {
@@ -144,13 +144,16 @@ public class MyDayPlanEntriesNeeded {
                     String cusType = jsonObject.optString("CustType");
                     String dayStatus = jsonObject.optString("day_status");
                     String date = jsonObject.optString("Dcr_dt");
+                    if(date.equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)))
+                        isTodayPresent = true;
                     if(cusType.equalsIgnoreCase("0") && !dayStatus.equalsIgnoreCase("1")) {
                         dateBefore = LocalDate.parse(date);
                         if(dateBefore != null && dateBefore.isBefore(currentDate) && dateBefore.isAfter(limitDate)) {
                             dates.put(date, cusType+dayStatus);
                             datesNeeded.add(date);
                         }
-                        if(date.equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) isTodayPresent = true;
+                        if(date.equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)))
+                            isTodayNotFinished = true;
                     }
                 }
                 Log.v("TAG 1", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
@@ -180,7 +183,7 @@ public class MyDayPlanEntriesNeeded {
                 }
                 Log.v("TAG 3", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }
-            if(!isTodayPresent) {
+            if(!isTodayPresent || isTodayNotFinished) {
                 datesNeeded.add(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
                 Log.v("TAG 4", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }

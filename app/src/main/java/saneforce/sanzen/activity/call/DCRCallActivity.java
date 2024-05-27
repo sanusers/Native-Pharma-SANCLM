@@ -511,6 +511,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
         btnCheckOut.setOnClickListener(v -> {
             dialogCheckOut.dismiss();
+            IsFromDCR =true;
             Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -2258,7 +2259,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     JwNeed = SharedPref.getChmJointworkNeed(this);
                     PrdSamNeed = SharedPref.getChmsamqtyNeed(this);
                     PrdRxNeed = SharedPref.getChmRxQty(this); //1
-                    CusCheckInOutNeed = SharedPref.getChmSrtNd(this);;
+                    CusCheckInOutNeed = SharedPref.getChmSrtNd(this);
 
                     //Mandatory
                     //   RcpaMandatory = loginResponse.getRcpaMd(); //Check This one

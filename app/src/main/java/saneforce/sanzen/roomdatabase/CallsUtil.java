@@ -64,7 +64,7 @@ public class CallsUtil {
     }
 
     public boolean isOutBoxDataAvailable() {
-        return !callOfflineDataDao.isAvailableCall(Constants.DUPLICATE_CALL) || callOfflineECDataDao.isAvailableEc() || offlineCheckInOutDataDao.isAvailableCheckInOut();
+        return callOfflineDataDao.isAvailableCall(Constants.WAITING_FOR_SYNC) || callOfflineECDataDao.isAvailableEc() || offlineCheckInOutDataDao.isAvailableCheckInOut() || offlineDaySubmitDao.isAvailableDaySubmit() || callOfflineDataDao.isAvailableCall() || callOfflineWorkTypeDataDao.isAvailableWT();
     }
 
     public ArrayList<GroupModelClass> getOutBoxDate() {

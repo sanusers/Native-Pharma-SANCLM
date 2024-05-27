@@ -2,6 +2,7 @@ package saneforce.sanzen.activity.reports.dayReport.adapter;
 
 import android.content.Context;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +50,6 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
         holder.rating_bar.setRating(Float.parseFloat(String.valueOf(callDetailingLists.get(position).getRating())));
         holder.rating_bar.setEnabled(false);
 
-
         if(!calculateDuration(callDetailingLists.get(position).getStartTime(),callDetailingLists.get(position).getEndTime()).equalsIgnoreCase("00:00:00")){
             holder.imgView.setVisibility(View.VISIBLE);
         }else {
@@ -58,7 +58,7 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
 
         holder.imgView.setOnClickListener(v -> {
 
-            CharSequence initialGuideTex = Html.fromHtml(" Start Time : " + callDetailingLists.get(position).getStartTime()  +"<br><br>"+ " End Time : " + callDetailingLists.get(position).getStartTime() );
+            CharSequence initialGuideTex = Html.fromHtml(" Start Time : " + callDetailingLists.get(position).getStartTime()  +"<br><br>"+ " End Time : " + callDetailingLists.get(position).getEndTime() );
 
             showTimelinePopUp( holder.imgView,initialGuideTex);
 

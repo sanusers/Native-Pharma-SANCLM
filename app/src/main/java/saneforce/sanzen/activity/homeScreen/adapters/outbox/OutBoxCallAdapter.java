@@ -16,9 +16,13 @@ import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.outBo
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -42,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -68,7 +73,6 @@ import saneforce.sanzen.storage.SharedPref;
 public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.ViewHolder> {
     Context context;
     ArrayList<OutBoxCallList> outBoxCallLists;
-//    SQLite sqLite;
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
@@ -85,7 +89,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         this.context = context;
         this.activity = activity;
         this.outBoxCallLists = outBoxCallLists;
-//        sqLite = new SQLite(context);
         this.apiInterface = apiInterface;
         commonUtilsMethods = new CommonUtilsMethods(context);
         roomDB=RoomDB.getDatabase(context);
@@ -163,67 +166,79 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
 
                     context.startActivity(intent);
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
-                    UpdateInputSample(outBoxCallLists.get(position).getJsonData());
-//                    sqLite.deleteOfflineCalls(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
-                    callsUtil.deleteOfflineCalls(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
-                    try {
-                        if (!outBoxCallLists.get(position).getStatus().equalsIgnoreCase(Constants.DUPLICATE_CALL)) {
-                            JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
 
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode())) {
-                                    jsonArray.remove(i);
-                                    break;
+                    Dialog dialog = new Dialog(context);
+                    dialog.setContentView(R.layout.dcr_cancel_alert);
+                    dialog.setCancelable(false);
+                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.show();
+                    TextView btn_yes=dialog.findViewById(R.id.btn_yes);
+                    TextView btn_no=dialog.findViewById(R.id.btn_no);
+                    TextView titte=dialog.findViewById(R.id.ed_alert_msg);
+                    titte.setText(R.string.are_you_sure_to_delete);
+
+                    btn_yes.setOnClickListener(view -> {
+                        dialog.dismiss();
+                        UpdateInputSample(outBoxCallLists.get(position).getJsonData());
+                        callsUtil.deleteOfflineCalls(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
+                        try {
+                            if (!outBoxCallLists.get(position).getStatus().equalsIgnoreCase(Constants.DUPLICATE_CALL)) {
+                                JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                    if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode())) {
+                                        jsonArray.remove(i);
+                                        break;
+                                    }
                                 }
-                            }
-
-                            MasterDataTable mData =new MasterDataTable();
-                            mData.setMasterKey(Constants.CALL_SYNC);
-                            mData.setMasterValues(jsonArray.toString());
-                            mData.setSyncStatus(0);
-                            MasterDataTable Checked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
-                            if(Checked !=null){
-                                masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
-                            }else {
-                                masterDataDao.insert(mData);
-                            }
-
-                            CallDataRestClass.resetcallValues(context);
-
-
-                            if (outBoxCallLists.get(position).getCusType().equalsIgnoreCase("1")) {
-                                JSONObject json = new JSONObject(outBoxCallLists.get(position).getJsonData());
-                                JSONArray jsonAdditional = json.getJSONArray("AdCuss");
-                                for (int aw = 0; aw < jsonAdditional.length(); aw++) {
-                                    JSONObject jsAw = jsonAdditional.getJSONObject(aw);
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(jsAw.getString("Code"))) {
-                                            jsonArray.remove(i);
+                                MasterDataTable mData =new MasterDataTable();
+                                mData.setMasterKey(Constants.CALL_SYNC);
+                                mData.setMasterValues(jsonArray.toString());
+                                mData.setSyncStatus(0);
+                                MasterDataTable Checked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                                if(Checked !=null){
+                                    masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
+                                }else {
+                                    masterDataDao.insert(mData);
+                                }
+                                CallDataRestClass.resetcallValues(context);
+                                if (outBoxCallLists.get(position).getCusType().equalsIgnoreCase("1")) {
+                                    JSONObject json = new JSONObject(outBoxCallLists.get(position).getJsonData());
+                                    JSONArray jsonAdditional = json.getJSONArray("AdCuss");
+                                    for (int aw = 0; aw < jsonAdditional.length(); aw++) {
+                                        JSONObject jsAw = jsonAdditional.getJSONObject(aw);
+                                        for (int i = 0; i < jsonArray.length(); i++) {
+                                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                            if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(jsAw.getString("Code"))) {
+                                                jsonArray.remove(i);
+                                            }
                                         }
                                     }
                                 }
                             }
-                           // AssignCallAnalysis(SharedPref.getSfType(context), outBoxCallLists.get(position).getCusType());
+                        } catch (Exception e) {
+                            Log.e("Outbox Delete call", "onBindViewHolder: " + e.getMessage());
+                            e.printStackTrace();
                         }
-                    } catch (Exception ignored) {
-
-                    }
-                    if (callOfflineECDataDao.isAvailableEc(outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getCusCode())) {
-                        for (int i = 0; i < listDates.size(); i++) {
-                            if (listDates.get(i).getGroupName().equalsIgnoreCase(outBoxCallLists.get(position).getDates())) {
-                                for (int j = 0; j < listDates.get(i).getChildItems().get(3).getEcModelClasses().size(); j++) {
-                                    EcModelClass ecModelClass = listDates.get(i).getChildItems().get(3).getEcModelClasses().get(j);
-                                    if (ecModelClass.getDates().equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && ecModelClass.getCusCode().equalsIgnoreCase(outBoxCallLists.get(position).getCusCode()) && ecModelClass.getCusName().equalsIgnoreCase(outBoxCallLists.get(position).getCusName())) {
-                                        listDates.get(i).getChildItems().get(3).getEcModelClasses().remove(j);
-                                        j--;
+                        if (callOfflineECDataDao.isAvailableEc(outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getCusCode())) {
+                            for (int i = 0; i < listDates.size(); i++) {
+                                if (listDates.get(i).getGroupName().equalsIgnoreCase(outBoxCallLists.get(position).getDates())) {
+                                    for (int j = 0; j < listDates.get(i).getChildItems().get(3).getEcModelClasses().size(); j++) {
+                                        EcModelClass ecModelClass = listDates.get(i).getChildItems().get(3).getEcModelClasses().get(j);
+                                        if (ecModelClass.getDates().equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && ecModelClass.getCusCode().equalsIgnoreCase(outBoxCallLists.get(position).getCusCode()) && ecModelClass.getCusName().equalsIgnoreCase(outBoxCallLists.get(position).getCusName())) {
+                                            listDates.get(i).getChildItems().get(3).getEcModelClasses().remove(j);
+                                            j--;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    removeAt(position);
+                        removeAt(position);
+                    });
+
+                    btn_no.setOnClickListener(view -> {
+                        dialog.dismiss();
+                    });
                 }
                 return true;
             });
