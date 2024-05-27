@@ -42,6 +42,8 @@
                 android:layout_marginRight="@dimen/_3sdp"
                 android:visibility="gone"
                 android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
                 android:background="@drawable/background_button_border_black"
                 android:drawableLeft="@drawable/background_drawable_icon"
                 android:fontFamily="@font/satoshi_medium"

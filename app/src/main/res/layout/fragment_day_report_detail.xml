@@ -909,11 +909,14 @@
                         android:id="@+id/dayReportDetailRecView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/btnLayout"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_below="@id/btnLayout"
-                        android:scrollbars="vertical"
-                        android:nestedScrollingEnabled="false"/>
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="-1dp"
+                        android:layout_marginEnd="0dp"
+                        android:nestedScrollingEnabled="false"
+                        android:scrollbars="vertical" />
 
                 </RelativeLayout>
 

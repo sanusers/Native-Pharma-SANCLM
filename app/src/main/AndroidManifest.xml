@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:screenOrientation="landscape">
+    android:screenOrientation="landscape" >
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -30,11 +30,15 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION " />
 
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
+
             <category android:name="android.intent.category.BROWSABLE" />
+
             <data android:scheme="https" />
         </intent>
     </queries>
@@ -62,26 +66,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:targetApi="31" >
 
         <activity
             android:name=".activity.reports.dayReport.MapViewActvity"
             android:exported="false"
-            android:screenOrientation="landscape">
-
+            android:screenOrientation="landscape" >
         </activity>
-
         <activity
             android:name=".activity.PrivacyPolicyActvity.PrivacyPolicyActivity"
             android:exported="false"
-            android:screenOrientation="landscape">
-
+            android:screenOrientation="landscape" >
         </activity>
-
         <activity
             android:name=".activity.camera.CameraActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.activityModule.Activity"
             android:exported="false"
@@ -91,7 +91,7 @@
             android:name=".activity.Quiz.QuizActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activity.previewPresentation.PreviewActivity"
             android:exported="false"
@@ -232,7 +232,7 @@
         <activity
             android:name=".activity.splash.SplashScreen"
             android:exported="true"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -246,7 +246,7 @@
 
         <service
             android:name=".services.FirebaseService"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -268,12 +268,14 @@
             android:name=".activity.myresource.Resource_profiling"
             android:exported="false"
             android:screenOrientation="landscape" />
-        <activity android:name=".activity.myresource.callstatusview.Callsstatus_screenview"
+        <activity
+            android:name=".activity.myresource.callstatusview.Callsstatus_screenview"
             android:exported="false"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".activity.myresource.Categoryview.Cate_viewscreen"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.myresource.Categoryview.Cate_viewscreen"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -293,23 +295,21 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="saneforce.sanzen.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true" >
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <service android:name=".activity.slideDownloaderAlertBox.HTMLThumbnailGeneratorService"
+        <service
+            android:name=".activity.slideDownloaderAlertBox.HTMLThumbnailGeneratorService"
             android:enabled="true"
-            android:exported="false"/>
-
-
-        <service android:name=".activity.SlideDownloadNew.SlideServices"
+            android:exported="false" />
+        <service
+            android:name=".activity.slideDownloaderAlertBox.SlideServices"
             android:enabled="true"
-            android:exported="false">
-
+            android:exported="false" >
         </service>
-
     </application>
 
 </manifest>

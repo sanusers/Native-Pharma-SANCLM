@@ -20,10 +20,12 @@ import saneforce.sanzen.activity.call.dcrCallSelection.fragments.HospitalFragmen
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.ListedDoctorFragment;
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.StockiestFragment;
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.UnlistedDoctorFragment;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.databinding.CallDcrSelectionBinding;
+import saneforce.sanzen.location.CheckFakeGPS;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
@@ -133,5 +135,9 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     }
 
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        CheckFakeGPS.CheckLocationStatus(DcrCallTabLayoutActivity.this);
+    }
 }

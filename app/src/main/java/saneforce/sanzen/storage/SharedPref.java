@@ -6,13 +6,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
-
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideModelClass;
 
 public class SharedPref {
 
@@ -1898,30 +1894,6 @@ public class SharedPref {
         editor.putString(DR_ADD_CALL_NEED, drAddCallNeed).apply();
     }
 
-
-    public static void saveSlideDownloadingList(Context context, String Downloadcount, ArrayList<SlideModelClass> List,ArrayList<String>IdList) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(SLIDEDOWNCOUNT, String.valueOf(Downloadcount));
-        editor.putString(SLIDELIST, new Gson().toJson(List));
-        editor.putString(SLIDEID, new Gson().toJson(IdList));
-        editor.apply();
-    }
-
-
-    public static String GetSlideID(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDEID, "[]");
-    }
-
-    public static String GetSlideDownloadingcount(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDEDOWNCOUNT, "0");
-    }
-
-    public static String GetSlideList(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDELIST, "");
-    }
-
-
     public static void ClearSharedPreference(Context context) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -2394,16 +2366,6 @@ public class SharedPref {
     public static boolean getTpSyncStaus(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(TPSYNC_STAUS, false);
     }
-
-
-
-
-
-
-
-
-
-
     public static void setDcrSequential(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();

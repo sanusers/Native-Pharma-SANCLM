@@ -68,7 +68,7 @@ public class AdapterCusMainList extends RecyclerView.Adapter<AdapterCusMainList.
         holder.card_view.setOnClickListener(view -> {
             DcrDetailViewActivity.dcrDetailModelLists = new ArrayList<>();
             for (int i = 0; i < dcrApprovalLists.size(); i++) {
-                DcrDetailViewActivity.dcrDetailModelLists.add(new DcrDetailModelList(dcrApprovalLists.get(i).getHq_name(), dcrApprovalLists.get(i).getName(), dcrApprovalLists.get(i).getCode(), dcrApprovalLists.get(i).getTypeCust(), dcrApprovalLists.get(i).getType(), dcrApprovalLists.get(i).getSdp_name(), dcrApprovalLists.get(i).getPob(), dcrApprovalLists.get(i).getRemark(), dcrApprovalLists.get(i).getJointWork(), dcrApprovalLists.get(i).getCall_feedback(), dcrApprovalLists.get(i).getModTime(), dcrApprovalLists.get(i).getVisitTime(),dcrApprovalLists.get(position).getDct_id(),dcrApprovalLists.get(position).getDcr_detial_id()));
+                DcrDetailViewActivity.dcrDetailModelLists.add(new DcrDetailModelList(dcrApprovalLists.get(i).getHq_name(), dcrApprovalLists.get(i).getName(), dcrApprovalLists.get(i).getCode(), dcrApprovalLists.get(i).getTypeCust(), dcrApprovalLists.get(i).getType(), dcrApprovalLists.get(i).getSdp_name(), dcrApprovalLists.get(i).getPob(), dcrApprovalLists.get(i).getRemark(), dcrApprovalLists.get(i).getJointWork(), dcrApprovalLists.get(i).getCall_feedback(), dcrApprovalLists.get(i).getModTime(), dcrApprovalLists.get(i).getVisitTime(),dcrApprovalLists.get(i).getDct_id(),dcrApprovalLists.get(i).getDcr_detial_id()));
             }
             DcrDetailViewActivity.SelectedCode = dcrApprovalLists.get(position).getCode();
             Intent intent = new Intent(context, DcrDetailViewActivity.class);

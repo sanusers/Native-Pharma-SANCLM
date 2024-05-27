@@ -40,6 +40,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,8 +49,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.SlideDownloadNew.SlideServices;
-import saneforce.sanzen.activity.SlideDownloadNew.SlidesViewModel;
+import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideServices;
+import saneforce.sanzen.activity.slideDownloaderAlertBox.SlidesViewModel;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.Slide_adapter;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
@@ -1879,8 +1880,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String FilePath = jsonObject.optString("FilePath");
                     String id = jsonObject.optString("SlideId");
-                    Log.v("AAAA","1111");
-                    SlidesDao.insert(new SlidesTableDeatils(id,FilePath,"","1","0","1"));
+                    SlidesDao.insert(new SlidesTableDeatils(id,FilePath,"","1","0","1",String.valueOf(i)));
                 }
             }
         } catch (JSONException e) {
@@ -1927,15 +1927,14 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
      SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);
     slidesViewModel.getAllSlides().observe(this, slides -> {
-        Collections.sort(slides, (s1, s2) -> Integer.compare(Integer.valueOf(s2.getDownloadingStaus()),Integer.valueOf(s1.getDownloadingStaus())));
+        Collections.sort(slides, Comparator.comparingInt(s -> Integer.valueOf(s.getListSlidePosition())));
 
         adapter.setSlides(slides);
     });
 
 
     slidesViewModel.GetDowloaingCount().observe(this,integer -> {
-            recyclerView.getLayoutManager().scrollToPosition(integer);
-            txt_downloadcount.setText(String.valueOf(integer)+" / ");
+        txt_downloadcount.setText(String.valueOf(integer)+" / ");
 
                 if(Integer.valueOf(txt_total.getText().toString())!=0){
                     if(integer==(Integer.valueOf(txt_total.getText().toString()))){

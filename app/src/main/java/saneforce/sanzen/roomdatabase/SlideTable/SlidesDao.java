@@ -2,7 +2,6 @@ package saneforce.sanzen.roomdatabase.SlideTable;
 
 import android.annotation.SuppressLint;
 import android.database.Cursor;
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -10,7 +9,6 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +27,6 @@ public interface SlidesDao {
     @Query("DELETE FROM `SlidesTableDeatils`")
     void deleteAllData();
 
-    @Query("DELETE FROM `SlidesTableDeatils`")
-    void deleteAllData();
     @Query("SELECT * FROM SlidesTableDeatils")
     Cursor getAllSlides();
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -45,6 +41,8 @@ public interface SlidesDao {
 
     @Query("SELECT COUNT(*) FROM SlidesTableDeatils WHERE DownloadingStaus = '1'")
     LiveData<Integer> getCountNewStatus();
+    @Query("SELECT COUNT(*) FROM SlidesTableDeatils WHERE DownloadingStaus = '2'")
+    int getInProcessCount();
 
     @Query("SELECT COUNT(*) FROM SlidesTableDeatils")
     LiveData<Integer> TotalSlidecount();
@@ -66,7 +64,8 @@ public interface SlidesDao {
                 @SuppressLint("Range") String downloadingStatus = cursor.getString(cursor.getColumnIndex("DownloadingStaus")); // Corrected column name
                 @SuppressLint("Range") String Progress = cursor.getString(cursor.getColumnIndex("Progress"));
                 @SuppressLint("Range") String Backgroundtask = cursor.getString(cursor.getColumnIndex("Background task"));
-                SlidesTableDeatils slide = new SlidesTableDeatils(slideId, slideName, slideSize, downloadingStatus,Progress,Backgroundtask);
+                @SuppressLint("Range") String FilePosition = cursor.getString(cursor.getColumnIndex("FilePosition"));
+                SlidesTableDeatils slide = new SlidesTableDeatils(slideId, slideName, slideSize, downloadingStatus,Progress,Backgroundtask,FilePosition);
                 slides.add(slide);
             } while (cursor.moveToNext());
             cursor.close();

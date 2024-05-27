@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.SlideDownloadNew.FileDownloadWorker;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
+import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesTableDeatils;
 import saneforce.sanzen.storage.SharedPref;
 
@@ -34,9 +35,11 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
     CommonUtilsMethods commonUtilsMethods;
     private List<SlidesTableDeatils> list = new ArrayList<>();
 
+    RoomDB roomDB;
     public Slide_adapter(Activity activity) {
         this.activity = activity;
         commonUtilsMethods=new CommonUtilsMethods(activity);
+        roomDB=RoomDB.getDatabase(activity);
     }
 
     @NonNull
@@ -67,7 +70,7 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
             holder.progressBar.setProgress(0);
         }else {
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
-            holder.text_download_size.setText("");
+            holder.text_download_size.setText("Downloading Failed");
             holder.progressBar.setProgress(0);
         }
 
@@ -88,37 +91,18 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
         }
         if (list.get(position).getDownloadingStaus().equalsIgnoreCase("0")) {
             holder.text_retry.setVisibility(View.VISIBLE);
-
         } else {
             holder.text_retry.setVisibility(View.GONE);
         }
-        holder.text_retry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (UtilityClass.isNetworkAvailable(activity)) {
-                    String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getSlideUrl(activity) + list.get(position).getSlideName();
-                    Data inputData = new Data.Builder()
-                            .putString("Flag", "2")
-                            .putString("file_url", url)
-                            .putString("Slide_id", list.get(position).getSlideId())
-                            .putString("Slide_name", list.get(position).getSlideName())
-                            .build();
-
-                    OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(FileDownloadWorker.class)
-                            .setInputData(inputData)
-                            .build();
-                    WorkManager workManager = WorkManager.getInstance(activity);
-                    workManager.enqueue(fileDownloadRequest);
-                }else {
-                    commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
-                }
-            }
-        });
+        if (roomDB.slidesDao().getInProcessCount() != 0) {
+            holder.text_retry.setVisibility(View.GONE);
+        }
     }
     public void setSlides(List<SlidesTableDeatils> slides) {
         list.clear();
         this.list = slides;
         notifyDataSetChanged();
+
     }
     @Override
     public int getItemCount() {
@@ -142,9 +126,36 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
             rl_title_layout = itemView.findViewById(R.id.rl_calender_syn);
 
 
+            text_retry.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+
+
+
+                    if (UtilityClass.isNetworkAvailable(activity)) {
+                                String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getSlideUrl(activity) + list.get(position).getSlideName();
+                                Log.e("DownloadingAPI",""+url);
+                                Data inputData = new Data.Builder()
+                                        .putString("Flag", "2")
+                                        .putString("file_url", url)
+                                        .putString("Slide_id", list.get(position).getSlideId())
+                                        .putString("Slide_name", list.get(position).getSlideName())
+                                        .putString("FilePosition", list.get(position).getListSlidePosition())
+                                        .build();
+
+                                OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(FileDownloadWorker.class)
+                                        .setInputData(inputData)
+                                        .build();
+                                WorkManager workManager = WorkManager.getInstance(activity);
+                                workManager.enqueue(fileDownloadRequest);
+                            }
+                    else {
+                        commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
+                    }
+                }
+            });
         }
     }
-   public ArrayList<SlideModelClass> getList(){
-        return null;
-    }
+
 }

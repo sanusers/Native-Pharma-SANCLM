@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +29,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
     @SuppressLint("StaticFieldLeak")
     public static ActivityDcrDetailViewBinding dcrDetailViewBinding;
     AdapterCusSingleList adapterCusSingleList;
-      public static String dcr_id ,Details_id;
+      public static String dcr_id ,Details_id,dcr_code;
     String hq_name, Cus_pob, Cus_jw, Cus_type, Cus_cluster, Cus_remark, Cus_feedback, Cus_modTime, Cus_visitTime,cut_name;
 
     CommonUtilsMethods commonUtilsMethods;

@@ -42,9 +42,11 @@ import saneforce.sanzen.activity.approvals.dcr.detailView.DcrDetailViewActivity;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DcrDetailModelList;
 import saneforce.sanzen.activity.call.pojo.input.SaveCallInputList;
 import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
+import saneforce.sanzen.activity.reports.dayReport.adapter.DayReportSlideDetailsAdapter;
 import saneforce.sanzen.activity.reports.dayReport.adapter.ReoportRcpaAdapter;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportRcpaModelClass;
 import saneforce.sanzen.activity.reports.dayReport.model.EventCaptureModelClass;
+import saneforce.sanzen.activity.reports.dayReport.model.SlideRatingDetalisModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
@@ -69,7 +71,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
     ApiInterface apiInterface;
     EventDetailsCapture adapter;
 
-
+    ArrayList<SlideRatingDetalisModelClass> callDetailingLists=new ArrayList<>();
     public AdapterCusSingleList(Context context, ArrayList<DcrDetailModelList> dcrApprovalNames, OnItemClickListenerApproval listenerApproval) {
         this.context = context;
         this.dcrApprovalNames = dcrApprovalNames;
@@ -147,6 +149,8 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
 
         holder.constraint_main.setOnClickListener(view -> {
             EventCaptureData.clear();
+            rcpaList.clear();
+            callDetailingLists.clear();
             if (adapter != null)
                 adapter.notifyDataSetChanged();
             dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
@@ -164,7 +168,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                     dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
                     dcrDetailViewBinding.constraintTagIc.setVisibility(View.VISIBLE);
                 }else {
-                    EvetCapureAPICall(position);
+                    EvetCapureAPICall();
                 }
 
             }
@@ -189,6 +193,21 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
         });
 
 
+        dcrDetailViewBinding.constraintMainSld.setOnClickListener(view -> {
+
+            if(dcrDetailViewBinding.sldLayout.getVisibility()==View.VISIBLE){
+                dcrDetailViewBinding.tagViewSld.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+                dcrDetailViewBinding.sldLayout.setVisibility(View.GONE);
+            }else {
+                dcrDetailViewBinding.tagViewSld.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
+                if(callDetailingLists.size()>0){
+                    dcrDetailViewBinding.sldLayout.setVisibility(View.VISIBLE);
+                }else {
+                    SldeDetails(dcrDetailViewBinding.sldarecyelerviwew,dcrDetailViewBinding.sldLayout,position);
+                }
+
+            }
+        });
 
 
     }
@@ -218,7 +237,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
         }
     }
 
-    public  void EvetCapureAPICall(int positon){
+    public  void EvetCapureAPICall(){
 
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         if (UtilityClass.isNetworkAvailable(context)) {
@@ -258,6 +277,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                             if(EventCaptureData.size()>0){
                                                 setEventCaptureData(EventCaptureData);
                                             }else {
+                                                dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                                                 dcrDetailViewBinding.rvEventListview.setVisibility(View.GONE);
                                                 dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
                                                 commonUtilsMethods.showToastMessage(context, "No Event Capture");
@@ -267,11 +287,17 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                    dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+                                    dcrDetailViewBinding.rvEventListview.setVisibility(View.GONE);
+                                    dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
                                 }
                             }
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+                                dcrDetailViewBinding.rvEventListview.setVisibility(View.GONE);
+                                dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
                                 commonUtilsMethods.showToastMessage(context,context.getString(R.string.toast_response_failed));
                                 progressDialog.dismiss();
                             }
@@ -304,8 +330,6 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
     }
 
 
-
-
     public  void Rcpagetdata(RecyclerView recyclerView , LinearLayout layout,int position){
 
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
@@ -316,7 +340,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("tableName", "getdcr_rcpa");
-                        jsonObject.put("dcrdetail_cd", dcrApprovalNames.get(position).getDcr_detial_id());
+                        jsonObject.put("dcrdetail_cd", DcrDetailViewActivity.Details_id);
                         jsonObject.put("sfcode", SharedPref.getSfCode(context));
                         jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                         jsonObject.put("Rsf",DcrApprovalActivity.SelectedSfCode);
@@ -348,6 +372,8 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                                 recyclerView.setAdapter(adapter);
                                                 layout.setVisibility(View.VISIBLE);
                                             }else {
+                                                layout.setVisibility(View.GONE);
+                                                dcrDetailViewBinding.tagViewRcpa.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                                                 commonUtilsMethods.showToastMessage(context, "No RCPA Values");
                                             }
 
@@ -355,11 +381,15 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                    layout.setVisibility(View.GONE);
+                                    dcrDetailViewBinding.tagViewRcpa.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                                 }
                             }
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                layout.setVisibility(View.GONE);
+                                dcrDetailViewBinding.tagViewRcpa.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
                                 progressDialog.dismiss();
                             }
@@ -380,5 +410,87 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
 
     }
 
+    public  void SldeDetails(RecyclerView recyclerView ,LinearLayout layout,int position){
+
+        progressDialog = CommonUtilsMethods.createProgressDialog(context);
+        if (UtilityClass.isNetworkAvailable(context)) {
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
+                if (status) {
+                    try {
+                        apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("tableName", "getslidedet");
+                        jsonObject.put("ACd", DcrDetailViewActivity.dcr_id);
+                        jsonObject.put("Mslcd", DcrDetailViewActivity.SelectedCode);
+                        jsonObject.put("sfcode", SharedPref.getSfCode(context));
+                        jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+                        jsonObject.put("Rsf",DcrApprovalActivity.SelectedSfCode);
+                        jsonObject.put("sf_type", SharedPref.getSfType(context));
+                        jsonObject.put("Designation", SharedPref.getDesig(context));
+                        jsonObject.put("state_code", SharedPref.getStateCode(context));
+                        jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+                        jsonObject.put("app_version", context.getResources().getString(R.string.app_version));
+                        jsonObject.put("Mode", context.getResources().getString(R.string.app_mode));
+                        Log.d("paramObject",jsonObject.toString());
+                        Map<String, String> mapString = new HashMap<>();
+                        mapString.put("axn", "get/reports");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                        call.enqueue(new Callback<JsonElement>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                Log.e("test", "res : " + response.body());
+                                progressDialog.dismiss();
+                                try {
+                                    if (response.body() != null && response.isSuccessful()) {
+                                        JSONArray jsonArray = new JSONArray();
+                                        if (response.body().isJsonArray()) {
+                                            jsonArray = new JSONArray(response.body().getAsJsonArray().toString());
+                                            Type typeToken = new TypeToken<ArrayList<SlideRatingDetalisModelClass>>() {
+                                            }.getType();
+                                            callDetailingLists = new Gson().fromJson(String.valueOf(jsonArray), typeToken);
+                                            if(callDetailingLists.size()>0){
+                                                DayReportSlideDetailsAdapter adapter=new DayReportSlideDetailsAdapter(callDetailingLists,context);
+                                                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                                                commonUtilsMethods.recycleTestWithDivider(recyclerView);
+                                                recyclerView.setAdapter(adapter);
+                                                layout.setVisibility(View.VISIBLE);
+                                         //       Slededataid=arrayList.get(position).getTrans_Detail_Slno();
+                                            }else {
+                                                layout.setVisibility(View.GONE);
+                                                dcrDetailViewBinding.tagViewSld.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+                                                commonUtilsMethods.showToastMessage(context, " Slides   Details Not Available");
+                                            }
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    layout.setVisibility(View.GONE);
+                                    dcrDetailViewBinding.tagViewSld.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                                layout.setVisibility(View.GONE);
+                                dcrDetailViewBinding.tagViewSld.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+                                progressDialog.dismiss();
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    progressDialog.dismiss();
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                }
+            });
+            networkStatusTask.execute();
+        } else {
+            progressDialog.dismiss();
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+        }
+
+    }
 
 }

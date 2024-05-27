@@ -1,4 +1,4 @@
-package saneforce.santrip.activity.login;
+package saneforce.sanzen.activity.login;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
@@ -10,7 +10,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,11 +17,8 @@ import android.provider.Settings;
 import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,27 +38,28 @@ import java.io.File;
 import java.util.Locale;
 import java.util.Objects;
 
-import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.HomeDashBoard;
-import saneforce.santrip.activity.masterSync.MasterSyncActivity;
-import saneforce.santrip.activity.setting.SettingsActivity;
-import saneforce.santrip.commonClasses.CommonUtilsMethods;
-import saneforce.santrip.commonClasses.Constants;
-import saneforce.santrip.commonClasses.UtilityClass;
-import saneforce.santrip.databinding.ActivityLoginBinding;
-import saneforce.santrip.network.ApiInterface;
-import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.roomdatabase.CallTableDetails.CallTableDao;
-import saneforce.santrip.roomdatabase.CallsUtil;
-import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataDao;
-import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataTable;
-import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
-import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SharedPref;
-import saneforce.santrip.utility.DownloaderClass;
-import saneforce.santrip.utility.ImageStorage;
-import saneforce.santrip.utility.LocaleHelper;
-import saneforce.santrip.utility.TimeUtils;
+import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
+import saneforce.sanzen.activity.setting.SettingsActivity;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
+import saneforce.sanzen.databinding.ActivityLoginBinding;
+import saneforce.sanzen.location.CheckFakeGPS;
+import saneforce.sanzen.network.ApiInterface;
+import saneforce.sanzen.network.RetrofitClient;
+import saneforce.sanzen.roomdatabase.CallTableDetails.CallTableDao;
+import saneforce.sanzen.roomdatabase.CallsUtil;
+import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataDao;
+import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataTable;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.DownloaderClass;
+import saneforce.sanzen.utility.ImageStorage;
+import saneforce.sanzen.utility.LocaleHelper;
+import saneforce.sanzen.utility.TimeUtils;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -94,7 +91,6 @@ public class LoginActivity extends AppCompatActivity {
         UtilityClass.setLanguage(LoginActivity.this);
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
         commonUtilsMethods = new CommonUtilsMethods(getParent());
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
@@ -142,6 +138,7 @@ public class LoginActivity extends AppCompatActivity {
 
         binding.loginBtn.setOnClickListener(view -> {
             UtilityClass.hideKeyboard(LoginActivity.this);
+            CheckFakeGPS.CheckLocationStatus(LoginActivity.this);
             userId = binding.userId.getText().toString().trim().replaceAll("\\s", "");
             userPwd = binding.password.getText().toString().trim().replaceAll("\\s", "");
 
@@ -153,6 +150,8 @@ public class LoginActivity extends AppCompatActivity {
                 } else if (userPwd.isEmpty()) {
                     binding.password.requestFocus();
                     commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_password));
+                } else if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase("")) {
+                    commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.no_network));
                 } else if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
                     SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                     commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
@@ -225,7 +224,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
 
         if(iscleared()){
-            Toast.makeText(LoginActivity.this,"Data Clear Sucessfully",Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this,"Data Cleared Sucessfully",Toast.LENGTH_SHORT).show();
         }else {
             Toast.makeText(LoginActivity.this,"Failed",Toast.LENGTH_SHORT).show();
         }
@@ -245,8 +244,8 @@ public class LoginActivity extends AppCompatActivity {
             //  binding.userId.setEnabled(true);
         } else {
             binding.userId.setText(SharedPref.getLoginId(LoginActivity.this));
-            binding.password.setText(SharedPref.getLoginUserPwd(LoginActivity.this));
-            //  binding.userId.setEnabled(false);
+          //  binding.password.setText(SharedPref.getLoginUserPwd(LoginActivity.this));
+              binding.userId.setEnabled(false);
         }
 
         SetUpLanguage();
@@ -470,11 +469,22 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         }
 
-
         if (slidesFolder.exists()) {
             deleteRecursive(slidesFolder);
         }
         slidesFolder.delete();
+
+        File thumbnailStorage = new File(getApplicationContext().getExternalFilesDir(null), "/Thumbnails/");
+        if (thumbnailStorage.exists() && thumbnailStorage.isDirectory()) {
+            File[] files = thumbnailStorage.listFiles();
+            for (File file : files) {
+                if (file.isFile()) {
+                    file.delete();
+                }
+            }
+        }
+
+
         return true;
 
     }

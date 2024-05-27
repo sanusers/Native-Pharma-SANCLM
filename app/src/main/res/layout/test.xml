@@ -5,60 +5,14 @@
     android:orientation="vertical">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="@dimen/_5sdp"
-        android:orientation="horizontal"
-        android:weightSum="5">
+ <TextView
+     android:id="@+id/testtext"
+     android:layout_width="wrap_content"
+     android:layout_gravity="center"
+     android:textColor="@color/black_45"
+     android:layout_height="wrap_content">
 
-        <TextView
-            android:fontFamily="@font/satoshi_bold"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/dark_purple"
-            android:textSize="@dimen/_6sdp"
-            android:layout_weight="1"
-           />
-
-        <TextView
-            android:fontFamily="@font/satoshi_bold"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/dark_purple"
-            android:textSize="@dimen/_6sdp"
-            android:layout_weight="0.5"
-             />
-
-        <TextView
-            android:layout_width="0dp"
-            android:textColor="@color/dark_purple"
-            android:textSize="@dimen/_6sdp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-             />
-
-        <TextView
-            android:layout_width="0dp"
-            android:fontFamily="@font/satoshi_bold"
-            android:textColor="@color/dark_purple"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:textSize="@dimen/_6sdp"
-           />
-
-        <TextView
-            android:layout_width="0dp"
-            android:textSize="@dimen/_6sdp"
-            android:fontFamily="@font/satoshi_bold"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            />
-
-    </LinearLayout>
-
-
+ </TextView>
 
 
 

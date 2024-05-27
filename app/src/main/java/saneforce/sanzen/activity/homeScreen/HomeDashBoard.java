@@ -15,6 +15,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -23,6 +24,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -50,6 +53,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -69,13 +73,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -88,7 +92,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
-import saneforce.sanzen.activity.SlideDownloadNew.SlideServices;
+import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideServices;
 import saneforce.sanzen.activity.activityModule.Activity;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.forms.Forms_activity;
@@ -101,7 +105,6 @@ import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.CallStatusModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.EventCalenderModelClass;
 
-import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
 import saneforce.sanzen.activity.leave.Leave_Application;
 import saneforce.sanzen.activity.login.LoginActivity;
 import saneforce.sanzen.activity.map.MapsActivity;
@@ -120,7 +123,7 @@ import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.MyDayPlanEntriesNeeded;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityHomeDashBoardBinding;
-import saneforce.sanzen.databinding.PreviewItemBinding;
+import saneforce.sanzen.location.CheckFakeGPS;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.activity.remaindercalls.RemaindercallsActivity;
@@ -181,6 +184,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private static FragmentManager fragmentManager;
     public static boolean canMoveNextDate = true;
 
+
+
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -191,8 +197,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("ACTIVITY_STATUS", "OnResume");
 
+        CheckFakeGPS.CheckLocationStatus(HomeDashBoard.this);
         if (tpRangeCheck) {
             CheckedTpRange();
         }
@@ -264,6 +270,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
+
         Log.d("ACTIVITY_STATUS", "OnCreate");
         binding = ActivityHomeDashBoardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -286,7 +295,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         actionBarDrawerToggle.syncState();
         binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
         fragmentManager = getSupportFragmentManager();
-
+        gpsTrack = new GPSTrack(this);
 
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
@@ -305,10 +314,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
 
         binding.imgNotofication.setOnClickListener(view -> {
-
             startActivity(new Intent(HomeDashBoard.this, MapViewActvity.class));
         });
-
 
         binding.imgLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -334,7 +341,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             }
         });
-
         adapter = new CustomPagerAdapter(getSupportFragmentManager());
         binding.viewPager1.setAdapter(adapter);
         binding.viewPager1.setOffscreenPageLimit(3);
@@ -370,7 +376,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } else {
             SharedPref.setSkipCheckIn(getApplicationContext(), false);
         }
-        checkAndSetEntryDate(this);
+            checkAndSetEntryDate(this);
+
+
 
         binding.rlDateLayoout.setOnClickListener(this);
         binding.viewCalerderLayout.rlCalenderSyn.setOnClickListener(this);
@@ -428,6 +436,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
             }
         });
+
+        double latitude = gpsTrack.getLatitude();
+        double  longitude = gpsTrack.getLongitude();
+        if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
+            address = CommonUtilsMethods.gettingAddress(this, latitude, longitude, false);
+        }  else {
+            address = "No Address Found";
+        }
+        Log.d("CurrentAdress", " Late   : "+latitude+"  Long ::"+longitude+ " Address  ::"  +address);
     }
 
     private static void setupLeftViewPager(Context context, FragmentManager fragmentManager) {
@@ -462,7 +479,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         });
 
         btnCheckIn.setOnClickListener(v -> {
-            gpsTrack = new GPSTrack(this);
+
             latitude = gpsTrack.getLatitude();
             longitude = gpsTrack.getLongitude();
             if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
@@ -843,6 +860,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         user_logout.setOnClickListener(v -> {
             SharedPref.saveLoginState(HomeDashBoard.this, false);
             startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
+            commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Logout Successfully");
             finish();
         });
 
@@ -1154,6 +1172,49 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.leave_application))) {
             startActivity(new Intent(HomeDashBoard.this, Leave_Application.class));
+            return true;
+        }
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.clear_slides))) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setTitle("Warning!");
+            alertDialogBuilder.setIcon(getDrawable(R.drawable.icon_sync_failed));
+            alertDialogBuilder.setMessage("Are you sure you want to clear slides?");
+            alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert);
+
+            alertDialogBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    roomDB.slidesDao().deleteAllData();
+
+                    File slidesFolder=null;
+                    if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                        slidesFolder = new File(HomeDashBoard.this.getExternalFilesDir(null), "Slides");
+                    }
+
+                    if (slidesFolder.exists()) {
+                        deleteRecursive(slidesFolder);
+                    }
+                    slidesFolder.delete();
+
+                    File thumbnailStorage = new File(getApplicationContext().getExternalFilesDir(null), "/Thumbnails/");
+                    if (thumbnailStorage.exists() && thumbnailStorage.isDirectory()) {
+                        File[] files = thumbnailStorage.listFiles();
+                        for (File file : files) {
+                            if (file.isFile()) {
+                                file.delete();
+                            }
+                        }
+                    }
+
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Cleared Successfully");
+
+                }
+            });
+
+            alertDialogBuilder.setNegativeButton(android.R.string.no, null);
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
             return true;
         }
 
@@ -1640,13 +1701,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             menu.findItem(R.id.approval).setVisible(false);
 
         if (SharedPref.getQuizNeed(this).equalsIgnoreCase("0"))
-            menu.findItem(R.id.quiz).setVisible(true);
+            menu.findItem(R.id.quiz).setVisible(false);
         else
             menu.findItem(R.id.quiz).setVisible(false);
 
 
         if (SharedPref.getSurveyNd(this).equalsIgnoreCase("0"))
-            menu.findItem(R.id.survey).setVisible(true);
+            menu.findItem(R.id.survey).setVisible(false);
         else
             menu.findItem(R.id.survey).setVisible(false);
 
@@ -1792,6 +1853,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         super.onDestroy();
         slidesDao.Changestatus("0","1");
 
+    }
+
+    private void deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                deleteRecursive(child);
+            }
+        }
+        fileOrDirectory.delete();
     }
 }
 

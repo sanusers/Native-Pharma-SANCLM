@@ -728,7 +728,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone"
-                        app:layout_constraintBottom_toTopOf="@id/constraint_main_rcpa"
+                        app:layout_constraintBottom_toTopOf="@id/constraint_main_sld"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@id/tv_visit_time"
                         app:layout_constraintTop_toBottomOf="@id/constraint_main_input">
@@ -885,13 +885,172 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_main_sld"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toTopOf="@id/view_dummy_sld"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/tv_visit_time"
+                        app:layout_constraintTop_toBottomOf="@id/constraint_main_input">
+
+                        <TextView
+                            android:id="@+id/tag_sld"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:paddingVertical="@dimen/_5sdp"
+                            android:text="Slide Details"
+                            android:textColor="@color/light_grey_2"
+                            android:textSize="@dimen/_6ssp"
+                            app:layout_constraintBottom_toTopOf="@id/constraint_tag_sld"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/tag_view_sld"
+                            android:layout_width="@dimen/_8sdp"
+                            android:layout_height="@dimen/_10sdp"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:layout_marginEnd="@dimen/_8sdp"
+                            android:src="@drawable/arrow_down"
+                            app:layout_constraintBottom_toTopOf="@id/constraint_tag_sld"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:ignore="ContentDescription" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/constraint_tag_sld"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginHorizontal="@dimen/_6sdp"
+                            android:background="@drawable/bg_light_grey_1"
+                            android:paddingHorizontal="@dimen/_5sdp"
+                            android:paddingVertical="@dimen/_3sdp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toTopOf="@id/rv_sdl"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tag_sld" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_sdl"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/_6sdp"
+                            android:paddingHorizontal="@dimen/_5sdp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/constraint_tag_sld" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <View
+                        android:id="@+id/view_dummy_sld"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_marginVertical="@dimen/_2sdp"
+                        android:background="@color/background"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/sldLayout"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/constraint_main_sld" />
+
+
+                    <LinearLayout
+                        android:id="@+id/sldLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toTopOf="@id/constraint_main_rcpa"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/tv_visit_time"
+                        app:layout_constraintTop_toBottomOf="@id/view_dummy_sld">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/_3sdp"
+                            android:layout_marginVertical="@dimen/_1sdp"
+                            android:background="@drawable/bg_light_grey_1"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/_5sdp"
+                            android:weightSum="4">
+
+                            <TextView
+                                android:fontFamily="@font/satoshi_bold"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/dark_purple"
+                                android:textSize="@dimen/_6sdp"
+                                android:layout_weight="1"
+                                android:text="Brand Name" />
+
+                            <TextView
+                                android:fontFamily="@font/satoshi_bold"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/dark_purple"
+                                android:textSize="@dimen/_6sdp"
+                                android:layout_weight="1"
+                                android:text="Duration" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:textColor="@color/dark_purple"
+                                android:textSize="@dimen/_6sdp"
+                                android:gravity="center"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/satoshi_bold"
+                                android:layout_weight="1"
+                                android:text="Rating" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:fontFamily="@font/satoshi_bold"
+                                android:textColor="@color/dark_purple"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textSize="@dimen/_6sdp"
+                                android:text="Feedback" />
+
+
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/sldarecyelerviwew"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/_3sdp"
+                            android:overScrollMode="never"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:paddingVertical="@dimen/_1sdp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="1.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/constraint_tag_sample_prd"
+                            />
+
+                    </LinearLayout>
+
+
+
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/constraint_main_rcpa"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toTopOf="@id/view_dummy_rcpa"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@id/tv_visit_time"
-                        app:layout_constraintTop_toBottomOf="@id/constraint_main_input">
+                        app:layout_constraintTop_toBottomOf="@id/sldLayout">
 
                         <TextView
                             android:id="@+id/tag_rcpa"
@@ -1046,6 +1205,7 @@
                             tools:listitem="@layout/report_rcpa_child_table_item" />
 
                     </LinearLayout>
+
 
 
                     <androidx.constraintlayout.widget.ConstraintLayout

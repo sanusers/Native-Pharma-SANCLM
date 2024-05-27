@@ -14,6 +14,7 @@ import saneforce.sanzen.activity.PrivacyPolicyActvity.PrivacyPolicyActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.login.LoginActivity;
 import saneforce.sanzen.activity.setting.SettingsActivity;
+import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.databinding.ActivitySplashScreenBinding;
 import saneforce.sanzen.storage.SharedPref;
 
@@ -57,7 +58,12 @@ public class SplashScreen extends AppCompatActivity {
             }
 
         },3000);
-    }
+
+
+
+
+
+        }
 
 
     @Override

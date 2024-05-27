@@ -21,22 +21,32 @@ public class SlidesTableDeatils {
     private String SlideSize;
     @ColumnInfo(name = "DownloadingStaus")
     private String DownloadingStaus;
-
-
     @ColumnInfo(name = "Progress")
     private String Progress;
 
     @ColumnInfo(name = "Background task")
     private String Backgroundtask;
-    public SlidesTableDeatils( String slideId, String slideName, String slideSize, String downloadingStaus,String Progress,String Backgroundtask) {
+
+    @ColumnInfo(name=("FilePosition"))
+    private String ListSlidePosition;
+    public SlidesTableDeatils( String slideId, String slideName, String slideSize, String downloadingStaus,String Progress,String Backgroundtask,String ListSlidePosition) {
         SlideId = slideId;
         SlideName = slideName;
         SlideSize = slideSize;
         DownloadingStaus = downloadingStaus;
         this.Progress = Progress;
         this.Backgroundtask = Backgroundtask;
+        this.ListSlidePosition = ListSlidePosition;
     }
     public SlidesTableDeatils() {
+    }
+
+    public String getListSlidePosition() {
+        return ListSlidePosition;
+    }
+
+    public void setListSlidePosition(String listSlidePosition) {
+        ListSlidePosition = listSlidePosition;
     }
 
     public String getProgress() {

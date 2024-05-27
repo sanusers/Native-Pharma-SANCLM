@@ -100,6 +100,7 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityBinding;
+import saneforce.sanzen.location.CheckFakeGPS;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 
@@ -3623,5 +3624,12 @@ public class Activity extends AppCompatActivity {
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
-  }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        CheckFakeGPS.CheckLocationStatus(Activity.this);
+    }
+}
 

@@ -50,4 +50,8 @@
         android:id="@+id/remaindercall"
         android:icon="@drawable/profiling"
         android:title="@string/remainder_call" />
+    <item
+        android:id="@+id/ClearSlide"
+        android:icon="@drawable/img_clear"
+        android:title="@string/clear_slides" />
 </menu>
