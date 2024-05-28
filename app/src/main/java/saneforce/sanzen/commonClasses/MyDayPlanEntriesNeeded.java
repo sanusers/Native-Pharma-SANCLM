@@ -144,7 +144,7 @@ public class MyDayPlanEntriesNeeded {
                     String cusType = jsonObject.optString("CustType");
                     String dayStatus = jsonObject.optString("day_status");
                     String date = jsonObject.optString("Dcr_dt");
-                    if(date.equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)))
+                    if(cusType.equalsIgnoreCase("0") && date.equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)))
                         isTodayPresent = true;
                     if(cusType.equalsIgnoreCase("0") && !dayStatus.equalsIgnoreCase("1")) {
                         dateBefore = LocalDate.parse(date);
@@ -219,9 +219,9 @@ public class MyDayPlanEntriesNeeded {
             Log.e("set date", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
             syncTaskStatus.datesFound();
         }else {
-            SharedPref.setSelectedDateCal(context, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_34));
+            SharedPref.setSelectedDateCal(context, "");
             Log.e("set date today", "setupMyDayPlanEntriesNeeded: dates empty");
-            syncTaskStatus.datesFound();
+            syncTaskStatus.noDatesFound();
         }
     }
 

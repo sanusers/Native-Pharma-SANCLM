@@ -297,7 +297,7 @@ public class DCRCallActivity extends AppCompatActivity {
                                 if(isFromActivity.equalsIgnoreCase("new")){
                                     InsertVisitControl();
                                 }
-                                callOfflineDataDao.saveOfflineCallOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
+                                callOfflineDataDao.saveOfflineCallOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
 //                                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
 //                                    dialogCheckOut.show();
 //                                } else {
@@ -307,7 +307,7 @@ public class DCRCallActivity extends AppCompatActivity {
 //                                    finish();
 //                                }
 
-                                if (JWOthersFragment.callCaptureImageLists.size() > 0) {
+                                if (!JWOthersFragment.callCaptureImageLists.isEmpty()) {
                                     for (int i = 0; i < JWOthersFragment.callCaptureImageLists.size(); i++) {
                                         callOfflineECDataDao.saveOfflineEC(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
                                     }
@@ -551,7 +551,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 masterDataDao.insert(inputdata);
             }
 
-            if (AdditionalCusListAdapter.saveAdditionalCallArrayList.size() > 0) {
+            if (!AdditionalCusListAdapter.saveAdditionalCallArrayList.isEmpty()) {
                 for (int i = 0; i < AdditionalCusListAdapter.saveAdditionalCallArrayList.size(); i++) {
                     jsonObject = new JSONObject();
                     jsonObject.put("CustCode", AdditionalCusListAdapter.saveAdditionalCallArrayList.get(i).getCode());

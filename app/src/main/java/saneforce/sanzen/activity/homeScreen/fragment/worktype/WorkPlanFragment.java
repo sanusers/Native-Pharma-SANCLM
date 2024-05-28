@@ -1078,32 +1078,37 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void updateLocalData() throws JSONException {
-        JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
-        for (int index = 0; index<jsonArray.length(); index++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(index);
-            String cusType = jsonObject.optString("CustType");
-            String dayStatus = jsonObject.optString("day_status");
-            String date = jsonObject.optString("Dcr_dt");
-            if(cusType.equalsIgnoreCase("0")
-                    && date.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()))
-                    && !dayStatus.equalsIgnoreCase("1")) {
-                jsonObject.put("day_status", "1");
-                jsonArray.put(index, jsonObject);
-                break;
+    private void updateLocalData() {
+        try {
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+            for (int index = 0; index<jsonArray.length(); index++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(index);
+                String cusType = jsonObject.optString("CustType");
+                String dayStatus = jsonObject.optString("day_status");
+                String date = jsonObject.optString("Dcr_dt");
+                if(cusType.equalsIgnoreCase("0")
+                        && date.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()))
+                        && !dayStatus.equalsIgnoreCase("1")) {
+                    jsonObject.put("day_status", "1");
+                    jsonArray.put(index, jsonObject);
+                    break;
+                }
             }
-        }
-        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 0));
-        jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
-        for (int index = 0; index<jsonArray.length(); index++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(index);
-            String date = jsonObject.getJSONObject("dt").getString("date").substring(0, 10);
-            if(date.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()))) {
-                jsonArray.remove(index);
-                break;
+            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 0));
+            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
+            for (int index = 0; index<jsonArray.length(); index++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(index);
+                String date = jsonObject.getJSONObject("dt").getString("date").substring(0, 10);
+                if(date.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()))) {
+                    jsonArray.remove(index);
+                    break;
+                }
             }
+            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 0));
+        } catch (Exception e) {
+            Log.e("WorkPlan final submit", "updateLocalData: " + e.getMessage());
+            e.printStackTrace();
         }
-        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 0));
     }
 
     private void CallDialogAfterCheckOut() {
@@ -1495,7 +1500,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             if (workTypeArray.length() > 0) {
                 if(HomeDashBoard.selectedDate != null) {
                     SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
-                    if(workTypeArray.length() == 2) {
+                    if(workTypeArray.length() == 2 && !workTypeArray.getJSONObject(1).getString("FWFlg").isEmpty()) {
                         binding.cardPlan2.setVisibility(View.VISIBLE);
                         binding.llDelete.setVisibility(View.GONE);
                     }else {
@@ -1884,15 +1889,20 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
             }
         } else {
-            offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+            updateLocalData();
             offlineDaySubmitDao.insert(new OfflineDaySubmitDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), finalSubmitJSONObject.toString()));
             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.day_submit_saved_locally));
             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
             SharedPref.setCheckInTime(requireContext(), "");
             SharedPref.setCheckDateTodayPlan(requireContext(), "");
-            HomeDashBoard.checkAndSetEntryDate(requireContext());
             SetupOutBoxAdapter(requireActivity(), requireContext());
-            CallDialogAfterCheckOut();
+            if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+                if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
+                    offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+                    CallDialogAfterCheckOut();
+                }
+            }
+            HomeDashBoard.checkAndSetEntryDate(requireContext());
         }
     }
 

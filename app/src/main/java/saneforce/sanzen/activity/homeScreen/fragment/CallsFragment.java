@@ -236,7 +236,7 @@ public class CallsFragment extends Fragment {
                 JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
                 CheckDate = jsonArray.getJSONObject(0).getString("vstTime").substring(0, 10);
 
-                if (CheckDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"))) {
+                if (CheckDate.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))))) {
                     isDataAvailable = true;
                 }
 

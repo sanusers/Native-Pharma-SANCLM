@@ -434,26 +434,26 @@ public class Leave_Application extends AppCompatActivity {
             for (Date date : datesInRange) {
                 listdate.add((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_20, TimeUtils.FORMAT_12, String.valueOf(date))));
             }
+
+            Leave_Application.leavebinding.lDays.setText(listdate.size() + " days " + L_typename);
+            L_count = String.valueOf(listdate.size());
+            totalval = Integer.parseInt((avilable));
+            val = Integer.parseInt(L_count);
+            Log.d("rem", totalval + "---" + val);
+            int bal = totalval - val;
+
+            if(bal == 0 || bal == (-bal)) {
+
+            }else {
+                if(leavety.equals("LOP")) {
+                    leavebinding.balanceDays.setText("");
+                }else {
+                    String balval = String.valueOf(bal);
+                    leavebinding.balanceDays.setText(balval + " " + "days remaining");
+                }
+            }
         } catch (ParseException e) {
             throw new RuntimeException(e);
-        }
-
-        Leave_Application.leavebinding.lDays.setText(listdate.size() + " days " + L_typename);
-        L_count = String.valueOf(listdate.size());
-        totalval = Integer.parseInt((avilable));
-        val = Integer.parseInt(L_count);
-        Log.d("rem", totalval + "---" + val);
-        int bal = totalval - val;
-
-        if (bal == 0 || bal == (-bal)) {
-
-        } else {
-            if (leavety.equals("LOP")) {
-                leavebinding.balanceDays.setText("");
-            } else {
-                String balval = String.valueOf(bal);
-                leavebinding.balanceDays.setText(balval + " " + "days remaining");
-            }
         }
 
 

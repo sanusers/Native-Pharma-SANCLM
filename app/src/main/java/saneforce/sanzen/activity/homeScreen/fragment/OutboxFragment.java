@@ -186,7 +186,7 @@ public class OutboxFragment extends Fragment {
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
 
         //CheckInOutData
-        if (listDates.size() > 0) {
+        if (!listDates.isEmpty()) {
             isCallAvailable = false;
             for (int i = 0; i < listDates.size(); i++) {
                 GroupModelClass modelClass = listDates.get(i);
