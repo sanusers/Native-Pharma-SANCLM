@@ -240,7 +240,7 @@
     <string name="scribble">Scribble</string>
     <string name="stop">Stop</string>
     <string name="brand_matrix">Brand Matrix</string>
-    <string name="custom_presentation">Custom Presentation</string>
+    <string name="my_presentation">My Presentation</string>
     <string name="select_listed_doctor_to_view_content">Select listed doctor to view content</string>
     <string name="no_customized_presentation_found">No customized presentation found</string>
     <string name="no_slides_found">No slides found</string>

@@ -269,11 +269,12 @@ public class DCRCallActivity extends AppCompatActivity {
             RemaindercallsActivity.vals_rm = "";
             progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
             if(SharedPref.getGeoChk(this).equalsIgnoreCase("0")){
-                if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
+                if(gpsTrack != null && ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0))) {
                     submitCall();
                 }else {
                     gpsTrack = new GPSTrack(this);
                     commonUtilsMethods.showToastMessage(this, getString(R.string.please_try_again));
+                    progressDialog.dismiss();
                 }
             }else {
                 submitCall();
@@ -340,7 +341,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_successfully));
                         //progressDialog.dismiss();
                     }
-
+                    SharedPref.setDayPlanStartedDate(this,  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
                     if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
                         //    progressDialog.dismiss();
                         dialogCheckOut.show();

@@ -214,7 +214,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
         binding.brandNameRecView.setLayoutManager(layoutManager);
         binding.brandNameRecView.setAdapter(brandNameAdapter);
 
-        if (arrayList.size() > 0)
+        if (!arrayList.isEmpty())
             populateSlideImageAdapter(arrayList.get(0).getProductArrayList());
     }
 
@@ -223,12 +223,12 @@ public class CreatePresentationActivity extends AppCompatActivity {
 
         imageSelectionInterface = (arrayList1, position) -> {
             brandNameAdapter.notifyDataSetChanged();
-            slideImageAdapter.notifyItemChanged(position);
+            slideImageAdapter.notifyDataSetChanged();
 
             for (BrandModelClass brandModelClass : brandProductArrayList) {
                 for (BrandModelClass.Product product : brandModelClass.getProductArrayList()) {
                     if (product.isImageSelected()) {
-                        if (selectedSlideArrayList.size() > 0) {
+                        if (!selectedSlideArrayList.isEmpty()) {
                             for (int i = 0; i < selectedSlideArrayList.size(); i++) {
                                 if (!selectedSlideArrayList.get(i).getSlideId().equalsIgnoreCase(product.getSlideId())) {
                                     selectedSlideArrayList.add(selectedSlideArrayList.size(), product);
@@ -239,7 +239,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
                             selectedSlideArrayList.add(selectedSlideArrayList.size(), product);
                         }
                     } else {
-                        if (selectedSlideArrayList.size() > 0) {
+                        if (!selectedSlideArrayList.isEmpty()) {
                             for (int i = 0; i < selectedSlideArrayList.size(); i++) {
                                 if (selectedSlideArrayList.get(i).getSlideId().equalsIgnoreCase(product.getSlideId())) {
                                     selectedSlideArrayList.remove(i);
@@ -263,8 +263,8 @@ public class CreatePresentationActivity extends AppCompatActivity {
             }
 
             populateSelectedSlideAdapter(selectedSlideArrayList);
-            binding.playBtn.setEnabled(selectedSlideArrayList.size() > 0);
-            binding.save.setEnabled(selectedSlideArrayList.size() > 0);
+            binding.playBtn.setEnabled(!selectedSlideArrayList.isEmpty());
+            binding.save.setEnabled(!selectedSlideArrayList.isEmpty());
         };
 
 
@@ -275,8 +275,8 @@ public class CreatePresentationActivity extends AppCompatActivity {
         binding.slideImageRecView.setLayoutManager(layoutManager);
         binding.slideImageRecView.setAdapter(slideImageAdapter);
 
-        binding.playBtn.setEnabled(selectedSlideArrayList.size() > 0);
-        binding.save.setEnabled(selectedSlideArrayList.size() > 0);
+        binding.playBtn.setEnabled(!selectedSlideArrayList.isEmpty());
+        binding.save.setEnabled(!selectedSlideArrayList.isEmpty());
 
     }
 

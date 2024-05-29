@@ -90,7 +90,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     JSONObject jsonObject = new JSONObject();
 
     ArrayList<JSONObject> workType_list1 = new ArrayList<>();
-    public static ArrayList<Multicheckclass_clust> multiple_cluster_list = new ArrayList<>();
+    public ArrayList<Multicheckclass_clust> multiple_cluster_list = new ArrayList<>();
     ArrayList<JSONObject> HQList = new ArrayList<>();
     ArrayList<JSONObject> cluster = new ArrayList<>();
     JSONObject SelectedWorkType;
@@ -230,6 +230,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         HomeDashBoard.binding.drMainlayout.openDrawer(GravityCompat.END);
         HomeDashBoard.binding.llNav.wkRecyelerView.setVisibility(View.GONE);
         HomeDashBoard.binding.llNav.wkListView.setVisibility(View.VISIBLE);
+        HomeDashBoard.binding.llNav.txtClDone.setVisibility(View.GONE);
         WorkplanListAdapter WT_ListAdapter = new WorkplanListAdapter(getActivity(), workType_list1, "1");
         HomeDashBoard.binding.llNav.wkListView.setAdapter(WT_ListAdapter);
 
@@ -311,7 +312,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         HomeDashBoard.binding.llNav.wkListView.setVisibility(View.GONE);
         HomeDashBoard.binding.drMainlayout.openDrawer(GravityCompat.END);
         HomeDashBoard.binding.llNav.tvSearchheader.setText("Cluster");
-
+        updateClusterList(DayPlanCount);
         MultiClusterAdapter multiClusterAdapter = new MultiClusterAdapter(getActivity(), multiple_cluster_list, new OnClusterClicklistener() {
             @Override
             public void classCampaignItem_addClass(Multicheckclass_clust classGroup) {
@@ -375,22 +376,22 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        HomeDashBoard.binding.llNav.cancelImg.setOnClickListener(view -> {
-            if(DayPlanCount.equalsIgnoreCase("1")){
-                if(binding.txtCluster1.getText().toString().isEmpty()){
-                    for (Multicheckclass_clust multicheckclassClust : WorkPlanFragment.multiple_cluster_list) {
-                        if(multicheckclassClust.isChecked()) multicheckclassClust.setChecked(false);
-                    }
-                }
-            }else {
-                if(binding.txtCluster2.getText().toString().isEmpty()){
-                    for (Multicheckclass_clust multicheckclassClust : WorkPlanFragment.multiple_cluster_list) {
-                        if(multicheckclassClust.isChecked()) multicheckclassClust.setChecked(false);
-                    }
-                }
-            }
-            HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
-        });
+//        HomeDashBoard.binding.llNav.cancelImg.setOnClickListener(view -> {
+//            if(DayPlanCount.equalsIgnoreCase("1")){
+//                if(binding.txtCluster1.getText().toString().isEmpty()){
+//                    for (Multicheckclass_clust multicheckclassClust : multiple_cluster_list) {
+//                        if(multicheckclassClust.isChecked()) multicheckclassClust.setChecked(false);
+//                    }
+//                }
+//            }else {
+//                if(binding.txtCluster2.getText().toString().isEmpty()){
+//                    for (Multicheckclass_clust multicheckclassClust : multiple_cluster_list) {
+//                        if(multicheckclassClust.isChecked()) multicheckclassClust.setChecked(false);
+//                    }
+//                }
+//            }
+//            HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
+//        });
     }
 
     @SuppressLint("SetTextI18n")
@@ -484,20 +485,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
             }
 
-
-            JSONArray workTypeArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getHqCode(requireContext())).getMasterSyncDataJsonArray();
-            for (int i = 0; i < workTypeArray2.length(); i++) {
-                JSONObject Object1 = workTypeArray2.getJSONObject(i);
-
-
-                if (("," + chk_cluster + ",").contains("," + Object1.getString("Code") + ",")) {
-                    multiple_cluster_list.add(new Multicheckclass_clust(Object1.getString("Code"), Object1.getString("Name"), "", true));
-                } else {
-                    multiple_cluster_list.add(new Multicheckclass_clust(Object1.getString("Code"), Object1.getString("Name"), "", false));
-
-                }
-                cluster.add(Object1);
-            }
+            updateClusterList("1");
 
             if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                 JSONArray workTypeArray3 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
@@ -518,6 +506,28 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         } catch (Exception a) {
             a.printStackTrace();
+        }
+    }
+
+    void updateClusterList(String dayPlanCount) {
+        try {
+            String clusters = mTowncode1;
+            if(dayPlanCount.equalsIgnoreCase("2")) clusters = mTowncode2;
+            multiple_cluster_list.clear();
+            JSONArray workTypeArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getHqCode(requireContext())).getMasterSyncDataJsonArray();
+            for (int i = 0; i<workTypeArray2.length(); i++) {
+                JSONObject Object1 = workTypeArray2.getJSONObject(i);
+                if(("," + clusters + ",").contains("," + Object1.getString("Code") + ",")) {
+                    multiple_cluster_list.add(new Multicheckclass_clust(Object1.getString("Code"), Object1.getString("Name"), "", true));
+                }else {
+                    multiple_cluster_list.add(new Multicheckclass_clust(Object1.getString("Code"), Object1.getString("Name"), "", false));
+
+                }
+                cluster.add(Object1);
+            }
+        } catch (Exception e){
+            Log.e("Work plan", "updateClusterList: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

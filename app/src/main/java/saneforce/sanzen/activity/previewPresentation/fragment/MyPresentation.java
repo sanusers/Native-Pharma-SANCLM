@@ -19,7 +19,7 @@ import saneforce.sanzen.databinding.FragmentHomePreviewBinding;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
-public class Customized extends Fragment {
+public class MyPresentation extends Fragment {
     FragmentHomePreviewBinding customizedBinding;
     PresentationAdapter presentationAdapter;
 
@@ -45,7 +45,7 @@ public class Customized extends Fragment {
     }
 
     public void populateAdapter() {
-        if (SlideCustomizedList.size() > 0) {
+        if (!SlideCustomizedList.isEmpty()) {
             customizedBinding.constraintNoData.setVisibility(View.GONE);
             customizedBinding.rvBrandList.setVisibility(View.VISIBLE);
             presentationAdapter = new PresentationAdapter(requireContext(), SlideCustomizedList, "customized");
