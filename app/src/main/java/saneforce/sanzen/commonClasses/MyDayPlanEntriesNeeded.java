@@ -220,7 +220,7 @@ public class MyDayPlanEntriesNeeded {
             syncTaskStatus.datesFound();
         }else {
             SharedPref.setSelectedDateCal(context, "");
-            Log.e("set date today", "setupMyDayPlanEntriesNeeded: dates empty");
+            Log.e("set date empty", "setupMyDayPlanEntriesNeeded: dates empty");
             syncTaskStatus.noDatesFound();
         }
     }

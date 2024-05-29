@@ -648,7 +648,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
     private void submitMyDayPlan() {
-        if(!mTownname1.isEmpty()) {
+        if(!mTownname1.isEmpty() || !mWTName1.isEmpty() || !mHQName1.isEmpty()) {
             if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
                 if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
                     if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
@@ -1232,12 +1232,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 }
 
                                 SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode);
-                                if(mFwFlg1.equalsIgnoreCase("F")||mFwFlg2.equalsIgnoreCase("F")){
-                                    SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(),true,true);
-                                }else {
-                                    SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(),true,false);
-
-                                }
+                                SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(), true, mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F"));
 
                                 JSONArray MydayPlanDataList = new JSONArray();
                                 JSONObject FisrstSeasonObject = new JSONObject();
@@ -1553,14 +1548,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.txtWorktype1.setText(mWTName1);
                             binding.txtCluster1.setText("");
                             binding.txtheadquaters1.setText("");
-                            SharedPref.saveHq(requireContext(), "", "");
                             SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
                         }else if(TerritoryFlag1.equalsIgnoreCase("Y")) {
                             if(!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                                 binding.rlheadquates1.setVisibility(View.VISIBLE);
-                                if(mFwFlg1.equalsIgnoreCase("F")) {
+//                                if(mFwFlg1.equalsIgnoreCase("F")) {
                                     SharedPref.saveHq(requireContext(), mHQName1, mHQCode1);
-                                }
+//                                }
                             }else {
                                 binding.rlheadquates1.setVisibility(View.GONE);
                                 SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
