@@ -1,6 +1,8 @@
 package saneforce.sanzen.activity.reports.dayReport.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
@@ -58,12 +60,10 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
 
         holder.imgView.setOnClickListener(v -> {
 
-            CharSequence initialGuideTex = Html.fromHtml(" Start Time : " + callDetailingLists.get(position).getStartTime()  +"<br><br>"+ " End Time : " + callDetailingLists.get(position).getEndTime() );
-
-            showTimelinePopUp( holder.imgView,initialGuideTex);
 
 
-
+            CharSequence initialGuideTex = Html.fromHtml(" Start Time : " + callDetailingLists.get(position).getStartTime()  +"<br><br>"+ " End Time : " + callDetailingLists.get(position).getStartTime() );
+            showTimelinePopUp(v,initialGuideTex);
         });
     }
 
@@ -115,13 +115,12 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
         TextView timelineTV = popupView.findViewById(R.id.timeline);
         timelineTV.setText(timeline);
         PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, false);
-        int[] location = new int[2];
-        view.getLocationOnScreen(location);
         popupWindow.setOutsideTouchable(true);
+        popupWindow.showAsDropDown(view);
         ImageView close = popupView.findViewById(R.id.img_close);
         close.setOnClickListener(closeView -> {
             popupWindow.dismiss();
         });
-        popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] , location[1]-180);
     }
+
 }

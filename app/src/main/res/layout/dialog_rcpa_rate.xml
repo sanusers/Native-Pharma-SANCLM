@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+<androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="24dp"
+    android:layout_marginEnd="12dp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:cardBackgroundColor="@color/transparent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <View
+            android:id="@+id/iconPoint"
+            android:layout_width="@dimen/_6sdp"
+            android:layout_height="@dimen/_6sdp"
+            android:background="@drawable/pointer"
+            android:rotation="180"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iconPoint"
+            android:background="@drawable/bg_darkpurple_sharp_bottom_end">
+
+            <TextView
+                android:id="@+id/textQty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/satoshi_bold"
+                android:text="@string/quantity"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="@+id/textOpQty"
+                app:layout_constraintStart_toStartOf="@+id/textOpQty"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/textRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:text="@string/rate_rcpa"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textQty"
+                app:layout_constraintEnd_toEndOf="@+id/txtOpRate"
+                app:layout_constraintStart_toStartOf="@+id/txtOpRate"
+                app:layout_constraintTop_toTopOf="@+id/textQty" />
+            <TextView
+                android:id="@+id/textOpRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="10dp"
+                android:text="@string/our_product"
+                android:fontFamily="@font/satoshi_bold"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textQty" />
+
+            <TextView
+                android:id="@+id/textEqual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="="
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textOpRate"
+                app:layout_constraintEnd_toEndOf="@+id/textEqual1"
+                app:layout_constraintStart_toStartOf="@+id/textEqual1"
+                app:layout_constraintTop_toTopOf="@+id/textOpRate" />
+            <TextView
+                android:id="@+id/textOpQty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="@string/op_qty"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginStart="6dp"
+                app:layout_constraintEnd_toStartOf="@+id/textMulti"
+                app:layout_constraintBottom_toBottomOf="@+id/textOpRate"
+                app:layout_constraintStart_toEndOf="@+id/textEqual"
+                app:layout_constraintTop_toTopOf="@+id/textOpRate" />
+            <TextView
+                android:id="@+id/textMulti"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="*"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginStart="10dp"
+                app:layout_constraintEnd_toStartOf="@+id/txtOpRate"
+                app:layout_constraintBottom_toBottomOf="@+id/textOpRate"
+                app:layout_constraintStart_toEndOf="@+id/textOpQty"
+                app:layout_constraintTop_toTopOf="@+id/textOpRate" />
+            <TextView
+                android:id="@+id/txtOpRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="@string/op_rate"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textOpRate"
+                app:layout_constraintEnd_toStartOf="@+id/textEqual3"
+                app:layout_constraintStart_toEndOf="@+id/textMulti"
+                app:layout_constraintTop_toTopOf="@+id/textOpRate" />
+            <TextView
+                android:id="@+id/textEqual3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="="
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:layout_marginStart="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textOpRate"
+                app:layout_constraintEnd_toStartOf="@+id/textOpValue"
+                app:layout_constraintStart_toEndOf="@+id/txtOpRate"
+                app:layout_constraintTop_toTopOf="@+id/textOpRate" />
+            <TextView
+                android:id="@+id/textOpValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="20dp"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="@string/op_value"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/textOpRate"
+                app:layout_constraintStart_toEndOf="@+id/textEqual3"
+                app:layout_constraintTop_toTopOf="@+id/textOpRate" />
+
+            <TextView
+                android:id="@+id/textCompRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/satoshi_bold"
+                android:text="@string/comp_product"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textOpRate" />
+            <TextView
+                android:id="@+id/textEqual1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="="
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/textCompQty"
+                app:layout_constraintBottom_toBottomOf="@+id/textCompRate"
+                app:layout_constraintStart_toEndOf="@+id/textCompRate"
+                app:layout_constraintTop_toTopOf="@+id/textCompRate" />
+
+            <TextView
+                android:id="@+id/textCompQty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="@string/comp_qty"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/textOpQty"
+                app:layout_constraintBottom_toBottomOf="@+id/textCompRate"
+                app:layout_constraintStart_toEndOf="@+id/textEqual1"
+                app:layout_constraintTop_toTopOf="@+id/textCompRate" />
+
+            <TextView
+                android:id="@+id/textMulti1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="*"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/txtCompRate"
+                app:layout_constraintEnd_toEndOf="@+id/textMulti"
+                app:layout_constraintStart_toStartOf="@+id/textMulti"
+                app:layout_constraintTop_toTopOf="@+id/txtCompRate" />
+            <TextView
+                android:id="@+id/txtCompRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="@string/cp_rate"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textCompRate"
+                app:layout_constraintStart_toStartOf="@+id/txtOpRate"
+                app:layout_constraintEnd_toEndOf="@+id/txtOpRate"
+                app:layout_constraintTop_toTopOf="@+id/textCompRate" />
+            <TextView
+                android:id="@+id/textEqual4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="="
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/txtCompRate"
+                app:layout_constraintStart_toStartOf="@+id/textEqual3"
+                app:layout_constraintEnd_toEndOf="@+id/textEqual3"
+                app:layout_constraintTop_toTopOf="@+id/txtCompRate" />
+
+            <TextView
+                android:id="@+id/textCompValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="@string/cp_value"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textCompRate"
+                app:layout_constraintEnd_toEndOf="@+id/textOpValue"
+                app:layout_constraintStart_toStartOf="@+id/textOpValue"
+                app:layout_constraintTop_toTopOf="@+id/textCompRate" />
+
+            <TextView
+                android:id="@+id/textRateTot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/satoshi_bold"
+                android:text="Total"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/txtCompRate"
+                app:layout_constraintStart_toEndOf="@+id/textMulti1"
+                app:layout_constraintTop_toBottomOf="@+id/textCompRate" />
+            <TextView
+                android:id="@+id/textEqual5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="="
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textRateTot"
+                app:layout_constraintStart_toStartOf="@+id/textEqual4"
+                app:layout_constraintEnd_toEndOf="@+id/textEqual4"
+                app:layout_constraintTop_toTopOf="@+id/textRateTot" />
+
+            <TextView
+                android:id="@+id/textTotalValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="total"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textRateTot"
+                app:layout_constraintEnd_toEndOf="@+id/textOpValue"
+                app:layout_constraintStart_toStartOf="@+id/textCompValue"
+                app:layout_constraintTop_toTopOf="@+id/textRateTot" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

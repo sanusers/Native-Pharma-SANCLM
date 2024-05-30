@@ -1050,7 +1050,6 @@
 
                 <LinearLayout
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cardRcpaLayout"
                     android:id="@+id/rcpaLayout"
@@ -1063,66 +1062,104 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:layout_marginHorizontal="@dimen/_3sdp"
-                        android:layout_marginVertical="@dimen/_1sdp"
-                        android:padding="@dimen/_5sdp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
                         android:background="@drawable/bg_light_grey_1"
-                        android:orientation="horizontal"
-                        android:weightSum="6">
+                        android:orientation="horizontal">
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            >
+                            <TextView
+                                android:id="@+id/textProductName"
+                                android:fontFamily="@font/satoshi_bold"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/dark_purple"
+                                android:textSize="@dimen/_6sdp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginStart="8dp"
+                                app:layout_constraintEnd_toStartOf="@+id/textQty"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                android:text="ProductName" />
 
-                        <TextView
-                            android:fontFamily="@font/satoshi_bold"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/dark_purple"
-                            android:textSize="@dimen/_6sdp"
-                            android:layout_weight="1"
-                            android:text="ProductName" />
+                            <TextView
+                                android:id="@+id/textQty"
+                                android:fontFamily="@font/satoshi_bold"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/dark_purple"
+                                android:textSize="@dimen/_6sdp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginEnd="1dp"
+                                app:layout_constraintEnd_toStartOf="@+id/textChemistName"
+                                app:layout_constraintTop_toTopOf="@+id/textProductName"
+                                app:layout_constraintStart_toEndOf="@+id/textProductName"
+                                android:text="Qty" />
+                            <TextView
+                                android:id="@+id/textChemistName"
+                                android:layout_width="0dp"
+                                android:textColor="@color/dark_purple"
+                                android:textSize="@dimen/_6sdp"
+                                android:layout_marginStart="8dp"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/satoshi_bold"
+                                app:layout_constraintEnd_toStartOf="@+id/textCompName"
+                                app:layout_constraintTop_toTopOf="@+id/textProductName"
+                                app:layout_constraintStart_toEndOf="@+id/textQty"
+                                android:text="@string/chemist_name" />
+                            <TextView
+                                android:id="@+id/textCompName"
+                                android:layout_width="0dp"
+                                android:textColor="@color/dark_purple"
+                                android:textSize="@dimen/_6sdp"
+                                android:layout_marginStart="8dp"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/satoshi_bold"
+                                app:layout_constraintEnd_toStartOf="@+id/textCompProductName"
+                                app:layout_constraintTop_toTopOf="@+id/textProductName"
+                                app:layout_constraintStart_toEndOf="@+id/textChemistName"
+                                android:text="Competitor Name" />
 
-                        <TextView
-                            android:fontFamily="@font/satoshi_bold"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/dark_purple"
-                            android:textSize="@dimen/_6sdp"
-                            android:layout_weight="0.5"
-                            android:text="Qty" />
-                        <TextView
-                            android:layout_width="0dp"
-                            android:textColor="@color/dark_purple"
-                            android:textSize="@dimen/_6sdp"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/satoshi_bold"
-                            android:layout_weight="1"
-                            android:text="@string/chemist_name" />
-                        <TextView
-                            android:layout_width="0dp"
-                            android:textColor="@color/dark_purple"
-                            android:textSize="@dimen/_6sdp"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/satoshi_bold"
-                            android:layout_weight="1.5"
-                            android:text="Competitor Name" />
+                            <TextView
+                                android:id="@+id/textCompProductName"
+                                android:layout_width="0dp"
+                                android:layout_marginStart="8dp"
+                                android:fontFamily="@font/satoshi_bold"
+                                android:textColor="@color/dark_purple"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintEnd_toStartOf="@+id/textQty1"
+                                app:layout_constraintTop_toTopOf="@+id/textProductName"
+                                app:layout_constraintStart_toEndOf="@+id/textCompName"                                android:textSize="@dimen/_6sdp"
+                                android:text="Competitor Productname" />
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:fontFamily="@font/satoshi_bold"
-                            android:textColor="@color/dark_purple"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1.45"
-                            android:textSize="@dimen/_6sdp"
-                            android:text="Competitor Productname" />
+                            <TextView
+                                android:id="@+id/textQty1"
+                                android:layout_width="0dp"
+                                android:textSize="@dimen/_6sdp"
+                                android:layout_marginStart="8dp"
+                                android:fontFamily="@font/satoshi_bold"
+                                android:textColor="@color/dark_purple"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintEnd_toStartOf="@+id/info"
+                                app:layout_constraintTop_toTopOf="@+id/textProductName"
+                                app:layout_constraintStart_toEndOf="@+id/textCompProductName"                                 android:paddingEnd="15dp"
+                                android:text="Qty" />
+                            <ImageView
+                                android:id="@+id/info"
+                                android:visibility="invisible"
+                                android:layout_width="@dimen/_10sdp"
+                                android:layout_height="@dimen/_10sdp"
+                                android:layout_marginEnd="30dp"
+                                android:src="@drawable/info_icon_purple"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="@+id/textProductName"
+                                app:layout_constraintStart_toEndOf="@+id/textQty1"
+                                tools:ignore="ContentDescription" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:textSize="@dimen/_6sdp"
-                            android:fontFamily="@font/satoshi_bold"
-                            android:textColor="@color/dark_purple"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:paddingEnd="15dp"
-                            android:text="Qty" />
+
 
                     </LinearLayout>
 
@@ -1132,7 +1169,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="@dimen/_3sdp"
                             android:overScrollMode="never"
-                            android:paddingHorizontal="@dimen/_4sdp"
                             android:paddingVertical="@dimen/_1sdp"
                             tools:listitem="@layout/report_rcpa_child_table_item"
                             app:layout_constraintBottom_toBottomOf="parent"

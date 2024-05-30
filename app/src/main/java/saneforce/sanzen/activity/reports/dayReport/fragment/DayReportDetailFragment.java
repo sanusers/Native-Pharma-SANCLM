@@ -3,6 +3,8 @@ package saneforce.sanzen.activity.reports.dayReport.fragment;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -200,9 +202,15 @@ public class DayReportDetailFragment extends Fragment {
         binding.name.setText(dayReportModel.getSF_Name());
         binding.workType.setText(dayReportModel.getWtype());
         binding.cluster.setText(dayReportModel.getTerrWrk());
-
-        binding.workType2.setText(dayReportModel.getHalfDay_FW_Type());
         binding.allCount.setText(String.valueOf(drCount + chmCount + stkCount + cipCount + undrCount + hosCount));
+        if (dayReportModel.getAdditional_Temp_Details()!=null){
+            binding.ll2.setVisibility(View.VISIBLE);
+            binding.view3.setVisibility(View.VISIBLE);
+            binding.workType2.setText(dayReportModel.getAdditional_Temp_Details());
+        }
+        if (SharedPref.getDesig(requireContext()).equals("MGR")){
+            binding.hqLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setSelection(LinearLayout linearLayout) {

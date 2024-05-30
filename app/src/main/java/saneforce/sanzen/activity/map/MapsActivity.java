@@ -23,12 +23,15 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
@@ -36,6 +39,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -89,6 +93,7 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityMapsBinding;
+import saneforce.sanzen.databinding.DialogMasterSyncUpdateBinding;
 import saneforce.sanzen.location.CheckFakeGPS;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -118,13 +123,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     LocationManager locationManager;
     GPSTrack gpsTrack;
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
-    String cust_name, town_code, town_name, SfName, SfType, img_url, cust_address, SfCode, DivCode, Designation, StateCode, SubDivisionCode, cust_code, filePath = "", imageName = "", taggedTime = "";
+    String cust_name, town_code, town_name, SfName, SfType, img_url, cust_address, SfCode, DivCode, Designation, StateCode, SubDivisionCode, cust_code, filePath = "", imageName = "", taggedTime = "",geoTagStatus="";
     double lat, lng, limitKm = 0.5;
     Dialog dialogTagCust;
     CommonUtilsMethods commonUtilsMethods;
     private String destinationFilePath;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+    AlertDialog customDialog;
+    String selectedTap;
 
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @SuppressLint("SuspiciousIndentation")
@@ -209,6 +216,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             town_code = extra.getString("town_code");
             town_name = extra.getString("town_name");
             cust_address = extra.getString("cus_add");
+            geoTagStatus = extra.getString("geoTagStatus");
+
         }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -618,6 +627,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         TextView tv_lat = dialogTagCust.findViewById(R.id.txt_lat);
         TextView tv_lng = dialogTagCust.findViewById(R.id.txt_lng);
         TextView tv_address = dialogTagCust.findViewById(R.id.txt_address);
+        ProgressBar progressBar =  dialogTagCust.findViewById(R.id.progressBar);
 
         tv_cust_name.setText(cust_name);
         tv_lat.setText(String.format("Latitude : %s", lat));
@@ -675,10 +685,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         btn_confirm.setOnClickListener(view -> {
             if (UtilityClass.isNetworkAvailable(this)){
                 if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                    CallImageAPI(jsonImage.toString(), jsonObject.toString());
+                    CallImageAPI(jsonImage.toString(), jsonObject.toString(),progressBar);
                 } else {
-                    progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
-                    CallAPIGeo(jsonObject.toString());
+                    progressBar.setVisibility(View.VISIBLE);
+                CallAPIGeo(jsonObject.toString(),progressBar);
                 }
             }else {
                 commonUtilsMethods.showToastMessage(this,getString(R.string.no_network));
@@ -740,7 +750,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return yy;
     }
 
-    private void CallAPIGeo(String jsonTag) {
+    private void CallAPIGeo(String jsonTag,ProgressBar progressBar) {
         Log.v("test", jsonTag);
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "geodetails");
@@ -751,19 +761,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     try {
-                        progressDialog.dismiss();
+//                        progressDialog.dismiss();
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("Msg").equalsIgnoreCase("Tagged Successfully")) {
                             commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tagged_successfully));
                             dialogTagCust.dismiss();
-                            CallAPIList(SelectedTab);
+                            CallAPIList(SelectedTab,progressBar);
                             isTagged = true;
                             TaggedLat = String.valueOf(lat);
                             TaggedLng = String.valueOf(lng);
                             TaggedAdd = mapsBinding.tvTaggedAddress.getText().toString();
                             //SharedPref.setTaggedSuccessfully(MapsActivity.this, "true");
-                            finish();
+//                            finish();
                         } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("Msg").equalsIgnoreCase("You have reached the maximum tags...")) {
                             commonUtilsMethods.showToastMessage(MapsActivity.this, jsonSaveRes.getString("Msg"));
                             dialogTagCust.dismiss();
@@ -772,11 +782,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             dialogTagCust.dismiss();
                         }
                     } catch (Exception e) {
-                        progressDialog.dismiss();
+                        progressBar.setVisibility(View.GONE);
                         dialogTagCust.dismiss();
                     }
                 } else {
-                    progressDialog.dismiss();
+                    progressBar.setVisibility(View.GONE);
                     commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_response_failed));
                     dialogTagCust.dismiss();
                 }
@@ -784,7 +794,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                progressDialog.dismiss();
+                progressBar.setVisibility(View.GONE);
                 commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_response_failed));
                 dialogTagCust.dismiss();
             }
@@ -792,7 +802,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    public void prepareMasterToSync(String hqCode, String Cust_Selected) {
+    public void prepareMasterToSync(String hqCode, String Cust_Selected,ProgressBar progressBar) {
         masterSyncArray.clear();
         MasterSyncItemModel ModelList = new MasterSyncItemModel();
         switch (Cust_Selected) {
@@ -812,11 +822,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         masterSyncArray.add(ModelList);
         for (int i = 0; i < masterSyncArray.size(); i++) {
-            sync(masterSyncArray.get(i), hqCode);
+            sync(masterSyncArray.get(i), hqCode,progressBar);
         }
     }
 
-    public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode) {
+    public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode,ProgressBar progressBar) {
 
         if (UtilityClass.isNetworkAvailable(context)) {
             try {
@@ -868,20 +878,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         }
 
                                         if (success) {
+                                            customDialog.dismiss();
+                                            progressBar.setVisibility(View.GONE);
+                                            showToast(selectedTap);
+                                            finish();
                                             masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0));
                                         }
                                     } else {
                                         masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+
                                     }
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
+                            }else {
+                                customDialog.dismiss();
+                                updateDialogBoxText(selectedTap);
                             }
                         }
 
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                            customDialog.dismiss();
                             Log.e("test", "failed : " + t);
+                            updateDialogBoxText(selectedTap);
                             masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                         }
                     });
@@ -895,25 +915,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    private void CallAPIList(String CustSelected) {
+    private void CallAPIList(String CustSelected,ProgressBar progressBar) {
+        selectedTap = CustSelected;
         String sfCode;
         if (SfType.equalsIgnoreCase("1")) {
             sfCode = SfCode;
         } else {
             sfCode = SelectedHqCode;
         }
+
         if (CustSelected.equalsIgnoreCase("D")) {
-            prepareMasterToSync(sfCode, "D");
+            showCustomDialog("Doctor List is updating, please wait...",ContextCompat.getDrawable(context, R.drawable.baseline_cloud_sync_24),true);
+            prepareMasterToSync(sfCode, "D",progressBar);
         } else if (CustSelected.equalsIgnoreCase("C")) {
-            prepareMasterToSync(sfCode, "C");
+            showCustomDialog("Chemist List is updating, please wait...", ContextCompat.getDrawable(context, R.drawable.baseline_cloud_sync_24_1),true);
+            prepareMasterToSync(sfCode, "C",progressBar);
         } else if (CustSelected.equalsIgnoreCase("S")) {
-            prepareMasterToSync(sfCode, "S");
+            showCustomDialog("StockList List is updating, please wait...",ContextCompat.getDrawable(context, R.drawable.baseline_cloud_sync_24_2),true);
+            prepareMasterToSync(sfCode, "S",progressBar);
         } else if (CustSelected.equalsIgnoreCase("U")) {
-            prepareMasterToSync(sfCode, "U");
+            showCustomDialog("UnListDoctor List is updating, please wait...",ContextCompat.getDrawable(context, R.drawable.baseline_cloud_sync_24_3),true);
+            prepareMasterToSync(sfCode, "U",progressBar);
         }
     }
 
-    private void CallImageAPI(String jsonImage, String jsonTag) {
+    private void CallImageAPI(String jsonImage, String jsonTag,ProgressBar progressBar) {
         try {
             ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
             Call<JsonObject> callImage;
@@ -932,8 +958,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             jsonImgRes = new JSONObject(response.body().toString());
                             Log.v("img_tag", jsonImgRes.getString("success"));
                             if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
-                                progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
-                                CallAPIGeo(jsonTag);
+                                progressBar.setVisibility(View.VISIBLE);
+                                CallAPIGeo(jsonTag,progressBar);
                             } else {
                                 dialogTagCust.dismiss();
                                 commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed));
@@ -1016,11 +1042,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setOnMarkerClickListener(this);
             mapsBinding.btnTag.setVisibility(View.GONE);
             mapsBinding.constraintTaggedView.setVisibility(View.VISIBLE);
+            if (geoTagStatus.equals("0")){
+                mapsBinding.textApproval.setVisibility(View.VISIBLE);
+            }else {
+                mapsBinding.textApproval.setVisibility(View.GONE);
+            }
+            if (geoTagStatus.equals("1")) {
+                mapsBinding.textPending.setVisibility(View.VISIBLE);
+            }else{
+                mapsBinding.textPending.setVisibility(View.GONE);
+            }
             mapsBinding.tvMeters.setVisibility(View.VISIBLE);
             mapsBinding.constraintMid.setVisibility(View.INVISIBLE);
             mapsBinding.imgRvRight.setVisibility(View.GONE);
             mapsBinding.rvList.setVisibility(View.GONE);
             mapsBinding.tvCustName.setText(cust_name);
+
 
             int getCount = 0;
             if (CustListAdapter.getCustListNew.size() > 0) {
@@ -1095,13 +1132,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         cust_address = jsonObject.getString("Addrs");
                         if (!jsonObject.getString("Lat").trim().isEmpty() || !jsonObject.getString("Long").trim().isEmpty()) {
                             if (!cust_address.isEmpty()) {
-                                list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "1", jsonObject.getString("Lat"), jsonObject.getString("Long"), cust_address, jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
+                                list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "1", jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                             } else {
                                 if (jsonObject.getString("Lat").equalsIgnoreCase("0.0") || jsonObject.getString("Long").equalsIgnoreCase("0.0")) {
                                     cust_address = "No Address Found";
                                 } else {
                                     cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.getString("Lat")), parseDouble(jsonObject.getString("Long")), false);
-                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "1", jsonObject.getString("Lat"), jsonObject.getString("Long"), cust_address, jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
+                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "1", jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                                 }
                             }
                         }
@@ -1294,5 +1331,43 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
-
+    private void showCustomDialog(String textUpdate,Drawable drawable,boolean visibility) {
+        DialogMasterSyncUpdateBinding masterSyncUpdateBinding = DialogMasterSyncUpdateBinding.inflate(LayoutInflater.from(getApplicationContext()));
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this, 0);
+         customDialog = builder.create();
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        customDialog.setView(masterSyncUpdateBinding.getRoot());
+        customDialog.setCancelable(false);
+        customDialog.show();
+        masterSyncUpdateBinding.textMasterSync.setText(textUpdate);
+        masterSyncUpdateBinding.syncImg.setBackground(drawable);
+        if (!visibility){
+            masterSyncUpdateBinding.progressBar.setVisibility(View.GONE);
+            masterSyncUpdateBinding.pendingImg.setVisibility(View.VISIBLE);
+            masterSyncUpdateBinding.closeBtn.setVisibility(View.VISIBLE);
+        }
+        masterSyncUpdateBinding.closeBtn.setOnClickListener(v -> {customDialog.dismiss();});
+    }
+  private void showToast(String selectedTap){
+        if (selectedTap.equals("D")){
+            commonUtilsMethods.showToastMessage(this,"Doctors List updated successfully.");
+        } else if (selectedTap.equals("C")) {
+            commonUtilsMethods.showToastMessage(this,"Chemist List updated successfully.");
+        } else if (selectedTap.equals("S")) {
+            commonUtilsMethods.showToastMessage(this,"Stock List updated successfully.");
+        } else if (selectedTap.equals("U")) {
+            commonUtilsMethods.showToastMessage(this,"UnListDoctors List updated successfully.");
+        }
+  }
+  private void updateDialogBoxText(String selectedTap){
+      if (selectedTap.equals("D")){
+          showCustomDialog("Failed to update Doctors List. Please try again.",ContextCompat.getDrawable(context, R.drawable.baseline_do_disturb_24),false);
+      } else if (selectedTap.equals("C")) {
+          showCustomDialog("Failed to update Chemist List. Please try again.",    ContextCompat.getDrawable(context, R.drawable.baseline_do_disturb_24), false);
+      } else if (selectedTap.equals("S")) {
+          showCustomDialog("Failed to update Stock List. Please try again.",    ContextCompat.getDrawable(context, R.drawable.baseline_do_disturb_24), false);
+      } else if (selectedTap.equals("U")) {
+          showCustomDialog("Failed to update UnlistedDoctors List. Please try again.",    ContextCompat.getDrawable(context, R.drawable.baseline_do_disturb_24), false);
+      }
+  }
 }
