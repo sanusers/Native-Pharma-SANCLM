@@ -30,6 +30,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.datatransport.runtime.synchronization.SynchronizationException;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -88,6 +89,7 @@ import saneforce.santrip.activity.call.pojo.product.SaveCallProductList;
 import saneforce.santrip.activity.call.pojo.rcpa.RCPAAddedCompList;
 import saneforce.santrip.activity.call.pojo.rcpa.RCPAAddedProdList;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
+import saneforce.santrip.activity.homeScreen.timeZone.AutoTimezone;
 import saneforce.santrip.activity.map.custSelection.CustList;
 
 import saneforce.santrip.activity.remaindercalls.RemaindercallsActivity;
@@ -150,6 +152,7 @@ public class DCRCallActivity extends AppCompatActivity {
     private CallOfflineECDataDao callOfflineECDataDao;
     private CallOfflineDataDao callOfflineDataDao;
     private CallsUtil callsUtil;
+    private AutoTimezone autoTimezone;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -180,7 +183,6 @@ public class DCRCallActivity extends AppCompatActivity {
         callOfflineDataDao = roomDB.callOfflineDataDao();
         callsUtil = new CallsUtil(this);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             isDetailingRequired = extra.getString(Constants.DETAILING_REQUIRED);
@@ -266,37 +268,36 @@ public class DCRCallActivity extends AppCompatActivity {
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view ->{
 
-
-                    RemaindercallsActivity.vals_rm ="";
-                    progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
-
-                    if(save_valid.equalsIgnoreCase("1")){
-                        Remainder_calls();
-
+                    if (!commonUtilsMethods.isAutoTimeZoneEnabled(this)){
+                        commonUtilsMethods.showAutoTimeZoneDialog(this);
                     }else{
-                        isCreateJsonSuccess = true;
-                        if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
-                            if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                                gpsTrack = new GPSTrack(DCRCallActivity.this);
-                                double lat = gpsTrack.getLatitude();
-                                double lng = gpsTrack.getLongitude();
-                                address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
-                                tv_address.setText(address);
-                                tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
-                            } else {
-                                tv_address.setText(context.getString(R.string.no_network));
-                            }
-                        }
+                        RemaindercallsActivity.vals_rm ="";
+                        progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
+                        if(save_valid.equalsIgnoreCase("1")){
+                            Remainder_calls();
 
-                        if (CheckRequiredFunctions() && CheckCurrentLoc()) {
-
-                            CreateJsonFileCall();
-                            if (isCreateJsonSuccess) {
-
-                                if(isFromActivity.equalsIgnoreCase("new")){
-                                    InsertVisitControl();
+                        }else{
+                            isCreateJsonSuccess = true;
+                            if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
+                                if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
+                                    gpsTrack = new GPSTrack(DCRCallActivity.this);
+                                    double lat = gpsTrack.getLatitude();
+                                    double lng = gpsTrack.getLongitude();
+                                    address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
+                                    tv_address.setText(address);
+                                    tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
+                                } else {
+                                    tv_address.setText(context.getString(R.string.no_network));
                                 }
-                                callOfflineDataDao.saveOfflineCallOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
+                            }
+
+                            if (CheckRequiredFunctions() && CheckCurrentLoc()) {
+                                CreateJsonFileCall();
+                                if (isCreateJsonSuccess) {
+                                    if(isFromActivity.equalsIgnoreCase("new")){
+                                        InsertVisitControl();
+                                    }
+                                    callOfflineDataDao.saveOfflineCallOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
 //                                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
 //                                    dialogCheckOut.show();
 //                                } else {
@@ -306,39 +307,41 @@ public class DCRCallActivity extends AppCompatActivity {
 //                                    finish();
 //                                }
 
-                                if (JWOthersFragment.callCaptureImageLists.size() > 0) {
-                                    for (int i = 0; i < JWOthersFragment.callCaptureImageLists.size(); i++) {
-                                        callOfflineECDataDao.saveOfflineEC(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
+                                    if (JWOthersFragment.callCaptureImageLists.size() > 0) {
+                                        for (int i = 0; i < JWOthersFragment.callCaptureImageLists.size(); i++) {
+                                            callOfflineECDataDao.saveOfflineEC(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
+                                        }
                                     }
-                                }
-                                UpdateInputStock();
-                                UpdateSampleStock();
+                                    UpdateInputStock();
+                                    UpdateSampleStock();
 
-                                if (!UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                                    commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_locally));
-                                }else {
-                                    commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_successfully));
-                                    //progressDialog.dismiss();
-                                }
+                                    if (!UtilityClass.isNetworkAvailable(getApplicationContext())) {
+                                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_locally));
+                                    }else {
+                                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_successfully));
+                                        //progressDialog.dismiss();
+                                    }
 
-                                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
-                                //    progressDialog.dismiss();
-                                    dialogCheckOut.show();
+                                    if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
+                                        //    progressDialog.dismiss();
+                                        dialogCheckOut.show();
+                                    } else {
+                                        IsFromDCR =true;
+                                        Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                                        startActivity(intent);
+                                        finish();
+
+                                    }
+
                                 } else {
-                                    IsFromDCR =true;
-                                    Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-                                    startActivity(intent);
-                                    finish();
-
+                                    progressDialog.dismiss();
                                 }
-
                             } else {
                                 progressDialog.dismiss();
                             }
-                        } else {
-                            progressDialog.dismiss();
                         }
                     }
+
                 }
                 );
 
@@ -1754,7 +1757,6 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonobjlist.put("rcallpob", pobValue);//sf_emp_id,sfcode,vstTime
             jsonobjlist.put("sf_emp_id",SharedPref.getSfEmpId(this) );//loginResponse.getSf_emp_id()
             jsonobjlist.put("sfcode", hqcode);
-
             // Get current date and time
             Date currentDate = new Date();
 
@@ -2084,7 +2086,6 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("mode", "0");
             jsonSaveDcr.put("Appver", getResources().getString(R.string.app_version));
             jsonSaveDcr.put("Mod", Constants.APP_MODE);
-
 
 
             JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();

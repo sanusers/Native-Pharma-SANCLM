@@ -54,9 +54,17 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
     @Override
     public void onBindViewHolder(@NonNull DayReportAdapter.MyViewHolder holder, int position) {
         DayReportModel dayReportModel = arrayList.get(holder.getAbsoluteAdapterPosition());
-        String address = dayReportModel.getInaddress();
         holder.name.setText(dayReportModel.getSF_Name());
-        holder.workType.setText(dayReportModel.getWtype());
+        String additionalWorkType = dayReportModel.getAdditional_Temp_Details();
+        String comma = ",";
+        if (additionalWorkType==null || additionalWorkType.equals("")){
+            additionalWorkType = "";
+            comma = "";
+        }
+        String workType = dayReportModel.getWtype();
+        String result = workType   +  comma + "  "+additionalWorkType;
+
+        holder.workType.setText(result);
         holder.submitDate.setText(dayReportModel.getRptdate());
         holder.remarks.setText(dayReportModel.getRemarks());
         if (SharedPref.getSrtNd(context).equalsIgnoreCase("0")){
@@ -117,6 +125,7 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             holder.arrow.setVisibility(View.GONE);
             holder.DcrIconLayout.setVisibility(View.GONE);
         }
+
        /* if(dayReportModel.getRemarks().equals("")){
            holder.remarksTxt.setVisibility(View.GONE);
            holder.remarks.setVisibility(View.GONE);

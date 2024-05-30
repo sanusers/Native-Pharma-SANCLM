@@ -421,7 +421,6 @@ public class TagCustSelectionList extends AppCompatActivity {
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
-
                         if (jsonObject.has("cust_status")) {
                             custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
                             custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
@@ -452,7 +451,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                     for (int i = 0; i < doctJsonArray.length(); i++) {
                         JSONObject doctJsonObject = doctJsonArray.getJSONObject(i);
                         String chemistCategory = doctJsonObject.getString("Code");
-                        String chemistCategoryName = doctJsonObject.getString("Doc_Cat_Name");
+                        String chemistCategoryName = doctJsonObject.getString("Chem_Cat_Name");
                         townMap.put(chemistCategory, chemistCategoryName);
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {

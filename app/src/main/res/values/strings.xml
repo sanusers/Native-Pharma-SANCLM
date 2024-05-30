@@ -398,4 +398,19 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="cannot_submit_work_plan">Cannot submit Work Plan!</string>
+    <string name="timezoneon">Turn on Automatic Date and Time in Settings.</string>
+    <string name="turn_on_timezone">Turn on Automatic time zone</string>
+    <string name="timezone_to_automatic">Please set time zone to automatic</string>
+    <string name="setting_open">Close Settings</string>
+    <string name="rcpa_rate">Rate</string>
+    <string name="op_qty">OP Qty</string>
+    <string name="op_rate">OP Rate</string>
+    <string name="our_product">Our Product</string>
+    <string name="comp_qty">CP Qty</string>
+    <string name="cp_rate">CP Rate</string>
+    <string name="op_value">OP Value</string>
+    <string name="cp_value">CP Value</string>
+    <string name="comp_product">Comp.Product</string>
+    <string name="quantity">QTY</string>
+    <string name="rate_rcpa">RATE</string>
 </resources>

@@ -1,7 +1,12 @@
 package saneforce.santrip.activity.reports.dayReport.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.metrics.Event;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +25,10 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
@@ -49,8 +58,8 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
 
         holder.ImageTittle.setText(EventList.get(position).getTitle());
         holder.Remarks.setText(EventList.get(position).getRemarks());
-
         String url = SharedPref.getTagImageUrl(context) +EventList.get(position).getEventimg();
+        System.out.println("url--->"+url);
         Picasso.get()
                 .load(url)
                 .into(holder.imageView);

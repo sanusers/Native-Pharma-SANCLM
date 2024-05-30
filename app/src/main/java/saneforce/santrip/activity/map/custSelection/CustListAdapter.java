@@ -54,13 +54,13 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
         holder.tv_specialist.setText(custListArrayList.get(position).getSpecialist());
         holder.tv_area.setText(custListArrayList.get(position).getTown_name());
         String selectedTap = custListArrayList.get(position).getType();
-        System.out.println("custListArrayList--->"+selectedTap);
         holder.tv_count.setText(String.format("%s/%s", custListArrayList.get(position).getTag(), custListArrayList.get(position).getMaxTag()));
-          if (custListArrayList.get(position).getCategory().equals("")){
-              holder.tv_category.setVisibility(View.GONE);
-          }else {
-              holder.tv_category.setText(custListArrayList.get(position).getCategory());
-          }
+        if (custListArrayList.get(position).getCategory().equals("")){
+            holder.tv_category.setVisibility(View.GONE);
+        }else {
+            holder.tv_category.setVisibility(View.VISIBLE);
+            holder.tv_category.setText(custListArrayList.get(position).getCategory());
+        }
         if (GeoTagApprovalNeed.equalsIgnoreCase("0")) {
             for (int m = 0; m < custListArrayListNew.size(); m++) {
                 if (custListArrayListNew.get(m).getCode().equalsIgnoreCase(custListArrayList.get(position).getCode())) {
@@ -98,11 +98,16 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
             }
         }
 */
-        if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
+        if (Integer.parseInt(custListArrayList.get(position).getTag())>=1){
+            holder.tv_view.setVisibility(View.VISIBLE);
+        }else{
+            holder.tv_view.setVisibility(View.GONE);
+        }
+        /*if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
             holder.tv_view.setVisibility(View.GONE);
         } else {
             holder.tv_view.setVisibility(View.VISIBLE);
-        }
+        }*/
 
         holder.tv_name.setOnClickListener(view -> {
             commonUtilsMethods.displayPopupWindow(activity, context, view, custListArrayList.get(position).getName());
@@ -131,9 +136,9 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
         });
 
         holder.tv_view.setOnClickListener(view -> {
-            if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
+            if(Integer.parseInt(custListArrayList.get(position).getTag())>=1){
+                /* (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag()))*/
                // Toast.makeText(context, "First Tag & View", Toast.LENGTH_SHORT).show();
-            } else {
                 Intent intent = new Intent(context, MapsActivity.class);
                 getCustListNew.clear();
                 for (int m = 0; m < custListArrayListNew.size(); m++) {
@@ -148,9 +153,12 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
                 intent.putExtra("from", "view_tagged");
                 intent.putExtra("cus_name", custListArrayList.get(position).getName());
                 intent.putExtra("cus_add", custListArrayList.get(position).getAddress());
+                intent.putExtra("geoTagStatus",custListArrayList.get(position).getGeoTagStatus());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-               // intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                // intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
+            } else {
+
             }
         });
         setVisibility(selectedTap,holder);

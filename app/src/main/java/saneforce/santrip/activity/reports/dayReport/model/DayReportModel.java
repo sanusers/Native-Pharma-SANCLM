@@ -54,8 +54,17 @@ public class DayReportModel implements Serializable {
 
   private int Typ = -1;
   private String Confirmed = "";
+  private String Additional_Temp_Details = "";
 
-  public DayReportModel(String udr, String intime, String drs, String inaddress, String halfDay_FW_Type, String outtime, String chm, String desig_Code, String SF_Code, String stk, String cip, String adate, String hos, String SF_Name, String rmdr, String rptdate, String wtype, String FWFlg, DayReportModel.Activity_Date activity_Date, String outaddress, String ACode, String remarks, String terrWrk, int typ, String confirmed) {
+  public String getAdditional_Temp_Details() {
+    return Additional_Temp_Details;
+  }
+
+  public void setAdditional_Temp_Details(String additional_Temp_Details) {
+    Additional_Temp_Details = additional_Temp_Details;
+  }
+
+  public DayReportModel(String udr, String intime, String drs, String inaddress, String halfDay_FW_Type, String outtime, String chm, String desig_Code, String SF_Code, String stk, String cip, String adate, String hos, String SF_Name, String rmdr, String rptdate, String wtype, String FWFlg, DayReportModel.Activity_Date activity_Date, String outaddress, String ACode, String remarks, String terrWrk, int typ, String confirmed, String Additional_Temp_Details) {
     Udr = udr;
     this.intime = intime;
     Drs = drs;
@@ -81,6 +90,7 @@ public class DayReportModel implements Serializable {
     TerrWrk = terrWrk;
     Typ = typ;
     Confirmed = confirmed;
+    this.Additional_Temp_Details = Additional_Temp_Details;
   }
 
   public String getConfirmed() {

@@ -3,11 +3,9 @@ package saneforce.santrip.activity.homeScreen;
 import static android.Manifest.permission.READ_MEDIA_AUDIO;
 import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.Manifest.permission.READ_MEDIA_VIDEO;
-
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
 import static saneforce.santrip.commonClasses.Constants.APP_MODE;
-
 import static saneforce.santrip.commonClasses.Constants.CONNECTIVITY_ACTION;
 
 import android.Manifest;
@@ -21,12 +19,12 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -47,12 +45,12 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -92,16 +90,16 @@ import saneforce.santrip.R;
 import saneforce.santrip.activity.Quiz.QuizActivity;
 import saneforce.santrip.activity.activityModule.Activity;
 import saneforce.santrip.activity.approvals.ApprovalsActivity;
+import saneforce.santrip.activity.call.dcrCallSelection.adapter.TabLayoutAdapter;
 import saneforce.santrip.activity.forms.Forms_activity;
 import saneforce.santrip.activity.homeScreen.adapters.Callstatusadapter;
 import saneforce.santrip.activity.homeScreen.adapters.CustomPagerAdapter;
-import saneforce.santrip.activity.call.dcrCallSelection.adapter.TabLayoutAdapter;
 import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
 import saneforce.santrip.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.santrip.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.CallStatusModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.EventCalenderModelClass;
-
+import saneforce.santrip.activity.homeScreen.timeZone.AutoTimezone;
 import saneforce.santrip.activity.leave.Leave_Application;
 import saneforce.santrip.activity.login.LoginActivity;
 import saneforce.santrip.activity.map.MapsActivity;
@@ -109,8 +107,7 @@ import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.activity.myresource.MyResource_Activity;
 import saneforce.santrip.activity.presentation.presentation.PresentationActivity;
 import saneforce.santrip.activity.previewPresentation.PreviewActivity;
-
-
+import saneforce.santrip.activity.remaindercalls.RemaindercallsActivity;
 import saneforce.santrip.activity.reports.ReportsActivity;
 import saneforce.santrip.activity.reports.dayReport.MapViewActvity;
 import saneforce.santrip.activity.tourPlan.TourPlanActivity;
@@ -120,10 +117,9 @@ import saneforce.santrip.commonClasses.GPSTrack;
 import saneforce.santrip.commonClasses.MyDayPlanEntriesNeeded;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityHomeDashBoardBinding;
-import saneforce.santrip.databinding.PreviewItemBinding;
+import saneforce.santrip.databinding.DialogTimezoneBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.activity.remaindercalls.RemaindercallsActivity;
 import saneforce.santrip.response.CustomSetupResponse;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
@@ -143,6 +139,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static Dialog dialogCheckInOut, dialogAfterCheckIn, dialogPwdChange;
     public static String CustomPresentationNeed, PresentationNeed, SequentialEntry;
     public static LocalDate selectedDate;
+    public static CustomPagerAdapter adapter;
+    public static boolean tpRangeCheck;
+    public static boolean canMoveNextDate = true;
+    static TabLayoutAdapter leftViewPagerAdapter;
+    static MasterDataDao masterDataDao;
+    private static FragmentManager fragmentManager;
     final ArrayList<CallStatusModelClass> callStatusList = new ArrayList<>();
     public ActionBarDrawerToggle actionBarDrawerToggle;
     ProgressDialog progressDialog;
@@ -150,12 +152,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     CommonUtilsMethods commonUtilsMethods;
     LocationManager locationManager;
     ApiInterface apiInterface;
-
     CustomSetupResponse customSetupResponse;
     IntentFilter intentFilter;
     NetworkChangeReceiver receiver;
     Callstatusadapter callstatusadapter;
-    static TabLayoutAdapter leftViewPagerAdapter;
     ArrayList<EventCalenderModelClass> calendarDays = new ArrayList<>();
     DrawerLayout.LayoutParams layoutParams;
     TextView tvDateTime, tvName, tvDateTimeAfter, tvLat, tvLong, tvAddress, tvHeading;
@@ -168,35 +168,196 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     ArrayList<String> weeklyOffDays = new ArrayList<>();
     JSONArray holidayJSONArray = new JSONArray();
     String holidayMode = "", weeklyOffCaption = "";
-    public static CustomPagerAdapter adapter;
-    private int passwordNotVisible = 1, passwordNotVisible1 = 1;
     RoomDB roomDB;
-
-    static MasterDataDao masterDataDao;
     OfflineCheckInOutDataDao offlineCheckInOutDataDao;
     TourPlanOfflineDataDao tourPlanOfflineDataDao;
-    public static boolean tpRangeCheck;
+    AutoTimezone autoTimezone;
+    Handler mainHandler = new Handler(Looper.getMainLooper());
+    Handler handler1 = new Handler();
+    long delay = 4000;
+    Runnable runnable;
+    private int passwordNotVisible = 1, passwordNotVisible1 = 1;
+    AlertDialog customDialog;
 
-    private static FragmentManager fragmentManager;
-    public static boolean canMoveNextDate = true;
+    private static void setupLeftViewPager(Context context, FragmentManager fragmentManager) {
+        leftViewPagerAdapter = new TabLayoutAdapter(fragmentManager);
+        leftViewPagerAdapter.add(new WorkPlanFragment(), "Work Plan");
+        leftViewPagerAdapter.add(new CallsFragment(), "Calls");
+        leftViewPagerAdapter.add(new OutboxFragment(), "Outbox");
+        binding.viewPager.setAdapter(leftViewPagerAdapter);
+        binding.viewPager.setCurrentItem(Integer.parseInt(SharedPref.getSetUpClickedTab(context)));
+        binding.tabLayout.setupWithViewPager(binding.viewPager);
+        binding.viewPager.setOffscreenPageLimit(leftViewPagerAdapter.getCount());
+    }
+
+    public static void checkAndSetEntryDate(Context context) {
+        binding.viewPagerProgress.setVisibility(View.VISIBLE);
+        MyDayPlanEntriesNeeded.updateMyDayPlanEntriesNeeded(context, true, new MyDayPlanEntriesNeeded.SyncTaskStatus() {
+            @Override
+            public void datesFound() {
+                if (SequentialEntry != null && SequentialEntry.equalsIgnoreCase("0")) {
+                    String dateRequired = SharedPref.getSelectedDateCal(context);
+                    String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, dateRequired);
+                    selectedDate = LocalDate.parse(dateRequired, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
+                    binding.textDate.setText(monthDateYear);
+                    SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, dateRequired));
+                    Log.e("TAG 0", "checkAndSetEntryDate: " + selectedDate);
+                } else if (canMoveNextDate) {
+                    String dateRequired = SharedPref.getSelectedDateCal(context);
+                    String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, dateRequired);
+                    selectedDate = LocalDate.parse(dateRequired, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
+                    binding.textDate.setText(monthDateYear);
+                    SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, dateRequired));
+                    Log.e("TAG 1", "checkAndSetEntryDate: " + selectedDate);
+                } else {
+                    canMoveNextDate = true;
+                    selectedDate = null;
+                    binding.textDate.setText(null);
+                    Log.e("TAG 3", "checkAndSetEntryDate: " + selectedDate);
+                }
+                binding.viewPagerProgress.setVisibility(View.GONE);
+                setupLeftViewPager(context, fragmentManager);
+            }
+
+            @Override
+            public void noDatesFound() {
+                selectedDate = null;
+                binding.textDate.setText(null);
+                binding.viewPagerProgress.setVisibility(View.GONE);
+                setupLeftViewPager(context, fragmentManager);
+                Log.e("TAG 4", "checkAndSetEntryDate: " + selectedDate);
+            }
+        });
+//        if(SequentialEntry != null && SequentialEntry.equalsIgnoreCase("0")){
+////            dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
+//        MyDayPlanEntriesNeeded.updateMyDayPlanEntriesNeeded(context, true, new MyDayPlanEntriesNeeded.SyncTaskStatus() {
+//                @Override
+//                public void onComplete() {
+//                    if(!SharedPref.getSelectedDateCal(context).isEmpty()){
+////                    binding.rlDateLayoout.setEnabled(false);
+////                try {
+////                    String sfCode = dateSync.getJSONObject(0).getString("Sf_Code");
+////                    JSONObject dt = new JSONObject(dateSync.getJSONObject(0).getString("dt"));
+////                    String date = dt.getString("date");
+////                    String flg = dateSync.getJSONObject(0).getString("flg");
+////                    String tableName = dateSync.getJSONObject(0).getString("tbname");
+//////                    String editFlag = dateSync.getJSONObject(0).getString("edit_flag");
+////                    if(flg.equalsIgnoreCase("2")) {
+////                        String dateRequired = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_34, date);
+//                        String dateRequired = SharedPref.getSelectedDateCal(context);
+//                        String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, dateRequired);
+//                        selectedDate = LocalDate.parse(dateRequired, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
+//                        binding.textDate.setText(monthDateYear);
+//                        SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, dateRequired));
+//                        Log.e("TAG change 0", "checkAndSetEntryDate: " + selectedDate);
+////                        getCallsDataToCalender();
+////                        setUpCalendar();
+////                    }
+////                } catch (Exception e){
+////                    e.printStackTrace();
+////                }
+//                    } else if(selectedDate != null && selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34)).equalsIgnoreCase(SharedPref.getSelectedDateCal(context))) {
+//                        Log.e("TAG", "onComplete: same" );
+//                    }else {
+//                        String currentDate = CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34);
+//                        String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, currentDate);
+//                        selectedDate = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
+//                        SharedPref.setSelectedDateCal(context, currentDate);
+//                        SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, currentDate));
+//                        binding.textDate.setText(monthDateYear);
+//                        Log.e("TAG new 0", "checkAndSetEntryDate: " + selectedDate);
+//                    }
+//                    binding.viewPagerProgress.setVisibility(View.GONE);
+//                    setupLeftViewPager(context, fragmentManager);
+//                }
+//
+//                @Override
+//                public void onFailed() {
+//                    binding.viewPagerProgress.setVisibility(View.GONE);
+//                    if(selectedDate!= null)Log.e("TAG", "onFailed: " + selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34)) + " - " + CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34));
+//                    if(selectedDate != null && selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34)).equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34))) {
+//                        Log.e("TAG", "onFailed: same" );
+//                        binding.textDate.setText(null);
+//                        selectedDate = null;
+//                    }else {
+//                        Log.e("TAG", "onFailed: diff");
+//                        String currentDate = CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34);
+//                        String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, currentDate);
+//                        selectedDate = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
+//                        SharedPref.setSelectedDateCal(context, currentDate);
+//                        SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, currentDate));
+//                        binding.textDate.setText(monthDateYear);
+//                        Log.e("TAG new 1", "checkAndSetEntryDate: " + selectedDate);
+//                    }
+//                    binding.viewPagerProgress.setVisibility(View.GONE);
+//                    setupLeftViewPager(context, fragmentManager);
+//                }
+//            });
+//
+//        }else {
+//            if(selectedDate!= null) {
+//                Log.e("TAG", "ns: " +
+//                        selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34)) + " - " +
+//                        SharedPref.getSelectedDateCal(context) + " - " +
+//                        CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34));
+//            }else {
+//                Log.e("TAG", "ns: " +
+//                        SharedPref.getSelectedDateCal(context) + " - " +
+//                        CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34));
+//            }
+//            try {
+//                if(selectedDate == null && SharedPref.getSelectedDateCal(context).isEmpty()) {
+//                    String currentDate = CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34);
+//                    String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, currentDate);
+//                    selectedDate = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
+//                    SharedPref.setSelectedDateCal(context, currentDate);
+//                    SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, currentDate));
+//                    binding.textDate.setText(monthDateYear);
+//                    Log.e("TAG null", "checkAndSetSequentialEntry: " + selectedDate);
+//                }else if(!SharedPref.getSelectedDateCal(context).isEmpty()){
+//                    String currentDate = SharedPref.getSelectedDateCal(context);
+//                    String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, currentDate);
+//                    selectedDate = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
+//                    SharedPref.setSelectedDateCal(context, currentDate);
+//                    SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, currentDate));
+//                    binding.textDate.setText(monthDateYear);
+//                    Log.e("TAG ShardPref non empty", "checkAndSetSequentialEntry: " + selectedDate);
+//                }else {
+//                    selectedDate = null;
+//                    binding.textDate.setText(null);
+//                    Log.e("TAG ShardPref empty", "checkAndSetSequentialEntry: " + selectedDate);
+//                }
+//            } catch (Exception e){
+//                Log.e("date compare", "checkAndSetEntryDate: " + e.getMessage());
+//                e.printStackTrace();
+////                SimpleDateFormat dateFormat = new SimpleDateFormat(TimeUtils.FORMAT_34);
+////                Date storedDate = dateFormat.parse(SharedPref.getSelectedDateCal(context));
+////                Date currentDate = dateFormat.parse(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_34));
+////                if(storedDate.before(currentDate)) {
+////
+////                }
+//            }
+//            binding.viewPagerProgress.setVisibility(View.GONE);
+//            setupLeftViewPager(context, fragmentManager);
+//        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onResume() {
         super.onResume();
         Log.d("ACTIVITY_STATUS", "OnResume");
-
-        if (tpRangeCheck) {
-            CheckedTpRange();
-        }
-
-
+        timeZoneVerification();
+//        if (tpRangeCheck) {
+//            CheckedTpRange();
+//        }
         commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
         if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
@@ -248,6 +409,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     protected void onPause() {
         super.onPause();
         unregisterReceiver(receiver);
+        handler1.postDelayed(runnable, delay);
+        System.out.println("isAutoTimeZoneDisabled1--->");
     }
 
     //To Hide the bottomNavigation When popup
@@ -263,11 +426,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Log.d("ACTIVITY_STATUS", "OnCreate");
         binding = ActivityHomeDashBoardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        autoTimezone = new AutoTimezone(HomeDashBoard.this);
+        startService(new Intent(HomeDashBoard.this, AutoTimezone.class));
         // THIS CODE IS DESIGN
         DisplayMetrics displayMetrics = new DisplayMetrics();
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
@@ -287,7 +451,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
         fragmentManager = getSupportFragmentManager();
 
-
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
         roomDB = RoomDB.getDatabase(context);
@@ -299,8 +462,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         tpRangeCheck = false;
-        CheckedTpRange();
-
+//        CheckedTpRange();
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
 
         binding.imgNotofication.setOnClickListener(view -> {
@@ -353,6 +515,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         getRequiredData();
         AppIdentify();
         onClickListener();
+
         if (SharedPref.getSrtNd(this).equalsIgnoreCase("0") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
             SharedPref.setCheckInTime(getApplicationContext(), "");
             SharedPref.setSkipCheckIn(getApplicationContext(), true);
@@ -418,17 +581,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
             }
         });
-    }
-
-    private static void setupLeftViewPager(Context context, FragmentManager fragmentManager) {
-        leftViewPagerAdapter = new TabLayoutAdapter(fragmentManager);
-        leftViewPagerAdapter.add(new WorkPlanFragment(), "Work Plan");
-        leftViewPagerAdapter.add(new CallsFragment(), "Calls");
-        leftViewPagerAdapter.add(new OutboxFragment(), "Outbox");
-        binding.viewPager.setAdapter(leftViewPagerAdapter);
-        binding.viewPager.setCurrentItem(Integer.parseInt(SharedPref.getSetUpClickedTab(context)));
-        binding.tabLayout.setupWithViewPager(binding.viewPager);
-        binding.viewPager.setOffscreenPageLimit(leftViewPagerAdapter.getCount());
     }
 
     private void CheckInOutDate() {
@@ -842,14 +994,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         Cluster.setText(SharedPref.getHqNameMain(this));
 
         l_click.setOnClickListener(v -> {
-            popupWindow.dismiss();
-            changePassword();
+            if (UtilityClass.isNetworkAvailable(this)) {
+                popupWindow.dismiss();
+                changePassword();
+            } else {
+                commonUtilsMethods.showToastMessage(this, "Please Check The Internet Connection");
+            }
+
         });
         popupWindow.setOutsideTouchable(true);
         popupWindow.update();
-
     }
-
 
     @SuppressLint({"MissingInflatedId", "WrongConstant", "UseCompatLoadingForDrawables"})
     public void changePassword() {
@@ -899,7 +1054,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     String truncated = str.substring(0, 30);
                     old_password.setText(truncated);
                     old_password.setSelection(truncated.length());
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Maximum password length reached. Please keep it under 30 characters");
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Maximum password length reached. Please keep it under 30 characters");
                 }
             }
 
@@ -930,7 +1085,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     String truncated = str.substring(0, 30);
                     new_password.setText(truncated);
                     new_password.setSelection(truncated.length());
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Maximum password length reached. Please keep it under 30 characters");
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Maximum password length reached. Please keep it under 30 characters");
                 }
             }
 
@@ -961,7 +1116,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     String truncated = str.substring(0, 30);
                     remain_password.setText(truncated);
                     remain_password.setSelection(truncated.length());
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Maximum password length reached. Please keep it under 30 characters");
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Maximum password length reached. Please keep it under 30 characters");
                 }
             }
 
@@ -976,11 +1131,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
-        old_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(old_password)});
+      /*  old_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(old_password)});
         new_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(new_password)});
-        remain_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(remain_password)});
-        String password = SharedPref.getLoginUserPwd(this);
-        System.out.println("loginPassword--->"+password);
+        remain_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(remain_password)});*/
+        String password = SharedPref.getLoginUserPwd(this).toLowerCase();
+
 
         old_view.setOnClickListener(v -> {
             if (!old_password.getText().toString().equals("")) {
@@ -1017,28 +1172,32 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
         update.setOnClickListener(v -> {
-            if (old_password.getText().toString().equals("")) {
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.enter_old_pwd));
-            } else if (new_password.getText().toString().equals("")) {
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.enter_new_pwd));
-            } else if (remain_password.getText().toString().equals("")) {
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.enter_repeat_pwd));
-            } else {
-                if (!password.equals(old_password.getText().toString())) {
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.chk_old_pwd));
-                } else if (!new_password.getText().toString().equals(remain_password.getText().toString())) {
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.pwd_not_match));
-                } else if (new_password.getText().toString().equals(password)) {
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.change_new_password));
+                if (old_password.getText().toString().equals("")) {
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.enter_old_pwd));
+                } else if (new_password.getText().toString().equals("")) {
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.enter_new_pwd));
+                } else if (remain_password.getText().toString().equals("")) {
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.enter_repeat_pwd));
                 } else {
-                    try {
-                        progressBar.setVisibility(View.VISIBLE);
-                        CallChangePasswordAPI(old_password.getText().toString(), new_password.getText().toString(), remain_password.getText().toString(),progressBar);
-                    } catch (Exception ignored) {
-                    }
+                    if (!password.equals(old_password.getText().toString().toLowerCase())) {
+                        commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.chk_old_pwd));
+                    } else if (!new_password.getText().toString().toLowerCase().equals(remain_password.getText().toString().toLowerCase())) {
+                        commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.pwd_not_match));
+                    } else if (new_password.getText().toString().toLowerCase().equals(password)) {
+                        commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.change_new_password));
+                    } else {
+                        try {
+                            if (UtilityClass.isNetworkAvailable(this)) {
+                                progressBar.setVisibility(View.VISIBLE);
+                                CallChangePasswordAPI(old_password.getText().toString(), new_password.getText().toString(), remain_password.getText().toString(), progressBar);
+                            }else{
+                                commonUtilsMethods.showToastMessage(this,"Please check Your Internet Connection");
+                            }
+                            } catch (Exception ignored) {
+                        }
 
+                    }
                 }
-            }
         });
 
         cls_but.setOnClickListener(v -> dialogPwdChange.dismiss());
@@ -1047,7 +1206,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         dialogPwdChange.show();
     }
 
-    private void CallChangePasswordAPI(String oldPwd, String newPwd, String confirmPwd,ProgressBar progressBar) {
+    private void CallChangePasswordAPI(String oldPwd, String newPwd, String confirmPwd, ProgressBar progressBar) {
         JSONObject jj = new JSONObject();
         try {
             jj.put("tableName", "savechpwd");
@@ -1080,7 +1239,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             SharedPref.saveLoginPwd(getApplicationContext(), confirmPwd);
                             commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.pwd_changed_successfully));
 //                            startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
-                            commonUtilsMethods.loginNavigation(HomeDashBoard.this,confirmPwd);
+                            commonUtilsMethods.loginNavigation(HomeDashBoard.this);
                             dialogPwdChange.dismiss();
                         } else {
                             commonUtilsMethods.showToastMessage(HomeDashBoard.this, js.getString("msg"));
@@ -1103,12 +1262,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     }
 
-
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
     }
-
 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -1210,158 +1367,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } else {
             commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
         }
-    }
-
-    public static void checkAndSetEntryDate(Context context) {
-        binding.viewPagerProgress.setVisibility(View.VISIBLE);
-        MyDayPlanEntriesNeeded.updateMyDayPlanEntriesNeeded(context, true, new MyDayPlanEntriesNeeded.SyncTaskStatus() {
-            @Override
-            public void datesFound() {
-                if (SequentialEntry != null && SequentialEntry.equalsIgnoreCase("0")) {
-                    String dateRequired = SharedPref.getSelectedDateCal(context);
-                    String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, dateRequired);
-                    selectedDate = LocalDate.parse(dateRequired, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
-                    binding.textDate.setText(monthDateYear);
-                    SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, dateRequired));
-                    Log.e("TAG 0", "checkAndSetEntryDate: " + selectedDate);
-                } else if (canMoveNextDate) {
-                    String dateRequired = SharedPref.getSelectedDateCal(context);
-                    String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, dateRequired);
-                    selectedDate = LocalDate.parse(dateRequired, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
-                    binding.textDate.setText(monthDateYear);
-                    SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, dateRequired));
-                    Log.e("TAG 1", "checkAndSetEntryDate: " + selectedDate);
-                } else {
-                    canMoveNextDate = true;
-                    selectedDate = null;
-                    binding.textDate.setText(null);
-                    Log.e("TAG 3", "checkAndSetEntryDate: " + selectedDate);
-                }
-                binding.viewPagerProgress.setVisibility(View.GONE);
-                setupLeftViewPager(context, fragmentManager);
-            }
-
-            @Override
-            public void noDatesFound() {
-                selectedDate = null;
-                binding.textDate.setText(null);
-                binding.viewPagerProgress.setVisibility(View.GONE);
-                setupLeftViewPager(context, fragmentManager);
-                Log.e("TAG 4", "checkAndSetEntryDate: " + selectedDate);
-            }
-        });
-//        if(SequentialEntry != null && SequentialEntry.equalsIgnoreCase("0")){
-////            dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
-//        MyDayPlanEntriesNeeded.updateMyDayPlanEntriesNeeded(context, true, new MyDayPlanEntriesNeeded.SyncTaskStatus() {
-//                @Override
-//                public void onComplete() {
-//                    if(!SharedPref.getSelectedDateCal(context).isEmpty()){
-////                    binding.rlDateLayoout.setEnabled(false);
-////                try {
-////                    String sfCode = dateSync.getJSONObject(0).getString("Sf_Code");
-////                    JSONObject dt = new JSONObject(dateSync.getJSONObject(0).getString("dt"));
-////                    String date = dt.getString("date");
-////                    String flg = dateSync.getJSONObject(0).getString("flg");
-////                    String tableName = dateSync.getJSONObject(0).getString("tbname");
-//////                    String editFlag = dateSync.getJSONObject(0).getString("edit_flag");
-////                    if(flg.equalsIgnoreCase("2")) {
-////                        String dateRequired = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_34, date);
-//                        String dateRequired = SharedPref.getSelectedDateCal(context);
-//                        String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, dateRequired);
-//                        selectedDate = LocalDate.parse(dateRequired, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
-//                        binding.textDate.setText(monthDateYear);
-//                        SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, dateRequired));
-//                        Log.e("TAG change 0", "checkAndSetEntryDate: " + selectedDate);
-////                        getCallsDataToCalender();
-////                        setUpCalendar();
-////                    }
-////                } catch (Exception e){
-////                    e.printStackTrace();
-////                }
-//                    } else if(selectedDate != null && selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34)).equalsIgnoreCase(SharedPref.getSelectedDateCal(context))) {
-//                        Log.e("TAG", "onComplete: same" );
-//                    }else {
-//                        String currentDate = CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34);
-//                        String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, currentDate);
-//                        selectedDate = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
-//                        SharedPref.setSelectedDateCal(context, currentDate);
-//                        SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, currentDate));
-//                        binding.textDate.setText(monthDateYear);
-//                        Log.e("TAG new 0", "checkAndSetEntryDate: " + selectedDate);
-//                    }
-//                    binding.viewPagerProgress.setVisibility(View.GONE);
-//                    setupLeftViewPager(context, fragmentManager);
-//                }
-//
-//                @Override
-//                public void onFailed() {
-//                    binding.viewPagerProgress.setVisibility(View.GONE);
-//                    if(selectedDate!= null)Log.e("TAG", "onFailed: " + selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34)) + " - " + CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34));
-//                    if(selectedDate != null && selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34)).equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34))) {
-//                        Log.e("TAG", "onFailed: same" );
-//                        binding.textDate.setText(null);
-//                        selectedDate = null;
-//                    }else {
-//                        Log.e("TAG", "onFailed: diff");
-//                        String currentDate = CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34);
-//                        String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, currentDate);
-//                        selectedDate = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
-//                        SharedPref.setSelectedDateCal(context, currentDate);
-//                        SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, currentDate));
-//                        binding.textDate.setText(monthDateYear);
-//                        Log.e("TAG new 1", "checkAndSetEntryDate: " + selectedDate);
-//                    }
-//                    binding.viewPagerProgress.setVisibility(View.GONE);
-//                    setupLeftViewPager(context, fragmentManager);
-//                }
-//            });
-//
-//        }else {
-//            if(selectedDate!= null) {
-//                Log.e("TAG", "ns: " +
-//                        selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34)) + " - " +
-//                        SharedPref.getSelectedDateCal(context) + " - " +
-//                        CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34));
-//            }else {
-//                Log.e("TAG", "ns: " +
-//                        SharedPref.getSelectedDateCal(context) + " - " +
-//                        CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34));
-//            }
-//            try {
-//                if(selectedDate == null && SharedPref.getSelectedDateCal(context).isEmpty()) {
-//                    String currentDate = CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34);
-//                    String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, currentDate);
-//                    selectedDate = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
-//                    SharedPref.setSelectedDateCal(context, currentDate);
-//                    SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, currentDate));
-//                    binding.textDate.setText(monthDateYear);
-//                    Log.e("TAG null", "checkAndSetSequentialEntry: " + selectedDate);
-//                }else if(!SharedPref.getSelectedDateCal(context).isEmpty()){
-//                    String currentDate = SharedPref.getSelectedDateCal(context);
-//                    String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, currentDate);
-//                    selectedDate = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
-//                    SharedPref.setSelectedDateCal(context, currentDate);
-//                    SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, currentDate));
-//                    binding.textDate.setText(monthDateYear);
-//                    Log.e("TAG ShardPref non empty", "checkAndSetSequentialEntry: " + selectedDate);
-//                }else {
-//                    selectedDate = null;
-//                    binding.textDate.setText(null);
-//                    Log.e("TAG ShardPref empty", "checkAndSetSequentialEntry: " + selectedDate);
-//                }
-//            } catch (Exception e){
-//                Log.e("date compare", "checkAndSetEntryDate: " + e.getMessage());
-//                e.printStackTrace();
-////                SimpleDateFormat dateFormat = new SimpleDateFormat(TimeUtils.FORMAT_34);
-////                Date storedDate = dateFormat.parse(SharedPref.getSelectedDateCal(context));
-////                Date currentDate = dateFormat.parse(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_34));
-////                if(storedDate.before(currentDate)) {
-////
-////                }
-//            }
-//            binding.viewPagerProgress.setVisibility(View.GONE);
-//            setupLeftViewPager(context, fragmentManager);
-//        }
     }
 
     @SuppressLint({"NonConstantResourceId", "NotifyDataSetChanged"})
@@ -1738,23 +1743,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         });
     }
 
-    public class DoubleClickListener implements View.OnClickListener {
-        private static final long DOUBLE_CLICK_TIME_DELTA = 300;
-        private long lastClickTime = 0;
-
-        @Override
-        public void onClick(View v) {
-            long clickTime = System.currentTimeMillis();
-            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
-                onDoubleClick(v);
-            }
-            lastClickTime = clickTime;
-        }
-
-        public void onDoubleClick(View v) {
-        }
-    }
-
     private void setGpsTrack() {
         gpsTrack = new GPSTrack(HomeDashBoard.this);
         double lat = gpsTrack.getLatitude();
@@ -1771,6 +1759,61 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } else {
             binding.imgLocation.setImageResource(R.drawable.locationget_img);
         }
+    }
+    public class DoubleClickListener implements View.OnClickListener {
+        private static final long DOUBLE_CLICK_TIME_DELTA = 300;
+        private long lastClickTime = 0;
+
+        @Override
+        public void onClick(View v) {
+            long clickTime = System.currentTimeMillis();
+            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
+                onDoubleClick(v);
+            }
+            lastClickTime = clickTime;
+        }
+
+        public void onDoubleClick(View v) {
+        }
+    }
+    private void timeZoneVerification() {
+        runnable = new Runnable() {
+            public void run() {
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeZoneEnabled(context);
+                        mainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (isAutoTimeZoneEnabled) {
+                                    if (customDialog!=null){
+                                        customDialog.dismiss();
+                                        customDialog.cancel();
+                                        customDialog.hide();
+                                    }
+                                    handler1.removeCallbacks(runnable);
+                                } else {
+                                    timeZoneVerificationDialog();
+                                    handler1.removeCallbacks(runnable);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        };
+        handler1.postDelayed(runnable, delay);
+    }
+    private void timeZoneVerificationDialog() {
+        DialogTimezoneBinding timezoneBinding = DialogTimezoneBinding.inflate(LayoutInflater.from(context));
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomeDashBoard.this, 0);
+        customDialog = builder.create();
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        customDialog.setView(timezoneBinding.getRoot());
+        customDialog.setCancelable(false);
+        customDialog.show();
+        timezoneBinding.btnOpenSettings.setOnClickListener(v -> {System.exit(0);});
     }
 }
 

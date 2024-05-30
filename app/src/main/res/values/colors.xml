@@ -125,6 +125,8 @@
     <color name="bg_pink10">#fff6f7</color>
     <color name="bg_grey_70">#EED7DB</color>
 
+    <color name="liteGray">#80282A3C</color>
+
 
 
 </resources>

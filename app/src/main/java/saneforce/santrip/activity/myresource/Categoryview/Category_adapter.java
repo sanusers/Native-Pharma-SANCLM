@@ -39,7 +39,6 @@ public class Category_adapter extends   RecyclerView.Adapter<Category_adapter.Vi
         holder.Category.setText(app_adapt.getCustType());
         holder.Doc_name.setText(app_adapt.getCustCode());
 
-
     }
 
     @Override

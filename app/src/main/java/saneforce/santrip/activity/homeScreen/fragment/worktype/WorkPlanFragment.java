@@ -709,9 +709,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             case R.id.btnsumit:
 //                if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
 //                    if (!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
-                if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
-                    remarksAlertBox();
+                if (!commonUtilsMethods.isAutoTimeZoneEnabled(requireContext())){
+                    commonUtilsMethods.showAutoTimeZoneDialog(requireContext());
+                }else {
+                    if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
+                        remarksAlertBox();
+                    }
                 }
+
 //                    } else {
 //                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
 //                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, HomeDashBoard.dateSync.toString(), 0));

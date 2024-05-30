@@ -3,12 +3,16 @@ package saneforce.santrip.activity.splash;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+
+import com.bumptech.glide.Glide;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.PrivacyPolicyActvity.PrivacyPolicyActivity;
@@ -33,6 +37,8 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(binding.getRoot());
 //        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+//        Glide.with(this).load(R.drawable.animation_slide).into(binding.splashImg);
+
 
         new Handler().postDelayed(() -> {
             if (SharedPref.getSettingState(getApplicationContext())){

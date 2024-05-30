@@ -278,7 +278,7 @@ public class DayReportFragment extends Fragment {
                         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
 
                         JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("tableName", "getdayrpt");
+                        jsonObject.put("tableName", "getdayrpt_edet");
                         jsonObject.put("sfcode",SharedPref.getSfCode(requireContext()));
                         jsonObject.put("sf_type", SharedPref.getSfType(requireContext()));
                         jsonObject.put("divisionCode",SharedPref.getDivisionCode(requireContext()));
@@ -348,7 +348,6 @@ public class DayReportFragment extends Fragment {
     }
     private void onClickListener(){
         binding.sortIcon.setOnClickListener(v -> {
-            System.out.println("onClickListener");
             Context wrapper = new ContextThemeWrapper(getContext(), R.style.popupMenuStyle);
             final PopupMenu popup = new PopupMenu(wrapper, binding.sortIcon, Gravity.END);
             popup.getMenu().add(1, 1, 1, "By Name      A - Z");
@@ -371,7 +370,7 @@ public class DayReportFragment extends Fragment {
         arrayListOfReportDataShort.clear();
         for (int i = 0; i < arrayListOfReportData.size(); i++) {
             if (Mode.equalsIgnoreCase("All") || Mode.equalsIgnoreCase("By Name      A - Z") || Mode.equalsIgnoreCase("By Name      Z - A") || Mode.equalsIgnoreCase("By Date      Newer - Older") || Mode.equalsIgnoreCase("By Date      Older - Newer")) {
-                arrayListOfReportDataShort.add(new DayReportModel(arrayListOfReportData.get(i).getUdr(), arrayListOfReportData.get(i).getIntime(), arrayListOfReportData.get(i).getDrs(), arrayListOfReportData.get(i).getInaddress(), arrayListOfReportData.get(i).getHalfDay_FW_Type(), arrayListOfReportData.get(i).getOuttime(), arrayListOfReportData.get(i).getChm(), arrayListOfReportData.get(i).getDesig_Code(), arrayListOfReportData.get(i).getSF_Code(), arrayListOfReportData.get(i).getStk(), arrayListOfReportData.get(i).getCip(),arrayListOfReportData.get(i).getAdate(),arrayListOfReportData.get(i).getHos(),arrayListOfReportData.get(i).getSF_Name(),arrayListOfReportData.get(i).getRmdr(),arrayListOfReportData.get(i).getRptdate(),arrayListOfReportData.get(i).getWtype(),arrayListOfReportData.get(i).getFWFlg(),arrayListOfReportData.get(i).getActivity_Date(),arrayListOfReportData.get(i).getOutaddress(),arrayListOfReportData.get(i).getACode(),arrayListOfReportData.get(i).getRemarks(),arrayListOfReportData.get(i).getTerrWrk(),arrayListOfReportData.get(i).getTyp(),arrayListOfReportData.get(i).getConfirmed()));
+                arrayListOfReportDataShort.add(new DayReportModel(arrayListOfReportData.get(i).getUdr(), arrayListOfReportData.get(i).getIntime(), arrayListOfReportData.get(i).getDrs(), arrayListOfReportData.get(i).getInaddress(), arrayListOfReportData.get(i).getHalfDay_FW_Type(), arrayListOfReportData.get(i).getOuttime(), arrayListOfReportData.get(i).getChm(), arrayListOfReportData.get(i).getDesig_Code(), arrayListOfReportData.get(i).getSF_Code(), arrayListOfReportData.get(i).getStk(), arrayListOfReportData.get(i).getCip(),arrayListOfReportData.get(i).getAdate(),arrayListOfReportData.get(i).getHos(),arrayListOfReportData.get(i).getSF_Name(),arrayListOfReportData.get(i).getRmdr(),arrayListOfReportData.get(i).getRptdate(),arrayListOfReportData.get(i).getWtype(),arrayListOfReportData.get(i).getFWFlg(),arrayListOfReportData.get(i).getActivity_Date(),arrayListOfReportData.get(i).getOutaddress(),arrayListOfReportData.get(i).getACode(),arrayListOfReportData.get(i).getRemarks(),arrayListOfReportData.get(i).getTerrWrk(),arrayListOfReportData.get(i).getTyp(),arrayListOfReportData.get(i).getConfirmed(),arrayListOfReportData.get(i).getAdditional_Temp_Details()));
             }
         }
 

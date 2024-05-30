@@ -34,7 +34,9 @@
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
+
             <category android:name="android.intent.category.BROWSABLE" />
+
             <data android:scheme="https" />
         </intent>
     </queries>
@@ -64,25 +66,22 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:supportsRtl"
         tools:targetApi="31">
+        <activity
+            android:name=".activity.homeScreen.BlockActivity"
+            android:exported="false" />
 
         <activity
             android:name=".activity.reports.dayReport.MapViewActvity"
             android:exported="false"
-            android:screenOrientation="landscape">
-
-        </activity>
-
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.PrivacyPolicyActvity.PrivacyPolicyActivity"
             android:exported="false"
-            android:screenOrientation="landscape">
-
-        </activity>
-
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.camera.CameraActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.activityModule.Activity"
             android:exported="false"
@@ -92,7 +91,7 @@
             android:name=".activity.Quiz.QuizActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activity.previewPresentation.PreviewActivity"
             android:exported="false"
@@ -240,6 +239,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".activity.homeScreen.timeZone.AutoTimezone" />
+
         <activity
             android:name=".activity.homeScreen.HomeDashBoard"
             android:exported="false"
@@ -269,15 +270,18 @@
             android:name=".activity.myresource.Resource_profiling"
             android:exported="false"
             android:screenOrientation="landscape" />
-        <activity android:name="saneforce.santrip.activity.myresource.callstatusview.Callsstatus_screenview"
+        <activity
+            android:name=".activity.myresource.callstatusview.Callsstatus_screenview"
             android:exported="false"
-            android:screenOrientation="landscape"/>
-        <activity android:name="saneforce.santrip.activity.myresource.Categoryview.Cate_viewscreen"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.myresource.Categoryview.Cate_viewscreen"
             android:exported="false"
-            android:screenOrientation="landscape"/>
-        <activity android:name="saneforce.santrip.activity.remaindercalls.RemaindercallsActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.remaindercalls.RemaindercallsActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -303,9 +307,10 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <service android:name=".activity.slideDownloaderAlertBox.HTMLThumbnailGeneratorService"
+        <service
+            android:name=".activity.slideDownloaderAlertBox.HTMLThumbnailGeneratorService"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false" />
     </application>
 
 </manifest>

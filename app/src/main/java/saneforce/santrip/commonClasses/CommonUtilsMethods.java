@@ -1,16 +1,25 @@
 package saneforce.santrip.commonClasses;
 
+import static java.security.AccessController.getContext;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.Parcelable;
+import android.provider.Settings;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.DisplayMetrics;
@@ -27,6 +36,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -46,7 +56,10 @@ import java.util.Locale;
 import java.util.Objects;
 
 import saneforce.santrip.R;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
+import saneforce.santrip.activity.homeScreen.timeZone.AutoTimezone;
 import saneforce.santrip.activity.login.LoginActivity;
+import saneforce.santrip.databinding.DialogTimezoneBinding;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.LocaleHelper;
 
@@ -55,7 +68,10 @@ public class CommonUtilsMethods {
     Context context;
     Activity activity;
     public static boolean isLocationFounded = false;
-
+    private static final long INTERVAL = 3000; // 3 seconds
+    private Handler handler;
+    private Runnable periodicTask;
+    private boolean isServiceRunning = false;
     public CommonUtilsMethods(Activity activity) {
         this.activity = activity;
     }
@@ -169,7 +185,7 @@ public class CommonUtilsMethods {
                     dialogInterface.dismiss();
                 }).show();
     }
-    public void loginNavigation(Activity activity,String password) {
+    public void loginNavigation(Activity activity) {
         new android.app.AlertDialog.Builder(activity)
                 .setTitle("Alert")
                 .setCancelable(false)
@@ -362,4 +378,45 @@ public class CommonUtilsMethods {
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
     }
+    public boolean isAutoTimeZoneEnabled(Context context) {
+        ContentResolver resolver = context.getContentResolver();
+        try {
+            int autoTimeZone = Settings.Global.getInt(resolver, Settings.Global.AUTO_TIME_ZONE);
+            return autoTimeZone == 1;
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public void showAutoTimeZoneDialog(final Context context) {
+        new AlertDialog.Builder(context)
+                .setTitle("Enable Automatic Time Zone")
+                .setMessage("Automatic time zone is disabled. Please enable it for proper functioning of the app.")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        redirectToTimeZoneSettings(context);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    public void redirectToTimeZoneSettings(Context context) {
+        Intent intent = new Intent(Settings.ACTION_DATE_SETTINGS);
+        context.startActivity(intent);
+    }
+    public void showCustomDialog(Context context) {
+        DialogTimezoneBinding timezoneBinding = DialogTimezoneBinding.inflate(LayoutInflater.from(context));
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, 0);
+        AlertDialog customDialog = builder.create();
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        customDialog.setView(timezoneBinding.getRoot());
+        customDialog.setCancelable(false);
+        customDialog.show();
+        timezoneBinding.btnOpenSettings.setOnClickListener(v -> {System.exit(0);});
+    }
+
+
+
 }
