@@ -239,7 +239,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".activity.homeScreen.timeZone.AutoTimezone" />
+        <service android:name=".activity.homeScreen.AutoTimezone" />
 
         <activity
             android:name=".activity.homeScreen.HomeDashBoard"

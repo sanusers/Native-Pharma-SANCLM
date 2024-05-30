@@ -1086,7 +1086,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             SharedPref.saveLoginPwd(getApplicationContext(), confirmPwd);
                             commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.pwd_changed_successfully));
 //                            startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
-                            commonUtilsMethods.loginNavigation(HomeDashBoard.this,confirmPwd);
+                            commonUtilsMethods.loginNavigation(HomeDashBoard.this);
                             dialogPwdChange.dismiss();
                         } else {
                             commonUtilsMethods.showToastMessage(HomeDashBoard.this, js.getString("msg"));

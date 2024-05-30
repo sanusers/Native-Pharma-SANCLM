@@ -1,4 +1,4 @@
-package saneforce.santrip.activity.homeScreen.timeZone;
+package saneforce.sanzen.activity.homeScreen;
 
 import android.app.Service;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.provider.Settings;
 
 import androidx.annotation.Nullable;
 
-import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
 
 public class AutoTimezone extends Service

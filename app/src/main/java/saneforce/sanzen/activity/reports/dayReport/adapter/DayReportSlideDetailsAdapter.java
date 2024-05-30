@@ -60,10 +60,6 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
 
         holder.imgView.setOnClickListener(v -> {
 
-            CharSequence initialGuideTex = Html.fromHtml(" Start Time : " + callDetailingLists.get(position).getStartTime()  +"<br><br>"+ " End Time : " + callDetailingLists.get(position).getEndTime() );
-
-            showTimelinePopUp( holder.imgView,initialGuideTex);
-
 
 
             CharSequence initialGuideTex = Html.fromHtml(" Start Time : " + callDetailingLists.get(position).getStartTime()  +"<br><br>"+ " End Time : " + callDetailingLists.get(position).getStartTime() );
@@ -125,7 +121,6 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
         close.setOnClickListener(closeView -> {
             popupWindow.dismiss();
         });
-        popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] , location[1]-180);
     }
 
 }

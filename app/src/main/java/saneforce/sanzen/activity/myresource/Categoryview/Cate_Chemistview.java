@@ -2,7 +2,7 @@ package saneforce.sanzen.activity.myresource.Categoryview;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.util.ArrayList;
+
+import saneforce.sanzen.activity.myresource.callstatusview.callstatus_model;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityCateChemistviewBinding;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.RoomDB;
 
 public class Cate_Chemistview extends Fragment {
 
