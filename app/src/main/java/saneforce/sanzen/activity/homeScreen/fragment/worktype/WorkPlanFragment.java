@@ -312,7 +312,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         HomeDashBoard.binding.llNav.wkListView.setVisibility(View.GONE);
         HomeDashBoard.binding.drMainlayout.openDrawer(GravityCompat.END);
         HomeDashBoard.binding.llNav.tvSearchheader.setText("Cluster");
-        updateClusterList(DayPlanCount);
+//        updateClusterList(DayPlanCount);
         MultiClusterAdapter multiClusterAdapter = new MultiClusterAdapter(getActivity(), multiple_cluster_list, new OnClusterClicklistener() {
             @Override
             public void classCampaignItem_addClass(Multicheckclass_clust classGroup) {
@@ -485,7 +485,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
             }
 
-            updateClusterList("1");
+//            updateClusterList("1");
+            JSONArray workTypeArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getHqCode(requireContext())).getMasterSyncDataJsonArray();
+            for (int i = 0; i < workTypeArray2.length(); i++) {
+                JSONObject Object1 = workTypeArray2.getJSONObject(i);
+
+                if (("," + chk_cluster + ",").contains("," + Object1.getString("Code") + ",")) {
+                    multiple_cluster_list.add(new Multicheckclass_clust(Object1.getString("Code"), Object1.getString("Name"), "", true));
+                } else {
+                    multiple_cluster_list.add(new Multicheckclass_clust(Object1.getString("Code"), Object1.getString("Name"), "", false));
+
+                }
+                cluster.add(Object1);
+            }
 
             if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                 JSONArray workTypeArray3 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();

@@ -66,8 +66,8 @@ public class ListedDoctorFragment extends Fragment {
     ImageView img_close, img_del;
     TextView tv_hqName, tv_add_condition, tv_filterCount;
     Button btn_apply, btn_clear;
-    String specialityCode, categoryCode, territoryCode, ClassCode;
-
+    String specialityCode = "", categoryCode = "", territoryCode = "", classCode = "";
+    String specialityName = "", categoryName = "", territoryName = "", className = "";
 
     ListView lv_spec, lv_cate, lv_terr,lv_class;
     JSONArray jsonArray;
@@ -133,11 +133,6 @@ public class ListedDoctorFragment extends Fragment {
     }
     public  void CustomizeFiltered(){
 
-
-        specialityCode ="";
-        territoryCode ="";
-        ClassCode =""; categoryCode ="";
-
         dialogFilter = new Dialog(requireContext());
         dialogFilter.setContentView(R.layout.popup_dcr_filter);
         Objects.requireNonNull(dialogFilter.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -160,38 +155,79 @@ public class ListedDoctorFragment extends Fragment {
         tvSpec.setVisibility(View.VISIBLE);
         tvCate.setVisibility(View.VISIBLE);
         tv_add_condition.setVisibility(View.VISIBLE);
-        img_del.setVisibility(View.VISIBLE);
+        img_del.setVisibility(View.GONE);
+
+        if(!territoryCode.isEmpty()) {
+            tvTerritory.setVisibility(View.VISIBLE);
+            img_del.setVisibility(View.VISIBLE);
+        }else {
+            tvTerritory.setVisibility(View.GONE);
+            img_del.setVisibility(View.GONE);
+        }
+
+        if(!classCode.isEmpty()) {
+            tvTerritory.setVisibility(View.INVISIBLE);
+            tvClass.setVisibility(View.VISIBLE);
+        }else {
+            tvClass.setVisibility(View.GONE);
+        }
+
         constraintLayout=dialogFilter.findViewById(R.id.constraint_btns);
         img_close.setOnClickListener(view12 -> dialogFilter.dismiss());
 
         btn_clear.setOnClickListener(view15 -> {
+            specialityCode = "";
+            territoryCode = "";
+            categoryCode = "";
+            classCode = "";
+            specialityName = "";
+            territoryName = "";
+            categoryName = "";
+            className = "";
+            tvSpec.setText("");
+            tvTerritory.setText("");
+            tvCate.setText("");
+            tvClass.setText("");
             tvSpec.setHint(R.string.speciality);
             tvTerritory.setHint(R.string.territory);
             tvCate.setHint(R.string.category);
             tvClass.setHint(R.string.class_filter);
-
         });
+
+        tvSpec.setText(specialityName);
+        tvTerritory.setText(territoryName);
+        tvCate.setText(categoryName);
+        tvClass.setText(className);
 
         tv_add_condition.setOnClickListener(view13 -> {
             if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvTerritory.getVisibility() == View.VISIBLE) {
                 tvClass.setVisibility(View.VISIBLE);
+                tv_add_condition.setVisibility(View.GONE);
             } else if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE) {
                 tvTerritory.setVisibility(View.VISIBLE);
+                img_del.setVisibility(View.VISIBLE);
             }
         });
 
         img_del.setOnClickListener(view14 -> {
+            if(!classCode.isEmpty()) {
+                classCode = "";
+                className = "";
+            }
+            if(!territoryCode.isEmpty()) {
+                territoryCode = "";
+                territoryName = "";
+            }
             if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvClass.getVisibility() == View.INVISIBLE) {
                 tvTerritory.setVisibility(View.GONE);
-                tvTerritory.setText(R.string.territory);
+                img_del.setVisibility(View.GONE);
+                tvTerritory.setHint(R.string.territory);
             } else if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvTerritory.getVisibility() == View.VISIBLE) {
                 tvClass.setVisibility(View.INVISIBLE);
-                tvClass.setText(R.string.class_filter);
+                tv_add_condition.setVisibility(View.VISIBLE);
+                tvClass.setHint(R.string.class_filter);
             }
         });
-
-
-
 
         tvSpec.setOnClickListener(view -> {
             if (lv_spec.getVisibility() == View.VISIBLE) {
@@ -203,6 +239,7 @@ public class ListedDoctorFragment extends Fragment {
 
                 FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
                     specialityCode = clickedItem.getCode();
+                    specialityName = clickedItem.getName();
                     tvSpec.setText(clickedItem.getName());
                     lv_spec.setVisibility(View.GONE);
                     tv_add_condition.setVisibility(View.VISIBLE);
@@ -212,14 +249,8 @@ public class ListedDoctorFragment extends Fragment {
                 lv_spec.setVisibility(View.VISIBLE);
                 tv_add_condition.setVisibility(View.INVISIBLE);
                 constraintLayout.setVisibility(View.INVISIBLE);
-
-
             }
-
-
         });
-
-
 
         tvCate.setOnClickListener(view -> {
             if (lv_cate.getVisibility() == View.VISIBLE) {
@@ -230,6 +261,7 @@ public class ListedDoctorFragment extends Fragment {
                 getFilterList("Category");
                 FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
                     categoryCode = clickedItem.getCode();
+                    categoryName = clickedItem.getName();
                     tvCate.setText(clickedItem.getName());
                     lv_cate.setVisibility(View.GONE);
                     tv_add_condition.setVisibility(View.VISIBLE);
@@ -240,9 +272,7 @@ public class ListedDoctorFragment extends Fragment {
                 tv_add_condition.setVisibility(View.INVISIBLE);
                 constraintLayout.setVisibility(View.INVISIBLE);
             }
-
         });
-
 
         tvTerritory.setOnClickListener(view -> {
             if (lv_terr.getVisibility() == View.VISIBLE) {
@@ -253,6 +283,7 @@ public class ListedDoctorFragment extends Fragment {
                 getFilterList("Territory");
                 FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
                     territoryCode = clickedItem.getCode();
+                    territoryName = clickedItem.getName();
                     tvTerritory.setText(clickedItem.getName());
                     lv_terr.setVisibility(View.GONE);
                     tv_add_condition.setVisibility(View.VISIBLE);
@@ -263,10 +294,7 @@ public class ListedDoctorFragment extends Fragment {
                 tv_add_condition.setVisibility(View.INVISIBLE);
                 constraintLayout.setVisibility(View.INVISIBLE);
             }
-
         });
-
-
 
         tvClass.setOnClickListener(view -> {
             if (lv_class.getVisibility() == View.VISIBLE) {
@@ -276,7 +304,8 @@ public class ListedDoctorFragment extends Fragment {
             } else {
                 getFilterList("Class");
                 FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
-                    ClassCode = clickedItem.getCode();
+                    classCode = clickedItem.getCode();
+                    className = clickedItem.getName();
                     tvClass.setText(clickedItem.getName());
                     lv_class.setVisibility(View.GONE);
                     tv_add_condition.setVisibility(View.VISIBLE);
@@ -287,19 +316,11 @@ public class ListedDoctorFragment extends Fragment {
                 tv_add_condition.setVisibility(View.INVISIBLE);
                 constraintLayout.setVisibility(View.INVISIBLE);
             }
-
         });
-
-
 
         btn_apply.setOnClickListener(view1 -> {
             Filltered();
         });
-
-        btn_clear.setOnClickListener(view2 -> {
-            Filltered();
-        });
-
 
     }
 
@@ -326,8 +347,6 @@ public class ListedDoctorFragment extends Fragment {
 
         }
     }
-
-
 
     private void SetupAdapter() {
         try {
@@ -538,33 +557,67 @@ public class ListedDoctorFragment extends Fragment {
         adapterDCRCallSelection.filterList(filteredNames);
     }
 
-
-
-
-    public  void  Filltered(){
+    public void Filltered() {
         FilltercustArraList.clear();
-        if(specialityCode.equalsIgnoreCase("")&& categoryCode.equalsIgnoreCase("")&& territoryCode.equalsIgnoreCase("")&& ClassCode.equalsIgnoreCase("")){
+        if(specialityCode.equalsIgnoreCase("") && categoryCode.equalsIgnoreCase("") && territoryCode.equalsIgnoreCase("") && classCode.equalsIgnoreCase("")) {
             FilltercustArraList.addAll(custListArrayList);
             tv_filterCount.setText("0");
             Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
         }else {
-            for(CustList mList:custListArrayList){
-                if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)){
+            for (CustList mList : custListArrayList) {
+                if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                        && mList.getTown_code().equalsIgnoreCase(territoryCode)
+                        && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                        && mList.getClassCode().equalsIgnoreCase(classCode)) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getCategoryCode().equalsIgnoreCase(categoryCode)){
+                }else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                        && mList.getTown_code().equalsIgnoreCase(territoryCode)
+                        && mList.getCategoryCode().equalsIgnoreCase(categoryCode)) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getTown_code().equalsIgnoreCase(territoryCode)){
+                }else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                        && mList.getTown_code().equalsIgnoreCase(territoryCode)
+                        && mList.getClassCode().equalsIgnoreCase(classCode)) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getClassCode().equalsIgnoreCase(ClassCode)){
+                }else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                        && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                        && mList.getClassCode().equalsIgnoreCase(classCode)) {
                     FilltercustArraList.add(mList);
+                }else if(mList.getTown_code().equalsIgnoreCase(territoryCode)
+                        && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                        && mList.getClassCode().equalsIgnoreCase(classCode)) {
+                    FilltercustArraList.add(mList);
+                }else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                        && mList.getTown_code().equalsIgnoreCase(territoryCode)) {
+                    FilltercustArraList.add(mList);
+                }else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                        && mList.getCategoryCode().equalsIgnoreCase(categoryCode)) {
+                    FilltercustArraList.add(mList);
+                }else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                        && mList.getClassCode().equalsIgnoreCase(classCode)) {
+                    FilltercustArraList.add(mList);
+                }else if(mList.getTown_code().equalsIgnoreCase(territoryCode)
+                        && mList.getCategoryCode().equalsIgnoreCase(categoryCode)) {
+                    FilltercustArraList.add(mList);
+                }else if(mList.getTown_code().equalsIgnoreCase(territoryCode)
+                        && mList.getClassCode().equalsIgnoreCase(classCode)) {
+                    FilltercustArraList.add(mList);
+                }else if(mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                        && mList.getClassCode().equalsIgnoreCase(classCode)) {
+                    FilltercustArraList.add(mList);
+                }else {
+                    if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)) {
+                        FilltercustArraList.add(mList);
+                    }else if(mList.getCategoryCode().equalsIgnoreCase(categoryCode)) {
+                        FilltercustArraList.add(mList);
+                    }else if(mList.getTown_code().equalsIgnoreCase(territoryCode)) {
+                        FilltercustArraList.add(mList);
+                    }else if(mList.getClassCode().equalsIgnoreCase(classCode)) {
+                        FilltercustArraList.add(mList);
+                    }
+                    tv_filterCount.setText(String.valueOf(FilltercustArraList.size()));
                 }
             }
-            tv_filterCount.setText(String.valueOf(FilltercustArraList.size()));
         }
-
 
         adapterDCRCallSelection.notifyDataSetChanged();
         dialogFilter.dismiss();
