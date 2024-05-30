@@ -72,7 +72,8 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
                 context.startActivity(intentWeb);
             } else {
                 ReportsActivity activity = (ReportsActivity) context;
-                activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
+
+                 activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
                 activity.getData(name, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4));
             }
         });

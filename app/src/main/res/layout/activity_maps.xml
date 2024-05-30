@@ -19,6 +19,7 @@
         tools:context=".activity.map.MapsActivity"
         tools:layout="@layout/activity_maps" />
 
+
     <View
         android:id="@+id/view_top"
         android:layout_width="match_parent"
@@ -280,13 +281,13 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="gone"
         android:id="@+id/constraint_tagged_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:drawablePadding="@dimen/_2sdp"
         android:paddingVertical="@dimen/_4sdp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -351,6 +352,44 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/tv_cust_name"
             app:layout_constraintTop_toBottomOf="@id/tv_cust_name" />
+        <TextView
+            android:id="@+id/textPending"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_marginLeft="@dimen/_2sdp"
+            android:layout_marginRight="@dimen/_2sdp"
+            android:background="@drawable/round_back_yellow"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="center"
+            android:text="P"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/_6sdp"
+            android:visibility="invisible"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textApproval"
+            app:layout_constraintEnd_toStartOf="@+id/textApproval"
+            app:layout_constraintTop_toTopOf="@+id/textApproval"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/textApproval"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_marginLeft="@dimen/_2sdp"
+            android:layout_marginRight="@dimen/_2sdp"
+            android:background="@drawable/round_back_green"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="center"
+            android:padding="0dp"
+            android:text="A"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/_6sdp"
+            android:layout_marginStart="10dp"
+            android:visibility="invisible"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="52dp"
+            app:layout_constraintEnd_toStartOf="@+id/tv_meters"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textStyle="bold"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView

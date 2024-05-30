@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -102,14 +104,26 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         });
-
-        holder.btn_approved.setOnClickListener(v -> CallApi("0", geoTaggingModelLists.get(position).getMapId(), geoTaggingModelLists.get(position).getCust_mode(), geoTaggingModelLists.get(position).getCode(), geoTaggingModelLists.get(position).getHqCode(), holder.getBindingAdapterPosition()));
-        holder.btn_rejected.setOnClickListener(v -> CallApi("2", geoTaggingModelLists.get(position).getMapId(), geoTaggingModelLists.get(position).getCust_mode(), geoTaggingModelLists.get(position).getCode(), geoTaggingModelLists.get(position).getHqCode(), holder.getBindingAdapterPosition()));
+        holder.btn_approved.setOnClickListener(v -> {
+            if (UtilityClass.isNetworkAvailable(context)){
+                CallApi("0", geoTaggingModelLists.get(position).getMapId(), geoTaggingModelLists.get(position).getCust_mode(), geoTaggingModelLists.get(position).getCode(), geoTaggingModelLists.get(position).getHqCode(), holder.getBindingAdapterPosition(),holder);
+            }else {
+                Toast.makeText(context,"Please check a Internet connection",Toast.LENGTH_SHORT).show();
+            }
+        });
+        holder.btn_rejected.setOnClickListener(v -> {
+            if (UtilityClass.isNetworkAvailable(context)) {
+                CallApi("2", geoTaggingModelLists.get(position).getMapId(), geoTaggingModelLists.get(position).getCust_mode(), geoTaggingModelLists.get(position).getCode(), geoTaggingModelLists.get(position).getHqCode(), holder.getBindingAdapterPosition(), holder);
+            }else {
+                Toast.makeText(context,"Please check a Internet connection",Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
-    private void CallApi(String Status, String MapId, String CustMode, String CustId, String hqCode, int Position) {
-        progressDialog = CommonUtilsMethods.createProgressDialog(context);
+    private void CallApi(String Status, String MapId, String CustMode, String CustId, String hqCode, int Position,ViewHolder holder) {
+        holder.progressBar.setVisibility(View.VISIBLE);
+
         try {
             jsonGeoTag.put("tableName", "savegeo_appr");
             switch (CustMode) {
@@ -198,31 +212,32 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
-                    progressDialog.dismiss();
+                    holder.progressBar.setVisibility(View.GONE);
                     try {
-                        assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
-                        if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            if (Status.equalsIgnoreCase("0")) {
-                                commonUtilsMethods.showToastMessage(context,context.getString(R.string.approved_successfully));
-                            } else {
-                                commonUtilsMethods.showToastMessage(context,context.getString(R.string.rejected_successfully));
-                            }
+                        boolean isSuccess = Boolean.valueOf(jsonSaveRes.getString("success"));
+                        if (isSuccess) {
                             removeAt(Position);
                             ApprovalsActivity.GeoTagCount--;
+                            if (Status.equalsIgnoreCase("0")) {
+                                Toast.makeText(context,"Approved Successfully",Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context,"Rejected Successfully",Toast.LENGTH_SHORT).show();
+                            }
+
                         }
                     } catch (Exception ignored) {
                     }
                 } else {
-                    progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(context,context.getString(R.string.toast_response_failed));
+                    holder.progressBar.setVisibility(View.GONE);
+                    Toast.makeText(context,"Response Failed! Please Try Again",Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(context,context.getString(R.string.toast_response_failed));
+                holder.progressBar.setVisibility(View.GONE);
+                Toast.makeText(context,"Response Failed! Please Try Again",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -248,6 +263,7 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
         TextView tv_name, tv_hq, tv_cluster, tv_address, tv_cust_mode, tv_date_time, tag_view;
         Button btn_approved, btn_rejected;
         ImageView img_cust;
+        ProgressBar progressBar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -261,6 +277,7 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
             btn_rejected = itemView.findViewById(R.id.btn_reject);
             tag_view = itemView.findViewById(R.id.tag_view);
             tv_date_time = itemView.findViewById(R.id.tv_date_time);
+            progressBar = itemView.findViewById(R.id.progressBar);
         }
     }
 }

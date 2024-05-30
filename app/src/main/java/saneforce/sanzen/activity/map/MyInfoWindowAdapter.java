@@ -100,8 +100,7 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             }
         }
 
-        taggingAdapter = new
-                TaggingAdapter(context.getApplicationContext(), MapsActivity.taggedMapListArrayList);
+        taggingAdapter = new TaggingAdapter(context.getApplicationContext(), MapsActivity.taggedMapListArrayList);
         commonUtilsMethods.recycleTestWithDivider(mapsBinding.rvList);
         mapsBinding.rvList.setAdapter(taggingAdapter);
         int position = taggingAdapter.getItemPosition(DrCode, Lat, Lng);

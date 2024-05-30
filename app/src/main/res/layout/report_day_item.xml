@@ -89,6 +89,7 @@
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
 
+
                     <RelativeLayout
                         android:id="@+id/rl_checkIn"
                         android:layout_width="wrap_content"

@@ -13,6 +13,7 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
+            android:layout_marginTop="12dp"
             android:id="@+id/popup_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,13 +69,12 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_5ssp" />
         </RelativeLayout>
-
         <ImageView
             android:layout_width="@dimen/_6sdp"
             android:layout_height="@dimen/_6sdp"
             android:layout_marginStart="@dimen/_2sdp"
-            android:layout_below="@id/popup_layout"
             android:layout_marginEnd="1dp"
+            android:rotation="180"
             android:src="@drawable/pointer" />
     </RelativeLayout>
 

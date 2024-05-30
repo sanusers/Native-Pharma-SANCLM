@@ -12,8 +12,11 @@ public class DayReportRcpaModelClass {
     private String CompPName;
     private String CPQty;
     private String CPUnit;
-
-    public DayReportRcpaModelClass(String drName, String chmName, String OPName, String OPQty, String OPUnit, String compName, String compPName, String CPQty, String CPUnit) {
+    private  String  OPRate;
+    private String OPValue;
+    private  String CPRate;
+    private String CPValue;
+    public DayReportRcpaModelClass(String drName, String chmName, String OPName, String OPQty, String OPUnit, String compName, String compPName, String CPQty, String CPUnit, String OPRate, String OPValue, String CPRate, String CPValue) {
         DrName = drName;
         ChmName = chmName;
         this.OPName = OPName;
@@ -23,6 +26,42 @@ public class DayReportRcpaModelClass {
         CompPName = compPName;
         this.CPQty = CPQty;
         this.CPUnit = CPUnit;
+        this.OPRate = OPRate;
+        this.OPValue = OPValue;
+        this.CPRate = CPRate;
+        this.CPValue = CPValue;
+    }
+
+    public String getOPRate() {
+        return OPRate;
+    }
+
+    public void setOPRate(String OPRate) {
+        this.OPRate = OPRate;
+    }
+
+    public String getOPValue() {
+        return OPValue;
+    }
+
+    public void setOPValue(String OPValue) {
+        this.OPValue = OPValue;
+    }
+
+    public String getCPRate() {
+        return CPRate;
+    }
+
+    public void setCPRate(String CPRate) {
+        this.CPRate = CPRate;
+    }
+
+    public String getCPValue() {
+        return CPValue;
+    }
+
+    public void setCPValue(String CPValue) {
+        this.CPValue = CPValue;
     }
 
     public String getDrName() {
