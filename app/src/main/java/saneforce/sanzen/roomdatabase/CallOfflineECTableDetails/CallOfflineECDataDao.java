@@ -65,7 +65,7 @@ public interface CallOfflineECDataDao {
     default void saveOfflineEC(String date, String cusCode, String cusName, String img_name, String filepath, String jsonValues, String status, Integer sync) {
         List<CallOfflineECDataTable> list = getCallData(cusCode, img_name);
         CallOfflineECDataTable callOfflineECDataTable = new CallOfflineECDataTable(date, cusCode, cusName, img_name, filepath, jsonValues, status, sync);
-        if(list != null && list.size() > 0){
+        if(list != null && !list.isEmpty()){
             callOfflineECDataTable.id = list.get(0).id;
             update(callOfflineECDataTable);
         }else {

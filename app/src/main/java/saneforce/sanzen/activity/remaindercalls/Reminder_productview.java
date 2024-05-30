@@ -23,7 +23,6 @@ package saneforce.sanzen.activity.remaindercalls;//package saneforce.santrip.act
 //import saneforce.sanclm.activity.homeScreen.call.adapter.product.SaveProductCallAdapter;
 //import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 //import saneforce.sanclm.databinding.FragmentProductsBinding;
-//import saneforce.sanclm.storage.SQLite;
 //
 ////activity_reminder_productview
 //public class Reminder_productview extends Fragment {
@@ -33,14 +32,12 @@ package saneforce.sanzen.activity.remaindercalls;//package saneforce.santrip.act
 //    public static ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList;
 //    CallProductListAdapter callProductListAdapter;
 //    SaveProductCallAdapter saveProductCallAdapter;
-//    SQLite sqLite;
 //
 //    @Nullable
 //    @Override
 //    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 //        productsBinding = FragmentProductsBinding.inflate(inflater);
 //        View v = productsBinding.getRoot();
-//        sqLite = new SQLite(getContext());
 //
 //      /*  if (DCRCallActivity.SampleValidation.equalsIgnoreCase("0")) {
 //            productsBinding.tagStock.setVisibility(View.VISIBLE);

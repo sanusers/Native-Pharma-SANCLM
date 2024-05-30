@@ -236,7 +236,7 @@ public class CallsFragment extends Fragment {
                 JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
                 CheckDate = jsonArray.getJSONObject(0).getString("vstTime").substring(0, 10);
 
-                if (CheckDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"))) {
+                if (CheckDate.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))))) {
                     isDataAvailable = true;
                 }
 
@@ -347,18 +347,33 @@ public class CallsFragment extends Fragment {
                 try {
                     if(workTypeArray.length() > 0) {
                         JSONObject FirstSeasonDayPlanObject = workTypeArray.getJSONObject(0);
-                        String DayPlanDate = FirstSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
-                        String FWFlg = FirstSeasonDayPlanObject.getString("FWFlg");
+                        String DayPlanDate1 = FirstSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
+                        String FWFlg1 = FirstSeasonDayPlanObject.getString("FWFlg");
+                        Date FirstPlanDate = sdf.parse(DayPlanDate1);
                         String CurrentDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
-                        Date FirstPlanDate = sdf.parse(DayPlanDate);
                         Date CurentDate = sdf.parse(CurrentDate);
-                        if(FirstPlanDate.equals(CurentDate)) {
-                            if(!FWFlg.equalsIgnoreCase("F"))
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.unable_to_add_call_for_non_field_work));
-                            else
-                                startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+                        if(workTypeArray.length() > 1) {
+                            JSONObject SecondSeasonDayPlanObject = workTypeArray.getJSONObject(1);
+                            String DayPlanDate2 = SecondSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
+                            String FWFlg2 = SecondSeasonDayPlanObject.getString("FWFlg");
+                            Date SecondPlanDate = sdf.parse(DayPlanDate2);
+                            if((FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) || (SecondPlanDate != null && SecondPlanDate.equals(CurentDate))) {
+                                if(!FWFlg1.equalsIgnoreCase("F") && (!FWFlg2.equalsIgnoreCase("F")))
+                                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.unable_to_add_call_for_non_field_work));
+                                else
+                                    startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+                            }else {
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
+                            }
                         }else {
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
+                            if(FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) {
+                                if(!FWFlg1.equalsIgnoreCase("F"))
+                                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.unable_to_add_call_for_non_field_work));
+                                else
+                                    startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+                            }else {
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
+                            }
                         }
                     }else{
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.kindly_submit_field_work));

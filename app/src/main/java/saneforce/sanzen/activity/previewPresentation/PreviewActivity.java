@@ -35,7 +35,7 @@ import saneforce.sanzen.activity.call.pojo.detailing.CallDetailingList;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.previewPresentation.fragment.BrandMatrix;
-import saneforce.sanzen.activity.previewPresentation.fragment.Customized;
+import saneforce.sanzen.activity.previewPresentation.fragment.MyPresentation;
 import saneforce.sanzen.activity.previewPresentation.fragment.HomeBrands;
 import saneforce.sanzen.activity.previewPresentation.fragment.Speciality;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -118,7 +118,7 @@ public class PreviewActivity extends AppCompatActivity {
                     viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                     headingData.add("C");
                     if (CustomPresentationNeed.equalsIgnoreCase("0")) {
-                        viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
+                        viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                         headingData.add("D");
                     }
                 } else {
@@ -127,7 +127,7 @@ public class PreviewActivity extends AppCompatActivity {
                     viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                     headingData.add("C");
                     if (CustomPresentationNeed.equalsIgnoreCase("0")) {
-                        viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
+                        viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                         headingData.add("D");
                     }
                 }
@@ -136,7 +136,7 @@ public class PreviewActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
                 viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                 if (CustomPresentationNeed.equalsIgnoreCase("0"))
-                    viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
+                    viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
             }
             previewBinding.viewPager.setAdapter(viewPagerAdapter);
             previewBinding.tabLayout.setupWithViewPager(previewBinding.viewPager);

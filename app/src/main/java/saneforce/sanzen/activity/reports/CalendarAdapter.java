@@ -49,7 +49,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         String dateString = arrayList.get(position);
         holder.dateNo.setText(dateString);
         if (!TextUtils.isEmpty(dateString)) {
-            String myDate = monthYearFromDate(localDate, TimeUtils.FORMAT_24) + "-" + dateString;
+            String myDate =  String.format("%s-%02d", monthYearFromDate(localDate, TimeUtils.FORMAT_24), Integer.parseInt(dateString));
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             try {
                 LocalDate parsedMyDate = LocalDate.parse(myDate, formatter);

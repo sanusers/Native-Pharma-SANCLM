@@ -84,7 +84,7 @@ public class Speciality extends Fragment {
                 }
             }
 
-            if (SlideSpecialityList.size() > 0) {
+            if (!SlideSpecialityList.isEmpty()) {
                 specialityPreviewBinding.constraintNoData.setVisibility(View.GONE);
                 specialityPreviewBinding.constraintSortFilter.setVisibility(View.VISIBLE);
                 specialityPreviewBinding.rvBrandList.setVisibility(View.VISIBLE);
@@ -146,7 +146,7 @@ public class Speciality extends Fragment {
 
             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(specialityPreviewBinding.rvBrandList.getWindowToken(), 0);
-            if (SlideSpecialityList.size() > 0) {
+            if (!SlideSpecialityList.isEmpty()) {
                 specialityPreviewBinding.constraintNoData.setVisibility(View.GONE);
                 specialityPreviewBinding.constraintSortFilter.setVisibility(View.VISIBLE);
                 specialityPreviewBinding.rvBrandList.setVisibility(View.VISIBLE);

@@ -267,38 +267,58 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view ->{
+            RemaindercallsActivity.vals_rm = "";
+            progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
+            if(SharedPref.getGeoChk(this).equalsIgnoreCase("0")){
+                if(gpsTrack != null && ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0))) {
+                    submitCall();
+                }else {
+                    gpsTrack = new GPSTrack(this);
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.please_try_again));
+                    progressDialog.dismiss();
+                }
+            }else {
+                submitCall();
+            }
+        });
 
+        assert isFromActivity != null;
+        if (isFromActivity.equalsIgnoreCase("edit_local")) {
+            jsonExtractLocal(CallActivityCustDetails.get(0).getJsonArray());
+        } else if (isFromActivity.equalsIgnoreCase("edit_online")) {
+            jsonExtractOnline(CallActivityCustDetails.get(0).getJsonArray());
+        }
+    }
 
-                    RemaindercallsActivity.vals_rm ="";
-                    progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
+    private void submitCall() {
 
-                    if(save_valid.equalsIgnoreCase("1")){
-                        Remainder_calls();
+        if(save_valid.equalsIgnoreCase("1")) {
+            Remainder_calls();
 
-                    }else{
-                        isCreateJsonSuccess = true;
-                        if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
-                            if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                                gpsTrack = new GPSTrack(DCRCallActivity.this);
-                                double lat = gpsTrack.getLatitude();
-                                double lng = gpsTrack.getLongitude();
-                                address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
-                                tv_address.setText(address);
-                                tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
-                            } else {
-                                tv_address.setText(context.getString(R.string.no_network));
-                            }
-                        }
+        }else {
+            isCreateJsonSuccess = true;
+            if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
+                if(UtilityClass.isNetworkAvailable(getApplicationContext())) {
+                    gpsTrack = new GPSTrack(DCRCallActivity.this);
+                    double lat = gpsTrack.getLatitude();
+                    double lng = gpsTrack.getLongitude();
+                    address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
+                    tv_address.setText(address);
+                    tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
+                }else {
+                    tv_address.setText(context.getString(R.string.no_network));
+                }
+            }
 
-                        if (CheckRequiredFunctions() && CheckCurrentLoc()) {
+            if(CheckRequiredFunctions() && CheckCurrentLoc()) {
 
-                            CreateJsonFileCall();
-                            if (isCreateJsonSuccess) {
+                CreateJsonFileCall();
+                if(isCreateJsonSuccess) {
 
-                                if(isFromActivity.equalsIgnoreCase("new")){
-                                    InsertVisitControl();
-                                }
-                                callOfflineDataDao.saveOfflineCallOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
+                    if(isFromActivity.equalsIgnoreCase("new")) {
+                        InsertVisitControl();
+                    }
+                    callOfflineDataDao.saveOfflineCallOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
 //                                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
 //                                    dialogCheckOut.show();
 //                                } else {
@@ -308,47 +328,38 @@ public class DCRCallActivity extends AppCompatActivity {
 //                                    finish();
 //                                }
 
-                                if (JWOthersFragment.callCaptureImageLists.size() > 0) {
-                                    for (int i = 0; i < JWOthersFragment.callCaptureImageLists.size(); i++) {
-                                        callOfflineECDataDao.saveOfflineEC(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
-                                    }
-                                }
-                                UpdateInputStock();
-                                UpdateSampleStock();
-
-                                if (!UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                                    commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_locally));
-                                }else {
-                                    commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_successfully));
-                                    //progressDialog.dismiss();
-                                }
-
-                                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
-                                //    progressDialog.dismiss();
-                                    dialogCheckOut.show();
-                                } else {
-                                    IsFromDCR =true;
-                                    Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-                                    startActivity(intent);
-                                    finish();
-
-                                }
-
-                            } else {
-                                progressDialog.dismiss();
-                            }
-                        } else {
-                            progressDialog.dismiss();
+                    if(!JWOthersFragment.callCaptureImageLists.isEmpty()) {
+                        for (int i = 0; i<JWOthersFragment.callCaptureImageLists.size(); i++) {
+                            callOfflineECDataDao.saveOfflineEC(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
                         }
                     }
-                }
-                );
+                    UpdateInputStock();
+                    UpdateSampleStock();
 
-        assert isFromActivity != null;
-        if (isFromActivity.equalsIgnoreCase("edit_local")) {
-            jsonExtractLocal(CallActivityCustDetails.get(0).getJsonArray());
-        } else if (isFromActivity.equalsIgnoreCase("edit_online")) {
-            jsonExtractOnline(CallActivityCustDetails.get(0).getJsonArray());
+                    if(!UtilityClass.isNetworkAvailable(getApplicationContext())) {
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_locally));
+                    }else {
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_successfully));
+                        //progressDialog.dismiss();
+                    }
+                    SharedPref.setDayPlanStartedDate(this,  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
+                    if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
+                        //    progressDialog.dismiss();
+                        dialogCheckOut.show();
+                    }else {
+                        IsFromDCR = true;
+                        Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                        startActivity(intent);
+                        finish();
+
+                    }
+
+                }else {
+                    progressDialog.dismiss();
+                }
+            }else {
+                progressDialog.dismiss();
+            }
         }
     }
 
@@ -512,6 +523,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
         btnCheckOut.setOnClickListener(v -> {
             dialogCheckOut.dismiss();
+            IsFromDCR =true;
             Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -551,7 +563,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 masterDataDao.insert(inputdata);
             }
 
-            if (AdditionalCusListAdapter.saveAdditionalCallArrayList.size() > 0) {
+            if (!AdditionalCusListAdapter.saveAdditionalCallArrayList.isEmpty()) {
                 for (int i = 0; i < AdditionalCusListAdapter.saveAdditionalCallArrayList.size(); i++) {
                     jsonObject = new JSONObject();
                     jsonObject.put("CustCode", AdditionalCusListAdapter.saveAdditionalCallArrayList.get(i).getCode());
@@ -2259,7 +2271,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     JwNeed = SharedPref.getChmJointworkNeed(this);
                     PrdSamNeed = SharedPref.getChmsamqtyNeed(this);
                     PrdRxNeed = SharedPref.getChmRxQty(this); //1
-                    CusCheckInOutNeed = SharedPref.getChmSrtNd(this);;
+                    CusCheckInOutNeed = SharedPref.getChmSrtNd(this);
 
                     //Mandatory
                     //   RcpaMandatory = loginResponse.getRcpaMd(); //Check This one
