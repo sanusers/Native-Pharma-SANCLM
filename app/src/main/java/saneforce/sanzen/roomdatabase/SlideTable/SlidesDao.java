@@ -46,8 +46,10 @@ public interface SlidesDao {
 
     @Query("SELECT COUNT(*) FROM SlidesTableDeatils")
     LiveData<Integer> TotalSlidecount();
-
-
+    @Query("SELECT SlideId FROM SlidesTableDeatils")
+    List<String> getAllSlideIds();
+    @Query("DELETE FROM SlidesTableDeatils WHERE SlideId = :slideId")
+    void deleteSlideById(String slideId);
       @Query("Update SlidesTableDeatils set `Background task`=:New WHERE `Background task` = :old")
      void Changestatus(String New,String old);
 

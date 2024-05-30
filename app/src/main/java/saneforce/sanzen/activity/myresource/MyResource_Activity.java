@@ -51,7 +51,7 @@ public class MyResource_Activity extends AppCompatActivity {
     public static ImageView close_sideview;
     public static TextView headtext_id;
     public static String values1;
-    String synhqval;
+
     public static String Key;
     public static ArrayList<String> list = new ArrayList<>();
 
@@ -91,14 +91,6 @@ public class MyResource_Activity extends AppCompatActivity {
         if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString("Origin");
         }
-
-
-        if (datalist.equals("")) {
-            synhqval = SharedPref.getHqCode(this);
-        } else {
-            synhqval = datalist;
-        }
-
         binding.backArrow.setOnClickListener(v -> {
             UtilityClass.hideKeyboard(this);
             getOnBackPressedDispatcher().onBackPressed();
@@ -112,7 +104,7 @@ public class MyResource_Activity extends AppCompatActivity {
         binding.hqView.setOnClickListener(v -> {
             syn_hq();
         });
-        Resource_list(synhqval);
+        Resource_list(SharedPref.getHqCode(this));
 
         close_sideview.setOnClickListener(v -> {
             binding.drawerLayout.closeDrawer(GravityCompat.END);
@@ -305,9 +297,9 @@ public class MyResource_Activity extends AppCompatActivity {
                 listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
             }
             listed_data.add(new Resourcemodel_class(SharedPref.getClusterCap(this), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + synhqval1).getMasterSyncDataJsonArray().length()), "9"));
-            listed_data.add(new Resourcemodel_class("Holiday / Weekly off", "", "11"));
-            listed_data.add(new Resourcemodel_class("Calls Status", "", "12"));
-            listed_data.add(new Resourcemodel_class("Category", "", "13"));
+            listed_data.add(new Resourcemodel_class("Holiday / Weekly off", masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray().length() + " / " + masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray().length(), "11"));
+            listed_data.add(new Resourcemodel_class("Calls Status",  String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray().length()), "12"));
+            listed_data.add(new Resourcemodel_class("Category", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length()), "13"));
             listed_data.add(new Resourcemodel_class("WorkType", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray().length()), "14"));
             Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count);
 
@@ -395,7 +387,6 @@ public class MyResource_Activity extends AppCompatActivity {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         if (str.equalsIgnoreCase(jsonObject.getString("id")) && (!dup_hq.equals(jsonObject.getString("id")))) {
                             dup_hq = jsonObject.getString("id");
-
                             listresource.add(new Resourcemodel_class(jsonObject.getString("id"), jsonObject.getString("name"), "", "", "", "", "", "", "", "", "", "", "",
                                     "", "", "", "", "", "", "", "", "", "","","",""));
                         }

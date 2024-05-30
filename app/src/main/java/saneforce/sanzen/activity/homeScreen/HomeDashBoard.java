@@ -185,6 +185,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private static FragmentManager fragmentManager;
     public static boolean canMoveNextDate = true;
 
+    public static String TourplanFlog ="";
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -313,15 +314,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.imgNotofication.setOnClickListener(view -> {
 
             startActivity(new Intent(HomeDashBoard.this, MapViewActvity.class));
-        });
-
-
-        binding.imgLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent serviceIntent = new Intent(HomeDashBoard.this, SlideServices.class);
-                startService(serviceIntent);
-            }
         });
 
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -1138,8 +1130,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.tour_plan))) {
             Intent intent=new Intent(getApplicationContext(), TourPlanActivity.class);
-            intent.putExtra("isFrom","isNav");
-            intent.putExtra("Month","3");
             startActivity(intent);
 
             return true;
@@ -1630,7 +1620,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
 
-    void CheckedTpRange() {
+  public   void CheckedTpRange() {
 
         if (!SharedPref.getskipDate(HomeDashBoard.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
             if (SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") &&
@@ -1652,8 +1642,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare  Tourplan....");
                     SharedPref.setSKIP(HomeDashBoard.this, false);
                     Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
-                    intent.putExtra("isFrom", "isHome");
-                    intent.putExtra("Month", "0");
+                    TourplanFlog="0";
                     startActivity(intent);
 
 
@@ -1673,8 +1662,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         }
 
                         Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
-                        intent.putExtra("isFrom", "isHome");
-                        intent.putExtra("Month", "1");
+                        TourplanFlog="1";
                         startActivity(intent);
 
                     }

@@ -35,7 +35,8 @@ public interface OfflineDaySubmitDao {
 
     @Query("SELECT `DATE` FROM `OFFLINE_DAY_SUBMIT_TABLE`")
     List<String> getAllOfflineDaySubmitDates();
-
+    @Query("SELECT EXISTS(SELECT 1 FROM `OFFLINE_DAY_SUBMIT_TABLE`)")
+    boolean isAvailableDaySubmit();
     @Query("SELECT * FROM `OFFLINE_DAY_SUBMIT_TABLE`")
     List<OfflineDaySubmitDataTable> getAllOfflineDaySubmit();
 

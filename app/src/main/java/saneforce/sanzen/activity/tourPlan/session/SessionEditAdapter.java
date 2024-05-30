@@ -454,6 +454,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.hqLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                holder. searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
                 if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
@@ -480,6 +481,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.clusterLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+               holder. searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
                 if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
@@ -513,6 +515,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.jcLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                holder. searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
 
@@ -548,6 +551,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.drLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                holder. searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
 
@@ -582,6 +586,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.chemistLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                holder. searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
 
@@ -620,7 +625,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             public void onClick(View view) {
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
-
+                holder. searchET.setText("");
                 if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
                 } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
@@ -653,6 +658,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.unListedDrLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                holder. searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
 
@@ -688,6 +694,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.cipLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                holder. searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
 
@@ -722,6 +729,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.hospLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                holder. searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
 

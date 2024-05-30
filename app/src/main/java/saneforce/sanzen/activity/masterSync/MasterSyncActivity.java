@@ -44,6 +44,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -299,7 +300,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                 HQCODE_SYN.add(jsonObject.getString("id"));
                                 SharedPref.setsyn_hqcode(this, String.valueOf(HQCODE_SYN));
                                 prepareArray(rsf); // replace the new rsf value
-                                masterSyncAll(true);
+                                masterSyncAll(false);
                                 break;
                             }
                         } catch (JSONException e) {
@@ -694,13 +695,13 @@ public class    MasterSyncActivity extends AppCompatActivity {
             MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, specialityCount, Constants.DOCTOR, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
             MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, qualificationCount, Constants.DOCTOR, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
             MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, categoryCount, Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
-            MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
+        //    MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
             MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, classCount, Constants.DOCTOR, "getclass", Constants.CLASS, classStatus, false);
             doctorModelArray.add(doctorModel);
             doctorModelArray.add(spl);
             doctorModelArray.add(ql);
             doctorModelArray.add(cat);
-            doctorModelArray.add(dep);
+          //  doctorModelArray.add(dep);
             doctorModelArray.add(clas);
         } else binding.listedDr.setVisibility(View.GONE);
 
@@ -754,15 +755,15 @@ public class    MasterSyncActivity extends AppCompatActivity {
         //Product
         productModelArray.clear();
         MasterSyncItemModel proModel = new MasterSyncItemModel(Constants.PRODUCT, productCount, Constants.PRODUCT, "getproducts", Constants.PRODUCT, productStatus, false);
-        MasterSyncItemModel proCatModel = new MasterSyncItemModel(Constants.PRODUCT_CATEGORY, proCatCount, Constants.PRODUCT, "", Constants.PRODUCT_CATEGORY, proCatStatus, false);
+     //   MasterSyncItemModel proCatModel = new MasterSyncItemModel(Constants.PRODUCT_CATEGORY, proCatCount, Constants.PRODUCT, "", Constants.PRODUCT_CATEGORY, proCatStatus, false);
         MasterSyncItemModel brandModel = new MasterSyncItemModel(Constants.BRAND, brandCount, Constants.PRODUCT, "getbrands", Constants.BRAND, brandStatus, false);
         productModelArray.add(proModel);
-        productModelArray.add(proCatModel);
+   //     productModelArray.add(proCatModel);
         productModelArray.add(brandModel);
         if (SharedPref.getRcpaNd(this).equalsIgnoreCase("0") || SharedPref.getChmRcpaNeed(this).equalsIgnoreCase("0")) {
-            MasterSyncItemModel compProductModel = new MasterSyncItemModel(Constants.COMPETITOR_PROD, compProCount, Constants.PRODUCT, "getcompdet", Constants.COMPETITOR_PROD, compProStatus, false);
+       //     MasterSyncItemModel compProductModel = new MasterSyncItemModel(Constants.COMPETITOR_PROD, compProCount, Constants.PRODUCT, "getcompdet", Constants.COMPETITOR_PROD, compProStatus, false);
             MasterSyncItemModel mapCompPrdModel = new MasterSyncItemModel(Constants.MAPPED_COMPETITOR_PROD, mapComPrdCount, "AdditionalDcr", "getmapcompdet", Constants.MAPPED_COMPETITOR_PROD, mapCompPrdStatus, false);
-            productModelArray.add(compProductModel);
+          //  productModelArray.add(compProductModel);
             productModelArray.add(mapCompPrdModel);
         }
 
@@ -821,10 +822,10 @@ public class    MasterSyncActivity extends AppCompatActivity {
         //Subordinate
         subordinateModelArray.clear();
         MasterSyncItemModel subModel = new MasterSyncItemModel(Constants.SUBORDINATE, subordinateCount, Constants.SUBORDINATE, "getsubordinate", Constants.SUBORDINATE, subordinateStatus, false);
-        MasterSyncItemModel subMgrModel = new MasterSyncItemModel(Constants.SUBORDINATE_MGR, subMgrCount, Constants.SUBORDINATE, "getsubordinatemgr", Constants.SUBORDINATE_MGR, subMgrStatus, false);
+       // MasterSyncItemModel subMgrModel = new MasterSyncItemModel(Constants.SUBORDINATE_MGR, subMgrCount, Constants.SUBORDINATE, "getsubordinatemgr", Constants.SUBORDINATE_MGR, subMgrStatus, false);
         MasterSyncItemModel jWorkModel = new MasterSyncItemModel("Joint Work", jWorkCount, Constants.SUBORDINATE, "getjointwork", Constants.JOINT_WORK + hqCode, jWorkStatus, false);
         subordinateModelArray.add(subModel);
-        subordinateModelArray.add(subMgrModel);
+       // subordinateModelArray.add(subMgrModel);
         subordinateModelArray.add(jWorkModel);
 
         //Other
@@ -1904,14 +1905,25 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
     public  void insertSlide(JSONArray jsonArray){
         try {
+            List<String> mList=new ArrayList<>();
 
+            List<String> nList =SlidesDao.getAllSlideIds();
             if(jsonArray.length()>0){
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String FilePath = jsonObject.optString("FilePath");
                     String id = jsonObject.optString("SlideId");
+                    mList.add(id);
                     SlidesDao.insert(new SlidesTableDeatils(id,FilePath,"","1","0","1",String.valueOf(i)));
                 }
+                if(nList.size()>0) {
+                    for (int j=0;j<nList.size();j++){
+                        if(!mList.contains(nList.get(j))){
+                            SlidesDao.deleteSlideById(nList.get(j));
+                        }
+                    }
+                }
+
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);

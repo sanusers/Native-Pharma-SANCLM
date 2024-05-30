@@ -29,7 +29,7 @@ public interface CallOfflineDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void saveCallOfflineData(CallOfflineDataTable callOfflineDataTable);
 
-    @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_TABLE`)")
+    @Query("SELECT COUNT(1) > 0 FROM CALL_OFFLINE_TABLE")
     boolean isAvailableCall();
 
     @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_TABLE` WHERE `CALL_SYNC_STATUS` = :status)")

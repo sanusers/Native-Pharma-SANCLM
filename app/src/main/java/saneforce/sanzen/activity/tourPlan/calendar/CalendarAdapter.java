@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,6 +53,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         if(!date.isEmpty()){
             if(Integer.valueOf(date)< TourPlanActivity.JoningDate &&Integer.valueOf(modelClass.getMonth())==TourPlanActivity.JoiningMonth  &&Integer.valueOf(modelClass.getYear())==TourPlanActivity.JoinYear ) {
                 TourPlanActivity.binding.calendarPrevButton.setEnabled(false);
+                holder.mainLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.bg_pink10));
                 TourPlanActivity.binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.less_than_gray, null));
                 holder.itemView.setEnabled(false);
             }else {
@@ -72,10 +75,13 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         TextView dateNo;
         ImageView cornerImage;
 
+        ConstraintLayout mainLayout;
+
         public MyViewHolder (@NonNull View itemView) {
             super(itemView);
             dateNo = itemView.findViewById(R.id.dateNo);
             cornerImage = itemView.findViewById(R.id.cornerImage);
+            mainLayout = itemView.findViewById(R.id.mainLayout);
         }
     }
 }

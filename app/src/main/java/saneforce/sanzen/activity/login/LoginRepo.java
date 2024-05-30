@@ -1,22 +1,20 @@
 package saneforce.sanzen.activity.login;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-
 import com.google.gson.JsonElement;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
@@ -42,9 +40,18 @@ public class LoginRepo {
             @Override
             public void onFailure (@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 Log.e("test","login failed : " + t);
-                LoginActivity.binding.progressBar.setVisibility(View.GONE);
-                LoginActivity.binding.loginBtn.setEnabled(true);
-                Toast.makeText(context.getApplicationContext(), R.string.please_try_again,Toast.LENGTH_SHORT).show();
+                if(!SharedPref.getLoginId(context).equalsIgnoreCase("")){
+                    LoginActivity.binding.progressBar.setVisibility(View.GONE);
+                    LoginActivity.binding.loginBtn.setEnabled(true);
+                    Toast.makeText(context.getApplicationContext(), R.string.please_try_again,Toast.LENGTH_SHORT).show();
+                   context.startActivity(new Intent(context, HomeDashBoard.class));
+
+                }else {
+                    LoginActivity.binding.progressBar.setVisibility(View.GONE);
+                    LoginActivity.binding.loginBtn.setEnabled(true);
+                    Toast.makeText(context.getApplicationContext(), R.string.please_try_again,Toast.LENGTH_SHORT).show();
+                }
+
 
             }
         });

@@ -206,60 +206,6 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
     }
 
     @SuppressLint("DefaultLocale")
-    private void AssignCallAnalysis(String sfType, String docNameID) {
-        Calendar calendar = Calendar.getInstance();
-        int currentMonth = calendar.get(Calendar.MONTH) + 1;
-        switch (docNameID) {
-            case "1":
-                String doc_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth), "1"));
-                if (sfType.equalsIgnoreCase("1")) {
-                    callAnalysisBinding.txtDocCount.setText(String.format("%s / %d", doc_current_callcount, Doctor_list.length()));
-                } else {
-                    callAnalysisBinding.txtDocCount.setText(doc_current_callcount);
-                }
-                break;
-            case "2":
-                String che_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth),"2"));
-                if (sfType.equalsIgnoreCase("1")) {
-                    callAnalysisBinding.txtDocCount.setText(String.format("%s / %d", che_current_callcount, Chemist_list.length()));
-                } else {
-                    callAnalysisBinding.txtDocCount.setText(che_current_callcount);
-                }
-                break;
-            case "3":
-                String stockiest_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth),"3"));
-                if (sfType.equalsIgnoreCase("1")) {
-                    callAnalysisBinding.txtStockCount.setText(String.format("%s / %d", stockiest_current_callcount, Stockiest_list.length()));
-                } else {
-                    callAnalysisBinding.txtDocCount.setText(stockiest_current_callcount);
-                }
-                break;
-            case "4":
-                String unlistered_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth),"4"));
-                if (sfType.equalsIgnoreCase("1")) {
-                    callAnalysisBinding.txtUnlistCount.setText(String.format("%s / %d", unlistered_current_callcount, unlistered_list.length()));
-                } else {
-                    callAnalysisBinding.txtDocCount.setText(unlistered_current_callcount);
-                }
-                break;
-            case "5":
-                String cip_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth),"5"));
-                if (sfType.equalsIgnoreCase("1")) {
-                    callAnalysisBinding.txtCipCount.setText(String.format("%s / %d", cip_current_callcount, cip_list.length()));
-                } else {
-                    callAnalysisBinding.txtDocCount.setText(cip_current_callcount);
-                }
-                break;
-            case "6":
-                String hos_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth),"6"));
-                if (sfType.equalsIgnoreCase("1")) {
-                    callAnalysisBinding.txtHosCount.setText(String.format("%s / %d", hos_current_callcount, hos_list.length()));
-                } else {
-                    callAnalysisBinding.txtDocCount.setText(hos_current_callcount);
-                }
-                break;
-        }
-    }
 
     private void CallDeleteAPI(String TranslNo, String aDetSLNo, String type, String date, String docCode) {
         JSONObject jsonObject = new JSONObject();

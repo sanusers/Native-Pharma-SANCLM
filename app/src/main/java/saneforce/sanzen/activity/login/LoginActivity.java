@@ -150,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else if (userPwd.isEmpty()) {
                     binding.password.requestFocus();
                     commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_password));
-                } else if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase("")) {
+                } else if (SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase("")) {
                     commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.no_network));
                 } else if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
                     SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
@@ -177,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         binding.clearData.setOnClickListener(view -> {
-            if (!callsUtil.isOutBoxDataAvailable()) {
+            if (callsUtil.isOutBoxDataAvailable()) {
                 new AlertDialog.Builder(this).setTitle("Warning!").setIcon(getDrawable(R.drawable.icon_sync_failed)).setMessage("Outbox Data Calls will be deleted, Do you want to Continue?").setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.yes, (dialog, whichButton) -> DeleteAllFiles()).setNegativeButton(android.R.string.no, null).show();
             } else {
                 DeleteAllFiles();
@@ -216,18 +216,16 @@ public class LoginActivity extends AppCompatActivity {
         roomDB.tourPlanOfflineDataDao().deleteAllData();
         roomDB.tourPlanOnlineDataDao().deleteAllData();
         roomDB.callOfflineWorkTypeDataDao().deleteAllData();
-        roomDB.slidesDao().deleteAllData();
+  //      roomDB.slidesDao().deleteAllData();
 
         SharedPref.clearSP(LoginActivity.this);
         SharedPref.saveLoginState(getApplicationContext(), false);
         SharedPref.saveSettingState(getApplicationContext(), false);
         startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
+        Toast.makeText(LoginActivity.this,"Data Cleared Sucessfully",Toast.LENGTH_SHORT).show();
 
-        if(iscleared()){
-            Toast.makeText(LoginActivity.this,"Data Cleared Sucessfully",Toast.LENGTH_SHORT).show();
-        }else {
-            Toast.makeText(LoginActivity.this,"Failed",Toast.LENGTH_SHORT).show();
-        }
+
+
     }
 
     public void uiInitialisation() {
@@ -461,40 +459,40 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    boolean iscleared(){
-        File slidesFolder;
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            slidesFolder = new File(LoginActivity.this.getExternalFilesDir(null), "Slides");
-        } else {
-            return false;
-        }
-
-        if (slidesFolder.exists()) {
-            deleteRecursive(slidesFolder);
-        }
-        slidesFolder.delete();
-
-        File thumbnailStorage = new File(getApplicationContext().getExternalFilesDir(null), "/Thumbnails/");
-        if (thumbnailStorage.exists() && thumbnailStorage.isDirectory()) {
-            File[] files = thumbnailStorage.listFiles();
-            for (File file : files) {
-                if (file.isFile()) {
-                    file.delete();
-                }
-            }
-        }
-
-
-        return true;
-
-    }
-
-    private void deleteRecursive(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory()) {
-            for (File child : fileOrDirectory.listFiles()) {
-                deleteRecursive(child);
-            }
-        }
-        fileOrDirectory.delete();
-    }
+//    boolean iscleared(){
+//        File slidesFolder;
+//        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+//            slidesFolder = new File(LoginActivity.this.getExternalFilesDir(null), "Slides");
+//        } else {
+//            return false;
+//        }
+//
+//        if (slidesFolder.exists()) {
+//            deleteRecursive(slidesFolder);
+//        }
+//        slidesFolder.delete();
+//
+//        File thumbnailStorage = new File(getApplicationContext().getExternalFilesDir(null), "/Thumbnails/");
+//        if (thumbnailStorage.exists() && thumbnailStorage.isDirectory()) {
+//            File[] files = thumbnailStorage.listFiles();
+//            for (File file : files) {
+//                if (file.isFile()) {
+//                    file.delete();
+//                }
+//            }
+//        }
+//
+//
+//        return true;
+//
+//    }
+//
+//    private void deleteRecursive(File fileOrDirectory) {
+//        if (fileOrDirectory.isDirectory()) {
+//            for (File child : fileOrDirectory.listFiles()) {
+//                deleteRecursive(child);
+//            }
+//        }
+//        fileOrDirectory.delete();
+//    }
 }

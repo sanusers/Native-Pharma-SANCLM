@@ -41,36 +41,39 @@ public class SlideServices extends Service {
         roomDB = RoomDB.getDatabase(getApplicationContext());
         SlidesDao = roomDB.slidesDao();
 
-        ArrayList<SlidesTableDeatils> List= SlidesDao.cursorToArrayList();
 
-        for (SlidesTableDeatils mList:List){
-            if(mList.getBackgroundtask().equalsIgnoreCase("1")){
-           if (mList.getDownloadingStaus().equalsIgnoreCase("1")||mList.getDownloadingStaus().equalsIgnoreCase("0")){
-               if(!MasterSyncActivity.SlideIds.contains(mList.getSlideId())) {
-                   String url = "https://" + SharedPref.getLogInsite(getApplicationContext()) + "/" + SharedPref.getSlideUrl(getApplicationContext()) + mList.getSlideName();
-                   Data inputData = new Data.Builder()
-                           .putString("Flag", "1")
-                           .putString("file_url", url)
-                           .putString("Slide_id", mList.getSlideId())
-                           .putString("Slide_name", mList.getSlideName())
-                           .putString("FilePosition", mList.getListSlidePosition())
-                           .build();
+        if(SlidesDao.getInProcessCount()==0){
+            ArrayList<SlidesTableDeatils> List= SlidesDao.cursorToArrayList();
+            for (SlidesTableDeatils mList:List){
+                if(mList.getBackgroundtask().equalsIgnoreCase("1")){
+                    if (mList.getDownloadingStaus().equalsIgnoreCase("1")||mList.getDownloadingStaus().equalsIgnoreCase("0")){
+                        if(!MasterSyncActivity.SlideIds.contains(mList.getSlideId())) {
+                            String url = "https://" + SharedPref.getLogInsite(getApplicationContext()) + "/" + SharedPref.getSlideUrl(getApplicationContext()) + mList.getSlideName();
+                            Data inputData = new Data.Builder()
+                                    .putString("Flag", "1")
+                                    .putString("file_url", url)
+                                    .putString("Slide_id", mList.getSlideId())
+                                    .putString("Slide_name", mList.getSlideName())
+                                    .putString("FilePosition", mList.getListSlidePosition())
+                                    .build();
 
-                   OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(FileDownloadWorker.class)
-                           .setInputData(inputData)
-                           .build();
-                   WorkManager workManager = WorkManager.getInstance(this);
-                   workManager.enqueue(fileDownloadRequest);
-                   MasterSyncActivity.SlideIds.add(mList.getSlideId());
-                   break;
-               }
-
-
-           }
-        }else {
-               stopSelf();
+                            OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(FileDownloadWorker.class)
+                                    .setInputData(inputData)
+                                    .build();
+                            WorkManager workManager = WorkManager.getInstance(this);
+                            workManager.enqueue(fileDownloadRequest);
+                            MasterSyncActivity.SlideIds.add(mList.getSlideId());
+                            break;
+                        }
+                    }
+                }else {
+                    stopSelf();
+                }
             }
+
         }
+
+
 
     }
 

@@ -5,6 +5,7 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.tourPlan.session.SessionEditAdapter.inputDataArray;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -37,9 +38,11 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -95,7 +98,7 @@ public class TourPlanActivity extends AppCompatActivity {
     CommonUtilsMethods commonUtilsMethods;
     public static ActivityTourPlanBinding binding;
 
-    public static   String isFrom="",SFTP_Date_sp="",SFTP_Date="",MonthFlag="";
+    public static String SFTP_Date_sp="",SFTP_Date="";
     public static  int JoningDate,JoiningMonth, JoinYear;
 
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
@@ -145,12 +148,7 @@ public class TourPlanActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         addSaveBtnLayout = binding.tpNavigation.addSaveLayout;
         clrSaveBtnLayout = binding.tpNavigation.clrSaveBtnLayout;
-        isFrom=getIntent().getStringExtra("isFrom");
-        MonthFlag=getIntent().getStringExtra("Month");
-
         checkTpApiStaus();
-
-
 
         try {
             SFTP_Date_sp = SharedPref.getSftpDate(TourPlanActivity.this);
@@ -168,7 +166,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
         uiInitialization();
 
-        if (MonthFlag.equalsIgnoreCase("1")){
+        if (HomeDashBoard.TourplanFlog.equalsIgnoreCase("1")){
             binding.calendarPrevButton.setEnabled(true);
             binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_black, null));
             localDate = localDate.plusMonths(1);
@@ -295,21 +293,6 @@ public class TourPlanActivity extends AppCompatActivity {
         });
 
 
-        if (isFrom.equalsIgnoreCase("isHome")) {
-            if (SharedPref.getskipstatus(TourPlanActivity.this)){
-                binding.txtSkip.setVisibility(View.VISIBLE);
-            }
-            else{
-                binding.txtSkip.setVisibility(View.GONE);}
-        } else {
-            binding.txtSkip.setVisibility(View.GONE);
-        }
-
-        binding.txtSkip.setOnClickListener(view -> {
-            HomeDashBoard.tpRangeCheck=true;
-            SharedPref.setSKIPDate(TourPlanActivity.this,TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
-            getOnBackPressedDispatcher().onBackPressed();
-        });
 
 
         binding.tpNavigation.tpDrawerCloseIcon.setOnClickListener(new View.OnClickListener() {
@@ -576,7 +559,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         for (ModelClass modelClass : arrayList) {
                             if (!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
 
-                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, "TP Offline Values Sending... ");
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, ">Offline TourPlan Uploading…");
                                 dummy.add(modelClass.getDayNo());
                                 Log.v("tpApproval", "---" + modelClass.getDayNo());
                                 binding.progressBar.setVisibility(View.VISIBLE);
@@ -1041,6 +1024,15 @@ public class TourPlanActivity extends AppCompatActivity {
             case "3": {
                 binding.tpStatusTxt.setText(Constants.STATUS_3);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                if(localDate.getMonthValue()==Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_8))){
+                    HomeDashBoard.TourplanFlog="1";
+                    Intent intent = getIntent();
+                    overridePendingTransition(0, 0);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    finish();
+                    overridePendingTransition(0, 0);
+                    startActivity(intent);
+                }
                 break;
             }
         }
@@ -1947,4 +1939,63 @@ public class TourPlanActivity extends AppCompatActivity {
             alertDialog.show();
         }
     }
-    }
+
+
+
+
+//    public   void CheckedTpRange() {
+//
+//        if (!SharedPref.getskipDate(TourPlanActivity.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
+//            if (SharedPref.getTpMandatoryNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getTpNeed(TourPlanActivity.this).equalsIgnoreCase("0") &&
+//                    !SharedPref.getTpStartDate(context).equalsIgnoreCase("1") && !SharedPref.getTpStartDate(TourPlanActivity.this).equalsIgnoreCase("-1") &&
+//                    !SharedPref.getTpEndDate(TourPlanActivity.this).equalsIgnoreCase("1") && !SharedPref.getTpEndDate(TourPlanActivity.this).equalsIgnoreCase("-1")) {
+//                Calendar calendar = Calendar.getInstance();
+//                SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+//                SimpleDateFormat date = new SimpleDateFormat("dd", Locale.ENGLISH);
+//                String mCurrDate = date.format(calendar.getTime());
+//                String currentDate = sdf.format(calendar.getTime());
+//                calendar.add(Calendar.MONTH, 1);
+//                String nextMonthDate = sdf.format(calendar.getTime());
+//
+//
+//                Log.e("currentStatus",tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate));
+//                Log.e("NextMonthStatus",tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate));
+//
+//                if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
+//                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Prepare  Tourplan....");
+//                    SharedPref.setSKIP(TourPlanActivity.this, false);
+//                    Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
+//                    intent.putExtra("isFrom", "isHome");
+//                    intent.putExtra("Month", "0");
+//                    startActivity(intent);
+//
+//
+//                } else if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")) {
+//                    String tp_start = SharedPref.getTpStartDate(TourPlanActivity.this);
+//                    String tp_end = SharedPref.getTpEndDate(TourPlanActivity.this);
+//                    int Start_Date = Integer.parseInt(tp_start);
+//                    int End_Date = Integer.parseInt(tp_end);
+//
+//                    int mCurrentDate = Integer.parseInt(mCurrDate);
+//                    if (((mCurrentDate >= Start_Date) && (mCurrentDate <= End_Date))) {
+//                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Prepare  Tourplan...");
+//                        if (End_Date >= mCurrentDate) {
+//                            SharedPref.setSKIP(TourPlanActivity.this, true);
+//                        } else {
+//                            SharedPref.setSKIP(TourPlanActivity.this, false);
+//                        }
+//
+//                        Intent intent = new Intent(TourPlanActivity.this, TourPlanActivity.class);
+//                        intent.putExtra("isFrom", "isHome");
+//                        intent.putExtra("Month", "1");
+//                        startActivity(intent);
+//
+//                    }
+//                }
+//            }
+//
+//
+//        }
+//    }
+
+}

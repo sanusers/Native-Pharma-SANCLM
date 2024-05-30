@@ -126,33 +126,30 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
             rl_title_layout = itemView.findViewById(R.id.rl_calender_syn);
 
 
-            text_retry.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
+            text_retry.setOnClickListener(view -> {
+                int position = getAdapterPosition();
 
 
 
-                    if (UtilityClass.isNetworkAvailable(activity)) {
-                                String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getSlideUrl(activity) + list.get(position).getSlideName();
-                                Log.e("DownloadingAPI",""+url);
-                                Data inputData = new Data.Builder()
-                                        .putString("Flag", "2")
-                                        .putString("file_url", url)
-                                        .putString("Slide_id", list.get(position).getSlideId())
-                                        .putString("Slide_name", list.get(position).getSlideName())
-                                        .putString("FilePosition", list.get(position).getListSlidePosition())
-                                        .build();
+                if (UtilityClass.isNetworkAvailable(activity)) {
+                            String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getSlideUrl(activity) + list.get(position).getSlideName();
+                            Log.e("DownloadingAPI",""+url);
+                            Data inputData = new Data.Builder()
+                                    .putString("Flag", "2")
+                                    .putString("file_url", url)
+                                    .putString("Slide_id", list.get(position).getSlideId())
+                                    .putString("Slide_name", list.get(position).getSlideName())
+                                    .putString("FilePosition", list.get(position).getListSlidePosition())
+                                    .build();
 
-                                OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(FileDownloadWorker.class)
-                                        .setInputData(inputData)
-                                        .build();
-                                WorkManager workManager = WorkManager.getInstance(activity);
-                                workManager.enqueue(fileDownloadRequest);
-                            }
-                    else {
-                        commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
-                    }
+                            OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(FileDownloadWorker.class)
+                                    .setInputData(inputData)
+                                    .build();
+                            WorkManager workManager = WorkManager.getInstance(activity);
+                            workManager.enqueue(fileDownloadRequest);
+                        }
+                else {
+                    commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
                 }
             });
         }

@@ -67,7 +67,11 @@ public class FileDownloadWorker extends Worker {
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 Log.e(TAG, "Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage());
-               return Result.failure();
+                slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downlaoding Failure","0","0","1",FilePosition));
+                if(Flag.equalsIgnoreCase("1")){
+                    ServicesRestarmehtod();
+                }
+                return Result.failure();
             }
 
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
@@ -221,8 +225,8 @@ public class FileDownloadWorker extends Worker {
 
     void ServicesRestarmehtod(){
 
-           Intent Intent = new Intent(getApplicationContext(), SlideServices.class);
-           getApplicationContext().stopService(Intent);
+            Intent Intent = new Intent(getApplicationContext(), SlideServices.class);
+            getApplicationContext().stopService(Intent);
 
             Intent Intent1 = new Intent(getApplicationContext(), SlideServices.class);
             getApplicationContext().startService(Intent1);

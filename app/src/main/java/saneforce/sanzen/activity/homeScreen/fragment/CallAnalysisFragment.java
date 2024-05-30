@@ -27,6 +27,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,8 +54,10 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     public static CallAnalysisFagmentBinding callAnalysisBinding;
     public static String key;
     public static JSONArray Doctor_list, Chemist_list, Stockiest_list, unlistered_list, cip_list, hos_list;
+    public static ArrayList<String> count_list = new ArrayList<>();
      public static Context context;
     CommonUtilsMethods commonUtilsMethods;
+   public static  String  Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
 
     public static int DrCallsCount, CheCallsCount, StkCallsCount, UnlCallSCount, CipCallsCount, HosCallsCount;
 
@@ -125,20 +128,21 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.FlHosProgress.setVisibility(View.GONE);
 
                 } else {
-                    callAnalysisBinding.txtDocCount.setText(DrCallsCount + " / " + Doctor_list.length());
-                    callAnalysisBinding.txtCheCount.setText(CheCallsCount + " / " + Chemist_list.length());
-                    callAnalysisBinding.txtStockCount.setText(StkCallsCount + " / " + Stockiest_list.length());
-                    callAnalysisBinding.txtUnlistCount.setText(UnlCallSCount + " / " + unlistered_list.length());
-                    callAnalysisBinding.txtCipCount.setText(CipCallsCount + " / " + cip_list.length());
-                    callAnalysisBinding.txtHosCount.setText(HosCallsCount + " / " + hos_list.length());
+                    //Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
+                    callAnalysisBinding.txtDocCount.setText(DrCallsCount + " / " + Doc_count);
+                    callAnalysisBinding.txtCheCount.setText(CheCallsCount + " / " + Che_count);
+                    callAnalysisBinding.txtStockCount.setText(StkCallsCount + " / " + Strck_count);
+                    callAnalysisBinding.txtUnlistCount.setText(UnlCallSCount + " / " +  Unlist_count);
+                    callAnalysisBinding.txtCipCount.setText(CipCallsCount + " / " +  Cip_count);
+                    callAnalysisBinding.txtHosCount.setText(HosCallsCount + " / " +  Hosp_count);
 
                     int doc_progress_value, che_progress_value, stockiest_progress_value, unlistered_progress_value, cip_progress_value, hos_progress_value;
-                    doc_progress_value = computePercent(DrCallsCount, Doctor_list.length());
-                    che_progress_value = computePercent(CheCallsCount, Chemist_list.length());
-                    stockiest_progress_value = computePercent(StkCallsCount, Stockiest_list.length());
-                    unlistered_progress_value = computePercent(UnlCallSCount, unlistered_list.length());
-                    cip_progress_value = computePercent(CipCallsCount, cip_list.length());
-                    hos_progress_value = computePercent(HosCallsCount, hos_list.length());
+                    doc_progress_value = computePercent(DrCallsCount, Integer.parseInt(Doc_count));
+                    che_progress_value = computePercent(CheCallsCount, Integer.parseInt(Che_count));
+                    stockiest_progress_value = computePercent(StkCallsCount, Integer.parseInt(Strck_count));
+                    unlistered_progress_value = computePercent(UnlCallSCount, Integer.parseInt(Unlist_count));
+                    cip_progress_value = computePercent(CipCallsCount, Integer.parseInt(Cip_count));
+                    hos_progress_value = computePercent(HosCallsCount, Integer.parseInt(Hosp_count));
 
                     callAnalysisBinding.txtDocValue.setText(doc_progress_value + "%");
                     callAnalysisBinding.txtCheValue.setText(che_progress_value + "%");
@@ -320,11 +324,11 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             callAnalysisBinding.textDate.setText(String.format("%s %d - %s %d", sdfs.format(MonthC.getTime()), MonthC.get(Calendar.YEAR), sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
 
             int xaxis1 = callTableDao.getCallsCountByRange("C1", Custype);
-            int xaxis2 = callTableDao.getCallsCountByRange("C2", Custype);
+            int xaxis2 = callTableDao.getCallsCountByRange("C1","C2", Custype);
             int xaxis3 = callTableDao.getCallsCountByRange("B1", Custype);
-            int xaxis4 = callTableDao.getCallsCountByRange("B2", Custype);
+            int xaxis4 = callTableDao.getCallsCountByRange("B1","B2", Custype);
             int xaxis5 = callTableDao.getCallsCountByRange("A1", Custype);
-            int xaxis6 = callTableDao.getCallsCountByRange("A2", Custype);
+            int xaxis6 = callTableDao.getCallsCountByRange("A1","A2", Custype);
 
             listYrange.add(xaxis1);
             listYrange.add(xaxis2);
@@ -352,9 +356,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             callAnalysisBinding.textDate.setText(String.format("%s %d - %s %d", sdfs.format(MonthB.getTime()), MonthB.get(Calendar.YEAR), sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
 
             int xaxis3 = callTableDao.getCallsCountByRange("B1", Custype);
-            int xaxis4 = callTableDao.getCallsCountByRange("B2", Custype);
+            int xaxis4 = callTableDao.getCallsCountByRange("B1","B2", Custype);
             int xaxis5 = callTableDao.getCallsCountByRange("A1", Custype);
-            int xaxis6 = callTableDao.getCallsCountByRange("A2", Custype);
+            int xaxis6 = callTableDao.getCallsCountByRange("A1","A2", Custype);
 
             listYrange.add(xaxis3);
             listYrange.add(xaxis4);
@@ -377,7 +381,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             callAnalysisBinding.textDate.setText(String.format("%s %d", sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
 
             int xaxis5 = callTableDao.getCallsCountByRange("A1", Custype);
-            int xaxis6 = callTableDao.getCallsCountByRange("A2", Custype);
+            int xaxis6 = callTableDao.getCallsCountByRange("A1","A2", Custype);
 
             listYrange.add(xaxis5);
             listYrange.add(xaxis6);
@@ -671,12 +675,129 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         callAnalysisBinding.llHosChild.setOnClickListener(this);
         callAnalysisBinding.llCipChild.setOnClickListener(this);
 
-        Doctor_list = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-        Chemist_list = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-        Stockiest_list = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-        unlistered_list = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-        cip_list = masterDataDao.getMasterDataTableOrNew(Constants.CIP + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-        hos_list = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+
+
+
+
+
+try {
+
+
+
+        JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+
+        String Doc_code = "", Chm_code = "", Stk_code = "", Cip_code = "", Hosp_code = "", Unlist_code = "";
+        String doctor = String.valueOf(jsonDoc);
+        if (!doctor.equals("") || !doctor.equals("null")) {
+            count_list.clear();
+            if (jsonDoc.length() > 0) {
+                for (int i = 0; i < jsonDoc.length(); i++) {
+                    JSONObject jsonObject = jsonDoc.getJSONObject(i);
+                    if (!Doc_code.equals(jsonObject.getString("Code"))) {
+                        Doc_code = jsonObject.getString("Code");
+                        count_list.add(Doc_code);
+                        Doc_count = String.valueOf(count_list.size());
+                    }
+                }
+            } else {
+                Doc_count = "0";
+            }
+        }
+
+        JSONArray jsonChm =  masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+        String chemist = String.valueOf(jsonChm);
+        if (!chemist.equals("") || !chemist.equals("null")) {
+            count_list.clear();
+            if (jsonChm.length() > 0) {
+                for (int i = 0; i < jsonChm.length(); i++) {
+                    JSONObject jsonObject = jsonChm.getJSONObject(i);
+                    if (!Chm_code.equals(jsonObject.getString("Code"))) {
+                        Chm_code = jsonObject.getString("Code");
+                        count_list.add(Chm_code);
+                        Che_count = String.valueOf(count_list.size());
+                    }
+                }
+            } else {
+                Che_count = "0";
+            }
+        }
+        JSONArray jsonstock =  masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+
+        String stockist = String.valueOf(jsonstock);
+        if (!stockist.equals("") || !stockist.equals("null")) {
+            count_list.clear();
+            if (jsonstock.length() > 0) {
+                for (int i = 0; i < jsonstock.length(); i++) {
+                    JSONObject jsonObject = jsonstock.getJSONObject(i);
+                    if (!Stk_code.equals(jsonObject.getString("Code"))) {
+                        Stk_code = jsonObject.getString("Code");
+                        count_list.add(Stk_code);
+                        Strck_count = String.valueOf(count_list.size());
+                    }
+                }
+            } else {
+                Strck_count = "0";
+            }
+        }
+        JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+        String unlisted = String.valueOf(jsonunlisted);
+        if (!unlisted.equals("") || !unlisted.equals("null")) {
+            count_list.clear();
+            if (jsonunlisted.length() > 0) {
+                for (int i = 0; i < jsonunlisted.length(); i++) {
+                    JSONObject jsonObject = jsonunlisted.getJSONObject(i);
+                    if (!Unlist_code.equals(jsonObject.getString("Code"))) {
+                        Stk_code = jsonObject.getString("Code");
+                        count_list.add(Stk_code);
+                        Unlist_count = String.valueOf(count_list.size());
+                    }
+                }
+            } else {
+                Unlist_count = "0";
+            }
+        }
+
+
+        JSONArray jsoncip = masterDataDao.getMasterDataTableOrNew(Constants.CIP + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+        String cip = String.valueOf(jsoncip);
+        if (!cip.equals("") || !cip.equals("null")) {
+            count_list.clear();
+            if (jsoncip.length() > 0) {
+                for (int i = 0; i < jsoncip.length(); i++) {
+                    JSONObject jsonObject = jsoncip.getJSONObject(i);
+                    if (!Cip_code.equals(jsonObject.getString("Code"))) {
+                        Cip_code = jsonObject.getString("Code");
+                        count_list.add(Cip_code);
+                        Cip_count = String.valueOf(count_list.size());
+                    }
+                }
+            } else {
+                Cip_count = "0";
+            }
+        }
+        JSONArray jsonhosp = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+        String hosp = String.valueOf(jsonhosp);
+        if (!hosp.equals("") || !hosp.equals("null")) {
+            count_list.clear();
+            if (jsonhosp.length() > 0) {
+                for (int i = 0; i < jsonhosp.length(); i++) {
+                    JSONObject jsonObject = jsonhosp.getJSONObject(i);
+                    if (!Hosp_code.equals(jsonObject.getString("Code"))) {
+                        Hosp_code = jsonObject.getString("Code");
+                        count_list.add(Hosp_code);
+                        Hosp_count = String.valueOf(count_list.size());
+                    }
+                }
+            } else {
+                Hosp_count = "0";
+            }
+        }
+
+
+}catch (Exception a){
+    a.printStackTrace();
+}
+
     }
 
 

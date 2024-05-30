@@ -47,51 +47,51 @@ public class CustomMarkerView extends MarkerView {
         if (linekey.equalsIgnoreCase("3")) {
 
             if (highlight.getX() == 1.0) {
-                getfeildworkcount = callTableDao.getFieldworkCount(cus,"C1");
+                getfeildworkcount = callTableDao.getFieldworkCount("C1");
 
             } else if (highlight.getX() == 2.0) {
-                getfeildworkcount = callTableDao.getFieldworkCount(cus,"C2");
+                getfeildworkcount = callTableDao.getFieldworkCount("C1","C2");
 
             } else if (highlight.getX() == 3.0) {
-                getfeildworkcount = callTableDao.getFieldworkCount(cus,"B1");
+                getfeildworkcount = callTableDao.getFieldworkCount("B1");
 
             } else if (highlight.getX() == 4.0) {
-                getfeildworkcount = callTableDao.getFieldworkCount(cus,"B2");
+                getfeildworkcount = callTableDao.getFieldworkCount("B1","B2");
             } else if (highlight.getX() == 5.0) {
-                getfeildworkcount = callTableDao.getFieldworkCount(cus,"A1");
+                getfeildworkcount = callTableDao.getFieldworkCount("A1");
 
             } else if (highlight.getX() == 6.0) {
-                getfeildworkcount = callTableDao.getFieldworkCount(cus,"A2");
+                getfeildworkcount = callTableDao.getFieldworkCount("A1","A2");
 
             }
         } else if (linekey.equalsIgnoreCase("2")) {
 
             if (highlight.getX() == 1.0) {
 
-                getfeildworkcount = callTableDao.getFieldworkCount(cus,"B1");
+                getfeildworkcount = callTableDao.getFieldworkCount("B1");
 
             } else if (highlight.getX() == 2.0) {
-                getfeildworkcount = callTableDao.getFieldworkCount(cus,"B2");
+                getfeildworkcount = callTableDao.getFieldworkCount("B1","B2");
 
 
             } else if (highlight.getX() == 3.0) {
-                getfeildworkcount = callTableDao.getFieldworkCount(cus,"A1");
+                getfeildworkcount = callTableDao.getFieldworkCount("A1");
 
 
             } else if (highlight.getX() == 4.0) {
 
-                getfeildworkcount = callTableDao.getFieldworkCount(cus,"A2");
+                getfeildworkcount = callTableDao.getFieldworkCount("A1","A2");
 
             }
 
         } else {
 
             if (highlight.getX() == 1.0) {
-                getfeildworkcount = callTableDao.getFieldworkCount(cus,"A1");
+                getfeildworkcount = callTableDao.getFieldworkCount("A1");
 
 
             } else if (highlight.getX() == 2.0) {
-                getfeildworkcount = callTableDao.getFieldworkCount(cus,"A2");
+                getfeildworkcount = callTableDao.getFieldworkCount("A1","A2");
 
             }
         }
