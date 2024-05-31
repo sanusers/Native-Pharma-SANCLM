@@ -42,7 +42,6 @@ public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHold
     @SuppressLint({"UseCompatLoadingForDrawables", "NotifyDataSetChanged"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        System.out.println("taggedName--->"+taggedMapLists.get(position).getName());
         holder.tv_name.setText(taggedMapLists.get(position).getName());
         holder.tv_address.setText(taggedMapLists.get(position).getAddr());
         holder.tv_meters.setText(String.format("%s Meter", taggedMapLists.get(position).getMeters()));

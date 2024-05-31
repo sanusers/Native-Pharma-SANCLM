@@ -22,10 +22,12 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -124,6 +126,7 @@ import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.MyDayPlanEntriesNeeded;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityHomeDashBoardBinding;
+import saneforce.sanzen.databinding.DialogTimezoneBinding;
 import saneforce.sanzen.location.CheckFakeGPS;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -186,6 +189,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static boolean canMoveNextDate = true;
 
     public static String TourplanFlog ="";
+    AutoTimezone autoTimezone;
+    AlertDialog customDialog;
+    Handler mainHandler = new Handler(Looper.getMainLooper());
+    Handler handler1 = new Handler();
+    long delay = 4000;
+    Runnable runnable;
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -195,10 +204,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onResume() {
+        timeZoneVerification();
         super.onResume();
         Log.d("ACTIVITY_STATUS", "OnResume");
         checkAndSetEntryDate(this);
-
         CheckFakeGPS.CheckLocationStatus(HomeDashBoard.this);
         if (tpRangeCheck) {
             CheckedTpRange();
@@ -255,6 +264,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     protected void onPause() {
         super.onPause();
         unregisterReceiver(receiver);
+        handler1.postDelayed(runnable, delay);
     }
 
     //To Hide the bottomNavigation When popup
@@ -308,7 +318,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         tpRangeCheck = false;
         CheckedTpRange();
-
+        autoTimezone = new AutoTimezone(this);
+        startService(new Intent(HomeDashBoard.this, AutoTimezone.class));
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
 
         binding.imgNotofication.setOnClickListener(view -> {
@@ -848,8 +859,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         Cluster.setText(SharedPref.getHqNameMain(this));
 
         l_click.setOnClickListener(v -> {
-            popupWindow.dismiss();
-            changePassword();
+            if (UtilityClass.isNetworkAvailable(this)) {
+                popupWindow.dismiss();
+                changePassword();
+            } else {
+                commonUtilsMethods.showToastMessage(this, "Please Check The Internet Connection");
+            }
+
         });
         popupWindow.setOutsideTouchable(true);
         popupWindow.update();
@@ -985,7 +1001,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         old_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(old_password)});
         new_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(new_password)});
         remain_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(remain_password)});
-        String password = SharedPref.getLoginUserPwd(this);
+        String password = SharedPref.getLoginUserPwd(this).toLowerCase();
         System.out.println("loginPassword--->"+password);
 
         old_view.setOnClickListener(v -> {
@@ -1030,16 +1046,20 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             } else if (remain_password.getText().toString().equals("")) {
                 commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.enter_repeat_pwd));
             } else {
-                if (!password.equals(old_password.getText().toString())) {
+                if (!password.equals(old_password.getText().toString().toLowerCase())) {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.chk_old_pwd));
-                } else if (!new_password.getText().toString().equals(remain_password.getText().toString())) {
+                } else if (!new_password.getText().toString().toLowerCase().equals(remain_password.getText().toString().toLowerCase())) {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.pwd_not_match));
-                } else if (new_password.getText().toString().equals(password)) {
+                } else if (new_password.getText().toString().toLowerCase().equals(password)) {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.change_new_password));
                 } else {
                     try {
-                        progressBar.setVisibility(View.VISIBLE);
-                        CallChangePasswordAPI(old_password.getText().toString(), new_password.getText().toString(), remain_password.getText().toString(),progressBar);
+                        if (UtilityClass.isNetworkAvailable(this)) {
+                            progressBar.setVisibility(View.VISIBLE);
+                            CallChangePasswordAPI(old_password.getText().toString(), new_password.getText().toString(), remain_password.getText().toString(), progressBar);
+                        }else{
+                            commonUtilsMethods.showToastMessage(this,"Please check Your Internet Connection");
+                        }
                     } catch (Exception ignored) {
                     }
 
@@ -1731,6 +1751,45 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         }
         fileOrDirectory.delete();
+    }
+    private void timeZoneVerification() {
+        runnable = new Runnable() {
+            public void run() {
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeZoneEnabled(context);
+                        mainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (isAutoTimeZoneEnabled) {
+                                    if (customDialog!=null){
+                                        customDialog.dismiss();
+                                        customDialog.cancel();
+                                        customDialog.hide();
+                                    }
+                                    handler1.removeCallbacks(runnable);
+                                } else {
+                                    timeZoneVerificationDialog();
+                                    handler1.removeCallbacks(runnable);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        };
+        handler1.postDelayed(runnable, delay);
+    }
+    private void timeZoneVerificationDialog() {
+        DialogTimezoneBinding timezoneBinding = DialogTimezoneBinding.inflate(LayoutInflater.from(context));
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomeDashBoard.this, 0);
+        customDialog = builder.create();
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        customDialog.setView(timezoneBinding.getRoot());
+        customDialog.setCancelable(false);
+        customDialog.show();
+        timezoneBinding.btnOpenSettings.setOnClickListener(v -> {System.exit(0);});
     }
 }
 

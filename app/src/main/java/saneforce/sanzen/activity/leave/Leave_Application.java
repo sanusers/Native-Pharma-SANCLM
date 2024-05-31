@@ -288,6 +288,7 @@ public class Leave_Application extends AppCompatActivity {
                 }
             });
             dailog_list.setOnItemClickListener((arg0, arg1, position, arg3) -> {
+                System.out.println("setOnItemClickListener--->");
                 // TODO Auto-generated method stub
                 String selectedFromList = dailog_list.getItemAtPosition(position).toString();
                 for (int i = 0; i < leave_typename.size(); i++) {
@@ -302,6 +303,7 @@ public class Leave_Application extends AppCompatActivity {
                                 JSONObject jsonobj1 = jsonArray1.getJSONObject(d);
                                 if (Ltype_id.equals(jsonobj1.getString("Leave_code"))) {
                                     avilable = (jsonobj1.getString("Avail"));
+                                    System.out.println("availablity--->"+avilable);
                                     leavety = (jsonobj1.getString("Leave_Type_Code"));
 
                                 }
@@ -437,7 +439,8 @@ public class Leave_Application extends AppCompatActivity {
 
             Leave_Application.leavebinding.lDays.setText(listdate.size() + " days " + L_typename);
             L_count = String.valueOf(listdate.size());
-            totalval = Integer.parseInt((avilable));
+            System.out.println("totalValue-->"+avilable);
+            totalval = Integer.parseInt(avilable);
             val = Integer.parseInt(L_count);
             Log.d("rem", totalval + "---" + val);
             int bal = totalval - val;

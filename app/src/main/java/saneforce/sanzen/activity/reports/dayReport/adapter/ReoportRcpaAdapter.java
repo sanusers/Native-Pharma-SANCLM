@@ -24,7 +24,6 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.ViewHolder> {
 
     ArrayList<DayReportRcpaModelClass> rcpaList = new ArrayList<>();
-
     Context context;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -53,6 +52,7 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
         int opValue = Integer.parseInt(rcpaList.get(position).getOPValue());
         int cpValue = Integer.parseInt(rcpaList.get(position).getCPValue());
         int totValue = opValue+cpValue;
+
         holder.prdName.setOnClickListener(v -> {
             popUp(v, rcpaList.get(position).getOPName());
         });
