@@ -53,7 +53,8 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
         String selectedTap = custListArrayList.get(position).getType();
         holder.tv_count.setText(String.format("%s/%s", custListArrayList.get(position).getTag(), custListArrayList.get(position).getMaxTag()));
         if (custListArrayList.get(position).getCategory().equals("")){
-            holder.tv_category.setVisibility(View.GONE);
+            holder.tv_category.setVisibility(View.VISIBLE);
+            holder.tv_category.setText("---");
         }else {
             holder.tv_category.setVisibility(View.VISIBLE);
             holder.tv_category.setText(custListArrayList.get(position).getCategory());

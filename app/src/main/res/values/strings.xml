@@ -407,7 +407,7 @@
     <string name="timezoneon">Turn on Automatic Date and Time in Settings.</string>
     <string name="turn_on_timezone">Turn on Automatic time zone</string>
     <string name="timezone_to_automatic">Please set time zone to automatic</string>
-    <string name="setting_open">Close Settings</string>
+    <string name="setting_open">Close</string>
     <string name="rcpa_rate">Rate</string>
     <string name="op_qty">OP Qty</string>
     <string name="op_rate">OP Rate</string>

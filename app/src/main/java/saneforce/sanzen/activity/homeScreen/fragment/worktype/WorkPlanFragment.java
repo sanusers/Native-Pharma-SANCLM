@@ -8,6 +8,7 @@ import static saneforce.sanzen.commonClasses.Constants.APP_MODE;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -57,6 +58,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
+import saneforce.sanzen.activity.leave.Leave_Application;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -117,6 +119,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private OfflineCheckInOutDataDao offlineCheckInOutDataDao;
     private CallOfflineWorkTypeDataDao callOfflineWorkTypeDataDao;
     private OfflineDaySubmitDao offlineDaySubmitDao;
+    private String leaveWorkType = "leave";
 
 
     @Override
@@ -618,6 +621,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 binding.txtSave.setTextColor(getResources().getColor(R.color.black));
                 binding.txtSave.setEnabled(true);
                 binding.cardPlan2.setVisibility(View.VISIBLE);
+                leaveWorkType = "";
                 getLocalData();
                 break;
 
@@ -1317,6 +1321,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 0));
                                 }
                                 SharedPref.setDayPlanStartedDate(requireContext(), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
+
+                                if (binding.txtWorktype1.getText().toString().toLowerCase().equals(leaveWorkType)){
+                                    startActivity(new Intent(context, Leave_Application.class));
+                                }else if (binding.txtWorktype2.getText().toString().toLowerCase().equals("leave")){
+                                    startActivity(new Intent(context, Leave_Application.class));
+                                }
                             } else {
                                 setUpMyDayplan();
                                 commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
