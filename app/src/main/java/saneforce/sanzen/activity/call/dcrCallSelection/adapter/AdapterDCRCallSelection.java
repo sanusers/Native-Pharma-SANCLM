@@ -91,26 +91,25 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     public void onBindViewHolder(@NonNull AdapterDCRCallSelection.ViewHolder holder, int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_name.setText(cusListArrayList.get(position).getName());
-        holder.tv_category.setText(cusListArrayList.get(position).getCategory());
+        if(cusListArrayList.get(position).getCategory().isEmpty())
+            holder.tv_category.setText("---");
+        else
+            holder.tv_category.setText(cusListArrayList.get(position).getCategory());
         holder.tv_specialist.setText(cusListArrayList.get(position).getSpecialist());
         holder.tv_area.setText(cusListArrayList.get(position).getTown_name());
-
 
         if (isFrom.equalsIgnoreCase("1") || isFrom.equalsIgnoreCase("4")) {
             holder.tv_category.setVisibility(View.VISIBLE);
             holder.tv_specialist.setVisibility(View.VISIBLE);
 
-        } else if (isFrom.equalsIgnoreCase("5")) {
+        } else if (isFrom.equalsIgnoreCase("2") || isFrom.equalsIgnoreCase("5")) {
             holder.tv_category.setVisibility(View.VISIBLE);
             holder.tv_specialist.setVisibility(View.GONE);
 
         }else {
             holder.tv_category.setVisibility(View.GONE);
             holder.tv_specialist.setVisibility(View.GONE);
-
         }
-
-
 
         holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, cusListArrayList.get(position).getName()));
 

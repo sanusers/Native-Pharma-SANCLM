@@ -168,6 +168,7 @@ public class PreCallAnalysisFragment extends Fragment {
 
                     } catch (Exception e) {
                         Log.v("preCall", "--error--" + e);
+                        e.printStackTrace();
                         CustomerProfile.progressDialog.dismiss();
                         activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                     }
@@ -195,7 +196,11 @@ public class PreCallAnalysisFragment extends Fragment {
                 String[] rcpa = item[3].replace("^", ",").split("[,]");
                 Rcpa = rcpa[1];
             }
-            ProductList.add(new PreCallAnalysisModelClass(item[0].trim(), item[1], item[2], Rcpa, item[4]));
+            if(item.length>4){
+                ProductList.add(new PreCallAnalysisModelClass(item[0].trim(), item[1], item[2], Rcpa, item[4]));
+            } else if(item.length>3) {
+                ProductList.add(new PreCallAnalysisModelClass(item[0].trim(), item[1], item[2], Rcpa, ""));
+            }
             adapter.notifyDataSetChanged();
         }
     }

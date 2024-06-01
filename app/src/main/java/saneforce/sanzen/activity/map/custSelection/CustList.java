@@ -1,7 +1,6 @@
 package saneforce.sanzen.activity.map.custSelection;
 
-public class
-CustList {
+public class CustList {
     String name;
     String type;
     String code;

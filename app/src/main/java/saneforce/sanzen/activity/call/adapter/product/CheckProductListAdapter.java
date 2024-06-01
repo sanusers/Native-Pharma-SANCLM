@@ -240,15 +240,19 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
     private void checkAndSetNoProductCheckedOrUnchecked() {
         if(!(DCRCallActivity.PrdMandatory != null && DCRCallActivity.PrdMandatory.equals("1"))) {
             if(!checkAnyProductSelected()) {
-                callCommonCheckedListArrayList.get(0).setCheckedItem(true);
-                noProductHolder.checkBox.setChecked(true);
-                noProductHolder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
-                noProductHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
+                if(callCommonCheckedListArrayList.get(0).getCode().equalsIgnoreCase("-10")) {
+                    callCommonCheckedListArrayList.get(0).setCheckedItem(true);
+                    noProductHolder.checkBox.setChecked(true);
+                    noProductHolder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
+                    noProductHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
+                }
             }else {
-                callCommonCheckedListArrayList.get(0).setCheckedItem(false);
-                noProductHolder.checkBox.setChecked(false);
-                noProductHolder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
-                noProductHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
+                if(callCommonCheckedListArrayList.get(0).getCode().equalsIgnoreCase("-10")) {
+                    callCommonCheckedListArrayList.get(0).setCheckedItem(false);
+                    noProductHolder.checkBox.setChecked(false);
+                    noProductHolder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
+                    noProductHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
+                }
             }
         }
     }

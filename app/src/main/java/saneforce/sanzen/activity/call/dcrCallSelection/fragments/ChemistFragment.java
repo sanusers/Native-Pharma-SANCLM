@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -56,15 +57,16 @@ public class ChemistFragment extends Fragment {
     Dialog dialogFilter;
     ImageButton iv_filter;
     ImageView img_close;
-    Button btn_apply;
+    Button btn_apply, btn_clear;
     JSONArray jsonArray;
-    TextView tv_hqName,tvTerritory,tv_filter_count;
+    TextView tv_hqName, tvTerritory, tv_filter_count, tvCate;
     CommonUtilsMethods commonUtilsMethods;
 
     ArrayList<DCRFillteredModelClass> filterSelectionList = new ArrayList<>();
-    String TerritoryCode;
+    String TerritoryCode = "", categoryCode = "", territoryName= "", categoryName = "";
 
-    ListView lv_terr;
+    ListView lv_cate, lv_terr;
+    ConstraintLayout constraintLayout ;
 
     ArrayList<CustList> FilltercustArraList = new ArrayList<>();
     private RoomDB roomDB;
@@ -131,9 +133,9 @@ public class ChemistFragment extends Fragment {
                             float[] distance = new float[2];
                             Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                             if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
-                                if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
+//                                if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
                                     cusListArrayList = SaveData(jsonObject, i);
-                                }
+//                                }
                             }
                         } else {
                             float[] distance = new float[2];
@@ -145,7 +147,7 @@ public class ChemistFragment extends Fragment {
                     }
                 } else {
                     if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
-                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
+                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
                             cusListArrayList = SaveData(jsonObject, i);
                         }
                     } else {
@@ -182,13 +184,29 @@ public class ChemistFragment extends Fragment {
         Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
     }
 
+    private String getChemistCategory(String chmCode) {
+        try {
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
+            for (int i = 0; i<jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String name = jsonObject.getString("Name");
+                String code = jsonObject.getString("Code");
+                if(code.equalsIgnoreCase(chmCode))
+                    return name;
+            }
+        } catch (Exception e) {
+            Log.e("Chemist Call", "getChemistCategory: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     private ArrayList<CustList> SaveData(JSONObject jsonObject, int i) {
         try {
             if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
-                cusListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "2", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), "", "", jsonObject.getString("Chemists_Email"), jsonObject.getString("Chemists_Mobile"), jsonObject.getString("Chemists_Phone"), "", "", "","",false));
+                cusListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "2", getChemistCategory(jsonObject.getString("Chm_cat")), jsonObject.getString("Chm_cat"), "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), "", "", jsonObject.getString("Chemists_Email"), jsonObject.getString("Chemists_Mobile"), jsonObject.getString("Chemists_Phone"), "", "", "","",false));
             } else {
-                cusListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "2", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), "", "", jsonObject.getString("Chemists_Email"), jsonObject.getString("Chemists_Mobile"), jsonObject.getString("Chemists_Phone"), "", "","","", true));
-
+                cusListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "2", getChemistCategory(jsonObject.getString("Chm_cat")), jsonObject.getString("Chm_cat"), "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), "", "", jsonObject.getString("Chemists_Email"), jsonObject.getString("Chemists_Mobile"), jsonObject.getString("Chemists_Phone"), "", "","","", true));
             }
         } catch (Exception e) {
             Log.v("CheCall", "--1111---" + e.toString());
@@ -219,17 +237,38 @@ public class ChemistFragment extends Fragment {
         dialogFilter.setCancelable(false);
         dialogFilter.show();
 
-        TerritoryCode="";
-        TextView territory=dialogFilter.findViewById(R.id.constraint_territory);
-        territory.setVisibility(View.VISIBLE);
         img_close = dialogFilter.findViewById(R.id.img_close);
         btn_apply = dialogFilter.findViewById(R.id.btn_apply);
+        btn_clear = dialogFilter.findViewById(R.id.btn_clear);
         tvTerritory = dialogFilter.findViewById(R.id.constraint_territory);
+        tvCate = dialogFilter.findViewById(R.id.constraint_category);
+        ViewGroup.LayoutParams layoutParams = tvCate.getLayoutParams();
+        if(layoutParams instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) layoutParams;
+            marginLayoutParams.leftMargin = 400;
+            tvCate.setLayoutParams(layoutParams);
+        }
+        tvTerritory.setText(territoryName);
+        tvCate.setText(categoryName);
 
         lv_terr = dialogFilter.findViewById(R.id.lv_territory);
+        lv_cate = dialogFilter.findViewById(R.id.lv_category);
+        tvTerritory.setVisibility(View.VISIBLE);
+        tvCate.setVisibility(View.VISIBLE);
+        constraintLayout=dialogFilter.findViewById(R.id.constraint_btns);
+
         img_close.setOnClickListener(view12 -> dialogFilter.dismiss());
 
-        btn_apply.setOnClickListener(view1 -> Filltered());
+        btn_apply.setOnClickListener(view1 -> Filtered());
+
+        btn_clear.setOnClickListener(view -> {
+            TerritoryCode = "";
+            categoryCode = "";
+            territoryName = "";
+            categoryName = "";
+            tvTerritory.setText("");
+            tvCate.setText("");
+        });
 
         tvTerritory.setOnClickListener(view -> {
             if (lv_terr.getVisibility() == View.VISIBLE) {
@@ -238,23 +277,22 @@ public class ChemistFragment extends Fragment {
             } else {
                 filterSelectionList.clear();
                 try {
-                    JSONArray jsonArray = new JSONArray();
-                    jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                     Log.v("jsonArray", "--" + jsonArray.length());
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"),jsonObject.getString("Name")));
+                        filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"),jsonObject.getString("Code")));
                     }
 
                     FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
                         TerritoryCode = clickedItem.getCode();
+                        territoryName = clickedItem.getName();
                         tvTerritory.setText(clickedItem.getName());
                         lv_terr.setVisibility(View.GONE);
 
                     });
                     lv_terr.setAdapter(arrayAdapter);
                     lv_terr.setVisibility(View.VISIBLE);
-
 
                 } catch (Exception ignored) {
 
@@ -263,18 +301,63 @@ public class ChemistFragment extends Fragment {
             }
         });
 
+        tvCate.setOnClickListener(view -> {
+            if (lv_cate.getVisibility() == View.VISIBLE) {
+                lv_cate.setVisibility(View.GONE);
+                constraintLayout.setVisibility(View.VISIBLE);
+            } else {
+                try {
+                    filterSelectionList.clear();
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
+                    Log.v("jsonArray", "--" + jsonArray.length());
+                    for (int i = 0; i<jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"), jsonObject.getString("Code")));
+                    }
+                    FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
+                        categoryCode = clickedItem.getCode();
+                        categoryName = clickedItem.getName();
+                        tvCate.setText(clickedItem.getName());
+                        lv_cate.setVisibility(View.GONE);
+                        constraintLayout.setVisibility(View.VISIBLE);
+                    });
+                    lv_cate.setAdapter(arrayAdapter);
+                    lv_cate.setVisibility(View.VISIBLE);
+                    constraintLayout.setVisibility(View.INVISIBLE);
+                } catch (Exception e){
+                    Log.e("Chemist Call Selection", "CustomizeFiltered: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+
+        });
+
 
     }
 
-    public void Filltered() {
+    public void Filtered() {
         FilltercustArraList.clear();
-        if (TerritoryCode.equalsIgnoreCase("")) {
+        if (TerritoryCode.equalsIgnoreCase("") && categoryCode.equalsIgnoreCase("")) {
             FilltercustArraList.addAll(cusListArrayList);
             tv_filter_count.setText("0");
             Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
-        } else {
+        } else if(!TerritoryCode.isEmpty() && !categoryCode.isEmpty()){
+            for (CustList mList : cusListArrayList) {
+                if (mList.getTown_code().equalsIgnoreCase(TerritoryCode) && mList.getCategoryCode().equalsIgnoreCase(categoryCode)) {
+                    FilltercustArraList.add(mList);
+                }
+            }
+            tv_filter_count.setText(String.valueOf(FilltercustArraList.size()));
+        } else if(!TerritoryCode.isEmpty()){
             for (CustList mList : cusListArrayList) {
                 if (mList.getTown_code().equalsIgnoreCase(TerritoryCode)) {
+                    FilltercustArraList.add(mList);
+                }
+            }
+            tv_filter_count.setText(String.valueOf(FilltercustArraList.size()));
+        } else if(!categoryCode.isEmpty()){
+            for (CustList mList : cusListArrayList) {
+                if (mList.getCategoryCode().equalsIgnoreCase(categoryCode)) {
                     FilltercustArraList.add(mList);
                 }
             }

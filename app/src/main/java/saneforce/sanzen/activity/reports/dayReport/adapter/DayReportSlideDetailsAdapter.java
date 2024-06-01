@@ -59,10 +59,7 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
         }
 
         holder.imgView.setOnClickListener(v -> {
-
-
-
-            CharSequence initialGuideTex = Html.fromHtml(" Start Time : " + callDetailingLists.get(position).getStartTime()  +"<br><br>"+ " End Time : " + callDetailingLists.get(position).getStartTime() );
+            CharSequence initialGuideTex = Html.fromHtml(" Start Time : " + callDetailingLists.get(position).getStartTime()  +"<br><br>"+ " End Time : " + callDetailingLists.get(position).getEndTime() );
             showTimelinePopUp(v,initialGuideTex);
         });
     }

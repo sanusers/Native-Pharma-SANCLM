@@ -42,6 +42,12 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+        if(JWKCodeList.contains(jwLists.get(position).getCode())){
+            holder.checkBox.setChecked(true);
+        }else {
+            holder.checkBox.setChecked(false);
+        }
         for (int j = 0; j < JWOthersFragment. callAddedJointList.size(); j++) {
             if (JWOthersFragment.callAddedJointList.get(j).getCode().equalsIgnoreCase(jwLists.get(position).getCode())) {
                 jwLists.set(position, new CallCommonCheckedList(jwLists.get(position).getName(), jwLists.get(position).getCode(), true));
@@ -50,12 +56,6 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
 
         holder.tv_name.setText(jwLists.get(position).getName());
         holder.checkBox.setChecked(jwLists.get(position).isCheckedItem());
-
-        if(JWKCodeList.contains(jwLists.get(position).getCode())){
-            holder.checkBox.setChecked(true);
-        }else {
-            holder.checkBox.setChecked(false);
-        }
 
         if (holder.checkBox.isChecked()) {
             holder.checkBox.setChecked(true);

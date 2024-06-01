@@ -88,6 +88,7 @@ import saneforce.sanzen.activity.call.pojo.input.SaveCallInputList;
 import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedCompList;
 import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedProdList;
+import saneforce.sanzen.activity.homeScreen.AutoTimezone;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 
@@ -98,6 +99,7 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityDcrcallBinding;
+
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -152,6 +154,12 @@ public class DCRCallActivity extends AppCompatActivity {
     private CallOfflineECDataDao callOfflineECDataDao;
     private CallOfflineDataDao callOfflineDataDao;
     private CallsUtil callsUtil;
+    AutoTimezone autoTimezone;
+    AlertDialog customDialog;
+    Handler mainHandler = new Handler(Looper.getMainLooper());
+    Handler handler1 = new Handler();
+    long delay = 4000;
+    Runnable runnable;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -267,13 +275,13 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view ->{
+            gpsTrack = new GPSTrack(this);
             RemaindercallsActivity.vals_rm = "";
             progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
             if(SharedPref.getGeoChk(this).equalsIgnoreCase("0")){
                 if(gpsTrack != null && ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0))) {
                     submitCall();
                 }else {
-                    gpsTrack = new GPSTrack(this);
                     commonUtilsMethods.showToastMessage(this, getString(R.string.please_try_again));
                     progressDialog.dismiss();
                 }
@@ -299,7 +307,6 @@ public class DCRCallActivity extends AppCompatActivity {
             isCreateJsonSuccess = true;
             if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
                 if(UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                    gpsTrack = new GPSTrack(DCRCallActivity.this);
                     double lat = gpsTrack.getLatitude();
                     double lng = gpsTrack.getLongitude();
                     address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
@@ -2544,7 +2551,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                     @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     sdf.setLenient(false);
-                    String todayData = CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd");
+                    String todayData = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
 
                     Date d1 = sdf.parse(jsonFDate.getString("date").substring(0, 10));
                     Date d2 = sdf.parse(todayData);
@@ -2562,7 +2569,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
-            if (InputFragment.checkedInputList.size() == 0) {
+            if (InputFragment.checkedInputList.isEmpty()) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (jsonObject.getString("Code").equalsIgnoreCase("-1")) {
@@ -2731,10 +2738,54 @@ public class DCRCallActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         CommonAlertBox.CheckLocationStatus(DCRCallActivity.this);
+
+        timeZoneVerification();
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler1.postDelayed(runnable, delay);
+    }
+    private void timeZoneVerification() {
+        runnable = new Runnable() {
+            public void run() {
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeZoneEnabled(context);
+                        mainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (isAutoTimeZoneEnabled) {
+                                    if (customDialog!=null){
+                                        customDialog.dismiss();
+                                        customDialog.cancel();
+                                        customDialog.hide();
+                                    }
+                                    handler1.removeCallbacks(runnable);
+                                } else {
+                                    timeZoneVerificationDialog();
+                                    handler1.removeCallbacks(runnable);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        };
+        handler1.postDelayed(runnable, delay);
+    }
+    private void timeZoneVerificationDialog() {
+        DialogTimezoneBinding timezoneBinding = DialogTimezoneBinding.inflate(LayoutInflater.from(context));
+        AlertDialog.Builder builder = new AlertDialog.Builder(DCRCallActivity.this, 0);
+        customDialog = builder.create();
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        customDialog.setView(timezoneBinding.getRoot());
+        customDialog.setCancelable(false);
+        customDialog.show();
+        timezoneBinding.btnOpenSettings.setOnClickListener(v -> {System.exit(0);});
     }
 }
-
-
    /* Backend Pending:
         1) Add CustStatus for Setup; --> GeoTagApprovalNeed
         2) Add Cust_status for all Doctor,Chemist,Cip,Stockist,UnDr --> cust_status
