@@ -40,7 +40,7 @@
             android:fontFamily="@font/satoshi_medium"
             android:textStyle="bold"
             android:gravity="start"
-            android:hint="Are you sure to cancel  ?"
+            android:hint="Are you sure, you want to cancel ?"
             android:padding="@dimen/_4sdp"
             android:layout_alignParentStart="true"
             android:paddingVertical="@dimen/_3sdp"

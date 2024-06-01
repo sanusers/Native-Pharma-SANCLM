@@ -392,14 +392,14 @@
     <string name="kindly_submit_field_work">Kindly Submit Field Work</string>
     <string name="unable_to_add_call_for_non_field_work">Unable to add call for non field work</string>
     <string name="please_enter_the_remarks">Please enter the remarks!</string>
-    <string name="workplan_submit_ack">You are trying to complete the day.\nAre you sure want tosubmit?</string>
+    <string name="workplan_submit_ack">You are trying to complete the day.\nAre you sure, you want to submit?</string>
     <string name="day_submitted_successfully">Day submitted successfully</string>
     <string name="are_you_sure">Are you sure!</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="cannot_submit_work_plan">Cannot submit Work Plan!</string>
     <string name="day_submit_saved_locally">Day Submit saved locally</string>
-    <string name="are_you_sure_to_delete">Are You Sure To Delete ?</string>
+    <string name="are_you_sure_to_delete">Are You Sure, You Want To Delete ?</string>
     <string name="fakegps_message">Fake Location detected. Your information has been sent to the admin.</string>
     <string name="title_activity_demo_main">DemoMainActivity</string>
     <string name="complete_day">Complete selected date to change date!</string>
@@ -419,4 +419,5 @@
     <string name="comp_product">Comp.Product</string>
     <string name="quantity">QTY</string>
     <string name="rate_rcpa">RATE</string>
+    <string name="found">Found</string>
 </resources>

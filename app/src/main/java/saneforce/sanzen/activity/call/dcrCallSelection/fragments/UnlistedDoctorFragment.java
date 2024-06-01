@@ -60,7 +60,7 @@ public class UnlistedDoctorFragment extends Fragment {
     JSONArray jsonArray;
     JSONObject jsonObjectDob, jsonObjectDow;
     CommonUtilsMethods commonUtilsMethods;
-    TextView tvSpec, tvCate, tvTerritory, tvClass;
+    TextView tvSpec, tvCate, tvTerritory, tvClass, noULDoctor;
     ConstraintLayout constraintLayout ;
     ListView lv_spec, lv_cate, lv_terr,lv_class;
 
@@ -83,6 +83,7 @@ public class UnlistedDoctorFragment extends Fragment {
         iv_filter = v.findViewById(R.id.iv_filter);
         tv_hqName = v.findViewById(R.id.tv_hq_name);
         tv_filterCount = v.findViewById(R.id.tv_filter_count);
+        noULDoctor = v.findViewById(R.id.no_unlisted_doctor);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
@@ -176,11 +177,20 @@ public class UnlistedDoctorFragment extends Fragment {
         FilltercustArraList.clear();
         FilltercustArraList.addAll(custListArrayList);
         Log.v("UNDRCALL", "-UnDr--size--" + custListArrayList.size());
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, SharedPref.getUnlistSrtNd(requireContext()),"4");
-        rv_list.setItemAnimator(new DefaultItemAnimator());
-        rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
-        rv_list.setAdapter(adapterDCRCallSelection);
-        Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
+
+        if(FilltercustArraList.isEmpty()){
+            noULDoctor.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getUNLcap(requireContext()), getString(R.string.found)));
+            noULDoctor.setVisibility(View.VISIBLE);
+            rv_list.setVisibility(View.GONE);
+        }else {
+            noULDoctor.setVisibility(View.GONE);
+            rv_list.setVisibility(View.VISIBLE);
+            adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, SharedPref.getUnlistSrtNd(requireContext()), "4");
+            rv_list.setItemAnimator(new DefaultItemAnimator());
+            rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
+            rv_list.setAdapter(adapterDCRCallSelection);
+            Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
+        }
     }
 
     private ArrayList<CustList> SaveData(JSONObject jsonObject, int i) {
@@ -520,7 +530,15 @@ public class UnlistedDoctorFragment extends Fragment {
             }
         }
 
-        adapterDCRCallSelection.notifyDataSetChanged();
+        if(FilltercustArraList.isEmpty()){
+            noULDoctor.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getUNLcap(requireContext()), getString(R.string.found)));
+            noULDoctor.setVisibility(View.VISIBLE);
+            rv_list.setVisibility(View.GONE);
+        }else {
+            noULDoctor.setVisibility(View.GONE);
+            rv_list.setVisibility(View.VISIBLE);
+            adapterDCRCallSelection.notifyDataSetChanged();
+        }
         dialogFilter.dismiss();
     }
 

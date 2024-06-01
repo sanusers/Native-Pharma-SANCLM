@@ -3,6 +3,7 @@ package saneforce.sanzen.roomdatabase;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -80,7 +81,7 @@ public class CallsUtil {
             for (String date : dates) {
                 groupNamesList = new ArrayList<>();
                 groupNamesList.add(new ChildListModelClass("Checking In/Out", 0, false, true, offlineCheckInOutDataDao.getCheckInOutTime(date), "", ""));
-                groupNamesList.add(new ChildListModelClass("Work Plan", 1, false, callOfflineWorkTypeDataDao.getWorkPlanModelClass(date)));
+                groupNamesList.add(new ChildListModelClass("Work Plan - " + Arrays.toString(callOfflineWorkTypeDataDao.getListOfflineWTNames(date).toArray()).replace("[", "").replace("]", ""), 1, false, callOfflineWorkTypeDataDao.getWorkPlanModelClass(date)));
                 groupNamesList.add(new ChildListModelClass("Calls", 2, false, true, getOutBoxCallsList(date), ""));
                 groupNamesList.add(new ChildListModelClass("Event Captured", 3, false, true, callOfflineECDataDao.getEcList(date)));
                 groupNamesList.add(new ChildListModelClass("Day Submit", 4, false, offlineDaySubmitDao.getDaySubmitModelClass(date)));

@@ -64,7 +64,7 @@ public class ListedDoctorFragment extends Fragment {
     Dialog dialogFilter;
     ImageButton iv_filter;
     ImageView img_close, img_del;
-    TextView tv_hqName, tv_add_condition, tv_filterCount;
+    TextView tv_hqName, tv_add_condition, tv_filterCount, noDoctor;
     Button btn_apply, btn_clear;
     String specialityCode = "", categoryCode = "", territoryCode = "", classCode = "";
     String specialityName = "", categoryName = "", territoryName = "", className = "";
@@ -100,6 +100,7 @@ public class ListedDoctorFragment extends Fragment {
         filterList = v.findViewById(R.id.filter_list_view);
         constraintFilter = v.findViewById(R.id.constraint_filter_selection_list);
         tv_filterCount = v.findViewById(R.id.tv_filter_count);
+        noDoctor = v.findViewById(R.id.no_doctor);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
@@ -441,12 +442,19 @@ public class ListedDoctorFragment extends Fragment {
         FilltercustArraList.clear();
         FilltercustArraList.addAll(custListArrayList);
 
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, SharedPref.getCustSrtNd(requireContext()),"1");
-        rv_list.setItemAnimator(new DefaultItemAnimator());
-        rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
-        rv_list.setAdapter(adapterDCRCallSelection);
-        Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
-
+        if(FilltercustArraList.isEmpty()){
+            noDoctor.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getDrCap(requireContext()), getString(R.string.found)));
+            noDoctor.setVisibility(View.VISIBLE);
+            rv_list.setVisibility(View.GONE);
+        }else {
+            noDoctor.setVisibility(View.GONE);
+            rv_list.setVisibility(View.VISIBLE);
+            adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, SharedPref.getCustSrtNd(requireContext()), "1");
+            rv_list.setItemAnimator(new DefaultItemAnimator());
+            rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
+            rv_list.setAdapter(adapterDCRCallSelection);
+            Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
+        }
     }
 
     private ArrayList<CustList> SaveData(JSONObject jsonObject, int i) {
@@ -647,7 +655,15 @@ public class ListedDoctorFragment extends Fragment {
             }
         }
 
-        adapterDCRCallSelection.notifyDataSetChanged();
+        if(FilltercustArraList.isEmpty()){
+            noDoctor.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getDrCap(requireContext()), getString(R.string.found)));
+            noDoctor.setVisibility(View.VISIBLE);
+            rv_list.setVisibility(View.GONE);
+        }else {
+            noDoctor.setVisibility(View.GONE);
+            rv_list.setVisibility(View.VISIBLE);
+            adapterDCRCallSelection.notifyDataSetChanged();
+        }
         dialogFilter.dismiss();
     }
 
