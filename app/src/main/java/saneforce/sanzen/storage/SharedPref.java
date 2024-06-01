@@ -383,7 +383,7 @@ public class SharedPref {
 
 
 
-    public static final String SKIPSTATUS= "SKIPSTATUS";
+    public static final String TPMANATORYSTATUS = "TPMANATORYSTATUS";
     public static final String SKIPDATE = "SKIPDATE";
 
     public static final String POLICY_STAUS = "POLICYSTATUS";
@@ -2321,14 +2321,14 @@ public class SharedPref {
         return context.getSharedPreferences(SETSYNHQ, MODE_PRIVATE).getString(SETSYN_HQCODE, "");
     }
 
-    public static void setSKIP(Context context, boolean status) {
+    public static void setTpStatus(Context context, boolean status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putBoolean(SKIPSTATUS, status).apply();
+        editor.putBoolean(TPMANATORYSTATUS, status).apply();
     }
 
-    public static boolean getskipstatus(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SKIPSTATUS, false);
+    public static boolean getTpStatus(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(TPMANATORYSTATUS, false);
     }
 
     public static void setSKIPDate(Context context, String status) {

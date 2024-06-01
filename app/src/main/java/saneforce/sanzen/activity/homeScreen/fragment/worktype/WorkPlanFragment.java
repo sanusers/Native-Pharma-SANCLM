@@ -543,7 +543,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 } else {
                     ShowWorkTypeAlert(binding.txtWorktype1, binding.rlcluster1, binding.rlheadquates1);
                 }
-
                 break;
 
             case R.id.rlcluster1:
@@ -558,7 +557,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 } else {
                     showMultiClusterAlter();
                 }
-
                 break;
 
 
@@ -622,6 +620,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.btnsumit:
+
                 if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")){
                     if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
                         submitMyDayPlan();

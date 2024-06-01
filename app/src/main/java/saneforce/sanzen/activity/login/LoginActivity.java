@@ -12,7 +12,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
 import android.text.InputType;
 import android.util.DisplayMetrics;
@@ -46,7 +45,7 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityLoginBinding;
-import saneforce.sanzen.location.CheckFakeGPS;
+import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallTableDetails.CallTableDao;
@@ -138,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
 
         binding.loginBtn.setOnClickListener(view -> {
             UtilityClass.hideKeyboard(LoginActivity.this);
-            CheckFakeGPS.CheckLocationStatus(LoginActivity.this);
+            CommonAlertBox.CheckLocationStatus(LoginActivity.this);
             userId = binding.userId.getText().toString().trim().replaceAll("\\s", "");
             userPwd = binding.password.getText().toString().trim().replaceAll("\\s", "");
 

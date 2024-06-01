@@ -1,8 +1,9 @@
-package saneforce.sanzen.location;
+package saneforce.sanzen.commonClasses;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,9 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.approvals.ApprovalsActivity;
+import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 
 
-public class CheckFakeGPS {
+public class CommonAlertBox {
 
     public  static  void CheckLocationStatus(Activity context){
 
@@ -72,5 +75,58 @@ public class CheckFakeGPS {
 
         return false;
     }
+
+
+
+    public  static  void TpAlert(Context context){
+
+
+
+       AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog alertDialog = builder.create();
+        builder.setTitle("Warning!")
+                .setMessage("Prepare Tourplan...").setCancelable(false).setIcon(context.getDrawable(R.drawable.icon_sync_failed)).setIcon(android.R.drawable.ic_dialog_alert)
+             //   .setPositiveButton("Sync", (dialog, which) -> get3MonthRemoteTPData("current"))
+                .setPositiveButton(context.getText(R.string.ok),(dialogInterface, i) -> {
+                    Intent intent =new Intent(context, TourPlanActivity.class);
+                    context.startActivity(intent);
+                })
+                .setPositiveButton("",(dialogInterface, i) -> {
+                    alertDialog.dismiss();
+                });
+        alertDialog.show();
+
+
+
+    }
+    public  static  void ApprovalAlert(Context context){
+
+
+
+       AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog alertDialog = builder.create();
+        builder.setTitle("Warning!")
+                .setMessage("Approval is pending...").setCancelable(false).setIcon(context.getDrawable(R.drawable.icon_sync_failed)).setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(context.getText(R.string.ok),(dialogInterface, i) -> {
+                    Intent intent =new Intent(context, ApprovalsActivity.class);
+                    context.startActivity(intent);
+                })
+                .setPositiveButton("",(dialogInterface, i) -> {
+                    alertDialog.dismiss();
+                });
+        alertDialog.show();
+
+
+
+    }
+
+
+
+
+
+
+
+
+
 
 }

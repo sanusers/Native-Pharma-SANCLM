@@ -44,15 +44,20 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
     public void onBindViewHolder(@NonNull TpClickViewDetailsAdapter.ViewHolder holder, int position) {
         holder.tv_wtName.setText(tpDetailedModels.get(position).getWtName());
         if (tpDetailedModels.get(position).getFWFlg().equalsIgnoreCase("F")) {
-            if (TpClusterNeed.equalsIgnoreCase("0")) {
-                holder.constraint_cluster.setVisibility(View.VISIBLE);
+
+               holder.constraint_cluster.setVisibility(View.VISIBLE);
                 holder.tv_cluster.setText(tpDetailedModels.get(position).getClusterName());
                 holder.tag_cluster.setText(SharedPref.getClusterCap(context));
                 if (!tpDetailedModels.get(position).getClusterName().isEmpty()) {
                     str = tpDetailedModels.get(position).getClusterName().split(",");
                     holder.tv_cluster_count.setText(String.valueOf(str.length));
                 }
-            }
+                if(!tpDetailedModels.get(position).getHqName().isEmpty()){
+                    holder.constraint_hq.setVisibility(View.VISIBLE);
+                    holder.tv_hq.setText(tpDetailedModels.get(position).getHqName());
+                }else {
+                    holder.constraint_hq.setVisibility(View.GONE);
+                }
 
             if (TpDrNeed.equalsIgnoreCase("0")) {
                 holder.constraint_doctor.setVisibility(View.VISIBLE);
@@ -96,11 +101,47 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
             holder.constraint_remarks.setVisibility(View.VISIBLE);
             holder.tv_remarks.setText(tpDetailedModels.get(position).getDayRemarks());
         } else {
-            holder.constraint_cluster.setVisibility(View.GONE);
+
+
+            if(!tpDetailedModels.get(position).getClusterName().isEmpty()){
+                holder.constraint_cluster.setVisibility(View.VISIBLE);
+                holder.tv_cluster.setText(tpDetailedModels.get(position).getClusterName());
+                holder.tag_cluster.setText(SharedPref.getClusterCap(context));
+                str = tpDetailedModels.get(position).getClusterName().split(",");
+                holder.tv_cluster_count.setText(String.valueOf(str.length));
+
+            }else {
+                holder.constraint_cluster.setVisibility(View.GONE);
+            }
+
+
+            if (!SharedPref.getDesig(context).equalsIgnoreCase("MR")) {
+                if (!tpDetailedModels.get(position).getHqName().isEmpty()) {
+                    holder.constraint_hq.setVisibility(View.VISIBLE);
+                    holder.tv_hq.setText(tpDetailedModels.get(position).getHqName());
+                } else {
+                    holder.constraint_hq.setVisibility(View.GONE);
+                }
+            } else {
+                holder.constraint_hq.setVisibility(View.GONE);
+            }
+
+            if (TpJwNeed.equalsIgnoreCase("0")) {
+                if (!tpDetailedModels.get(position).getJwName().isEmpty()) {
+                    holder.tv_jwList.setText(tpDetailedModels.get(position).getJwName());
+                    holder.constraint_jw.setVisibility(View.VISIBLE);
+                    str = tpDetailedModels.get(position).getJwName().split(",");
+                    holder.tv_jw_count.setText(String.valueOf(str.length));
+                } else {
+                    holder.constraint_jw.setVisibility(View.GONE);
+                }
+            } else {
+                holder.constraint_jw.setVisibility(View.GONE);
+            }
+
             holder.constraint_doctor.setVisibility(View.GONE);
             holder.constraint_chemist.setVisibility(View.GONE);
             holder.constraint_stockiest.setVisibility(View.GONE);
-            holder.constraint_jw.setVisibility(View.GONE);
             holder.constraint_remarks.setVisibility(View.VISIBLE);
             holder.tv_remarks.setText(tpDetailedModels.get(position).getDayRemarks());
 
@@ -113,8 +154,8 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ConstraintLayout constraint_cluster, constraint_doctor, constraint_chemist, constraint_stockiest, constraint_jw, constraint_remarks;
-        TextView tv_wtName, tag_cluster, tag_dr, tag_chemist, tag_stockist, tag_jw, tv_cluster, tv_drList, tv_chemistList, tv_stockiestList, tv_jwList, tv_remarks, tv_cluster_count, tv_dr_count, tv_chemist_count, tv_stockiest_count, tv_jw_count;
+        ConstraintLayout constraint_cluster, constraint_doctor, constraint_chemist, constraint_stockiest, constraint_jw, constraint_remarks,constraint_hq;
+        TextView tv_wtName, tag_cluster, tag_dr, tag_chemist, tag_stockist, tag_jw, tv_cluster, tv_drList, tv_chemistList, tv_stockiestList, tv_jwList, tv_remarks, tv_cluster_count, tv_dr_count, tv_chemist_count, tv_stockiest_count, tv_jw_count,tv_hq,tv_count;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -141,6 +182,11 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
             tv_jw_count = itemView.findViewById(R.id.tv_jw_count);
             constraint_remarks = itemView.findViewById(R.id.constraint_remarks);
             tv_remarks = itemView.findViewById(R.id.tv_remarks);
+            tv_hq = itemView.findViewById(R.id.tv_hq);
+            tv_count = itemView.findViewById(R.id.tv_hq_count);
+            constraint_hq = itemView.findViewById(R.id.constraint_hq);
+
+
         }
     }
 }
