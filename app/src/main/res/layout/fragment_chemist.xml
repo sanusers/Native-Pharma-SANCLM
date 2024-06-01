@@ -75,6 +75,8 @@
                 android:drawableStart="@drawable/grey_search"
                 android:drawablePadding="@dimen/_5sdp"
                 android:hint="@string/search"
+                android:singleLine="true"
+                android:maxLines="1"
                 android:imeOptions="actionDone"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:textColor="@color/black"
@@ -129,6 +131,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/constraint_top">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/no_chemist"
+                android:visibility="gone"
+                android:text="No Chemist Available"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_cust_list_selection"

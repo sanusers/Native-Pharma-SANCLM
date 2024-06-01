@@ -58,7 +58,7 @@ public class StockiestFragment extends Fragment {
     ImageView img_close;
     Button btn_apply, btn_clear;
     JSONArray jsonArray;
-    TextView tv_hqName,tvTerritory,tv_filter_count;
+    TextView tv_hqName,tvTerritory,tv_filter_count, noStockist;
     CommonUtilsMethods commonUtilsMethods;
 
     String territoryCode = "", territoryName = "";
@@ -78,6 +78,7 @@ public class StockiestFragment extends Fragment {
         iv_filter = v.findViewById(R.id.iv_filter);
         tv_filter_count = v.findViewById(R.id.tv_filter_count);
         tv_hqName = v.findViewById(R.id.tv_hq_name);
+        noStockist = v.findViewById(R.id.no_stockist);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
 
         roomDB = RoomDB.getDatabase(requireContext());
@@ -117,11 +118,10 @@ public class StockiestFragment extends Fragment {
         try {
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
 
-            Log.v("STKCALL", "-stk_full_length-" + jsonArray.length() +"\n"+ SharedPref.getTodayDayPlanClusterCode(requireContext()));
+            Log.v("STKCALL", "-stk_full_length-" + jsonArray.length());
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                Log.e("TAG", "SetupAdapter: " + jsonObject.getString("Town_Code"));
                     if (SharedPref.getGeotagNeedStock(context).equalsIgnoreCase("1")) {
                         if (!jsonObject.getString("lat").isEmpty() && !jsonObject.getString("long").isEmpty()) {
                             if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
@@ -174,12 +174,21 @@ public class StockiestFragment extends Fragment {
         FilltercustArraList.clear();
         FilltercustArraList.addAll(custListArrayList);
         Log.v("STKCALL", "-stk--size--" + custListArrayList.size());
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, "1","3");
-        rv_list.setItemAnimator(new DefaultItemAnimator());
-        rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
-        rv_list.setAdapter(adapterDCRCallSelection);
 
-        Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
+        if(FilltercustArraList.isEmpty()){
+            noStockist.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getStkCap(requireContext()), getString(R.string.found)));
+            noStockist.setVisibility(View.VISIBLE);
+            rv_list.setVisibility(View.GONE);
+        }else {
+            noStockist.setVisibility(View.GONE);
+            rv_list.setVisibility(View.VISIBLE);
+            adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, "1", "3");
+            rv_list.setItemAnimator(new DefaultItemAnimator());
+            rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
+            rv_list.setAdapter(adapterDCRCallSelection);
+
+            Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
+        }
     }
 
     private ArrayList<CustList> SaveData(JSONObject jsonObject, int i) {
@@ -284,7 +293,16 @@ public class StockiestFragment extends Fragment {
             }
             tv_filter_count.setText(String.valueOf(FilltercustArraList.size()));
         }
-        adapterDCRCallSelection.notifyDataSetChanged();
+
+        if(FilltercustArraList.isEmpty()){
+            noStockist.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getStkCap(requireContext()), getString(R.string.found)));
+            noStockist.setVisibility(View.VISIBLE);
+            rv_list.setVisibility(View.GONE);
+        }else {
+            noStockist.setVisibility(View.GONE);
+            rv_list.setVisibility(View.VISIBLE);
+            adapterDCRCallSelection.notifyDataSetChanged();
+        }
         dialogFilter.dismiss();
     }
 

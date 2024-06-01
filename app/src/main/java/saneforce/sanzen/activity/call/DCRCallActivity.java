@@ -93,7 +93,6 @@ import saneforce.sanzen.activity.call.pojo.input.SaveCallInputList;
 import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedCompList;
 import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedProdList;
-import saneforce.sanzen.activity.homeScreen.AutoTimezone;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 
@@ -160,7 +159,6 @@ public class DCRCallActivity extends AppCompatActivity {
     private CallOfflineECDataDao callOfflineECDataDao;
     private CallOfflineDataDao callOfflineDataDao;
     private CallsUtil callsUtil;
-    AutoTimezone autoTimezone;
     AlertDialog customDialog;
     Handler mainHandler = new Handler(Looper.getMainLooper());
     Handler handler1 = new Handler();
@@ -2753,43 +2751,10 @@ public class DCRCallActivity extends AppCompatActivity {
         handler1.postDelayed(runnable, delay);
     }
     private void timeZoneVerification() {
-        runnable = new Runnable() {
-            public void run() {
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeZoneEnabled(context);
-                        mainHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (isAutoTimeZoneEnabled) {
-                                    if (customDialog!=null){
-                                        customDialog.dismiss();
-                                        customDialog.cancel();
-                                        customDialog.hide();
-                                    }
-                                    handler1.removeCallbacks(runnable);
-                                } else {
-                                    timeZoneVerificationDialog();
-                                    handler1.removeCallbacks(runnable);
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        };
-        handler1.postDelayed(runnable, delay);
-    }
-    private void timeZoneVerificationDialog() {
-        DialogTimezoneBinding timezoneBinding = DialogTimezoneBinding.inflate(LayoutInflater.from(context));
-        AlertDialog.Builder builder = new AlertDialog.Builder(DCRCallActivity.this, 0);
-        customDialog = builder.create();
-        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        customDialog.setView(timezoneBinding.getRoot());
-        customDialog.setCancelable(false);
-        customDialog.show();
-        timezoneBinding.btnOpenSettings.setOnClickListener(v -> {System.exit(0);});
+        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context);
+        if (!isAutoTimeZoneEnabled) {
+            CommonUtilsMethods.showCustomDialog(this);
+        }
     }
 }
    /* Backend Pending:

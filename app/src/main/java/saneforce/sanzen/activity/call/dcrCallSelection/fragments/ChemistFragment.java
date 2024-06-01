@@ -59,7 +59,7 @@ public class ChemistFragment extends Fragment {
     ImageView img_close;
     Button btn_apply, btn_clear;
     JSONArray jsonArray;
-    TextView tv_hqName, tvTerritory, tv_filter_count, tvCate;
+    TextView tv_hqName, tvTerritory, tv_filter_count, tvCate, noChemist;
     CommonUtilsMethods commonUtilsMethods;
 
     ArrayList<DCRFillteredModelClass> filterSelectionList = new ArrayList<>();
@@ -81,6 +81,7 @@ public class ChemistFragment extends Fragment {
         iv_filter = v.findViewById(R.id.iv_filter);
         tv_filter_count = v.findViewById(R.id.tv_filter_count);
         tv_hqName = v.findViewById(R.id.tv_hq_name);
+        noChemist = v.findViewById(R.id.no_chemist);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
 
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -177,11 +178,19 @@ public class ChemistFragment extends Fragment {
 
         FilltercustArraList.clear();
         FilltercustArraList.addAll(cusListArrayList);
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList,SharedPref.getChmSrtNd(requireContext()),"2");
-        rv_list.setItemAnimator(new DefaultItemAnimator());
-        rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
-        rv_list.setAdapter(adapterDCRCallSelection);
-        Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
+        if(FilltercustArraList.isEmpty()){
+            noChemist.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getChmCap(requireContext()), getString(R.string.found)));
+            noChemist.setVisibility(View.VISIBLE);
+            rv_list.setVisibility(View.GONE);
+        }else {
+            noChemist.setVisibility(View.GONE);
+            rv_list.setVisibility(View.VISIBLE);
+            adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, SharedPref.getChmSrtNd(requireContext()), "2");
+            rv_list.setItemAnimator(new DefaultItemAnimator());
+            rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
+            rv_list.setAdapter(adapterDCRCallSelection);
+            Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
+        }
     }
 
     private String getChemistCategory(String chmCode) {
@@ -364,7 +373,15 @@ public class ChemistFragment extends Fragment {
             tv_filter_count.setText(String.valueOf(FilltercustArraList.size()));
         }
 
-        adapterDCRCallSelection.notifyDataSetChanged();
+        if(FilltercustArraList.isEmpty()){
+            noChemist.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getChmCap(requireContext()), getString(R.string.found)));
+            noChemist.setVisibility(View.VISIBLE);
+            rv_list.setVisibility(View.GONE);
+        }else {
+            noChemist.setVisibility(View.GONE);
+            rv_list.setVisibility(View.VISIBLE);
+            adapterDCRCallSelection.notifyDataSetChanged();
+        }
         dialogFilter.dismiss();
     }
 

@@ -63,7 +63,9 @@ public class RemaindercallsActivity extends AppCompatActivity {
         setContentView(remcallbinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-
+        roomDB = RoomDB.getDatabase(this);
+        dcrDocDataDao = roomDB.dcrDocDataDao();
+        masterDataDao = roomDB.masterDataDao();
         nav_view1 = findViewById(R.id.nav_view1);
         app_recycler_view = findViewById(R.id.app_recycler_view);
         headtext_id = findViewById(R.id.headtext_id);

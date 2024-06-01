@@ -14,6 +14,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +29,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -50,7 +52,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -95,6 +96,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
+import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideServices;
 import saneforce.sanzen.activity.activityModule.Activity;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.forms.Forms_activity;
@@ -188,7 +190,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static boolean canMoveNextDate = true;
 
     public static String TourplanFlog ="";
-    AutoTimezone autoTimezone;
     AlertDialog customDialog;
     Handler mainHandler = new Handler(Looper.getMainLooper());
     Handler handler1 = new Handler();
@@ -315,7 +316,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
 
         tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
-
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         autoTimezone = new AutoTimezone(this);
@@ -1174,7 +1174,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
             alertDialogBuilder.setTitle("Warning!");
             alertDialogBuilder.setIcon(getDrawable(R.drawable.icon_sync_failed));
-            alertDialogBuilder.setMessage("Are you sure you want to clear slides?");
+            alertDialogBuilder.setMessage("Are you sure, you want to clear slides?");
             alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert);
 
             alertDialogBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -1750,7 +1750,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeZoneEnabled(context);
+                        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context);
                         mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -1758,7 +1758,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                     if (customDialog!=null){
                                         customDialog.dismiss();
                                         customDialog.cancel();
-                                        customDialog.hide();
                                     }
                                     handler1.removeCallbacks(runnable);
                                 } else {

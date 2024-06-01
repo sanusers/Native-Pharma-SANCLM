@@ -38,6 +38,7 @@ import saneforce.sanzen.activity.previewPresentation.fragment.BrandMatrix;
 import saneforce.sanzen.activity.previewPresentation.fragment.MyPresentation;
 import saneforce.sanzen.activity.previewPresentation.fragment.HomeBrands;
 import saneforce.sanzen.activity.previewPresentation.fragment.Speciality;
+import saneforce.sanzen.activity.previewPresentation.fragment.Therapist;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -135,14 +136,13 @@ public class PreviewActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
                 viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
                 viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+                viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
                 if (CustomPresentationNeed.equalsIgnoreCase("0"))
                     viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
             }
             previewBinding.viewPager.setAdapter(viewPagerAdapter);
             previewBinding.tabLayout.setupWithViewPager(previewBinding.viewPager);
             previewBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
-
-
 
             previewBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
