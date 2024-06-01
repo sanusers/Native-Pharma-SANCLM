@@ -52,6 +52,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -195,6 +196,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     Handler handler1 = new Handler();
     long delay = 4000;
     Runnable runnable;
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -318,8 +320,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
-        autoTimezone = new AutoTimezone(this);
-        startService(new Intent(HomeDashBoard.this, AutoTimezone.class));
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
 
         binding.imgNotofication.setOnClickListener(view -> {

@@ -57,10 +57,10 @@ import java.util.Locale;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.call.DCRCallActivity;
+
 import saneforce.sanzen.activity.login.LoginActivity;
 import saneforce.sanzen.databinding.DialogTimezoneBinding;
-import saneforce.sanzen.location.CheckFakeGPS;
+
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.LocaleHelper;
 
