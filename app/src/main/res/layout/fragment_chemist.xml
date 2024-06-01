@@ -75,6 +75,8 @@
                 android:drawableStart="@drawable/grey_search"
                 android:drawablePadding="@dimen/_5sdp"
                 android:hint="@string/search"
+                android:singleLine="true"
+                android:maxLines="1"
                 android:imeOptions="actionDone"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:textColor="@color/black"

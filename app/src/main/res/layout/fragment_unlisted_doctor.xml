@@ -78,6 +78,8 @@
                 android:hint="@string/search"
                 android:imeOptions="actionDone"
                 android:paddingHorizontal="@dimen/_10sdp"
+                android:singleLine="true"
+                android:maxLines="1"
                 android:textColor="@color/black"
                 android:textColorHint="@color/light_grey"
                 android:textSize="@dimen/_6ssp"

@@ -118,11 +118,10 @@ public class StockiestFragment extends Fragment {
         try {
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
 
-            Log.v("STKCALL", "-stk_full_length-" + jsonArray.length() +"\n"+ SharedPref.getTodayDayPlanClusterCode(requireContext()));
+            Log.v("STKCALL", "-stk_full_length-" + jsonArray.length());
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                Log.e("TAG", "SetupAdapter: " + jsonObject.getString("Town_Code"));
                     if (SharedPref.getGeotagNeedStock(context).equalsIgnoreCase("1")) {
                         if (!jsonObject.getString("lat").isEmpty() && !jsonObject.getString("long").isEmpty()) {
                             if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
