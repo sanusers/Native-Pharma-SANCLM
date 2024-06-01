@@ -383,7 +383,9 @@ public class SharedPref {
 
 
 
-    public static final String TPMANATORYSTATUS = "TPMANATORYSTATUS";
+    public static final String TP_MANATORY_STATUS = "TP_MANATORY_STATUS";
+    public static final String APPROVAL_MANATORY_STATUS = "APPROVAL_MANATORY_STATUS";
+    public static final String APPROVAL_SKIPDATE = "APPROVAL_SKIPDATE";
     public static final String SKIPDATE = "SKIPDATE";
 
     public static final String POLICY_STAUS = "POLICYSTATUS";
@@ -2324,14 +2326,44 @@ public class SharedPref {
     public static void setTpStatus(Context context, boolean status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putBoolean(TPMANATORYSTATUS, status).apply();
+        editor.putBoolean(TP_MANATORY_STATUS, status).apply();
     }
 
-    public static boolean getTpStatus(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(TPMANATORYSTATUS, false);
+    public static boolean getTpmanatoryStatus(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(TP_MANATORY_STATUS, false);
     }
 
-    public static void setSKIPDate(Context context, String status) {
+    public static void setApprvalManatoryStatus(Context context, boolean status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(APPROVAL_MANATORY_STATUS, status).apply();
+    }
+
+    public static boolean getApprovalManatoryStatus(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(APPROVAL_MANATORY_STATUS, false);
+    }
+
+
+
+
+    // APPROVAL_SKIPDATE
+
+
+    public static void setApprovalSKIPDate(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(APPROVAL_SKIPDATE, status).apply();
+    }
+
+    public static String getApprovalskipDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(APPROVAL_SKIPDATE, "");
+    }
+
+
+
+
+
+    public static void setTpSKIPDate(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(SKIPDATE, status).apply();

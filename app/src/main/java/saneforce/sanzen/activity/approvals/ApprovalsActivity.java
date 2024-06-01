@@ -25,6 +25,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.databinding.ActivityApprovalsBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -32,6 +33,7 @@ import saneforce.sanzen.network.RetrofitClient;
 
 
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class ApprovalsActivity extends AppCompatActivity {
     public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0, GeoTagCount = 0;
@@ -81,7 +83,13 @@ public class ApprovalsActivity extends AppCompatActivity {
             AssignCountValues();
         }
 
-        approvalsBinding.ivBack.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
+
+        approvalsBinding.ivBack.setOnClickListener(view -> {
+            if(!SharedPref.getDesig(ApprovalsActivity.this).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(ApprovalsActivity.this).equalsIgnoreCase("0")) {
+                 SharedPref.setApprovalSKIPDate(ApprovalsActivity.this, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
+            }
+            getOnBackPressedDispatcher().onBackPressed();
+            });
 
         // approvalsBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(ApprovalsActivity.this, HomeDashBoard.class)));
     }

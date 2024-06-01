@@ -234,8 +234,13 @@ public class TourPlanActivity extends AppCompatActivity {
 
 
         binding.backArrow.setOnClickListener(view -> {
-            SharedPref.setSKIPDate(TourPlanActivity.this,TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
-            HomeDashBoard.tpRangeCheck=false;
+
+            if (SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") &&
+                    !SharedPref.getTpStartDate(context).equalsIgnoreCase("1") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("-1") &&
+                    !SharedPref.getTpEndDate(context).equalsIgnoreCase("1") && !SharedPref.getTpEndDate(context).equalsIgnoreCase("-1")) {
+                    SharedPref.setTpSKIPDate(TourPlanActivity.this,TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
+            }
+
             getOnBackPressedDispatcher().onBackPressed();
             finish();
         });
@@ -1021,6 +1026,7 @@ public class TourPlanActivity extends AppCompatActivity {
             case "3": {
                 binding.tpStatusTxt.setText(Constants.STATUS_3);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                CheckedTpRange();
                 break;
             }
         }
@@ -1075,8 +1081,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                     }
                                     binding.progressBar.setVisibility(View.GONE);
                                     binding.tvSync.setEnabled(true);
-                                    HomeDashBoard.tpRangeCheck=true;
-
 
                                     dayWiseArrayPrevMonth = prepareModelClassForMonth(localDate.minusMonths(1));
                                     dayWiseArrayCurrentMonth = prepareModelClassForMonth(LocalDate.now());
@@ -1925,6 +1929,48 @@ public class TourPlanActivity extends AppCompatActivity {
         }
     }
 
+    public   void CheckedTpRange() {
+
+        if (!SharedPref.getskipDate(TourPlanActivity.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
+            if (SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") &&
+                    !SharedPref.getTpStartDate(context).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("-1") &&
+                    !SharedPref.getTpEndDate(context).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(context).equalsIgnoreCase("-1")) {
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+                SimpleDateFormat date = new SimpleDateFormat("dd", Locale.ENGLISH);
+                String mCurrDate = date.format(calendar.getTime());
+                String currentDate = sdf.format(calendar.getTime());
+                calendar.add(Calendar.MONTH, 1);
+                String nextMonthDate = sdf.format(calendar.getTime());
+
+                String tp_start = SharedPref.getTpStartDate(context);
+                String tp_end = SharedPref.getTpEndDate(context);
+                int Start_Date = Integer.parseInt(tp_start);
+                int End_Date = Integer.parseInt(tp_end);
+                int mCurrentDate = Integer.parseInt(mCurrDate);
+
+
+                if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
+                    SharedPref.setTpStatus(TourPlanActivity.this, true);
+                    Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
+                    startActivity(intent);
+                } else if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")&&((mCurrentDate >= Start_Date) && (mCurrentDate <= End_Date))) {
+                    if (End_Date <= mCurrentDate) {
+                        SharedPref.setTpStatus(TourPlanActivity.this, true);
+                    } else {
+                        SharedPref.setTpStatus(TourPlanActivity.this, false);
+                    }
+
+                }else {
+                    SharedPref.setTpStatus(TourPlanActivity.this, false);
+                }
+            }
+
+
+        }else {
+            SharedPref.setTpStatus(TourPlanActivity.this, false);
+        }
+    }
 
 
 

@@ -265,6 +265,7 @@
     <string name="poor_connection">Poor Network Connection</string>
     <string name="no_slides">No slides!</string>
     <string name="processing">Processing</string>
+    <string name="proceed">Proceed</string>
     <string name="scribble_upload">Scribble Upload Successfully</string>
     <string name="no_qty_prd">No Qty Available in this Product</string>
     <string name="no_qty_input">No Qty Available in this Input</string>

@@ -112,6 +112,7 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/TvAddActivty"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_23sdp"
         android:layout_weight="1"

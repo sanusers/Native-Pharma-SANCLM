@@ -12,33 +12,36 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
+import saneforce.sanzen.storage.SharedPref;
 
 
 public class CommonAlertBox {
+    public  static  void CheckLocationStatus(Activity activity){
 
-    public  static  void CheckLocationStatus(Activity context){
-
-        LocationManager  locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        LocationManager  locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
                 @Override
-                public void onLocationChanged(Location location) {boolean isMock = isMockLocation(context.getApplicationContext(),location);
+                public void onLocationChanged(Location location) {boolean isMock = isMockLocation(activity.getApplicationContext(),location);
                     if (isMock) {
                         locationManager.removeUpdates(this);
-                        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
                         alert.setCancelable(false);
-                        LayoutInflater inflater = context.getLayoutInflater();
+                        LayoutInflater inflater = activity.getLayoutInflater();
                         View alertLayout = inflater.inflate(R.layout.fake_gps_alert_box, null);
                         Button btnOk = alertLayout.findViewById(R.id.BtnClose);
                         alert.setView(alertLayout);
                         AlertDialog dialog = alert.create();
                         dialog.show();
                         btnOk.setOnClickListener(v -> {
-                            context.finishAffinity();
+                            activity.finishAffinity();
                             System.exit(0);
                             dialog.dismiss();
                         });
@@ -76,46 +79,51 @@ public class CommonAlertBox {
         return false;
     }
 
+ public  static  void TpAlert(Activity activity){
 
-
-    public  static  void TpAlert(Context context){
-
-
-
-       AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        AlertDialog alertDialog = builder.create();
-        builder.setTitle("Warning!")
-                .setMessage("Prepare Tourplan...").setCancelable(false).setIcon(context.getDrawable(R.drawable.icon_sync_failed)).setIcon(android.R.drawable.ic_dialog_alert)
-             //   .setPositiveButton("Sync", (dialog, which) -> get3MonthRemoteTPData("current"))
-                .setPositiveButton(context.getText(R.string.ok),(dialogInterface, i) -> {
-                    Intent intent =new Intent(context, TourPlanActivity.class);
-                    context.startActivity(intent);
-                })
-                .setPositiveButton("",(dialogInterface, i) -> {
-                    alertDialog.dismiss();
-                });
-        alertDialog.show();
-
-
-
+        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+        alert.setCancelable(false);
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.warning_alert, null);
+        Button btn_yes=alertLayout.findViewById(R.id.btnYes);
+        Button btn_no=alertLayout.findViewById(R.id.btnNo);
+        TextView alerttext=alertLayout.findViewById(R.id.ed_alert_msg);
+        alerttext.setText("The tour planning date has exceeded. Please prepare your tour plan....");
+        alert.setView(alertLayout);
+        AlertDialog dialog = alert.create();
+        dialog.show();
+        btn_yes.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, ApprovalsActivity.class);
+            activity.startActivity(intent);
+            dialog.dismiss();
+        });
+        btn_no.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+   //  dialog.getWindow().setLayout((int) activity.getResources().getDimension(R.dimen._200sdp), (int) activity.getResources().getDimension(R.dimen._100sdp));
     }
-    public  static  void ApprovalAlert(Context context){
-
-
-
-       AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        AlertDialog alertDialog = builder.create();
-        builder.setTitle("Warning!")
-                .setMessage("Approval is pending...").setCancelable(false).setIcon(context.getDrawable(R.drawable.icon_sync_failed)).setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton(context.getText(R.string.ok),(dialogInterface, i) -> {
-                    Intent intent =new Intent(context, ApprovalsActivity.class);
-                    context.startActivity(intent);
-                })
-                .setPositiveButton("",(dialogInterface, i) -> {
-                    alertDialog.dismiss();
-                });
-        alertDialog.show();
-
+    public  static  void ApprovalAlert(Activity activity){
+        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+        alert.setCancelable(false);
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.warning_alert, null);
+        Button btn_yes=alertLayout.findViewById(R.id.btnYes);
+        Button btn_no=alertLayout.findViewById(R.id.btnNo);
+        TextView alerttext=alertLayout.findViewById(R.id.ed_alert_msg);
+        alerttext.setText("Team approvals are still pending. Please clear all approvals...");
+        alert.setView(alertLayout);
+        AlertDialog dialog = alert.create();
+        dialog.show();
+        btn_yes.setOnClickListener(v -> {
+            SharedPref.setApprovalsCounts(activity, "false");
+            Intent intent = new Intent(activity, ApprovalsActivity.class);
+            activity.startActivity(intent);
+            dialog.dismiss();
+        });
+        btn_no.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+        dialog.getWindow().setLayout((int) activity.getResources().getDimension(R.dimen._150sdp), (int) activity.getResources().getDimension(R.dimen._100sdp));
 
 
     }
