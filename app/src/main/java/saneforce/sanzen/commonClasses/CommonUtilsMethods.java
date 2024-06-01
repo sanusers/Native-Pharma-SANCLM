@@ -1,5 +1,6 @@
 package saneforce.sanzen.commonClasses;
 
+import static androidx.core.content.ContextCompat.startActivity;
 import static java.security.AccessController.getContext;
 
 import android.annotation.SuppressLint;
@@ -17,6 +18,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.Settings;
@@ -55,8 +57,10 @@ import java.util.Locale;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.login.LoginActivity;
 import saneforce.sanzen.databinding.DialogTimezoneBinding;
+import saneforce.sanzen.location.CheckFakeGPS;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.LocaleHelper;
 
@@ -106,7 +110,7 @@ public class CommonUtilsMethods {
                 toast.setDuration(Toast.LENGTH_LONG);
                 toast.setView(layout);
                 toast.show();
-                isLocationFounded= true;
+                isLocationFounded = true;
                /* Toast toast = Toast.makeText(activity, "Location Captured:" + address, Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.BOTTOM, 0, 0);
                 toast.show();*/
@@ -125,7 +129,7 @@ public class CommonUtilsMethods {
                 toast.setDuration(Toast.LENGTH_LONG);
                 toast.setView(layout);
                 toast.show();
-                isLocationFounded= false;
+                isLocationFounded = false;
 
                /* Toast toast = Toast.makeText(activity, address + " Try Again!", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.BOTTOM, 0, 0);
@@ -179,6 +183,7 @@ public class CommonUtilsMethods {
                     dialogInterface.dismiss();
                 }).show();
     }
+
     public void loginNavigation(Activity activity) {
         new android.app.AlertDialog.Builder(activity)
                 .setTitle("Alert")
@@ -194,6 +199,7 @@ public class CommonUtilsMethods {
                 })
                 .show();
     }
+
     public static void RequestPermissions(Activity activity, String[] Permissions, boolean isRefresh) {
         PermissionListener permissionlistener = new PermissionListener() {
             @SuppressLint("UnsafeIntentLaunch")
@@ -235,7 +241,7 @@ public class CommonUtilsMethods {
         try {
             dialog.show();
         } catch (WindowManager.BadTokenException ignored) {
-            Log.e("DialogboxStatus",""+ignored);
+            Log.e("DialogboxStatus", "" + ignored);
         }
 
         dialog.setCancelable(false);
@@ -244,6 +250,7 @@ public class CommonUtilsMethods {
         dialog.setContentView(R.layout.loading_progress);
         return dialog;
     }
+
     public void showToastMessage(Activity activity, String message) {
 
         LayoutInflater inflater = activity.getLayoutInflater();
@@ -379,35 +386,19 @@ public class CommonUtilsMethods {
         }
         return string;
     }
-    public boolean isAutoTimeZoneEnabled(Context context) {
+
+    public boolean isAutoTimeEnabled(Context context) {
         ContentResolver resolver = context.getContentResolver();
         try {
-            int autoTimeZone = Settings.Global.getInt(resolver, Settings.Global.AUTO_TIME_ZONE);
-            return autoTimeZone == 1;
+            int autoTime = Settings.Global.getInt(resolver, Settings.Global.AUTO_TIME);
+            return autoTime == 1;
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
             return false;
         }
     }
-    public void showAutoTimeZoneDialog(final Context context) {
-        new AlertDialog.Builder(context)
-                .setTitle("Enable Automatic Time Zone")
-                .setMessage("Automatic time zone is disabled. Please enable it for proper functioning of the app.")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        redirectToTimeZoneSettings(context);
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
-    }
 
-    public void redirectToTimeZoneSettings(Context context) {
-        Intent intent = new Intent(Settings.ACTION_DATE_SETTINGS);
-        context.startActivity(intent);
-    }
-    public void showCustomDialog(Context context) {
+    public static void showCustomDialog(Activity context) {
         DialogTimezoneBinding timezoneBinding = DialogTimezoneBinding.inflate(LayoutInflater.from(context));
         AlertDialog.Builder builder = new AlertDialog.Builder(context, 0);
         AlertDialog customDialog = builder.create();
@@ -415,9 +406,14 @@ public class CommonUtilsMethods {
         customDialog.setView(timezoneBinding.getRoot());
         customDialog.setCancelable(false);
         customDialog.show();
-        timezoneBinding.btnOpenSettings.setOnClickListener(v -> {System.exit(0);});
+        timezoneBinding.btnOpenSettings.setOnClickListener(v -> {
+            customDialog.dismiss();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            context.startActivity(intent);
+            context.finish();
+
+        });
     }
-
-
 
 }

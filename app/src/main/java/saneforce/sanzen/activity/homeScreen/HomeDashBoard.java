@@ -14,6 +14,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +29,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -189,7 +191,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static boolean canMoveNextDate = true;
 
     public static String TourplanFlog ="";
-    AutoTimezone autoTimezone;
     AlertDialog customDialog;
     Handler mainHandler = new Handler(Looper.getMainLooper());
     Handler handler1 = new Handler();
@@ -313,13 +314,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
 
         tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
-
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         tpRangeCheck = false;
         CheckedTpRange();
-        autoTimezone = new AutoTimezone(this);
-        startService(new Intent(HomeDashBoard.this, AutoTimezone.class));
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
 
         binding.imgNotofication.setOnClickListener(view -> {
@@ -1758,7 +1756,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeZoneEnabled(context);
+                        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context);
                         mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -1766,7 +1764,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                     if (customDialog!=null){
                                         customDialog.dismiss();
                                         customDialog.cancel();
-                                        customDialog.hide();
                                     }
                                     handler1.removeCallbacks(runnable);
                                 } else {

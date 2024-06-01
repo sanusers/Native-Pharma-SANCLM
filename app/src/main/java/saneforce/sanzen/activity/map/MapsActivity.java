@@ -207,7 +207,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         commonUtilsMethods.setUpLanguage(MapsActivity.this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
-
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             from_tagging = extra.getString("from");
@@ -996,6 +995,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             CommonUtilsMethods.RequestGPSPermission(MapsActivity.this);
         }
+        timeZoneVerification();
         super.onResume();
     }
 
@@ -1368,6 +1368,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
           showCustomDialog("Failed to update Stock List. Please try again.",    ContextCompat.getDrawable(context, R.drawable.baseline_do_disturb_24), false);
       } else if (selectedTap.equals("U")) {
           showCustomDialog("Failed to update UnlistedDoctors List. Please try again.",    ContextCompat.getDrawable(context, R.drawable.baseline_do_disturb_24), false);
+      }
+  }
+  private void timeZoneVerification(){
+      boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context);
+      if (!isAutoTimeZoneEnabled) {
+          CommonUtilsMethods.showCustomDialog(this);
       }
   }
 }
