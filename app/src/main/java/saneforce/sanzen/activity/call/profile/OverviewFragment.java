@@ -26,6 +26,7 @@ public class OverviewFragment extends Fragment {
         View view = overviewBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
+        hideUnwantedView();
         SetProfileData();
         return view;
     }
@@ -53,6 +54,32 @@ public class OverviewFragment extends Fragment {
                 overviewBinding.tvAddress.setText(DCRCallActivity.CallActivityCustDetails.get(0).getAddress());
         } catch (Exception ignored) {
 
+        }
+    }
+
+    private void hideUnwantedView() {
+        switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()){
+            case "1":
+            case "4":
+                break;
+            case "2":
+                overviewBinding.tvTagQualify.setVisibility(View.GONE);
+                overviewBinding.tvQualify.setVisibility(View.GONE);
+                overviewBinding.tvTagSpeciality.setVisibility(View.GONE);
+                overviewBinding.tvSpeciality.setVisibility(View.GONE);
+                break;
+            case "3":
+                overviewBinding.tvTagDob.setVisibility(View.GONE);
+                overviewBinding.tvDob.setVisibility(View.GONE);
+                overviewBinding.tvTagWedDate.setVisibility(View.GONE);
+                overviewBinding.tvWedDate.setVisibility(View.GONE);
+                overviewBinding.tvTagQualify.setVisibility(View.GONE);
+                overviewBinding.tvQualify.setVisibility(View.GONE);
+                overviewBinding.tvTagSpeciality.setVisibility(View.GONE);
+                overviewBinding.tvSpeciality.setVisibility(View.GONE);
+                overviewBinding.tvTagCategory.setVisibility(View.GONE);
+                overviewBinding.tvCategory.setVisibility(View.GONE);
+                break;
         }
     }
 }

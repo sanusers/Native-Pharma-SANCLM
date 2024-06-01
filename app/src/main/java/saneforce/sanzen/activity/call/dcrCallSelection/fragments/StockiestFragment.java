@@ -56,12 +56,12 @@ public class StockiestFragment extends Fragment {
     Dialog dialogFilter;
     ImageButton iv_filter;
     ImageView img_close;
-    Button btn_apply;
+    Button btn_apply, btn_clear;
     JSONArray jsonArray;
     TextView tv_hqName,tvTerritory,tv_filter_count;
     CommonUtilsMethods commonUtilsMethods;
 
-    String TerritoryCode;
+    String territoryCode = "", territoryName = "";
 
     ListView lv_terr;
     ArrayList<CustList> FilltercustArraList = new ArrayList<>();
@@ -117,11 +117,11 @@ public class StockiestFragment extends Fragment {
         try {
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
 
-            Log.v("STKCALL", "-stk_full_length-" + jsonArray.length());
+            Log.v("STKCALL", "-stk_full_length-" + jsonArray.length() +"\n"+ SharedPref.getTodayDayPlanClusterCode(requireContext()));
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-
+                Log.e("TAG", "SetupAdapter: " + jsonObject.getString("Town_Code"));
                     if (SharedPref.getGeotagNeedStock(context).equalsIgnoreCase("1")) {
                         if (!jsonObject.getString("lat").isEmpty() && !jsonObject.getString("long").isEmpty()) {
                             if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
@@ -129,26 +129,29 @@ public class StockiestFragment extends Fragment {
                                 float[] distance = new float[2];
                                 Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                 if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
-                                    if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
+//                                    if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
                                         custListArrayList = SaveData(jsonObject,i);
-                                    }
+//                                    }
                                 }
                             } else {
                                 Log.v("STKCALL", "--22-");
                                 float[] distance = new float[2];
                                 Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                 if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
-                                    custListArrayList = SaveData(jsonObject,i);                                }
+                                    custListArrayList = SaveData(jsonObject,i);
+                                }
                             }
                         }
                     } else {
-                        if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
-                            Log.v("STKCALL", "--33-");
-                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
-                                custListArrayList = SaveData(jsonObject,i);                            }
-                        } else {
+//                        if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
+//                            Log.v("STKCALL", "--33-");
+//                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+//                                custListArrayList = SaveData(jsonObject,i);
+//                            }
+//                        } else {
                             Log.v("STKCALL", "--44-");
-                            custListArrayList = SaveData(jsonObject,i);                        }
+                            custListArrayList = SaveData(jsonObject,i);
+//                        }
                     }
                 }
 
@@ -182,9 +185,9 @@ public class StockiestFragment extends Fragment {
     private ArrayList<CustList> SaveData(JSONObject jsonObject, int i) {
         try {
             if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
-                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "3", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), "", "", jsonObject.getString("Stockiest_Email"), jsonObject.getString("Stockiest_Mobile"), jsonObject.getString("Stockiest_Phone"), jsonObject.getString("Stockiest_Cont_Desig"), "","","",false));
+                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "3", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), "", "", jsonObject.getString("Stockiest_Email"), jsonObject.getString("Stockiest_Mobile"), jsonObject.getString("Stockiest_Phone"), jsonObject.getString("Stockiest_Cont_Desig"), "","","",false));
             } else {
-                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "3", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), "", "", jsonObject.getString("Stockiest_Email"), jsonObject.getString("Stockiest_Mobile"), jsonObject.getString("Stockiest_Phone"), jsonObject.getString("Stockiest_Cont_Desig"), "","","",true));
+                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "3", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), "", "", jsonObject.getString("Stockiest_Email"), jsonObject.getString("Stockiest_Mobile"), jsonObject.getString("Stockiest_Phone"), jsonObject.getString("Stockiest_Cont_Desig"), "","","",true));
             }
         } catch (Exception e) {
             Log.v("STKCALL", "--1111---" + e.toString());
@@ -213,17 +216,23 @@ public class StockiestFragment extends Fragment {
         dialogFilter.setCancelable(false);
         dialogFilter.show();
 
-        TerritoryCode="";
-        TextView territory=dialogFilter.findViewById(R.id.constraint_territory);
-        territory.setVisibility(View.VISIBLE);
         img_close = dialogFilter.findViewById(R.id.img_close);
         btn_apply = dialogFilter.findViewById(R.id.btn_apply);
+        btn_clear = dialogFilter.findViewById(R.id.btn_clear);
         tvTerritory = dialogFilter.findViewById(R.id.constraint_territory);
+        tvTerritory.setVisibility(View.VISIBLE);
 
         lv_terr = dialogFilter.findViewById(R.id.lv_territory);
         img_close.setOnClickListener(view12 -> dialogFilter.dismiss());
 
-        btn_apply.setOnClickListener(view1 -> Filltered());
+        btn_apply.setOnClickListener(view1 -> Filtered());
+
+        btn_clear.setOnClickListener(view -> {
+            territoryCode = "";
+            territoryName = "";
+            tvTerritory.setText("");
+            tvTerritory.setHint(R.string.territory);
+        });
 
         tvTerritory.setOnClickListener(view -> {
             if (lv_terr.getVisibility() == View.VISIBLE) {
@@ -232,16 +241,16 @@ public class StockiestFragment extends Fragment {
             } else {
                 filterSelectionList.clear();
                 try {
-                    JSONArray jsonArray = new JSONArray();
-                    jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                     Log.v("jsonArray", "--" + jsonArray.length());
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"),jsonObject.getString("Name")));
+                        filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"),jsonObject.getString("Code")));
                     }
 
                     FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
-                        TerritoryCode = clickedItem.getCode();
+                        territoryCode = clickedItem.getCode();
+                        territoryName = clickedItem.getName();
                         tvTerritory.setText(clickedItem.getName());
                         lv_terr.setVisibility(View.GONE);
 
@@ -260,16 +269,16 @@ public class StockiestFragment extends Fragment {
 
     }
 
-    public void Filltered() {
+    public void Filtered() {
         FilltercustArraList.clear();
-        if (TerritoryCode.equalsIgnoreCase("")) {
+        if (territoryName.equalsIgnoreCase("")) {
             FilltercustArraList.addAll(custListArrayList);
 
             tv_filter_count.setText("0");
             Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
         } else {
             for (CustList mList : custListArrayList) {
-                if (mList.getTown_code().equalsIgnoreCase(TerritoryCode)) {
+                if (mList.getTown_name().equalsIgnoreCase(territoryName)) {
                     FilltercustArraList.add(mList);
                 }
             }

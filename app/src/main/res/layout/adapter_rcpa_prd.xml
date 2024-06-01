@@ -62,6 +62,7 @@
             android:paddingVertical="@dimen/_4sdp"
             android:textColor="@color/dark_purple"
             android:textSize="@dimen/_6ssp"
+            android:maxLength="4"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tag_rate"
             app:layout_constraintStart_toEndOf="@id/tag_qty"

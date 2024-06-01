@@ -280,13 +280,13 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view ->{
+            gpsTrack = new GPSTrack(this);
             RemaindercallsActivity.vals_rm = "";
             progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
             if(SharedPref.getGeoChk(this).equalsIgnoreCase("0")){
                 if(gpsTrack != null && ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0))) {
                     submitCall();
                 }else {
-                    gpsTrack = new GPSTrack(this);
                     commonUtilsMethods.showToastMessage(this, getString(R.string.please_try_again));
                     progressDialog.dismiss();
                 }
@@ -312,7 +312,6 @@ public class DCRCallActivity extends AppCompatActivity {
             isCreateJsonSuccess = true;
             if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
                 if(UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                    gpsTrack = new GPSTrack(DCRCallActivity.this);
                     double lat = gpsTrack.getLatitude();
                     double lng = gpsTrack.getLongitude();
                     address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
@@ -2557,7 +2556,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                     @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     sdf.setLenient(false);
-                    String todayData = CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd");
+                    String todayData = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
 
                     Date d1 = sdf.parse(jsonFDate.getString("date").substring(0, 10));
                     Date d2 = sdf.parse(todayData);
@@ -2575,7 +2574,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
-            if (InputFragment.checkedInputList.size() == 0) {
+            if (InputFragment.checkedInputList.isEmpty()) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (jsonObject.getString("Code").equalsIgnoreCase("-1")) {
