@@ -65,7 +65,8 @@ public class UnlistedDoctorFragment extends Fragment {
     ListView lv_spec, lv_cate, lv_terr,lv_class;
 
 
-    String specialityCode, categoryCode, territoryCode,ClassCode;
+    String specialityCode = "", categoryCode = "", territoryCode = "", classCode = "";
+    String specialityName = "", categoryName = "", territoryName = "", className = "";
     TextView tv_hqName, tv_add_condition, tv_filterCount;
     Button btn_apply, btn_clear;
     ArrayList<DCRFillteredModelClass> filterSelectionList = new ArrayList<>();
@@ -131,9 +132,9 @@ public class UnlistedDoctorFragment extends Fragment {
                             float[] distance = new float[2];
                             Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                             if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
-                                if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
+//                                if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
                                     custListArrayList = SaveData(jsonObject, i);
-                                }
+//                                }
                             }
                         } else {
                             Log.v("UNDRCALL", "--22-");
@@ -145,15 +146,15 @@ public class UnlistedDoctorFragment extends Fragment {
                         }
                     }
                 } else {
-                    if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
-                        Log.v("UNDRCALL", "--33-");
-                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
-                            custListArrayList = SaveData(jsonObject, i);
-                        }
-                    } else {
+//                    if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
+//                        Log.v("UNDRCALL", "--33-");
+//                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+//                            custListArrayList = SaveData(jsonObject, i);
+//                        }
+//                    } else {
                         Log.v("UNDRCALL", "--44-");
                         custListArrayList = SaveData(jsonObject, i);
-                    }
+//                    }
                 }
             }
 
@@ -187,11 +188,11 @@ public class UnlistedDoctorFragment extends Fragment {
             if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
                 jsonObjectDob = new JSONObject(jsonObject.getString("DOB"));
                 jsonObjectDow = new JSONObject(jsonObject.getString("DOW"));
-                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "4", jsonObject.getString("CategoryName"), jsonObject.getString("Category"), jsonObject.getString("SpecialtyName"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObjectDob.getString("date"), jsonObjectDow.getString("date"), jsonObject.getString("Email"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), "", "",jsonObject.getString("Doc_ClsCode"), jsonObject.getString("Specialty"),false));
+                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "4", jsonObject.getString("CategoryName"), jsonObject.getString("Category"), jsonObject.getString("SpecialtyName"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addrs"), jsonObjectDob.getString("date"), jsonObjectDow.getString("date"), jsonObject.getString("Email"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), "", "",jsonObject.getString("Doc_ClsCode"), jsonObject.getString("Specialty"),false));
             } else {
                 jsonObjectDob = new JSONObject(jsonObject.getString("DOB"));
                 jsonObjectDow = new JSONObject(jsonObject.getString("DOW"));
-                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "4", jsonObject.getString("CategoryName"), jsonObject.getString("Category"), jsonObject.getString("SpecialtyName"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObjectDob.getString("date"), jsonObjectDow.getString("date"), jsonObject.getString("Email"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), "", "", jsonObject.getString("Doc_ClsCode"),jsonObject.getString("Specialty"),true));
+                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "4", jsonObject.getString("CategoryName"), jsonObject.getString("Category"), jsonObject.getString("SpecialtyName"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addrs"), jsonObjectDob.getString("date"), jsonObjectDow.getString("date"), jsonObject.getString("Email"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), "", "", jsonObject.getString("Doc_ClsCode"),jsonObject.getString("Specialty"),true));
             }
         } catch (Exception e) {
             Log.v("UNDRCALL", "--1111---" + e.toString());
@@ -210,14 +211,7 @@ public class UnlistedDoctorFragment extends Fragment {
         adapterDCRCallSelection.filterList(filteredNames);
     }
 
-
-
     public  void CustomizeFiltered(){
-
-
-        specialityCode ="";
-        territoryCode ="";
-        ClassCode =""; categoryCode ="";
 
         dialogFilter = new Dialog(requireContext());
         dialogFilter.setContentView(R.layout.popup_dcr_filter);
@@ -241,38 +235,78 @@ public class UnlistedDoctorFragment extends Fragment {
         tvSpec.setVisibility(View.VISIBLE);
         tvCate.setVisibility(View.VISIBLE);
         tv_add_condition.setVisibility(View.VISIBLE);
-        img_del.setVisibility(View.VISIBLE);
+        img_del.setVisibility(View.GONE);
+
+        if(!territoryCode.isEmpty()) {
+            tvTerritory.setVisibility(View.VISIBLE);
+            img_del.setVisibility(View.VISIBLE);
+        }else {
+            tvTerritory.setVisibility(View.GONE);
+            img_del.setVisibility(View.GONE);
+        }
+
+        if(!classCode.isEmpty()) {
+            tvTerritory.setVisibility(View.INVISIBLE);
+            tvClass.setVisibility(View.VISIBLE);
+        }else {
+            tvClass.setVisibility(View.GONE);
+        }
+
         constraintLayout=dialogFilter.findViewById(R.id.constraint_btns);
         img_close.setOnClickListener(view12 -> dialogFilter.dismiss());
 
         btn_clear.setOnClickListener(view15 -> {
+            specialityCode = "";
+            territoryCode = "";
+            categoryCode = "";
+            classCode = "";
+            specialityName = "";
+            territoryName = "";
+            categoryName = "";
+            className = "";
+            tvSpec.setText("");
+            tvTerritory.setText("");
+            tvCate.setText("");
+            tvClass.setText("");
             tvSpec.setHint(R.string.speciality);
             tvTerritory.setHint(R.string.territory);
             tvCate.setHint(R.string.category);
             tvClass.setHint(R.string.class_filter);
-
         });
+        tvSpec.setText(specialityName);
+        tvTerritory.setText(territoryName);
+        tvCate.setText(categoryName);
+        tvClass.setText(className);
 
         tv_add_condition.setOnClickListener(view13 -> {
             if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvTerritory.getVisibility() == View.VISIBLE) {
                 tvClass.setVisibility(View.VISIBLE);
+                tv_add_condition.setVisibility(View.GONE);
             } else if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE) {
                 tvTerritory.setVisibility(View.VISIBLE);
+                img_del.setVisibility(View.VISIBLE);
             }
         });
 
         img_del.setOnClickListener(view14 -> {
+            if(!classCode.isEmpty()) {
+                classCode = "";
+                className = "";
+            }
+            if(!territoryCode.isEmpty()) {
+                territoryCode = "";
+                territoryName = "";
+            }
             if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvClass.getVisibility() == View.INVISIBLE) {
                 tvTerritory.setVisibility(View.GONE);
-                tvTerritory.setText(R.string.territory);
+                img_del.setVisibility(View.GONE);
+                tvTerritory.setHint(R.string.territory);
             } else if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvTerritory.getVisibility() == View.VISIBLE) {
                 tvClass.setVisibility(View.INVISIBLE);
-                tvClass.setText(R.string.class_filter);
+                tv_add_condition.setVisibility(View.VISIBLE);
+                tvClass.setHint(R.string.class_filter);
             }
         });
-
-
-
 
         tvSpec.setOnClickListener(view -> {
             if (lv_spec.getVisibility() == View.VISIBLE) {
@@ -284,6 +318,7 @@ public class UnlistedDoctorFragment extends Fragment {
 
                 FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
                     specialityCode = clickedItem.getCode();
+                    specialityName = clickedItem.getName();
                     tvSpec.setText(clickedItem.getName());
                     lv_spec.setVisibility(View.GONE);
                     tv_add_condition.setVisibility(View.VISIBLE);
@@ -293,14 +328,8 @@ public class UnlistedDoctorFragment extends Fragment {
                 lv_spec.setVisibility(View.VISIBLE);
                 tv_add_condition.setVisibility(View.INVISIBLE);
                 constraintLayout.setVisibility(View.INVISIBLE);
-
-
             }
-
-
         });
-
-
 
         tvCate.setOnClickListener(view -> {
             if (lv_cate.getVisibility() == View.VISIBLE) {
@@ -311,6 +340,7 @@ public class UnlistedDoctorFragment extends Fragment {
                 getFilterList("Category");
                 FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
                     categoryCode = clickedItem.getCode();
+                    categoryName = clickedItem.getName();
                     tvCate.setText(clickedItem.getName());
                     lv_cate.setVisibility(View.GONE);
                     tv_add_condition.setVisibility(View.VISIBLE);
@@ -324,7 +354,6 @@ public class UnlistedDoctorFragment extends Fragment {
 
         });
 
-
         tvTerritory.setOnClickListener(view -> {
             if (lv_terr.getVisibility() == View.VISIBLE) {
                 lv_terr.setVisibility(View.GONE);
@@ -334,6 +363,7 @@ public class UnlistedDoctorFragment extends Fragment {
                 getFilterList("Territory");
                 FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
                     territoryCode = clickedItem.getCode();
+                    territoryName = clickedItem.getName();
                     tvTerritory.setText(clickedItem.getName());
                     lv_terr.setVisibility(View.GONE);
                     tv_add_condition.setVisibility(View.VISIBLE);
@@ -347,8 +377,6 @@ public class UnlistedDoctorFragment extends Fragment {
 
         });
 
-
-
         tvClass.setOnClickListener(view -> {
             if (lv_class.getVisibility() == View.VISIBLE) {
                 lv_class.setVisibility(View.GONE);
@@ -357,7 +385,8 @@ public class UnlistedDoctorFragment extends Fragment {
             } else {
                 getFilterList("Class");
                 FillteredAdapter arrayAdapter = new FillteredAdapter(requireContext(), filterSelectionList, clickedItem -> {
-                    ClassCode = clickedItem.getCode();
+                    classCode = clickedItem.getCode();
+                    className = clickedItem.getName();
                     tvClass.setText(clickedItem.getName());
                     lv_class.setVisibility(View.GONE);
                     tv_add_condition.setVisibility(View.VISIBLE);
@@ -371,16 +400,9 @@ public class UnlistedDoctorFragment extends Fragment {
 
         });
 
-
-
         btn_apply.setOnClickListener(view1 -> {
-            Filltered();
+            Filtered();
         });
-
-        btn_clear.setOnClickListener(view2 -> {
-            Filltered();
-        });
-
 
     }
 
@@ -408,33 +430,95 @@ public class UnlistedDoctorFragment extends Fragment {
         }
     }
 
-
-
-
-    public  void  Filltered(){
+    public void Filtered() {
         FilltercustArraList.clear();
-        if(specialityCode.equalsIgnoreCase("")&&categoryCode.equalsIgnoreCase("")&&territoryCode.equalsIgnoreCase("")&&ClassCode.equalsIgnoreCase("")){
+        if(specialityCode.equalsIgnoreCase("") && categoryCode.equalsIgnoreCase("") && territoryCode.equalsIgnoreCase("") && classCode.equalsIgnoreCase("")) {
             FilltercustArraList.addAll(custListArrayList);
             tv_filterCount.setText("0");
             Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
         }else {
-            for(CustList mList:custListArrayList){
-                if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)){
+            for (CustList mList : custListArrayList) {
+                if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                        && mList.getTown_code().equalsIgnoreCase(territoryCode)
+                        && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                        && mList.getClassCode().equalsIgnoreCase(classCode)) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getCategoryCode().equalsIgnoreCase(categoryCode)){
+                }else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                        && mList.getTown_code().equalsIgnoreCase(territoryCode)
+                        && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                        && classCode.isEmpty()) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getTown_code().equalsIgnoreCase(territoryCode)){
+                }else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                        && mList.getTown_code().equalsIgnoreCase(territoryCode)
+                        && mList.getClassCode().equalsIgnoreCase(classCode)
+                        && categoryCode.isEmpty()) {
                     FilltercustArraList.add(mList);
-                }
-                else if(mList.getClassCode().equalsIgnoreCase(ClassCode)){
+                }else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                        && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                        && mList.getClassCode().equalsIgnoreCase(classCode)
+                        && territoryCode.isEmpty()) {
                     FilltercustArraList.add(mList);
+                }else if(mList.getTown_code().equalsIgnoreCase(territoryCode)
+                        && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                        && mList.getClassCode().equalsIgnoreCase(classCode)
+                        && specialityCode.isEmpty()) {
+                    FilltercustArraList.add(mList);
+                }else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                        && mList.getTown_code().equalsIgnoreCase(territoryCode)
+                        && categoryCode.isEmpty()
+                        && classCode.isEmpty()) {
+                    FilltercustArraList.add(mList);
+                }else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                        && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                        && territoryCode.isEmpty()
+                        && classCode.isEmpty()) {
+                    FilltercustArraList.add(mList);
+                }else if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                        && mList.getClassCode().equalsIgnoreCase(classCode)
+                        && territoryCode.isEmpty()
+                        && categoryCode.isEmpty()) {
+                    FilltercustArraList.add(mList);
+                }else if(mList.getTown_code().equalsIgnoreCase(territoryCode)
+                        && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                        && specialityCode.isEmpty()
+                        && classCode.isEmpty()) {
+                    FilltercustArraList.add(mList);
+                }else if(mList.getTown_code().equalsIgnoreCase(territoryCode)
+                        && mList.getClassCode().equalsIgnoreCase(classCode)
+                        && specialityCode.isEmpty()
+                        && categoryCode.isEmpty()) {
+                    FilltercustArraList.add(mList);
+                }else if(mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                        && mList.getClassCode().equalsIgnoreCase(classCode)
+                        && specialityCode.isEmpty()
+                        && territoryCode.isEmpty()) {
+                    FilltercustArraList.add(mList);
+                }else {
+                    if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
+                            && territoryCode.isEmpty()
+                            && categoryCode.isEmpty()
+                            && classCode.isEmpty()) {
+                        FilltercustArraList.add(mList);
+                    }else if(mList.getCategoryCode().equalsIgnoreCase(categoryCode)
+                            && specialityCode.isEmpty()
+                            && territoryCode.isEmpty()
+                            && classCode.isEmpty()) {
+                        FilltercustArraList.add(mList);
+                    }else if(mList.getTown_code().equalsIgnoreCase(territoryCode)
+                            && specialityCode.isEmpty()
+                            && categoryCode.isEmpty()
+                            && classCode.isEmpty()) {
+                        FilltercustArraList.add(mList);
+                    }else if(mList.getClassCode().equalsIgnoreCase(classCode)
+                            && specialityCode.isEmpty()
+                            && territoryCode.isEmpty()
+                            && categoryCode.isEmpty()) {
+                        FilltercustArraList.add(mList);
+                    }
+                    tv_filterCount.setText(String.valueOf(FilltercustArraList.size()));
                 }
             }
-            tv_filterCount.setText(String.valueOf(FilltercustArraList.size()));
         }
-
 
         adapterDCRCallSelection.notifyDataSetChanged();
         dialogFilter.dismiss();

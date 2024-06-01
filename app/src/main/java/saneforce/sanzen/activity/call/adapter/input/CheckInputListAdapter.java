@@ -205,15 +205,19 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
     private void checkAndSetNoInputCheckedOrUnchecked() {
         if(!(DCRCallActivity.InpMandatory != null && DCRCallActivity.InpMandatory.equals("1"))) {
             if(!checkAnyInputSelected()) {
-                checked_arrayList.get(0).setCheckedItem(true);
-                noInputHolder.checkBox.setChecked(true);
-                noInputHolder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
-                noInputHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
+                if(checked_arrayList.get(0).getCode().equalsIgnoreCase("-10")) {
+                    checked_arrayList.get(0).setCheckedItem(true);
+                    noInputHolder.checkBox.setChecked(true);
+                    noInputHolder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
+                    noInputHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
+                }
             }else {
-                checked_arrayList.get(0).setCheckedItem(false);
-                noInputHolder.checkBox.setChecked(false);
-                noInputHolder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
-                noInputHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
+                if(checked_arrayList.get(0).getCode().equalsIgnoreCase("-10")) {
+                    checked_arrayList.get(0).setCheckedItem(false);
+                    noInputHolder.checkBox.setChecked(false);
+                    noInputHolder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
+                    noInputHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
+                }
             }
         }
     }

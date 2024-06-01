@@ -155,6 +155,7 @@
                         android:inputType="number"
                         android:padding="@dimen/_6sdp"
                         android:hint="Enter Qty"
+                        android:maxLength="4"
                         android:textColor="@color/dark_purple"
                         android:textColorHint="@color/black"
                         android:textSize="@dimen/_6ssp"
