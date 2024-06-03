@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">Test.H.2</string>
+    <string name="app_version" translatable="false">Test.H.3</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -265,6 +265,7 @@
     <string name="poor_connection">Poor Network Connection</string>
     <string name="no_slides">No slides!</string>
     <string name="processing">Processing</string>
+    <string name="proceed">Proceed</string>
     <string name="scribble_upload">Scribble Upload Successfully</string>
     <string name="no_qty_prd">No Qty Available in this Product</string>
     <string name="no_qty_input">No Qty Available in this Input</string>

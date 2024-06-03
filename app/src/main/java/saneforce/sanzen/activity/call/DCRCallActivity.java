@@ -103,8 +103,9 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityDcrcallBinding;
+
+import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.databinding.DialogTimezoneBinding;
-import saneforce.sanzen.location.CheckFakeGPS;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.response.CustomSetupResponse;
@@ -2741,7 +2742,8 @@ public class DCRCallActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        CheckFakeGPS.CheckLocationStatus(DCRCallActivity.this);
+        CommonAlertBox.CheckLocationStatus(DCRCallActivity.this);
+
         timeZoneVerification();
     }
     @Override

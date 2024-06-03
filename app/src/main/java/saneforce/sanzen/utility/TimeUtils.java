@@ -47,7 +47,7 @@ public class TimeUtils {
     public static final String FORMAT_28 = "d";
     public static final String FORMAT_29 = "HH:mm";
     public static final String FORMAT_30 = "dd-MM-yyyy HH:mm";
-    public static final String FORMAT_31 = "m";
+    public static final String FORMAT_31 = "M";
     public static final String FORMAT_32 = "HH:mm:ss";
     public static final String FORMAT_33 = "hh:mm:ss a";
     public static final String FORMAT_34 = "d-M-yyyy";

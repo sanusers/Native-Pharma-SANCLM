@@ -10,6 +10,12 @@ public class TpDetailedModel {
     String WtName;
     String WtName2;
     String WtName3;
+    String HqCode;
+    String HqCode2;
+    String HqCode3;
+    String HqName;
+    String HqName2;
+    String HqName3;
     String ClusterCode;
     String ClusterCode2;
     String ClusterCode3;
@@ -34,18 +40,20 @@ public class TpDetailedModel {
     String jwName;
     String jwName2;
     String jwName3;
-    public TpDetailedModel(String dayNo, String wtName, String clusterName, String FWFlg, String dayRemarks, String drName,String chemName,String StockiestName,String jwName) {
+    public TpDetailedModel(String dayNo, String wtName,String hqName, String clusterName, String FWFlg, String dayRemarks, String drName,String chemName,String StockiestName,String jwName) {
         DayNo = dayNo;
         WtName = wtName;
         ClusterName = clusterName;
         this.FWFlg = FWFlg;
+        this.HqName = FWFlg;
         DayRemarks = dayRemarks;
         this.drName = drName;
         this.chemistName = chemName;
         this.stockiestName = StockiestName;
         this.jwName = jwName;
+        this.HqName = hqName;
     }
-    public TpDetailedModel(String dayNo, String status, String reasonForRejection, String wtCode, String wtCode2, String wtCode3, String wtName, String wtName2, String wtName3, String clusterCode, String clusterCode2, String clusterCode3, String clusterName, String clusterName2, String clusterName3, String FWFlg, String FWFlg2, String FWFlg3, String dayRemarks, String dayRemarks2, String dayRemarks3, String drName, String drName2, String drName3, String chemistName, String chemistName2, String chemistName3, String stockiestName, String stockiestName2, String stockiestName3, String jwName, String jwName2, String jwName3) {
+    public TpDetailedModel(String dayNo, String status, String reasonForRejection, String wtCode, String wtCode2, String wtCode3, String wtName, String wtName2, String wtName3, String hqCode ,String hqCode2, String hqCode3,String hqName,String hqName2,String hqName3,String clusterCode, String clusterCode2, String clusterCode3, String clusterName, String clusterName2, String clusterName3, String FWFlg, String FWFlg2, String FWFlg3, String dayRemarks, String dayRemarks2, String dayRemarks3, String drName, String drName2, String drName3, String chemistName, String chemistName2, String chemistName3, String stockiestName, String stockiestName2, String stockiestName3, String jwName, String jwName2, String jwName3) {
         DayNo = dayNo;
         Status = status;
         this.reasonForRejection = reasonForRejection;
@@ -55,6 +63,12 @@ public class TpDetailedModel {
         WtName = wtName;
         WtName2 = wtName2;
         WtName3 = wtName3;
+        HqCode = hqCode;
+        HqCode2 = hqCode2;
+        HqCode3 = hqCode3;
+        HqName = hqName;
+        HqName2 = hqName2;
+        HqName3 = hqName3;
         ClusterCode = clusterCode;
         ClusterCode2 = clusterCode2;
         ClusterCode3 = clusterCode3;
@@ -343,5 +357,53 @@ public class TpDetailedModel {
 
     public void setDayRemarks3(String dayRemarks3) {
         DayRemarks3 = dayRemarks3;
+    }
+
+    public String getHqCode() {
+        return HqCode;
+    }
+
+    public void setHqCode(String hqCode) {
+        HqCode = hqCode;
+    }
+
+    public String getHqCode2() {
+        return HqCode2;
+    }
+
+    public void setHqCode2(String hqCode2) {
+        HqCode2 = hqCode2;
+    }
+
+    public String getHqCode3() {
+        return HqCode3;
+    }
+
+    public void setHqCode3(String hqCode3) {
+        HqCode3 = hqCode3;
+    }
+
+    public String getHqName() {
+        return HqName;
+    }
+
+    public void setHqName(String hqName) {
+        HqName = hqName;
+    }
+
+    public String getHqName2() {
+        return HqName2;
+    }
+
+    public void setHqName2(String hqName2) {
+        HqName2 = hqName2;
+    }
+
+    public String getHqName3() {
+        return HqName3;
+    }
+
+    public void setHqName3(String hqName3) {
+        HqName3 = hqName3;
     }
 }

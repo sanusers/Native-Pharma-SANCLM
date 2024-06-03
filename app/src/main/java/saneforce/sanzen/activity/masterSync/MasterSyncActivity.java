@@ -1562,7 +1562,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
             ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
 
             String monthYear = monthYearFromDate(localDate);
-            String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_8, monthYear);
+            String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
             String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
             String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
             ArrayList<ModelClass> modelClasses = new ArrayList<>();

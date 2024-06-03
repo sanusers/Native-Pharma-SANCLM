@@ -60,6 +60,7 @@ import saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
 import saneforce.sanzen.activity.leave.Leave_Application;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
+import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -559,7 +560,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 } else {
                     ShowWorkTypeAlert(binding.txtWorktype1, binding.rlcluster1, binding.rlheadquates1);
                 }
-
                 break;
 
             case R.id.rlcluster1:
@@ -574,7 +574,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 } else {
                     showMultiClusterAlter();
                 }
-
                 break;
 
 
@@ -614,7 +613,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.txtSave:
-                if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")){
+
+                if (SharedPref.getApprovalManatoryStatus(requireContext()) && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                    CommonAlertBox.ApprovalAlert(requireActivity());
+                } else if (SharedPref.getTpmanatoryStatus(requireContext())) {
+                    CommonAlertBox.TpAlert(requireActivity());
+                }else {
+                    if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")){
                     if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
                         saveMyDayPlan();
                     }else {
@@ -623,7 +628,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                 }else {
                     saveMyDayPlan();
-                }
+                }}
                 break;
 
             case R.id.txtAddPlan:
@@ -639,23 +644,22 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.btnsumit:
-                if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")){
-                    if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
+                if (SharedPref.getApprovalManatoryStatus(requireContext()) && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                    CommonAlertBox.ApprovalAlert(requireActivity());
+                } else if (SharedPref.getTpmanatoryStatus(requireContext())) {
+                    CommonAlertBox.TpAlert(requireActivity());
+                } else {
+                    if (SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
+                        if ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
+                            submitMyDayPlan();
+                        } else {
+                            gpsTrack = new GPSTrack(requireContext());
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_try_again));
+                        }
+                    } else {
                         submitMyDayPlan();
-                    }else {
-                        gpsTrack = new GPSTrack(requireContext());
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_try_again));
                     }
-                }else {
-                    submitMyDayPlan();
                 }
-//                if (mSubmitflag.equalsIgnoreCase("S1")) {
-//                    AletboxRemarks();
-//                } else if (mSubmitflag.equalsIgnoreCase("S2")) {
-//                    MyDayPlanSubmit();
-//                } else {
-//                    Toast.makeText(getActivity(), "Save Workday Plan", Toast.LENGTH_SHORT).show();
-//                }
                 break;
 
 

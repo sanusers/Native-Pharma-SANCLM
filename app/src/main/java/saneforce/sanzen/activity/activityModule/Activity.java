@@ -100,7 +100,7 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityBinding;
-import saneforce.sanzen.location.CheckFakeGPS;
+import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 
@@ -3629,7 +3629,7 @@ public class Activity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        CheckFakeGPS.CheckLocationStatus(Activity.this);
+        CommonAlertBox.CheckLocationStatus(Activity.this);
     }
 }
 

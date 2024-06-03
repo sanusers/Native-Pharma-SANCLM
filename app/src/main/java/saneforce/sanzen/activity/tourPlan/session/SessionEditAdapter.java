@@ -934,10 +934,10 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 else
                     holder.stockiestLayout.setVisibility(View.GONE);
 
-                if (unListedDrNeed.equalsIgnoreCase("0"))
-                    holder.unListedDrLayout.setVisibility(View.VISIBLE);
-                else
-                    holder.unListedDrLayout.setVisibility(View.GONE);
+//                if (unListedDrNeed.equalsIgnoreCase("0"))
+//                    holder.unListedDrLayout.setVisibility(View.VISIBLE);
+//                else
+//                    holder.unListedDrLayout.setVisibility(View.GONE);
 
                 if (cipNeed.equalsIgnoreCase("0"))
                     holder.cipLayout.setVisibility(View.VISIBLE);

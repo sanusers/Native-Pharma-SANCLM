@@ -36,6 +36,7 @@ import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.adapters.Call_adapter;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.modelClass.CallsModalClass;
+import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -298,10 +299,6 @@ public class CallsFragment extends Fragment {
         masterDataDao =db.masterDataDao();
 
 
-
-
-
-
         adapter = new Call_adapter(requireContext(), TodayCallList, apiInterface);
         LinearLayoutManager manager = new LinearLayoutManager(requireContext());
         binding.recyelerview.setNestedScrollingEnabled(false);
@@ -315,16 +312,36 @@ public class CallsFragment extends Fragment {
 
 
         binding.rlSyncCall.setOnClickListener(v12 -> {
-            if (UtilityClass.isNetworkAvailable(requireContext())) {
+            if (SharedPref.getApprovalManatoryStatus(requireContext()) && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                CommonAlertBox.ApprovalAlert(requireActivity());
+            } else if (SharedPref.getTpmanatoryStatus(requireContext())) {
+                CommonAlertBox.TpAlert(requireActivity());
+            }else {    if (UtilityClass.isNetworkAvailable(requireContext())) {
                 binding.rlSyncCall.setEnabled(false);
                 CallTodayCallsAPI(requireContext(), apiInterface, true);
             } else {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+            }}
+
+        });
+
+        binding.TvAddActivty.setOnClickListener(view -> {
+            if (SharedPref.getApprovalManatoryStatus(requireContext()) && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                CommonAlertBox.ApprovalAlert(requireActivity());
+            } else if (SharedPref.getTpmanatoryStatus(requireContext())) {
+                CommonAlertBox.TpAlert(requireActivity());
             }
         });
 
+
         binding.tvAddCall.setOnClickListener(view -> {
             // startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+            if (SharedPref.getApprovalManatoryStatus(requireContext()) && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                CommonAlertBox.ApprovalAlert(requireActivity());
+            } else if (SharedPref.getTpmanatoryStatus(requireContext())) {
+                CommonAlertBox.TpAlert(requireActivity());
+            }else {
+
             if (SharedPref.getSfCode(requireContext()).equalsIgnoreCase("0")) {
                 if (SharedPref.getSkipCheckIn(requireContext())) {
                     if (SharedPref.getHqCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getHqCode(requireContext()).isEmpty()) {
@@ -381,7 +398,7 @@ public class CallsFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
+            }}
         });
 
         return v;

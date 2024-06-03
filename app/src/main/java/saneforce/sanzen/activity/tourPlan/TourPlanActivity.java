@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -97,7 +96,6 @@ public class TourPlanActivity extends AppCompatActivity {
     boolean isDataAvailable,isEdited;
     CommonUtilsMethods commonUtilsMethods;
     public static ActivityTourPlanBinding binding;
-
     public static String SFTP_Date_sp="",SFTP_Date="";
     public static  int JoningDate,JoiningMonth, JoinYear;
 
@@ -236,8 +234,14 @@ public class TourPlanActivity extends AppCompatActivity {
 
 
         binding.backArrow.setOnClickListener(view -> {
+
+            if (SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") &&
+                    !SharedPref.getTpStartDate(context).equalsIgnoreCase("1") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("-1") &&
+                    !SharedPref.getTpEndDate(context).equalsIgnoreCase("1") && !SharedPref.getTpEndDate(context).equalsIgnoreCase("-1")) {
+                    SharedPref.setTpSKIPDate(TourPlanActivity.this,TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
+            }
+
             getOnBackPressedDispatcher().onBackPressed();
-            HomeDashBoard.tpRangeCheck=false;
             finish();
         });
         binding.calendarNextButton.setOnClickListener(view -> {
@@ -559,7 +563,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         for (ModelClass modelClass : arrayList) {
                             if (!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
 
-                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, ">Offline TourPlan Uploading…");
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, " Offline TourPlan Uploading…");
                                 dummy.add(modelClass.getDayNo());
                                 Log.v("tpApproval", "---" + modelClass.getDayNo());
                                 binding.progressBar.setVisibility(View.VISIBLE);
@@ -670,8 +674,6 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
             }
 
-
-
             JSONArray workTypeArray1 = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
             for (int i = 0; i < workTypeArray1.length(); i++) {
                 JSONObject jsonObject = workTypeArray1.getJSONObject(i);
@@ -736,7 +738,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
                 ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate1));
                 String monthYear = monthYearFromDate(localDate1);
-                String month = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_8, monthYear);
+                String month = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
                 String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
 
                 ArrayList<String> holidayDateArray = new ArrayList<>();
@@ -1024,15 +1026,7 @@ public class TourPlanActivity extends AppCompatActivity {
             case "3": {
                 binding.tpStatusTxt.setText(Constants.STATUS_3);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
-                if(localDate.getMonthValue()==Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_8))){
-                    HomeDashBoard.TourplanFlog="1";
-                    Intent intent = getIntent();
-                    overridePendingTransition(0, 0);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    finish();
-                    overridePendingTransition(0, 0);
-                    startActivity(intent);
-                }
+                CheckedTpRange();
                 break;
             }
         }
@@ -1087,8 +1081,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                     }
                                     binding.progressBar.setVisibility(View.GONE);
                                     binding.tvSync.setEnabled(true);
-                                    HomeDashBoard.tpRangeCheck=true;
-
 
                                     dayWiseArrayPrevMonth = prepareModelClassForMonth(localDate.minusMonths(1));
                                     dayWiseArrayCurrentMonth = prepareModelClassForMonth(LocalDate.now());
@@ -1171,7 +1163,7 @@ public class TourPlanActivity extends AppCompatActivity {
             ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
 
             String monthYear = monthYearFromDate(localDate);
-            String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_8, monthYear);
+            String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
             String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
             String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
             ArrayList<ModelClass> modelClasses = new ArrayList<>();
@@ -1384,7 +1376,7 @@ public class TourPlanActivity extends AppCompatActivity {
         ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
         ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
 
-        if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
+     //   if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
             if (!receiveModel.getClusterName().isEmpty())
                 clusterArray = addExtraData(receiveModel.getClusterName(), receiveModel.getClusterCode());
             if (!receiveModel.getJWNames().isEmpty())
@@ -1395,7 +1387,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 chemArray = addExtraData(receiveModel.getChem_Name(), receiveModel.getChem_Code());
             if (!receiveModel.getStockist_Name().isEmpty())
                 stkArray = addExtraData(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
-        }
+   //     }
         sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
 
         if (!receiveModel.getWTName2().isEmpty()) {
@@ -1413,7 +1405,6 @@ public class TourPlanActivity extends AppCompatActivity {
             cipArray = new ArrayList<>();
             hospArray = new ArrayList<>();
 
-            if (receiveModel.getFWFlg2().equalsIgnoreCase("F")) {
                 if (!receiveModel.getClusterName2().isEmpty())
                     clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
                 if (!receiveModel.getJWNames2().isEmpty())
@@ -1424,7 +1415,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
                 if (!receiveModel.getStockist_two_name().isEmpty())
                     stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
-            }
+
             sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
 
         }
@@ -1444,7 +1435,6 @@ public class TourPlanActivity extends AppCompatActivity {
             cipArray = new ArrayList<>();
             hospArray = new ArrayList<>();
 
-            if (receiveModel.getFWFlg3().equalsIgnoreCase("F")) {
                 if (!receiveModel.getClusterName3().isEmpty())
                     clusterArray = addExtraData(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
                 if (!receiveModel.getJWNames3().isEmpty())
@@ -1455,8 +1445,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     chemArray = addExtraData(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
                 if (!receiveModel.getStockist_three_name().isEmpty())
                     stkArray = addExtraData(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
-            }
-            sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
+                sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
         }
 
         ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
@@ -1940,62 +1929,49 @@ public class TourPlanActivity extends AppCompatActivity {
         }
     }
 
+    public   void CheckedTpRange() {
+
+        if (!SharedPref.getskipDate(TourPlanActivity.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
+            if (SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") &&
+                    !SharedPref.getTpStartDate(context).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("-1") &&
+                    !SharedPref.getTpEndDate(context).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(context).equalsIgnoreCase("-1")) {
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+                SimpleDateFormat date = new SimpleDateFormat("dd", Locale.ENGLISH);
+                String mCurrDate = date.format(calendar.getTime());
+                String currentDate = sdf.format(calendar.getTime());
+                calendar.add(Calendar.MONTH, 1);
+                String nextMonthDate = sdf.format(calendar.getTime());
+
+                String tp_start = SharedPref.getTpStartDate(context);
+                String tp_end = SharedPref.getTpEndDate(context);
+                int Start_Date = Integer.parseInt(tp_start);
+                int End_Date = Integer.parseInt(tp_end);
+                int mCurrentDate = Integer.parseInt(mCurrDate);
 
 
+                if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
+                    SharedPref.setTpStatus(TourPlanActivity.this, true);
+                    Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
+                    startActivity(intent);
+                } else if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")&&((mCurrentDate >= Start_Date) && (mCurrentDate <= End_Date))) {
+                    if (End_Date <= mCurrentDate) {
+                        SharedPref.setTpStatus(TourPlanActivity.this, true);
+                    } else {
+                        SharedPref.setTpStatus(TourPlanActivity.this, false);
+                    }
 
-//    public   void CheckedTpRange() {
-//
-//        if (!SharedPref.getskipDate(TourPlanActivity.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
-//            if (SharedPref.getTpMandatoryNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getTpNeed(TourPlanActivity.this).equalsIgnoreCase("0") &&
-//                    !SharedPref.getTpStartDate(context).equalsIgnoreCase("1") && !SharedPref.getTpStartDate(TourPlanActivity.this).equalsIgnoreCase("-1") &&
-//                    !SharedPref.getTpEndDate(TourPlanActivity.this).equalsIgnoreCase("1") && !SharedPref.getTpEndDate(TourPlanActivity.this).equalsIgnoreCase("-1")) {
-//                Calendar calendar = Calendar.getInstance();
-//                SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
-//                SimpleDateFormat date = new SimpleDateFormat("dd", Locale.ENGLISH);
-//                String mCurrDate = date.format(calendar.getTime());
-//                String currentDate = sdf.format(calendar.getTime());
-//                calendar.add(Calendar.MONTH, 1);
-//                String nextMonthDate = sdf.format(calendar.getTime());
-//
-//
-//                Log.e("currentStatus",tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate));
-//                Log.e("NextMonthStatus",tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate));
-//
-//                if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
-//                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Prepare  Tourplan....");
-//                    SharedPref.setSKIP(TourPlanActivity.this, false);
-//                    Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
-//                    intent.putExtra("isFrom", "isHome");
-//                    intent.putExtra("Month", "0");
-//                    startActivity(intent);
-//
-//
-//                } else if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")) {
-//                    String tp_start = SharedPref.getTpStartDate(TourPlanActivity.this);
-//                    String tp_end = SharedPref.getTpEndDate(TourPlanActivity.this);
-//                    int Start_Date = Integer.parseInt(tp_start);
-//                    int End_Date = Integer.parseInt(tp_end);
-//
-//                    int mCurrentDate = Integer.parseInt(mCurrDate);
-//                    if (((mCurrentDate >= Start_Date) && (mCurrentDate <= End_Date))) {
-//                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Prepare  Tourplan...");
-//                        if (End_Date >= mCurrentDate) {
-//                            SharedPref.setSKIP(TourPlanActivity.this, true);
-//                        } else {
-//                            SharedPref.setSKIP(TourPlanActivity.this, false);
-//                        }
-//
-//                        Intent intent = new Intent(TourPlanActivity.this, TourPlanActivity.class);
-//                        intent.putExtra("isFrom", "isHome");
-//                        intent.putExtra("Month", "1");
-//                        startActivity(intent);
-//
-//                    }
-//                }
-//            }
-//
-//
-//        }
-//    }
+                }else {
+                    SharedPref.setTpStatus(TourPlanActivity.this, false);
+                }
+            }
+
+
+        }else {
+            SharedPref.setTpStatus(TourPlanActivity.this, false);
+        }
+    }
+
+
 
 }

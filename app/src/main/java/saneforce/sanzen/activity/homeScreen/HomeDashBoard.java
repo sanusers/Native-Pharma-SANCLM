@@ -52,6 +52,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -84,7 +85,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -128,8 +128,8 @@ import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.MyDayPlanEntriesNeeded;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityHomeDashBoardBinding;
+import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.databinding.DialogTimezoneBinding;
-import saneforce.sanzen.location.CheckFakeGPS;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.activity.remaindercalls.RemaindercallsActivity;
@@ -181,7 +181,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static CustomPagerAdapter adapter;
     private int passwordNotVisible = 1, passwordNotVisible1 = 1;
     RoomDB roomDB;
-   SlidesDao slidesDao;
+    SlidesDao slidesDao;
     static MasterDataDao masterDataDao;
     OfflineCheckInOutDataDao offlineCheckInOutDataDao;
     TourPlanOfflineDataDao tourPlanOfflineDataDao;
@@ -196,6 +196,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     Handler handler1 = new Handler();
     long delay = 4000;
     Runnable runnable;
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -208,11 +209,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         timeZoneVerification();
         super.onResume();
         Log.d("ACTIVITY_STATUS", "OnResume");
-        checkAndSetEntryDate(this);
-        CheckFakeGPS.CheckLocationStatus(HomeDashBoard.this);
-        if (tpRangeCheck) {
-            CheckedTpRange();
+        CommonAlertBox.CheckLocationStatus(HomeDashBoard.this);
+        if(!SharedPref.getDesig(HomeDashBoard.this).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0")){
+            CheckingManatoryApprovals();
         }
+        CheckedTpRange();
+        checkAndSetEntryDate(this);
+        checkAndSetEntryDate(this);
+
 
         commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
         if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -316,12 +320,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
-        tpRangeCheck = false;
-        CheckedTpRange();
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
 
         binding.imgNotofication.setOnClickListener(view -> {
-
             startActivity(new Intent(HomeDashBoard.this, MapViewActvity.class));
         });
 
@@ -848,7 +849,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         user_logout.setOnClickListener(v -> {
             SharedPref.saveLoginState(HomeDashBoard.this, false);
             startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
-            commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Logout Successfully");
+        //    commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Logout Successfully");
+            Toast.makeText(HomeDashBoard.this,"Logout Successfully",Toast.LENGTH_SHORT).show();
             finish();
         });
 
@@ -912,7 +914,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     val = val.replace(" ", "");
                     old_password.setText("");
                     old_password.setText(val);
-
                     old_password.setSelection(val.length());
                 }
                 if (str.length() > 30) {
@@ -1642,8 +1643,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (!SharedPref.getskipDate(HomeDashBoard.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
             if (SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") &&
-                    !SharedPref.getTpStartDate(context).equalsIgnoreCase("1") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("-1") &&
-                    !SharedPref.getTpEndDate(context).equalsIgnoreCase("1") && !SharedPref.getTpEndDate(context).equalsIgnoreCase("-1")) {
+                    !SharedPref.getTpStartDate(context).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("-1") &&
+                    !SharedPref.getTpEndDate(context).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(context).equalsIgnoreCase("-1")) {
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
                 SimpleDateFormat date = new SimpleDateFormat("dd", Locale.ENGLISH);
@@ -1652,42 +1653,35 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 calendar.add(Calendar.MONTH, 1);
                 String nextMonthDate = sdf.format(calendar.getTime());
 
+                String tp_start = SharedPref.getTpStartDate(context);
+                String tp_end = SharedPref.getTpEndDate(context);
+                int Start_Date = Integer.parseInt(tp_start);
+                int End_Date = Integer.parseInt(tp_end);
+                int mCurrentDate = Integer.parseInt(mCurrDate);
 
-                Log.e("currentStatus",tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate));
-                Log.e("NextMonthStatus",tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate));
 
                 if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare  Tourplan....");
-                    SharedPref.setSKIP(HomeDashBoard.this, false);
-                    Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
                     TourplanFlog="0";
+                    SharedPref.setTpStatus(HomeDashBoard.this, true);
+                    Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
                     startActivity(intent);
 
 
-                } else if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")) {
-                    String tp_start = SharedPref.getTpStartDate(context);
-                    String tp_end = SharedPref.getTpEndDate(context);
-                    int Start_Date = Integer.parseInt(tp_start);
-                    int End_Date = Integer.parseInt(tp_end);
-
-                    int mCurrentDate = Integer.parseInt(mCurrDate);
-                    if (((mCurrentDate >= Start_Date) && (mCurrentDate <= End_Date))) {
-                        commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare  Tourplan...");
-                        if (End_Date >= mCurrentDate) {
-                            SharedPref.setSKIP(HomeDashBoard.this, true);
+                } else if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")&&((mCurrentDate >= Start_Date) && (mCurrentDate <= End_Date))) {
+                      commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare  Tourplan...");
+                        if (End_Date <= mCurrentDate) {
+                            SharedPref.setTpStatus(HomeDashBoard.this, true);
                         } else {
-                            SharedPref.setSKIP(HomeDashBoard.this, false);
+                            SharedPref.setTpStatus(HomeDashBoard.this, false);
                         }
-
                         Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
                         TourplanFlog="1";
                         startActivity(intent);
-
-                    }
+                }else {
+                    SharedPref.setTpStatus(HomeDashBoard.this, false);
                 }
             }
-
-
         }
     }
 
@@ -1788,5 +1782,79 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         customDialog.show();
         timezoneBinding.btnOpenSettings.setOnClickListener(v -> {System.exit(0);});
     }
+
+
+
+  public  void CheckingManatoryApprovals(){
+        try {
+              JSONObject jsonGetCount=new JSONObject();
+              jsonGetCount.put("tableName", "getapprovalcheck");
+              jsonGetCount.put("sfcode", SharedPref.getSfCode(this));
+              jsonGetCount.put("division_code", SharedPref.getDivisionCode(this));
+              jsonGetCount.put("Rsf", SharedPref.getHqCode(this));
+              jsonGetCount.put("sf_type", SharedPref.getSfType(this));
+              jsonGetCount.put("Designation", SharedPref.getDesig(this));
+              jsonGetCount.put("state_code", SharedPref.getStateCode(this));
+              jsonGetCount.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+              jsonGetCount.put("Tp_need", SharedPref.getTpNeed(this));
+              jsonGetCount.put("geotag_need", SharedPref.getGeotagNeed(this));
+              jsonGetCount.put("TPdev_need", SharedPref.getTpdcrMgrappr(this));
+
+
+          Map<String, String> mapString = new HashMap<>();
+          mapString.put("axn", "get/approvals");
+          Call<JsonElement> callGetCountApprovals = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonGetCount.toString());
+          callGetCountApprovals.enqueue(new Callback<JsonElement>() {
+              @Override
+              public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                  assert response.body() != null;
+                  Log.v("counts", "-0-" + response.body());
+                  if (response.isSuccessful()) {
+                      try {
+
+                          int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0, GeoTagCount = 0;
+                          JSONObject jsonObject1 = new JSONObject(response.body().toString());
+                          JSONArray jsonArray = jsonObject1.getJSONArray("apprCount");
+
+                          for (int i = 0; i < jsonArray.length(); i++) {
+                              JSONObject jsonCounts = jsonArray.getJSONObject(i);
+                              if (jsonCounts.has("dcrappr_count"))
+                                  DcrCount = jsonCounts.getInt("dcrappr_count");
+                              if (jsonCounts.has("tpappr_count"))
+                                  TpCount = jsonCounts.getInt("tpappr_count");
+                              if (jsonCounts.has("leaveappr_count"))
+                                  LeaveCount = jsonCounts.getInt("leaveappr_count");
+                              if (jsonCounts.has("devappr_count"))
+                                  DeviationCount = jsonCounts.getInt("devappr_count");
+                              if (jsonCounts.has("geotag_count"))
+                                  GeoTagCount = jsonCounts.getInt("geotag_count");
+                          }
+
+                          if(DcrCount>0 ||TpCount>0  ||LeaveCount>0  ||DeviationCount>0 ||GeoTagCount>0 ){
+                              SharedPref.setApprvalManatoryStatus(HomeDashBoard.this,true);
+                              if(!SharedPref.getApprovalskipDate(HomeDashBoard.this).equalsIgnoreCase( TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))){
+                                  Intent intent=new Intent(HomeDashBoard. this,ApprovalsActivity.class);
+                                  startActivity(intent);
+                              }
+                          }else {
+                              SharedPref.setApprvalManatoryStatus(HomeDashBoard.this,false);
+                          }
+
+                      } catch (Exception e) {
+
+
+                      }
+                  }
+              }
+
+              @Override
+              public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                  commonUtilsMethods.showToastMessage(getApplicationContext(),getString(R.string.toast_response_failed));
+                  progressDialog.dismiss();
+              }
+          });} catch (Exception ignored) {
+
+        }
+      }
 }
 
