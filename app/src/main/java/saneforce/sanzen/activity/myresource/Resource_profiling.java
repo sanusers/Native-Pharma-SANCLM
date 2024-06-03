@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -504,6 +505,12 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
             jsonobj.put("Doc_Spec_ShortName", Speciality.getText().toString());
             jsonobj.put("Map_ListedDr_Products", "");
             jsonobj.put("ListedDr_Visit_Days", "");
+            jsonobj.put("versionNo",  getString(R.string.app_version));
+            jsonobj.put("mod", Constants.APP_MODE);
+            jsonobj.put("Device_version", Build.VERSION.RELEASE);
+            jsonobj.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonobj.put("AppName", getString(R.string.str_app_name));
+            jsonobj.put("language", SharedPref.getSelectedLanguage(this));
 
 
             Log.d("prifiling", jsonobj.toString());

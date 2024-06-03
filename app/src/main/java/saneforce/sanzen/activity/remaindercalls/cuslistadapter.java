@@ -2,6 +2,7 @@ package saneforce.sanzen.activity.remaindercalls;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -228,6 +229,12 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                 jsonObject.put("Designation", SharedPref.getDesig(context));
                 jsonObject.put("state_code", SharedPref.getStateCode(context));
                 jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+                jsonObject.put("versionNo", context.getString(R.string.app_version));
+                jsonObject.put("mod", Constants.APP_MODE);
+                jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                jsonObject.put("AppName", context.getString(R.string.str_app_name));
+                jsonObject.put("language", SharedPref.getSelectedLanguage(context));
                 Log.d("jsonObject", String.valueOf(jsonObject));
                 Map<String, String> mapString = new HashMap<>();
 

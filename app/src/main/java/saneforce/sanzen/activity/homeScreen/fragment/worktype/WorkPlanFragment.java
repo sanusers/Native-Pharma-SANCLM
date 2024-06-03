@@ -1018,6 +1018,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("TP_cluster", "");
             jsonObject.put("TP_worktype", "");
             jsonObject.put("day_flag", "0");
+            jsonObject.put("versionNo", getString(R.string.app_version));
+            jsonObject.put("mod", Constants.APP_MODE);
+            jsonObject.put("Device_version", Build.VERSION.RELEASE);
+            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonObject.put("AppName", getString(R.string.str_app_name));
+            jsonObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
 
 
         } catch (Exception ignored) {
@@ -1407,6 +1413,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonObject.put("Designation", SharedPref.getDesig(requireContext()));
                 jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
                 jsonObject.put("subdivision_code",SharedPref.getSubdivisionCode(requireContext()));
+                jsonObject.put("versionNo", getString(R.string.app_version));
+                jsonObject.put("mod", Constants.APP_MODE);
+                jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                jsonObject.put("AppName", getString(R.string.str_app_name));
+                jsonObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
 
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "table/dcrmasterdata");
@@ -1807,6 +1819,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
                 jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(requireContext()));
                 jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
+                jsonObject.put("versionNo", getString(R.string.app_version));
+                jsonObject.put("mod", Constants.APP_MODE);
+                jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                jsonObject.put("AppName", getString(R.string.str_app_name));
+                jsonObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
 
                 Log.v("Mydayplan", "--json-- " + jsonObject);
 
@@ -1892,6 +1910,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonCheck.put("Check_In", SharedPref.getCheckInTime(requireContext()));
             jsonCheck.put("Check_Out", CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
             jsonCheck.put("DateTime", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd") + " " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
+            jsonCheck.put("versionNo", getString(R.string.app_version));
+            jsonCheck.put("mod", Constants.APP_MODE);
+            jsonCheck.put("Device_version", Build.VERSION.RELEASE);
+            jsonCheck.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonCheck.put("AppName", getString(R.string.str_app_name));
+            jsonCheck.put("language", SharedPref.getSelectedLanguage(requireContext()));
             Log.v("CheckInOut", "--json--" + jsonCheck);
 
             finalSubmitJSONObject.put("tableName", "final_day");
@@ -1908,6 +1932,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             finalSubmitJSONObject.put("Activity_Dt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
             finalSubmitJSONObject.put("current_Dt", CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_1));
             finalSubmitJSONObject.put("day_remarks", remark);
+            finalSubmitJSONObject.put("versionNo", getString(R.string.app_version));
+            finalSubmitJSONObject.put("mod", Constants.APP_MODE);
+            finalSubmitJSONObject.put("Device_version", Build.VERSION.RELEASE);
+            finalSubmitJSONObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            finalSubmitJSONObject.put("AppName", getString(R.string.str_app_name));
+            finalSubmitJSONObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
             Log.v("Final Submit", "--json-- " + finalSubmitJSONObject);
         } catch (JSONException e) {
             e.printStackTrace();

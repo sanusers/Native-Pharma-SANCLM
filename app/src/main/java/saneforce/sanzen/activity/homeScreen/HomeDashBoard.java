@@ -494,6 +494,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 jsonCheck.put("Check_In", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
                 jsonCheck.put("Check_Out", "");
                 jsonCheck.put("DateTime", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                jsonCheck.put("versionNo", getString(R.string.app_version));
+                jsonCheck.put("mod", Constants.APP_MODE);
+                jsonCheck.put("Device_version", Build.VERSION.RELEASE);
+                jsonCheck.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                jsonCheck.put("AppName", getString(R.string.str_app_name));
+                jsonCheck.put("language", SharedPref.getSelectedLanguage(this));
                 Log.v("CheckInOut", "--json--" + jsonCheck.toString());
             } catch (JSONException ignored) {
             }
@@ -1086,6 +1092,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             jj.put("txOPW", oldPwd);
             jj.put("txNPW", newPwd);
             jj.put("txCPW", confirmPwd);
+            jj.put("versionNo", getString(R.string.app_version));
+            jj.put("mod", Constants.APP_MODE);
+            jj.put("Device_version", Build.VERSION.RELEASE);
+            jj.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jj.put("AppName", getString(R.string.str_app_name));
+            jj.put("language", SharedPref.getSelectedLanguage(this));
             Log.d("PassWord_Change", String.valueOf(jj));
         } catch (Exception ignored) {
 
@@ -1432,6 +1444,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             jj.put("Designation", SharedPref.getDesig(this));
             jj.put("state_code", SharedPref.getStateCode(this));
             jj.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            jj.put("versionNo", getString(R.string.app_version));
+            jj.put("mod", Constants.APP_MODE);
+            jj.put("Device_version", Build.VERSION.RELEASE);
+            jj.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jj.put("AppName", getString(R.string.str_app_name));
+            jj.put("language", SharedPref.getSelectedLanguage(this));
             Log.d("object", jj.toString());
         } catch (Exception ignored) {
         }
@@ -1799,6 +1817,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
               jsonGetCount.put("Tp_need", SharedPref.getTpNeed(this));
               jsonGetCount.put("geotag_need", SharedPref.getGeotagNeed(this));
               jsonGetCount.put("TPdev_need", SharedPref.getTpdcrMgrappr(this));
+              jsonGetCount.put("versionNo", getString(R.string.app_version));
+              jsonGetCount.put("mod", Constants.APP_MODE);
+              jsonGetCount.put("Device_version", Build.VERSION.RELEASE);
+              jsonGetCount.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+              jsonGetCount.put("AppName", getString(R.string.str_app_name));
+              jsonGetCount.put("language", SharedPref.getSelectedLanguage(this));
 
 
           Map<String, String> mapString = new HashMap<>();

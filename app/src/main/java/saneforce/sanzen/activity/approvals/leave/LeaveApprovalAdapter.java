@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
@@ -35,6 +36,7 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
@@ -126,6 +128,12 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             jsonLeave.put("Designation", SharedPref.getDesig(context));
             jsonLeave.put("state_code", SharedPref.getStateCode(context));
             jsonLeave.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+            jsonLeave.put("versionNo", context.getString(R.string.app_version));
+            jsonLeave.put("mod", Constants.APP_MODE);
+            jsonLeave.put("Device_version", Build.VERSION.RELEASE);
+            jsonLeave.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonLeave.put("AppName", context.getString(R.string.str_app_name));
+            jsonLeave.put("language", SharedPref.getSelectedLanguage(context));
             Log.v("reject_leave", jsonLeave.toString());
         } catch (Exception ignored) {
 
@@ -182,6 +190,12 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             jsonLeave.put("Designation",SharedPref.getDesig(context));
             jsonLeave.put("state_code", SharedPref.getStateCode(context));
             jsonLeave.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+            jsonLeave.put("versionNo", context.getString(R.string.app_version));
+            jsonLeave.put("mod", Constants.APP_MODE);
+            jsonLeave.put("Device_version", Build.VERSION.RELEASE);
+            jsonLeave.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonLeave.put("AppName", context.getString(R.string.str_app_name));
+            jsonLeave.put("language", SharedPref.getSelectedLanguage(context));
         } catch (Exception ignored) {
 
         }

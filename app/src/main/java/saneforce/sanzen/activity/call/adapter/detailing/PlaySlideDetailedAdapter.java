@@ -14,6 +14,7 @@ import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -60,6 +61,7 @@ import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
@@ -236,6 +238,12 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             jsonImage.put("Designation", SharedPref.getDesig(context));
             jsonImage.put("state_code", SharedPref.getStateCode(context));
             jsonImage.put("subdivision_code",SharedPref.getSubdivisionCode(context));
+            jsonImage.put("versionNo", context.getString(R.string.app_version));
+            jsonImage.put("mod", Constants.APP_MODE);
+            jsonImage.put("Device_version", Build.VERSION.RELEASE);
+            jsonImage.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonImage.put("AppName", context.getString(R.string.str_app_name));
+            jsonImage.put("language", SharedPref.getSelectedLanguage(context));
             Log.v("scribbleUpload", jsonImage.toString());
         } catch (Exception ignored) {
         }

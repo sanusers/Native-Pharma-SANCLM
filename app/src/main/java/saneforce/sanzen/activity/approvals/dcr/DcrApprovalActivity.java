@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -53,6 +54,7 @@ import saneforce.sanzen.activity.approvals.tp.pojo.TpModelList;
 import saneforce.sanzen.activity.call.pojo.input.SaveCallInputList;
 import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 
@@ -138,6 +140,12 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonDcrContentList.put("Designation", SharedPref.getDesig(this));
             jsonDcrContentList.put("state_code", SharedPref.getStateCode(this));
             jsonDcrContentList.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            jsonDcrContentList.put("versionNo", getString(R.string.app_version));
+            jsonDcrContentList.put("mod", Constants.APP_MODE);
+            jsonDcrContentList.put("Device_version", Build.VERSION.RELEASE);
+            jsonDcrContentList.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonDcrContentList.put("AppName", getString(R.string.str_app_name));
+            jsonDcrContentList.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_get_full_dcr_list", jsonDcrContentList.toString());
 
         } catch (Exception ignored) {
@@ -357,6 +365,12 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonReject.put("Designation", SharedPref.getDesig(this));
             jsonReject.put("state_code", SharedPref.getStateCode(this));
             jsonReject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            jsonReject.put("versionNo", getString(R.string.app_version));
+            jsonReject.put("mod", Constants.APP_MODE);
+            jsonReject.put("Device_version", Build.VERSION.RELEASE);
+            jsonReject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonReject.put("AppName", getString(R.string.str_app_name));
+            jsonReject.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_send_approval", jsonReject.toString());
         } catch (Exception ignored) {
 
@@ -425,6 +439,12 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonAccept.put("Designation", SharedPref.getDesig(this));
             jsonAccept.put("state_code", SharedPref.getStateCode(this));
             jsonAccept.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            jsonAccept.put("versionNo", getString(R.string.app_version));
+            jsonAccept.put("mod", Constants.APP_MODE);
+            jsonAccept.put("Device_version", Build.VERSION.RELEASE);
+            jsonAccept.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonAccept.put("AppName", getString(R.string.str_app_name));
+            jsonAccept.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_send_approval", jsonAccept.toString());
         } catch (Exception ignored) {
 
@@ -490,6 +510,12 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonDcrList.put("Designation", SharedPref.getDesig(this));
             jsonDcrList.put("state_code", SharedPref.getStateCode(this));
             jsonDcrList.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            jsonDcrList.put("versionNo", getString(R.string.app_version));
+            jsonDcrList.put("mod", Constants.APP_MODE);
+            jsonDcrList.put("Device_version", Build.VERSION.RELEASE);
+            jsonDcrList.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonDcrList.put("AppName", getString(R.string.str_app_name));
+            jsonDcrList.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_getDcr_list", jsonDcrList.toString());
         } catch (Exception ignored) {
 

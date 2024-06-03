@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.approvals.tpdeviation;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
@@ -77,6 +79,12 @@ CommonUtilsMethods commonUtilsMethods;
             jsonTpDeviation.put("state_code", SharedPref.getStateCode(context));
             jsonTpDeviation.put("subdivision_code", SharedPref.getSubdivisionCode(context));
             jsonTpDeviation.put("Mode", "");
+            jsonTpDeviation.put("versionNo", context.getString(R.string.app_version));
+            jsonTpDeviation.put("mod", Constants.APP_MODE);
+            jsonTpDeviation.put("Device_version", Build.VERSION.RELEASE);
+            jsonTpDeviation.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonTpDeviation.put("AppName", context.getString(R.string.str_app_name));
+            jsonTpDeviation.put("language", SharedPref.getSelectedLanguage(context));
             Log.v("json_approve_tpDev", jsonTpDeviation.toString());
         } catch (Exception ignored) {
 

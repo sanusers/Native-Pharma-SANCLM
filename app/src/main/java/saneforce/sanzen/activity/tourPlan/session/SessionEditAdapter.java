@@ -2,6 +2,7 @@ package saneforce.sanzen.activity.tourPlan.session;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -1074,6 +1075,12 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 jsonObject.put("Designation", SharedPref.getDesig(context));
                 jsonObject.put("state_code", SharedPref.getStateCode(context));
                 jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+                jsonObject.put("versionNo", context.getString(R.string.app_version));
+                jsonObject.put("mod", Constants.APP_MODE);
+                jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                jsonObject.put("AppName", context.getString(R.string.str_app_name));
+                jsonObject.put("language", SharedPref.getSelectedLanguage(context));
 
 //                Log.e("test","master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;

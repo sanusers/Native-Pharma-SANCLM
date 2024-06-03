@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -139,6 +140,12 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                     jsonGeoTag.put("unlisted_doctorId", "");
                     jsonGeoTag.put("hospital_mapId", "");
                     jsonGeoTag.put("hospitalId", "");
+                    jsonGeoTag.put("versionNo", context.getString(R.string.app_version));
+                    jsonGeoTag.put("mod", Constants.APP_MODE);
+                    jsonGeoTag.put("Device_version", Build.VERSION.RELEASE);
+                    jsonGeoTag.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                    jsonGeoTag.put("AppName", context.getString(R.string.str_app_name));
+                    jsonGeoTag.put("language", SharedPref.getSelectedLanguage(context));
                     break;
                 case "C":
                     jsonGeoTag.put("doctor_mapId", "");

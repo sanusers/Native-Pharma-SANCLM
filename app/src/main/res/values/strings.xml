@@ -426,4 +426,5 @@
     <string name="customise">Customise</string>
     <string name="select_theraptic">Select Theraptic</string>
     <string name="are_you_sure_you_want_to_clear">Are You Sure, You Want To Clear!</string>
+    <string name="jointcall">JointCall</string>
 </resources>

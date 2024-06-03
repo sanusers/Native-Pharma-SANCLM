@@ -136,7 +136,7 @@ public class PreviewActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
                 viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
                 viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-                viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
+//                viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
                 if (CustomPresentationNeed.equalsIgnoreCase("0"))
                     viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
             }

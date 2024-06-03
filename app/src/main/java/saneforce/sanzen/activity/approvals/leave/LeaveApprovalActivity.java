@@ -4,6 +4,7 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,6 +31,7 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityLeaveBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -107,6 +109,12 @@ public class LeaveApprovalActivity extends AppCompatActivity {
             jsonLeave.put("Designation", SharedPref.getDesig(this));
             jsonLeave.put("state_code", SharedPref.getStateCode(this));
             jsonLeave.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            jsonLeave.put("versionNo", getString(R.string.app_version));
+            jsonLeave.put("mod", Constants.APP_MODE);
+            jsonLeave.put("Device_version", Build.VERSION.RELEASE);
+            jsonLeave.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonLeave.put("AppName", getString(R.string.str_app_name));
+            jsonLeave.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_get_lvl_list", jsonLeave.toString());
         } catch (Exception ignored) {
 

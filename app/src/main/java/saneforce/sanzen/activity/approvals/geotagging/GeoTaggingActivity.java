@@ -6,6 +6,7 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -36,6 +37,7 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityGeoTaggingBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -231,6 +233,12 @@ public class GeoTaggingActivity extends AppCompatActivity {
             jsonGeoTagList.put("Designation", SharedPref.getDesig(this));
             jsonGeoTagList.put("state_code", SharedPref.getStateCode(this));
             jsonGeoTagList.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            jsonGeoTagList.put("versionNo", getString(R.string.app_version));
+            jsonGeoTagList.put("mod", Constants.APP_MODE);
+            jsonGeoTagList.put("Device_version", Build.VERSION.RELEASE);
+            jsonGeoTagList.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonGeoTagList.put("AppName", getString(R.string.str_app_name));
+            jsonGeoTagList.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_getGeoTag_list", jsonGeoTagList.toString());
         } catch (Exception ignored) {
 

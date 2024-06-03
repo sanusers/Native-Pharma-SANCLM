@@ -359,6 +359,12 @@ public class Leave_Application extends AppCompatActivity {
             jsonObject.put("Designation", SharedPref.getDesig(this));
             jsonObject.put("state_code",  SharedPref.getStateCode(this));
             jsonObject.put("subdivision_code",  SharedPref.getSubdivisionCode(this));
+            jsonObject.put("versionNo",  getString(R.string.app_version));
+            jsonObject.put("mod", Constants.APP_MODE);
+            jsonObject.put("Device_version", Build.VERSION.RELEASE);
+            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonObject.put("AppName", getString(R.string.str_app_name));
+            jsonObject.put("language", SharedPref.getSelectedLanguage(this));
             Log.d("JSonobj", String.valueOf(jsonObject));
 
             Map<String, String> qry = new HashMap<>();
@@ -622,6 +628,12 @@ public class Leave_Application extends AppCompatActivity {
                 jsonobj.put("subdivision_code",  SharedPref.getSubdivisionCode(this));
                 jsonobj.put("sf_emp_id", SharedPref.getSfEmpId(this));
                 jsonobj.put("leave_typ_code", Ltype_id);
+                jsonobj.put("versionNo",  getString(R.string.app_version));
+                jsonobj.put("mod", Constants.APP_MODE);
+                jsonobj.put("Device_version", Build.VERSION.RELEASE);
+                jsonobj.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                jsonobj.put("AppName", getString(R.string.str_app_name));
+                jsonobj.put("language", SharedPref.getSelectedLanguage(this));
 
 
                 Log.d("save_obj", String.valueOf(jsonobj));

@@ -11,6 +11,7 @@ import static saneforce.sanzen.activity.previewPresentation.fragment.Speciality.
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -237,6 +238,12 @@ public class DrSelectionSide extends Fragment {
                 jsonObject.put("Designation", SharedPref.getDesig(context));
                 jsonObject.put("state_code", SharedPref.getStateCode(context));
                 jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+                jsonObject.put("versionNo",  getString(R.string.app_version));
+                jsonObject.put("mod", Constants.APP_MODE);
+                jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                jsonObject.put("AppName", getString(R.string.str_app_name));
+                jsonObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
 
                 Call<JsonElement> call = null;
                 Map<String, String> mapString = new HashMap<>();

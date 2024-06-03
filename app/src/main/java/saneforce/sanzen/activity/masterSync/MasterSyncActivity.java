@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -1074,6 +1075,12 @@ public class    MasterSyncActivity extends AppCompatActivity {
             jsonObject.put("Designation", SharedPref.getDesig(this));
             jsonObject.put("state_code", SharedPref.getStateCode(this));
             jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            jsonObject.put("versionNo",  getResources().getString(R.string.app_version));
+            jsonObject.put("mod", Constants.APP_MODE);
+            jsonObject.put("Device_version", Build.VERSION.RELEASE);
+            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonObject.put("AppName", getString(R.string.str_app_name));
+            jsonObject.put("language", SharedPref.getSelectedLanguage(this));
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
             switch (remoteTableName) {
                 case "getholiday":

@@ -2,6 +2,7 @@ package saneforce.sanzen.commonClasses;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -73,6 +74,12 @@ public class MyDayPlanEntriesNeeded {
             jj.put("Designation", SharedPref.getDesig(context));
             jj.put("state_code", SharedPref.getStateCode(context));
             jj.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+            jj.put("versionNo", context.getString(R.string.app_version));
+            jj.put("mod", Constants.APP_MODE);
+            jj.put("Device_version", Build.VERSION.RELEASE);
+            jj.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jj.put("AppName", context.getString(R.string.str_app_name));
+            jj.put("language", SharedPref.getSelectedLanguage(context));
         } catch (Exception e) {
             e.printStackTrace();
         }

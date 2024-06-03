@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.approvals;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.app.ProgressDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +28,7 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityApprovalsBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -109,6 +111,12 @@ public class ApprovalsActivity extends AppCompatActivity {
             jsonGetCount.put("Tp_need", SharedPref.getTpNeed(this));
             jsonGetCount.put("geotag_need", SharedPref.getGeotagNeed(this));
             jsonGetCount.put("TPdev_need", SharedPref.getTpdcrMgrappr(this));
+            jsonGetCount.put("versionNo", getString(R.string.app_version));
+            jsonGetCount.put("mod", Constants.APP_MODE);
+            jsonGetCount.put("Device_version", Build.VERSION.RELEASE);
+            jsonGetCount.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonGetCount.put("AppName", getString(R.string.str_app_name));
+            jsonGetCount.put("language", SharedPref.getSelectedLanguage(this));
 
             Log.v("json_get_full_dcr_list", jsonGetCount.toString());
 

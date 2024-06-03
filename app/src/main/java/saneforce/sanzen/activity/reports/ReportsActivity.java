@@ -5,6 +5,7 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
@@ -28,6 +29,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityReportsBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -100,6 +102,12 @@ public class ReportsActivity extends AppCompatActivity {
                         jsonObject.put("state_code", SharedPref.getStateCode(this));
                         jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
                         jsonObject.put("rptDt", date);
+                        jsonObject.put("versionNo",  getString(R.string.app_version));
+                        jsonObject.put("mod", Constants.APP_MODE);
+                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                        jsonObject.put("AppName", getString(R.string.str_app_name));
+                        jsonObject.put("language", SharedPref.getSelectedLanguage(this));
                         if (report.equalsIgnoreCase("DAY REPORT")) {
                             jsonObject.put("tableName", "getdayrpt");
 
