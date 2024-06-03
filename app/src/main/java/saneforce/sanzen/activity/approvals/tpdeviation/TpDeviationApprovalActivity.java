@@ -4,6 +4,7 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,6 +31,7 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityTpDeviationApprovalBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -117,6 +119,12 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
             jsonTpDeviation.put("Designation", SharedPref.getDesig(this));
             jsonTpDeviation.put("state_code", SharedPref.getStateCode(this));
             jsonTpDeviation.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            jsonTpDeviation.put("versionNo", getString(R.string.app_version));
+            jsonTpDeviation.put("mod", Constants.APP_MODE);
+            jsonTpDeviation.put("Device_version", Build.VERSION.RELEASE);
+            jsonTpDeviation.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonTpDeviation.put("AppName", getString(R.string.str_app_name));
+            jsonTpDeviation.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_get_tpDev_list", jsonTpDeviation.toString());
         } catch (Exception ignored) {
 

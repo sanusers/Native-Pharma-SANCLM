@@ -401,7 +401,7 @@
     <string name="no">No</string>
     <string name="cannot_submit_work_plan">Cannot submit Work Plan!</string>
     <string name="day_submit_saved_locally">Day Submit saved locally</string>
-    <string name="are_you_sure_to_delete">Are You Sure, You Want To Delete ?</string>
+    <string name="are_you_sure_to_delete">Are You Sure, You Want To Delete!</string>
     <string name="fakegps_message">Fake Location detected. Your information has been sent to the admin.</string>
     <string name="title_activity_demo_main">DemoMainActivity</string>
     <string name="complete_day">Complete selected date to change date!</string>
@@ -425,4 +425,6 @@
     <string name="therapist">Therapist</string>
     <string name="customise">Customise</string>
     <string name="select_theraptic">Select Theraptic</string>
+    <string name="are_you_sure_you_want_to_clear">Are You Sure, You Want To Clear!</string>
+    <string name="jointcall">JointCall</string>
 </resources>

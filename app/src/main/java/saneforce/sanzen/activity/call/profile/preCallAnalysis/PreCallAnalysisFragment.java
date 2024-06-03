@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.call.profile.preCallAnalysis;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.profile.CustomerProfile;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentPrecallAnalysisBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -70,6 +72,12 @@ public class PreCallAnalysisFragment extends Fragment {
             json.put("Designation", SharedPref.getDesig(context));
             json.put("state_code", SharedPref.getStateCode(context));
             json.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+            json.put("versionNo", context.getString(R.string.app_version));
+            json.put("mod", Constants.APP_MODE);
+            json.put("Device_version", Build.VERSION.RELEASE);
+            json.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            json.put("AppName", context.getString(R.string.str_app_name));
+            json.put("language", SharedPref.getSelectedLanguage(context));
             Log.v("json_cus_l_visit", json.toString());
         } catch (Exception ignored) {
 

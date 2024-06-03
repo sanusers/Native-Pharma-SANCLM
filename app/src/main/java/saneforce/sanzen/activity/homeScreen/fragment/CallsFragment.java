@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -94,6 +95,12 @@ public class CallsFragment extends Fragment {
                             jsonObject.put("Designation", SharedPref.getDesig(context));
                             jsonObject.put("state_code", SharedPref.getStateCode(context));
                             jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+                            jsonObject.put("versionNo", context.getString(R.string.app_version));
+                            jsonObject.put("mod", Constants.APP_MODE);
+                            jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                            jsonObject.put("AppName", context.getString(R.string.str_app_name));
+                            jsonObject.put("language", SharedPref.getSelectedLanguage(context));
                             Log.v("TodayCalls", "--json--" + jsonObject);
 
                             Map<String, String> mapString = new HashMap<>();
@@ -279,6 +286,12 @@ public class CallsFragment extends Fragment {
             jsonObject.put("Trans_SlNo", todayCallListTwo.get(i).getTrans_Slno());
             jsonObject.put("FW_Indicator", FwFlag);
             jsonObject.put("AMSLNo", todayCallListTwo.get(i).getADetSLNo());
+            jsonObject.put("versionNo",  context.getString(R.string.app_version));
+            jsonObject.put("mod", Constants.APP_MODE);
+            jsonObject.put("Device_version", Build.VERSION.RELEASE);
+            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonObject.put("AppName", context.getString(R.string.str_app_name));
+            jsonObject.put("language", SharedPref.getSelectedLanguage(context));
             jsonArray2.put(jsonObject);
         } catch (Exception ignored) {
 

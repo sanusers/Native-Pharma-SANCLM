@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,6 +81,8 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     String acdCode;
     String ReportingSfCode;
     ArrayList<SlideRatingDetalisModelClass> callDetailingLists=new ArrayList<>();
+    ArrayList<DayReportRcpaModelClass> rcpaModelArray;
+
 
     public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst,String ActCode,String ReportingSfCode,String rcpaItem,String eventCaptureItem) {
         this.context = context;
@@ -216,7 +219,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         });
 
         holder.rcpaLayoutitle.setOnClickListener(view -> {
-
+            rcpaList.clear();
             if(holder.rcpaLayout.getVisibility()==View.VISIBLE){
                 holder.rcpa_arrow.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                 holder.rcpaLayout.setVisibility(View.GONE);
@@ -225,6 +228,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 if(rcpaList.size()>0){
                     if(dataModel.getTrans_Detail_Slno().equalsIgnoreCase(rcpadataid)){
                         holder.rcpaLayout.setVisibility(View.VISIBLE);
+
                     }else {
                         Rcpagetdata(holder.rvRcpa,holder.rcpaLayout,position);
                     }
@@ -407,6 +411,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         protected FilterResults performFiltering(CharSequence charSequence) {
             FilterResults results = new FilterResults();
             ArrayList<DayReportDetailModel> filteredModelArray = new ArrayList<>();
+            ArrayList<DayReportRcpaModelClass> rcpaModelClassArrayList = new ArrayList<>();
             if (charSequence != null && charSequence.length() > 0) {
                 for (DayReportDetailModel model : supportModelArray) {
                     if (model.getName().toUpperCase().contains(charSequence.toString().toUpperCase()) || model.getTerritory().toUpperCase().contains(charSequence.toString().toUpperCase())) {
@@ -456,6 +461,12 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                         jsonObject.put("Designation", SharedPref.getDesig(context));
                         jsonObject.put("state_code", SharedPref.getStateCode(context));
                         jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+                        jsonObject.put("versionNo", context.getString(R.string.app_version));
+                        jsonObject.put("mod", Constants.APP_MODE);
+                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                        jsonObject.put("AppName", context.getString(R.string.str_app_name));
+                        jsonObject.put("language", SharedPref.getSelectedLanguage(context));
                         Log.d("paramObject",jsonObject.toString());
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
@@ -527,8 +538,6 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
 
     public  void Rcpagetdata(RecyclerView recyclerView ,LinearLayout layout,int position){
-
-
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         if (UtilityClass.isNetworkAvailable(context)) {
             NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
@@ -545,6 +554,12 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                         jsonObject.put("Designation", SharedPref.getDesig(context));
                         jsonObject.put("state_code", SharedPref.getStateCode(context));
                         jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+                        jsonObject.put("versionNo", context.getString(R.string.app_version));
+                        jsonObject.put("mod", Constants.APP_MODE);
+                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                        jsonObject.put("AppName", context.getString(R.string.str_app_name));
+                        jsonObject.put("language", SharedPref.getSelectedLanguage(context));
                         Log.d("paramObject",jsonObject.toString());
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
@@ -605,7 +620,6 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
 
     public  void SldeDetails(RecyclerView recyclerView ,LinearLayout layout,int position){
-
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         if (UtilityClass.isNetworkAvailable(context)) {
             NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
@@ -625,6 +639,12 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                         jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
                         jsonObject.put("app_version", context.getResources().getString(R.string.app_version));
                         jsonObject.put("Mode", context.getResources().getString(R.string.app_mode));
+                        jsonObject.put("versionNo", context.getString(R.string.app_version));
+                        jsonObject.put("mod", Constants.APP_MODE);
+                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                        jsonObject.put("AppName", context.getString(R.string.str_app_name));
+                        jsonObject.put("language", SharedPref.getSelectedLanguage(context));
                         Log.d("paramObject",jsonObject.toString());
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");

@@ -229,6 +229,7 @@ public class StockiestFragment extends Fragment {
         btn_apply = dialogFilter.findViewById(R.id.btn_apply);
         btn_clear = dialogFilter.findViewById(R.id.btn_clear);
         tvTerritory = dialogFilter.findViewById(R.id.constraint_territory);
+        tvTerritory.setText(territoryName);
         tvTerritory.setVisibility(View.VISIBLE);
 
         lv_terr = dialogFilter.findViewById(R.id.lv_territory);

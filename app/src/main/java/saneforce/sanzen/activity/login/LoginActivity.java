@@ -378,13 +378,15 @@ public class LoginActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", userId);
             jsonObject.put("password", password);
-            jsonObject.put("versionNo",  getResources().getString(R.string.app_version));
+            jsonObject.put("versionNo", getString(R.string.app_version));
             jsonObject.put("mode", Constants.APP_MODE);
             jsonObject.put("Device_version", Build.VERSION.RELEASE);
-            jsonObject.put("Tt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2));
             jsonObject.put("device_id", deviceId);
             jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonObject.put("AppName", getString(R.string.str_app_name));
+            jsonObject.put("language", SharedPref.getSelectedLanguage(this));
             jsonObject.put("AppDeviceRegId", fcmToken);
+            jsonObject.put("Tt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2));
             jsonObject.put("location", "0.0 : 0.0");
             Log.v("Login", "--json-" + jsonObject);
             loginViewModel.loginProcess(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()), jsonObject.toString()).observe(LoginActivity.this, new Observer<JsonElement>() {
@@ -444,10 +446,16 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        timeZoneVerification();
         super.onResume();
     }
 
-
+    private void timeZoneVerification() {
+        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context);
+        if (!isAutoTimeZoneEnabled) {
+            CommonUtilsMethods.showCustomDialog(this);
+        }
+    }
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);

@@ -21,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -646,6 +647,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             jsonImage.put("Designation", Designation);
             jsonImage.put("state_code", StateCode);
             jsonImage.put("subdivision_code", SubDivisionCode);
+            jsonImage.put("versionNo",  getString(R.string.app_version));
+            jsonImage.put("mod", Constants.APP_MODE);
+            jsonImage.put("Device_version", Build.VERSION.RELEASE);
+            jsonImage.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonImage.put("AppName", getString(R.string.str_app_name));
+            jsonImage.put("language", SharedPref.getSelectedLanguage(this));
         } catch (Exception ignored) {
         }
 
@@ -672,6 +679,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             jsonObject.put("version", getResources().getString(R.string.app_version));
             jsonObject.put("towncode", town_code);
             jsonObject.put("townname", town_name);
+            jsonObject.put("versionNo",  getString(R.string.app_version));
+            jsonObject.put("mod", Constants.APP_MODE);
+            jsonObject.put("Device_version", Build.VERSION.RELEASE);
+            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonObject.put("AppName", getString(R.string.str_app_name));
+            jsonObject.put("language", SharedPref.getSelectedLanguage(this));
             if (GeoTagApprovalNeed.equalsIgnoreCase("0")) {
                 jsonObject.put("status", "1");
             } else {
@@ -838,6 +851,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 jsonObject.put("Designation", Designation);
                 jsonObject.put("state_code", StateCode);
                 jsonObject.put("subdivision_code", SubDivisionCode);
+                jsonObject.put("versionNo",  getString(R.string.app_version));
+                jsonObject.put("mod", Constants.APP_MODE);
+                jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                jsonObject.put("AppName", getString(R.string.str_app_name));
+                jsonObject.put("language", SharedPref.getSelectedLanguage(this));
 
 // Log.e("test","master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;

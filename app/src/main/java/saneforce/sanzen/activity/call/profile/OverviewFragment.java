@@ -63,6 +63,10 @@ public class OverviewFragment extends Fragment {
             case "4":
                 break;
             case "2":
+                overviewBinding.tvTagDob.setVisibility(View.GONE);
+                overviewBinding.tvDob.setVisibility(View.GONE);
+                overviewBinding.tvTagWedDate.setVisibility(View.GONE);
+                overviewBinding.tvWedDate.setVisibility(View.GONE);
                 overviewBinding.tvTagQualify.setVisibility(View.GONE);
                 overviewBinding.tvQualify.setVisibility(View.GONE);
                 overviewBinding.tvTagSpeciality.setVisibility(View.GONE);
@@ -79,6 +83,8 @@ public class OverviewFragment extends Fragment {
                 overviewBinding.tvSpeciality.setVisibility(View.GONE);
                 overviewBinding.tvTagCategory.setVisibility(View.GONE);
                 overviewBinding.tvCategory.setVisibility(View.GONE);
+                overviewBinding.tvTagEmail.setVisibility(View.GONE);
+                overviewBinding.tvEmail.setVisibility(View.GONE);
                 break;
         }
     }

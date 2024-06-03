@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -149,6 +150,12 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             jsonTp.put("Designation", SharedPref.getDesig(this));
             jsonTp.put("state_code", SharedPref.getStateCode(this));
             jsonTp.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            jsonTp.put("versionNo", getString(R.string.app_version));
+            jsonTp.put("mod", Constants.APP_MODE);
+            jsonTp.put("Device_version", Build.VERSION.RELEASE);
+            jsonTp.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonTp.put("AppName", getString(R.string.str_app_name));
+            jsonTp.put("language", SharedPref.getSelectedLanguage(this));
 
             Log.v("json_tp_Approved", jsonTp.toString());
         } catch (Exception ignored) {
@@ -234,6 +241,12 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             jsonTp.put("Designation", SharedPref.getDesig(this));
             jsonTp.put("state_code", SharedPref.getStateCode(this));
             jsonTp.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            jsonTp.put("versionNo", getString(R.string.app_version));
+            jsonTp.put("mod", Constants.APP_MODE);
+            jsonTp.put("Device_version", Build.VERSION.RELEASE);
+            jsonTp.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonTp.put("AppName", getString(R.string.str_app_name));
+            jsonTp.put("language", SharedPref.getSelectedLanguage(this));
 
             Log.v("json_tp_Reject", jsonTp.toString());
         } catch (Exception ignored) {
@@ -304,6 +317,12 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             jsonTp.put("Designation", SharedPref.getDesig(this));
             jsonTp.put("state_code", SharedPref.getStateCode(this));
             jsonTp.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            jsonTp.put("versionNo", getString(R.string.app_version));
+            jsonTp.put("mod", Constants.APP_MODE);
+            jsonTp.put("Device_version", Build.VERSION.RELEASE);
+            jsonTp.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonTp.put("AppName", getString(R.string.str_app_name));
+            jsonTp.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_getTpList", jsonTp.toString());
         } catch (Exception ignored) {
 
@@ -422,6 +441,12 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             jsonTp.put("Designation", SharedPref.getDesig(this));
             jsonTp.put("state_code", SharedPref.getStateCode(this));
             jsonTp.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            jsonTp.put("versionNo", getString(R.string.app_version));
+            jsonTp.put("mod", Constants.APP_MODE);
+            jsonTp.put("Device_version", Build.VERSION.RELEASE);
+            jsonTp.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonTp.put("AppName", getString(R.string.str_app_name));
+            jsonTp.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_getTpDetailedList", jsonTp.toString());
         } catch (Exception ignored) {
 

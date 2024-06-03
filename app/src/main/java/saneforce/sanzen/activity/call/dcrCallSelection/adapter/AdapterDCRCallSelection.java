@@ -176,27 +176,27 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     }
 
     private void goNextActivity(int position) {
-        if (needCheckInOut.equalsIgnoreCase("0")) {
-            tv_cusName.setText(cusListArrayList.get(position).getName());
-            tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
-
-            dialogCheckIn.show();
-            img_Close.setOnClickListener(v -> dialogCheckIn.dismiss());
-
-            btnCheckIN.setOnClickListener(v -> {
-                DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
-                DCRCallActivity.CallActivityCustDetails.add(0, new CustList(cusListArrayList.get(position).getName(), cusListArrayList.get(position).getCode(), cusListArrayList.get(position).getType(), cusListArrayList.get(position).getCategory(), cusListArrayList.get(position).getCategoryCode(), cusListArrayList.get(position).getSpecialist(), cusListArrayList.get(position).getSpecialistCode(), cusListArrayList.get(position).getTown_name(), cusListArrayList.get(position).getTown_code(), cusListArrayList.get(position).getMaxTag(), cusListArrayList.get(position).getTag(), cusListArrayList.get(position).getPosition(), cusListArrayList.get(position).getLatitude(), cusListArrayList.get(position).getLongitude(), cusListArrayList.get(position).getAddress(), cusListArrayList.get(position).getDob(), cusListArrayList.get(position).getWedding_date(), cusListArrayList.get(position).getEmail(), cusListArrayList.get(position).getMobile(), cusListArrayList.get(position).getPhone(), cusListArrayList.get(position).getQualification(), cusListArrayList.get(position).getPriorityPrdCode(), cusListArrayList.get(position).getMappedBrands(), cusListArrayList.get(position).getMappedSlides()));
-                Intent intent = new Intent(context, CustomerProfile.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                context.startActivity(intent);
-            });
-        } else {
+//        if (needCheckInOut.equalsIgnoreCase("0")) {
+//            tv_cusName.setText(cusListArrayList.get(position).getName());
+//            tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
+//
+//            dialogCheckIn.show();
+//            img_Close.setOnClickListener(v -> dialogCheckIn.dismiss());
+//
+//            btnCheckIN.setOnClickListener(v -> {
+//                DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
+//                DCRCallActivity.CallActivityCustDetails.add(0, new CustList(cusListArrayList.get(position).getName(), cusListArrayList.get(position).getCode(), cusListArrayList.get(position).getType(), cusListArrayList.get(position).getCategory(), cusListArrayList.get(position).getCategoryCode(), cusListArrayList.get(position).getSpecialist(), cusListArrayList.get(position).getSpecialistCode(), cusListArrayList.get(position).getTown_name(), cusListArrayList.get(position).getTown_code(), cusListArrayList.get(position).getMaxTag(), cusListArrayList.get(position).getTag(), cusListArrayList.get(position).getPosition(), cusListArrayList.get(position).getLatitude(), cusListArrayList.get(position).getLongitude(), cusListArrayList.get(position).getAddress(), cusListArrayList.get(position).getDob(), cusListArrayList.get(position).getWedding_date(), cusListArrayList.get(position).getEmail(), cusListArrayList.get(position).getMobile(), cusListArrayList.get(position).getPhone(), cusListArrayList.get(position).getQualification(), cusListArrayList.get(position).getPriorityPrdCode(), cusListArrayList.get(position).getMappedBrands(), cusListArrayList.get(position).getMappedSlides()));
+//                Intent intent = new Intent(context, CustomerProfile.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                context.startActivity(intent);
+//            });
+//        } else {
             DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
             DCRCallActivity.CallActivityCustDetails.add(0, new CustList(cusListArrayList.get(position).getName(), cusListArrayList.get(position).getCode(), cusListArrayList.get(position).getType(), cusListArrayList.get(position).getCategory(), cusListArrayList.get(position).getCategoryCode(), cusListArrayList.get(position).getSpecialist(), cusListArrayList.get(position).getSpecialistCode(), cusListArrayList.get(position).getTown_name(), cusListArrayList.get(position).getTown_code(), cusListArrayList.get(position).getMaxTag(), cusListArrayList.get(position).getTag(), cusListArrayList.get(position).getPosition(), cusListArrayList.get(position).getLatitude(), cusListArrayList.get(position).getLongitude(), cusListArrayList.get(position).getAddress(), cusListArrayList.get(position).getDob(), cusListArrayList.get(position).getWedding_date(), cusListArrayList.get(position).getEmail(), cusListArrayList.get(position).getMobile(), cusListArrayList.get(position).getPhone(), cusListArrayList.get(position).getQualification(), cusListArrayList.get(position).getPriorityPrdCode(), cusListArrayList.get(position).getMappedBrands(), cusListArrayList.get(position).getMappedSlides()));
             Intent intent = new Intent(context, CustomerProfile.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
-        }
+//        }
     }
 
     @Override

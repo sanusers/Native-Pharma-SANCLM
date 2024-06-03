@@ -2,14 +2,19 @@ package saneforce.sanzen.activity.homeScreen.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +41,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.adapters.outbox.OutBoxHeaderAdapter;
 import saneforce.sanzen.activity.homeScreen.modelClass.CheckInOutModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.DaySubmitModelClass;
@@ -126,53 +132,72 @@ public class OutboxFragment extends Fragment {
         new Handler().postDelayed(this::refreshPendingFunction, 200);
 
         outBoxBinding.clearCalls.setOnClickListener(v1 -> {
-            ArrayList<OutBoxCallList> outBoxCallLists = callsUtil.getAllOutBoxCallsList();
-            try {
-                if (outBoxCallLists.size() > 0) {
-                    JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        for (int j = 0; j < outBoxCallLists.size(); j++) {
-                            if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(j).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(outBoxCallLists.get(j).getCusCode())) {
-                                jsonArray.remove(i);
-                                i--;
-                            }
-                        }
-                    }
-                    MasterDataTable data = new MasterDataTable();
-                    data.setMasterKey(Constants.CALL_SYNC);
-                    data.setMasterValues(jsonArray.toString());
-                    data.setSyncStatus(0);
-                    MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
-                    if (mNChecked != null) {
-                        masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
-                    } else {
-                        masterDataDao.insert(data);
-
-                    }
-                    CallDataRestClass.resetcallValues(context);
-
-
-                }
-            } catch (Exception ignored) {
-
+            if(!listDates.isEmpty()) {
+                Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.dcr_cancel_alert);
+                dialog.setCancelable(false);
+                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+                TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                TextView btn_no = dialog.findViewById(R.id.btn_no);
+                TextView title = dialog.findViewById(R.id.ed_alert_msg);
+                title.setText(R.string.are_you_sure_you_want_to_clear);
+                btn_yes.setOnClickListener(view12 -> {
+                    clearCalls();
+                    dialog.dismiss();
+                });
+                btn_no.setOnClickListener(view12 -> {
+                    dialog.dismiss();
+                });
             }
-
-            if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
-                if(offlineCheckInOutDataDao.getCheckInOutCount(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) > 0) {
-                    SharedPref.setCheckInTime(requireContext(), "");
-                    SharedPref.setCheckDateTodayPlan(requireContext(), "");
-                }
-            }
-            callsUtil.deleteOfflineCalls();
-            listDates.clear();
-            outBoxHeaderAdapter = new OutBoxHeaderAdapter(requireActivity(), requireContext(), listDates);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(requireContext());
-            outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
-            outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
         });
 
         return v;
+    }
+
+    private void clearCalls() {
+        ArrayList<OutBoxCallList> outBoxCallLists = callsUtil.getAllOutBoxCallsList();
+        try {
+            if (!outBoxCallLists.isEmpty()) {
+                JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    for (int j = 0; j < outBoxCallLists.size(); j++) {
+                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(j).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(outBoxCallLists.get(j).getCusCode())) {
+                            jsonArray.remove(i);
+                            i--;
+                        }
+                    }
+                }
+                MasterDataTable data = new MasterDataTable();
+                data.setMasterKey(Constants.CALL_SYNC);
+                data.setMasterValues(jsonArray.toString());
+                data.setSyncStatus(0);
+                MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                if (mNChecked != null) {
+                    masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
+                } else {
+                    masterDataDao.insert(data);
+                }
+                CallDataRestClass.resetcallValues(context);
+            }
+        } catch (Exception e) {
+            Log.e("Outbox", "clearCalls: "+ e.getMessage());
+            e.printStackTrace();
+        }
+
+        if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+            if(offlineCheckInOutDataDao.getCheckInOutCount(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) > 0) {
+                SharedPref.setCheckInTime(requireContext(), "");
+                SharedPref.setCheckDateTodayPlan(requireContext(), "");
+            }
+        }
+        callsUtil.deleteOfflineCalls();
+        listDates.clear();
+        outBoxHeaderAdapter = new OutBoxHeaderAdapter(requireActivity(), requireContext(), listDates);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(requireContext());
+        outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
+        outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
     }
 
     private void refreshPendingFunction() {

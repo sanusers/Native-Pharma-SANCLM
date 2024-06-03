@@ -5,6 +5,7 @@ import static saneforce.sanzen.activity.approvals.dcr.detailView.DcrDetailViewAc
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,7 @@ import saneforce.sanzen.activity.reports.dayReport.model.DayReportRcpaModelClass
 import saneforce.sanzen.activity.reports.dayReport.model.EventCaptureModelClass;
 import saneforce.sanzen.activity.reports.dayReport.model.SlideRatingDetalisModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -256,6 +258,12 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                         jsonObject.put("Designation", SharedPref.getDesig(context));
                         jsonObject.put("state_code", SharedPref.getStateCode(context));
                         jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+                        jsonObject.put("versionNo", context.getString(R.string.app_version));
+                        jsonObject.put("mod", Constants.APP_MODE);
+                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                        jsonObject.put("AppName", context.getString(R.string.str_app_name));
+                        jsonObject.put("language", SharedPref.getSelectedLanguage(context));
                         Log.d("paramObject",jsonObject.toString());
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
@@ -348,6 +356,12 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                         jsonObject.put("Designation", SharedPref.getDesig(context));
                         jsonObject.put("state_code", SharedPref.getStateCode(context));
                         jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+                        jsonObject.put("versionNo", context.getString(R.string.app_version));
+                        jsonObject.put("mod", Constants.APP_MODE);
+                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                        jsonObject.put("AppName", context.getString(R.string.str_app_name));
+                        jsonObject.put("language", SharedPref.getSelectedLanguage(context));
                         Log.d("paramObject",jsonObject.toString());
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
@@ -431,6 +445,12 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                         jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
                         jsonObject.put("app_version", context.getResources().getString(R.string.app_version));
                         jsonObject.put("Mode", context.getResources().getString(R.string.app_mode));
+                        jsonObject.put("versionNo", context.getString(R.string.app_version));
+                        jsonObject.put("mod", Constants.APP_MODE);
+                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                        jsonObject.put("AppName", context.getString(R.string.str_app_name));
+                        jsonObject.put("language", SharedPref.getSelectedLanguage(context));
                         Log.d("paramObject",jsonObject.toString());
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");

@@ -537,6 +537,12 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
             jsonobj.put("tagged_cust_HQ", SharedPref.getSfCode(this));
             jsonobj.put("mode", Constants.APP_MODE);
             jsonobj.put("version", Constants.APP_VERSION);
+            jsonobj.put("versionNo",  getString(R.string.app_version));
+            jsonobj.put("mod", Constants.APP_MODE);
+            jsonobj.put("Device_version", Build.VERSION.RELEASE);
+            jsonobj.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonobj.put("AppName", getString(R.string.str_app_name));
+            jsonobj.put("language", SharedPref.getSelectedLanguage(this));
 //            Log.d("prifiling", jsonobj.toString());
             Map<String, String> mapString = new HashMap<>();
             mapString.put("axn", "geodetails");
@@ -641,6 +647,12 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                 jsonObject.put("Designation", SharedPref.getDesig(this));
                 jsonObject.put("state_code", SharedPref.getStateCode(this));
                 jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+                jsonObject.put("versionNo",  getString(R.string.app_version));
+                jsonObject.put("mod", Constants.APP_MODE);
+                jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                jsonObject.put("AppName", getString(R.string.str_app_name));
+                jsonObject.put("language", SharedPref.getSelectedLanguage(this));
 
                 Log.e("test", "master sync obj in TP : " + jsonObject + "--" + hqCode);
                 Map<String, String> mapString = new HashMap<>();

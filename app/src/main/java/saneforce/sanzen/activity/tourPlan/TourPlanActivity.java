@@ -6,6 +6,7 @@ import static saneforce.sanzen.activity.tourPlan.session.SessionEditAdapter.inpu
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -1062,6 +1063,12 @@ public class TourPlanActivity extends AppCompatActivity {
                     jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(TourPlanActivity.this));
                     jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, LocalDate.now().getMonth().toString()));
                     jsonObject.put("tp_year", LocalDate.now().getYear());
+                    jsonObject.put("versionNo", getString(R.string.app_version));
+                    jsonObject.put("mod", Constants.APP_MODE);
+                    jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                    jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                    jsonObject.put("AppName", getString(R.string.str_app_name));
+                    jsonObject.put("language", SharedPref.getSelectedLanguage(this));
                     Log.v("tpGetPlan", "--json--" + jsonObject);
 
                     Map<String, String> mapString = new HashMap<>();
@@ -1489,6 +1496,12 @@ public class TourPlanActivity extends AppCompatActivity {
             jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(TourPlanActivity.this));
             jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
             jsonObject.put("Year", localDate1.getYear());
+            jsonObject.put("versionNo",  getResources().getString(R.string.app_version));
+            jsonObject.put("mod", Constants.APP_MODE);
+            jsonObject.put("Device_version", Build.VERSION.RELEASE);
+            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonObject.put("AppName", getString(R.string.str_app_name));
+            jsonObject.put("language", SharedPref.getSelectedLanguage(this));
 
 
             Map<String, String> mapString = new HashMap<>();
@@ -1572,6 +1585,12 @@ public class TourPlanActivity extends AppCompatActivity {
                         jsonObject.put("state_code", SharedPref.getStateCode(TourPlanActivity.this));
                         jsonObject.put("TPMonth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
                         jsonObject.put("TPYear", localDate1.getYear());
+                        jsonObject.put("versionNo", getString(R.string.app_version));
+                        jsonObject.put("mod", Constants.APP_MODE);
+                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                        jsonObject.put("AppName", getString(R.string.str_app_name));
+                        jsonObject.put("language", SharedPref.getSelectedLanguage(TourPlanActivity.this));
 
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "save/tp");

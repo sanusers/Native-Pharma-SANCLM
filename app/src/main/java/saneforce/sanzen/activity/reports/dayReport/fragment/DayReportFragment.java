@@ -5,6 +5,7 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -56,6 +57,7 @@ import saneforce.sanzen.activity.reports.dayReport.model.DayReportModel;
 import saneforce.sanzen.activity.tourPlan.calendar.OnDayClickInterface;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentDayReportBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -208,6 +210,7 @@ public class DayReportFragment extends Fragment {
         return date.format(formatter);
     }
 
+
     public void calendarDialog() {
 
         if (alertDialog != null) {
@@ -259,7 +262,9 @@ public class DayReportFragment extends Fragment {
             @Override
             public void onDayClicked(int position, String date, ModelClass modelClass) {
                 calendarDialog.cancel();
+                System.out.println("localDate1--->"+localDate);
                 getData(monthYearFromDate(localDate, TimeUtils.FORMAT_24) + "-" + date);
+                System.out.println("monthDate--->"+monthYearFromDate(localDate, TimeUtils.FORMAT_23) + "-" + date);
             }
         });
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 7);
@@ -286,6 +291,12 @@ public class DayReportFragment extends Fragment {
                         jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
                         jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(requireContext()));
                         jsonObject.put("rptDt", date);
+                        jsonObject.put("versionNo", getString(R.string.app_version));
+                        jsonObject.put("mod", Constants.APP_MODE);
+                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
+                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+                        jsonObject.put("AppName", getString(R.string.str_app_name));
+                        jsonObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
                         Log.v("jsonDayReport", "---" + jsonObject);
 
                         Map<String, String> mapString = new HashMap<>();

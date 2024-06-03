@@ -190,6 +190,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                         HomeDashBoard.checkAndSetEntryDate(context);
 //                    }
                 } else {
+                    Log.e("call status", "onBindViewHolder: " );
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
                 }
 
