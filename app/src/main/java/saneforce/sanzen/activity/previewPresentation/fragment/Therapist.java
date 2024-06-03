@@ -1,6 +1,9 @@
 package saneforce.sanzen.activity.previewPresentation.fragment;
 
+import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.CusType;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.SelectedTab;
+import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.SpecialityCode;
+import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.SpecialityName;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.from_where;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.previewBinding;
 
@@ -53,6 +56,19 @@ public class Therapist extends Fragment {
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
+
+        if (from_where.equalsIgnoreCase("call")) {
+            if (CusType.equalsIgnoreCase("1")) {
+                getSelectedSpec(requireContext(), SpecialityCode, SpecialityName, masterDataDao);
+            } else {
+                getRequiredData(requireContext(), SpecialityName, masterDataDao);
+            }
+        } else {
+            fragmentTherapistBinding.constraintNoData.setVisibility(View.VISIBLE);
+            fragmentTherapistBinding.rvTherapistList.setVisibility(View.GONE);
+            fragmentTherapistBinding.tvInfo.setVisibility(View.GONE);
+            fragmentTherapistBinding.viewDummy2.setVisibility(View.GONE);
+        }
 
         getRequiredData(requireContext(),"All", masterDataDao);
 

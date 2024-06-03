@@ -310,7 +310,7 @@ public class DayReportDetailFragment extends Fragment {
                 break;
             case "2":
                 callCheckInOutNeed = SharedPref.getChmSrtNd(requireContext());
-                rcpaItem = SharedPref.getChmRcpaMd(requireContext());
+                rcpaItem = SharedPref.getChmRcpaNeed(requireContext());
                 eventCaptureItem = SharedPref.getCeNeed(requireContext());
                 break;
             case "3":
