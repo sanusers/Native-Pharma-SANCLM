@@ -208,6 +208,7 @@ public class DayReportFragment extends Fragment {
         return date.format(formatter);
     }
 
+
     public void calendarDialog() {
 
         if (alertDialog != null) {
@@ -259,7 +260,9 @@ public class DayReportFragment extends Fragment {
             @Override
             public void onDayClicked(int position, String date, ModelClass modelClass) {
                 calendarDialog.cancel();
+                System.out.println("localDate1--->"+localDate);
                 getData(monthYearFromDate(localDate, TimeUtils.FORMAT_24) + "-" + date);
+                System.out.println("monthDate--->"+monthYearFromDate(localDate, TimeUtils.FORMAT_23) + "-" + date);
             }
         });
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 7);

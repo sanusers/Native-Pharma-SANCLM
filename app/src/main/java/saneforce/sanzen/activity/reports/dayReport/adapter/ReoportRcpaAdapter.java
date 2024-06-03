@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -81,6 +82,7 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
 
         TextView prdName, prdqty, CompetitorName, CompetitorProductName, ComprdQty, comName;
         View infoView;
+        LinearLayout layout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -445,10 +445,16 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        timeZoneVerification();
         super.onResume();
     }
 
-
+    private void timeZoneVerification() {
+        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context);
+        if (!isAutoTimeZoneEnabled) {
+            CommonUtilsMethods.showCustomDialog(this);
+        }
+    }
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);

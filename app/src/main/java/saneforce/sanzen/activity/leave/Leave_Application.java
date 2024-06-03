@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +33,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +57,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -62,6 +66,7 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
@@ -89,7 +94,7 @@ public class Leave_Application extends AppCompatActivity {
     int totalval = 0, val = 0;
 
     public static ListView dailog_list;
-    String l_address = "", l_reason = "",imageName = "";
+    String l_address = "", l_reason = "",imageName = "",leaveAvailable;
 
     CommonUtilsMethods commonUtilsMethods;
    public static ActivityLeaveApplicationBinding leavebinding;
@@ -97,6 +102,7 @@ public class Leave_Application extends AppCompatActivity {
     private MasterDataDao masterDataDao;
     private String destinationFilePath;
     boolean isLeaveEntitlementRequested;
+
 
     //To Hide the bottomNavigation When popup
 
@@ -126,7 +132,6 @@ public class Leave_Application extends AppCompatActivity {
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         isLeaveEntitlementRequested = SharedPref.getLeaveEntitlementNeed(this).equals("0");
-        System.out.println("leaveApp--->"+isLeaveEntitlementRequested);
         dailog_list = findViewById(R.id.cutumdailog_list);
         close_sideview = findViewById(R.id.close_sideview);
         headtext_id = findViewById(R.id.headtext_id);
@@ -211,6 +216,7 @@ public class Leave_Application extends AppCompatActivity {
 
 
         AvailableLeave();
+
     }
 
     public void leave_applydates() {
@@ -256,7 +262,6 @@ public class Leave_Application extends AppCompatActivity {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String Leavename = (jsonObject.getString("Leave_Name"));//Leave_Name
-                    System.out.println("leaveType---->"+Leavename);
                     String L_code = (jsonObject.getString("Leave_code"));
                     String L_Sname = (jsonObject.getString("Leave_SName"));
 
@@ -310,7 +315,6 @@ public class Leave_Application extends AppCompatActivity {
                                     JSONObject jsonobj1 = jsonArray1.getJSONObject(d);
                                     if (Ltype_id.equals(jsonobj1.getString("Leave_code"))) {
                                         avilable = (jsonobj1.getString("Avail"));
-                                        System.out.println("availablity--->" + avilable);
                                         leavety = (jsonobj1.getString("Leave_Type_Code"));
 
                                     }
@@ -516,7 +520,6 @@ public class Leave_Application extends AppCompatActivity {
     }
 
     public void AvailableLeave() {
-
         try {
             Chart_list.clear();
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
@@ -532,7 +535,6 @@ public class Leave_Application extends AppCompatActivity {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         JSONObject jsonObject1 = jsonArray1.getJSONObject(i1);
                         String Ltype = (jsonObject1.getString("Leave_Name"));
-
                         if (jsonObject.getString("Leave_code").equals(jsonObject1.getString("Leave_code"))) {
                             Leave_modelclass tackleave = new Leave_modelclass(jsonObject1.getString("Leave_Name"), (jsonObject.getString("Elig")),
                                     (jsonObject.getString("Taken")), (jsonObject.getString("Avail")),
@@ -544,7 +546,6 @@ public class Leave_Application extends AppCompatActivity {
 
 //                        Collections.reverse(Chart_list);
                             Piechart_adapter chart_details = new Piechart_adapter(Leave_Application.this, Chart_list);
-
                             leavebinding.RLPiechart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
                             leavebinding.RLPiechart.setItemAnimator(new DefaultItemAnimator());
                             leavebinding.RLPiechart.setAdapter(chart_details);
@@ -605,7 +606,6 @@ public class Leave_Application extends AppCompatActivity {
 
             try {
                 JSONObject jsonobj = new JSONObject();
-
                 jsonobj.put("tableName", "saveleave");
                 jsonobj.put("sfcode", SharedPref.getSfCode(this));
                 jsonobj.put("FDate", f_date);
@@ -622,8 +622,6 @@ public class Leave_Application extends AppCompatActivity {
                 jsonobj.put("subdivision_code",  SharedPref.getSubdivisionCode(this));
                 jsonobj.put("sf_emp_id", SharedPref.getSfEmpId(this));
                 jsonobj.put("leave_typ_code", Ltype_id);
-
-
                 Log.d("save_obj", String.valueOf(jsonobj));
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "save/leavemodule");
@@ -636,13 +634,17 @@ public class Leave_Application extends AppCompatActivity {
                             if (response.isSuccessful()) {
                                 Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
                                 commonUtilsMethods.showToastMessage(Leave_Application.this,"Leave Submitted Successfully");
+                                if (isLeaveEntitlementRequested){
+                                    updateLeaveStatusMasterSync();
+                                }
                                 finish();
+
                             }
                         }
 
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                            Toast.makeText(Leave_Application.this, "Poor Connection Please Check After Sometime", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Leave_Application.this, "Poor Internet Connection Please Check After Sometime", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -668,7 +670,7 @@ public class Leave_Application extends AppCompatActivity {
             l_details.notifyDataSetChanged();
 
 
-            Toast.makeText(this, "please check Internet connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Check Internet Connection", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -696,5 +698,60 @@ public class Leave_Application extends AppCompatActivity {
         if (!isAutoTimeZoneEnabled) {
             CommonUtilsMethods.showCustomDialog(this);
         }
+    }
+    private void updateLeaveStatusMasterSync() {
+        JSONObject leaveStatusObject = new JSONObject();
+        try {
+            leaveStatusObject.put("tableName", "getleavestatus");
+            leaveStatusObject.put("sfcode", SharedPref.getSfCode(this));
+            leaveStatusObject.put("division_code", SharedPref.getDivisionCode(this));
+            leaveStatusObject.put("Rsf", SharedPref.getHqCode(this));
+            leaveStatusObject.put("sf_type", SharedPref.getSfType(this));
+            leaveStatusObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+            leaveStatusObject.put("Designation", SharedPref.getDesig(this));
+            leaveStatusObject.put("state_code", SharedPref.getStateCode(this));
+            leaveStatusObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            System.out.println("leaveStatusObject--->"+leaveStatusObject);
+        } catch (Exception ignored) {
+
+        }
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "get/leave");
+        Call<JsonElement> leaveStatus = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, leaveStatusObject.toString());
+
+        leaveStatus.enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        JsonElement jsonElement = response.body();
+                        JSONArray jsonArray = new JSONArray();
+                        assert jsonElement != null;
+                        if (!jsonElement.isJsonNull()) {
+                            if (jsonElement.isJsonArray()) {
+                                JsonArray jsonArray1 = jsonElement.getAsJsonArray();
+                                jsonArray = new JSONArray(jsonArray1.toString());
+                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LEAVE_STATUS, jsonArray.toString(), 0));
+                            } else if (jsonElement.isJsonObject()) {
+                                JsonObject jsonObject = jsonElement.getAsJsonObject();
+                                JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
+                                if (!jsonObject1.has("success")) {
+                                    jsonArray.put(jsonObject1);
+                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LEAVE_STATUS, jsonArray.toString(), 0));
+                                }
+                            }
+                        }
+                } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                Toast.makeText(Leave_Application.this, "Poor Internet Connection Please Check After Sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }
