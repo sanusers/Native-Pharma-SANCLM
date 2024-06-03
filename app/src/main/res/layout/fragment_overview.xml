@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     android:background="@drawable/bg_white_without_border">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
         android:layout_margin="@dimen/_6sdp">
 
         <TextView
             android:id="@+id/tv_tag_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_4sdp"
             android:layout_marginVertical="@dimen/_1sdp"
             android:fontFamily="@font/satoshi_bold"
             android:gravity="center"
@@ -22,7 +24,7 @@
             android:paddingVertical="@dimen/_2sdp"
             android:text="Name"
             android:textColor="@color/black"
-            android:textSize="@dimen/_7sdp"
+            android:textSize="@dimen/_7ssp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/tv_name"
             app:layout_constraintStart_toStartOf="parent"
@@ -190,11 +192,19 @@
             app:layout_constraintStart_toStartOf="@id/tv_tag_name"
             app:layout_constraintTop_toBottomOf="@id/tv_tag_email" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_margin="@dimen/_6sdp">
+
         <TextView
             android:id="@+id/tv_tag_qualify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_4sdp"
             android:layout_marginVertical="@dimen/_1sdp"
             android:fontFamily="@font/satoshi_bold"
             android:gravity="center"
@@ -228,7 +238,7 @@
 
         <TextView
             android:id="@+id/tv_tag_category"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_6sdp"
             android:layout_marginBottom="@dimen/_1sdp"
@@ -246,7 +256,7 @@
 
         <TextView
             android:id="@+id/tv_category"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_4sdp"
             android:layout_marginVertical="@dimen/_1sdp"
@@ -264,7 +274,7 @@
 
         <TextView
             android:id="@+id/tv_tag_speciality"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_6sdp"
             android:layout_marginBottom="@dimen/_1sdp"
@@ -282,7 +292,7 @@
 
         <TextView
             android:id="@+id/tv_speciality"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_4sdp"
             android:layout_marginVertical="@dimen/_1sdp"
@@ -300,7 +310,7 @@
 
         <TextView
             android:id="@+id/tv_tag_territory"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_6sdp"
             android:layout_marginBottom="@dimen/_1sdp"
@@ -318,7 +328,7 @@
 
         <TextView
             android:id="@+id/tv_territory"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_4sdp"
             android:layout_marginVertical="@dimen/_1sdp"
@@ -336,7 +346,7 @@
 
         <TextView
             android:id="@+id/tv_tag_address"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_6sdp"
             android:layout_marginBottom="@dimen/_1sdp"
@@ -354,7 +364,7 @@
 
         <TextView
             android:id="@+id/tv_address"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/_30sdp"
             android:layout_marginHorizontal="@dimen/_4sdp"
             android:layout_marginVertical="@dimen/_1sdp"
@@ -371,5 +381,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tv_tag_qualify"
             app:layout_constraintTop_toBottomOf="@id/tv_tag_address" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+    </LinearLayout>
+</LinearLayout>

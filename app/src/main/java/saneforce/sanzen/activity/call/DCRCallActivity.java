@@ -309,15 +309,15 @@ public class DCRCallActivity extends AppCompatActivity {
         }else {
             isCreateJsonSuccess = true;
             if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
-                if(UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                    double lat = gpsTrack.getLatitude();
-                    double lng = gpsTrack.getLongitude();
-                    address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
-                    tv_address.setText(address);
-                    tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
-                }else {
-                    tv_address.setText(context.getString(R.string.no_network));
-                }
+//                if(UtilityClass.isNetworkAvailable(getApplicationContext())) {
+//                    double lat = gpsTrack.getLatitude();
+//                    double lng = gpsTrack.getLongitude();
+//                    address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
+//                    tv_address.setText(address);
+//                    tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
+//                }else {
+//                    tv_address.setText(context.getString(R.string.no_network));
+//                }
             }
 
             if(CheckRequiredFunctions() && CheckCurrentLoc()) {
@@ -353,16 +353,17 @@ public class DCRCallActivity extends AppCompatActivity {
                         //progressDialog.dismiss();
                     }
                     SharedPref.setDayPlanStartedDate(this,  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
-                    if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
+//                    if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
                         //    progressDialog.dismiss();
-                        dialogCheckOut.show();
-                    }else {
+//                        dialogCheckOut.show();
+//                    }else {
+                        progressDialog.dismiss();
                         IsFromDCR = true;
                         Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                         startActivity(intent);
                         finish();
 
-                    }
+//                    }
 
                 }else {
                     progressDialog.dismiss();
@@ -968,7 +969,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         callsUtil.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
                         progressDialog.dismiss();
                         if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
-                            dialogCheckOut.show();
+//                            dialogCheckOut.show();
                         } else {
                             Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -981,7 +982,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_something_wrong));
                         if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
-                            dialogCheckOut.show();
+//                            dialogCheckOut.show();
                         } else {
                             Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -999,7 +1000,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_failed_saved_locally));
                 if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
-                    dialogCheckOut.show();
+//                    dialogCheckOut.show();
                 } else {
                     Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -2477,7 +2478,7 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
             if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
-                DialogCheckOut();
+//                DialogCheckOut();
             }
 
         } catch (Exception ignored) {

@@ -88,7 +88,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("StaticFieldLeak")
     public static WorkplanFragmentBinding binding;
     ProgressDialog progressDialog;
-    String CheckInOutStatus, FinalSubmitStatus;
+    String CheckInOutStatus, FinalSubmitStatus, hqCode = "";
     JSONObject jsonObject = new JSONObject();
 
     ArrayList<JSONObject> workType_list1 = new ArrayList<>();
@@ -154,6 +154,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         gpsTrack = new GPSTrack(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
+        chk_cluster = "";
+        hqCode = SharedPref.getHqCode(requireContext());
 
         if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
             binding.btnsumit.setText(requireContext().getString(R.string.final_submit_check_out));
@@ -315,12 +317,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         HomeDashBoard.binding.llNav.wkListView.setVisibility(View.GONE);
         HomeDashBoard.binding.drMainlayout.openDrawer(GravityCompat.END);
         HomeDashBoard.binding.llNav.tvSearchheader.setText("Cluster");
-//        updateClusterList(DayPlanCount);
+        updateClusterList(DayPlanCount);
         MultiClusterAdapter multiClusterAdapter = new MultiClusterAdapter(getActivity(), multiple_cluster_list, new OnClusterClicklistener() {
             @Override
             public void classCampaignItem_addClass(Multicheckclass_clust classGroup) {
                 listSelectedCluster.add(classGroup);
-
             }
 
             @Override
@@ -488,19 +489,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
             }
 
-//            updateClusterList("1");
-            JSONArray workTypeArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getHqCode(requireContext())).getMasterSyncDataJsonArray();
-            for (int i = 0; i < workTypeArray2.length(); i++) {
-                JSONObject Object1 = workTypeArray2.getJSONObject(i);
-
-                if (("," + chk_cluster + ",").contains("," + Object1.getString("Code") + ",")) {
-                    multiple_cluster_list.add(new Multicheckclass_clust(Object1.getString("Code"), Object1.getString("Name"), "", true));
-                } else {
-                    multiple_cluster_list.add(new Multicheckclass_clust(Object1.getString("Code"), Object1.getString("Name"), "", false));
-
-                }
-                cluster.add(Object1);
-            }
+            updateClusterList("1");
+//            JSONArray workTypeArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getHqCode(requireContext())).getMasterSyncDataJsonArray();
+//            for (int i = 0; i < workTypeArray2.length(); i++) {
+//                JSONObject Object1 = workTypeArray2.getJSONObject(i);
+//
+//                if (("," + chk_cluster + ",").contains("," + Object1.getString("Code") + ",")) {
+//                    multiple_cluster_list.add(new Multicheckclass_clust(Object1.getString("Code"), Object1.getString("Name"), "", true));
+//                } else {
+//                    multiple_cluster_list.add(new Multicheckclass_clust(Object1.getString("Code"), Object1.getString("Name"), "", false));
+//
+//                }
+//                cluster.add(Object1);
+//            }
 
             if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                 JSONArray workTypeArray3 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
@@ -529,10 +530,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             String clusters = mTowncode1;
             if(dayPlanCount.equalsIgnoreCase("2")) clusters = mTowncode2;
             multiple_cluster_list.clear();
-            JSONArray workTypeArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getHqCode(requireContext())).getMasterSyncDataJsonArray();
+            JSONArray workTypeArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + hqCode).getMasterSyncDataJsonArray();
             for (int i = 0; i<workTypeArray2.length(); i++) {
                 JSONObject Object1 = workTypeArray2.getJSONObject(i);
-                if(("," + clusters + ",").contains("," + Object1.getString("Code") + ",")) {
+                if(("," + chk_cluster + ",").contains("," + Object1.getString("Code") + ",")) {
                     multiple_cluster_list.add(new Multicheckclass_clust(Object1.getString("Code"), Object1.getString("Name"), "", true));
                 }else {
                     multiple_cluster_list.add(new Multicheckclass_clust(Object1.getString("Code"), Object1.getString("Name"), "", false));
@@ -1368,6 +1369,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } else {
             binding.progressHq2.setVisibility(View.VISIBLE);
         }
+        this.hqCode = hqCode;
 
         List<MasterSyncItemModel> list = new ArrayList<>();
         list.add(new MasterSyncItemModel("Doctor", 0, "Doctor", "getdoctors", Constants.DOCTOR + hqCode, 0, false));

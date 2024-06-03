@@ -251,12 +251,12 @@ public class ChemistFragment extends Fragment {
         btn_clear = dialogFilter.findViewById(R.id.btn_clear);
         tvTerritory = dialogFilter.findViewById(R.id.constraint_territory);
         tvCate = dialogFilter.findViewById(R.id.constraint_category);
-        ViewGroup.LayoutParams layoutParams = tvCate.getLayoutParams();
-        if(layoutParams instanceof ViewGroup.MarginLayoutParams) {
-            ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) layoutParams;
-            marginLayoutParams.leftMargin = 400;
-            tvCate.setLayoutParams(layoutParams);
-        }
+//        ViewGroup.LayoutParams layoutParams = tvCate.getLayoutParams();
+//        if(layoutParams instanceof ViewGroup.MarginLayoutParams) {
+//            ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) layoutParams;
+//            marginLayoutParams.leftMargin = 400;
+//            tvCate.setLayoutParams(layoutParams);
+//        }
         tvTerritory.setText(territoryName);
         tvCate.setText(categoryName);
 

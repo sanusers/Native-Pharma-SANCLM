@@ -77,6 +77,18 @@
             app:layout_constraintVertical_bias="0.0"
             tools:ignore="HardcodedText,RtlHardcoded" />
 
+        <View
+            android:layout_width="@dimen/_128sdp"
+            android:layout_height="1dp"
+            android:id="@+id/dummy"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:paddingHorizontal="@dimen/_10sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            app:layout_constraintStart_toStartOf="@id/tv_head_filter"
+            app:layout_constraintTop_toBottomOf="@id/tv_head_filter"
+            app:layout_constraintVertical_bias="0.0"/>
+
         <TextView
             android:id="@+id/constraint_category"
             android:layout_width="@dimen/_128sdp"
@@ -99,7 +111,7 @@
             app:drawableEndCompat="@drawable/spin_down_arrow"
             app:drawableTint="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/constraint_speciality"
+            app:layout_constraintStart_toEndOf="@id/dummy"
             app:layout_constraintTop_toBottomOf="@id/tv_head_filter"
             app:layout_constraintVertical_bias="0.0"
             tools:ignore="HardcodedText,RtlHardcoded" />
