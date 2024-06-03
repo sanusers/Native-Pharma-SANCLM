@@ -40,6 +40,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
 import saneforce.sanzen.activity.reports.dayReport.DataViewModel;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DayReportDetailAdapter;
+import saneforce.sanzen.activity.reports.dayReport.adapter.ReoportRcpaAdapter;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportDetailModel;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;

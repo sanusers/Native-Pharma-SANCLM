@@ -120,7 +120,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private OfflineCheckInOutDataDao offlineCheckInOutDataDao;
     private CallOfflineWorkTypeDataDao callOfflineWorkTypeDataDao;
     private OfflineDaySubmitDao offlineDaySubmitDao;
-    private String leaveWorkType = "leave";
 
 
     @Override
@@ -639,7 +638,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 binding.txtSave.setTextColor(getResources().getColor(R.color.black));
                 binding.txtSave.setEnabled(true);
                 binding.cardPlan2.setVisibility(View.VISIBLE);
-                leaveWorkType = "";
                 getLocalData();
                 break;
 
@@ -1345,11 +1343,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 }
                                 SharedPref.setDayPlanStartedDate(requireContext(), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
 
-                                if (binding.txtWorktype1.getText().toString().toLowerCase().equals(leaveWorkType)){
-                                    startActivity(new Intent(context, Leave_Application.class));
-                                }else if (binding.txtWorktype2.getText().toString().toLowerCase().equals("leave")){
-                                    startActivity(new Intent(context, Leave_Application.class));
-                                }
                             } else {
                                 setUpMyDayplan();
                                 commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));

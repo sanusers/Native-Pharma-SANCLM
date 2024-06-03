@@ -7,6 +7,8 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import org.json.JSONArray;
+
 @Dao
 public interface MasterDataDao {
 

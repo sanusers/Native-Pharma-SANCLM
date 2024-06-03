@@ -27,12 +27,14 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     Context context;
     OnDayClickInterface onDayClickInterface;
     LocalDate localDate;
+    String myDate;
 
     public CalendarAdapter(ArrayList<String> arrayList, Context context,LocalDate localDate,OnDayClickInterface onDayClickInterface) {
         this.arrayList = arrayList;
         this.context = context;
         this.onDayClickInterface = onDayClickInterface;
         this.localDate = localDate;
+        System.out.println("localDate--->"+localDate);
         localDate = LocalDate.now();
 
     }
@@ -49,7 +51,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         String dateString = arrayList.get(position);
         holder.dateNo.setText(dateString);
         if (!TextUtils.isEmpty(dateString)) {
-            String myDate =  String.format("%s-%02d", monthYearFromDate(localDate, TimeUtils.FORMAT_24), Integer.parseInt(dateString));
+             myDate =  String.format("%s-%02d", monthYearFromDate(localDate, TimeUtils.FORMAT_24), Integer.parseInt(dateString));
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             try {
                 LocalDate parsedMyDate = LocalDate.parse(myDate, formatter);
@@ -71,6 +73,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
             public void onClick(View view) {
                 if(!arrayList.get(holder.getAbsoluteAdapterPosition()).equals("")){
                     onDayClickInterface.onDayClicked(holder.getAbsoluteAdapterPosition(),arrayList.get(holder.getAbsoluteAdapterPosition()),new ModelClass()); // Used the same Interface class which used for TourPlan.So passing 1st and 3rd argument for no purpose
+                System.out.println("onDayClickInterface--->"+myDate);
                 }
             }
         });

@@ -81,6 +81,8 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     String acdCode;
     String ReportingSfCode;
     ArrayList<SlideRatingDetalisModelClass> callDetailingLists=new ArrayList<>();
+    ArrayList<DayReportRcpaModelClass> rcpaModelArray;
+
 
     public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst,String ActCode,String ReportingSfCode,String rcpaItem,String eventCaptureItem) {
         this.context = context;
@@ -217,7 +219,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         });
 
         holder.rcpaLayoutitle.setOnClickListener(view -> {
-
+            rcpaList.clear();
             if(holder.rcpaLayout.getVisibility()==View.VISIBLE){
                 holder.rcpa_arrow.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                 holder.rcpaLayout.setVisibility(View.GONE);
@@ -226,6 +228,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 if(rcpaList.size()>0){
                     if(dataModel.getTrans_Detail_Slno().equalsIgnoreCase(rcpadataid)){
                         holder.rcpaLayout.setVisibility(View.VISIBLE);
+
                     }else {
                         Rcpagetdata(holder.rvRcpa,holder.rcpaLayout,position);
                     }
@@ -408,6 +411,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         protected FilterResults performFiltering(CharSequence charSequence) {
             FilterResults results = new FilterResults();
             ArrayList<DayReportDetailModel> filteredModelArray = new ArrayList<>();
+            ArrayList<DayReportRcpaModelClass> rcpaModelClassArrayList = new ArrayList<>();
             if (charSequence != null && charSequence.length() > 0) {
                 for (DayReportDetailModel model : supportModelArray) {
                     if (model.getName().toUpperCase().contains(charSequence.toString().toUpperCase()) || model.getTerritory().toUpperCase().contains(charSequence.toString().toUpperCase())) {
@@ -534,8 +538,6 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
 
     public  void Rcpagetdata(RecyclerView recyclerView ,LinearLayout layout,int position){
-
-
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         if (UtilityClass.isNetworkAvailable(context)) {
             NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
@@ -618,7 +620,6 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
 
     public  void SldeDetails(RecyclerView recyclerView ,LinearLayout layout,int position){
-
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         if (UtilityClass.isNetworkAvailable(context)) {
             NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
