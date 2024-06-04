@@ -109,7 +109,7 @@ public class ReportsActivity extends AppCompatActivity {
                         jsonObject.put("AppName", getString(R.string.str_app_name));
                         jsonObject.put("language", SharedPref.getSelectedLanguage(this));
                         if (report.equalsIgnoreCase("DAY REPORT")) {
-                            jsonObject.put("tableName", "getdayrpt");
+                            jsonObject.put("tableName", "getdayrpt_edet");
 
                         }
 

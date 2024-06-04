@@ -110,7 +110,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
             Log.v("size", "--prd--" + ProductListNew.size());
             if (ProductListNew.size() > 0) {
                 dcrDetailViewBinding.constraintMainSample.setVisibility(View.VISIBLE);
-                productAdapter = new ProductAdapter(context, ProductListNew);
+                productAdapter = new ProductAdapter(context, ProductListNew,"");
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
                 dcrDetailViewBinding.rvSamplePrd.setLayoutManager(mLayoutManager);
                 commonUtilsMethods.recycleTestWithDivider(dcrDetailViewBinding.rvSamplePrd);
