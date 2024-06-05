@@ -56,7 +56,7 @@ public class PreviewActivity extends AppCompatActivity {
     PreviewTabAdapter viewPagerAdapter;
     String finalPrdNam;
     ArrayList<StoreImageTypeUrl> dummyArr = new ArrayList<>();
-    String startT, endT, CustomPresentationNeed;
+    String startT, endT, CustomPresentationNeed, therapticNeed;
     CommonUtilsMethods commonUtilsMethods;
     CustomSetupResponse customSetupResponse;
     private RoomDB roomDB;
@@ -118,8 +118,10 @@ public class PreviewActivity extends AppCompatActivity {
                     headingData.add("B");
                     viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                     headingData.add("C");
-//                    viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
-//                    headingData.add("D");
+                    if(therapticNeed.equalsIgnoreCase("0")) {
+                        viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
+                        headingData.add("D");
+                    }
                     if (CustomPresentationNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                         headingData.add("E");
@@ -129,8 +131,10 @@ public class PreviewActivity extends AppCompatActivity {
                     headingData.add("A");
                     viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                     headingData.add("C");
-//                    viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
-//                    headingData.add("D");
+                    if(therapticNeed.equalsIgnoreCase("0")) {
+                        viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
+                        headingData.add("D");
+                    }
                     if (CustomPresentationNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                         headingData.add("E");
@@ -140,7 +144,9 @@ public class PreviewActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
                 viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
                 viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-//                viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
+                if(therapticNeed.equalsIgnoreCase("0")) {
+                    viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
+                }
                 if (CustomPresentationNeed.equalsIgnoreCase("0"))
                     viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
             }
@@ -252,6 +258,7 @@ public class PreviewActivity extends AppCompatActivity {
                 }.getType();
                 customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
                 CustomPresentationNeed = customSetupResponse.getCustomizationPrsNeed();
+                therapticNeed = customSetupResponse.getTherapaticNeed();
             }
         } catch (Exception ignored) {
         }

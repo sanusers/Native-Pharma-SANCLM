@@ -571,9 +571,9 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 case "C":
                     holder.tv_brandName.setText(context.getResources().getText(R.string.speciality));
                     break;
-//                case "D":
-//                    holder.tv_brandName.setText(context.getResources().getText(R.string.therapist));
-//                    break;
+                case "D":
+                    holder.tv_brandName.setText(context.getResources().getText(R.string.therapist));
+                    break;
                 case "E":
                     holder.tv_brandName.setText(context.getResources().getText(R.string.my_presentation));
                     break;
@@ -592,9 +592,9 @@ public class PlaySlideDetailing extends AppCompatActivity {
                     case "C":
                         populateListData(SlideSpecialityList);
                         break;
-//                    case "D":
-//                        populateListData(SlideTherapistList);
-//                        break;
+                    case "D":
+                        populateListData(SlideTherapistList);
+                        break;
                     case "E":
                         populateLocalSavedData(SlideCustomizedList);
                         break;

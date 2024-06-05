@@ -372,10 +372,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mTowncode1 = strClusterID;
                     mTownname1 = strClusterName;
                     binding.txtCluster1.setText(CommonUtilsMethods.removeLastComma(strClusterName.trim()));
+                    chk_cluster = mTowncode1;
                 } else {
                     mTowncode2 = strClusterID;
                     mTownname2 = strClusterName;
                     binding.txtCluster2.setText(CommonUtilsMethods.removeLastComma(strClusterName.trim()));
+                    chk_cluster = mTowncode2;
                 }
             }
         });
@@ -1671,6 +1673,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             mFwFlg2 = SecondSeasonDayPlanObject.getString("FWFlg");
                             mHQCode2 = SecondSeasonDayPlanObject.getString("SFMem");
                             mHQName2 = SecondSeasonDayPlanObject.getString("HQNm");
+                            chk_cluster = mTowncode2;
                             //   mRemarks1 = SecondSeasonDayPlanObject.getString("Rem");
 
 

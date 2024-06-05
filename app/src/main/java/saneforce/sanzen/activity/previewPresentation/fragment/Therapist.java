@@ -1,7 +1,6 @@
 package saneforce.sanzen.activity.previewPresentation.fragment;
 
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.CusType;
-import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.SelectedTab;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.SpecialityCode;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.SpecialityName;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.from_where;
@@ -41,27 +40,24 @@ public class Therapist extends Fragment {
     @SuppressLint("StaticFieldLeak")
     private static FragmentTherapistBinding fragmentTherapistBinding;
     public static ArrayList<BrandModelClass> SlideTherapistList = new ArrayList<>();
-    public static ArrayList<String> brandCodeList = new ArrayList<>();
+    private static final ArrayList<String> brandCodeList = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     private static PreviewAdapter previewAdapter;
-    private CommonUtilsMethods commonUtilsMethods;
-    private RoomDB roomDB;
-    private MasterDataDao masterDataDao;
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         fragmentTherapistBinding = FragmentTherapistBinding.inflate(inflater);
-        roomDB = RoomDB.getDatabase(requireContext());
-        masterDataDao = roomDB.masterDataDao();
-        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        RoomDB roomDB = RoomDB.getDatabase(requireContext());
+        MasterDataDao masterDataDao = roomDB.masterDataDao();
+        CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 
         if (from_where.equalsIgnoreCase("call")) {
             if (CusType.equalsIgnoreCase("1")) {
-                getSelectedSpec(requireContext(), SpecialityCode, SpecialityName, masterDataDao);
+                getSelectedTherapist(requireContext(), SpecialityCode, SpecialityName, masterDataDao);
             } else {
-                getRequiredData(requireContext(), SpecialityName, masterDataDao);
+                getRequiredData(requireContext(), "All", masterDataDao);
             }
         } else {
             fragmentTherapistBinding.constraintNoData.setVisibility(View.VISIBLE);
@@ -70,10 +66,9 @@ public class Therapist extends Fragment {
             fragmentTherapistBinding.viewDummy2.setVisibility(View.GONE);
         }
 
-        getRequiredData(requireContext(),"All", masterDataDao);
+        getRequiredData(requireContext(), "All", masterDataDao);
 
         fragmentTherapistBinding.tvSelectTheraptic.setOnClickListener(v1 -> {
-//            SelectedTab = "Spec";
             previewBinding.fragmentSelectTherapistSide.setVisibility(View.VISIBLE);
         });
 
@@ -131,19 +126,19 @@ public class Therapist extends Fragment {
                         fileName = productObject.getString("FilePath");
                         slidePriority = productObject.getString("Priority");
                         String categoryCode = productObject.getString("Category_Code");
-                        Log.e("TAG", "getRequiredData: " + categoryCode);
                         String[] codes = categoryCode.split(",");
                         for (String categoryGrpCode: codes){
                             if(therapticCodes.contains(categoryGrpCode)){
-                                Log.e("TAG", "getRequiredData: " + categoryGrpCode);
+                                Log.e("TAG", "getRequiredData: \nBrand: " +brandCode + "\nCategory: " + categoryGrpCode);
+                                BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
+                                productArrayList.add(product);
+                                break;
                             }
                         }
-                        BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
-                        productArrayList.add(product);
                     }
                 }
                 boolean brandSelected = i == 0;
-                if (!brandCodeList.contains(brandCode) && !brandName.isEmpty()) {  //To avoid repeated of same brand
+                if (!brandCodeList.contains(brandCode) && !brandName.isEmpty() && !productArrayList.isEmpty()) {  //To avoid repeated of same brand
                     BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, brandSelected, productArrayList);
                     SlideTherapistList.add(brandModelClass);
                     brandCodeList.add(brandCode);
@@ -154,8 +149,10 @@ public class Therapist extends Fragment {
                 fragmentTherapistBinding.constraintNoData.setVisibility(View.GONE);
                 fragmentTherapistBinding.constraintSortFilter.setVisibility(View.VISIBLE);
                 fragmentTherapistBinding.rvTherapistList.setVisibility(View.VISIBLE);
-                fragmentTherapistBinding.tvInfo.setVisibility(View.VISIBLE);
-                fragmentTherapistBinding.viewDummy2.setVisibility(View.VISIBLE);
+                if(from_where.equalsIgnoreCase("call")) {
+                    fragmentTherapistBinding.tvInfo.setVisibility(View.VISIBLE);
+                    fragmentTherapistBinding.viewDummy2.setVisibility(View.VISIBLE);
+                }
                 previewAdapter = new PreviewAdapter(context, SlideTherapistList);
                 fragmentTherapistBinding.rvTherapistList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
                 fragmentTherapistBinding.rvTherapistList.setAdapter(previewAdapter);
@@ -174,7 +171,7 @@ public class Therapist extends Fragment {
     }
 
 
-    public static void getSelectedSpec(Context context, String therapticCode, String therapticName, MasterDataDao masterDataDao) {
+    public static void getSelectedTherapist(Context context, String therapticCode, String therapticName, MasterDataDao masterDataDao) {
         try {
             fragmentTherapistBinding.tvSelectTheraptic.setText(therapticName);
             SlideTherapistList.clear();
@@ -202,15 +199,16 @@ public class Therapist extends Fragment {
                         String[] codes = categoryCode.split(",");
                         for (String categoryGrpCode: codes){
                             if(therapticCode.equalsIgnoreCase(categoryGrpCode)){
-                                Log.e("TAG", "getRequiredData: " + categoryGrpCode);
+                                Log.e("TAG", "getRequiredData: \nBrand: " +brandCode + "\nCategory: " + categoryGrpCode);
+                                BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
+                                productArrayList.add(product);
+                                break;
                             }
                         }
-                        BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
-                        productArrayList.add(product);
                     }
                 }
                 boolean brandSelected = i == 0;
-                if (!brandCodeList.contains(brandCode) && !brandName.isEmpty()) { //To avoid repeated of same brand
+                if (!brandCodeList.contains(brandCode) && !brandName.isEmpty() && !productArrayList.isEmpty()) { //To avoid repeated of same brand
                     BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, brandSelected, productArrayList);
                     SlideTherapistList.add(brandModelClass);
                     brandCodeList.add(brandCode);

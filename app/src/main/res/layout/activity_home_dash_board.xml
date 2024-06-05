@@ -464,6 +464,7 @@
                                     android:layout_marginTop="@dimen/_2sdp"
                                     android:layout_marginEnd="@dimen/_2sdp"
                                     android:layout_marginBottom="@dimen/_2sdp"
+                                    android:visibility="gone"
                                     android:background="@drawable/backround_text"
                                     android:backgroundTint="#26FFEB3B"
                                     android:orientation="horizontal"

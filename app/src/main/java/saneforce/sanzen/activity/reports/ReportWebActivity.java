@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -88,8 +89,8 @@ public class ReportWebActivity extends AppCompatActivity {
     }
 
     private void PopulateWebView() {
-        url = SharedPref.getTagImageUrl(ReportWebActivity.this) + "MasterFiles/Dashboard_Menu.aspx" + "?sfcode=" + SharedPref.getSfCode(this) + "&cMnth=" + CommonUtilsMethods.getCurrentInstance("MM") + "&cYr=" + CommonUtilsMethods.getCurrentInstance("yyyy") + "&div_code=" + SharedPref.getDivisionCode(this)+ "&sf_type=" + SharedPref.getSfType(this)+ "&SF=" + SharedPref.getSfCode(this) + "&Mode=" + Constants.APP_MODE;
-
+        url = SharedPref.getTagImageUrl(ReportWebActivity.this) + "MasterFiles/Dashboard_Menu.aspx" + "?sfcode=" + SharedPref.getSfCode(this) + "&cMnth=" + CommonUtilsMethods.getCurrentInstance("MM") + "&cYr=" + CommonUtilsMethods.getCurrentInstance("yyyy") + "&div_code=" + CommonUtilsMethods.removeLastComma(SharedPref.getDivisionCode(this))+ "&sf_type=" + SharedPref.getSfType(this)+ "&SF=" + SharedPref.getSfCode(this) + "&Mode=" + Constants.APP_MODE;
+        Log.e("URL", "PopulateWebView: " + url );
         binding.webView.getSettings().setJavaScriptEnabled(true);
         binding.webView.setVerticalScrollBarEnabled(true);
         binding.webView.setHorizontalScrollBarEnabled(true);
