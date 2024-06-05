@@ -11,6 +11,7 @@ import static saneforce.sanzen.activity.previewPresentation.fragment.BrandMatrix
 import static saneforce.sanzen.activity.previewPresentation.fragment.MyPresentation.SlideCustomizedList;
 import static saneforce.sanzen.activity.previewPresentation.fragment.HomeBrands.SlideHomeBrandList;
 import static saneforce.sanzen.activity.previewPresentation.fragment.Speciality.SlideSpecialityList;
+import static saneforce.sanzen.activity.previewPresentation.fragment.Therapist.SlideTherapistList;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -570,7 +571,10 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 case "C":
                     holder.tv_brandName.setText(context.getResources().getText(R.string.speciality));
                     break;
-                case "D":
+//                case "D":
+//                    holder.tv_brandName.setText(context.getResources().getText(R.string.therapist));
+//                    break;
+                case "E":
                     holder.tv_brandName.setText(context.getResources().getText(R.string.my_presentation));
                     break;
             }
@@ -588,7 +592,10 @@ public class PlaySlideDetailing extends AppCompatActivity {
                     case "C":
                         populateListData(SlideSpecialityList);
                         break;
-                    case "D":
+//                    case "D":
+//                        populateListData(SlideTherapistList);
+//                        break;
+                    case "E":
                         populateLocalSavedData(SlideCustomizedList);
                         break;
                 }
@@ -690,6 +697,17 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                         productArrayList.add(product);
                                     }
                                     break;
+//                                case "D":
+//                                    if (productObject.getString("Speciality_Code").contains(PlaySlideDetailing.SpecialityCodePlay)) {
+//                                        brandName = productObject.getString("Name");
+//                                        code = productObject.getString("Code");
+//                                        slideId = productObject.getString("SlideId");
+//                                        fileName = productObject.getString("FilePath");
+//                                        slidePriority = productObject.getString("Priority");
+//                                        product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
+//                                        productArrayList.add(product);
+//                                    }
+//                                    break;
                             }
                         }
                     }

@@ -19,10 +19,12 @@ import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
     Context context;
     ArrayList<SaveCallProductList> getProductList;
+    String category;
 
-    public ProductAdapter(Context context, ArrayList<SaveCallProductList> getProductList) {
+    public ProductAdapter(Context context, ArrayList<SaveCallProductList> getProductList,String category) {
         this.context = context;
         this.getProductList = getProductList;
+        this.category = category;
     }
 
     @NonNull
@@ -42,7 +44,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.tv_samQty.setText(getProductList.get(position).getSample_qty());
         holder.tv_rxQty.setText(getProductList.get(position).getRx_qty());
         holder.tv_rcpa.setText(getProductList.get(position).getRcpa_qty());
-
+        System.out.println("category--->"+category);
+        if(category.equalsIgnoreCase("chemist_") || category.equalsIgnoreCase("stockiest_")){
+            holder.img_promoted.setVisibility(View.INVISIBLE);
+        }
         if(getProductList.get(position).getPromoted().equalsIgnoreCase("Yes")){
             holder.img_promoted.setImageDrawable(context.getResources().getDrawable(R.drawable.tick_icone));
         }else {

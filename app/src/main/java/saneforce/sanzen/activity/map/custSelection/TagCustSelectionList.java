@@ -466,15 +466,16 @@ public class TagCustSelectionList extends AppCompatActivity {
                         String chemistTownName = townMap.get(chemistCategory);
                         if (chemistTownName==null) chemistTownName = "";
                         if (jsonObject.has("cust_status")) {
-                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, chemistTownName, "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("HosAddr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
-                            custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, chemistTownName, "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("HosAddr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, chemistTownName, "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                            custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, chemistTownName, "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
                         } else {
-                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, chemistTownName, "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("HosAddr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
-                            custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, chemistTownName, "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("HosAddr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, chemistTownName, "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
+                            custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, chemistTownName, "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
                         }
                     }
-                } catch (Exception ignored) {
-                    // Handle exceptions
+                } catch (Exception e) {
+                    Log.e("TAG", "AddCustList: " + e.getMessage());
+                    e.printStackTrace();
                 }
                 break;
 

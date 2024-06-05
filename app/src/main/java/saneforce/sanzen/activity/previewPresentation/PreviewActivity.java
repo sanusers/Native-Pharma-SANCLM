@@ -118,18 +118,22 @@ public class PreviewActivity extends AppCompatActivity {
                     headingData.add("B");
                     viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                     headingData.add("C");
+//                    viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
+//                    headingData.add("D");
                     if (CustomPresentationNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
-                        headingData.add("D");
+                        headingData.add("E");
                     }
                 } else {
                     viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
                     headingData.add("A");
                     viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                     headingData.add("C");
+//                    viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
+//                    headingData.add("D");
                     if (CustomPresentationNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
-                        headingData.add("D");
+                        headingData.add("E");
                     }
                 }
             } else {

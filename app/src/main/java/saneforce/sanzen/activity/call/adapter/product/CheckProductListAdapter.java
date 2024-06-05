@@ -249,9 +249,11 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
             }else {
                 if(callCommonCheckedListArrayList.get(0).getCode().equalsIgnoreCase("-10")) {
                     callCommonCheckedListArrayList.get(0).setCheckedItem(false);
-                    noProductHolder.checkBox.setChecked(false);
-                    noProductHolder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
-                    noProductHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
+                    if(noProductHolder != null) {
+                        noProductHolder.checkBox.setChecked(false);
+                        noProductHolder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
+                        noProductHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
+                    }
                 }
             }
         }

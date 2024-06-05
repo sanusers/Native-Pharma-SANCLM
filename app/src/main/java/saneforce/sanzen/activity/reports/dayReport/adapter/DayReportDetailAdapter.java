@@ -118,11 +118,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         holder.jointWork.setText(dataModel.getWWith());
         holder.nextVisit.setText(dataModel.getNextVstDate());
         holder.overAllRemark.setText(dataModel.getRemarks());
-
-
-        if (checkInOutNeed) {
-            holder.checkInOutLayout.setVisibility(View.VISIBLE);
-        }
+        holder.checkInOutLayout.setVisibility(View.GONE);
         if (isRcpaRequested){
             holder.rcpaLayoutitle.setVisibility(View.VISIBLE);
         }
@@ -142,10 +138,12 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 break;
             }
             case Constants.CHEMIST: {
+                holder.textPromoted.setVisibility(View.INVISIBLE);
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_chemist_icon));
                 break;
             }
             case Constants.STOCKIEST: {
+                holder.textPromoted.setVisibility(View.INVISIBLE);
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_stockiest_icon));
                 break;
             }
@@ -174,7 +172,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     holder.rvPrd.setVisibility(View.VISIBLE);
                     holder.PrdLayout.setVisibility(View.VISIBLE);
                     productPromoted = getList(dataModel.getPromoted_product());
-                    productAdapter = new ProductAdapter(context, getProductList(dataModel.getProducts()));
+                    productAdapter = new ProductAdapter(context, getProductList(dataModel.getProducts()),reportOf);
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
                     holder.rvPrd.setLayoutManager(mLayoutManager);
                     commonUtilsMethods.recycleTestWithDivider(holder.rvPrd);
@@ -351,7 +349,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, visitTime, modifiedTime, cluster, pob, feedback, jointWork, nextVisit, checkInTime, checkInAddress, checkInMarker;
-        TextView checkOutTime, checkOutAddress, checkOutMarker, overAllRemark, viewMoreTxt;
+        TextView checkOutTime, checkOutAddress, checkOutMarker, overAllRemark, viewMoreTxt,textPromoted;
         ImageView nameIcon, viewMoreArrow,rcpa_arrow,slide_arrow;
         LinearLayout viewMore, checkInOutLayout,EventLayout,rcpaLayout,rcpaLayoutitle, slideDetailsLayout,SlidercpaLayoutitle;
         RelativeLayout rlNextVisit;
@@ -401,6 +399,8 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             rvSlideDetails = itemView.findViewById(R.id.Sliderecyelerview);
             slide_arrow = itemView.findViewById(R.id.slide_arrow);
             SlidercpaLayoutitle = itemView.findViewById(R.id.SlideLayoutitle);
+            textPromoted =  itemView.findViewById(R.id.product_qty);
+
 
         }
     }
