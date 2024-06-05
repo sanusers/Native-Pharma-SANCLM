@@ -60,7 +60,7 @@ public class TpApprovalDetailedAdapter extends RecyclerView.Adapter<TpApprovalDe
             if (!tpDetailedList.get(position).getWtName3().isEmpty())
                 tpClickedList.add(new TpDetailedModel(tpDetailedList.get(position).getDayNo(), tpDetailedList.get(position).getWtName3(),  tpDetailedList.get(position).getHqName3(),tpDetailedList.get(position).getClusterName3(), tpDetailedList.get(position).getFWFlg3(), tpDetailedList.get(position).getDayRemarks3(), tpDetailedList.get(position).getDrName3(), tpDetailedList.get(position).getChemistName3(), tpDetailedList.get(position).getStockiestName3(), tpDetailedList.get(position).getJwName3()));
 
-          /*  if (tpDetailedList.get(position).getWtName2().isEmpty()) {
+          /*  if (tpDetailedList.get(position).getWtName2().isEmpty())  {
                 tpClickedList.add(new TpDetailedModel(tpDetailedList.get(position).getDayNo(), tpDetailedList.get(position).getWtName(), tpDetailedList.get(position).getClusterName(), tpDetailedList.get(position).getFWFlg(), tpDetailedList.get(position).getDayRemarks(), tpDetailedList.get(position).getDrName()));
             } else if (tpDetailedList.get(position).getWtName3().isEmpty()) {
                 tpClickedList.add(new TpDetailedModel(tpDetailedList.get(position).getDayNo(), tpDetailedList.get(position).getWtName(), tpDetailedList.get(position).getClusterName(), tpDetailedList.get(position).getFWFlg(), tpDetailedList.get(position).getDayRemarks(), tpDetailedList.get(position).getDrName()));

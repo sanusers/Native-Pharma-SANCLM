@@ -1804,6 +1804,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
   public  void CheckingManatoryApprovals(){
+        if(UtilityClass.isNetworkAvailable(HomeDashBoard.this)){
         try {
               JSONObject jsonGetCount=new JSONObject();
               jsonGetCount.put("tableName", "getapprovalcheck");
@@ -1873,12 +1874,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
               @Override
               public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                  commonUtilsMethods.showToastMessage(getApplicationContext(),getString(R.string.toast_response_failed));
-                  progressDialog.dismiss();
+
               }
           });} catch (Exception ignored) {
 
         }
-      }
+      }}
 }
 

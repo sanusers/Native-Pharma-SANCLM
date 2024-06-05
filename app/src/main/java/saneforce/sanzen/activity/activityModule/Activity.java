@@ -403,8 +403,6 @@ public class Activity extends AppCompatActivity {
                                    }
                                    binding.progrlessdetail.setVisibility(View.GONE); }
                            }else {
-
-
                                binding.rldatalayout.setVisibility(View.GONE);
                                binding.rlNoData.setVisibility(View.VISIBLE);
                                binding.btnsumit.setVisibility(View.GONE);
