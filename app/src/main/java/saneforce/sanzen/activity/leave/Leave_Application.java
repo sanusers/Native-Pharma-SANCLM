@@ -22,10 +22,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -57,7 +55,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -138,6 +135,16 @@ public class Leave_Application extends AppCompatActivity {
         et_Custsearch = findViewById(R.id.et_Custsearch);
         dailog_list.setVisibility(View.VISIBLE);
         setVisibility();
+        JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
+        for (int bean = 0;bean<jsonArray.length();bean++){
+            try {
+                JSONObject jsonObject = jsonArray.getJSONObject(bean);
+                System.out.println("jsonObject--->"+jsonObject);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+//        updateLeaveStatusMasterSync1();
         leavebinding.edReason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edReason)});
 
 //        l_sideview.closeDrawer(Gravity.RIGHT);
@@ -213,7 +220,6 @@ public class Leave_Application extends AppCompatActivity {
             }
 
         });
-
 
         AvailableLeave();
 
@@ -706,7 +712,7 @@ public class Leave_Application extends AppCompatActivity {
     }
 
     private void timeZoneVerification() {
-        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context);
+        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context) && commonUtilsMethods.isTimeZoneAutomatic(context);
         if (!isAutoTimeZoneEnabled) {
             CommonUtilsMethods.showCustomDialog(this);
         }
@@ -764,6 +770,6 @@ public class Leave_Application extends AppCompatActivity {
                 Toast.makeText(Leave_Application.this, "Poor Internet Connection Please Check After Sometime", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
+
 }

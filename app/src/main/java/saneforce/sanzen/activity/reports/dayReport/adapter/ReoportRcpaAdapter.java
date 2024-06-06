@@ -68,8 +68,8 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
         });
         holder.infoView.setOnClickListener(v -> {
             ratePopUp(v,rcpaList.get(position).getOPRate(),rcpaList.get(position).getOPQty(),rcpaList.get(position).getOPRate(),rcpaList.get(position).getOPValue(),rcpaList.get(position).getCPQty(),rcpaList.get(position).getCPRate(),rcpaList.get(position).getCPValue(),totValue);
+            notifyDataSetChanged();
         });
-
     }
 
     @Override
@@ -94,6 +94,7 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
             ComprdQty = itemView.findViewById(R.id.competitorproductnameqty);
             comName = itemView.findViewById(R.id.chemistName);
             infoView = itemView.findViewById(R.id.infoView);
+            layout = itemView.findViewById(R.id.layOut);
         }
     }
 
