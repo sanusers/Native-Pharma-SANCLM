@@ -159,7 +159,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     LocationManager locationManager;
     ApiInterface apiInterface;
 
-    CustomSetupResponse customSetupResponse;
+//    CustomSetupResponse customSetupResponse;
     IntentFilter intentFilter;
     NetworkChangeReceiver receiver;
     Callstatusadapter callstatusadapter;
@@ -585,18 +585,20 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     private void getRequiredData() {
         try {
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject setupData = jsonArray.getJSONObject(0);
-                customSetupResponse = new CustomSetupResponse();
-                Type typeSetup = new TypeToken<CustomSetupResponse>() {
-                }.getType();
-                customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
-                PresentationNeed = customSetupResponse.getPresentationNeed();
-                CustomPresentationNeed = customSetupResponse.getCustomizationPrsNeed();
-            }
+//            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
+//            for (int i = 0; i < jsonArray.length(); i++) {
+//                JSONObject setupData = jsonArray.getJSONObject(0);
+//                customSetupResponse = new CustomSetupResponse();
+//                Type typeSetup = new TypeToken<CustomSetupResponse>() {
+//                }.getType();
+//                customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
+//                PresentationNeed = customSetupResponse.getPresentationNeed();
+//                CustomPresentationNeed = customSetupResponse.getCustomizationPrsNeed();
+//            }
+            PresentationNeed = SharedPref.getPresentationNeed(this);
+            CustomPresentationNeed = SharedPref.getCustomizationPresentationNeed(this);
             if (PresentationNeed != null && PresentationNeed.equalsIgnoreCase("0")) {
-                if (CustomPresentationNeed != null && CustomPresentationNeed.equalsIgnoreCase("0")) {
+                if (CustomPresentationNeed.equalsIgnoreCase("0")) {
                     binding.llPresentation.setVisibility(View.VISIBLE);
                 } else {
                     binding.llPresentation.setVisibility(View.GONE);
@@ -607,8 +609,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.llSlide.setVisibility(View.GONE);
             }
             SequentialEntry = SharedPref.getDcrSequential(this);
-        } catch (Exception ignored) {
-            ignored.printStackTrace();
+        } catch (Exception e) {
+            Log.e("Presentation", "getRequiredData: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

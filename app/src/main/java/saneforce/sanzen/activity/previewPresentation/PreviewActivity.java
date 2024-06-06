@@ -46,6 +46,7 @@ import saneforce.sanzen.response.CustomSetupResponse;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class PreviewActivity extends AppCompatActivity {
@@ -58,7 +59,7 @@ public class PreviewActivity extends AppCompatActivity {
     ArrayList<StoreImageTypeUrl> dummyArr = new ArrayList<>();
     String startT, endT, CustomPresentationNeed, therapticNeed;
     CommonUtilsMethods commonUtilsMethods;
-    CustomSetupResponse customSetupResponse;
+//    CustomSetupResponse customSetupResponse;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private CallOfflineDataDao callOfflineDataDao;
@@ -250,16 +251,18 @@ public class PreviewActivity extends AppCompatActivity {
 
     private void getRequiredData() {
         try {
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject setupData = jsonArray.getJSONObject(0);
-                customSetupResponse = new CustomSetupResponse();
-                Type typeSetup = new TypeToken<CustomSetupResponse>() {
-                }.getType();
-                customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
-                CustomPresentationNeed = customSetupResponse.getCustomizationPrsNeed();
-                therapticNeed = customSetupResponse.getTherapaticNeed();
-            }
+//            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
+//            for (int i = 0; i < jsonArray.length(); i++) {
+//                JSONObject setupData = jsonArray.getJSONObject(0);
+//                customSetupResponse = new CustomSetupResponse();
+//                Type typeSetup = new TypeToken<CustomSetupResponse>() {
+//                }.getType();
+//                customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
+//                CustomPresentationNeed = customSetupResponse.getCustomizationPrsNeed();
+//                therapticNeed = customSetupResponse.getTherapaticNeed();
+//            }
+            CustomPresentationNeed = SharedPref.getCustomizationPresentationNeed(this);
+            therapticNeed = SharedPref.getTherapticPresentationNeed(this);
         } catch (Exception ignored) {
         }
     }

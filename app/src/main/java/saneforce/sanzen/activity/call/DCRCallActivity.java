@@ -2264,6 +2264,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     PrdSamNeed = SharedPref.getDrSampNd(this);
                     PrdRxNeed = SharedPref.getDrRxNd(this);
                     CusCheckInOutNeed = SharedPref.getCustSrtNd(this);
+                    AdditionalCallNeed = SharedPref.getAdditionalCallNeed(this);
 
                     //Mandatory
                     PrdMandatory = SharedPref.getDrPrdMd(this);
@@ -2317,13 +2318,14 @@ public class DCRCallActivity extends AppCompatActivity {
                     //Need
                     ProductNeed = SharedPref.getSpNeed(this);
                     InputNeed = SharedPref.getSiNeed(this);
-                    PobNeed = SharedPref.getStkPobNeed(this);
+//                    PobNeed = SharedPref.getStkPobNeed(this);
                     OverallFeedbackNeed =SharedPref.getSfNeed(this);
                     EventCaptureNeed = SharedPref.getSeNeed(this);
                     JwNeed = SharedPref.getStkJointworkNeed(this);
                     PrdSamNeed = "0";
                     PrdRxNeed = SharedPref.getStkPobNeed(this);
                     CusCheckInOutNeed = "1";
+                    PobNeed = SharedPref.getStockistPobNeed(this);
 
                     //Mandatory
                     PobMandatory = SharedPref.getStkPobMandatoryNeed(this);
@@ -2342,13 +2344,14 @@ public class DCRCallActivity extends AppCompatActivity {
                     CusCheckInOutNeed = SharedPref.getUnlistSrtNd(this);;
 
                     //Need
-                    PobNeed = SharedPref.getUlPobNeed(this);
+//                    PobNeed = SharedPref.getUlPobNeed(this);
                     OverallFeedbackNeed = SharedPref.getNfNeed(this);
                     EventCaptureNeed = SharedPref.getNeNeed(this);
                     JwNeed =SharedPref.getUlJointworkNeed(this);
                     PrdSamNeed = "0";
                     PrdRxNeed =SharedPref.getUlPobNeed(this);;
                     CusCheckInOutNeed = "1";
+                    PobNeed = SharedPref.getUnlistedDoctorPobNeed(this);
 
                     //Mandatory
                     PobMandatory = SharedPref.getUlPobMandatoryNeed(this);
@@ -2478,18 +2481,18 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
-            JSONObject setupData = jsonArray.getJSONObject(0);
-            Type typeSetup = new TypeToken<CustomSetupResponse>() {
-            }.getType();
-            CustomSetupResponse customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
-            if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
-                AdditionalCallNeed = customSetupResponse.getAdditionalCall();
-            }else if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
-                PobNeed = customSetupResponse.getStockistPobNeed();
-            }else if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
-                PobNeed = customSetupResponse.getUndrPobNeed();
-            }
+//            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
+//            JSONObject setupData = jsonArray.getJSONObject(0);
+//            Type typeSetup = new TypeToken<CustomSetupResponse>() {
+//            }.getType();
+//            CustomSetupResponse customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
+//            if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
+//                AdditionalCallNeed = customSetupResponse.getAdditionalCall();
+//            }else if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
+//                PobNeed = customSetupResponse.getStockistPobNeed();
+//            }else if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
+//                PobNeed = customSetupResponse.getUndrPobNeed();
+//            }
 
             if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
 //                DialogCheckOut();
