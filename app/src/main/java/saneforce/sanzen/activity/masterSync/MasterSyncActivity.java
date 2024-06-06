@@ -632,7 +632,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
         jWorkCount = masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + rsf).getMasterSyncDataJsonArray().length();
         Quixcount = masterDataDao.getMasterDataTableOrNew(Constants.QUIZ).getMasterSyncDataJsonArray().length();
         setupCount = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray().length();
-        customSetupCount = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray().length();
+//        customSetupCount = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray().length();
 
         doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR + rsf);
         specialityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPECIALITY);
@@ -680,7 +680,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
         jWorkStatus = masterDataDao.getMasterSyncStatusByKey(Constants.JOINT_WORK + rsf);
         QuizStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUIZ);
         setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
-        customSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CUSTOM_SETUP);
+//        customSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CUSTOM_SETUP);
 
         binding.listedDr.setSelected(true);
         prepareArray(rsf);
@@ -841,9 +841,9 @@ public class    MasterSyncActivity extends AppCompatActivity {
         //Setup
         setupModelArray.clear();
         MasterSyncItemModel setupModel = new MasterSyncItemModel(Constants.SETUP, setupCount, Constants.SETUP, "getsetups", Constants.SETUP, setupStatus, false);
-        MasterSyncItemModel customSetupModel = new MasterSyncItemModel(Constants.CUSTOM_SETUP, customSetupCount, Constants.SETUP, "getcustomsetup", Constants.CUSTOM_SETUP, customSetupStatus, false);
+//        MasterSyncItemModel customSetupModel = new MasterSyncItemModel(Constants.CUSTOM_SETUP, customSetupCount, Constants.SETUP, "getcustomsetup", Constants.CUSTOM_SETUP, customSetupStatus, false);
         setupModelArray.add(setupModel);
-        setupModelArray.add(customSetupModel);
+//        setupModelArray.add(customSetupModel);
 
         passDataToAdapter();
 

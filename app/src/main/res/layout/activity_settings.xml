@@ -32,6 +32,11 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:src="@drawable/zen_logo"
+                        android:id="@+id/zen_logo"/>
 
                     <TextView
                         android:id="@+id/tv_app_name"
@@ -39,8 +44,11 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_bold"
                         android:text="@string/str_app_name"
+                        android:layout_toEndOf="@id/zen_logo"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_10sdp"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:layout_marginTop="@dimen/_1sdp"
                         tools:ignore="SpUsage" />
 
                     <TextView

@@ -473,7 +473,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
             for (int i = 0; i < workTypeArray.length(); i++) {
                 JSONObject object = workTypeArray.getJSONObject(i);
-
+                if (object.getString("FWFlg").equalsIgnoreCase("L")) {
+                    continue;
+                }
                 if (SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
 
                     if (DayPlanCount.equalsIgnoreCase("1")) {

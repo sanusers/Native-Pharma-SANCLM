@@ -398,8 +398,12 @@ public class SharedPref {
     public static final String DCR_SEQUENTIAL = "dcr_sequential";
 
     public static final String DAY_PLAN_STARTED = "day_plan_started";
-
-
+    public static final String PRESENTATION_NEED = "PresentNd";
+    public static final String CUSTOMIZATION_PRESENTATION_NEED = "Customization_need";
+    public static final String THERAPTIC_PRESENTATION_NEED = "TherapticNd";
+    public static final String STOCKIST_POB_NEED = "Pob_Stockist_Nd";
+    public static final String UNLISTED_DOCTOR_POB_NEED = "Pob_Unlstdr_Nd";
+    public static final String ADDITIONAL_CALL_NEED = "Additional_Call";
 
     public static final String SLIDE_DOWNLOADING_STATUS = "Slide_downloding_status";
     public static SharedPreferences.Editor editor;
@@ -607,8 +611,8 @@ public class SharedPref {
         editor.putString(MISC_EXPENSE_NEED, jsonObject.getString("misc_expense_need"));
         editor.putString(DOC_POB_NEED, jsonObject.getString("Doc_Pob_Need"));
         editor.putString(CHM_POB_NEED, jsonObject.getString("Chm_Pob_Need"));
-        editor.putString(STK_POB_NEED, jsonObject.getString("Stk_Pob_Need"));
-        editor.putString(UL_POB_NEED, jsonObject.getString("Ul_Pob_Need"));
+//        editor.putString(STK_POB_NEED, jsonObject.getString("Stk_Pob_Need"));
+//        editor.putString(UL_POB_NEED, jsonObject.getString("Ul_Pob_Need"));
         editor.putString(STK_POB_MANDATORY_NEED, jsonObject.getString("Stk_Pob_Mandatory_Need"));
         editor.putString(UL_POB_MANDATORY_NEED, jsonObject.getString("Ul_Pob_Mandatory_Need"));
         editor.putString(DOC_JOINTWORK_NEED, jsonObject.getString("Doc_jointwork_Need"));
@@ -711,6 +715,12 @@ public class SharedPref {
         editor.putString(RCPA_COMPETITOR_ADD, jsonObject.getString("RCPA_competitor_add"));
         editor.putString(GEOTAGGING, jsonObject.getString("GeoTagging"));
         editor.putString(DCR_SEQUENTIAL, jsonObject.getString("dcr_sequential"));
+        editor.putString(PRESENTATION_NEED, jsonObject.getString("PresentNd"));
+        editor.putString(CUSTOMIZATION_PRESENTATION_NEED, jsonObject.getString("Customization_need"));
+        editor.putString(THERAPTIC_PRESENTATION_NEED, jsonObject.getString("TherapticNd"));
+        editor.putString(STOCKIST_POB_NEED, jsonObject.getString("Pob_Stockist_Nd"));
+        editor.putString(UNLISTED_DOCTOR_POB_NEED, jsonObject.getString("Pob_Unlstdr_Nd"));
+        editor.putString(ADDITIONAL_CALL_NEED, jsonObject.getString("Additional_Call"));
         editor.apply();
 
     }catch (Exception ignore){
@@ -2411,6 +2421,66 @@ public class SharedPref {
 
     public static String getDcrSequential(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DCR_SEQUENTIAL, "");
+    }
+
+    public static void setPresentationNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(PRESENTATION_NEED, status).apply();
+    }
+
+    public static String getPresentationNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(PRESENTATION_NEED, "");
+    }
+
+    public static void setCustomizationPresentationNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CUSTOMIZATION_PRESENTATION_NEED, status).apply();
+    }
+
+    public static String getCustomizationPresentationNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CUSTOMIZATION_PRESENTATION_NEED, "");
+    }
+
+    public static void setTherapticPresentationNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(THERAPTIC_PRESENTATION_NEED, status).apply();
+    }
+
+    public static String getTherapticPresentationNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(THERAPTIC_PRESENTATION_NEED, "");
+    }
+
+    public static void setStockistPobNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(STOCKIST_POB_NEED, status).apply();
+    }
+
+    public static String getStockistPobNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STOCKIST_POB_NEED, "");
+    }
+
+    public static void setUnlistedDoctorPobNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(UNLISTED_DOCTOR_POB_NEED, status).apply();
+    }
+
+    public static String getUnlistedDoctorPobNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(UNLISTED_DOCTOR_POB_NEED, "");
+    }
+
+    public static void setAdditionalCallNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(ADDITIONAL_CALL_NEED, status).apply();
+    }
+
+    public static String getAdditionalCallNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ADDITIONAL_CALL_NEED, "");
     }
 
 }
