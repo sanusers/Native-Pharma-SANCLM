@@ -14,7 +14,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,7 +28,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -72,6 +70,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -97,7 +96,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
-import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideServices;
 import saneforce.sanzen.activity.activityModule.Activity;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.forms.Forms_activity;
@@ -1768,7 +1766,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context);
+                        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context) && commonUtilsMethods.isTimeZoneAutomatic(context);
                         mainHandler.post(new Runnable() {
                             @Override
                             public void run() {

@@ -2765,7 +2765,7 @@ public class DCRCallActivity extends AppCompatActivity {
         handler1.postDelayed(runnable, delay);
     }
     private void timeZoneVerification() {
-        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context);
+        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context) && commonUtilsMethods.isTimeZoneAutomatic(context);
         if (!isAutoTimeZoneEnabled) {
             CommonUtilsMethods.showCustomDialog(this);
         }
