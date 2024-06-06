@@ -223,7 +223,7 @@ public class PreviewActivity extends AppCompatActivity {
                 }
             }
 
-            if (arrayStore.size() > 0) {
+            if (!arrayStore.isEmpty()) {
                 try {
                     JSONArray jsonArray = new JSONArray(arrayStore.get(arrayStore.size()-1).getRemTime());
                     for (int i = 0; i<jsonArray.length(); i++) {

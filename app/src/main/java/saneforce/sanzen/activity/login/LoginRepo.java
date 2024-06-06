@@ -25,7 +25,7 @@ public class LoginRepo {
     public MutableLiveData<JsonElement> requestLogin(Context context, String baseUrl, String object){
         final MutableLiveData<JsonElement> mutableLiveData = new MutableLiveData<>();
         Map<String, String> mapString = new HashMap<>();
-        mapString.put("axn", "action/login");
+        mapString.put("axn", "action/login_edet");
         ApiInterface apiInterface = RetrofitClient.getRetrofit(context, baseUrl);
         Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context),mapString,object);
         call.enqueue(new Callback<JsonElement>() {

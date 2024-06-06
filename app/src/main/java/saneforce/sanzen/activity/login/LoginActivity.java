@@ -243,6 +243,9 @@ public class LoginActivity extends AppCompatActivity {
             binding.userId.setText(SharedPref.getLoginId(LoginActivity.this));
           //  binding.password.setText(SharedPref.getLoginUserPwd(LoginActivity.this));
               binding.userId.setEnabled(false);
+              if(binding.userId.getText().toString().isEmpty()){
+                  binding.userId.setEnabled(true);
+              }
         }
 
         SetUpLanguage();

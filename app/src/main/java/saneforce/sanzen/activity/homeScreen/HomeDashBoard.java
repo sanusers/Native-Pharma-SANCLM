@@ -597,17 +597,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //            }
             PresentationNeed = SharedPref.getPresentationNeed(this);
             CustomPresentationNeed = SharedPref.getCustomizationPresentationNeed(this);
-            if (PresentationNeed != null && PresentationNeed.equalsIgnoreCase("0")) {
-                if (CustomPresentationNeed.equalsIgnoreCase("0")) {
+//            if (PresentationNeed.equalsIgnoreCase("0")) {
+//                if (CustomPresentationNeed.equalsIgnoreCase("0")) {
                     binding.llPresentation.setVisibility(View.VISIBLE);
-                } else {
-                    binding.llPresentation.setVisibility(View.GONE);
-                }
-                binding.llSlide.setVisibility(View.VISIBLE);
-            } else {
-                binding.llPresentation.setVisibility(View.GONE);
-                binding.llSlide.setVisibility(View.GONE);
-            }
+//                } else {
+//                    binding.llPresentation.setVisibility(View.GONE);
+//                }
+//                binding.llSlide.setVisibility(View.VISIBLE);
+//            } else {
+//                binding.llPresentation.setVisibility(View.GONE);
+//                binding.llSlide.setVisibility(View.GONE);
+//            }
             SequentialEntry = SharedPref.getDcrSequential(this);
         } catch (Exception e) {
             Log.e("Presentation", "getRequiredData: " + e.getMessage());
