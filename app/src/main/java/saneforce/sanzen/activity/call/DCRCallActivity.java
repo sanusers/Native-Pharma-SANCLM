@@ -354,6 +354,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_successfully));
                         //progressDialog.dismiss();
                     }
+                    storingSlide.clear();
                     SharedPref.setDayPlanStartedDate(this,  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
 //                    if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
                         //    progressDialog.dismiss();

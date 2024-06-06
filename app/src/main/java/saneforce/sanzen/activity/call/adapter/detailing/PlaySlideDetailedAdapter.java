@@ -370,7 +370,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         RelativeLayout rl_stop = dialogPopUp.findViewById(R.id.rl_stop);
 
         boolean isAvailable = false;
-        if (slideScribble.size() > 0) {
+        if (!slideScribble.isEmpty()) {
             for (int i = 0; i < slideScribble.size(); i++) {
                 if (slideScribble.get(i).getSlideNam().equalsIgnoreCase(slideName)) {
                     scribblePos = i;
@@ -567,6 +567,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     }
                 }
             }
+            slideScribble.clear();
             act.getOnBackPressedDispatcher().onBackPressed();
         });
 
