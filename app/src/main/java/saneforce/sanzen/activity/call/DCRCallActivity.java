@@ -552,7 +552,7 @@ public class DCRCallActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("CustCode", CallActivityCustDetails.get(0).getCode());
             jsonObject.put("CustType", CallActivityCustDetails.get(0).getType());
-            jsonObject.put("Dcr_dt", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+            jsonObject.put("Dcr_dt", HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
             jsonObject.put("month_name", CommonUtilsMethods.getCurrentInstance("MMMM"));
             jsonObject.put("Mnth", CommonUtilsMethods.getCurrentInstance("M"));
             jsonObject.put("Yr", CommonUtilsMethods.getCurrentInstance("yyyy"));
@@ -2260,7 +2260,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     RCPANeed = SharedPref.getRcpaNd(this);
                     PobNeed = SharedPref.getDocPobNeed(this);
                     OverallFeedbackNeed = SharedPref.getDfNeed(this);
-                    EventCaptureNeed = SharedPref.getDeNeed(this);;
+                    EventCaptureNeed = SharedPref.getDeNeed(this);
                     JwNeed = SharedPref.getDocJointworkNeed(this);
                     PrdSamNeed = SharedPref.getDrSampNd(this);
                     PrdRxNeed = SharedPref.getDrRxNd(this);

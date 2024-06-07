@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -146,6 +147,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
             Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
             final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
             popup.inflate(R.menu.call_menu);
+            MenuItem editMenu = popup.getMenu().findItem(R.id.menuEdit);
+            editMenu.setVisible(!status.equalsIgnoreCase(Constants.DUPLICATE_CALL));
             popup.setOnMenuItemClickListener(menuItem -> {
                 if (menuItem.getItemId() == R.id.menuSync) {
                     if (UtilityClass.isNetworkAvailable(context)) {

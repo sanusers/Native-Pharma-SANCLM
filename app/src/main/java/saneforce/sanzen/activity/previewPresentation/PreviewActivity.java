@@ -123,10 +123,10 @@ public class PreviewActivity extends AppCompatActivity {
                         viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
                         headingData.add("D");
                     }
-                    if (CustomPresentationNeed.equalsIgnoreCase("0")) {
+//                    if (CustomPresentationNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                         headingData.add("E");
-                    }
+//                    }
                 } else {
                     viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
                     headingData.add("A");
@@ -136,10 +136,10 @@ public class PreviewActivity extends AppCompatActivity {
                         viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
                         headingData.add("D");
                     }
-                    if (CustomPresentationNeed.equalsIgnoreCase("0")) {
+//                    if (CustomPresentationNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                         headingData.add("E");
-                    }
+//                    }
                 }
             } else {
                 viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
@@ -148,7 +148,7 @@ public class PreviewActivity extends AppCompatActivity {
                 if(therapticNeed.equalsIgnoreCase("0")) {
                     viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
                 }
-                if (CustomPresentationNeed.equalsIgnoreCase("0"))
+//                if (CustomPresentationNeed.equalsIgnoreCase("0"))
                     viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
             }
             previewBinding.viewPager.setAdapter(viewPagerAdapter);

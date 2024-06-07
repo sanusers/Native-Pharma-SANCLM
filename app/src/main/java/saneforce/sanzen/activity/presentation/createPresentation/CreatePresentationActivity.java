@@ -32,6 +32,7 @@ import saneforce.sanzen.activity.presentation.playPreview.PlaySlidePreviewActivi
 import saneforce.sanzen.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityCreatePresentationBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
@@ -130,6 +131,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
                    commonUtilsMethods.showToastMessage(CreatePresentationActivity.this ,getString(R.string.enter_presentation_name));
                 }
             }
+            UtilityClass.hideKeyboard(this);
         });
 
     }

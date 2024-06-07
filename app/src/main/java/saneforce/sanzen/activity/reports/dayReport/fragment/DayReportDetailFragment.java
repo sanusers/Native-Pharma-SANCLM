@@ -299,14 +299,14 @@ public class DayReportDetailFragment extends Fragment {
     }
 
     public void populateAdapter(ArrayList<DayReportDetailModel> arrayList, String reportOf, String type) {
-        if (arrayList.size() > 0) binding.noReportFoundTxt.setVisibility(View.GONE);
+        if (!arrayList.isEmpty()) binding.noReportFoundTxt.setVisibility(View.GONE);
         else binding.noReportFoundTxt.setVisibility(View.VISIBLE);
 
         switch (type) {
             case "1":
                 callCheckInOutNeed = SharedPref.getCustSrtNd(requireContext());
-                rcpaItem = SharedPref.getSepRcpaNd(context);
-                eventCaptureItem = SharedPref.getDeNeed(context);
+                rcpaItem = SharedPref.getSepRcpaNd(requireContext());
+                eventCaptureItem = SharedPref.getDeNeed(requireContext());
                 break;
             case "2":
                 callCheckInOutNeed = SharedPref.getChmSrtNd(requireContext());
