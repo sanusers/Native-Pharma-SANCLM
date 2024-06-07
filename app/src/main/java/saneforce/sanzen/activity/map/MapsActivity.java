@@ -1279,7 +1279,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mapsBinding.rvList.removeItemDecorationAt(i);
                 }
             }
-
             taggingAdapter = new TaggingAdapter(MapsActivity.this, taggedMapListArrayList);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
             mapsBinding.rvList.setLayoutManager(mLayoutManager);

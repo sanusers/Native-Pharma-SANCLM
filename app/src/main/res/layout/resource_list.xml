@@ -147,7 +147,19 @@
                         android:padding="@dimen/_3sdp"
                         android:text="Specialty"
                         android:textColor="#808B96"
-
+                        android:textSize="@dimen/_6sdp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/textAvailablity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_3sdp"
+                        android:text="Specialty"
+                        android:textColor="#808B96"
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold" />
 

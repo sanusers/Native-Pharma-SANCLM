@@ -21,6 +21,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -65,6 +66,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.google.android.gms.location.FusedLocationProviderApi;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
@@ -1799,7 +1802,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         customDialog.setView(timezoneBinding.getRoot());
         customDialog.setCancelable(false);
         customDialog.show();
-        timezoneBinding.btnOpenSettings.setOnClickListener(v -> {System.exit(0);});
+        timezoneBinding.btnOpenSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            System.exit(0);
+        });
     }
 
 

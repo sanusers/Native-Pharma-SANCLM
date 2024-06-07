@@ -410,7 +410,6 @@ public class CommonUtilsMethods {
             customDialog.dismiss();
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
-            context.startActivity(intent);
             context.finishAffinity();
         });
     }
