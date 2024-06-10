@@ -209,28 +209,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         timeZoneVerification();
         super.onResume();
         Log.d("ACTIVITY_STATUS", "OnResume");
-        CommonAlertBox.CheckLocationStatus(HomeDashBoard.this);
-        if(!SharedPref.getDesig(HomeDashBoard.this).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0")){
-            CheckingManatoryApprovals();
-        }
-        CheckedTpRange();
-        checkAndSetEntryDate(this);
-        checkAndSetEntryDate(this);
-
-
         commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
         if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
             binding.myDrawerLayout.closeDrawer(GravityCompat.START);
         }
-
-//        if (SharedPref.getSrtNd(this).equalsIgnoreCase("0") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
-//            SharedPref.setCheckInTime(getApplicationContext(), "");
-//            SharedPref.setSkipCheckIn(getApplicationContext(), true);
-//            CheckInOutDate();
-//        } else {
-//            SharedPref.setSkipCheckIn(getApplicationContext(), false);
-//        }
 
         if (Build.VERSION.SDK_INT >= 33) {
             if (ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(HomeDashBoard.this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(HomeDashBoard.this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
@@ -263,6 +246,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } catch (Exception ignored) {
 
         }
+
+
+
+        CommonAlertBox.CheckLocationStatus(HomeDashBoard.this);
+        if(!SharedPref.getDesig(HomeDashBoard.this).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0")){
+            CheckingManatoryApprovals();
+        }
+        CheckedTpRange();
+        checkAndSetEntryDate(this);
+        checkAndSetEntryDate(this);
+
     }
 
     @Override
@@ -377,6 +371,20 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } else {
             SharedPref.setSkipCheckIn(getApplicationContext(), false);
         }
+
+
+
+        gpsTrack = new GPSTrack(this);
+        latitude = gpsTrack.getLatitude();
+        longitude = gpsTrack.getLongitude();
+        if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
+            address = CommonUtilsMethods.gettingAddress(this, latitude, longitude, false);
+        } else {
+            address = "No Address Found";
+        }
+
+
+        Log.e("addresss"," :"+latitude+"   :"+longitude+" :"+address);
 
         binding.rlDateLayoout.setOnClickListener(this);
         binding.viewCalerderLayout.rlCalenderSyn.setOnClickListener(this);
@@ -1630,24 +1638,23 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")) {
             binding.tvLdot.setVisibility(View.VISIBLE);
             binding.imgLocation.setImageResource(R.drawable.location_img);
-        } else {
-            binding.imgLocation.setImageResource(R.drawable.locationget_img);
-        }
-        if (SharedPref.getGeotagNeed(this).equalsIgnoreCase("1")) {
+        } else binding.imgLocation.setImageResource(R.drawable.locationget_img);
+
+        if (SharedPref.getGeotagNeed(this).equalsIgnoreCase("1"))
             binding.tvDdot.setVisibility(View.VISIBLE);
-        }
-        if (SharedPref.getGeotagNeedChe(this).equalsIgnoreCase("1")) {
+
+        if (SharedPref.getGeotagNeedChe(this).equalsIgnoreCase("1"))
             binding.tvCdot.setVisibility(View.VISIBLE);
-        }
-        if (SharedPref.getGeotagNeedStock(this).equalsIgnoreCase("1")) {
+
+        if (SharedPref.getGeotagNeedStock(this).equalsIgnoreCase("1"))
             binding.tvSdot.setVisibility(View.VISIBLE);
-        }
-        if (SharedPref.getGeotagNeedUnlst(this).equalsIgnoreCase("1")) {
+
+        if (SharedPref.getGeotagNeedUnlst(this).equalsIgnoreCase("1"))
             binding.tvUdot.setVisibility(View.VISIBLE);
-        }
-        if (SharedPref.getGeotagNeedCip(this).equalsIgnoreCase("1")) {
+
+        if (SharedPref.getGeotagNeedCip(this).equalsIgnoreCase("1"))
             binding.tvHdot.setVisibility(View.VISIBLE);
-        }
+
 
     }
 

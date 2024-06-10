@@ -137,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
 
         binding.loginBtn.setOnClickListener(view -> {
             UtilityClass.hideKeyboard(LoginActivity.this);
-            CommonAlertBox.CheckLocationStatus(LoginActivity.this);
+      //      CommonAlertBox.CheckLocationStatus(LoginActivity.this);
             userId = binding.userId.getText().toString().trim().replaceAll("\\s", "");
             userPwd = binding.password.getText().toString().trim().replaceAll("\\s", "");
 

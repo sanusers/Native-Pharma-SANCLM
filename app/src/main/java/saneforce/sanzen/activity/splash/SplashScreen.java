@@ -26,13 +26,14 @@ public class SplashScreen extends AppCompatActivity {
 
   ActivitySplashScreenBinding binding ;
 
-
+    GPSTrack gpsTrack;
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivitySplashScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        gpsTrack=new GPSTrack(this);   // Donot Remove it    Need To  Get Location
 //        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
