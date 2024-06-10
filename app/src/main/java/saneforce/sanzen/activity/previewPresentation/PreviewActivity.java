@@ -46,6 +46,7 @@ import saneforce.sanzen.response.CustomSetupResponse;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class PreviewActivity extends AppCompatActivity {
@@ -56,9 +57,9 @@ public class PreviewActivity extends AppCompatActivity {
     PreviewTabAdapter viewPagerAdapter;
     String finalPrdNam;
     ArrayList<StoreImageTypeUrl> dummyArr = new ArrayList<>();
-    String startT, endT, CustomPresentationNeed;
+    String startT, endT, CustomPresentationNeed, therapticNeed;
     CommonUtilsMethods commonUtilsMethods;
-    CustomSetupResponse customSetupResponse;
+//    CustomSetupResponse customSetupResponse;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private CallOfflineDataDao callOfflineDataDao;
@@ -118,30 +119,36 @@ public class PreviewActivity extends AppCompatActivity {
                     headingData.add("B");
                     viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                     headingData.add("C");
-//                    viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
-//                    headingData.add("D");
-                    if (CustomPresentationNeed.equalsIgnoreCase("0")) {
+                    if(therapticNeed.equalsIgnoreCase("0")) {
+                        viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
+                        headingData.add("D");
+                    }
+//                    if (CustomPresentationNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                         headingData.add("E");
-                    }
+//                    }
                 } else {
                     viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
                     headingData.add("A");
                     viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                     headingData.add("C");
-//                    viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
-//                    headingData.add("D");
-                    if (CustomPresentationNeed.equalsIgnoreCase("0")) {
+                    if(therapticNeed.equalsIgnoreCase("0")) {
+                        viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
+                        headingData.add("D");
+                    }
+//                    if (CustomPresentationNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                         headingData.add("E");
-                    }
+//                    }
                 }
             } else {
                 viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
                 viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
                 viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-//                viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
-                if (CustomPresentationNeed.equalsIgnoreCase("0"))
+                if(therapticNeed.equalsIgnoreCase("0")) {
+                    viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
+                }
+//                if (CustomPresentationNeed.equalsIgnoreCase("0"))
                     viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
             }
             previewBinding.viewPager.setAdapter(viewPagerAdapter);
@@ -216,7 +223,7 @@ public class PreviewActivity extends AppCompatActivity {
                 }
             }
 
-            if (arrayStore.size() > 0) {
+            if (!arrayStore.isEmpty()) {
                 try {
                     JSONArray jsonArray = new JSONArray(arrayStore.get(arrayStore.size()-1).getRemTime());
                     for (int i = 0; i<jsonArray.length(); i++) {
@@ -244,15 +251,18 @@ public class PreviewActivity extends AppCompatActivity {
 
     private void getRequiredData() {
         try {
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject setupData = jsonArray.getJSONObject(0);
-                customSetupResponse = new CustomSetupResponse();
-                Type typeSetup = new TypeToken<CustomSetupResponse>() {
-                }.getType();
-                customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
-                CustomPresentationNeed = customSetupResponse.getCustomizationPrsNeed();
-            }
+//            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
+//            for (int i = 0; i < jsonArray.length(); i++) {
+//                JSONObject setupData = jsonArray.getJSONObject(0);
+//                customSetupResponse = new CustomSetupResponse();
+//                Type typeSetup = new TypeToken<CustomSetupResponse>() {
+//                }.getType();
+//                customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
+//                CustomPresentationNeed = customSetupResponse.getCustomizationPrsNeed();
+//                therapticNeed = customSetupResponse.getTherapaticNeed();
+//            }
+            CustomPresentationNeed = SharedPref.getCustomizationPresentationNeed(this);
+            therapticNeed = SharedPref.getTherapticPresentationNeed(this);
         } catch (Exception ignored) {
         }
     }

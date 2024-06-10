@@ -14,7 +14,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +21,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -29,7 +29,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -67,11 +66,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.google.android.gms.location.FusedLocationProviderApi;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -97,7 +99,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
-import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideServices;
 import saneforce.sanzen.activity.activityModule.Activity;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.forms.Forms_activity;
@@ -161,7 +162,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     LocationManager locationManager;
     ApiInterface apiInterface;
 
-    CustomSetupResponse customSetupResponse;
+//    CustomSetupResponse customSetupResponse;
     IntentFilter intentFilter;
     NetworkChangeReceiver receiver;
     Callstatusadapter callstatusadapter;
@@ -595,30 +596,33 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     private void getRequiredData() {
         try {
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject setupData = jsonArray.getJSONObject(0);
-                customSetupResponse = new CustomSetupResponse();
-                Type typeSetup = new TypeToken<CustomSetupResponse>() {
-                }.getType();
-                customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
-                PresentationNeed = customSetupResponse.getPresentationNeed();
-                CustomPresentationNeed = customSetupResponse.getCustomizationPrsNeed();
-            }
-            if (PresentationNeed != null && PresentationNeed.equalsIgnoreCase("0")) {
-                if (CustomPresentationNeed != null && CustomPresentationNeed.equalsIgnoreCase("0")) {
+//            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
+//            for (int i = 0; i < jsonArray.length(); i++) {
+//                JSONObject setupData = jsonArray.getJSONObject(0);
+//                customSetupResponse = new CustomSetupResponse();
+//                Type typeSetup = new TypeToken<CustomSetupResponse>() {
+//                }.getType();
+//                customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
+//                PresentationNeed = customSetupResponse.getPresentationNeed();
+//                CustomPresentationNeed = customSetupResponse.getCustomizationPrsNeed();
+//            }
+            PresentationNeed = SharedPref.getPresentationNeed(this);
+            CustomPresentationNeed = SharedPref.getCustomizationPresentationNeed(this);
+//            if (PresentationNeed.equalsIgnoreCase("0")) {
+//                if (CustomPresentationNeed.equalsIgnoreCase("0")) {
                     binding.llPresentation.setVisibility(View.VISIBLE);
-                } else {
-                    binding.llPresentation.setVisibility(View.GONE);
-                }
-                binding.llSlide.setVisibility(View.VISIBLE);
-            } else {
-                binding.llPresentation.setVisibility(View.GONE);
-                binding.llSlide.setVisibility(View.GONE);
-            }
+//                } else {
+//                    binding.llPresentation.setVisibility(View.GONE);
+//                }
+//                binding.llSlide.setVisibility(View.VISIBLE);
+//            } else {
+//                binding.llPresentation.setVisibility(View.GONE);
+//                binding.llSlide.setVisibility(View.GONE);
+//            }
             SequentialEntry = SharedPref.getDcrSequential(this);
-        } catch (Exception ignored) {
-            ignored.printStackTrace();
+        } catch (Exception e) {
+            Log.e("Presentation", "getRequiredData: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -1775,7 +1779,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context);
+                        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context) && commonUtilsMethods.isTimeZoneAutomatic(context);
                         mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -1805,7 +1809,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         customDialog.setView(timezoneBinding.getRoot());
         customDialog.setCancelable(false);
         customDialog.show();
-        timezoneBinding.btnOpenSettings.setOnClickListener(v -> {System.exit(0);});
+        timezoneBinding.btnOpenSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            System.exit(0);
+        });
     }
 
 

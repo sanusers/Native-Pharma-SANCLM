@@ -83,7 +83,7 @@ import saneforce.sanzen.utility.TimeUtils;
 
 public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
-    public static String chk_cluster = "";
+    public String chk_cluster = "";
     public static ArrayList<Multicheckclass_clust> listSelectedCluster = new ArrayList<>();
     public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "", mFinalRemarks = "";
     @SuppressLint("StaticFieldLeak")
@@ -372,15 +372,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mTowncode1 = strClusterID;
                     mTownname1 = strClusterName;
                     binding.txtCluster1.setText(CommonUtilsMethods.removeLastComma(strClusterName.trim()));
+                    chk_cluster = mTowncode1;
                 } else {
                     mTowncode2 = strClusterID;
                     mTownname2 = strClusterName;
                     binding.txtCluster2.setText(CommonUtilsMethods.removeLastComma(strClusterName.trim()));
+                    chk_cluster = mTowncode2;
                 }
             }
         });
 
-//        HomeDashBoard.binding.llNav.cancelImg.setOnClickListener(view -> {
+        HomeDashBoard.binding.llNav.cancelImg.setOnClickListener(view -> {
 //            if(DayPlanCount.equalsIgnoreCase("1")){
 //                if(binding.txtCluster1.getText().toString().isEmpty()){
 //                    for (Multicheckclass_clust multicheckclassClust : multiple_cluster_list) {
@@ -394,8 +396,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                    }
 //                }
 //            }
-//            HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
-//        });
+            if((DayPlanCount.equalsIgnoreCase("1") && mTowncode1.isEmpty()) || (DayPlanCount.equalsIgnoreCase("2") && mTowncode2.isEmpty())) {
+                chk_cluster = "";
+            }
+            HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
+        });
     }
 
     @SuppressLint("SetTextI18n")
@@ -415,16 +420,37 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             SelectedHQ = HQ_ListAdapter.getlisted().get(position);
             HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
             try {
-
-                if (UtilityClass.isNetworkAvailable(requireContext())) {
-
+                hqCode = SelectedHQ.getString("id");
+                Log.d("work plan", "showHQ: " + hqCode);
+                boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR + hqCode),
+                        chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST + hqCode),
+                        stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST + hqCode),
+                        ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR + hqCode),
+//                        hosAvailability = masterDataDao.isDataAvailable(Constants.HOSPITAL + hqCode),
+//                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
+                        clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode);
+                Log.e("Work plan", "showHQ: " + docAvailability + " " + chemAvailability + " " + stkAvailability + " " + ulDocAvailability + " " + clusterAvailability);
+//                if(docAvailability && chemAvailability && stkAvailability && ulDocAvailability && hosAvailability && cipAvailability && clusterAvailability){
+                if(docAvailability && chemAvailability && stkAvailability && ulDocAvailability && clusterAvailability){
+                    TextCL.setText("");
+                    TextHQ.setText(SelectedHQ.getString("name"));
+                    if (DayPlanCount.equalsIgnoreCase("1")) {
+                        mHQCode1 = SelectedHQ.getString("id");
+                        mHQName1 = SelectedHQ.getString("name");
+                        binding.progressHq1.setVisibility(View.GONE);
+                    } else {
+                        mHQCode2 = SelectedHQ.getString("id");
+                        mHQName2 = SelectedHQ.getString("name");
+                        binding.progressHq2.setVisibility(View.GONE);
+                    }
+                    getDatabaseHeadQuarters(hqCode);
+                } else if (UtilityClass.isNetworkAvailable(requireContext())) {
                     TextCL.setText("");
                     TextHQ.setText(SelectedHQ.getString("name"));
                     if (DayPlanCount.equalsIgnoreCase("1")) {
                         mHQCode1 = SelectedHQ.getString("id");
                         mHQName1 = SelectedHQ.getString("name");
                         getData(SelectedHQ.getString("id"));
-
                     } else {
                         mHQCode2 = SelectedHQ.getString("id");
                         mHQName2 = SelectedHQ.getString("name");
@@ -471,7 +497,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
             for (int i = 0; i < workTypeArray.length(); i++) {
                 JSONObject object = workTypeArray.getJSONObject(i);
-
+                if (object.getString("FWFlg").equalsIgnoreCase("L")) {
+                    continue;
+                }
                 if (SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
 
                     if (DayPlanCount.equalsIgnoreCase("1")) {
@@ -1114,6 +1142,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
     private void updateLocalData() {
+        DayPlanCount = "1";
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
             for (int index = 0; index<jsonArray.length(); index++) {
@@ -1379,8 +1408,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         list.add(new MasterSyncItemModel("Chemist", 0, "Doctor", "getchemist", Constants.CHEMIST + hqCode, 0, false));
         list.add(new MasterSyncItemModel("Stockiest", 0, "Doctor", "getstockist", Constants.STOCKIEST + hqCode, 0, false));
         list.add(new MasterSyncItemModel("Unlisted Doctor", 0, "Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Hospital", 0, "Doctor", "gethospital", Constants.HOSPITAL + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("CIP", 0, "Doctor", "getcip", Constants.CIP + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("Hospital", 0, "Doctor", "gethospital", Constants.HOSPITAL + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("CIP", 0, "Doctor", "getcip", Constants.CIP + hqCode, 0, false));
         list.add(new MasterSyncItemModel("Cluster", 0, "Doctor", "getterritory", Constants.CLUSTER + hqCode, 0, false));
 
 
@@ -1654,7 +1683,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.txtCluster2.setText("");
                     binding.txtheadquaters2.setText("");
 
-                    if(workTypeArray.length() == 2) {
+                    if(workTypeArray.length() == 2 && !workTypeArray.getJSONObject(1).getString("WT").isEmpty()) {
                         JSONObject SecondSeasonDayPlanObject = workTypeArray.getJSONObject(1);
                         String TPDt2 = SecondSeasonDayPlanObject.getString("TPDt");
                         JSONObject jsonObject12 = new JSONObject(TPDt2);
@@ -1671,6 +1700,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             mFwFlg2 = SecondSeasonDayPlanObject.getString("FWFlg");
                             mHQCode2 = SecondSeasonDayPlanObject.getString("SFMem");
                             mHQName2 = SecondSeasonDayPlanObject.getString("HQNm");
+                            chk_cluster = mTowncode2;
                             //   mRemarks1 = SecondSeasonDayPlanObject.getString("Rem");
 
 

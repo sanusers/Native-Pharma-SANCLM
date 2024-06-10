@@ -37,7 +37,7 @@
                     android:layout_weight="1.7"
                     android:fontFamily="@font/satoshi_medium"
                     android:padding="@dimen/_6sdp"
-                    android:text="Listed doctor"
+                    android:text="Leave Types"
                     android:textColor="#282A3C"
                     android:textSize="@dimen/_8sdp"
                     android:textStyle="bold"

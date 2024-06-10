@@ -354,6 +354,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_successfully));
                         //progressDialog.dismiss();
                     }
+                    storingSlide.clear();
                     SharedPref.setDayPlanStartedDate(this,  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
 //                    if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
                         //    progressDialog.dismiss();
@@ -551,7 +552,7 @@ public class DCRCallActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("CustCode", CallActivityCustDetails.get(0).getCode());
             jsonObject.put("CustType", CallActivityCustDetails.get(0).getType());
-            jsonObject.put("Dcr_dt", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+            jsonObject.put("Dcr_dt", HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
             jsonObject.put("month_name", CommonUtilsMethods.getCurrentInstance("MMMM"));
             jsonObject.put("Mnth", CommonUtilsMethods.getCurrentInstance("M"));
             jsonObject.put("Yr", CommonUtilsMethods.getCurrentInstance("yyyy"));
@@ -2259,11 +2260,12 @@ public class DCRCallActivity extends AppCompatActivity {
                     RCPANeed = SharedPref.getRcpaNd(this);
                     PobNeed = SharedPref.getDocPobNeed(this);
                     OverallFeedbackNeed = SharedPref.getDfNeed(this);
-                    EventCaptureNeed = SharedPref.getDeNeed(this);;
+                    EventCaptureNeed = SharedPref.getDeNeed(this);
                     JwNeed = SharedPref.getDocJointworkNeed(this);
                     PrdSamNeed = SharedPref.getDrSampNd(this);
                     PrdRxNeed = SharedPref.getDrRxNd(this);
                     CusCheckInOutNeed = SharedPref.getCustSrtNd(this);
+                    AdditionalCallNeed = SharedPref.getAdditionalCallNeed(this);
 
                     //Mandatory
                     PrdMandatory = SharedPref.getDrPrdMd(this);
@@ -2317,13 +2319,14 @@ public class DCRCallActivity extends AppCompatActivity {
                     //Need
                     ProductNeed = SharedPref.getSpNeed(this);
                     InputNeed = SharedPref.getSiNeed(this);
-                    PobNeed = SharedPref.getStkPobNeed(this);
+//                    PobNeed = SharedPref.getStkPobNeed(this);
                     OverallFeedbackNeed =SharedPref.getSfNeed(this);
                     EventCaptureNeed = SharedPref.getSeNeed(this);
                     JwNeed = SharedPref.getStkJointworkNeed(this);
                     PrdSamNeed = "0";
                     PrdRxNeed = SharedPref.getStkPobNeed(this);
                     CusCheckInOutNeed = "1";
+                    PobNeed = SharedPref.getStockistPobNeed(this);
 
                     //Mandatory
                     PobMandatory = SharedPref.getStkPobMandatoryNeed(this);
@@ -2342,13 +2345,14 @@ public class DCRCallActivity extends AppCompatActivity {
                     CusCheckInOutNeed = SharedPref.getUnlistSrtNd(this);;
 
                     //Need
-                    PobNeed = SharedPref.getUlPobNeed(this);
+//                    PobNeed = SharedPref.getUlPobNeed(this);
                     OverallFeedbackNeed = SharedPref.getNfNeed(this);
                     EventCaptureNeed = SharedPref.getNeNeed(this);
                     JwNeed =SharedPref.getUlJointworkNeed(this);
                     PrdSamNeed = "0";
                     PrdRxNeed =SharedPref.getUlPobNeed(this);;
                     CusCheckInOutNeed = "1";
+                    PobNeed = SharedPref.getUnlistedDoctorPobNeed(this);
 
                     //Mandatory
                     PobMandatory = SharedPref.getUlPobMandatoryNeed(this);
@@ -2478,18 +2482,18 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
-            JSONObject setupData = jsonArray.getJSONObject(0);
-            Type typeSetup = new TypeToken<CustomSetupResponse>() {
-            }.getType();
-            CustomSetupResponse customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
-            if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
-                AdditionalCallNeed = customSetupResponse.getAdditionalCall();
-            }else if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
-                PobNeed = customSetupResponse.getStockistPobNeed();
-            }else if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
-                PobNeed = customSetupResponse.getUndrPobNeed();
-            }
+//            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
+//            JSONObject setupData = jsonArray.getJSONObject(0);
+//            Type typeSetup = new TypeToken<CustomSetupResponse>() {
+//            }.getType();
+//            CustomSetupResponse customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
+//            if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
+//                AdditionalCallNeed = customSetupResponse.getAdditionalCall();
+//            }else if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
+//                PobNeed = customSetupResponse.getStockistPobNeed();
+//            }else if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
+//                PobNeed = customSetupResponse.getUndrPobNeed();
+//            }
 
             if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
 //                DialogCheckOut();
@@ -2765,7 +2769,7 @@ public class DCRCallActivity extends AppCompatActivity {
         handler1.postDelayed(runnable, delay);
     }
     private void timeZoneVerification() {
-        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context);
+        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context) && commonUtilsMethods.isTimeZoneAutomatic(context);
         if (!isAutoTimeZoneEnabled) {
             CommonUtilsMethods.showCustomDialog(this);
         }

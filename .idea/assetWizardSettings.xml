@@ -79,8 +79,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\apps\Downloads\Native-Pharma-SANCLM\app\src\main\res\drawable\san_clm_logo.png" />
-                                                <entry key="scalingPercent" value="85" />
+                                                <entry key="imagePath" value="C:\Users\apps\Downloads\Native-Pharma-SANCLM\app\src\main\res\drawable\zen_logo.jpg" />
+                                                <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -114,6 +114,8 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="fbfbfb" />
+                                      <entry key="previewDensity" value="xxxhdpi" />
+                                      <entry key="showGrid" value="true" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -277,6 +279,12 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
+                                    </map>
+                                  </option>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="previewDensity" value="xxxhdpi" />
+                                      <entry key="showGrid" value="true" />
                                     </map>
                                   </option>
                                 </PersistentState>

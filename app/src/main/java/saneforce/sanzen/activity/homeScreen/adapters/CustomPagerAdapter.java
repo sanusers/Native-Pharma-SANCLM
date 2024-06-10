@@ -5,6 +5,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import saneforce.sanzen.activity.homeScreen.fragment.CallAnalysisFragment;
+import saneforce.sanzen.activity.homeScreen.fragment.E_DetailingAnalysisFragment;
+import saneforce.sanzen.activity.homeScreen.fragment.SalesAnalysisFragment;
 
 public class CustomPagerAdapter extends FragmentPagerAdapter {
     private final int NUM_PAGES = 1;
@@ -15,13 +17,15 @@ public class CustomPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-
-                return new CallAnalysisFragment();
-          /*  case 1:
-                return new E_DetailingAnalysisFragment();
-            case 2:
-                return new SalesAnalysisFragment();*/
-
+//        switch (position){
+//            case 0:
+//                return new CallAnalysisFragment();
+//            case 1:
+//                return new E_DetailingAnalysisFragment();
+//            case 2:
+//                return new SalesAnalysisFragment();
+//        }
+        return new CallAnalysisFragment();
     }
 
     @Override

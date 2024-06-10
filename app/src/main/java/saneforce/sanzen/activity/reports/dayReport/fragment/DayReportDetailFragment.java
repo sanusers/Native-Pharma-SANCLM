@@ -3,8 +3,7 @@ package saneforce.sanzen.activity.reports.dayReport.fragment;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.app.ProgressDialog;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -20,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
@@ -40,7 +40,6 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
 import saneforce.sanzen.activity.reports.dayReport.DataViewModel;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DayReportDetailAdapter;
-import saneforce.sanzen.activity.reports.dayReport.adapter.ReoportRcpaAdapter;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportDetailModel;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -195,9 +194,9 @@ public class DayReportDetailFragment extends Fragment {
             hosCount = Integer.parseInt(dayReportModel.getCip());
             binding.hospCount.setText(dayReportModel.getHos());
         }
-        if ((dayReportModel.getTyp()==0 || dayReportModel.getTyp()==1) && Integer.parseInt(dayReportModel.getConfirmed())==2){
+        if ((dayReportModel.getTyp() == 0 || dayReportModel.getTyp() == 1) && Integer.parseInt(dayReportModel.getConfirmed()) == 2) {
             binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             binding.rejectionReasonLayout.setVisibility(View.GONE);
         }
 
@@ -205,15 +204,16 @@ public class DayReportDetailFragment extends Fragment {
         binding.workType.setText(dayReportModel.getWtype());
         binding.cluster.setText(dayReportModel.getTerrWrk());
         binding.allCount.setText(String.valueOf(drCount + chmCount + stkCount + cipCount + undrCount + hosCount));
-        if (dayReportModel.getAdditional_Temp_Details()!=null){
+        if (dayReportModel.getAdditional_Temp_Details() != null && !dayReportModel.getAdditional_Temp_Details().equals("")) {
             binding.ll2.setVisibility(View.VISIBLE);
             binding.view3.setVisibility(View.VISIBLE);
             binding.workType2.setText(dayReportModel.getAdditional_Temp_Details());
         }
-        if (SharedPref.getDesig(requireContext()).equals("MGR")){
+        if (SharedPref.getDesig(requireContext()).equals("MGR")) {
             binding.hqLayout.setVisibility(View.VISIBLE);
         }
     }
+
 
     public void setSelection(LinearLayout linearLayout) {
         binding.doctor.setSelected(false);
@@ -252,7 +252,7 @@ public class DayReportDetailFragment extends Fragment {
                         jsonObject.put("AppName", getString(R.string.str_app_name));
                         jsonObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
 
-                        Log.d("paramObject",jsonObject.toString());
+                        Log.d("paramObject", jsonObject.toString());
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
                         Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
@@ -299,14 +299,14 @@ public class DayReportDetailFragment extends Fragment {
     }
 
     public void populateAdapter(ArrayList<DayReportDetailModel> arrayList, String reportOf, String type) {
-        if (arrayList.size() > 0) binding.noReportFoundTxt.setVisibility(View.GONE);
+        if (!arrayList.isEmpty()) binding.noReportFoundTxt.setVisibility(View.GONE);
         else binding.noReportFoundTxt.setVisibility(View.VISIBLE);
 
         switch (type) {
             case "1":
                 callCheckInOutNeed = SharedPref.getCustSrtNd(requireContext());
-                rcpaItem = SharedPref.getSepRcpaNd(context);
-                eventCaptureItem = SharedPref.getDeNeed(context);
+                rcpaItem = SharedPref.getSepRcpaNd(requireContext());
+                eventCaptureItem = SharedPref.getDeNeed(requireContext());
                 break;
             case "2":
                 callCheckInOutNeed = SharedPref.getChmSrtNd(requireContext());
@@ -332,7 +332,7 @@ public class DayReportDetailFragment extends Fragment {
                 break;
         }
 
-        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()),dayReportModel.getACode(),dayReportModel.getSF_Code(),rcpaItem,eventCaptureItem);
+        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()), dayReportModel.getACode(), dayReportModel.getSF_Code(), rcpaItem, eventCaptureItem);
         binding.dayReportDetailRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportDetailRecView.setAdapter(adapter);
     }

@@ -42,6 +42,9 @@ public interface MasterDataDao {
     @Query("SELECT `SYNC_STATUS` FROM `MASTER_TABLE` WHERE `KEY` = :key")
     int getMasterSyncStatusByKey(String key);
 
+    @Query("SELECT EXISTS(SELECT 1 FROM `MASTER_TABLE` WHERE `KEY` = :key)")
+    boolean isDataAvailable(String key);
+
     default MasterDataTable getMasterDataTableOrNew(String key) {
         MasterDataTable masterDataTable = getMasterSyncDataByKey(key);
         if(masterDataTable == null) masterDataTable = new MasterDataTable();

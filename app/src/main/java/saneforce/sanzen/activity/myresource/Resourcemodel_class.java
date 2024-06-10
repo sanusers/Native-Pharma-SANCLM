@@ -7,8 +7,9 @@ public class Resourcemodel_class {
     String Dcr_code, Dcr_name, Res_custname, Res_Category, Res_rx, Res_Specialty, Latitude, Longtitude, Res_id, Custoum_name, val_pos, Res_Qualifiey, Res_adds, Res_Dob, Res_Dow, Res_mob,
             Res_phn, Res_Email, Res_listeddoc_sex, Res_Categorycode, Res_Specialtycode, Town_code, Town_name,Pos_name;
 
-    String cust_name, visit_date, max_count, cust_id, custcode,workType,TP_DCR,type;
+    String cust_name, visit_date, max_count, cust_id, custcode,workType,TP_DCR,type,leaveTypes,eligible,available,taken;
     int visit_count;
+
 
     public Resourcemodel_class(String listed_data, String listed_count, String val_pos) {
         this.listed_data = listed_data;
@@ -24,7 +25,33 @@ public class Resourcemodel_class {
         this.max_count = max_count;
     }
 
+    public void setLeaveTypes(String leaveTypes) {
+        this.leaveTypes = leaveTypes;
+    }
 
+    public String getEligible() {
+        return eligible;
+    }
+
+    public void setEligible(String eligible) {
+        this.eligible = eligible;
+    }
+
+    public String getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(String available) {
+        this.available = available;
+    }
+
+    public String getTaken() {
+        return taken;
+    }
+
+    public void setTaken(String taken) {
+        this.taken = taken;
+    }
     public String getWorkType() {
         return workType;
     }
@@ -50,7 +77,7 @@ public class Resourcemodel_class {
     }
 
     public Resourcemodel_class(String dcr_code, String dcr_name, String res_custname, String res_Category, String res_Categorycode, String res_rx, String res_Specialtycode, String res_Specialty, String Latitude, String Longtitude, String Res_id,
-                               String Custoum_name, String res_Qualifiey, String Res_adds, String Res_Dob, String Res_Dow, String Res_mob, String Res_phn, String Res_Email, String Res_listeddoc_sex, String Town_code, String Town_name, String Pos_name, String workType, String TP_DCR, String type) {
+                               String Custoum_name, String res_Qualifiey, String Res_adds, String Res_Dob, String Res_Dow, String Res_mob, String Res_phn, String Res_Email, String Res_listeddoc_sex, String Town_code, String Town_name, String Pos_name, String workType, String TP_DCR, String type,String leaveTypes,String eligible,String available,String taken) {
         Dcr_code = dcr_code;
         Dcr_name = dcr_name;
         Res_custname = res_custname;
@@ -77,6 +104,11 @@ public class Resourcemodel_class {
         this.workType = workType;
         this.TP_DCR = TP_DCR;
         this.type = type;
+        this.leaveTypes = leaveTypes;
+        this.eligible = eligible;
+        this.available = available;
+        this.taken = taken;
+
 
     }
 
@@ -348,4 +380,9 @@ public class Resourcemodel_class {
     public void setPos_name(String pos_name) {
         Pos_name = pos_name;
     }
+    public String getLeaveTypes() {
+        return leaveTypes;
+    }
+
+
 }

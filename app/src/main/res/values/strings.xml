@@ -241,7 +241,7 @@
     <string name="scribble">Scribble</string>
     <string name="stop">Stop</string>
     <string name="brand_matrix">Brand Matrix</string>
-    <string name="my_presentation">Customise / My Presentation</string>
+    <string name="my_presentation">My Presentation</string>
     <string name="select_listed_doctor_to_view_content">Select listed doctor to view content</string>
     <string name="no_customized_presentation_found">No customized presentation found</string>
     <string name="no_slides_found">No slides found</string>
@@ -310,7 +310,7 @@
     <string name="chg_new_pwd"> change new password</string>
     <string name="change_new_password"> Old password and new password both are the same, change to something else</string>
     <string name="chk_old_pwd">Old password is wrong! Enter again</string>
-    <string name="pwd_not_match">Password mismatch</string>
+    <string name="pwd_not_match">Repeat Password is incorrect</string>
     <string name="pwd_changed_successfully">Password changed successfully</string>
     <string name="exceed_tag_limit">Exceed the Tag limitation !!</string>
     <string name="not_able_to_find_address">Not able to find address! Kindly try again</string>
@@ -427,4 +427,5 @@
     <string name="select_theraptic">Select Theraptic</string>
     <string name="are_you_sure_you_want_to_clear">Are You Sure, You Want To Clear!</string>
     <string name="jointcall">JointCall</string>
+    <string name="no_content_to_view">No content to view</string>
 </resources>

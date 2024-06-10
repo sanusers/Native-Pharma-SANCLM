@@ -243,6 +243,9 @@ public class LoginActivity extends AppCompatActivity {
             binding.userId.setText(SharedPref.getLoginId(LoginActivity.this));
           //  binding.password.setText(SharedPref.getLoginUserPwd(LoginActivity.this));
               binding.userId.setEnabled(false);
+              if(binding.userId.getText().toString().isEmpty()){
+                  binding.userId.setEnabled(true);
+              }
         }
 
         SetUpLanguage();
@@ -451,7 +454,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void timeZoneVerification() {
-        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context);
+        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context) && commonUtilsMethods.isTimeZoneAutomatic(context);
         if (!isAutoTimeZoneEnabled) {
             CommonUtilsMethods.showCustomDialog(this);
         }

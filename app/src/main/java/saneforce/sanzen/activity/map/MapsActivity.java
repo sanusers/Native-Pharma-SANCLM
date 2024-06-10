@@ -1279,7 +1279,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mapsBinding.rvList.removeItemDecorationAt(i);
                 }
             }
-
             taggingAdapter = new TaggingAdapter(MapsActivity.this, taggedMapListArrayList);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
             mapsBinding.rvList.setLayoutManager(mLayoutManager);
@@ -1389,7 +1388,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
       }
   }
   private void timeZoneVerification(){
-      boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context);
+      boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context) && commonUtilsMethods.isTimeZoneAutomatic(context);
       if (!isAutoTimeZoneEnabled) {
           CommonUtilsMethods.showCustomDialog(this);
       }

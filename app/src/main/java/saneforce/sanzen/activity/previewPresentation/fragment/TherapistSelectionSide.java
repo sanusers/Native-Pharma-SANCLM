@@ -2,7 +2,7 @@ package saneforce.sanzen.activity.previewPresentation.fragment;
 
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.previewBinding;
 import static saneforce.sanzen.activity.previewPresentation.fragment.Therapist.getRequiredData;
-import static saneforce.sanzen.activity.previewPresentation.fragment.Therapist.getSelectedSpec;
+import static saneforce.sanzen.activity.previewPresentation.fragment.Therapist.getSelectedTherapist;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,23 +32,19 @@ import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
 public class TherapistSelectionSide extends Fragment {
-    public FragmentSelectFbSideBinding selectTherapistSideBinding;
-    JSONObject jsonObject;
-    ArrayList<String> list_name = new ArrayList<>();
-    ArrayList<String> list_code = new ArrayList<>();
-    ArrayAdapter<String> dataAdapter;
-    SetupResponse setUpResponse;
-    CommonUtilsMethods commonUtilsMethods;
-    private RoomDB roomDB;
+    private FragmentSelectFbSideBinding selectTherapistSideBinding;
+    private final ArrayList<String> list_name = new ArrayList<>();
+    private final ArrayList<String> list_code = new ArrayList<>();
+    private ArrayAdapter<String> dataAdapter;
     private MasterDataDao masterDataDao;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         selectTherapistSideBinding = FragmentSelectFbSideBinding.inflate(inflater);
         View v = selectTherapistSideBinding.getRoot();
-        roomDB = RoomDB.getDatabase(requireContext());
+        RoomDB roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
-        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         SetupAdapter();
 
@@ -85,7 +82,7 @@ public class TherapistSelectionSide extends Fragment {
             if (list_name.get(i).equalsIgnoreCase("All") && list_code.get(i).isEmpty()) {
                 getRequiredData(requireContext(), list_name.get(i), masterDataDao);
             } else {
-                getSelectedSpec(requireContext(), list_code.get(i), list_name.get(i), masterDataDao);
+                getSelectedTherapist(requireContext(), list_code.get(i), list_name.get(i), masterDataDao);
             }
             previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
             previewBinding.fragmentSelectTherapistSide.setVisibility(View.GONE);
@@ -99,12 +96,13 @@ public class TherapistSelectionSide extends Fragment {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.THERAPTIC_SLIDE).getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArray.length(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
                 list_name.add(jsonObject.getString("Name"));
                 list_code.add(jsonObject.getString("Code"));
             }
-        } catch (Exception ignored) {
-            ignored.printStackTrace();
+        } catch (Exception e) {
+            Log.e("TherapistSelectionSide", "SetupAdapter: " + e.getMessage());
+            e.printStackTrace();
         }
         dataAdapter = new ArrayAdapter<>(requireActivity(), R.layout.listview_items, list_name);
         selectTherapistSideBinding.selectListView.setAdapter(dataAdapter);

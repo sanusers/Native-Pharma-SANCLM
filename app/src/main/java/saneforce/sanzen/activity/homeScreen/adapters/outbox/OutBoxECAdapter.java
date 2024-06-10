@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -35,6 +36,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -93,54 +95,76 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             popup.setOnMenuItemClickListener(menuItem -> {
                 if (menuItem.getItemId() == R.id.menuSync) {
                     CallImageApi();
+                    if (UtilityClass.isNetworkAvailable(context)) {
+                        CallImageApi();
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    }
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
-                    try {
-                        JSONObject jsonObject;
-                        jsonObject = new JSONObject(callOfflineDataDao.getJsonCallList(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode()));
-                        JSONArray jsonArray = jsonObject.getJSONArray("EventCapture");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObjectEC = jsonArray.getJSONObject(i);
-                            if (jsonObjectEC.getString("EventImageName").equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
-                                jsonArray.remove(i);
-                                break;
-                            }
-                        }
+                    Dialog dialog = new Dialog(context);
+                    dialog.setContentView(R.layout.dcr_cancel_alert);
+                    dialog.setCancelable(false);
+                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.show();
+                    TextView btn_yes=dialog.findViewById(R.id.btn_yes);
+                    TextView btn_no=dialog.findViewById(R.id.btn_no);
+                    TextView titte=dialog.findViewById(R.id.ed_alert_msg);
+                    titte.setText(R.string.are_you_sure_to_delete);
 
-                        for (int i = 0; i < listDates.size(); i++) {
-                            if (listDates.get(i).getGroupName().equalsIgnoreCase(ecModelClasses.get(position).getDates())) {
-                                for (int j = 0; j < listDates.get(i).getChildItems().get(2).getOutBoxCallLists().size(); j++) {
-                                    OutBoxCallList outBoxCallList = listDates.get(i).getChildItems().get(2).getOutBoxCallLists().get(j);
-                                    if (outBoxCallList.getCusCode().equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
-                                        jsonObject = new JSONObject(outBoxCallList.getJsonData());
-                                        for (int m = 0; m < jsonArray.length(); m++) {
-                                            JSONObject jsonObjectEC = jsonArray.getJSONObject(i);
-                                            if (jsonObjectEC.getString("EventImageName").equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
-                                                jsonArray.remove(i);
-                                                break;
+                    btn_yes.setOnClickListener(view -> {
+                        dialog.dismiss();
+                        try {
+                            JSONObject jsonObject;
+                            jsonObject = new JSONObject(callOfflineDataDao.getJsonCallList(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode()));
+                            JSONArray jsonArray = jsonObject.getJSONArray("EventCapture");
+                            for (int i = 0; i<jsonArray.length(); i++) {
+                                JSONObject jsonObjectEC = jsonArray.getJSONObject(i);
+                                if(jsonObjectEC.getString("EventImageName").equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
+                                    jsonArray.remove(i);
+                                    break;
+                                }
+                            }
+
+                            for (int i = 0; i<listDates.size(); i++) {
+                                if(listDates.get(i).getGroupName().equalsIgnoreCase(ecModelClasses.get(position).getDates())) {
+                                    for (int j = 0; j<listDates.get(i).getChildItems().get(2).getOutBoxCallLists().size(); j++) {
+                                        OutBoxCallList outBoxCallList = listDates.get(i).getChildItems().get(2).getOutBoxCallLists().get(j);
+                                        if(outBoxCallList.getCusCode().equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
+                                            jsonObject = new JSONObject(outBoxCallList.getJsonData());
+                                            for (int m = 0; m<jsonArray.length(); m++) {
+                                                JSONObject jsonObjectEC = jsonArray.getJSONObject(i);
+                                                if(jsonObjectEC.getString("EventImageName").equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
+                                                    jsonArray.remove(i);
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
-                        }
 
-                        callOfflineDataDao.saveOfflineUpdateJson(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode(), jsonObject.toString());
-                        outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
-                        commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
-                        outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
-                        outBoxHeaderAdapter.notifyDataSetChanged();
-                    } catch (Exception ignored) {
-                    }
-                    File fileDelete = new File(ecModelClasses.get(position).getFilePath());
-                    if (fileDelete.exists()) {
-                        if (fileDelete.delete()) {
-                            System.out.println("file Deleted :" + ecModelClasses.get(position).getFilePath());
-                        } else {
-                            System.out.println("file not Deleted :" + ecModelClasses.get(position).getFilePath());
+                            callOfflineDataDao.saveOfflineUpdateJson(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode(), jsonObject.toString());
+                            outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
+                            commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
+                            outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
+                            outBoxHeaderAdapter.notifyDataSetChanged();
+                        } catch (Exception ignored) {
                         }
-                    }
-                    callOfflineECDataDao.deleteOfflineEC(String.valueOf(ecModelClasses.get(position).getId()));
-                    removeAt(position);
+                        File fileDelete = new File(ecModelClasses.get(position).getFilePath());
+                        if(fileDelete.exists()) {
+                            if(fileDelete.delete()) {
+                                System.out.println("file Deleted :" + ecModelClasses.get(position).getFilePath());
+                            }else {
+                                System.out.println("file not Deleted :" + ecModelClasses.get(position).getFilePath());
+                            }
+                        }
+                        callOfflineECDataDao.deleteOfflineEC(String.valueOf(ecModelClasses.get(position).getId()));
+                        removeAt(position);
+                    });
+
+                    btn_no.setOnClickListener(view -> {
+                        dialog.dismiss();
+                    });
                 }
                 return true;
             });

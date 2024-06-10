@@ -88,7 +88,8 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String count = String.valueOf((position + 1));
         final Resourcemodel_class app_adapt = resList.get(position);
-
+        System.out.println("leaveWorkTypes--->"+app_adapt.getWorkType());
+        System.out.println("eligibility--->"+app_adapt.getEligible());
         Doc_geoneed = SharedPref.getGeotagNeed(context);
         Che_geoneed = SharedPref.getGeotagNeedChe(context);
         Stk_geoneed = SharedPref.getGeotagNeedStock(context);
@@ -198,6 +199,16 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 holder.Res_Table1.setVisibility(View.VISIBLE);
                 holder.Res_category.setVisibility(View.VISIBLE);
                 holder.Res_category.setText(app_adapt.getTP_DCR());
+            }
+            if (app_adapt.getType().equals("leaveStatus")){
+                holder.Res_category.setVisibility(View.VISIBLE);
+                holder.Res_Table1.setVisibility(View.VISIBLE);
+                holder.Res_Table2.setVisibility(View.VISIBLE);
+                holder.available.setVisibility(View.VISIBLE);
+                holder.Res_Name.setText("LeaveType :"+" "+app_adapt.getLeaveTypes());
+                holder.Res_category.setText("Eligible :"+" "+app_adapt.getEligible());
+                holder.available.setText("Available :"+" "+app_adapt.getAvailable());
+                holder.Res_rx.setText("Taken :"+" "+app_adapt.getTaken());
             }
 
             holder.listcount.setText(count + " )");
@@ -331,7 +342,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         public TextView Res_Name, Res_category, Res_specialty, Res_rx, Res_culter, listcount;
         public LinearLayout Res_Edit, Res_View, Res_Table1, Res_Table2, Click_Res, res_view, vistcntrl_view, Res_visitcntl, end_line, topline, line_endshow;
 
-        public TextView visit_dt;  //cutom_name1,date_visit,cutom_name2,date_visit2,cutom_name3,date_visit3
+        public TextView visit_dt,available;  //cutom_name1,date_visit,cutom_name2,date_visit2,cutom_name3,date_visit3
         public RecyclerView tertry_list;
 
 
@@ -360,6 +371,8 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
             tertry_list = itemView.findViewById(R.id.tertry_list);
             visit_dt = itemView.findViewById(R.id.visit_dt);
             Res_visitcntl = itemView.findViewById(R.id.Res_visitcntl);
+            available = itemView.findViewById(R.id.textAvailablity);
+
 
         }
     }

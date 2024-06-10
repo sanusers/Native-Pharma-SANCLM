@@ -235,11 +235,11 @@ public class JWOthersFragment extends Fragment {
         } else {
             jwOthersBinding.constraintCapture.setVisibility(View.GONE);
         }
-        if (DCRCallActivity.save_valid.equals("1")) {
-            jwOthersBinding.constraintCapture.setVisibility(View.GONE);
-        }else{
-            jwOthersBinding.constraintCapture.setVisibility(View.VISIBLE);
-        }
+//        if (DCRCallActivity.save_valid.equals("1")) {
+//            jwOthersBinding.constraintCapture.setVisibility(View.GONE);
+//        }else{
+//            jwOthersBinding.constraintCapture.setVisibility(View.VISIBLE);
+//        }
 
 
         if (DCRCallActivity.JwNeed.equalsIgnoreCase("0")) {
