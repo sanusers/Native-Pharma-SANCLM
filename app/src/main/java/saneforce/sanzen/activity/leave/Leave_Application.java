@@ -18,12 +18,14 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,13 +57,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityLeaveApplicationBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
-
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -69,36 +71,29 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class Leave_Application extends AppCompatActivity {
-    TextView  headtext_id;
-    EditText et_Custsearch;
-
-    ApiInterface apiInterface;
-    ImageView close_sideview;
-
-    String navigateFrom = "";
-
-    ArrayAdapter<String> adapter;
     public static ArrayList<Leave_modelclass> List_LeaveDates = new ArrayList<>();
     public static ArrayList<Leave_modelclass> Chart_list = new ArrayList<>();
-
-    ArrayList<String> leave_type = new ArrayList<>();
     public static ArrayList<String> ltypecount = new ArrayList<>();
+    public static ListView dailog_list;
+    public static ActivityLeaveApplicationBinding leavebinding;
+    TextView headtext_id;
+    EditText et_Custsearch;
+    ApiInterface apiInterface;
+    ImageView close_sideview;
+    String navigateFrom = "";
+    ArrayAdapter<String> adapter;
+    ArrayList<String> leave_type = new ArrayList<>();
     ArrayList<String> leave_typeid = new ArrayList<>();
     ArrayList<String> leave_typename = new ArrayList<>();
     ArrayList<String> listdate = new ArrayList<>();
-
     String Ltype_id, L_typename, L_count = "", Lshortname, avilable, leavety;
     int totalval = 0, val = 0;
-
-    public static ListView dailog_list;
-    String l_address = "", l_reason = "",imageName = "",leaveAvailable;
-
+    String l_address = "", l_reason = "", imageName = "", leaveAvailable;
     CommonUtilsMethods commonUtilsMethods;
-   public static ActivityLeaveApplicationBinding leavebinding;
+    boolean isLeaveEntitlementRequested;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private String destinationFilePath;
-    boolean isLeaveEntitlementRequested;
 
 
     //To Hide the bottomNavigation When popup
@@ -107,14 +102,13 @@ public class Leave_Application extends AppCompatActivity {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             leavebinding.chartLayout.setSystemUiVisibility(
-                  View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
-
 
 
     @SuppressLint("WrongConstant")
@@ -135,15 +129,8 @@ public class Leave_Application extends AppCompatActivity {
         et_Custsearch = findViewById(R.id.et_Custsearch);
         dailog_list.setVisibility(View.VISIBLE);
         setVisibility();
-        JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
-        for (int bean = 0;bean<jsonArray.length();bean++){
-            try {
-                JSONObject jsonObject = jsonArray.getJSONObject(bean);
-                System.out.println("jsonObject--->"+jsonObject);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        setMaxLength();
+
 //        updateLeaveStatusMasterSync1();
         leavebinding.edReason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edReason)});
 
@@ -198,13 +185,13 @@ public class Leave_Application extends AppCompatActivity {
             } else if (leavebinding.etToDate.getText().toString().equals("")) {
                 Toast.makeText(this, "Select To Date", Toast.LENGTH_SHORT).show();
             } else {
-                if (UtilityClass.isNetworkAvailable(this)){
+                if (UtilityClass.isNetworkAvailable(this)) {
                     showalert_leavetype();
-                }
-                else{
-                    commonUtilsMethods.showToastMessage(this,"Please Check Your Internet Connection");
+                } else {
+                    commonUtilsMethods.showToastMessage(this, "Please Check Your Internet Connection");
                 }
             }
+            closeKeyboard();
         });
 
         leavebinding.submitLeave.setOnClickListener(v -> {
@@ -212,7 +199,7 @@ public class Leave_Application extends AppCompatActivity {
                 Toast.makeText(this, "Select From Date", Toast.LENGTH_SHORT).show();
             } else if (leavebinding.etToDate.getText().toString().equals("")) {
                 Toast.makeText(this, "Select To Date", Toast.LENGTH_SHORT).show();
-            } else if ( leavebinding.LeaveType.getText().toString().equals("")) {
+            } else if (leavebinding.LeaveType.getText().toString().equals("")) {
                 Toast.makeText(this, "Select Leave Type", Toast.LENGTH_SHORT).show();
             } else {
                 Submit();
@@ -334,8 +321,8 @@ public class Leave_Application extends AppCompatActivity {
                         }
                     }
                     leavebinding.leaveSide.closeDrawer(Gravity.END);
-                }else{
-                    commonUtilsMethods.showToastMessage(this,"Please Check Your Internet Connection");
+                } else {
+                    commonUtilsMethods.showToastMessage(this, "Please Check Your Internet Connection");
                 }
             });
 
@@ -354,7 +341,6 @@ public class Leave_Application extends AppCompatActivity {
             }
 
 
-
             String f_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, leavebinding.etFromDate.getText().toString()));
             String t_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, leavebinding.etToDate.getText().toString()));
             JSONObject jsonObject = new JSONObject();
@@ -367,9 +353,9 @@ public class Leave_Application extends AppCompatActivity {
             jsonObject.put("Rsf", SharedPref.getHqCode(this));
             jsonObject.put("sf_type", SharedPref.getSfType(this));
             jsonObject.put("Designation", SharedPref.getDesig(this));
-            jsonObject.put("state_code",  SharedPref.getStateCode(this));
-            jsonObject.put("subdivision_code",  SharedPref.getSubdivisionCode(this));
-            jsonObject.put("versionNo",  getString(R.string.app_version));
+            jsonObject.put("state_code", SharedPref.getStateCode(this));
+            jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            jsonObject.put("versionNo", getString(R.string.app_version));
             jsonObject.put("mod", Constants.APP_MODE);
             jsonObject.put("Device_version", Build.VERSION.RELEASE);
             jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
@@ -380,7 +366,7 @@ public class Leave_Application extends AppCompatActivity {
             Map<String, String> qry = new HashMap<>();
             qry.put("axn", "get/leave");
             Call<JsonElement> call = null;
-            call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()),qry, jsonObject.toString());
+            call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), qry, jsonObject.toString());
             if (call != null) {
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
@@ -395,6 +381,7 @@ public class Leave_Application extends AppCompatActivity {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                                     String Leavename = (jsonObject.getString("Flg"));//Leave_Name
                                     String msg = (jsonObject.getString("Msg"));
+                                    System.out.println("leaveMessage--->" + msg);
                                     if ((jsonObject.getString("Msg").equals(""))) {
                                         Leavedetails();
                                     } else {
@@ -464,19 +451,19 @@ public class Leave_Application extends AppCompatActivity {
 
             Leave_Application.leavebinding.lDays.setText(listdate.size() + " days " + L_typename);
             L_count = String.valueOf(listdate.size());
-            System.out.println("totalValue-->"+avilable);
-            if (isLeaveEntitlementRequested){
+            System.out.println("totalValue-->" + avilable);
+            if (isLeaveEntitlementRequested) {
                 totalval = Integer.parseInt(avilable);
                 val = Integer.parseInt(L_count);
                 Log.d("rem", totalval + "---" + val);
                 int bal = totalval - val;
 
-                if(bal == 0 || bal == (-bal)) {
+                if (bal == 0 || bal == (-bal)) {
 
-                }else {
-                    if(leavety.equals("LOP")) {
+                } else {
+                    if (leavety.equals("LOP")) {
                         leavebinding.balanceDays.setText("");
-                    }else {
+                    } else {
                         String balval = String.valueOf(bal);
                         leavebinding.balanceDays.setText(balval + " " + "days remaining");
                     }
@@ -595,6 +582,7 @@ public class Leave_Application extends AppCompatActivity {
             l_address = leavebinding.edAddress.getText().toString();
             l_reason = leavebinding.edReason.getText().toString();
 
+
 //   {
 //
 //    "tableName":"saveleave",
@@ -626,15 +614,15 @@ public class Leave_Application extends AppCompatActivity {
                 jsonobj.put("NOD", L_count);
                 jsonobj.put("LvOnAdd", l_address);
                 jsonobj.put("LvRem", l_reason);
-                jsonobj.put("division_code",  SharedPref.getDivisionCode(this));
+                jsonobj.put("division_code", SharedPref.getDivisionCode(this));
                 jsonobj.put("Rsf", SharedPref.getHqCode(this));
                 jsonobj.put("sf_type", SharedPref.getSfType(this));
-                jsonobj.put("Designation",  SharedPref.getDesig(this));
-                jsonobj.put("state_code",  SharedPref.getStateCode(this));
-                jsonobj.put("subdivision_code",  SharedPref.getSubdivisionCode(this));
+                jsonobj.put("Designation", SharedPref.getDesig(this));
+                jsonobj.put("state_code", SharedPref.getStateCode(this));
+                jsonobj.put("subdivision_code", SharedPref.getSubdivisionCode(this));
                 jsonobj.put("sf_emp_id", SharedPref.getSfEmpId(this));
                 jsonobj.put("leave_typ_code", Ltype_id);
-                jsonobj.put("versionNo",  getString(R.string.app_version));
+                jsonobj.put("versionNo", getString(R.string.app_version));
                 jsonobj.put("mod", Constants.APP_MODE);
                 jsonobj.put("Device_version", Build.VERSION.RELEASE);
                 jsonobj.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
@@ -643,7 +631,7 @@ public class Leave_Application extends AppCompatActivity {
                 Log.d("save_obj", String.valueOf(jsonobj));
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "save/leavemodule");
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonobj.toString());
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonobj.toString());
 
                 if (call != null) {
                     call.enqueue(new Callback<JsonElement>() {
@@ -651,8 +639,8 @@ public class Leave_Application extends AppCompatActivity {
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                             if (response.isSuccessful()) {
                                 Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
-                                commonUtilsMethods.showToastMessage(Leave_Application.this,"Leave Submitted Successfully");
-                                if (isLeaveEntitlementRequested){
+                                commonUtilsMethods.showToastMessage(Leave_Application.this, "Leave Submitted Successfully");
+                                if (isLeaveEntitlementRequested) {
                                     updateLeaveStatusMasterSync();
                                 }
                                 finish();
@@ -697,14 +685,15 @@ public class Leave_Application extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) Leave_Application.this.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
-    private void setVisibility(){
-        if (isLeaveEntitlementRequested){
+
+    private void setVisibility() {
+        if (isLeaveEntitlementRequested) {
             leavebinding.chartLayout.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             leavebinding.chartLayout.setVisibility(View.GONE);
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -717,6 +706,7 @@ public class Leave_Application extends AppCompatActivity {
             CommonUtilsMethods.showCustomDialog(this);
         }
     }
+
     private void updateLeaveStatusMasterSync() {
         JSONObject leaveStatusObject = new JSONObject();
         try {
@@ -729,7 +719,7 @@ public class Leave_Application extends AppCompatActivity {
             leaveStatusObject.put("Designation", SharedPref.getDesig(this));
             leaveStatusObject.put("state_code", SharedPref.getStateCode(this));
             leaveStatusObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            System.out.println("leaveStatusObject--->"+leaveStatusObject);
+            System.out.println("leaveStatusObject--->" + leaveStatusObject);
         } catch (Exception ignored) {
 
         }
@@ -759,11 +749,11 @@ public class Leave_Application extends AppCompatActivity {
                                 }
                             }
                         }
-                } catch (JSONException e) {
+                    } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                }
+            }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
@@ -772,4 +762,62 @@ public class Leave_Application extends AppCompatActivity {
         });
     }
 
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    private void setMaxLength() {
+
+        leavebinding.edAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // TODO Auto-generated method stub
+                String str = s.toString();
+                if (str.length() > 300) {
+                    String truncated = str.substring(0, 300);
+                    leavebinding.edAddress.setText(truncated);
+                    leavebinding.edAddress.setSelection(truncated.length());
+                    closeKeyboard();
+                    commonUtilsMethods.showToastMessage(Leave_Application.this, "Maximum address length reached. Please keep it under 300 characters");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        leavebinding.edReason.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // TODO Auto-generated method stub
+                String str = s.toString();
+                if (str.length() > 300) {
+                    String truncated = str.substring(0, 300);
+                    leavebinding.edReason.setText(truncated);
+                    leavebinding.edReason.setSelection(truncated.length());
+                    commonUtilsMethods.showToastMessage(Leave_Application.this, "Maximum Reason length reached. Please keep it under 300 characters");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
 }

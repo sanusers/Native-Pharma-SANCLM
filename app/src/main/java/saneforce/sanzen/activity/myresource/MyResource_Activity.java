@@ -68,7 +68,7 @@ public class MyResource_Activity extends AppCompatActivity {
     private RoomDB roomDB;
 
     private MasterDataDao masterDataDao;
-
+    boolean isLeaveEntitlementRequested;
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +86,7 @@ public class MyResource_Activity extends AppCompatActivity {
 
         masterDataDao = roomDB.masterDataDao();
 
-
+        isLeaveEntitlementRequested = SharedPref.getLeaveEntitlementNeed(this).equals("0");
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString("Origin");
@@ -301,6 +301,9 @@ public class MyResource_Activity extends AppCompatActivity {
             listed_data.add(new Resourcemodel_class("Calls Status",  String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray().length()), "12"));
             listed_data.add(new Resourcemodel_class("Category", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length()), "13"));
             listed_data.add(new Resourcemodel_class("WorkType", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray().length()), "14"));
+            if (isLeaveEntitlementRequested){
+                listed_data.add(new Resourcemodel_class("LeaveStatus",String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length()),"15"));
+            }
             Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count);
 
             resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1);//13
@@ -388,7 +391,7 @@ public class MyResource_Activity extends AppCompatActivity {
                         if (str.equalsIgnoreCase(jsonObject.getString("id")) && (!dup_hq.equals(jsonObject.getString("id")))) {
                             dup_hq = jsonObject.getString("id");
                             listresource.add(new Resourcemodel_class(jsonObject.getString("id"), jsonObject.getString("name"), "", "", "", "", "", "", "", "", "", "", "",
-                                    "", "", "", "", "", "", "", "", "", "","","",""));
+                                    "", "", "", "", "", "", "", "", "", "","","","","","","",""));
                         }
                     }
 
@@ -417,7 +420,7 @@ public class MyResource_Activity extends AppCompatActivity {
     private void filter(String text) {
         ArrayList<Resourcemodel_class> filterdNames = new ArrayList<>();
         for (Resourcemodel_class s : listresource) {
-            if (s.getDcr_name().toLowerCase().contains(text.toLowerCase()) || s.getRes_custname().toLowerCase().contains(text.toLowerCase()) || s.getRes_Specialty().toLowerCase().contains(text.toLowerCase()) || s.getRes_Category().toLowerCase().contains(text.toLowerCase()) ||s.getWorkType().toLowerCase().contains(text.toLowerCase())) {//getRes_Category
+            if (s.getDcr_name().toLowerCase().contains(text.toLowerCase()) || s.getRes_custname().toLowerCase().contains(text.toLowerCase()) || s.getRes_Specialty().toLowerCase().contains(text.toLowerCase()) || s.getRes_Category().toLowerCase().contains(text.toLowerCase()) ||s.getWorkType().toLowerCase().contains(text.toLowerCase())||s.getLeaveTypes().toLowerCase().contains(text.toLowerCase())) {//getRes_Category
                 filterdNames.add(s);
             }
         }

@@ -222,10 +222,9 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
 
                     if (Afterdate.isBefore(date1val) || Afterdate.equals(date1val)) {
                         Leave_Application.leavebinding.etToDate.setText(from_val1);
-
                         finish();
                     } else {
-                        commonUtilsMethods.showToastMessage(CalendarActivity.this,"Unable to select" + "--" + Afterdate + "--" + date1val);
+//                        commonUtilsMethods.showToastMessage(CalendarActivity.this,"Unable to select" + "--" + Afterdate + "--" + date1val);
                     }
                 }
             }

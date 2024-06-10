@@ -548,7 +548,7 @@
                                             android:fontFamily="@font/satoshi_medium"
                                             android:gravity="left"
                                             android:paddingBottom="@dimen/_2sdp"
-                                            android:text="Leave Taken"
+                                            android:text="Leave Available"
                                             android:textColor="#282A3C"
                                             android:textSize="@dimen/_8sdp"
                                             android:textStyle="bold" />
