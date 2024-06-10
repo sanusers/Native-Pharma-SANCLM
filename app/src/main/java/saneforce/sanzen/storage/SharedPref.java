@@ -406,7 +406,8 @@ public class SharedPref {
     public static final String ADDITIONAL_CALL_NEED = "Additional_Call";
 
     public static final String SLIDE_DOWNLOADING_STATUS = "Slide_downloding_status";
-    public static SharedPreferences.Editor editor;
+    public static final String LAST_CALL_DATE = "Last_Call_Date";
+     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -2482,5 +2483,17 @@ public class SharedPref {
     public static String getAdditionalCallNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ADDITIONAL_CALL_NEED, "");
     }
+
+    public static void setLastCallDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LAST_CALL_DATE, date).apply();
+    }
+
+    public static String getLastCallDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LAST_CALL_DATE, "");
+    }
+
+
 
 }

@@ -1,1 +1,18 @@
 /build
+
+# Build files
+.idea/
+.gradle/
+build/
+local.properties
+
+# Generated files
+.DS_Store
+*.iml
+*.apk
+*.aar
+
+# Temporary files
+*.tmp
+*.swp
+*~

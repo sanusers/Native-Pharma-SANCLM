@@ -4,7 +4,7 @@ public class EventCalenderModelClass {
 
 
     private String dateID;
-    private String EventFlog;
+    private String EventFlag;
     private String Month;
     private String Year;
     private boolean isSelected;
@@ -12,7 +12,7 @@ public class EventCalenderModelClass {
 
     public EventCalenderModelClass(String dateID, String worktypeFlog, String month, String year) {
         this.dateID = dateID;
-        this.EventFlog = worktypeFlog;
+        this.EventFlag = worktypeFlog;
         Month = month;
         Year = year;
     }
@@ -25,12 +25,12 @@ public class EventCalenderModelClass {
         this.dateID = dateID;
     }
 
-    public String getWorktypeFlog() {
-        return EventFlog;
+    public String getWorkTypeFlag() {
+        return EventFlag;
     }
 
-    public void setWorktypeFlog(String worktypeFlog) {
-        this.EventFlog = worktypeFlog;
+    public void setWorkTypeFlag(String worktypeFlog) {
+        this.EventFlag = worktypeFlog;
     }
 
     public String getMonth() {

@@ -21,7 +21,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -66,22 +65,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 
-import com.google.android.gms.location.FusedLocationProviderApi;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -134,7 +127,6 @@ import saneforce.sanzen.databinding.DialogTimezoneBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.activity.remaindercalls.RemaindercallsActivity;
-import saneforce.sanzen.response.CustomSetupResponse;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
@@ -197,6 +189,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     Handler handler1 = new Handler();
     long delay = 4000;
     Runnable runnable;
+    private static boolean isDateSelectionClicked = false;
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -322,6 +315,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
+
+        isDateSelectionClicked = false;
 
         binding.imgNotofication.setOnClickListener(view -> {
             startActivity(new Intent(HomeDashBoard.this, MapViewActvity.class));
@@ -829,7 +824,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 for (EventCalenderModelClass list : callsatuslist) {
                     int index = ListID.indexOf(list.getDateID());
                     if (index != -1) {
-                        daysInMonthArray.get(index).setWorktypeFlog(list.getWorktypeFlog());
+                        daysInMonthArray.get(index).setWorkTypeFlag(list.getWorkTypeFlag());
                     }
                 }
             }
@@ -1297,6 +1292,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     public static void checkAndSetEntryDate(Context context) {
         binding.viewPagerProgress.setVisibility(View.VISIBLE);
+        isDateSelectionClicked = false;
         MyDayPlanEntriesNeeded.updateMyDayPlanEntryDates(context, false, new MyDayPlanEntriesNeeded.SyncTaskStatus() {
             @Override
             public void datesFound() {
@@ -1340,44 +1336,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.rl_calender_syn:
+                binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.VISIBLE);
                 callAPIDateSync();
                 break;
             case R.id.rl_date_layoout:
-                if(SequentialEntry.equalsIgnoreCase("0")) {
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.sequential_entry_cannot_change_date));
-                } else if(!SharedPref.getDayPlanStartedDate(this).isEmpty() && MyDayPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(this))) {
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.complete_day));
-                }
-//                else if(HomeDashBoard.selectedDate != null){
-//                    commonUtilsMethods.showToastMessage(this, getString(R.string.complete_day));
-//                }
-                else if(!MyDayPlanEntriesNeeded.datesNeeded.isEmpty() || !SharedPref.getSelectedDateCal(this).isEmpty()) {
-                    SetUpHolidayWeekEndData();
-                    if (binding.viewCalerderLayout.getRoot().getVisibility() == View.GONE) {
-                        getCallsDataToCalender();
-                        if (selectedDate == null) {
-                            selectedDate = LocalDate.now();
-                        }
-                        binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
-                        calendarDays.clear();
-                        calendarDays = daysInMonthArray(selectedDate);
-                        callstatusadapter = new Callstatusadapter(calendarDays, HomeDashBoard.this, selectedDate);
-                        binding.viewCalerderLayout.calendarRecyclerView.setLayoutManager(new GridLayoutManager(this, 7));
-                        binding.viewCalerderLayout.calendarRecyclerView.setAdapter(callstatusadapter);
-
-                        binding.viewCalerderLayout.getRoot().setVisibility(View.VISIBLE);
-                        //   binding.tabLayout.getRoot().setVisibility(View.GONE);
-                        binding.tabLayout.setVisibility(View.GONE);
-                        binding.viewPager.setVisibility(View.GONE);
-                    } else {
-                        binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
-                        //  binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
-                        binding.tabLayout.setVisibility(View.VISIBLE);
-                        binding.viewPager.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    commonUtilsMethods.showToastMessage(this, "No pending dates to select");
-                }
+                isDateSelectionClicked = !isDateSelectionClicked;
+                setUpCalendar();
                 break;
 
             case R.id.ll_next_month:
@@ -1436,6 +1400,46 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
+    private void setUpCalendar() {
+        binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.VISIBLE);
+        if(SequentialEntry.equalsIgnoreCase("0")) {
+            commonUtilsMethods.showToastMessage(this, getString(R.string.sequential_entry_cannot_change_date));
+        } else if(!SharedPref.getDayPlanStartedDate(this).isEmpty() && MyDayPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(this))) {
+            commonUtilsMethods.showToastMessage(this, getString(R.string.complete_day));
+        }
+//                else if(HomeDashBoard.selectedDate != null){
+//                    commonUtilsMethods.showToastMessage(this, getString(R.string.complete_day));
+//                }
+        else if(!MyDayPlanEntriesNeeded.datesNeeded.isEmpty() || !SharedPref.getSelectedDateCal(this).isEmpty()) {
+            SetUpHolidayWeekEndData();
+            if (isDateSelectionClicked) {
+                getCallsDataToCalender();
+                if (selectedDate == null) {
+                    selectedDate = LocalDate.now();
+                }
+                binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
+                calendarDays.clear();
+                calendarDays = daysInMonthArray(selectedDate);
+                callstatusadapter = new Callstatusadapter(calendarDays, HomeDashBoard.this, selectedDate);
+                binding.viewCalerderLayout.calendarRecyclerView.setLayoutManager(new GridLayoutManager(this, 7));
+                binding.viewCalerderLayout.calendarRecyclerView.setAdapter(callstatusadapter);
+
+                binding.viewCalerderLayout.getRoot().setVisibility(View.VISIBLE);
+                //   binding.tabLayout.getRoot().setVisibility(View.GONE);
+                binding.tabLayout.setVisibility(View.GONE);
+                binding.viewPager.setVisibility(View.GONE);
+            }else {
+                binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
+                //  binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
+                binding.tabLayout.setVisibility(View.VISIBLE);
+                binding.viewPager.setVisibility(View.VISIBLE);
+            }
+        } else {
+            commonUtilsMethods.showToastMessage(this, "No pending dates to select");
+        }
+        binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
+    }
+
     private void callAPIDateSync() {
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         JSONObject jj = new JSONObject();
@@ -1472,11 +1476,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         JsonArray jsonArray = jsonElement.getAsJsonArray();
                         masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 0));
 
-                        binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
-                        binding.tabLayout.setVisibility(View.VISIBLE);
-                        binding.viewPager.setVisibility(View.VISIBLE);
-                        commonUtilsMethods.showToastMessage(HomeDashBoard.this, context.getString(R.string.updated_successfully));
+//                        binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
+//                        binding.tabLayout.setVisibility(View.VISIBLE);
+//                        binding.viewPager.setVisibility(View.VISIBLE);
+                        commonUtilsMethods.showToastMessage(HomeDashBoard.this, context.getString(R.string.synced_successfully));
                         progressDialog.dismiss();
+                        setUpCalendar();
                     } catch (Exception ignored) {
                         progressDialog.dismiss();
                     }

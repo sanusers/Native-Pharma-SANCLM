@@ -355,6 +355,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         //progressDialog.dismiss();
                     }
                     storingSlide.clear();
+                    SharedPref.setLastCallDate(this, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
                     SharedPref.setDayPlanStartedDate(this,  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
 //                    if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
                         //    progressDialog.dismiss();

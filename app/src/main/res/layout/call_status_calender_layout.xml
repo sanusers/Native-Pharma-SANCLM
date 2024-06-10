@@ -67,7 +67,7 @@
         android:background="@color/cl_border_color" />
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/view_bar"
@@ -218,11 +218,11 @@
             android:layout_marginTop="@dimen/_2sdp"
             android:layout_marginEnd="@dimen/_2sdp" />
 
-
         <ScrollView
+            android:id="@+id/types"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="match_parent"
+            android:layout_below="@id/calendarRecyclerView">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -464,6 +464,16 @@
 
         </ScrollView>
 
-    </LinearLayout>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/calendar_progress_bar"
+            android:indeterminateTint="@color/dark_purple"
+            android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
+            android:visibility="visible"
+            android:layout_above="@id/types" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

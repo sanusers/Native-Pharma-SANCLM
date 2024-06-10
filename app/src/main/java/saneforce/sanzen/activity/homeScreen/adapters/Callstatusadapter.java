@@ -16,9 +16,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -29,7 +26,6 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.modelClass.EventCalenderModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.MyDayPlanEntriesNeeded;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -91,28 +87,28 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
 
         // set Event
         GradientDrawable drawable = (GradientDrawable) context.getResources().getDrawable(R.drawable.event_point_background);
-        if (list.getWorktypeFlog().equalsIgnoreCase("F")) {
+        if (list.getWorkTypeFlag().equalsIgnoreCase("F")) {
             drawable.setColor(context.getResources().getColor(R.color.green_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorktypeFlog().equalsIgnoreCase("W")) {
+        } else if (list.getWorkTypeFlag().equalsIgnoreCase("W")) {
             drawable.setColor(context.getResources().getColor(R.color.yellow_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorktypeFlog().equalsIgnoreCase("H")) {
+        } else if (list.getWorkTypeFlag().equalsIgnoreCase("H")) {
             drawable.setColor(context.getResources().getColor(R.color.lustylavender_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorktypeFlog().equalsIgnoreCase("L")) {
+        } else if (list.getWorkTypeFlag().equalsIgnoreCase("L")) {
             drawable.setColor(context.getResources().getColor(R.color.red_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorktypeFlog().equalsIgnoreCase("N")) {
+        } else if (list.getWorkTypeFlag().equalsIgnoreCase("N")) {
             drawable.setColor(context.getResources().getColor(R.color.blue_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorktypeFlog().equalsIgnoreCase("M")) {
+        } else if (list.getWorkTypeFlag().equalsIgnoreCase("M")) {
             drawable.setColor(context.getResources().getColor(R.color.Hilo_bay_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorktypeFlog().equalsIgnoreCase("RE")) {
+        } else if (list.getWorkTypeFlag().equalsIgnoreCase("RE")) {
             drawable.setColor(context.getResources().getColor(R.color.pink_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorktypeFlog().equalsIgnoreCase("R")) {
+        } else if (list.getWorkTypeFlag().equalsIgnoreCase("R")) {
             drawable.setColor(context.getResources().getColor(R.color.dark_green_60));
             holder.imageView.setVisibility(View.VISIBLE);
         } else {

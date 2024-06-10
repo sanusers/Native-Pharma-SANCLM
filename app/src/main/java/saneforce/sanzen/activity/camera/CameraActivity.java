@@ -191,7 +191,8 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
         startBackgroundThread();
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, true);
             }
         }else {
@@ -213,6 +214,8 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
                 openCamera();
             }else {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.camera_permission_needed));
+                isImageCaptured = false;
+                finish();
             }
         }
     }
