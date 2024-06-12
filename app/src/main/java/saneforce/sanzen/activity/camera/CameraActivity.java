@@ -67,6 +67,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     private final String TAG = "Camera Activity";
     private String filePath, cameraMode, from;
     private boolean lTagEnabled = false;
+    private int permissionRequestCount = 0;
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -213,9 +214,15 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
             if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             }else {
+                if(permissionRequestCount == 3){
+                    permissionRequestCount = 0;
+                    setResult(RESULT_CANCELED);
+                }
                 commonUtilsMethods.showToastMessage(this, getString(R.string.camera_permission_needed));
                 isImageCaptured = false;
-                finish();
+                openCamera();
+                permissionRequestCount++;
+//                finish();
             }
         }
     }

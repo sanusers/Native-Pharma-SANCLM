@@ -104,9 +104,12 @@ public class JWOthersFragment extends Fragment {
                     jwOthersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
                     jwOthersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
                     jwOthersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
+                }else if(result.getResultCode() == Activity.RESULT_CANCELED) {
+                    Log.d("Camera", "onActivityResult: Canceled");
                 }
-            } catch (Exception ignored) {
-
+            } catch (Exception e) {
+                Log.e("Camera", "onActivityResult: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     });

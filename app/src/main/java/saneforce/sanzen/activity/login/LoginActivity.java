@@ -37,6 +37,7 @@ import java.io.File;
 import java.util.Locale;
 import java.util.Objects;
 
+import saneforce.sanzen.BuildConfig;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;

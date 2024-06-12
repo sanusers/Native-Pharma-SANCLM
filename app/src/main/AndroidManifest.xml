@@ -228,7 +228,7 @@
             android:name=".activity.presentation.createPresentation.CreatePresentationActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.splash.SplashScreen"
             android:exported="true"

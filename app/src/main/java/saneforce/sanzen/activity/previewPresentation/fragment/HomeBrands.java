@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.previewPresentation.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,7 +83,7 @@ public class HomeBrands extends Fragment {
                 }
             }
 
-            if (SlideHomeBrandList.size() > 0) {
+            if (!SlideHomeBrandList.isEmpty()) {
                 homePreviewBinding.constraintNoData.setVisibility(View.GONE);
                 homePreviewBinding.rvBrandList.setVisibility(View.VISIBLE);
                 previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);

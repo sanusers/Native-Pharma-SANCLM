@@ -158,11 +158,11 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                                 count++;
                             }
                         }
-                        if (count < Integer.parseInt(cusListArrayList.get(position).getTotalVisitCount())) {
+//                        if (count < Integer.parseInt(cusListArrayList.get(position).getTotalVisitCount())) {
                             goNextActivity(position);
-                        } else {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_of_visit));
-                        }
+//                        } else {
+//                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_of_visit));
+//                        }
                     } else {
                         goNextActivity(position);
                     }

@@ -5,6 +5,7 @@ import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.from
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
@@ -50,7 +53,7 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
         holder.name.setText(arrayList.get(position).getBrandName());
         products = arrayList.get(position).getProductArrayList();
 
-        if (products.size() > 0) SupportClass.setThumbnail(context, products.get(0).getSlideName(), holder.imageView);
+        if (!products.isEmpty()) SupportClass.setThumbnail(context, products.get(0).getSlideName(), holder.imageView);
 
         if (products.size() > 1) holder.count.setText(products.size() + " Asserts");
         else holder.count.setText(products.size() + " Assert");
@@ -80,6 +83,16 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
                 } else {
                     productsList = arrayList.get(position).getProductArrayList();
                     intent = new Intent(context, PlaySlidePreviewActivity.class);
+                }
+                for (BrandModelClass.Product product : products) {
+                    Log.d("TAG2", "onBindViewHolder: "+ product.getBrandName() + " " + product.getSlideName() + ": " + product.getPriority());
+                }
+                for (BrandModelClass.Product product : productsList) {
+                    Log.d("TAG1", "onBindViewHolder: "+ product.getBrandName() + " " + product.getSlideName() + ": " + product.getPriority());
+                }
+                Collections.sort(productsList, Comparator.comparingInt(p -> Integer.parseInt(p.getPriority())));
+                for (BrandModelClass.Product product : productsList) {
+                    Log.d("TAG3", "onBindViewHolder: "+ product.getBrandName() + " " + product.getSlideName() + ": " + product.getPriority());
                 }
                 String data = new Gson().toJson(productsList);
                 Bundle bundle = new Bundle();

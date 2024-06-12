@@ -167,7 +167,11 @@ public class ListedDoctorFragment extends Fragment {
         }
 
         if(!classCode.isEmpty()) {
-            tvTerritory.setVisibility(View.INVISIBLE);
+            if(territoryCode.isEmpty()) {
+                tvTerritory.setVisibility(View.INVISIBLE);
+            }else {
+                tv_add_condition.setVisibility(View.GONE);
+            }
             tvClass.setVisibility(View.VISIBLE);
         }else {
             tvClass.setVisibility(View.GONE);
@@ -215,7 +219,7 @@ public class ListedDoctorFragment extends Fragment {
                 classCode = "";
                 className = "";
             }
-            if(!territoryCode.isEmpty()) {
+            else if(!territoryCode.isEmpty()) {
                 territoryCode = "";
                 territoryName = "";
             }

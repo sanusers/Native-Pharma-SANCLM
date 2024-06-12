@@ -15,14 +15,11 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,7 +39,6 @@ import saneforce.sanzen.activity.previewPresentation.fragment.Therapist;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
-import saneforce.sanzen.response.CustomSetupResponse;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -113,7 +109,7 @@ public class PreviewActivity extends AppCompatActivity {
             if (from_where.equalsIgnoreCase("call")) {
                 headingData.clear();
                 if (CusType.equalsIgnoreCase("1")) {
-                    viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
+                    viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
                     headingData.add("A");
                     viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
                     headingData.add("B");
@@ -128,7 +124,7 @@ public class PreviewActivity extends AppCompatActivity {
                         headingData.add("E");
 //                    }
                 } else {
-                    viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
+                    viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
                     headingData.add("A");
                     viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                     headingData.add("C");
@@ -142,7 +138,7 @@ public class PreviewActivity extends AppCompatActivity {
 //                    }
                 }
             } else {
-                viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
+                viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
                 viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
                 viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                 if(therapticNeed.equalsIgnoreCase("0")) {

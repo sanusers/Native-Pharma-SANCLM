@@ -723,11 +723,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void submitMyDayPlan() {
         if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
-            if(mWTName1.isEmpty()) {
+            if(mWTName1.isEmpty() && mFwFlg1.equalsIgnoreCase("F")) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
-            } else if(mTowncode1.isEmpty()) {
+            } else if(mTowncode1.isEmpty() && mFwFlg1.equalsIgnoreCase("F")) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_cluster));
-            } else if(SharedPref.getLastCallDate(requireContext()).isEmpty() || !SharedPref.getLastCallDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)))) {
+            } else if((SharedPref.getLastCallDate(requireContext()).isEmpty() || !SharedPref.getLastCallDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)))) && mFwFlg1.equalsIgnoreCase("F")) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.should_have_a_call));
             } else {
                 if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
