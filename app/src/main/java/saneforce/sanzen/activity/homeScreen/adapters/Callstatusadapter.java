@@ -109,7 +109,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
             drawable.setColor(context.getResources().getColor(R.color.pink_60));
             holder.imageView.setVisibility(View.VISIBLE);
         } else if (list.getWorkTypeFlag().equalsIgnoreCase("R")) {
-            drawable.setColor(context.getResources().getColor(R.color.dark_green_60));
+            drawable.setColor(context.getResources().getColor(R.color.brown_60));
             holder.imageView.setVisibility(View.VISIBLE);
         } else {
             holder.imageView.setVisibility(View.GONE);

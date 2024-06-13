@@ -180,7 +180,6 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
         });
 
         activityCameraBinding.switchCamera.setOnClickListener(view -> {
-            Log.d(TAG, "onCreate: camera switch : " + isBackCameraOpen);
             isBackCameraOpen = !isBackCameraOpen;
             openCamera();
         });
@@ -306,14 +305,12 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     }
 
     private void startBackgroundThread() {
-        Log.d(TAG, "startBackgroundThread: ");
         backgroundThread = new HandlerThread("CameraBackground");
         backgroundThread.start();
         backgroundHandler = new Handler(backgroundThread.getLooper());
     }
 
     private void stopBackgroundThread() {
-        Log.d(TAG, "stopBackgroundThread: ");
         if(backgroundThread != null) {
             backgroundThread.quitSafely();
             try {

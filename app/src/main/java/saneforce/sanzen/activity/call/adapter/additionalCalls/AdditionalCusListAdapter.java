@@ -166,7 +166,8 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
 
             if (!isLocal) {
                 if (!cusCode.equalsIgnoreCase(CallActivityCustDetails.get(0).getCode())) {
-                    JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+//                    JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
@@ -178,9 +179,8 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
                     if (!isVisitedToday) {
                         if (SharedPref.getVstNd(context).equalsIgnoreCase("0") && SharedPref.getSfType(context).equalsIgnoreCase("1")) {
                             int count = 0;
-                            JSONArray jsonVisit = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
-                            for (int i = 0; i < jsonVisit.length(); i++) {
-                                JSONObject jsonObject = jsonVisit.getJSONObject(i);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
                                 if (jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
                                     count++;
                                 }

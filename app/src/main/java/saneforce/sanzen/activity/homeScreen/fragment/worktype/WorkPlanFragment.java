@@ -285,6 +285,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            UtilityClass.hideKeyboard(requireActivity());
         });
 
         HomeDashBoard.binding.llNav.etSearch.addTextChangedListener(new TextWatcher() {
@@ -301,6 +302,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void afterTextChanged(Editable s) {
+                String searchString = s.toString().trim();
+                if(searchString.isEmpty()) UtilityClass.hideKeyboard(requireActivity());
             }
         });
     }

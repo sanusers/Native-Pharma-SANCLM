@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -15,7 +16,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
+import saneforce.sanzen.R;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.previewPresentation.adapter.PreviewAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -46,6 +50,28 @@ public class HomeBrands extends Fragment {
         masterDataDao = roomDB.masterDataDao();
         getRequiredData();
 
+        homePreviewBinding.tvAz.setOnClickListener(v13 -> {
+            homePreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
+            homePreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            homePreviewBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
+            homePreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
+            homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
+            Collections.sort(SlideHomeBrandList, Comparator.comparing(BrandModelClass::getBrandName));
+        });
+
+        homePreviewBinding.tvZa.setOnClickListener(v12 -> {
+            homePreviewBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_right_radius));
+            homePreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            homePreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
+            homePreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
+            homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
+            Collections.sort(SlideHomeBrandList, Collections.reverseOrder(new BrandMatrix.SortByName()));
+        });
+        
         return v;
     }
 
@@ -84,12 +110,16 @@ public class HomeBrands extends Fragment {
             }
 
             if (!SlideHomeBrandList.isEmpty()) {
+                if(SlideHomeBrandList.size()>1) {
+                    homePreviewBinding.constraintSortFilter.setVisibility(View.VISIBLE);
+                }
                 homePreviewBinding.constraintNoData.setVisibility(View.GONE);
                 homePreviewBinding.rvBrandList.setVisibility(View.VISIBLE);
                 previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
                 homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
                 homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
             } else {
+                homePreviewBinding.constraintSortFilter.setVisibility(View.GONE);
                 homePreviewBinding.constraintNoData.setVisibility(View.VISIBLE);
                 homePreviewBinding.rvBrandList.setVisibility(View.GONE);
             }

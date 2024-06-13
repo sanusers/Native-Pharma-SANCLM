@@ -38,7 +38,7 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
         holder.txt_sample.setText(mlist.getSample());
         holder.txt_rx.setText(mlist.getRx());
         holder.txt_rcpa.setText(mlist.getRcpa());
-        holder.txt_feedback.setText(mlist.getFeedBack());
+//        holder.txt_feedback.setText(mlist.getFeedBack());
 
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
             case "1":
@@ -57,7 +57,7 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
                     holder.view_rx.setVisibility(View.GONE);
                 }
 
-                if (PreCallAnalysisFragment.RCPANeed.equalsIgnoreCase("1")) {
+                if (PreCallAnalysisFragment.RCPANeed.equalsIgnoreCase("0")) {
                     holder.txt_rcpa.setVisibility(View.VISIBLE);
                     holder.view_rcpa.setVisibility(View.VISIBLE);
                 } else {
@@ -81,7 +81,7 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
                     holder.view_rx.setVisibility(View.GONE);
                 }
 
-                if (PreCallAnalysisFragment.RCPANeed.equalsIgnoreCase("1")) {
+                if (PreCallAnalysisFragment.RCPANeed.equalsIgnoreCase("0")) {
                     holder.txt_rcpa.setVisibility(View.VISIBLE);
                     holder.view_rcpa.setVisibility(View.VISIBLE);
                 } else {
@@ -168,7 +168,7 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
             txt_sample = itemView.findViewById(R.id.sample_qty);
             txt_rx = itemView.findViewById(R.id.rx_qty);
             txt_rcpa = itemView.findViewById(R.id.rcpa_qty);
-            txt_feedback = itemView.findViewById(R.id.feedback);
+//            txt_feedback = itemView.findViewById(R.id.feedback);
             view_sample = itemView.findViewById(R.id.dummy_sample);
             view_rx = itemView.findViewById(R.id.dummy_rx);
             view_rcpa = itemView.findViewById(R.id.dummy_rcpa);

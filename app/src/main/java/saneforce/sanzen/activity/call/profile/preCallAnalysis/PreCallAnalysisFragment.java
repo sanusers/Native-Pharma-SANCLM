@@ -43,7 +43,7 @@ public class PreCallAnalysisFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentPrecallAnalysisBinding preCallAnalysisBinding;
     public static ApiInterface apiInterface;
-    public static String PrdSamNeed, PrdRxNeed,RCPANeed;
+    public static String PrdSamNeed, PrdRxNeed, RCPANeed, CallFeedbackNeed;
     public static PreCallAnalysisAdapter adapter;
     public static ArrayList<PreCallAnalysisModelClass> ProductList = new ArrayList<>();
     static List<DCRLastVisitDetails> dcrLastVstDetails = new ArrayList<>();
@@ -231,12 +231,19 @@ public class PreCallAnalysisFragment extends Fragment {
                     preCallAnalysisBinding.rxCaption.setVisibility(View.GONE);
                     preCallAnalysisBinding.rxCaptionLine.setVisibility(View.GONE);
                 }
-                if (RCPANeed.equalsIgnoreCase("1")) {
+                if (RCPANeed.equalsIgnoreCase("0")) {
                     preCallAnalysisBinding.rcpaCaption.setVisibility(View.VISIBLE);
                     preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.VISIBLE);
                 } else {
                     preCallAnalysisBinding.rcpaCaption.setVisibility(View.GONE);
                     preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.GONE);
+                }
+                if (CallFeedbackNeed.equalsIgnoreCase("0")) {
+                    preCallAnalysisBinding.tvTagFeedback.setVisibility(View.VISIBLE);
+                    preCallAnalysisBinding.tvFeedback.setVisibility(View.VISIBLE);
+                } else {
+                    preCallAnalysisBinding.tvTagFeedback.setVisibility(View.GONE);
+                    preCallAnalysisBinding.tvFeedback.setVisibility(View.GONE);
                 }
                 break;
             case "2":
@@ -254,12 +261,19 @@ public class PreCallAnalysisFragment extends Fragment {
                     preCallAnalysisBinding.rxCaption.setVisibility(View.GONE);
                     preCallAnalysisBinding.rxCaptionLine.setVisibility(View.GONE);
                 }
-                if (RCPANeed.equalsIgnoreCase("1")) {
+                if (RCPANeed.equalsIgnoreCase("0")) {
                     preCallAnalysisBinding.rcpaCaption.setVisibility(View.VISIBLE);
                     preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.VISIBLE);
                 } else {
                     preCallAnalysisBinding.rcpaCaption.setVisibility(View.GONE);
                     preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.GONE);
+                }
+                if (CallFeedbackNeed.equalsIgnoreCase("0")) {
+                    preCallAnalysisBinding.tvTagFeedback.setVisibility(View.VISIBLE);
+                    preCallAnalysisBinding.tvFeedback.setVisibility(View.VISIBLE);
+                } else {
+                    preCallAnalysisBinding.tvTagFeedback.setVisibility(View.GONE);
+                    preCallAnalysisBinding.tvFeedback.setVisibility(View.GONE);
                 }
                 break;
             case "3":
@@ -279,6 +293,13 @@ public class PreCallAnalysisFragment extends Fragment {
                 } else {
                     preCallAnalysisBinding.rxCaption.setVisibility(View.GONE);
                     preCallAnalysisBinding.rxCaptionLine.setVisibility(View.GONE);
+                }
+                if (CallFeedbackNeed.equalsIgnoreCase("0")) {
+                    preCallAnalysisBinding.tvTagFeedback.setVisibility(View.VISIBLE);
+                    preCallAnalysisBinding.tvFeedback.setVisibility(View.VISIBLE);
+                } else {
+                    preCallAnalysisBinding.tvTagFeedback.setVisibility(View.GONE);
+                    preCallAnalysisBinding.tvFeedback.setVisibility(View.GONE);
                 }
                 preCallAnalysisBinding.rcpaCaption.setVisibility(View.GONE);
                 preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.GONE);
@@ -313,27 +334,33 @@ public class PreCallAnalysisFragment extends Fragment {
                 PrdSamNeed = SharedPref.getDrSampNd(requireContext());
                 PrdRxNeed =  SharedPref.getDrRxNd(requireContext());
                 RCPANeed =  SharedPref.getRcpaNd(requireContext());
+                CallFeedbackNeed = SharedPref.getDfNeed(requireContext());
                 break;
             case "2":
                 PrdSamNeed = SharedPref.getChmsamqtyNeed(requireContext());
                 PrdRxNeed = SharedPref.getChmRxQty(requireContext());;//1
                 RCPANeed = SharedPref.getChmRcpaNeed(requireContext());
+                CallFeedbackNeed = SharedPref.getCfNeed(requireContext());
                 break;
             case "3":
                 PrdSamNeed = "0";
                 PrdRxNeed = SharedPref.getStkPobNeed(requireContext());
                 RCPANeed = "0";
+                CallFeedbackNeed = SharedPref.getSfNeed(requireContext());
                 break;
             case "4":
                 PrdRxNeed = SharedPref.getUlPobNeed(requireContext());
                 PrdSamNeed = "0";
                 RCPANeed = "0";
+                CallFeedbackNeed = SharedPref.getNfNeed(requireContext());
                 break;
             case "5":
+                CallFeedbackNeed = SharedPref.getCipFNeed(requireContext());
             case "6":
                 PrdSamNeed = "0";
                 PrdRxNeed = "0";
                 RCPANeed = "0";
+                CallFeedbackNeed = SharedPref.getHfNeed(requireContext());
                 break;
         }
 

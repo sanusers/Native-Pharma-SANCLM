@@ -1275,8 +1275,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     private void goToNearMeActivity() {
         if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
-            if (SharedPref.getHqCode(HomeDashBoard.this).equalsIgnoreCase("null") || SharedPref.getHqCode(HomeDashBoard.this).isEmpty()) {
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.submit_mydayplan));
+            if (!WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F") && !WorkPlanFragment.mFwFlg2.equalsIgnoreCase("F")) {
+//            if (SharedPref.getHqCode(HomeDashBoard.this).equalsIgnoreCase("null") || SharedPref.getHqCode(HomeDashBoard.this).isEmpty()) {
+                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.kindly_submit_field_work));
             } else {
                 Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
                 intent.putExtra("from", "not_tagging");
