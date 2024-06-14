@@ -1,18 +1,23 @@
 package saneforce.sanzen.activity.approvals.leave;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,6 +42,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
@@ -49,12 +55,14 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
     ApiInterface api_interface;
     ProgressDialog progressDialog = null;
     CommonUtilsMethods commonUtilsMethods;
+    LeaveApprovalActivity leaveApprovalActivity;
 
 
     public LeaveApprovalAdapter(Context context, ArrayList<LeaveModelList> leaveModelLists) {
         this.context = context;
         this.leaveModelLists = leaveModelLists;
         commonUtilsMethods = new CommonUtilsMethods(context);
+        leaveApprovalActivity = new LeaveApprovalActivity();
     }
 
     @NonNull
@@ -90,21 +98,25 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
 
             btn_cancel.setOnClickListener(view1 -> {
+                closeKeyBoard(view1);
                 ed_reason.setText("");
                 dialogReject.dismiss();
             });
-
             iv_close.setOnClickListener(view12 -> {
+                closeKeyBoard(view12);
                 ed_reason.setText("");
                 dialogReject.dismiss();
             });
 
             btn_reject.setOnClickListener(view13 -> {
                 if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
+                    closeKeyBoard(view13);
                     RejectedLeave(leaveModelLists.get(holder.getBindingAdapterPosition()).getLeave_id(), holder.getBindingAdapterPosition(), ed_reason.getText().toString());
                 } else {
+                    closeKeyBoard(view13);
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_reason_for_reject));
                 }
+
             });
             dialogReject.show();
         });
@@ -216,6 +228,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                             commonUtilsMethods.showToastMessage(context, context.getString(R.string.approved_successfully));
                             removeAt(Position);
                             ApprovalsActivity.LeaveCount--;
+
                         }
                     } catch (Exception ignored) {
                     }
@@ -232,7 +245,12 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             }
         });
     }
-
+    private void closeKeyBoard(View view){
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null && view != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
     @Override
     public int getItemCount() {
         return leaveModelLists.size();

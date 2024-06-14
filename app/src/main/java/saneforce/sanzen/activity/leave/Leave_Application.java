@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.Html;
@@ -57,6 +59,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -94,6 +97,7 @@ public class Leave_Application extends AppCompatActivity {
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private String destinationFilePath;
+    LeaveViewModel leaveViewModel;
 
 
     //To Hide the bottomNavigation When popup
@@ -128,11 +132,13 @@ public class Leave_Application extends AppCompatActivity {
         headtext_id = findViewById(R.id.headtext_id);
         et_Custsearch = findViewById(R.id.et_Custsearch);
         dailog_list.setVisibility(View.VISIBLE);
+        leaveViewModel = new LeaveViewModel(this);
         setVisibility();
         setMaxLength();
+        onClickListener();
 
-//        updateLeaveStatusMasterSync1();
         leavebinding.edReason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edReason)});
+        leavebinding.edAddress.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edAddress)});
 
 //        l_sideview.closeDrawer(Gravity.RIGHT);
         leavebinding.leavebackArrow.setOnClickListener(v -> {
@@ -427,7 +433,6 @@ public class Leave_Application extends AppCompatActivity {
             } else {
             }
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -451,7 +456,6 @@ public class Leave_Application extends AppCompatActivity {
 
             Leave_Application.leavebinding.lDays.setText(listdate.size() + " days " + L_typename);
             L_count = String.valueOf(listdate.size());
-            System.out.println("totalValue-->" + avilable);
             if (isLeaveEntitlementRequested) {
                 totalval = Integer.parseInt(avilable);
                 val = Integer.parseInt(L_count);
@@ -641,7 +645,7 @@ public class Leave_Application extends AppCompatActivity {
                                 Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
                                 commonUtilsMethods.showToastMessage(Leave_Application.this, "Leave Submitted Successfully");
                                 if (isLeaveEntitlementRequested) {
-                                    updateLeaveStatusMasterSync();
+                                    leaveViewModel.updateLeaveStatusMasterSync();
                                 }
                                 finish();
 
@@ -707,60 +711,6 @@ public class Leave_Application extends AppCompatActivity {
         }
     }
 
-    private void updateLeaveStatusMasterSync() {
-        JSONObject leaveStatusObject = new JSONObject();
-        try {
-            leaveStatusObject.put("tableName", "getleavestatus");
-            leaveStatusObject.put("sfcode", SharedPref.getSfCode(this));
-            leaveStatusObject.put("division_code", SharedPref.getDivisionCode(this));
-            leaveStatusObject.put("Rsf", SharedPref.getHqCode(this));
-            leaveStatusObject.put("sf_type", SharedPref.getSfType(this));
-            leaveStatusObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-            leaveStatusObject.put("Designation", SharedPref.getDesig(this));
-            leaveStatusObject.put("state_code", SharedPref.getStateCode(this));
-            leaveStatusObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            System.out.println("leaveStatusObject--->" + leaveStatusObject);
-        } catch (Exception ignored) {
-
-        }
-        Map<String, String> mapString = new HashMap<>();
-        mapString.put("axn", "get/leave");
-        Call<JsonElement> leaveStatus = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, leaveStatusObject.toString());
-
-        leaveStatus.enqueue(new Callback<JsonElement>() {
-            @Override
-            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        JsonElement jsonElement = response.body();
-                        JSONArray jsonArray = new JSONArray();
-                        assert jsonElement != null;
-                        if (!jsonElement.isJsonNull()) {
-                            if (jsonElement.isJsonArray()) {
-                                JsonArray jsonArray1 = jsonElement.getAsJsonArray();
-                                jsonArray = new JSONArray(jsonArray1.toString());
-                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LEAVE_STATUS, jsonArray.toString(), 0));
-                            } else if (jsonElement.isJsonObject()) {
-                                JsonObject jsonObject = jsonElement.getAsJsonObject();
-                                JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
-                                if (!jsonObject1.has("success")) {
-                                    jsonArray.put(jsonObject1);
-                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LEAVE_STATUS, jsonArray.toString(), 0));
-                                }
-                            }
-                        }
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                Toast.makeText(Leave_Application.this, "Poor Internet Connection Please Check After Sometime", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     private void closeKeyboard() {
         View view = this.getCurrentFocus();
@@ -818,6 +768,29 @@ public class Leave_Application extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
 
             }
+        });
+    }
+    private void onClickListener(){
+        leavebinding.leaveStatusSync.setOnClickListener(v -> {
+            leavebinding.etFromDate.setText("");
+            leavebinding.etToDate.setText("");
+            leavebinding.LeaveType.setText("");
+            leavebinding.edAddress.getText().clear();
+            leavebinding.edReason.getText().clear();
+            leavebinding.balanceDays.setText("");
+            List_LeaveDates.clear();
+            leavebinding.progressBar.setVisibility(View.VISIBLE);
+            leaveViewModel.updateLeaveStatusMasterSync();
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    leavebinding.progressBar.setVisibility(View.GONE);
+                    AvailableLeave();
+                }
+            };
+
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(runnable, 500);
         });
     }
 }

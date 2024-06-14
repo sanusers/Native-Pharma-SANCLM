@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.approvals.leave;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +34,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityLeaveBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -72,7 +75,6 @@ public class LeaveApprovalActivity extends AppCompatActivity {
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-
         CallApiLeave();
 
         leaveBinding.ivBack.setOnClickListener(v -> {
@@ -88,6 +90,8 @@ public class LeaveApprovalActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String searchString = charSequence.toString().trim();
+                if(searchString.isEmpty()) UtilityClass.hideKeyboard(LeaveApprovalActivity.this);
 
             }
 

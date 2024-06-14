@@ -1275,8 +1275,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     private void goToNearMeActivity() {
         if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
-            if (SharedPref.getHqCode(HomeDashBoard.this).equalsIgnoreCase("null") || SharedPref.getHqCode(HomeDashBoard.this).isEmpty()) {
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.submit_mydayplan));
+ if (SharedPref.getHqCode(HomeDashBoard.this).equalsIgnoreCase("null") || SharedPref.getHqCode(HomeDashBoard.this).isEmpty()) {
+                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.kindly_submit_field_work));
             } else {
                 Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
                 intent.putExtra("from", "not_tagging");
@@ -1289,7 +1289,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
         }
     }
-
     public static void checkAndSetEntryDate(Context context) {
         binding.viewPagerProgress.setVisibility(View.VISIBLE);
         isDateSelectionClicked = false;
@@ -1335,6 +1334,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+            
             case R.id.rl_calender_syn:
                 binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.VISIBLE);
                 callAPIDateSync();

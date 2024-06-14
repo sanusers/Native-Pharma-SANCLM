@@ -1,0 +1,101 @@
+package saneforce.sanzen.activity.ViewModel;
+
+import android.content.Context;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.network.ApiInterface;
+import saneforce.sanzen.network.RetrofitClient;
+import saneforce.sanzen.response.LoginResponse;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
+
+public class LeaveViewModel extends ViewModel {
+    Call<JsonElement> leaveStatus;
+    private Context context;
+    RoomDB roomDB = RoomDB.getDatabase(context);
+    MasterDataDao masterDataDao = roomDB.masterDataDao();
+    public LeaveViewModel(Context context) {
+        this.context = context;
+    }
+
+    public void updateLeaveStatusMasterSync() {
+
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+        JSONObject leaveStatusObject = new JSONObject();
+
+        try {
+            leaveStatusObject.put("tableName", "getleavestatus");
+            leaveStatusObject.put("sfcode", SharedPref.getSfCode(context));
+            leaveStatusObject.put("division_code", SharedPref.getDivisionCode(context));
+            leaveStatusObject.put("Rsf", SharedPref.getHqCode(context));
+            leaveStatusObject.put("sf_type", SharedPref.getSfType(context));
+            leaveStatusObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+            leaveStatusObject.put("Designation", SharedPref.getDesig(context));
+            leaveStatusObject.put("state_code", SharedPref.getStateCode(context));
+            leaveStatusObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+            System.out.println("leaveStatusObject--->" + leaveStatusObject);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "get/leave");
+        leaveStatus = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, leaveStatusObject.toString());
+        leaveStatus.enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, retrofit2.Response<JsonElement> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        JsonElement jsonElement = response.body();
+                        JSONArray jsonArray = new JSONArray();
+                        assert jsonElement != null;
+                        if (!jsonElement.isJsonNull()) {
+                            if (jsonElement.isJsonArray()) {
+                                JsonArray jsonArray1 = jsonElement.getAsJsonArray();
+                                jsonArray = new JSONArray(jsonArray1.toString());
+                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LEAVE_STATUS, jsonArray.toString(), 0));
+                            } else if (jsonElement.isJsonObject()) {
+                                JsonObject jsonObject = jsonElement.getAsJsonObject();
+                                JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
+                                if (!jsonObject1.has("success")) {
+                                    jsonArray.put(jsonObject1);
+                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LEAVE_STATUS, jsonArray.toString(), 0));
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+            }
+        });
+    }
+
+}
+
