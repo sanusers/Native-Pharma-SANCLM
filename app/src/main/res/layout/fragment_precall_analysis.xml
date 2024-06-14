@@ -97,7 +97,7 @@
   </LinearLayout>
 
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -236,24 +236,24 @@
                     android:layout_height="match_parent"
                     android:background="@color/bg_grey_dark" />
 
-                <TextView
-                    android:id="@+id/feedback_caption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:fontFamily="@font/satoshi_bold"
-                    android:text="@string/feedback"
-                    android:textSize="@dimen/_6sdp"
-                    android:textColor="@color/black"
-                    android:padding="@dimen/_2sdp"
-                    android:visibility="visible" />
+<!--                <TextView-->
+<!--                    android:id="@+id/feedback_caption"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:fontFamily="@font/satoshi_bold"-->
+<!--                    android:text="@string/feedback"-->
+<!--                    android:textSize="@dimen/_6sdp"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:padding="@dimen/_2sdp"-->
+<!--                    android:visibility="visible" />-->
 
-                <View
-                    android:layout_width="@dimen/_1sdp"
-                    android:layout_height="match_parent"
-                    android:background="@color/bg_grey_dark" />
+<!--                <View-->
+<!--                    android:layout_width="@dimen/_1sdp"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:background="@color/bg_grey_dark" />-->
             </LinearLayout>
         </LinearLayout>
 
@@ -301,6 +301,6 @@
             app:layout_constraintTop_toBottomOf="@id/tv_tag_inputs" />
 
     </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

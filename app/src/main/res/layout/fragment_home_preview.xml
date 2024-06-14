@@ -5,6 +5,67 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_sort_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_4sdp"
+        android:paddingVertical="@dimen/_2sdp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            android:id="@+id/tv_az"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_purple_left_radius"
+            android:fontFamily="@font/satoshi_bold"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_6sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:singleLine="true"
+            android:text="@string/az"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_6ssp"
+            android:textStyle="normal"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_za"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/tv_za"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_white_right"
+            android:fontFamily="@font/satoshi_bold"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_6sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:singleLine="true"
+            android:text="@string/za"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_6ssp"
+            android:textStyle="normal"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_no_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,7 +117,8 @@
         android:windowSoftInputMode="adjustResize|adjustPan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/constraint_sort_filter" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

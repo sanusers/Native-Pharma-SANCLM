@@ -117,23 +117,23 @@
                             android:layout_height="match_parent"
                             android:background="@color/bg_grey_dark" />
 
-                        <TextView
-                            android:id="@+id/feedback"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:padding="@dimen/_2sdp"
-                            android:text="0"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/_6sdp"
-                             />
+<!--                        <TextView-->
+<!--                            android:id="@+id/feedback"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:gravity="center"-->
+<!--                            android:padding="@dimen/_2sdp"-->
+<!--                            android:text="0"-->
+<!--                            android:textColor="@color/black"-->
+<!--                            android:textSize="@dimen/_6sdp"-->
+<!--                             />-->
 
-                        <View
-                            android:layout_width="@dimen/_1sdp"
-                            android:layout_height="match_parent"
-                            android:background="@color/bg_grey_dark" />
+<!--                        <View-->
+<!--                            android:layout_width="@dimen/_1sdp"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:background="@color/bg_grey_dark" />-->
                     </LinearLayout>
 
                     <View

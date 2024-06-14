@@ -217,7 +217,7 @@
     <string name="preview">Preview</string>
     <string name="report">Report</string>
     <string name="analysis">Analysis</string>
-    <string name="home">Home</string>
+    <string name="all_brands">All Brands</string>
     <string name="refresh">Refresh Location</string>
     <string name="tour_plan">Tour Plan</string>
     <string name="leave_application">Leave Application</string>
@@ -253,7 +253,7 @@
     <string name="selected_same_doctor">Selected Same Doctor you call now</string>
     <string name="rejected_successfully">Rejected Successfully</string>
     <string name="approved_successfully">Approved Successfully</string>
-    <string name="updated_successfully">Updated Successfully</string>
+    <string name="synced_successfully">Synced Successfully</string>
     <string name="update">Update</string>
     <string name="send_approved_successfully">Approval sent Successfully</string>
     <string name="failed_to_send_approval">Failed to send Approval</string>
@@ -437,7 +437,8 @@
 
 
 
-
-
-
+    <string name="alert">Alert</string>
+    <string name="please_select_a_date">Please Select a date!</string>
+    <string name="remarks_must_contain_at_least_3_characters">Remarks must contain at least 3 characters</string>
+    <string name="should_have_a_call">Should have a call on selected date to submit!</string>
 </resources>

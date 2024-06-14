@@ -47,6 +47,7 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 
 public class UnlistedDoctorFragment extends Fragment {
@@ -195,14 +196,14 @@ public class UnlistedDoctorFragment extends Fragment {
 
     private ArrayList<CustList> SaveData(JSONObject jsonObject, int i) {
         try {
+            jsonObjectDob = new JSONObject(jsonObject.getString("DOB"));
+            jsonObjectDow = new JSONObject(jsonObject.getString("DOW"));
+            String dob = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_35, jsonObjectDob.getString("date"));
+            String dow = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_35, jsonObjectDow.getString("date"));
             if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
-                jsonObjectDob = new JSONObject(jsonObject.getString("DOB"));
-                jsonObjectDow = new JSONObject(jsonObject.getString("DOW"));
-                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "4", jsonObject.getString("CategoryName"), jsonObject.getString("Category"), jsonObject.getString("SpecialtyName"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addrs"), jsonObjectDob.getString("date"), jsonObjectDow.getString("date"), jsonObject.getString("Email"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), "", "",jsonObject.getString("Doc_ClsCode"), jsonObject.getString("Specialty"),false));
+                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "4", jsonObject.getString("CategoryName"), jsonObject.getString("Category"), jsonObject.getString("SpecialtyName"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addrs"), dob, dow, jsonObject.getString("Email"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("Qual"), "",jsonObject.getString("Doc_ClsCode"), jsonObject.getString("Specialty"),false));
             } else {
-                jsonObjectDob = new JSONObject(jsonObject.getString("DOB"));
-                jsonObjectDow = new JSONObject(jsonObject.getString("DOW"));
-                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "4", jsonObject.getString("CategoryName"), jsonObject.getString("Category"), jsonObject.getString("SpecialtyName"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addrs"), jsonObjectDob.getString("date"), jsonObjectDow.getString("date"), jsonObject.getString("Email"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), "", "", jsonObject.getString("Doc_ClsCode"),jsonObject.getString("Specialty"),true));
+                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "4", jsonObject.getString("CategoryName"), jsonObject.getString("Category"), jsonObject.getString("SpecialtyName"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addrs"), dob, dow, jsonObject.getString("Email"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("Qual"), "", jsonObject.getString("Doc_ClsCode"),jsonObject.getString("Specialty"),true));
             }
         } catch (Exception e) {
             Log.v("UNDRCALL", "--1111---" + e.toString());
@@ -256,7 +257,11 @@ public class UnlistedDoctorFragment extends Fragment {
         }
 
         if(!classCode.isEmpty()) {
-            tvTerritory.setVisibility(View.INVISIBLE);
+            if(territoryCode.isEmpty()) {
+                tvTerritory.setVisibility(View.INVISIBLE);
+            }else {
+                tv_add_condition.setVisibility(View.GONE);
+            }
             tvClass.setVisibility(View.VISIBLE);
         }else {
             tvClass.setVisibility(View.GONE);
@@ -303,7 +308,7 @@ public class UnlistedDoctorFragment extends Fragment {
                 classCode = "";
                 className = "";
             }
-            if(!territoryCode.isEmpty()) {
+            else if(!territoryCode.isEmpty()) {
                 territoryCode = "";
                 territoryName = "";
             }

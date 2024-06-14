@@ -293,17 +293,19 @@ public class MyResource_Activity extends AppCompatActivity {
             product_count = String.valueOf(productcount.size());
             listed_data.add(new Resourcemodel_class("Input", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray().length()), "7"));
             listed_data.add(new Resourcemodel_class("Product", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray().length()), "8"));
-            if (SharedPref.getVstNd(getApplicationContext()).equalsIgnoreCase("0")) {
-                listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
-            }
             listed_data.add(new Resourcemodel_class(SharedPref.getClusterCap(this), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + synhqval1).getMasterSyncDataJsonArray().length()), "9"));
-            listed_data.add(new Resourcemodel_class("Holiday / Weekly off", masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray().length() + " / " + masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray().length(), "11"));
-            listed_data.add(new Resourcemodel_class("Calls Status",  String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray().length()), "12"));
-            listed_data.add(new Resourcemodel_class("Category", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length()), "13"));
-            listed_data.add(new Resourcemodel_class("WorkType", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray().length()), "14"));
+            listed_data.add(new Resourcemodel_class("Holiday / Weekly off", masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray().length() + " / " + masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray().length(), "10"));
+            listed_data.add(new Resourcemodel_class("Category", String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));
+            listed_data.add(new Resourcemodel_class("WorkType", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray().length()), "12"));
             if (isLeaveEntitlementRequested){
-                listed_data.add(new Resourcemodel_class("LeaveStatus",String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length()),"15"));
+                listed_data.add(new Resourcemodel_class("LeaveStatus",String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length()),"13"));
             }
+            if (SharedPref.getVstNd(getApplicationContext()).equalsIgnoreCase("0")) {
+//                listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
+                listed_data.add(new Resourcemodel_class("Doctor Visit", "", "14"));
+            }
+//            listed_data.add(new Resourcemodel_class("Calls Status",  String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray().length()), "12"));
+            listed_data.add(new Resourcemodel_class("Calls Status",  "", "15"));
             Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count);
 
             resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1);//13
@@ -327,13 +329,13 @@ public class MyResource_Activity extends AppCompatActivity {
             JSONArray jsonvst_ctl = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray();
             JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
             // Initialize a HashMap to store counts of custom_id1 values
-            String viewlist = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
+            String viewlist = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_31, (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
             if (jsonvst_ctl.length() > 0) {
                 for (int i = 0; i < jsonvst_ctl.length(); i++) {
                     JSONObject jsonObject = jsonvst_ctl.getJSONObject(i);
                     String custom_id1 = jsonObject.getString("CustCode");
                     String Mnth = jsonObject.getString("Mnth");
-                    if (viewlist.equals(Mnth)) {
+                    if (!custom_id1.isEmpty() && viewlist.equals(Mnth)) {
                         // Check if the custom_id1 value is already in the HashMap
                         if (idCounts.containsKey(custom_id1)) {
                             // If it's already in the HashMap, increment the count

@@ -332,7 +332,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         idCounts.clear();
                         Valcount = "2";
 
-                        listed = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+                        listed = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_31, CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
                         pos_check = "2";
                         if (jsonvst_ctl.length() > 0) {
                             for (int i = 0; i < jsonvst_ctl.length(); i++) {

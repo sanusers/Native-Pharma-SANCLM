@@ -67,6 +67,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     private final String TAG = "Camera Activity";
     private String filePath, cameraMode, from;
     private boolean lTagEnabled = false;
+    private int permissionRequestCount = 0;
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -179,7 +180,6 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
         });
 
         activityCameraBinding.switchCamera.setOnClickListener(view -> {
-            Log.d(TAG, "onCreate: camera switch : " + isBackCameraOpen);
             isBackCameraOpen = !isBackCameraOpen;
             openCamera();
         });
@@ -191,7 +191,8 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
         startBackgroundThread();
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, true);
             }
         }else {
@@ -212,7 +213,15 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
             if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             }else {
+                if(permissionRequestCount == 3){
+                    permissionRequestCount = 0;
+                    setResult(RESULT_CANCELED);
+                }
                 commonUtilsMethods.showToastMessage(this, getString(R.string.camera_permission_needed));
+                isImageCaptured = false;
+                openCamera();
+                permissionRequestCount++;
+//                finish();
             }
         }
     }
@@ -296,14 +305,12 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     }
 
     private void startBackgroundThread() {
-        Log.d(TAG, "startBackgroundThread: ");
         backgroundThread = new HandlerThread("CameraBackground");
         backgroundThread.start();
         backgroundHandler = new Handler(backgroundThread.getLooper());
     }
 
     private void stopBackgroundThread() {
-        Log.d(TAG, "stopBackgroundThread: ");
         if(backgroundThread != null) {
             backgroundThread.quitSafely();
             try {

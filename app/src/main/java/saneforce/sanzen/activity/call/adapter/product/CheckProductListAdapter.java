@@ -144,7 +144,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
                         CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                     }
                 }else {
-                    if(DCRCallActivity.PrdMandatory.equalsIgnoreCase("1")) {
+                    if(DCRCallActivity.PrdMandatory != null && DCRCallActivity.PrdMandatory.equalsIgnoreCase("1")) {
                         noProductHolder.checkBox.setChecked(false);
                         commonUtilsMethods.showToastMessage(context, "Product selection is mandatory!");
                     }else {

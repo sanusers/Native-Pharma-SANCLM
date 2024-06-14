@@ -67,7 +67,7 @@
         android:background="@color/cl_border_color" />
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/view_bar"
@@ -77,6 +77,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/month_selection"
             android:layout_marginTop="@dimen/_2sdp"
             android:orientation="vertical">
 
@@ -214,15 +215,16 @@
             android:id="@+id/calendarRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/month_selection"
             android:layout_marginStart="@dimen/_2sdp"
             android:layout_marginTop="@dimen/_2sdp"
             android:layout_marginEnd="@dimen/_2sdp" />
 
-
         <ScrollView
+            android:id="@+id/types"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="match_parent"
+            android:layout_below="@id/calendarRecyclerView">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -325,6 +327,19 @@
                         android:padding="@dimen/_3sdp"
                         android:text="@string/re_entry"
                         android:textColor="@color/pink_60"
+                        android:textSize="@dimen/_5sdp" />
+
+                    <TextView
+                        android:id="@+id/txt_rejected"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_2sdp"
+                        android:background="@drawable/custom_backround_layout"
+                        android:backgroundTint="@color/brown_10"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_3sdp"
+                        android:text="@string/rejected"
+                        android:textColor="@color/brown_60"
                         android:textSize="@dimen/_5sdp" />
                 </LinearLayout>
 
@@ -464,6 +479,16 @@
 
         </ScrollView>
 
-    </LinearLayout>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/calendar_progress_bar"
+            android:indeterminateTint="@color/dark_purple"
+            android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
+            android:visibility="visible"
+            android:layout_above="@id/types" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

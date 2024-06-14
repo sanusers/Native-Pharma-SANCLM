@@ -355,6 +355,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         //progressDialog.dismiss();
                     }
                     storingSlide.clear();
+                    SharedPref.setLastCallDate(this, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
                     SharedPref.setDayPlanStartedDate(this,  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
 //                    if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
                         //    progressDialog.dismiss();
@@ -1210,7 +1211,6 @@ public class DCRCallActivity extends AppCompatActivity {
 
             latEdit = js.getString("lati");
             lngEdit = js.getString("long");
-            Log.e("TAG", "jsonExtractOnline: lat , lng -> " + latEdit + lngEdit);
 
             if(!isFromActivity.equalsIgnoreCase("new ") && GeoChk.equalsIgnoreCase("0") && (latEdit.isEmpty() || lngEdit.isEmpty())){
                 gpsTrack = new GPSTrack(this);
@@ -1449,6 +1449,7 @@ public class DCRCallActivity extends AppCompatActivity {
             Log.v("jsonExtractLocal", "----" + jsonArray);
             JSONObject json = new JSONObject(jsonArray);
 
+            VistTime = json.getString("vstTime");
             int iEnd = json.getString("Entry_location").indexOf(":");
             if (iEnd != -1) {
                 latEdit = json.getString("Entry_location").substring(0, iEnd);
@@ -1844,13 +1845,20 @@ public class DCRCallActivity extends AppCompatActivity {
         try {
             CurrentDate = CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd");
             CurrentTime = CommonUtilsMethods.getCurrentInstance("HH:mm:ss");
-            if (isFromActivity.equalsIgnoreCase("new")) {
+            if(UtilityClass.isNetworkAvailable(this)) {
+                if(isFromActivity.equalsIgnoreCase("new")) {
+                    gpsTrack = new GPSTrack(this);
+                    lat = gpsTrack.getLatitude();
+                    lng = gpsTrack.getLongitude();
+                    address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
+                }else {
+                    address = CommonUtilsMethods.gettingAddress(this, Double.parseDouble(latEdit), Double.parseDouble(lngEdit), false);
+                }
+            }else {
                 gpsTrack = new GPSTrack(this);
                 lat = gpsTrack.getLatitude();
                 lng = gpsTrack.getLongitude();
-                address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
-            } else {
-                address = CommonUtilsMethods.gettingAddress(this, Double.parseDouble(latEdit), Double.parseDouble(lngEdit), false);
+                address = "No Address Found";
             }
 
             Log.v("final_value_call", "---injonite---");

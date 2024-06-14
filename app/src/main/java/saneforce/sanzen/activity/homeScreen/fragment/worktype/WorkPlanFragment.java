@@ -59,13 +59,11 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
-import saneforce.sanzen.activity.leave.Leave_Application;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
-import saneforce.sanzen.commonClasses.MyDayPlanEntriesNeeded;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.WorkplanFragmentBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -289,6 +287,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            UtilityClass.hideKeyboard(requireActivity());
         });
 
         HomeDashBoard.binding.llNav.etSearch.addTextChangedListener(new TextWatcher() {
@@ -305,6 +304,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void afterTextChanged(Editable s) {
+                String searchString = s.toString().trim();
+                if(searchString.isEmpty()) UtilityClass.hideKeyboard(requireActivity());
             }
         });
     }
@@ -579,147 +580,173 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
+        try {
+            switch (v.getId()){
 
-        switch (v.getId()) {
-
-            case R.id.rlworktype1:
-                if (HomeDashBoard.binding.textDate.getText().toString().equalsIgnoreCase("")) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_date));
-                } else {
-                    ShowWorkTypeAlert(binding.txtWorktype1, binding.rlcluster1, binding.rlheadquates1);
-                }
-                break;
-
-            case R.id.rlcluster1:
-                if (binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
-                } else if (SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
-                    if (binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
-                    } else {
-                        showMultiClusterAlter();
-                    }
-                } else {
-                    showMultiClusterAlter();
-                }
-                break;
-
-
-            case R.id.rlworktype2:
-                ShowWorkTypeAlert(binding.txtWorktype2, binding.rlcluster2, binding.rlheadquates2);
-                break;
-
-            case R.id.rlcluster2:
-
-                if (binding.txtheadquaters2.getText().toString().equalsIgnoreCase("") && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
-                } else if (SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
-                    if (binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
-                    } else {
-                        showMultiClusterAlter();
-                    }
-                } else {
-                    showMultiClusterAlter();
-                }
-
-                break;
-
-            case R.id.rlheadquates1:
-                if (binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
-                } else {
-                    showHQ(binding.txtheadquaters1, binding.txtCluster1);
-                }
-                break;
-
-            case R.id.rlheadquates2:
-                if (binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
-                } else {
-                    showHQ(binding.txtheadquaters2, binding.txtCluster2);
-                }
-                break;
-            case R.id.txtSave:
-
-                if(SharedPref.getApprovalManatoryStatus(requireContext())&&!SharedPref.getDesig(requireActivity()).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
-                    CommonAlertBox.ApprovalAlert(requireActivity());
-                } else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireActivity()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireActivity()).equalsIgnoreCase("0")) {
-                    CommonAlertBox.TpAlert(requireActivity());
-                }else {
-                    if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")){
-                    if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
-                        saveMyDayPlan();
+                case R.id.rlworktype1:
+                    if(HomeDashBoard.binding.textDate.getText().toString().equalsIgnoreCase("")) {
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_date));
                     }else {
-                        gpsTrack = new GPSTrack(requireContext());
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_try_again));
+                        ShowWorkTypeAlert(binding.txtWorktype1, binding.rlcluster1, binding.rlheadquates1);
                     }
-                }else {
-                    saveMyDayPlan();
-                }}
-                break;
+                    break;
 
-            case R.id.txtAddPlan:
-                mSubmitflag = "S0";
-                DayPlanCount = "2";
-                binding.llDelete.setVisibility(View.VISIBLE);
-                binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
-                binding.txtSave.setTextColor(getResources().getColor(R.color.black));
-                binding.txtSave.setEnabled(true);
-                binding.cardPlan2.setVisibility(View.VISIBLE);
-                getLocalData();
-                break;
-
-            case R.id.btnsumit:
-                if(SharedPref.getApprovalManatoryStatus(requireContext())&&!SharedPref.getDesig(requireActivity()).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
-                    CommonAlertBox.ApprovalAlert(requireActivity());
-                } else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireActivity()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireActivity()).equalsIgnoreCase("0")) {
-                    CommonAlertBox.TpAlert(requireActivity());
-                } else {
-                    if (SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
-                        if ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
-                            submitMyDayPlan();
-                        } else {
-                            gpsTrack = new GPSTrack(requireContext());
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_try_again));
+                case R.id.rlcluster1:
+                    if(binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
+                    }else if(SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                        if(binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
+                        }else {
+                            showMultiClusterAlter();
                         }
-                    } else {
-                        submitMyDayPlan();
+                    }else {
+                        showMultiClusterAlter();
                     }
-                }
-                break;
+                    break;
 
 
-            case R.id.ll_delete:
-                binding.txtSave.setEnabled(false);
-                binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
-                binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
-                binding.txtWorktype2.setText("");
-                binding.txtCluster2.setText("");
-                binding.txtheadquaters2.setText("");
-                DayPlanCount = "1";
-                mSubmitflag = "S1";
-                binding.cardPlan2.setVisibility(View.GONE);
-                break;
+                case R.id.rlworktype2:
+                    ShowWorkTypeAlert(binding.txtWorktype2, binding.rlcluster2, binding.rlheadquates2);
+                    break;
+
+                case R.id.rlcluster2:
+
+                    if(binding.txtheadquaters2.getText().toString().equalsIgnoreCase("") && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
+                    }else if(SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                        if(binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
+                        }else {
+                            showMultiClusterAlter();
+                        }
+                    }else {
+                        showMultiClusterAlter();
+                    }
+
+                    break;
+
+                case R.id.rlheadquates1:
+                    if(binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
+                    }else {
+                        showHQ(binding.txtheadquaters1, binding.txtCluster1);
+                    }
+                    break;
+
+                case R.id.rlheadquates2:
+                    if(binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
+                    }else {
+                        showHQ(binding.txtheadquaters2, binding.txtCluster2);
+                    }
+                    break;
+                case R.id.txtSave:
+
+                    if(SharedPref.getApprovalManatoryStatus(requireContext()) && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                        CommonAlertBox.ApprovalAlert(requireActivity());
+                    }else if(SharedPref.getTpmanatoryStatus(requireContext())) {
+                        CommonAlertBox.TpAlert(requireActivity());
+                    }else {
+                        if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
+                            if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
+                                saveMyDayPlan();
+                            }else {
+                                gpsTrack = new GPSTrack(requireContext());
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_try_again));
+                            }
+                        }else {
+                            saveMyDayPlan();
+                        }
+                    }
+                    break;
+
+                case R.id.txtAddPlan:
+                    mSubmitflag = "S0";
+                    DayPlanCount = "2";
+                    binding.llDelete.setVisibility(View.VISIBLE);
+                    binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
+                    binding.txtSave.setTextColor(getResources().getColor(R.color.black));
+                    binding.txtSave.setEnabled(true);
+                    binding.cardPlan2.setVisibility(View.VISIBLE);
+                    getLocalData();
+                    break;
+
+                case R.id.btnsumit:
+                    if(SharedPref.getApprovalManatoryStatus(requireContext()) && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                        CommonAlertBox.ApprovalAlert(requireActivity());
+                    }else if(SharedPref.getTpmanatoryStatus(requireContext())) {
+                        CommonAlertBox.TpAlert(requireActivity());
+                    }else {
+                        if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
+                            if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
+                                submitMyDayPlan();
+                            }else {
+                                gpsTrack = new GPSTrack(requireContext());
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_try_again));
+                            }
+                        }else {
+                            submitMyDayPlan();
+                        }
+                    }
+                    break;
+
+                case R.id.ll_delete:
+                    Dialog dialog = new Dialog(requireContext());
+                    dialog.setContentView(R.layout.dcr_cancel_alert);
+                    dialog.setCancelable(false);
+                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.show();
+                    TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                    TextView btn_no = dialog.findViewById(R.id.btn_no);
+                    TextView title = dialog.findViewById(R.id.ed_alert_msg);
+                    title.setText(R.string.are_you_sure_to_delete);
+                    btn_yes.setOnClickListener(view -> {
+                        dialog.dismiss();
+                        binding.txtSave.setEnabled(false);
+                        binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
+                        binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
+                        binding.txtWorktype2.setText("");
+                        binding.txtCluster2.setText("");
+                        binding.txtheadquaters2.setText("");
+                        DayPlanCount = "1";
+                        mSubmitflag = "S1";
+                        binding.cardPlan2.setVisibility(View.GONE);
+                    });
+
+                    btn_no.setOnClickListener(view -> {
+                        dialog.dismiss();
+                    });
+                    break;
+            }
+        }catch (Exception e){
+            Log.e("WorkPlan Fragment", "onClick: " + e.getMessage());
+            e.printStackTrace();
         }
 
     }
 
     private void submitMyDayPlan() {
-        if(!mTownname1.isEmpty() || !mWTName1.isEmpty() || !mHQName1.isEmpty()) {
-            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
-                if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
-                    if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
+        if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
+            if(mWTName1.isEmpty() && mFwFlg1.equalsIgnoreCase("F")) {
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
+            } else if(mTowncode1.isEmpty() && mFwFlg1.equalsIgnoreCase("F")) {
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_cluster));
+            } else if((SharedPref.getLastCallDate(requireContext()).isEmpty() || !SharedPref.getLastCallDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)))) && mFwFlg1.equalsIgnoreCase("F")) {
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.should_have_a_call));
+            } else {
+                if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+                    if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
                         remarksAlertBox();
+                    }else {
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
                     }
                 }else {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
-                }
-            }else {
-                if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
                     remarksAlertBox();
                 }
             }
+        }else{
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_select_a_date));
         }
     }
 
@@ -2028,8 +2055,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 remarks = remarks.replaceAll("'", "");
                 Log.e("Remarks", "remark : " + remarks);
                 finalSubmit(remarks);
-            } else {
+            } else if(remarks.isEmpty()) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_enter_the_remarks));
+            } else {
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.remarks_must_contain_at_least_3_characters));
             }
         });
         btn_clear.setOnClickListener(view -> {
@@ -2044,7 +2073,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         TextView content = dialogRemarks.findViewById(R.id.content);
         Button btn_clear = dialogRemarks.findViewById(R.id.btn_clear);
         Button btn_save = dialogRemarks.findViewById(R.id.btn_save);
-        heading.setText(requireContext().getString(R.string.are_you_sure));
+        heading.setText(R.string.alert);
         btn_save.setText(requireContext().getString(R.string.yes));
         btn_clear.setText(requireContext().getString(R.string.no));
         content.setVisibility(View.VISIBLE);

@@ -138,7 +138,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         holder.constraint_main.setOnClickListener(view -> {
             try {
                 boolean isVisitedToday = false;
-                JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -151,9 +151,8 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 if (!isVisitedToday) {
                     if (SharedPref.getVstNd(context).equalsIgnoreCase("0") && SharedPref.getSfType(context).equalsIgnoreCase("1") && cusListArrayList.get(position).getType().equalsIgnoreCase("1")) {
                         int count = 0;
-                        JSONArray jsonVisit = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
-                        for (int i = 0; i < jsonVisit.length(); i++) {
-                            JSONObject jsonObject = jsonVisit.getJSONObject(i);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
                             if (jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())) {
                                 count++;
                             }

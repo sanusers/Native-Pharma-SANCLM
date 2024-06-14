@@ -104,9 +104,12 @@ public class JWOthersFragment extends Fragment {
                     jwOthersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
                     jwOthersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
                     jwOthersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
+                }else if(result.getResultCode() == Activity.RESULT_CANCELED) {
+                    Log.d("Camera", "onActivityResult: Canceled");
                 }
-            } catch (Exception ignored) {
-
+            } catch (Exception e) {
+                Log.e("Camera", "onActivityResult: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     });
@@ -158,7 +161,7 @@ public class JWOthersFragment extends Fragment {
                         }
 
                     } catch (Exception ignored) {
-                        Log.v("Testing","issue");
+                        Log.v("Testing","issue" + ignored.getMessage());
                     }
 
 
@@ -168,7 +171,7 @@ public class JWOthersFragment extends Fragment {
             JWKCodeList.clear();
             SharedPref.setJWKCODE(context, JWKCodeList, "");
             Log.v("Testing","OLD");
-            }
+        }
 
 
         jwOthersBinding.tvFeedback.setOnClickListener(view -> dcrCallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE));
@@ -282,7 +285,7 @@ public class JWOthersFragment extends Fragment {
         if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             file = new File(context.getExternalFilesDir(null) + "/JWOthersImages/");
         }else {
-            Log.e("File Creation", "captureFile: " );
+            Log.e("File Creation", "captureFile: No media mounted");
         }
         if(file != null && !file.exists()) {
             if(!file.mkdirs()) {
