@@ -53,17 +53,22 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
             holder.count.setText("");
         }
 
-        if (data.syncSuccess == 1)
-            holder.syncErrorIcon.setVisibility(View.VISIBLE);
 
         if (data.isPBarVisibility()) {
             holder.progressBar.setVisibility(View.VISIBLE);
             holder.syncErrorIcon.setVisibility(View.GONE);
         } else {
             holder.progressBar.setVisibility(View.GONE);
+            holder.syncErrorIcon.setVisibility(View.VISIBLE);
+            if (data.syncSuccess == 1)
+                holder.syncErrorIcon.setImageResource(R.drawable.icon_sync_failed);
+            else if (data.syncSuccess == 2) holder.syncErrorIcon.setImageResource(R.drawable.done);
+            else holder.syncErrorIcon.setVisibility(View.GONE);
+
         }
 
         holder.itemView.setOnClickListener(view -> {
+
             holder.progressBar.setVisibility(View.VISIBLE);
             holder.syncErrorIcon.setVisibility(View.GONE);
             masterSyncItemClick.itemClick(data, holder.getBindingAdapterPosition());

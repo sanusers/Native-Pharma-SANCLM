@@ -18,6 +18,8 @@ public class DCRApprovalList {
     String submission_date_sub;
     String other_wt;
 
+    String Additional_Temp_Details;
+
     public String getActivity_date_sub() {
         return activity_date_sub;
     }
@@ -46,21 +48,22 @@ public class DCRApprovalList {
         this.sf_name = sf_name;
     }
 
-    public DCRApprovalList(String trans_slNo, String sf_name, String activity_date, String plan_name, String workType_name, String SfCode, String fieldWork_indicator, String jointwrk, String pob, String callfd, String remarks) {
-        this.trans_slNo = trans_slNo;
-        this.sf_name = sf_name;
-        this.activity_date = activity_date;
-        this.plan_name = plan_name;
-        this.workType_name = workType_name;
-        this.SfCode = SfCode;
-        this.fieldWork_indicator = fieldWork_indicator;
-        this.jointwrk = jointwrk;
-        this.pob = pob;
-        this.callfd = callfd;
-        this.remarks = remarks;
-    }
+//    public DCRApprovalList(String trans_slNo, String sf_name, String activity_date, String plan_name, String workType_name, String SfCode, String fieldWork_indicator, String jointwrk, String pob, String callfd, String remarks) {
+//        this.trans_slNo = trans_slNo;
+//        this.sf_name = sf_name;
+//        this.activity_date = activity_date;
+//        this.plan_name = plan_name;
+//        this.workType_name = workType_name;
+//        this.SfCode = SfCode;
+//        this.fieldWork_indicator = fieldWork_indicator;
+//        this.jointwrk = jointwrk;
+//        this.pob = pob;
+//        this.callfd = callfd;
+//        this.remarks = remarks;
+//
+//    }
 
-    public DCRApprovalList(String trans_slNo, String sf_name, String activity_date, String plan_name, String workType_name, String SfCode, String fieldWork_indicator,String submission_date_sub,String other_wt) {
+    public DCRApprovalList(String trans_slNo, String sf_name, String activity_date, String plan_name, String workType_name, String SfCode, String fieldWork_indicator,String submission_date_sub,String other_wt,String remarks,String additional_Temp_Details) {
         this.trans_slNo = trans_slNo;
         this.sf_name = sf_name;
         this.activity_date = activity_date;
@@ -70,6 +73,8 @@ public class DCRApprovalList {
         this.fieldWork_indicator = fieldWork_indicator;
         this.submission_date_sub = submission_date_sub;
         this.other_wt = other_wt;
+        this.remarks = remarks;
+        this.Additional_Temp_Details = additional_Temp_Details;
     }
 
     public String getPosition() {
@@ -174,5 +179,13 @@ public class DCRApprovalList {
 
     public void setFieldWork_indicator(String fieldWork_indicator) {
         this.fieldWork_indicator = fieldWork_indicator;
+    }
+
+    public String getAdditional_Temp_Details() {
+        return Additional_Temp_Details;
+    }
+
+    public void setAdditional_Temp_Details(String additional_Temp_Details) {
+        Additional_Temp_Details = additional_Temp_Details;
     }
 }

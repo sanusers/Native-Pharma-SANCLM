@@ -5,7 +5,6 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.tourPlan.session.SessionEditAdapter.inputDataArray;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -1027,7 +1026,7 @@ public class TourPlanActivity extends AppCompatActivity {
             case "3": {
                 binding.tpStatusTxt.setText(Constants.STATUS_3);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
-                CheckedTpRange();
+                SetTpRangeStatus();
                 break;
             }
         }
@@ -1061,7 +1060,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     jsonObject.put("Designation", SharedPref.getDesig(TourPlanActivity.this));
                     jsonObject.put("state_code", SharedPref.getStateCode(TourPlanActivity.this));
                     jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(TourPlanActivity.this));
-                    jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, LocalDate.now().getMonth().toString()));
+                    jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_31, LocalDate.now().getMonth().toString()));
                     jsonObject.put("tp_year", LocalDate.now().getYear());
                     jsonObject.put("versionNo", getString(R.string.app_version));
                     jsonObject.put("mod", Constants.APP_MODE);
@@ -1583,7 +1582,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
                         jsonObject.put("Designation", SharedPref.getDesig(TourPlanActivity.this));
                         jsonObject.put("state_code", SharedPref.getStateCode(TourPlanActivity.this));
-                        jsonObject.put("TPMonth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
+                        jsonObject.put("TPMonth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_31, localDate1.getMonth().toString()));
                         jsonObject.put("TPYear", localDate1.getYear());
                         jsonObject.put("versionNo", getString(R.string.app_version));
                         jsonObject.put("mod", Constants.APP_MODE);
@@ -1591,6 +1590,8 @@ public class TourPlanActivity extends AppCompatActivity {
                         jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
                         jsonObject.put("AppName", getString(R.string.str_app_name));
                         jsonObject.put("language", SharedPref.getSelectedLanguage(TourPlanActivity.this));
+
+                        Log.v("ApprovalObject",""+jsonObject.toString());
 
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "save/tp");
@@ -1948,12 +1949,8 @@ public class TourPlanActivity extends AppCompatActivity {
         }
     }
 
-    public   void CheckedTpRange() {
+    public   void SetTpRangeStatus() {
 
-        if (!SharedPref.getskipDate(TourPlanActivity.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
-            if (SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") &&
-                    !SharedPref.getTpStartDate(context).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("-1") &&
-                    !SharedPref.getTpEndDate(context).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(context).equalsIgnoreCase("-1")) {
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
                 SimpleDateFormat date = new SimpleDateFormat("dd", Locale.ENGLISH);
@@ -1971,25 +1968,20 @@ public class TourPlanActivity extends AppCompatActivity {
 
                 if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
                     SharedPref.setTpStatus(TourPlanActivity.this, true);
-                    Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
-                    startActivity(intent);
-                } else if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")&&((mCurrentDate >= Start_Date) && (mCurrentDate <= End_Date))) {
-                    if (End_Date <= mCurrentDate) {
+                } else if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")&&(mCurrentDate >= Start_Date)) {
+                    if (End_Date < mCurrentDate) {
                         SharedPref.setTpStatus(TourPlanActivity.this, true);
                     } else {
                         SharedPref.setTpStatus(TourPlanActivity.this, false);
                     }
-
                 }else {
                     SharedPref.setTpStatus(TourPlanActivity.this, false);
                 }
             }
 
 
-        }else {
-            SharedPref.setTpStatus(TourPlanActivity.this, false);
-        }
-    }
+
+
 
 
 

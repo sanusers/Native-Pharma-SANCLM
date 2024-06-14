@@ -18,99 +18,111 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:weightSum="12"
+            android:padding="@dimen/_3sdp"
             android:orientation="horizontal">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
+
+            <TextView
+                    android:gravity="left"
                     android:id="@+id/productname"
                     android:fontFamily="@font/satoshi_medium"
                     android:layout_width="0dp"
+                    android:layout_weight="2"
                     android:layout_height="wrap_content"
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_6sdp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginStart="8dp"
-                    app:layout_constraintEnd_toStartOf="@+id/productqty"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:text="ProductName" />
 
                 <TextView
+                    android:layout_weight="1"
                     android:id="@+id/productqty"
                     android:fontFamily="@font/satoshi_medium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_6sdp"
-                    android:layout_marginStart="8dp"
-                    app:layout_constraintEnd_toStartOf="@+id/competitorname"
-                    app:layout_constraintTop_toTopOf="@+id/productname"
-                    app:layout_constraintStart_toEndOf="@+id/productname"
                     android:text="Qty" />
                 <TextView
+                    android:layout_weight="2"
                     android:id="@+id/competitorname"
                     android:layout_width="0dp"
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_6sdp"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
-                    app:layout_constraintEnd_toStartOf="@+id/chemistName"
-                    app:layout_constraintTop_toTopOf="@+id/productname"
-                    app:layout_constraintStart_toEndOf="@+id/productqty"
                     android:text="@string/chemist_name" />
                 <TextView
+                    android:layout_weight="2"
                     android:id="@+id/chemistName"
                     android:layout_width="0dp"
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_6sdp"
-                    android:layout_marginStart="8dp"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
-                    app:layout_constraintEnd_toStartOf="@+id/competitorproductname"
-                    app:layout_constraintTop_toTopOf="@+id/productname"
-                    app:layout_constraintStart_toEndOf="@+id/competitorname"
                     android:text="Competitor Name" />
 
                 <TextView
+                    android:gravity="left"
+                    android:layout_weight="2"
                     android:id="@+id/competitorproductname"
                     android:layout_width="0dp"
                     android:fontFamily="@font/satoshi_medium"
                     android:textColor="@color/dark_purple"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    app:layout_constraintEnd_toStartOf="@+id/competitorproductnameqty"
-                    app:layout_constraintTop_toTopOf="@+id/productname"
-                    app:layout_constraintStart_toEndOf="@+id/chemistName"                                android:textSize="@dimen/_6sdp"
+                    android:textSize="@dimen/_6sdp"
                     android:text="Competitor Productname" />
 
                 <TextView
+                    android:gravity="left"
+                    android:layout_weight="1"
                     android:id="@+id/competitorproductnameqty"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/_6sdp"
                     android:fontFamily="@font/satoshi_medium"
                     android:textColor="@color/dark_purple"
-                    android:layout_marginStart="8dp"
-                    app:layout_constraintEnd_toStartOf="@+id/infoView"
-                    app:layout_constraintTop_toTopOf="@+id/productname"
-                    app:layout_constraintStart_toEndOf="@+id/competitorproductname"                                 android:paddingEnd="15dp"
                     android:text="Qty" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/img_remarks"
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_14sdp"
+                    android:paddingVertical="@dimen/_4sdp"
+                    android:src="@drawable/img_remarks_1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/img_del"
+                    app:layout_constraintStart_toEndOf="@id/tv_value_comp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content">
                 <View
                     android:id="@+id/infoView"
                     android:layout_width="@dimen/_10sdp"
                     android:layout_height="@dimen/_10sdp"
-                    android:layout_marginEnd="30dp"
                     android:background="@drawable/info_icon_purple"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/productname"
                     app:layout_constraintStart_toEndOf="@+id/competitorproductnameqty"
                     tools:ignore="ContentDescription" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+
 
         </LinearLayout>
-        >
+
 
 </LinearLayout>
 </LinearLayout>

@@ -65,7 +65,7 @@ public class AdapterDcrApprovalList extends RecyclerView.Adapter<AdapterDcrAppro
 
 
         holder.constraint_main.setOnClickListener(view -> {
-            onItemClickListenerApproval.onClick(new DCRApprovalList(dcrApprovalLists.get(position).getTrans_slNo(), dcrApprovalLists.get(position).getSf_name(), dcrApprovalLists.get(position).getActivity_date(), dcrApprovalLists.get(position).getPlan_name(), dcrApprovalLists.get(position).getWorkType_name(), dcrApprovalLists.get(position).getSfCode(), dcrApprovalLists.get(position).getFieldWork_indicator(), dcrApprovalLists.get(position).getSubmission_date_sub(), dcrApprovalLists.get(position).getOther_wt()), holder.getBindingAdapterPosition());
+            onItemClickListenerApproval.onClick(new DCRApprovalList(dcrApprovalLists.get(position).getTrans_slNo(), dcrApprovalLists.get(position).getSf_name(), dcrApprovalLists.get(position).getActivity_date(), dcrApprovalLists.get(position).getPlan_name(), dcrApprovalLists.get(position).getWorkType_name(), dcrApprovalLists.get(position).getSfCode(), dcrApprovalLists.get(position).getFieldWork_indicator(), dcrApprovalLists.get(position).getSubmission_date_sub(), dcrApprovalLists.get(position).getOther_wt(), dcrApprovalLists.get(position).getRemarks(),dcrApprovalLists.get(position).getAdditional_Temp_Details()), holder.getBindingAdapterPosition());
             notifyDataSetChanged();
         });
     }

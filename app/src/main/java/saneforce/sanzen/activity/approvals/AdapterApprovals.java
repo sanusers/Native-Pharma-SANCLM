@@ -19,14 +19,17 @@ import saneforce.sanzen.activity.approvals.geotagging.GeoTaggingActivity;
 import saneforce.sanzen.activity.approvals.leave.LeaveApprovalActivity;
 import saneforce.sanzen.activity.approvals.tp.TpApprovalActivity;
 import saneforce.sanzen.activity.approvals.tpdeviation.TpDeviationApprovalActivity;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
 public class AdapterApprovals extends RecyclerView.Adapter<AdapterApprovals.ViewHolder> {
     Context context;
     ArrayList<AdapterModel> approval_list;
+    CommonUtilsMethods commonUtilsMethods;
 
     public AdapterApprovals(Context context, ArrayList<AdapterModel> approval_list) {
         this.context = context;
         this.approval_list = approval_list;
+        commonUtilsMethods=new CommonUtilsMethods(context);
     }
 
     @NonNull
@@ -41,23 +44,44 @@ public class AdapterApprovals extends RecyclerView.Adapter<AdapterApprovals.View
         holder.tv_name.setText(approval_list.get(position).getName());
         holder.tv_count.setText(approval_list.get(position).getCount());
 
-        if(holder.tv_count.getText().toString().equalsIgnoreCase("0")){
-            holder.constraintMain.setEnabled(false);
-        }else {
-            holder.constraintMain.setEnabled(true);
-        }
+
 
         holder.constraintMain.setOnClickListener(view -> {
             if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.leave_approvals))) {
-                context.startActivity(new Intent(context, LeaveApprovalActivity.class));
+                if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
+                    context.startActivity(new Intent(context, LeaveApprovalActivity.class));
+                } else {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.leave_ap_not_available));
+                }
             } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.tp_approvals))) {
-                context.startActivity(new Intent(context, TpApprovalActivity.class));
+
+                if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
+                    context.startActivity(new Intent(context, TpApprovalActivity.class));
+                } else {
+                    commonUtilsMethods.showToastMessage(context,  context.getString(R.string.tp_ap_not_available));
+                }
+
             } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.tp_deviation))) {
-                context.startActivity(new Intent(context, TpDeviationApprovalActivity.class));
+
+                if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
+                    context.startActivity(new Intent(context, TpDeviationApprovalActivity.class));
+                } else {
+                    commonUtilsMethods.showToastMessage(context,  context.getString(R.string.tpdevication_ap_not_available));
+                }
             } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.dcr_approvals))) {
-                context.startActivity(new Intent(context, DcrApprovalActivity.class));
+                if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
+                    context.startActivity(new Intent(context, DcrApprovalActivity.class));
+                } else {
+                    commonUtilsMethods.showToastMessage(context,  context.getString(R.string.dcr_ap_not_available));
+                }
+
             } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.geo_tagging))) {
-                context.startActivity(new Intent(context, GeoTaggingActivity.class));
+                if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
+                    context.startActivity(new Intent(context, GeoTaggingActivity.class));
+                } else {
+                    commonUtilsMethods.showToastMessage(context,  context.getString(R.string.geoTagging_ap_not_available));
+                }
+
             }
         });
     }

@@ -172,6 +172,43 @@ public class CommonUtilsMethods {
         };
     }
 
+    public static InputFilter FilterSpaceEditText(final EditText editText, final int maxLength) {
+        return new InputFilter() {
+            boolean canEnterSpace = false;
+
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if (editText.getText().toString().equals("")) {
+                    canEnterSpace = false;
+                }
+
+                StringBuilder builder = new StringBuilder();
+
+                for (int i = start; i < end; i++) {
+                    char currentChar = source.charAt(i);
+
+                    if (Character.isLetterOrDigit(currentChar) || currentChar == '_') {
+                        builder.append(currentChar);
+                        canEnterSpace = true;
+                    }
+
+                    if (Character.isWhitespace(currentChar) && canEnterSpace) {
+                        builder.append(currentChar);
+                    }
+                }
+
+                String result = dest.toString().substring(0, dstart) + builder.toString() + dest.toString().substring(dend);
+
+                if (result.length() > maxLength) {
+                    return "";
+                }
+
+                return builder.toString();
+            }
+        };
+    }
+
+
     public static void RequestGPSPermission(Activity activity) {
         // LocationManager locationManager = (LocationManager) activity.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
@@ -342,7 +379,8 @@ public class CommonUtilsMethods {
 
     public void displayPopupWindow(Activity activity, Context context, View view, String name) {
         PopupWindow popup = new PopupWindow(context);
-        @SuppressLint("InflateParams") View layout = activity.getLayoutInflater().inflate(R.layout.popup_text, null);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.popup_text, null);
         popup.setContentView(layout);
         popup.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         TextView tv_name = layout.findViewById(R.id.tv_name);

@@ -115,7 +115,7 @@ public class CommonAlertBox {
         btn_no.setOnClickListener(view -> {
             dialog.dismiss();
         });
-        dialog.getWindow().setLayout((int) activity.getResources().getDimension(R.dimen._200sdp), (int) activity.getResources().getDimension(R.dimen._100sdp));
+
     }
 
     public static void ApprovalAlert(Activity activity) {
@@ -139,7 +139,6 @@ public class CommonAlertBox {
         btn_no.setOnClickListener(view -> {
             dialog.dismiss();
         });
-        dialog.getWindow().setLayout((int) activity.getResources().getDimension(R.dimen._150sdp), (int) activity.getResources().getDimension(R.dimen._100sdp));
     }
 
 

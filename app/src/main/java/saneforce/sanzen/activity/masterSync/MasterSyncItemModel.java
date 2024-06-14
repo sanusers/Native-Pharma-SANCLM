@@ -22,9 +22,8 @@ public class MasterSyncItemModel {
         this.PBarVisibility = PBarVisibility;
     }
 
-    public MasterSyncItemModel (String name, int count, String masterOf, String remoteTableName, String localTableKeyName, int syncSuccess, boolean PBarVisibility) {
+    public MasterSyncItemModel (String name, String masterOf, String remoteTableName, String localTableKeyName, int syncSuccess, boolean PBarVisibility) {
         this.name = name;
-        this.count = count;
         this.masterOf = masterOf;
         this.remoteTableName = remoteTableName;
         this.localTableKeyName = localTableKeyName;

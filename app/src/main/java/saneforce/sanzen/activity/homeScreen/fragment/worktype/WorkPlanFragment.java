@@ -15,6 +15,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -641,9 +642,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.txtSave:
 
-                if (SharedPref.getApprovalManatoryStatus(requireContext()) && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                if(SharedPref.getApprovalManatoryStatus(requireContext())&&!SharedPref.getDesig(requireActivity()).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
                     CommonAlertBox.ApprovalAlert(requireActivity());
-                } else if (SharedPref.getTpmanatoryStatus(requireContext())) {
+                } else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireActivity()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireActivity()).equalsIgnoreCase("0")) {
                     CommonAlertBox.TpAlert(requireActivity());
                 }else {
                     if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")){
@@ -670,9 +671,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.btnsumit:
-                if (SharedPref.getApprovalManatoryStatus(requireContext()) && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                if(SharedPref.getApprovalManatoryStatus(requireContext())&&!SharedPref.getDesig(requireActivity()).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
                     CommonAlertBox.ApprovalAlert(requireActivity());
-                } else if (SharedPref.getTpmanatoryStatus(requireContext())) {
+                } else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireActivity()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireActivity()).equalsIgnoreCase("0")) {
                     CommonAlertBox.TpAlert(requireActivity());
                 } else {
                     if (SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
@@ -1288,6 +1289,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
                             if (json.getString("success").equalsIgnoreCase("true")) {
                                 SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
+                              HomeDashBoard.binding.viewPager.setCurrentItem(1);
+
                                 commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
                                 if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                                     SharedPref.saveHq(requireContext(), mHQName, mHQCode);
@@ -1404,13 +1407,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         this.hqCode = hqCode;
 
         List<MasterSyncItemModel> list = new ArrayList<>();
-        list.add(new MasterSyncItemModel("Doctor", 0, "Doctor", "getdoctors", Constants.DOCTOR + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Chemist", 0, "Doctor", "getchemist", Constants.CHEMIST + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Stockiest", 0, "Doctor", "getstockist", Constants.STOCKIEST + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Unlisted Doctor", 0, "Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Doctor", "Doctor", "getdoctors", Constants.DOCTOR + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Chemist", "Doctor", "getchemist", Constants.CHEMIST + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Stockiest", "Doctor", "getstockist", Constants.STOCKIEST + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Unlisted Doctor", "Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, 0, false));
 //        list.add(new MasterSyncItemModel("Hospital", 0, "Doctor", "gethospital", Constants.HOSPITAL + hqCode, 0, false));
 //        list.add(new MasterSyncItemModel("CIP", 0, "Doctor", "getcip", Constants.CIP + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Cluster", 0, "Doctor", "getterritory", Constants.CLUSTER + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Cluster", "Doctor", "getterritory", Constants.CLUSTER + hqCode, 0, false));
 
 
         for (int i = 0; i < list.size(); i++) {
@@ -1474,7 +1477,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                         }
 
                                         if (success) {
-                                            masterDataDao.saveMasterSyncData(new MasterDataTable(LocalTableKeyName, jsonArray.toString(), 0));
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(LocalTableKeyName, jsonArray.toString(), 2));
 
                                             if (LocalTableKeyName.startsWith(Constants.CLUSTER)) {
                                                 if (DayPlanCount.equalsIgnoreCase("1")) {
@@ -2008,6 +2011,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void dialogFinalSubmit(Dialog dialogRemarks) {
         EditText ed_remarks = dialogRemarks.findViewById(R.id.ed_remark);
+        ed_remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remarks,300)});
         TextView heading = dialogRemarks.findViewById(R.id.tv_head);
         TextView content = dialogRemarks.findViewById(R.id.content);
         Button btn_clear = dialogRemarks.findViewById(R.id.btn_clear);
@@ -2035,6 +2039,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void dialogAcknowledge(Dialog dialogRemarks) {
         EditText ed_remarks = dialogRemarks.findViewById(R.id.ed_remark);
+        ed_remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remarks,300)});
         TextView heading = dialogRemarks.findViewById(R.id.tv_head);
         TextView content = dialogRemarks.findViewById(R.id.content);
         Button btn_clear = dialogRemarks.findViewById(R.id.btn_clear);

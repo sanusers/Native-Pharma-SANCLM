@@ -19,6 +19,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -55,6 +56,7 @@ import saneforce.sanzen.activity.call.pojo.input.SaveCallInputList;
 import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 
@@ -110,12 +112,10 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         adapterSelectionList = new AdapterSelectionList(context, adapterModels, dcrDetailedList, adapterCusMainList, SharedPref.getDrCap(context), SharedPref.getChmCap(context), SharedPref.getStkCap(context), SharedPref.getUNLcap(context));
         dcrCallApprovalBinding.rvSelectionList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         dcrCallApprovalBinding.rvSelectionList.setAdapter(adapterSelectionList);
-
         if (!ClusterNames.toString().isEmpty()) {
             dcrCallApprovalBinding.tvCluster1.setText(removeLastChar(ClusterNames.toString()));
-        } else {
-            dcrCallApprovalBinding.tvCluster1.setText(context.getResources().getString(R.string.no_cluster));
         }
+
     }
 
     public static String removeLastChar(String s) {
@@ -315,7 +315,14 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             startActivity(intent);
         });
 
-        dcrCallApprovalBinding.btnApproved.setOnClickListener(view -> CallApprovalApi());
+        dcrCallApprovalBinding.btnApproved.setOnClickListener(view -> {
+            if (UtilityClass.isNetworkAvailable(this)) {
+                CallApprovalApi();
+            } else {
+                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
+            }
+        });
+
 
         dcrCallApprovalBinding.btnReject.setOnClickListener(view -> {
             dialogReject = new Dialog(DcrApprovalActivity.this);
@@ -333,19 +340,26 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             btn_cancel.setOnClickListener(view1 -> {
                 ed_reason.setText("");
                 dialogReject.dismiss();
+                UtilityClass.hideKeyboard(DcrApprovalActivity.this);
             });
 
             iv_close.setOnClickListener(view12 -> {
                 ed_reason.setText("");
                 dialogReject.dismiss();
+                UtilityClass.hideKeyboard(DcrApprovalActivity.this);
             });
 
             btn_reject.setOnClickListener(view14 -> {
-                if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
-                    rejectApproval(ed_reason.getText().toString());
+                if(UtilityClass.isNetworkAvailable(this)){
+                    if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
+                        rejectApproval(ed_reason.getText().toString());
+                    } else {
+                        commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_enter_reason_for_reject));
+                    }
                 } else {
-                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_enter_reason_for_reject));
+                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
                 }
+
             });
             dialogReject.show();
         });
@@ -535,7 +549,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
-                            dcrApprovalLists.add(new DCRApprovalList(json.getString("Trans_SlNo"), json.getString("Sf_Name"), json.getString("Activity_Date"), json.getString("Plan_Name"), json.getString("WorkType_Name"), json.getString("Sf_Code"), json.getString("FieldWork_Indicator"), json.getString("Submission_Date"), json.getString("Hlfday")));
+                            dcrApprovalLists.add(new DCRApprovalList(json.getString("Trans_SlNo"), json.getString("Sf_Name"), json.getString("Activity_Date"), json.getString("Plan_Name"), json.getString("WorkType_Name"), json.getString("Sf_Code"), json.getString("FieldWork_Indicator"), json.getString("Submission_Date"), json.getString("Hlfday"),json.getString("Remarks"),json.getString("Additional_Temp_Details")));
                         }
                         adapterDcrApprovalList = new AdapterDcrApprovalList(DcrApprovalActivity.this, DcrApprovalActivity.this, dcrApprovalLists, DcrApprovalActivity.this);
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -563,8 +577,13 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
     @Override
     public void onClick(DCRApprovalList dcrApprovalList, int pos) {
+
         dcrCallApprovalBinding.tvName.setText(dcrApprovalList.getSf_name());
-        dcrCallApprovalBinding.tvWorktype1.setText(dcrApprovalList.getWorkType_name());
+        if (dcrApprovalList.getAdditional_Temp_Details().equalsIgnoreCase(""))
+            dcrCallApprovalBinding.tvWorktype1.setText(dcrApprovalList.getWorkType_name());
+        else
+            dcrCallApprovalBinding.tvWorktype1.setText(dcrApprovalList.getWorkType_name() + " / " + dcrApprovalList.getAdditional_Temp_Details());
+
         dcrCallApprovalBinding.tvRemark1.setText(dcrApprovalList.getRemarks());
         dcrCallApprovalBinding.tvActivityDate.setText(dcrApprovalList.getActivity_date());
         dcrCallApprovalBinding.tvSubmittedDate.setText(dcrApprovalList.getSubmission_date_sub());
@@ -572,7 +591,13 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         SelectedSfCode = dcrApprovalList.getSfCode();
         SelectedActivityDate = dcrApprovalList.getActivity_date();
         SelectedPosition = pos;
+
         getDcrContentList();
+        if(dcrApprovalList.getFieldWork_indicator().equalsIgnoreCase("F")){
+            dcrCallApprovalBinding.rvSelectionList.setVisibility(View.VISIBLE);
+        }else {
+            dcrCallApprovalBinding.rvSelectionList.setVisibility(View.GONE);
+        }
         dcrCallApprovalBinding.constraintDcrListContent.setVisibility(View.VISIBLE);
     }
 
@@ -585,4 +610,5 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     public void onItemClick(TpModelList tpModelLists, int pos) {
 
     }
+
 }

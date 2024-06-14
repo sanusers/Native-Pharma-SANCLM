@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/_7sdp"
+
+        android:padding="@dimen/_10sdp"
         android:background="@drawable/selector_box"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,14 +49,17 @@
                 android:layout_height="@dimen/_6sdp"
                 android:src="@drawable/icon_sync_failed"
                 android:layout_gravity="center"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:ignore="ContentDescription" />
+
+
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/count"
             android:layout_weight="1"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:textColor="@color/text_dark_65"

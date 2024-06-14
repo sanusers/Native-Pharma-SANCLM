@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.homeScreen.fragment;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -325,9 +327,9 @@ public class CallsFragment extends Fragment {
 
 
         binding.rlSyncCall.setOnClickListener(v12 -> {
-            if (SharedPref.getApprovalManatoryStatus(requireContext()) && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+            if(SharedPref.getApprovalManatoryStatus(requireContext())&&!SharedPref.getDesig(requireActivity()).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
                 CommonAlertBox.ApprovalAlert(requireActivity());
-            } else if (SharedPref.getTpmanatoryStatus(requireContext())) {
+            } else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireActivity()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireActivity()).equalsIgnoreCase("0")) {
                 CommonAlertBox.TpAlert(requireActivity());
             }else {    if (UtilityClass.isNetworkAvailable(requireContext())) {
                 binding.rlSyncCall.setEnabled(false);
@@ -339,9 +341,9 @@ public class CallsFragment extends Fragment {
         });
 
         binding.TvAddActivty.setOnClickListener(view -> {
-            if (SharedPref.getApprovalManatoryStatus(requireContext()) && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+            if(SharedPref.getApprovalManatoryStatus(requireContext())&&!SharedPref.getDesig(requireActivity()).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
                 CommonAlertBox.ApprovalAlert(requireActivity());
-            } else if (SharedPref.getTpmanatoryStatus(requireContext())) {
+            }else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                 CommonAlertBox.TpAlert(requireActivity());
             }
         });
@@ -349,9 +351,9 @@ public class CallsFragment extends Fragment {
 
         binding.tvAddCall.setOnClickListener(view -> {
             // startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
-            if (SharedPref.getApprovalManatoryStatus(requireContext()) && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+            if(SharedPref.getApprovalManatoryStatus(requireContext())&&!SharedPref.getDesig(requireActivity()).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
                 CommonAlertBox.ApprovalAlert(requireActivity());
-            } else if (SharedPref.getTpmanatoryStatus(requireContext())) {
+            } else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                 CommonAlertBox.TpAlert(requireActivity());
             }else {
 

@@ -40,6 +40,9 @@ public class DayReportDetailModel implements Serializable {
     private String gifts = "";
     private String promoted_product = "";
 
+
+
+
     public String getPromoted_product() {
         return promoted_product;
     }

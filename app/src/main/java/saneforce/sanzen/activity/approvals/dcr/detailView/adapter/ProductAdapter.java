@@ -2,10 +2,12 @@ package saneforce.sanzen.activity.approvals.dcr.detailView.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,13 +17,15 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
     Context context;
     ArrayList<SaveCallProductList> getProductList;
     String category;
-
+    CommonUtilsMethods commonUtilsMethods;
     public ProductAdapter(Context context, ArrayList<SaveCallProductList> getProductList,String category) {
+        commonUtilsMethods=new CommonUtilsMethods(context);
         this.context = context;
         this.getProductList = getProductList;
         this.category = category;
@@ -53,7 +57,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         }else {
             holder.img_promoted.setImageDrawable(context.getResources().getDrawable(R.drawable.gray_cross_icon));
         }
-
+        holder.tv_name.setOnClickListener(view -> {
+            commonUtilsMethods.displayPopupWindow(null,context,view,getProductList.get(position).getName());
+       });
     }
 
     @Override

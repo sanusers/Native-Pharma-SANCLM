@@ -153,8 +153,8 @@ public class LoginActivity extends AppCompatActivity {
                     commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.no_network));
                 } else if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
                     SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
-                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
                     startActivity(new Intent(LoginActivity.this, HomeDashBoard.class));
+                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
                 } else {
                     commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.mismatch));
                 }
@@ -430,7 +430,7 @@ public class LoginActivity extends AppCompatActivity {
             SharedPref.saveLoginId(LoginActivity.this, userId, userPwd);
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));
-            SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
+         //   SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
             SharedPref.saveHqMain(LoginActivity.this, jsonObject.getString("HQName"));
 
             if (SharedPref.getAutomassyncFromSP(LoginActivity.this)) {

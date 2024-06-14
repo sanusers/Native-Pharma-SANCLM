@@ -94,7 +94,7 @@
                 android:fontFamily="@font/satoshi_medium"
                 android:paddingTop="@dimen/_7sdp"
                 android:paddingBottom="@dimen/_7sdp"
-                android:text="MR_Name "
+                android:hint="@string/select_hq"
                 android:textColor="@color/text_dark"
                 android:textSize="@dimen/_6sdp"
                 android:textStyle="bold"

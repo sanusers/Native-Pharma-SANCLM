@@ -88,7 +88,7 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
             EditText ed_remark = dialogFeedback.findViewById(R.id.ed_remark);
             Button btn_clear = dialogFeedback.findViewById(R.id.btn_clear);
             Button btn_save = dialogFeedback.findViewById(R.id.btn_save);
-            ed_remark.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remark)});
+            ed_remark.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remark,250)});
 
             if (!callDetailingLists.get(holder.getBindingAdapterPosition()).getFeedback().isEmpty()) {
                 ed_remark.setText(callDetailingLists.get(holder.getBindingAdapterPosition()).getFeedback());

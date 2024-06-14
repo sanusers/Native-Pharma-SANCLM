@@ -65,6 +65,8 @@
             android:gravity="start|top"
             android:hint="@string/type_your_feedback"
             android:padding="@dimen/_4sdp"
+            android:maxLength="250"
+            android:ellipsize="end"
             android:imeOptions="actionDone"
             android:paddingVertical="@dimen/_3sdp"
             android:textSize="@dimen/_6ssp"

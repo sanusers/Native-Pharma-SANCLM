@@ -51,8 +51,8 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
             Cus_pob = extra.getString("cus_pob");
             Cus_jw = extra.getString("cus_jw");
             Cus_type = extra.getString("cus_type");
-            Cus_remark = extra.getString("cus_fb");
-            Cus_feedback = extra.getString("cus_remark");
+            Cus_remark = extra.getString("cus_remark");
+            Cus_feedback = extra.getString("cus_fb");
             Cus_modTime = extra.getString("cus_mod_time");
             Cus_visitTime = extra.getString("cus_visit_time");
             dcr_id = extra.getString("dcr_id");
@@ -63,7 +63,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
         if (!cut_name.isEmpty()) dcrDetailViewBinding.tvName.setText(cut_name);
         if (!Cus_cluster.isEmpty()) dcrDetailViewBinding.tvClusterTop.setText(Cus_cluster);
         if (!Cus_pob.isEmpty()) dcrDetailViewBinding.tvPob.setText(Cus_pob);
-        if (!Cus_jw.isEmpty()) dcrDetailViewBinding.tvJw.setText(Cus_jw);
+        if (!Cus_jw.isEmpty()) dcrDetailViewBinding.tvJw.setText(Cus_jw.replace("$$",","));
         if (!Cus_remark.isEmpty()) dcrDetailViewBinding.tvOverallRemarks.setText(Cus_remark);
         if (!Cus_feedback.isEmpty()) dcrDetailViewBinding.tvOverallFeedback.setText(Cus_feedback);
         if (!Cus_visitTime.isEmpty()) dcrDetailViewBinding.tvVisitTime.setText(Cus_visitTime);
@@ -170,7 +170,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
             dcrDetailViewBinding.tvPob.setText("0");
         }
         if (!dcrDetailModelList.getJointWork().isEmpty()) {
-            dcrDetailViewBinding.tvJw.setText(dcrDetailModelList.getJointWork());
+            dcrDetailViewBinding.tvJw.setText(dcrDetailModelList.getJointWork().replace("$$",","));
         } else {
             dcrDetailViewBinding.tvJw.setText(getResources().getText(R.string.no_jw));
         }

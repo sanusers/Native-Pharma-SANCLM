@@ -357,7 +357,7 @@
     <string name="select_a_language">Select a language</string>
     <string name="user_id">User ID</string>
     <string name="enter_user_id">Enter User ID</string>
-    <string name="mismatch">User Id or Password Mismatch</string>
+    <string name="mismatch">User Id or Password</string>
     <string name="password">Password</string>
     <string name="enterpassword">Enter Password</string>
     <string name="english">English</string>
@@ -428,4 +428,16 @@
     <string name="are_you_sure_you_want_to_clear">Are You Sure, You Want To Clear!</string>
     <string name="jointcall">JointCall</string>
     <string name="no_content_to_view">No content to view</string>
+
+    <string name="tp_ap_not_available">TourPlan approvals not available</string>
+    <string name="leave_ap_not_available">Leave approvals not available</string>
+    <string name="dcr_ap_not_available">DCR approvals not available</string>
+    <string name="tpdevication_ap_not_available">TP approvals Deviation not available</string>
+    <string name="geoTagging_ap_not_available">Geo Tagging approvals not available</string>
+
+
+
+
+
+
 </resources>

@@ -14,6 +14,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -54,6 +55,23 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
         int cpValue = Integer.parseInt(rcpaList.get(position).getCPValue());
         int totValue = opValue+cpValue;
 
+
+
+
+
+        if (!rcpaList.get(position).getCPRemarks().isEmpty()) {
+            holder.img_remarks.setEnabled(true);
+            holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.img_remarks_0));
+        } else {
+            holder.img_remarks.setEnabled(false);
+            holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.img_remarks_1));
+        }
+
+
+
+
+
+
         holder.prdName.setOnClickListener(v -> {
             popUp(v, rcpaList.get(position).getOPName());
         });
@@ -65,6 +83,9 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
         });
         holder.comName.setOnClickListener(v -> {
             popUp(v, rcpaList.get(position).getCompName());
+        });
+        holder.img_remarks.setOnClickListener(v -> {
+            popUp(v, rcpaList.get(position).getCPRemarks());
         });
         holder.infoView.setOnClickListener(v -> {
             ratePopUp(v,rcpaList.get(position).getOPRate(),rcpaList.get(position).getOPQty(),rcpaList.get(position).getOPRate(),rcpaList.get(position).getOPValue(),rcpaList.get(position).getCPQty(),rcpaList.get(position).getCPRate(),rcpaList.get(position).getCPValue(),totValue);
@@ -82,6 +103,7 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
 
         TextView prdName, prdqty, CompetitorName, CompetitorProductName, ComprdQty, comName;
         View infoView;
+        ImageView img_remarks;
         LinearLayout layout;
 
         public ViewHolder(@NonNull View itemView) {
@@ -94,6 +116,7 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
             ComprdQty = itemView.findViewById(R.id.competitorproductnameqty);
             comName = itemView.findViewById(R.id.chemistName);
             infoView = itemView.findViewById(R.id.infoView);
+            img_remarks = itemView.findViewById(R.id.img_remarks);
             layout = itemView.findViewById(R.id.layOut);
         }
     }

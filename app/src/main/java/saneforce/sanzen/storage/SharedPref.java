@@ -427,7 +427,7 @@ public class SharedPref {
         editor.putString(DESIG_CODE, jsonObject.getString("desig_Code"));
         editor.putString(DIVISION_NAME, jsonObject.getString("Division_name"));
         editor.putString(DESIG, jsonObject.getString("Desig"));
-        editor.putString(HQ_NAME, jsonObject.getString("HQName"));
+       // editor.putString(HQ_NAME, jsonObject.getString("HQName"));
         editor.putString(SF_STAT, jsonObject.getString("SFStat"));
         editor.putString(DIVISION_CODE, jsonObject.getString("Division_Code"));
         editor.putString(T_BASE, jsonObject.getString("TBase"));

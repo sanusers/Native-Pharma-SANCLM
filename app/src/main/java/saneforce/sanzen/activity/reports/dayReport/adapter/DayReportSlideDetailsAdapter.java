@@ -62,7 +62,16 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
             CharSequence initialGuideTex = Html.fromHtml(" Start Time : " + callDetailingLists.get(position).getStartTime()  +"<br><br>"+ " End Time : " + callDetailingLists.get(position).getEndTime() );
             showTimelinePopUp(v,initialGuideTex);
         });
+
+        holder.TxtFeedback.setOnClickListener(v -> {
+            popUp(holder.TxtFeedback,callDetailingLists.get(position).getFeedbk());
+        });
+
+        holder.txtbrandName.setOnClickListener(v -> {
+            popUp(holder.txtbrandName,callDetailingLists.get(position).getProduct_Name());
+        });
     }
+
 
     @Override
     public int getItemCount() {
@@ -119,5 +128,14 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
             popupWindow.dismiss();
         });
     }
-
+    private void popUp(View v, String name) {
+        PopupWindow popup = new PopupWindow(context);
+        View layout = LayoutInflater.from(context).inflate(R.layout.popup_text, null);
+        popup.setContentView(layout);
+        popup.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        TextView tv_name = layout.findViewById(R.id.tv_name);
+        tv_name.setText(name);
+        popup.setOutsideTouchable(true);
+        popup.showAsDropDown(v);
+    }
 }

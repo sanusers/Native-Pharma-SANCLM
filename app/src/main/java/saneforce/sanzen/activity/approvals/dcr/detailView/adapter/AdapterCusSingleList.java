@@ -153,6 +153,8 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
             EventCaptureData.clear();
             rcpaList.clear();
             callDetailingLists.clear();
+            dcrDetailViewBinding.rcpaLayout.setVisibility(View.GONE);
+            dcrDetailViewBinding.sldLayout.setVisibility(View.GONE);
             if (adapter != null)
                 adapter.notifyDataSetChanged();
             dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);

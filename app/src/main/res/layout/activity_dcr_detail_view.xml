@@ -161,7 +161,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/satoshi_medium"
                 android:padding="@dimen/_2sdp"
-                android:text="Nandanam"
+                android:text=""
                 android:textColor="@color/light_grey_2"
                 android:textSize="@dimen/_6ssp"
                 android:textStyle="normal"
@@ -236,7 +236,7 @@
 
                     <TextView
                         android:id="@+id/tag_modified_time"
-                        android:layout_width="@dimen/_70sdp"
+                        android:layout_width="@dimen/_60sdp"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:paddingVertical="@dimen/_2sdp"
@@ -250,7 +250,7 @@
 
                     <TextView
                         android:id="@+id/tv_modified_time"
-                        android:layout_width="@dimen/_70sdp"
+                        android:layout_width="@dimen/_60sdp"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_bold"
                         android:paddingVertical="@dimen/_2sdp"
@@ -294,10 +294,11 @@
 
                     <TextView
                         android:id="@+id/tag_pob"
-                        android:layout_width="@dimen/_30sdp"
+                        android:layout_width="@dimen/_40sdp"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:paddingVertical="@dimen/_2sdp"
+
                         android:text="POB"
                         android:textColor="@color/light_grey_2"
                         android:textSize="@dimen/_6ssp"
@@ -309,7 +310,7 @@
 
                     <TextView
                         android:id="@+id/tv_pob"
-                        android:layout_width="@dimen/_30sdp"
+                        android:layout_width="@dimen/_40sdp"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_bold"
                         android:paddingVertical="@dimen/_2sdp"
@@ -984,41 +985,41 @@
                             android:weightSum="4">
 
                             <TextView
-                                android:fontFamily="@font/satoshi_bold"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/dark_purple"
-                                android:textSize="@dimen/_6sdp"
                                 android:layout_weight="1"
-                                android:text="Brand Name" />
-
-                            <TextView
                                 android:fontFamily="@font/satoshi_bold"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:text="Brand Name"
                                 android:textColor="@color/dark_purple"
-                                android:textSize="@dimen/_6sdp"
-                                android:layout_weight="1"
-                                android:text="Duration" />
+                                android:textSize="@dimen/_6sdp" />
 
                             <TextView
                                 android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_bold"
+                                android:text="Duration"
                                 android:textColor="@color/dark_purple"
-                                android:textSize="@dimen/_6sdp"
+                                android:textSize="@dimen/_6sdp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_bold"
                                 android:gravity="center"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/satoshi_bold"
-                                android:layout_weight="1"
-                                android:text="Rating" />
+                                android:text="Rating"
+                                android:textColor="@color/dark_purple"
+                                android:textSize="@dimen/_6sdp" />
 
                             <TextView
                                 android:layout_width="0dp"
-                                android:fontFamily="@font/satoshi_bold"
-                                android:textColor="@color/dark_purple"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:textSize="@dimen/_6sdp"
-                                android:text="Feedback" />
+                                android:fontFamily="@font/satoshi_bold"
+                                android:text="Feedback"
+                                android:textColor="@color/dark_purple"
+                                android:textSize="@dimen/_6sdp" />
 
 
                         </LinearLayout>
@@ -1035,12 +1036,9 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="1.0"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/constraint_tag_sample_prd"
-                            />
+                            app:layout_constraintTop_toBottomOf="@id/constraint_tag_sample_prd" />
 
                     </LinearLayout>
-
-
 
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -1207,14 +1205,13 @@
                     </LinearLayout>
 
 
-
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/constraint_main_capImg"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/view_dummy_ic"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/rcpaLayout">
 
                         <TextView
@@ -1255,74 +1252,75 @@
                             android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tag_ic" >
+                            app:layout_constraintTop_toBottomOf="@id/tag_ic">
 
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:orientation="vertical"
                                 android:layout_height="wrap_content"
+                                android:orientation="vertical"
                                 tools:ignore="MissingConstraints">
+
                                 <LinearLayout
                                     android:layout_width="match_parent"
-                                    android:weightSum="3"
-                                    android:padding="@dimen/_4sdp"
-                                    android:background="@drawable/bg_light_grey_1"
                                     android:layout_height="wrap_content"
+                                    android:background="@drawable/bg_light_grey_1"
+                                    android:padding="@dimen/_4sdp"
+                                    android:weightSum="3"
                                     tools:ignore="MissingConstraints">
-                                    <TextView
-                                        android:textColor="@color/dark_purple"
-                                        android:textSize="@dimen/_6sdp"
-                                        android:gravity="center"
-                                        android:layout_gravity="center"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="@font/satoshi_medium"
-                                        android:textStyle="bold"
-                                        android:layout_width="0dp"
-                                        android:layout_weight="0.5"
-                                        android:text="Captured"
-                                        /> >
 
                                     <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="0.5"
+                                        android:fontFamily="@font/satoshi_medium"
+                                        android:gravity="center"
+                                        android:text="Captured"
                                         android:textColor="@color/dark_purple"
                                         android:textSize="@dimen/_6sdp"
-                                        android:textStyle="bold"
-                                        android:gravity="center"
-                                        android:layout_gravity="center"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="@font/satoshi_medium"
+                                        android:textStyle="bold" />
+                                    >
+
+                                    <TextView
                                         android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
                                         android:layout_weight="1"
+                                        android:fontFamily="@font/satoshi_medium"
+                                        android:gravity="center"
                                         android:text="Name"
-                                        >
+                                        android:textColor="@color/dark_purple"
+                                        android:textSize="@dimen/_6sdp"
+                                        android:textStyle="bold">
 
                                     </TextView>
 
                                     <TextView
                                         android:id="@+id/tv_description"
-                                        android:gravity="center"
-                                        android:layout_gravity="center"
-                                        android:textColor="@color/dark_purple"
-                                        android:textStyle="bold"
-                                        android:textSize="@dimen/_6sdp"
-                                        android:fontFamily="@font/satoshi_medium"
-                                        android:text="Description"
                                         android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
                                         android:layout_weight="1.5"
-                                        android:layout_height="wrap_content">
+                                        android:fontFamily="@font/satoshi_medium"
+                                        android:gravity="center"
+                                        android:text="Description"
+                                        android:textColor="@color/dark_purple"
+                                        android:textSize="@dimen/_6sdp"
+                                        android:textStyle="bold">
 
                                     </TextView>
 
                                 </LinearLayout>
+
                                 <androidx.recyclerview.widget.RecyclerView
                                     android:id="@+id/rvEventListview"
                                     android:layout_width="match_parent"
-                                    android:layout_marginTop="@dimen/_2sdp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginHorizontal="@dimen/_6sdp"
+                                    android:layout_marginTop="@dimen/_2sdp"
                                     android:paddingHorizontal="@dimen/_5sdp"
-                                    android:visibility="visible"
-                                    />
+                                    android:visibility="visible" />
                             </LinearLayout>
                         </androidx.constraintlayout.widget.ConstraintLayout>
 

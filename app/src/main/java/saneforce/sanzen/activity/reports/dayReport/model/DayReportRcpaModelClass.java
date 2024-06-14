@@ -16,7 +16,9 @@ public class DayReportRcpaModelClass {
     private String OPValue;
     private  String CPRate;
     private String CPValue;
+    private String CPRemarks;
     private boolean isSelected= false;
+
     public DayReportRcpaModelClass(String drName, String chmName, String OPName, String OPQty, String OPUnit, String compName, String compPName, String CPQty, String CPUnit, String OPRate, String OPValue, String CPRate, String CPValue,boolean isSelected) {
         DrName = drName;
         ChmName = chmName;
@@ -34,6 +36,15 @@ public class DayReportRcpaModelClass {
         this.isSelected = isSelected;
 
     }
+
+    public String getCPRemarks() {
+        return CPRemarks;
+    }
+
+    public void setCPRemarks(String CPRemarks) {
+        this.CPRemarks = CPRemarks;
+    }
+
     public boolean isSelected() {
         return isSelected;
     }

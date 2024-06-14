@@ -866,8 +866,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         user_logout.setOnClickListener(v -> {
             SharedPref.saveLoginState(HomeDashBoard.this, false);
-            startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
-        //    commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Logout Successfully");
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            //    commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Logout Successfully")
             Toast.makeText(HomeDashBoard.this,"Logout Successfully",Toast.LENGTH_SHORT).show();
             finish();
         });
@@ -1669,6 +1671,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
   public   void CheckedTpRange() {
+         // Log.v("","TpMN :"+SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0")+"TpMN :"+SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0"));
 
         if (!SharedPref.getskipDate(HomeDashBoard.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
             if (SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") &&
@@ -1690,16 +1693,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
                 if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare  Tourplan....");
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan....");
                     TourplanFlog="0";
                     SharedPref.setTpStatus(HomeDashBoard.this, true);
                     Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
                     startActivity(intent);
 
 
-                } else if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")&&((mCurrentDate >= Start_Date) && (mCurrentDate <= End_Date))) {
-                      commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare  Tourplan...");
-                        if (End_Date <= mCurrentDate) {
+                } else if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")&&((mCurrentDate >= Start_Date))) {
+                      commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan...");
+                        if (End_Date < mCurrentDate) {
                             SharedPref.setTpStatus(HomeDashBoard.this, true);
                         } else {
                             SharedPref.setTpStatus(HomeDashBoard.this, false);
@@ -1873,6 +1876,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                           if(DcrCount>0 ||TpCount>0  ||LeaveCount>0  ||DeviationCount>0 ||GeoTagCount>0 ){
                               SharedPref.setApprvalManatoryStatus(HomeDashBoard.this,true);
                               if(!SharedPref.getApprovalskipDate(HomeDashBoard.this).equalsIgnoreCase( TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))){
+                                  SharedPref.setApprovalsCounts(HomeDashBoard.this, "false");
                                   Intent intent=new Intent(HomeDashBoard. this,ApprovalsActivity.class);
                                   startActivity(intent);
                               }

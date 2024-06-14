@@ -63,6 +63,7 @@
         <item name="colorControlActivated">@color/gold_yellow</item>
     </style>
 
+
     <style name="popupMenuStyle" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:textColor">@color/dark_purple</item>
         <item name="fontFamily">@font/satoshi_bold</item>

@@ -2,6 +2,8 @@ package saneforce.sanzen.activity.reports.dayReport.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -25,6 +28,7 @@ import saneforce.sanzen.activity.reports.dayReport.DataViewModel;
 import saneforce.sanzen.activity.reports.dayReport.MapViewActvity;
 import saneforce.sanzen.activity.reports.dayReport.fragment.DayReportDetailFragment;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportModel;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.storage.SharedPref;
 
 
@@ -125,6 +129,15 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             holder.DcrIconLayout.setVisibility(View.GONE);
         }
 
+
+
+        holder.remarks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popUp(holder.remarks,dayReportModel.getRemarks());
+             }
+        });
+
        /* if(dayReportModel.getRemarks().equals("")){
            holder.remarksTxt.setVisibility(View.GONE);
            holder.remarks.setVisibility(View.GONE);
@@ -149,21 +162,28 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
                 break;
             }
         }*/
+
+        // Typ  , Confirmed
         int status = dayReportModel.getTyp();
         String confirmStatus1 = dayReportModel.getConfirmed();
         int confirmStatus = Integer.parseInt(confirmStatus1);
-        if (status==0 && confirmStatus==0) {
+
+
+        if ((status==0 && confirmStatus==0)||(status==1 && confirmStatus==0)) {
             holder.status.setText("Draft");
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.text_dark_15)));
-        } else if ((status==0 || status==1) && confirmStatus==1) {
-            holder.status.setText("Finished");
-            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.bg_priority)));
-        } else if ((status==0 || status==1) && confirmStatus==2) {
-            holder.status.setText("Rejected");
-            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.pink_15)));
-        } else if ((status==0 || status==1) && confirmStatus==3) {
-            holder.status.setText("ReEntry");
+        } else if (status==0 && confirmStatus==1) {
+            holder.status.setText("Finished"); // blue
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.bg_lite_blue)));
+        } else if (status==0 && confirmStatus==2) {
+            holder.status.setText("Rejected"); // red
+            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.red_60)));
+        } else if (status==0  && confirmStatus==3) {
+            holder.status.setText("ReEntry");
+            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.pink_10)));
+        }else if (status==1  && confirmStatus==1) {
+            holder.status.setText("Approved");
+            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.green_10)));
         }
 
 
@@ -318,6 +338,15 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         };
     }
 
-
+    private void popUp(View v, String name) {
+        PopupWindow popup = new PopupWindow(context);
+        View layout = LayoutInflater.from(context).inflate(R.layout.popup_text, null);
+        popup.setContentView(layout);
+        popup.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        TextView tv_name = layout.findViewById(R.id.tv_name);
+        tv_name.setText(name);
+        popup.setOutsideTouchable(true);
+        popup.showAsDropDown(v);
+    }
 
 }

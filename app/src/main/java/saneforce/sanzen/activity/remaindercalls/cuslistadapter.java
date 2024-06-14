@@ -200,7 +200,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
     public void getData(String hq_code) {
 //        ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
         List<MasterSyncItemModel> list = new ArrayList<>();
-        list.add(new MasterSyncItemModel("Doctor", 0, "Doctor", "getdoctors", Constants.DOCTOR + hq_code, 0, false));
+        list.add(new MasterSyncItemModel("Doctor",  "Doctor", "getdoctors", Constants.DOCTOR + hq_code, 0, false));
         for (int i = 0; i < list.size(); i++) {
             syncMaster(list.get(i).getMasterOf(), list.get(i).getRemoteTableName(), list.get(i).getLocalTableKeyName(), hq_code);
             Log.d("check_syndata", list.get(i).getMasterOf() + "====" + list.get(i).getRemoteTableName() + "===" + list.get(i).getLocalTableKeyName());
