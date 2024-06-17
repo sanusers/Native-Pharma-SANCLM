@@ -772,13 +772,11 @@ public class Leave_Application extends AppCompatActivity {
     }
     private void onClickListener(){
         leavebinding.leaveStatusSync.setOnClickListener(v -> {
+            List_LeaveDates.clear();
             leavebinding.etFromDate.setText("");
             leavebinding.etToDate.setText("");
             leavebinding.LeaveType.setText("");
-            leavebinding.edAddress.getText().clear();
-            leavebinding.edReason.getText().clear();
             leavebinding.balanceDays.setText("");
-            List_LeaveDates.clear();
             leavebinding.progressBar.setVisibility(View.VISIBLE);
             leaveViewModel.updateLeaveStatusMasterSync();
             Runnable runnable = new Runnable() {

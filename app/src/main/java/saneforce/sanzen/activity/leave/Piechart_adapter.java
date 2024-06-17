@@ -118,6 +118,9 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
             int Total_dates = Integer.parseInt(L_Elgable);
             int Apply_dates = Integer.parseInt(taken);
             int Balance_date = Total_dates-Apply_dates;
+            if (Balance_date<0){
+                Balance_date = 0;
+            }
             ArrayList<PieEntry> lve_list = new ArrayList<PieEntry>();
             PieEntry pieEntry = new PieEntry(Apply_dates, "");
             lve_list.add(pieEntry);
@@ -154,6 +157,9 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
             int Apply_dates = Integer.parseInt(taken);
 
             int Balance_date = Total_dates-Apply_dates;
+            if (Balance_date<0){
+                Balance_date = 0;
+            }
             ArrayList<PieEntry> lve_list = new ArrayList<PieEntry>();
             PieEntry pieEntry = new PieEntry(Apply_dates, "");
             lve_list.add(pieEntry);
@@ -186,6 +192,9 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
             int Total_dates = Integer.parseInt(L_Elgable);
             int Apply_dates = Integer.parseInt(taken);
             int Balance_date = Total_dates-Apply_dates;
+            if (Balance_date<0){
+                Balance_date = 0;
+            }
 
             ArrayList<PieEntry> lve_list = new ArrayList<PieEntry>();
             PieEntry pieEntry = new PieEntry(Apply_dates, "");
@@ -225,8 +234,6 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
             values.add(pieEntry1);
             pieDataSet3 = new PieDataSet(values, "");
             pieData3 = new PieData(pieDataSet3);
-
-
             pieData3.setValueFormatter(new PercentFormatter());
             chart.setData(pieData3);
             chart.setUsePercentValues(false);
@@ -239,9 +246,11 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
             pieData3.setValueTextSize(0f);
             pieData3.setValueTextColor(Color.WHITE);
             chart.animateXY(1400, 1400);
-
-
-            Ltype.setText(taken);
+            int lopTaken =   Integer.parseInt(taken);
+            if (lopTaken<0){
+                lopTaken = 0;
+            }
+            Ltype.setText(String.valueOf(lopTaken));
             ltype_name.setText(pie_value);
         }
 
