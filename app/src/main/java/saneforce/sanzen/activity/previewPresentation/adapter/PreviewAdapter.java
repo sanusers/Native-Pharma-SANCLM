@@ -84,16 +84,6 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
                     productsList = arrayList.get(position).getProductArrayList();
                     intent = new Intent(context, PlaySlidePreviewActivity.class);
                 }
-                for (BrandModelClass.Product product : products) {
-                    Log.d("TAG2", "onBindViewHolder: "+ product.getBrandName() + " " + product.getSlideName() + ": " + product.getPriority());
-                }
-                for (BrandModelClass.Product product : productsList) {
-                    Log.d("TAG1", "onBindViewHolder: "+ product.getBrandName() + " " + product.getSlideName() + ": " + product.getPriority());
-                }
-                Collections.sort(productsList, Comparator.comparingInt(p -> Integer.parseInt(p.getPriority())));
-                for (BrandModelClass.Product product : productsList) {
-                    Log.d("TAG3", "onBindViewHolder: "+ product.getBrandName() + " " + product.getSlideName() + ": " + product.getPriority());
-                }
                 String data = new Gson().toJson(productsList);
                 Bundle bundle = new Bundle();
                 bundle.putString("slideBundle", data);

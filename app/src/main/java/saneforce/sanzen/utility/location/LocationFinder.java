@@ -30,7 +30,7 @@ import java.util.List;
 
 public class LocationFinder {
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000;
-    static LocationEvents mlocEvents;
+    private final LocationEvents mlocEvents;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
     private LocationRequest mLocationRequest;
@@ -92,7 +92,7 @@ public class LocationFinder {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             List<Location> locationList = locationResult.getLocations();
-            if (locationList.size() > 0) {
+            if (!locationList.isEmpty()) {
                 try {
                     Location location = locationList.get(locationList.size() - 1);
                     if (running < timeout) mlocEvents.OnLocationRecived(location);
