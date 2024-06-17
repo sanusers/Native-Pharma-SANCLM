@@ -56,15 +56,9 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         final Leave_modelclass pie_value = chart_list.get(position);
-        if (pie_value.getL_type().equals("SL")){
-            System.out.println("slLeaveAvailable--->"+pie_value.getAvaolable());
-        }
         String L_Taken = pie_value.getTakenleave();
-        System.out.println("chartLeave--->"+L_Taken);
         String L_Elgable = pie_value.getEligable();
-        System.out.println("chartLeave1--->"+L_Elgable);
         String L_Avalable = pie_value.getAvaolable();
-        System.out.println("chartLeave2--->"+L_Avalable);
 
         Log.d("chart", pie_value + "---" + L_Taken +"--"+L_Elgable+"--"+L_Avalable);
 
@@ -103,7 +97,6 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
     @SuppressLint("SetTextI18n")
     public void Chartview(PieChart chart, String L_Available, String  L_Elgable, String L_taken, String taken, TextView c_val, TextView c_val_tol, TextView ltype_name, String pie_value,
                           TextView Ltype, RelativeLayout chartview_value) {
-        System.out.println("L_Elgable--->"+L_Elgable);
         int countdata1=0,countdata2=0;
         if(L_Available.equals("LOP")){
             chartview_value.setVisibility(View.GONE);
@@ -123,17 +116,13 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
 
 
             int Total_dates = Integer.parseInt(L_Elgable);
-            System.out.println("totalDates--->"+Total_dates);
             int Apply_dates = Integer.parseInt(taken);
-            System.out.println("totalDates1--->"+Apply_dates);
             int Balance_date = Total_dates-Apply_dates;
-            System.out.println("totalDates2--->"+Balance_date);
             ArrayList<PieEntry> lve_list = new ArrayList<PieEntry>();
             PieEntry pieEntry = new PieEntry(Apply_dates, "");
             lve_list.add(pieEntry);
             PieEntry pieEntry1 = new PieEntry(Balance_date, "");
             lve_list.add(pieEntry1);
-            System.out.println("pieEntry-->"+lve_list);
             pieDataSet = new PieDataSet(lve_list, "");
             pieDataSet.setColors(colors);
             pieData = new PieData(pieDataSet);

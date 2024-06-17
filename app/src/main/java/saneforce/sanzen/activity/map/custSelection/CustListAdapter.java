@@ -51,6 +51,11 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
         holder.tv_specialist.setText(custListArrayList.get(position).getSpecialist());
         holder.tv_area.setText(custListArrayList.get(position).getTown_name());
         String selectedTap = custListArrayList.get(position).getType();
+        if (custListArrayList.get(position).getName().equalsIgnoreCase("dilip kothari")){
+            System.out.println("name---->"+custListArrayList.get(position).getName());
+            System.out.println("tag---->"+custListArrayList.get(position).getTag());
+            System.out.println("maxTag---->"+custListArrayList.get(position).getMaxTag());
+        }
         holder.tv_count.setText(String.format("%s/%s", custListArrayList.get(position).getTag(), custListArrayList.get(position).getMaxTag()));
         if (custListArrayList.get(position).getCategory().equals("")){
             holder.tv_category.setVisibility(View.VISIBLE);

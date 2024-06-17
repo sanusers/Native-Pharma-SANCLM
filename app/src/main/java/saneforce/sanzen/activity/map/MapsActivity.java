@@ -654,6 +654,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             jsonImage.put("AppName", getString(R.string.str_app_name));
             jsonImage.put("language", SharedPref.getSelectedLanguage(this));
         } catch (Exception ignored) {
+
         }
 
         JSONObject jsonObject = new JSONObject();
@@ -695,11 +696,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         btn_confirm.setOnClickListener(view -> {
             if (UtilityClass.isNetworkAvailable(this)){
+                progressBar.setVisibility(View.VISIBLE);
                 if (GeoTagImageNeed.equalsIgnoreCase("0")) {
                     CallImageAPI(jsonImage.toString(), jsonObject.toString(),progressBar);
                 } else {
-                    progressBar.setVisibility(View.VISIBLE);
-                CallAPIGeo(jsonObject.toString(),progressBar);
+                    CallAPIGeo(jsonObject.toString(),progressBar);
                 }
             }else {
                 commonUtilsMethods.showToastMessage(this,getString(R.string.no_network));
@@ -789,7 +790,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             commonUtilsMethods.showToastMessage(MapsActivity.this, jsonSaveRes.getString("Msg"));
                             dialogTagCust.dismiss();
                         } else {
-                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.something_wrong));
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
                             dialogTagCust.dismiss();
                         }
                     } catch (Exception e) {
@@ -798,7 +799,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 } else {
                     progressBar.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
                     dialogTagCust.dismiss();
                 }
             }
@@ -806,7 +807,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
                 dialogTagCust.dismiss();
             }
         });
@@ -987,13 +988,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     } else {
                         dialogTagCust.dismiss();
-                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.something_wrong));
+                        commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
                     dialogTagCust.dismiss();
                 }
             });

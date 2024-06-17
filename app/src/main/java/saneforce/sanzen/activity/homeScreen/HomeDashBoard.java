@@ -1677,7 +1677,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
   public   void CheckedTpRange() {
-         // Log.v("","TpMN :"+SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0")+"TpMN :"+SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0"));
 
         if (!SharedPref.getskipDate(HomeDashBoard.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
             if (SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") &&
