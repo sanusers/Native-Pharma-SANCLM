@@ -428,6 +428,15 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                 String eligible = jsonObject.getString("Elig");
                                 String available = jsonObject.getString("Avail");
                                 String taken = jsonObject.getString("Taken");
+                                int eligibleCount = Integer.parseInt(eligible);
+                                int availableCount = Integer.parseInt(available);
+                                int takenCount = Integer.parseInt(taken);
+                                if (availableCount<0){
+                                    available = "0";
+                                }
+                                if (eligibleCount<takenCount) {
+                                    taken = eligible;
+                                }
                                 listresource.add(new Resourcemodel_class("","", "", "", "", "","", "", "", "",
                                         "", "", "","","","","","","","","","","","","","leaveStatus",leaveType,eligible,available,taken));
                                 Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "");

@@ -132,6 +132,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MasterDataDao masterDataDao;
     AlertDialog customDialog;
     String selectedTap;
+    Button btn_confirm;
 
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @SuppressLint("SuspiciousIndentation")
@@ -620,7 +621,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         dialogTagCust.setCancelable(false);
         Objects.requireNonNull(dialogTagCust.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogTagCust.show();
-        Button btn_confirm = dialogTagCust.findViewById(R.id.btn_confirm);
+         btn_confirm = dialogTagCust.findViewById(R.id.btn_confirm);
         Button btn_cancel = dialogTagCust.findViewById(R.id.btn_cancel);
         TextView tv_cust_name = dialogTagCust.findViewById(R.id.txt_cust_name);
         TextView tv_lat = dialogTagCust.findViewById(R.id.txt_lat);
@@ -697,6 +698,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         btn_confirm.setOnClickListener(view -> {
             if (UtilityClass.isNetworkAvailable(this)){
                 progressBar.setVisibility(View.VISIBLE);
+                btn_confirm.setEnabled(false);
+                btn_confirm.setBackground(ContextCompat.getDrawable(context, R.drawable.tagging_disable_button));
                 if (GeoTagImageNeed.equalsIgnoreCase("0")) {
                     CallImageAPI(jsonImage.toString(), jsonObject.toString(),progressBar);
                 } else {
@@ -797,10 +800,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         progressBar.setVisibility(View.GONE);
                         dialogTagCust.dismiss();
                     }
+                    btn_confirm.setEnabled(true);
+                    btn_confirm.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_purple));
                 } else {
                     progressBar.setVisibility(View.GONE);
                     commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
                     dialogTagCust.dismiss();
+                    btn_confirm.setEnabled(true);
+                    btn_confirm.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_purple));
                 }
             }
 
@@ -809,6 +816,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 progressBar.setVisibility(View.GONE);
                 commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
                 dialogTagCust.dismiss();
+                btn_confirm.setEnabled(true);
+                btn_confirm.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_purple));
             }
         });
 
@@ -1356,6 +1365,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         customDialog.setView(masterSyncUpdateBinding.getRoot());
         customDialog.setCancelable(false);
+        customDialog.show();
         customDialog.show();
         masterSyncUpdateBinding.textMasterSync.setText(textUpdate);
         masterSyncUpdateBinding.syncImg.setBackground(drawable);
