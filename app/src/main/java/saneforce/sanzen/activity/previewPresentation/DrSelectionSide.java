@@ -173,14 +173,19 @@ public class DrSelectionSide extends Fragment {
             /*if (jsonArray.length() == 0) {
                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync));
             }*/
+            ArrayList<String> docNames = new ArrayList<>();
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
-                if (!jsonObject.getString("MappProds").isEmpty() && jsonObject.getString("MappProds").contains("-") && !jsonObject.getString("MProd").isEmpty()) {
-                    brands = getBrands(jsonObject.getString("MappProds"));
-                    callDrListBrand.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), brands, jsonObject.getString("MProd"), true));
-                } else {
-                    callDrListBrand.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), "", "", false));
+                if(!docNames.contains(jsonObject.getString("Name"))) {
+                    if(!jsonObject.getString("MappProds").isEmpty() && jsonObject.getString("MappProds").contains("-") && !jsonObject.getString("MProd").isEmpty()) {
+                        brands = getBrands(jsonObject.getString("MappProds"));
+                        docNames.add(jsonObject.getString("Name"));
+                        callDrListBrand.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), brands, jsonObject.getString("MProd"), true));
+                    }else {
+                        docNames.add(jsonObject.getString("Name"));
+                        callDrListBrand.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), "", "", false));
+                    }
                 }
             }
             selectDoctorAdapter = new SelectDoctorAdapter(requireContext(), callDrListBrand);

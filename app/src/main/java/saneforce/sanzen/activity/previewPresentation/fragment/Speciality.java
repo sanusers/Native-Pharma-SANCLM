@@ -10,6 +10,7 @@ import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.prev
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
@@ -56,33 +59,116 @@ public class Speciality extends Fragment {
             brandCodeList.clear();
             JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
             JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
+            LinkedHashMap<String, LinkedHashMap<String, String>> brandToProductWithPriority = new LinkedHashMap<>();
+            HashMap<String, LinkedHashMap<String, JSONObject>> brandToProducts = new HashMap<>();
 
-            for (int i = 0; i < brandSlide.length(); i++) {
-                JSONObject brandObject = brandSlide.getJSONObject(i);
-                String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "";
-                String brandCode = brandObject.getString("Product_Brd_Code");
-                String priority = brandObject.getString("Priority");
-
-                ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
-                for (int j = 0; j < prodSlide.length(); j++) {
-                    JSONObject productObject = prodSlide.getJSONObject(j);
-                    if (productObject.getString("Code").equalsIgnoreCase(brandCode)) {
-                        brandName = productObject.getString("Name");
-                        code = productObject.getString("Code");
-                        slideId = productObject.getString("SlideId");
-                        fileName = productObject.getString("FilePath");
-                        slidePriority = productObject.getString("Priority");
-                        BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
-                        productArrayList.add(product);
-                    }
-                }
-                boolean brandSelected = i == 0;
-                if (!brandCodeList.contains(brandCode) && !brandName.isEmpty()) {  //To avoid repeated of same brand
-                    BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, brandSelected, productArrayList);
-                    SlideSpecialityList.add(brandModelClass);
-                    brandCodeList.add(brandCode);
+            for (int i = 0; i < prodSlide.length(); i++) {
+                JSONObject productObject = prodSlide.getJSONObject(i);
+                String id = productObject.getString("SlideId");
+                String code = productObject.getString("Code");
+                Log.e("product", "getRequiredData: " + code + " -> " + id);
+                if(brandToProducts.containsKey(code)){
+                    brandToProducts.get(code).put(id, productObject);
+                }else {
+                    LinkedHashMap<String, JSONObject> productData = new LinkedHashMap<>();
+                    productData.put(id, productObject);
+                    brandToProducts.put(code, productData);
                 }
             }
+
+            for(int i = 0; i < brandSlide.length(); i++) {
+                JSONObject brandObject = brandSlide.getJSONObject(i);
+                String brandCode = brandObject.getString("Product_Brd_Code");
+                String priority = brandObject.getString("Priority");
+                String id = brandObject.getString("ID");
+                if(brandToProductWithPriority.containsKey(brandCode)){
+                    brandToProductWithPriority.get(brandCode).put(id, priority);
+                }else{
+                    LinkedHashMap<String, String> productsList = new LinkedHashMap<>();
+                    productsList.put(id, priority);
+                    brandToProductWithPriority.put(brandCode, productsList);
+                }
+            }
+
+            for (String brandCode : brandToProductWithPriority.keySet()) {
+                ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
+                String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "", priority = "";
+                LinkedHashMap<String, String> productWithPriority = brandToProductWithPriority.get(brandCode);
+                HashMap<String, JSONObject> products = brandToProducts.get(brandCode);
+                if(productWithPriority != null) {
+                    for (String productID : productWithPriority.keySet()) {
+                        if(products != null && products.containsKey(productID)) {
+                            JSONObject productObject = products.get(productID);
+                            if(productObject != null) {
+                                brandName = productObject.getString("Name");
+                                code = productObject.getString("Code");
+                                slideId = productObject.getString("SlideId");
+                                fileName = productObject.getString("FilePath");
+                                slidePriority = productObject.getString("Priority");
+                                if(priority.isEmpty()) priority = "500" + slidePriority;
+                                BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
+                                productArrayList.add(product);
+                            }
+                        }
+                    }
+                    if(!productWithPriority.isEmpty() && products != null) {
+                        for (String productID : productWithPriority.keySet()) {
+                            products.remove(productID);
+                        }
+                    }
+                }
+                if(products != null && !products.isEmpty()) {
+                    for (String productID : products.keySet()) {
+                        JSONObject productObject = products.get(productID);
+                        if(productObject != null) {
+                            brandName = productObject.getString("Name");
+                            code = productObject.getString("Code");
+                            slideId = productObject.getString("SlideId");
+                            fileName = productObject.getString("FilePath");
+                            slidePriority = productObject.getString("Priority");
+                            if(priority.isEmpty()) priority = "500" + slidePriority;
+                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
+                            productArrayList.add(product);
+                        }
+                    }
+                }
+                if(!brandName.isEmpty() && !productArrayList.isEmpty()) {
+                    BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, false, productArrayList);
+                    SlideSpecialityList.add(brandModelClass);
+                }
+            }
+            if(!SlideSpecialityList.isEmpty()) {
+                BrandModelClass brandModelClass = SlideSpecialityList.get(0);
+                brandModelClass.setBrandSelected(true);
+                SlideSpecialityList.set(0, brandModelClass);
+            }
+
+//            for (int i = 0; i < brandSlide.length(); i++) {
+//                JSONObject brandObject = brandSlide.getJSONObject(i);
+//                String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "";
+//                String brandCode = brandObject.getString("Product_Brd_Code");
+//                String priority = brandObject.getString("Priority");
+//
+//                ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
+//                for (int j = 0; j < prodSlide.length(); j++) {
+//                    JSONObject productObject = prodSlide.getJSONObject(j);
+//                    if (productObject.getString("Code").equalsIgnoreCase(brandCode)) {
+//                        brandName = productObject.getString("Name");
+//                        code = productObject.getString("Code");
+//                        slideId = productObject.getString("SlideId");
+//                        fileName = productObject.getString("FilePath");
+//                        slidePriority = productObject.getString("Priority");
+//                        BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
+//                        productArrayList.add(product);
+//                    }
+//                }
+//                boolean brandSelected = i == 0;
+//                if (!brandCodeList.contains(brandCode) && !brandName.isEmpty()) {  //To avoid repeated of same brand
+//                    BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, brandSelected, productArrayList);
+//                    SlideSpecialityList.add(brandModelClass);
+//                    brandCodeList.add(brandCode);
+//                }
+//            }
 
             if (!SlideSpecialityList.isEmpty()) {
                 specialityPreviewBinding.constraintNoData.setVisibility(View.GONE);
@@ -114,35 +200,118 @@ public class Speciality extends Fragment {
             brandCodeList.clear();
             JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
             JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
+            LinkedHashMap<String, LinkedHashMap<String, String>> brandToProductWithPriority = new LinkedHashMap<>();
+            HashMap<String, LinkedHashMap<String, JSONObject>> brandToProducts = new HashMap<>();
 
-            for (int i = 0; i < brandSlide.length(); i++) {
+            for (int i = 0; i < prodSlide.length(); i++) {
+                JSONObject productObject = prodSlide.getJSONObject(i);
+                String id = productObject.getString("SlideId");
+                String code = productObject.getString("Code");
+                Log.e("product", "getRequiredData: " + code + " -> " + id);
+                if(brandToProducts.containsKey(code)){
+                    brandToProducts.get(code).put(id, productObject);
+                }else {
+                    LinkedHashMap<String, JSONObject> productData = new LinkedHashMap<>();
+                    productData.put(id, productObject);
+                    brandToProducts.put(code, productData);
+                }
+            }
+
+            for(int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
-                String brandName = "";
                 String brandCode = brandObject.getString("Product_Brd_Code");
                 String priority = brandObject.getString("Priority");
+                String id = brandObject.getString("ID");
+                if(brandToProductWithPriority.containsKey(brandCode)){
+                    brandToProductWithPriority.get(brandCode).put(id, priority);
+                }else{
+                    LinkedHashMap<String, String> productsList = new LinkedHashMap<>();
+                    productsList.put(id, priority);
+                    brandToProductWithPriority.put(brandCode, productsList);
+                }
+            }
 
+            for (String brandCode : brandToProductWithPriority.keySet()) {
                 ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
-                for (int j = 0; j < prodSlide.length(); j++) {
-                    JSONObject productObject = prodSlide.getJSONObject(j);
-                    if (productObject.getString("Code").equalsIgnoreCase(brandCode)) {
-                        if (productObject.getString("Speciality_Code").contains(selectedSpecialityCode)) {
+                String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "", priority = "";
+                LinkedHashMap<String, String> productWithPriority = brandToProductWithPriority.get(brandCode);
+                HashMap<String, JSONObject> products = brandToProducts.get(brandCode);
+                if(productWithPriority != null) {
+                    for (String productID : productWithPriority.keySet()) {
+                        if(products != null && products.containsKey(productID)) {
+                            JSONObject productObject = products.get(productID);
+                            if(productObject != null && productObject.getString("Speciality_Code").contains(selectedSpecialityCode)) {
+                                brandName = productObject.getString("Name");
+                                code = productObject.getString("Code");
+                                slideId = productObject.getString("SlideId");
+                                fileName = productObject.getString("FilePath");
+                                slidePriority = productObject.getString("Priority");
+                                if(priority.isEmpty()) priority = "500" + slidePriority;
+                                BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
+                                productArrayList.add(product);
+                            }
+                        }
+                    }
+                    if(!productWithPriority.isEmpty() && products != null) {
+                        for (String productID : productWithPriority.keySet()) {
+                            products.remove(productID);
+                        }
+                    }
+                }
+                if(products != null && !products.isEmpty()) {
+                    for (String productID : products.keySet()) {
+                        JSONObject productObject = products.get(productID);
+                        if(productObject != null && productObject.getString("Speciality_Code").contains(selectedSpecialityCode)) {
                             brandName = productObject.getString("Name");
-                            String code = productObject.getString("Code");
-                            String slideId = productObject.getString("SlideId");
-                            String fileName = productObject.getString("FilePath");
-                            String slidePriority = productObject.getString("Priority");
-                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
+                            code = productObject.getString("Code");
+                            slideId = productObject.getString("SlideId");
+                            fileName = productObject.getString("FilePath");
+                            slidePriority = productObject.getString("Priority");
+                            if(priority.isEmpty()) priority = "500" + slidePriority;
+                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
                             productArrayList.add(product);
                         }
                     }
                 }
-                boolean brandSelected = i == 0;
-                if (!brandCodeList.contains(brandCode) && !brandName.isEmpty()) { //To avoid repeated of same brand
-                    BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, brandSelected, productArrayList);
+                if(!brandName.isEmpty() && !productArrayList.isEmpty()) {
+                    BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, false, productArrayList);
                     SlideSpecialityList.add(brandModelClass);
-                    brandCodeList.add(brandCode);
                 }
             }
+            if(!SlideSpecialityList.isEmpty()) {
+                BrandModelClass brandModelClass = SlideSpecialityList.get(0);
+                brandModelClass.setBrandSelected(true);
+                SlideSpecialityList.set(0, brandModelClass);
+            }
+
+//            for (int i = 0; i < brandSlide.length(); i++) {
+//                JSONObject brandObject = brandSlide.getJSONObject(i);
+//                String brandName = "";
+//                String brandCode = brandObject.getString("Product_Brd_Code");
+//                String priority = brandObject.getString("Priority");
+//
+//                ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
+//                for (int j = 0; j < prodSlide.length(); j++) {
+//                    JSONObject productObject = prodSlide.getJSONObject(j);
+//                    if (productObject.getString("Code").equalsIgnoreCase(brandCode)) {
+//                        if (productObject.getString("Speciality_Code").contains(selectedSpecialityCode)) {
+//                            brandName = productObject.getString("Name");
+//                            String code = productObject.getString("Code");
+//                            String slideId = productObject.getString("SlideId");
+//                            String fileName = productObject.getString("FilePath");
+//                            String slidePriority = productObject.getString("Priority");
+//                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
+//                            productArrayList.add(product);
+//                        }
+//                    }
+//                }
+//                boolean brandSelected = i == 0;
+//                if (!brandCodeList.contains(brandCode) && !brandName.isEmpty()) { //To avoid repeated of same brand
+//                    BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, brandSelected, productArrayList);
+//                    SlideSpecialityList.add(brandModelClass);
+//                    brandCodeList.add(brandCode);
+//                }
+//            }
 
             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(specialityPreviewBinding.rvBrandList.getWindowToken(), 0);
@@ -232,6 +401,22 @@ public class Speciality extends Fragment {
         });
 
         return v;
+    }
+
+    private BrandModelClass.Product getProductData(JSONObject productObject, String priority) {
+        try {
+            String brandName = productObject.getString("Name");
+            String code = productObject.getString("Code");
+            String slideId = productObject.getString("SlideId");
+            String fileName = productObject.getString("FilePath");
+            String slidePriority = productObject.getString("Priority");
+            if(priority.isEmpty()) priority = "500" + slidePriority;
+            return new BrandModelClass.Product(code, brandName, slideId, fileName, priority, false);
+        } catch (Exception e) {
+            Log.e("GetProductData", "getProductData: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

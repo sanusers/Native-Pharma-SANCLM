@@ -53,7 +53,8 @@ public interface SlidesDao {
       @Query("Update SlidesTableDeatils set `Background task`=:New WHERE `Background task` = :old")
      void Changestatus(String New,String old);
 
-
+    @Query("SELECT SlideName FROM SlidesTableDeatils WHERE `SlideId` = :slideId")
+    String getSlideName(String slideId);
 
     default ArrayList<SlidesTableDeatils> cursorToArrayList() {
           Cursor cursor=getAllSlides();

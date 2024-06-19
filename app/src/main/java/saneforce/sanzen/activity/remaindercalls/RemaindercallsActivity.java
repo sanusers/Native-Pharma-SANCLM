@@ -76,6 +76,7 @@ public class RemaindercallsActivity extends AppCompatActivity {
         REm_hq_code = SharedPref.getSfCode(this);
 
         app_recycler_view.setVisibility(View.VISIBLE);
+        remcallbinding.title.setText(SharedPref.getRemainderCallCap(this));
 
         remcallbinding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 //        remcallbinding.backArrow.setOnClickListener(view -> {

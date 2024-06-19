@@ -126,7 +126,7 @@ public class DCRCallActivity extends AppCompatActivity {
     public static ArrayList<StoreImageTypeUrl> arrayStore;
     @SuppressLint("StaticFieldLeak")
     public static ActivityDcrcallBinding dcrCallBinding;
-    public static String clickedLocalDate, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, PobNeed, CapPob, OverallFeedbackNeed, EventCaptureNeed, JwNeed, CusCheckInOutNeed, SampleValidation, InputValidation, PrdSamNeed, PrdRxNeed, CapSamQty, CapRxQty, RcpaCompetitorAdd, SamQtyRestriction, SamQtyRestrictValue, InpQtyRestriction, InpQtyRestrictValue, TodayPlanSfCode, PrdMandatory, InpMandatory;
+    public static String clickedLocalDate, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, PobNeed, CapPob, OverallFeedbackNeed, EventCaptureNeed, JwNeed, CusCheckInOutNeed, SampleValidation, InputValidation, PrdSamNeed, PrdRxNeed, PrdRcpaQtyNeed, CapSamQty, CapRxQty, RcpaCompetitorAdd, SamQtyRestriction, SamQtyRestrictValue, InpQtyRestriction, InpQtyRestrictValue, TodayPlanSfCode, PrdMandatory, InpMandatory;
     public static ArrayList<CallCommonCheckedList> StockSample = new ArrayList<>();
     public static ArrayList<CallCommonCheckedList> StockInput = new ArrayList<>();
     public static String isFromActivity,save_valid,hqcode;
@@ -2272,6 +2272,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     JwNeed = SharedPref.getDocJointworkNeed(this);
                     PrdSamNeed = SharedPref.getDrSampNd(this);
                     PrdRxNeed = SharedPref.getDrRxNd(this);
+                    PrdRcpaQtyNeed = SharedPref.getRcpaQtyNeed(this);
                     CusCheckInOutNeed = SharedPref.getCustSrtNd(this);
                     AdditionalCallNeed = SharedPref.getAdditionalCallNeed(this);
 
@@ -2306,6 +2307,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     JwNeed = SharedPref.getChmJointworkNeed(this);
                     PrdSamNeed = SharedPref.getChmsamqtyNeed(this);
                     PrdRxNeed = SharedPref.getChmRxQty(this); //1
+                    PrdRcpaQtyNeed = SharedPref.getRcpaQtyNeed(this);
                     CusCheckInOutNeed = SharedPref.getChmSrtNd(this);
 
                     //Mandatory
@@ -2333,6 +2335,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     JwNeed = SharedPref.getStkJointworkNeed(this);
                     PrdSamNeed = "0";
                     PrdRxNeed = SharedPref.getStkPobNeed(this);
+                    PrdRcpaQtyNeed = SharedPref.getRcpaQtyNeed(this);
                     CusCheckInOutNeed = "1";
                     PobNeed = SharedPref.getStockistPobNeed(this);
 
@@ -2358,7 +2361,8 @@ public class DCRCallActivity extends AppCompatActivity {
                     EventCaptureNeed = SharedPref.getNeNeed(this);
                     JwNeed =SharedPref.getUlJointworkNeed(this);
                     PrdSamNeed = "0";
-                    PrdRxNeed =SharedPref.getUlPobNeed(this);;
+                    PrdRxNeed =SharedPref.getUlPobNeed(this);
+                    PrdRcpaQtyNeed = SharedPref.getRcpaQtyNeed(this);
                     CusCheckInOutNeed = "1";
                     PobNeed = SharedPref.getUnlistedDoctorPobNeed(this);
 
@@ -2378,6 +2382,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     JwNeed =  SharedPref.getCipJointworkNeed(this);
                     PrdSamNeed = "0";
                     PrdRxNeed = "0";
+                    PrdRcpaQtyNeed = SharedPref.getRcpaQtyNeed(this);
                     CusCheckInOutNeed = SharedPref.getCipSrtNd(this);
 
                     //Mandatory
@@ -2396,6 +2401,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     JwNeed = "0";
                     PrdSamNeed = "0";
                     PrdRxNeed = "0";
+                    PrdRcpaQtyNeed = SharedPref.getRcpaQtyNeed(this);
 
                     //Mandatory
                     EventCapMandatory = SharedPref.getHospEventMd(this);

@@ -20,6 +20,7 @@ import saneforce.sanzen.activity.approvals.leave.LeaveApprovalActivity;
 import saneforce.sanzen.activity.approvals.tp.TpApprovalActivity;
 import saneforce.sanzen.activity.approvals.tpdeviation.TpDeviationApprovalActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.storage.SharedPref;
 
 public class AdapterApprovals extends RecyclerView.Adapter<AdapterApprovals.ViewHolder> {
     Context context;
@@ -43,8 +44,6 @@ public class AdapterApprovals extends RecyclerView.Adapter<AdapterApprovals.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.tv_name.setText(approval_list.get(position).getName());
         holder.tv_count.setText(approval_list.get(position).getCount());
-
-
 
         holder.constraintMain.setOnClickListener(view -> {
             if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.leave_approvals))) {

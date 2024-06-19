@@ -2,6 +2,8 @@ package saneforce.sanzen.activity.reports.dayReport.adapter;
 
 
 
+import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -19,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -131,23 +134,27 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             holder.rlNextVisit.setVisibility(View.VISIBLE);
         }*/
 
+        String detailingNeed = "0";
+
         switch (reportOf) {
             case Constants.DOCTOR: {
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_dr_icon));
-
                 break;
             }
             case Constants.CHEMIST: {
+                detailingNeed = SharedPref.getCHMDetailingNeed(context);
                 holder.textPromoted.setVisibility(View.INVISIBLE);
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_chemist_icon));
                 break;
             }
             case Constants.STOCKIEST: {
+                detailingNeed = SharedPref.getSTKDetailingNeed(context);
                 holder.textPromoted.setVisibility(View.INVISIBLE);
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_stockiest_icon));
                 break;
             }
             case Constants.UNLISTED_DOCTOR: {
+                detailingNeed = SharedPref.getUNDRDetailingNeed(context);
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_unlist_dr_icon));
                 break;
             }
@@ -159,6 +166,14 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_hospital_icon));
                 break;
             }
+        }
+
+        if(detailingNeed.equalsIgnoreCase("0")){
+            holder.slideLayout.setVisibility(View.VISIBLE);
+            holder.view5.setVisibility(View.VISIBLE);
+        }else {
+            holder.slideLayout.setVisibility(View.GONE);
+            holder.view5.setVisibility(View.GONE);
         }
 
         holder.viewMore.setOnClickListener(view -> {
@@ -236,9 +251,6 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
             }
         });
-
-
-
 
         holder.SlidercpaLayoutitle.setOnClickListener(view -> {
 
@@ -354,11 +366,11 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         LinearLayout viewMore, checkInOutLayout,EventLayout,rcpaLayout,rcpaLayoutitle, slideDetailsLayout,SlidercpaLayoutitle;
         RelativeLayout rlNextVisit;
         ConstraintLayout PrdLayout, InpLayout, expandLayout;
-
+        CardView slideLayout;
 
 
         RecyclerView rvPrd, rvInput,rvRcpa,rvSlideDetails;
-        View viewNextVisit;
+        View viewNextVisit, view5;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -394,13 +406,13 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             rvInput = itemView.findViewById(R.id.rv_input);
             InpLayout = itemView.findViewById(R.id.inputLayout);
             checkInOutLayout = itemView.findViewById(R.id.checkInOutLayout);
-
+            slideLayout = itemView.findViewById(R.id.cardSlideLayout);
             slideDetailsLayout = itemView.findViewById(R.id.SlideLayout);
             rvSlideDetails = itemView.findViewById(R.id.Sliderecyelerview);
             slide_arrow = itemView.findViewById(R.id.slide_arrow);
             SlidercpaLayoutitle = itemView.findViewById(R.id.SlideLayoutitle);
             textPromoted =  itemView.findViewById(R.id.product_qty);
-
+            view5 = itemView.findViewById(R.id.view5);
 
         }
     }

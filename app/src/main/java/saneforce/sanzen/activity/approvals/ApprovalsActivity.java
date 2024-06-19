@@ -171,10 +171,16 @@ public class ApprovalsActivity extends AppCompatActivity {
     private void AssignCountValues() {
         Log.v("counts", "---" + DcrCount + "---" + TpCount + "---" + LeaveCount + "---" + DeviationCount + "---" + GeoTagCount);
         list_approvals.add(new AdapterModel(getResources().getString(R.string.leave_approvals), String.valueOf(LeaveCount)));
-        list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_approvals), String.valueOf(TpCount)));
+        if (SharedPref.getTpNeed(context).equalsIgnoreCase("0")) {
+            list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_approvals), String.valueOf(TpCount)));
+        }
         list_approvals.add(new AdapterModel(getResources().getString(R.string.dcr_approvals), String.valueOf(DcrCount)));
-        list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_deviation), String.valueOf(DeviationCount)));
-        list_approvals.add(new AdapterModel(getResources().getString(R.string.geo_tagging), String.valueOf(GeoTagCount)));
+        if (SharedPref.getTpdcrMgrappr(context).equalsIgnoreCase("0")) {
+            list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_deviation), String.valueOf(DeviationCount)));
+        }
+        if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
+            list_approvals.add(new AdapterModel(getResources().getString(R.string.geo_tagging), String.valueOf(GeoTagCount)));
+        }
 
         adapterApprovals = new AdapterApprovals(ApprovalsActivity.this, list_approvals);
         approvalsBinding.rvApprovalList.setItemAnimator(new DefaultItemAnimator());

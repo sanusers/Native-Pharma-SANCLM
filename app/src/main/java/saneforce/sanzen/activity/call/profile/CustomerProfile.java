@@ -29,6 +29,7 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 
@@ -146,6 +147,28 @@ public class CustomerProfile extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
+
+        String detailingNeed;
+        switch (CallActivityCustDetails.get(0).getType()) {
+            case "2":
+                detailingNeed = SharedPref.getCHMDetailingNeed(this);
+                break;
+            case "3":
+                detailingNeed = SharedPref.getSTKDetailingNeed(this);
+                break;
+            case "4":
+                detailingNeed = SharedPref.getUNDRDetailingNeed(this);
+                break;
+            default:
+                detailingNeed = "0";
+                break;
+        }
+
+        if(detailingNeed.equalsIgnoreCase("0")){
+            btn_start.setVisibility(View.VISIBLE);
+        }else {
+            btn_start.setVisibility(View.GONE);
+        }
 
         img_back.setOnClickListener(view -> finish());
     }

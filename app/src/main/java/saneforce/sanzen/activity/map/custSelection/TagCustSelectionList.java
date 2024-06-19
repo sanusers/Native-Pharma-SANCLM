@@ -37,6 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -268,17 +269,11 @@ public class TagCustSelectionList extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonHQList = jsonArray.getJSONObject(i);
                 System.out.println("jsonHQList--->"+jsonHQList);
-                if (SelectedHqCode.equalsIgnoreCase(jsonHQList.getString("id"))) {
-                    if (HqCodeList.size() != 0) {
-                        HqNameList.add(jsonHQList.getString("name"));
-                        HqCodeList.add(jsonHQList.getString("id"));
-                    } else {
-                        HqNameList.add(jsonHQList.getString("name"));
-                        HqCodeList.add(jsonHQList.getString("id"));
-                    }
-                } else {
-                    HqNameList.add(jsonHQList.getString("name"));
-                    HqCodeList.add(jsonHQList.getString("id"));
+                String name = jsonHQList.optString("name", "");
+                String code = jsonHQList.optString("id", "");
+                if(!code.isEmpty() && code.equalsIgnoreCase(WorkPlanFragment.mHQCode1) || code.equalsIgnoreCase(WorkPlanFragment.mHQCode2)) {
+                    HqNameList.add(name);
+                    HqCodeList.add(code);
                 }
             }
 

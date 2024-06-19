@@ -127,6 +127,7 @@
         android:imeOptions="actionDone"
         android:inputType="number"
         android:maxLength="4"
+        android:visibility="gone"
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_3sdp"
         android:textColor="@color/text_qty_prd"

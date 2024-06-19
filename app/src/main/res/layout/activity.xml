@@ -48,6 +48,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_16sdp"
+                    android:id="@+id/title"
                     android:fontFamily="@font/satoshi_variable"
                     android:text="Activity"
                     android:textColor="@color/white"
@@ -141,6 +142,7 @@
                 android:layout_marginStart="@dimen/_6sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:text="List of Activity"
+                android:id="@+id/list_title"
                 android:textColor="@color/black_45"
                 android:textSize="@dimen/_7sdp"
                 android:textStyle="bold"></TextView>

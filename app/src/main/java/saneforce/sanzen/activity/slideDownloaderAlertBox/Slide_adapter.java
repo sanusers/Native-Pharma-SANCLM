@@ -54,7 +54,6 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
     @Override
     public void onBindViewHolder(@NonNull listDataViewholider holder, @SuppressLint("RecyclerView") int position) {
         holder.setIsRecyclable(false);
-
         // 0- failure,1-New, 2-Processing, 3- Success
         holder.txt_imagename.setText(list.get(position).getSlideName());
         if(list.get(position).getDownloadingStaus().equalsIgnoreCase("3")){

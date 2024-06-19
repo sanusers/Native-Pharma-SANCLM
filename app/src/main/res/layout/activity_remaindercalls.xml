@@ -52,7 +52,7 @@
                     android:layout_marginStart="@dimen/_8sdp"
                     android:fontFamily="@font/satoshi_bold"
                     android:layout_marginRight="@dimen/_10sdp"
-
+                    android:id="@+id/title"
                     android:text="Remainder Call for Doctor"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_8sdp"

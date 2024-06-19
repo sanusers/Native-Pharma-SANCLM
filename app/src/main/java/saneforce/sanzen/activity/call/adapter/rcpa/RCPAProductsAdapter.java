@@ -43,6 +43,7 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 
 public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapter.ViewHolder> {
     Context context;
@@ -113,6 +114,12 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
             ViewHolder.rv_added_comp_list.setLayoutManager(mLayoutManager);
             ViewHolder.rv_added_comp_list.setAdapter(rcpaCompListAdapter);
+        }
+
+        if(SharedPref.getRcpaCompetitorAdd(context).equalsIgnoreCase("0")){
+            holder.btn_add_comp.setVisibility(View.VISIBLE);
+        }else {
+            holder.btn_add_comp.setVisibility(View.GONE);
         }
 
         holder.btn_add_comp.setOnClickListener(view -> {

@@ -22,6 +22,7 @@ import saneforce.sanzen.activity.approvals.dcr.pojo.DcrDetailModelList;
 import saneforce.sanzen.activity.approvals.tp.pojo.TpModelList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.databinding.ActivityDcrDetailViewBinding;
+import saneforce.sanzen.storage.SharedPref;
 
 public class DcrDetailViewActivity extends AppCompatActivity implements OnItemClickListenerApproval {
     public static ArrayList<DcrDetailModelList> dcrDetailModelLists;
@@ -68,20 +69,31 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
         if (!Cus_feedback.isEmpty()) dcrDetailViewBinding.tvOverallFeedback.setText(Cus_feedback);
         if (!Cus_visitTime.isEmpty()) dcrDetailViewBinding.tvVisitTime.setText(Cus_visitTime);
         if (!Cus_modTime.isEmpty()) dcrDetailViewBinding.tvModifiedTime.setText(Cus_modTime);
+        String detailingNeed = "0";
 
         switch (Cus_type) {
             case "1":
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_dr_img));
                 break;
             case "2":
+                detailingNeed = SharedPref.getCHMDetailingNeed(this);
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_chemist_img));
                 break;
             case "3":
+                detailingNeed = SharedPref.getSTKDetailingNeed(this);
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_stockist_img));
                 break;
             case "4":
+                detailingNeed = SharedPref.getUNDRDetailingNeed(this);
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_unlistdr_img));
                 break;
+        }
+        if(detailingNeed.equalsIgnoreCase("0")){
+            dcrDetailViewBinding.constraintMainSld.setVisibility(View.VISIBLE);
+            dcrDetailViewBinding.viewDummySld.setVisibility(View.VISIBLE);
+        }else {
+            dcrDetailViewBinding.constraintMainSld.setVisibility(View.GONE);
+            dcrDetailViewBinding.viewDummySld.setVisibility(View.GONE);
         }
 
         SetUpCusListAdapter();

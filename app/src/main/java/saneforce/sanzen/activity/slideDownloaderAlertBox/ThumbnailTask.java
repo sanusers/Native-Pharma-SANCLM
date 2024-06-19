@@ -34,11 +34,11 @@ public class ThumbnailTask {
             String fileFormat = SupportClass.getFileExtension(fileName);
             File sourceFile = new File(context.getExternalFilesDir(null) + "/Slides/", fileName);
             File thumbnailStorage;
-            if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+//            if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                 thumbnailStorage = new File(context.getExternalFilesDir(null) + "/Thumbnails/");
-            }else {
-                return false;
-            }
+//            }else {
+//                return false;
+//            }
             if(!thumbnailStorage.exists()) {
                 if(!thumbnailStorage.mkdirs()) {
                     Log.e("Thumbnail Conversion", "Directory Creation Failed.");

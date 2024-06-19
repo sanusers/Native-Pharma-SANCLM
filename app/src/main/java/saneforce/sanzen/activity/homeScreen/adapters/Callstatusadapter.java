@@ -1,6 +1,8 @@
 package saneforce.sanzen.activity.homeScreen.adapters;
 
 
+import static saneforce.sanzen.activity.homeScreen.HomeDashBoard.SequentialEntry;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -174,7 +176,13 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
 //                    }
 //                }
 
-                if (isApplicableDate) {
+                if(SequentialEntry.equalsIgnoreCase("0")) {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date));
+                } else if(!SharedPref.getDayPlanStartedDate(context).isEmpty() && MyDayPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.complete_day));
+                } else if(!MyDayPlanEntriesNeeded.datesNeeded.isEmpty() && !SharedPref.getSelectedDateCal(context).isEmpty()) {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_pending_dates_to_select));
+                } else if (isApplicableDate) {
                     SharedPref.setSelectedDateCal(context, String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()));
                     HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
                     HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);

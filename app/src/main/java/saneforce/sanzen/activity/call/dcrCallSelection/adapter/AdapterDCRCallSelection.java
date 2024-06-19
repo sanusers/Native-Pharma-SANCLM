@@ -91,10 +91,10 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     public void onBindViewHolder(@NonNull AdapterDCRCallSelection.ViewHolder holder, int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_name.setText(cusListArrayList.get(position).getName());
-        if(cusListArrayList.get(position).getCategory().isEmpty())
-            holder.tv_category.setText("---");
-        else
-            holder.tv_category.setText(cusListArrayList.get(position).getCategory());
+//        if(cusListArrayList.get(position).getCategory().isEmpty())
+//            holder.tv_category.setText("---");
+//        else
+        holder.tv_category.setText(cusListArrayList.get(position).getCategory());
         holder.tv_specialist.setText(cusListArrayList.get(position).getSpecialist());
         holder.tv_area.setText(cusListArrayList.get(position).getTown_name());
 

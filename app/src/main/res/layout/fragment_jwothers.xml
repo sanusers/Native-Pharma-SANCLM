@@ -219,6 +219,7 @@
                     android:imeOptions="actionDone"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:maxLength="300"
                     android:paddingHorizontal="@dimen/_6sdp"
                     android:paddingVertical="@dimen/_2sdp"
                     android:textSize="@dimen/_6ssp"

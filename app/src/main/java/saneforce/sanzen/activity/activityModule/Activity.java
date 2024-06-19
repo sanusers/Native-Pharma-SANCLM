@@ -146,6 +146,9 @@ public class Activity extends AppCompatActivity {
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         fontmedium = ResourcesCompat.getFont(this, R.font.satoshi_medium);
         fontregular = ResourcesCompat.getFont(this, R.font.satoshi_regular);
+        binding.title.setText(SharedPref.getActivityCap(this));
+        binding.listTitle.setText(String.format("List of %s", SharedPref.getActivityCap(this)));
+        binding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(this)));
         binding.txthqName.setText(SharedPref.getHqName(Activity.this));
             binding.btnsumit.setEnabled(false);
             adapter=new ActivityAdapter(getApplicationContext(), ActivityList, classGroup -> {

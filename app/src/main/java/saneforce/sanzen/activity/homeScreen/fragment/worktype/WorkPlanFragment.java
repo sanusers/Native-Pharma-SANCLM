@@ -250,6 +250,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                     if (SelectedWorkType.getString("FWFlg").equalsIgnoreCase("F")) {
                         IsFeildWorkFlag = "F1";
+                        NeedClusterFlag1 = true;
                         rlculster.setVisibility(View.VISIBLE);
                         if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                             rlHQ.setVisibility(View.VISIBLE);
@@ -728,7 +729,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void submitMyDayPlan() {
         if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
-            if(mWTName1.isEmpty() && mFwFlg1.equalsIgnoreCase("F")) {
+            if(mWTName1.isEmpty()) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
             } else if(mTowncode1.isEmpty() && mFwFlg1.equalsIgnoreCase("F")) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_cluster));
@@ -1624,7 +1625,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         mHQName1 = FirstSeasonDayPlanObject.getString("HQNm");
                         mRemarks1 = FirstSeasonDayPlanObject.getString("Rem");
                         chk_cluster = FirstSeasonDayPlanObject.getString("Pl");
-
+                        SharedPref.setDayPlanStartedDate(requireContext(),  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
 
                         if(worktypedata.length()>0) {
                             for (int i = 0; i<worktypedata.length(); i++) {
@@ -1731,6 +1732,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             mHQCode2 = SecondSeasonDayPlanObject.getString("SFMem");
                             mHQName2 = SecondSeasonDayPlanObject.getString("HQNm");
                             chk_cluster = mTowncode2;
+                            SharedPref.setDayPlanStartedDate(requireContext(),  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
                             //   mRemarks1 = SecondSeasonDayPlanObject.getString("Rem");
 
 

@@ -139,7 +139,7 @@
  -->
     <RelativeLayout
         android:id="@+id/rl_btns"
-        android:layout_width="@dimen/_140sdp"
+        android:layout_width="@dimen/_120sdp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_16sdp"
         android:orientation="horizontal"
@@ -174,10 +174,11 @@
             android:layout_alignParentEnd="true"
             android:layout_marginHorizontal="@dimen/_5sdp"
             android:layout_marginVertical="@dimen/_5sdp"
+            android:paddingHorizontal="@dimen/_15sdp"
             android:layout_toEndOf="@id/btn_cancel"
             android:background="@drawable/bg_purple"
             android:fontFamily="@font/satoshi_bold"
-            android:text="@string/final_submit"
+            android:text="@string/submit"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="@dimen/_6ssp"

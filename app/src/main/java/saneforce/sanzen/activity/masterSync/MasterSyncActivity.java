@@ -79,7 +79,7 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkStatusTask;
 import saneforce.sanzen.utility.TimeUtils;
 
-public class    MasterSyncActivity extends AppCompatActivity {
+public class MasterSyncActivity extends AppCompatActivity {
 
    public static ActivityMasterSyncBinding binding;
     ApiInterface apiInterface;
@@ -791,7 +791,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
         //Setup
         setupModelArray.clear();
-        MasterSyncItemModel setupModel = new MasterSyncItemModel(Constants.SETUP, Constants.SETUP, "getsetups", Constants.SETUP, setupStatus, false);
+        MasterSyncItemModel setupModel = new MasterSyncItemModel(Constants.SETUP, Constants.SETUP, "getsetups_edet", Constants.SETUP, setupStatus, false);
 //        MasterSyncItemModel customSetupModel = new MasterSyncItemModel(Constants.CUSTOM_SETUP, customSetupCount, Constants.SETUP, "getcustomsetup", Constants.CUSTOM_SETUP, customSetupStatus, false);
         setupModelArray.add(setupModel);
 //        setupModelArray.add(customSetupModel);
@@ -1175,6 +1175,10 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                                 insertSlide(jsonArray);
                                                 if (!navigateFrom.equalsIgnoreCase("Login")) {
                                                     SlideAlertbox(true);}
+                                            }
+                                        } else if(masterOf.equalsIgnoreCase(Constants.SETUP)){
+                                            if (jsonArray.length() > 0){
+                                                SharedPref.InsertLogInData(MasterSyncActivity.this, jsonArray.getJSONObject(0));
                                             }
                                         }
                                     }
@@ -1870,25 +1874,29 @@ public class    MasterSyncActivity extends AppCompatActivity {
             List<String> mList=new ArrayList<>();
 
             List<String> nList =SlidesDao.getAllSlideIds();
-            if(jsonArray.length()>0){
+            if(jsonArray.length() > 0){
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String FilePath = jsonObject.optString("FilePath");
                     String id = jsonObject.optString("SlideId");
                     mList.add(id);
-                    SlidesDao.insert(new SlidesTableDeatils(id,FilePath,"","1","0","1",String.valueOf(i)));
+                    if(SlidesDao.getSlideName(id) != null && SlidesDao.getSlideName(id).equalsIgnoreCase(FilePath)) {
+                        SlidesDao.insert(new SlidesTableDeatils(id, FilePath, "", "1", "0", "1", String.valueOf(i)));
+                    }else {
+                        SlidesDao.saveSlideData(new SlidesTableDeatils(id, FilePath, "", "1", "0", "1", String.valueOf(i)));
+                    }
                 }
-                if(nList.size()>0) {
-                    for (int j=0;j<nList.size();j++){
-                        if(!mList.contains(nList.get(j))){
+                if(!nList.isEmpty()) {
+                    for (int j = 0; j<nList.size(); j++) {
+                        if(!mList.contains(nList.get(j))) {
                             SlidesDao.deleteSlideById(nList.get(j));
                         }
                     }
                 }
-
             }
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            Log.e("MasterSync Slides", "insertSlide: " + e.getMessage());
+            e.printStackTrace();
         }
 
 
@@ -1931,8 +1939,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
      SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);
     slidesViewModel.getAllSlides().observe(this, slides -> {
-        Collections.sort(slides, Comparator.comparingInt(s -> Integer.valueOf(s.getListSlidePosition())));
-
+        Collections.sort(slides, Comparator.comparingInt(s -> Integer.parseInt(s.getListSlidePosition())));
         adapter.setSlides(slides);
     });
 

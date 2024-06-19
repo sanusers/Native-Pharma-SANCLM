@@ -191,6 +191,7 @@
                     android:paddingHorizontal="@dimen/_4sdp"
                     android:paddingVertical="@dimen/_3sdp"
                     android:text="@string/rcpa"
+                    android:visibility="gone"
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_7ssp"
                     android:layout_marginEnd="@dimen/_15sdp"

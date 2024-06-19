@@ -53,7 +53,7 @@ public class PreviewActivity extends AppCompatActivity {
     PreviewTabAdapter viewPagerAdapter;
     String finalPrdNam;
     ArrayList<StoreImageTypeUrl> dummyArr = new ArrayList<>();
-    String startT, endT, CustomPresentationNeed, therapticNeed;
+    String startT, endT, presentationNeed, therapticNeed;
     CommonUtilsMethods commonUtilsMethods;
 //    CustomSetupResponse customSetupResponse;
     private RoomDB roomDB;
@@ -119,10 +119,10 @@ public class PreviewActivity extends AppCompatActivity {
                         viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
                         headingData.add("D");
                     }
-//                    if (CustomPresentationNeed.equalsIgnoreCase("0")) {
+                    if (presentationNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                         headingData.add("E");
-//                    }
+                    }
                 } else {
                     viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
                     headingData.add("A");
@@ -132,10 +132,10 @@ public class PreviewActivity extends AppCompatActivity {
                         viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
                         headingData.add("D");
                     }
-//                    if (CustomPresentationNeed.equalsIgnoreCase("0")) {
+                    if (presentationNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                         headingData.add("E");
-//                    }
+                    }
                 }
             } else {
                 viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
@@ -144,7 +144,7 @@ public class PreviewActivity extends AppCompatActivity {
                 if(therapticNeed.equalsIgnoreCase("0")) {
                     viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
                 }
-//                if (CustomPresentationNeed.equalsIgnoreCase("0"))
+                if (presentationNeed.equalsIgnoreCase("0"))
                     viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
             }
             previewBinding.viewPager.setAdapter(viewPagerAdapter);
@@ -257,7 +257,7 @@ public class PreviewActivity extends AppCompatActivity {
 //                CustomPresentationNeed = customSetupResponse.getCustomizationPrsNeed();
 //                therapticNeed = customSetupResponse.getTherapaticNeed();
 //            }
-            CustomPresentationNeed = SharedPref.getCustomizationPresentationNeed(this);
+            presentationNeed = SharedPref.getPresentationNeed(this);
             therapticNeed = SharedPref.getTherapticPresentationNeed(this);
         } catch (Exception ignored) {
         }

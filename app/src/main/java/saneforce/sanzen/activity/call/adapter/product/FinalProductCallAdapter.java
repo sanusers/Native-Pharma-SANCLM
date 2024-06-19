@@ -84,6 +84,9 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                         holder.ed_samplesQty.setVisibility(View.VISIBLE);
                     if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
                         holder.ed_rxQty.setVisibility(View.VISIBLE);
+                    if (DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
+                        holder.ed_rcpaQty.setVisibility(View.VISIBLE);
+                    }
                 }else {
                     holder.ed_rcpaQty.setText(" ");
                     holder.ed_rcpaQty.setFocusable(false);
@@ -102,6 +105,9 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
 //                        holder.ed_rcpaQty.setVisibility(View.GONE);
                             holder.switch_prompt.setVisibility(View.GONE);
                     holder.ed_rxQty.setVisibility(View.VISIBLE);
+                    if (DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
+                        holder.ed_rcpaQty.setVisibility(View.VISIBLE);
+                    }
 
 
                 }
@@ -120,6 +126,9 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                         holder.ed_samplesQty.setVisibility(View.VISIBLE);
                     if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
                         holder.ed_rxQty.setVisibility(View.VISIBLE);
+                    if (DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
+                        holder.ed_rcpaQty.setVisibility(View.VISIBLE);
+                    }
 
                 }else{
 //                    myTextView. setFocusable(true); myTextView
@@ -143,6 +152,9 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                             holder.ed_rxQty.setVisibility(View.VISIBLE);
                     if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
                         holder.ed_rxQty.setVisibility(View.VISIBLE);
+                    if (DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
+                        holder.ed_rcpaQty.setVisibility(View.VISIBLE);
+                    }
 //                    holder.ed_rcpaQty.setVisibility(View.GONE);
                     holder.switch_prompt.setVisibility(View.GONE);
                 }
@@ -152,6 +164,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                 Log.d("listcheck","case5");
                 holder.ed_samplesQty.setVisibility(View.GONE);
                 holder.ed_rxQty.setVisibility(View.GONE);
+                holder.ed_rcpaQty.setVisibility(View.GONE);
         }
 
        /* Queries    	  Qty	          Sample	          Sale	          Sale/Sample

@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 import java.util.List;
 
+import saneforce.sanzen.activity.call.DCRCallActivity;
+
 
 public class SharedPref {
 
@@ -407,6 +409,11 @@ public class SharedPref {
 
     public static final String SLIDE_DOWNLOADING_STATUS = "Slide_downloding_status";
     public static final String LAST_CALL_DATE = "Last_Call_Date";
+    public static final String CHM_DETAILING_NEED = "Detailing_chem";
+    public static final String STK_DETAILING_NEED = "Detailing_stk";
+    public static final String UNDR_DETAILING_NEED = "Detailing_undr";
+    public static final String EDIT_CALL_DEL_NEED = "EditCallDelNeed";
+    public static final String ACTIVITY_CAP = "ActivityCap";
      public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -722,6 +729,11 @@ public class SharedPref {
         editor.putString(STOCKIST_POB_NEED, jsonObject.getString("Pob_Stockist_Nd"));
         editor.putString(UNLISTED_DOCTOR_POB_NEED, jsonObject.getString("Pob_Unlstdr_Nd"));
         editor.putString(ADDITIONAL_CALL_NEED, jsonObject.getString("Additional_Call"));
+        editor.putString(CHM_DETAILING_NEED, jsonObject.getString("Detailing_chem"));
+        editor.putString(STK_DETAILING_NEED, jsonObject.getString("Detailing_stk"));
+        editor.putString(UNDR_DETAILING_NEED, jsonObject.getString("Detailing_undr"));
+        editor.putString(EDIT_CALL_DEL_NEED, jsonObject.getString("EditCallDelNeed"));
+        editor.putString(ACTIVITY_CAP, jsonObject.getString("ActivityCap"));
         editor.apply();
 
     }catch (Exception ignore){
@@ -2494,6 +2506,23 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LAST_CALL_DATE, "");
     }
 
+    public static String getCHMDetailingNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CHM_DETAILING_NEED, "");
+    }
 
+    public static String getSTKDetailingNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STK_DETAILING_NEED, "");
+    }
 
+    public static String getUNDRDetailingNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(UNDR_DETAILING_NEED, "");
+    }
+
+    public static String getEditCallDelNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(EDIT_CALL_DEL_NEED, "");
+    }
+
+    public static String getActivityCap(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ACTIVITY_CAP, "");
+    }
 }

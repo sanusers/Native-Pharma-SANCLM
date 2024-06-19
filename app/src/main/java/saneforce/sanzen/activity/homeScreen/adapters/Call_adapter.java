@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -126,13 +127,13 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                 Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
                 PopupMenu popupMenu = new PopupMenu(wrapper, v, Gravity.END);
                 popupMenu.getMenuInflater().inflate(R.menu.call_online_menu, popupMenu.getMenu());
+                MenuItem delete = popupMenu.getMenu().findItem(R.id.menuDelete);
+                delete.setVisible(SharedPref.getEditCallDelNeed(context).equalsIgnoreCase("0"));
                 popupMenu.show();
                 popupMenu.setOnMenuItemClickListener(menuItem -> {
                     if (menuItem.getItemId() == R.id.menuEdit) {
                         CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID());
                     } else if (menuItem.getItemId() == R.id.menuDelete) {
-
-
                         Dialog   dialog = new Dialog(context);
                         dialog.setContentView(R.layout.dcr_cancel_alert);
                         dialog.setCancelable(false);
@@ -147,7 +148,6 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                             dialog.dismiss();
                             try {
                                 dialogTransparent.show();
-
                                 CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode());
                                 String mMdata= masterDataDao.getDataByKey(Constants.CALL_SYNC);
                                 JSONArray jsonArray = new JSONArray(mMdata);
@@ -167,10 +167,8 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                                     masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
                                 } else {
                                     masterDataDao.insert(data);
-
                                 }
                                 CallDataRestClass.resetcallValues(context);
-
 
                                 new CountDownTimer(250, 250) {
                                     public void onTick(long millisUntilFinished) {
@@ -192,8 +190,6 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         btn_no.setOnClickListener(view12 -> {
                             dialog.dismiss();
                         });
-
-
 
                     }
                     return true;

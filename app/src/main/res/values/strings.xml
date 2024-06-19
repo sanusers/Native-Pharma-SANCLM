@@ -346,7 +346,7 @@
     <string name="az">AZ</string>
     <string name="za">ZA</string>
     <string name="san_media_pvt_ltd">SAN Media Pvt Ltd</string>
-    <string name="not_chose_after_date">Not possible to choose this date</string>
+    <string name="not_chose_after_date">Date selection not possible</string>
     <string name="old_password">Old Password</string>
     <string name="enter_old_password">Enter Old Password</string>
     <string name="new_password">New Password</string>
@@ -441,4 +441,6 @@
     <string name="please_select_a_date">Please Select a date!</string>
     <string name="remarks_must_contain_at_least_3_characters">Remarks must contain at least 3 characters</string>
     <string name="should_have_a_call">Should have a call on selected date to submit!</string>
+    <string name="submit">Submit</string>
+    <string name="no_pending_dates_to_select">No pending dates to select</string>
 </resources>
