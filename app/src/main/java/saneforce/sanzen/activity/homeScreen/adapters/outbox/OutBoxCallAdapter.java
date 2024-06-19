@@ -324,7 +324,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                             if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
                                 callsUtil.deleteOfflineCalls(cusCode, cusName, date);
                                 removeAt(pos);
-                                CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
+                             //   CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_saved_successfully));
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
                                 callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.DUPLICATE_CALL, 1);
@@ -385,7 +385,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                             }
                         }
                     }
-                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 0));
+                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 2));
                 }
             }
 

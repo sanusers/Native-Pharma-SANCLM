@@ -103,11 +103,11 @@ public class MyDayPlanEntriesNeeded {
                             assert jsonElement != null;
                             JsonArray jsonArray = jsonElement.getAsJsonArray();
                             if(finalI == 0) {
-                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 0));
+                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
 //                                callSyncSuccess = 1;
                             }
                             if(finalI == 1) {
-                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 0));
+                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 2));
 //                                dateSyncSuccess = 1;
                             }
 //                            if(callSyncSuccess == 1 && dateSyncSuccess == 1) {

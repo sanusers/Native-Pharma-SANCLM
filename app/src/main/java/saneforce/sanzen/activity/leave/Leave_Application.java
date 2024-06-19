@@ -711,7 +711,6 @@ public class Leave_Application extends AppCompatActivity {
         }
     }
 
-
     private void closeKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {

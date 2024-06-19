@@ -589,7 +589,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         }
 
         if (!isCallAvailable) {
-            CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
+       //     CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
             progressDialog.dismiss();
             notifyDataSetChanged();
         }

@@ -225,7 +225,7 @@ public class RCPASelectCompSide extends Fragment {
                             jsonObject.put("Our_prd_name", addCompListDummy.get(0).getPrd_name());
                             jsonObject.put("Competitor_Prd_bulk", finalCount + "#" + rcpaSideBinding.edCompPrd.getText().toString() + "~" + finalCount + "$" + rcpaSideBinding.edCompCompany.getText().toString() + "/");
                             jsonArray.put(jsonObject);
-                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LOCAL_MAPPED_COMPETITOR_PROD, jsonArray.toString(), 0));
+                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LOCAL_MAPPED_COMPETITOR_PROD, jsonArray.toString(), 2));
 
                             addCompList.add(new RCPAAddedCompList(addCompListDummy.get(0).getPrd_name(), addCompListDummy.get(0).getPrd_code(), addCompListDummy.get(0).getChem_names(), addCompListDummy.get(0).getChem_Code(), rcpaSideBinding.edCompCompany.getText().toString(), String.valueOf(finalCount), rcpaSideBinding.edCompPrd.getText().toString(), String.valueOf(finalCount), addCompListDummy.get(0).getRate(), false, addCompListDummy.get(0).getTotalPrdValue()));
 

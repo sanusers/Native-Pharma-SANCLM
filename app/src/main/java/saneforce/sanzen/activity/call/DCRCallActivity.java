@@ -363,6 +363,7 @@ public class DCRCallActivity extends AppCompatActivity {
 //                    }else {
                         progressDialog.dismiss();
                         IsFromDCR = true;
+                       HomeDashBoard.isDcrFrom=true;
                         Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                         startActivity(intent);
                         finish();
@@ -1041,7 +1042,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 }
             }
-            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 0));
+            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 2));
         } catch (Exception e) {
             Log.v("chkSamStk", "error---" + e);
         }
@@ -1064,7 +1065,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 }
             }
-            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 0));
+            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 2));
         } catch (Exception e) {
             Log.v("chkInpStk", "error---" + e);
         }

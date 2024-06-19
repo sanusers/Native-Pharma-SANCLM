@@ -650,9 +650,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     break;
                 case R.id.txtSave:
 
-                    if(SharedPref.getApprovalManatoryStatus(requireContext()) && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                    if(SharedPref.getApprovalManatoryStatus(requireContext())&&!SharedPref.getDesig(requireActivity()).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
                         CommonAlertBox.ApprovalAlert(requireActivity());
-                    }else if(SharedPref.getTpmanatoryStatus(requireContext())) {
+                    }else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                         CommonAlertBox.TpAlert(requireActivity());
                     }else {
                         if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
@@ -686,9 +686,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     break;
 
                 case R.id.btnsumit:
-                    if(SharedPref.getApprovalManatoryStatus(requireContext()) && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                    if(SharedPref.getApprovalManatoryStatus(requireContext())&&!SharedPref.getDesig(requireActivity()).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
                         CommonAlertBox.ApprovalAlert(requireActivity());
-                    }else if(SharedPref.getTpmanatoryStatus(requireContext())) {
+                    }else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                         CommonAlertBox.TpAlert(requireActivity());
                     }else {
                         if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
@@ -944,7 +944,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonObjectwt.put("TP_cluster", "");
                 jsonObjectwt.put("TP_worktype", "");
                 jsonData.put(SecondSeasonObject);
-                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, jsonData.toString(), 0));
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, jsonData.toString(), 2));
             } else {
                 FisrstSeasonObject.put("SFCode", SharedPref.getSfCode(requireContext()));
                 JSONObject TPDtFisrstSeasonObject = new JSONObject();
@@ -981,7 +981,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 SecondSeasonObject.put("TP_cluster", "");
                 SecondSeasonObject.put("TP_worktype", "");
                 MydayPlanDataList.put(SecondSeasonObject);
-                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, MydayPlanDataList.toString(), 0));
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, MydayPlanDataList.toString(), 2));
             }
 
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
@@ -1012,7 +1012,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonObject.put("AMSLNo", "");
                 jsonObject.put("day_status", "0");
                 jsonArray.put(jsonObject);
-                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 0));
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
             }
             SharedPref.setDayPlanStartedDate(requireContext(), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
             OutboxFragment.SetupOutBoxAdapter(requireActivity(), requireContext());
@@ -1152,7 +1152,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     Log.v("FinalSubmit", response.body() + "--" + response.isSuccessful());
                     if(response.isSuccessful()) {
                         try {
-                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, "[]", 0));
+                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, "[]", 2));
 //                            MyDayPlanEntriesNeeded.syncCallAndDate(requireContext());
                             updateLocalData();
                             SharedPref.setDayPlanStartedDate(requireContext(), "");
@@ -1199,7 +1199,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     break;
                 }
             }
-            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 0));
+            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
             for (int index = 0; index<jsonArray.length(); index++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(index);
@@ -1209,7 +1209,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     break;
                 }
             }
-            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 0));
+            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 2));
         } catch (Exception e) {
             Log.e("WorkPlan final submit", "updateLocalData: " + e.getMessage());
             e.printStackTrace();
@@ -1381,7 +1381,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     SecondSeasonObject.put("TP_worktype", "");
                                     MydayPlanDataList.put(SecondSeasonObject);
                                 }
-                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, MydayPlanDataList.toString(), 0));
+                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, MydayPlanDataList.toString(), 2));
 
                                 JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
                                 boolean isCallSyncAvailable = false;
@@ -1411,7 +1411,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     jsonObject.put("AMSLNo", "");
                                     jsonObject.put("day_status", "0");
                                     jsonArray.put(jsonObject);
-                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 0));
+                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
                                 }
                                 SharedPref.setDayPlanStartedDate(requireContext(), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
 
@@ -1822,7 +1822,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
             }else {
                 SharedPref.setDayPlanStartedDate(requireContext(), "");
-                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, "[]", 0));
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, "[]", 2));
                 binding.txtWorktype1.setText("");
                 binding.txtCluster1.setText("");
                 binding.txtheadquaters1.setText("");
@@ -1926,7 +1926,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     }
 
                                     if(success) {
-                                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, jsonArray.toString(), 0));
+                                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, jsonArray.toString(), 2));
                                     }
                                 }
 

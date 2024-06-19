@@ -366,9 +366,7 @@ public class SharedPref {
     //Approval
     public static final String APPROVAL_COUNT = "approval_count";
     // Slide
-    public static final String SLIDEID = "slideid";
-    public static final String SLIDELIST = "slidelist";
-    public static final String SLIDEDOWNCOUNT = "slidedowncount";
+    public static final String TAB_STATUS = "TAB_STATUS";
     public static final String SYNC_STATUS = "SP_MAS_DETAILS";
     public static SharedPreferences sharedPreferences;
     public static final String SP_CALL_ClEAR_MONTH = "call_clear_month";
@@ -2226,14 +2224,14 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CHECK_DATE_TODAY_PLAN, "");
     }
 
-    public static void setSetUpClickedTab(Context context, String status) {
+    public static void setSetUpClickedTab(Context context, int status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(SET_UP_CLICKED_TAB, status).apply();
+        editor.putInt(TAB_STATUS, status).apply();
     }
 
-    public static String getSetUpClickedTab(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SET_UP_CLICKED_TAB, "0");
+    public static int getSetUpClickedTab(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(TAB_STATUS, 0);
     }
 
     public static void setSkipCheckIn(Context context, boolean status) {

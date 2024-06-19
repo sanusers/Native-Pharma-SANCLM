@@ -2,6 +2,8 @@ package saneforce.sanzen.activity.tourPlan.session;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
@@ -16,6 +18,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -71,6 +74,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     SessionInterface sessionInterface;
     SessionItemAdapter sessionItemAdapter = new SessionItemAdapter();
     String sfCode = "", division_code = "", sfType = "", designation = "", state_code = "", subdivision_code = "";
+    int synccount =0;
     String jwNeed = "", drNeed = "", chemistNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", FW_meetup_mandatory = "";
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
     CommonUtilsMethods commonUtilsMethods;
@@ -195,7 +199,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull SessionEditAdapter.MyViewHolder holder, int position) {
-
+        holder.progress_hq.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
         holder.remarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
         holder.remarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
         holder.sessionData = inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition());
@@ -254,6 +258,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 if (holder.sessionData.getHQ().getName().equals("")) {
                     holder.hqField.setText("Select");
                 } else {
+
                     holder.hqField.setText(holder.sessionData.getHQ().getName());
                     holder.selectedHq = holder.sessionData.getHQ().getCode();
                 }
@@ -1007,7 +1012,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     public void getDataFromLocal(MyViewHolder holder, String hqCode) {
 
         if (!masterDataDao.getMasterSyncDataOfHQ(Constants.CLUSTER + hqCode)) {
-            prepareMasterToSync(hqCode);
+            prepareMasterToSync(holder,hqCode);
         }
 
         holder.clusterArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + hqCode).getMasterSyncDataJsonArray());
@@ -1038,7 +1043,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         return MainList;
     }
 
-    public void prepareMasterToSync(String hqCode) {
+    public void prepareMasterToSync(MyViewHolder holder ,String hqCode) {
+        holder.progress_hq.setVisibility(View.VISIBLE);
+        synccount=0;
         masterSyncArray.clear();
         MasterSyncItemModel doctorModel = new MasterSyncItemModel(Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode);
         MasterSyncItemModel cheModel = new MasterSyncItemModel(Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode);
@@ -1058,11 +1065,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         masterSyncArray.add(cluster);
         masterSyncArray.add(jWorkModel);
         for (int i = 0; i < masterSyncArray.size(); i++) {
-            sync(masterSyncArray.get(i), hqCode);
+            sync(masterSyncArray.get(i), hqCode,holder);
         }
     }
 
-    public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode) {
+    public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode,MyViewHolder holder) {
 
         if (UtilityClass.isNetworkAvailable(context)) {
             try {
@@ -1135,12 +1142,20 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     e.printStackTrace();
                                 }
                             }
+                            synccount++;
+                            if(synccount==8){
+                                holder.progress_hq.setVisibility(View.GONE);
+                            }
                         }
 
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             Log.e("test", "failed : " + t);
                             masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                            synccount++;
+                            if(synccount==8){
+                                holder.progress_hq.setVisibility(View.GONE);
+                            }
                         }
                     });
                 }
@@ -1615,6 +1630,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         ArrayList<ModelClass.SessionList.SubClass> hospitalModelArray;
         String hq_code = "", selectedHq = "", hqNeed = "", clusterNeed = "";
         ArrayList<String> selectedClusterCode = new ArrayList<>();
+        ProgressBar progress_hq;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -1637,6 +1653,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             hospLayout = itemView.findViewById(R.id.hospLayout);
             remarksLayout = itemView.findViewById(R.id.remarkLayout);
             remarks = itemView.findViewById(R.id.remarkET);
+            progress_hq = itemView.findViewById(R.id.progress_hq);
+
 
             workTypeArrow = itemView.findViewById(R.id.workTypeArrow);
             hqArrow = itemView.findViewById(R.id.hqArrow);

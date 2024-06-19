@@ -87,10 +87,8 @@ public class MasterSyncActivity extends AppCompatActivity {
     public static Dialog dialog1;
     String rsf="";
 
-
-    // Api call status
-
-    //   2 - sucesss, 1- failure ,  0- Notsync yet
+    boolean retrystatus=false;
+    //  Api call status  ======> 2 - sucesss, 1- failure ,  0- Notsync yet
     int doctorStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, setupStatus = 0;
     int apiSuccessCount = 0, itemCount = 0;
     String navigateFrom = "";
@@ -206,11 +204,6 @@ public class MasterSyncActivity extends AppCompatActivity {
 //            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         } else {
             binding.backArrow.setVisibility(View.VISIBLE);
-            if(SharedPref.getSlideDowloadingStatus(this)){
-                binding.imgDownloading.setVisibility(View.VISIBLE);
-            }else {
-                binding.imgDownloading.setVisibility(View.VISIBLE);
-            }
         }
 //        else {
 //            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -1180,9 +1173,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                 if (!navigateFrom.equalsIgnoreCase("Login")) {
                                                     SlideAlertbox(true);}
                                             }
-                                        } else if(masterOf.equalsIgnoreCase(Constants.SETUP)){
+                                        } else  if(!navigateFrom.equalsIgnoreCase("Login") && masterOf.equalsIgnoreCase(Constants.SETUP) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
                                             if (jsonArray.length() > 0){
-                                                SharedPref.InsertLogInData(MasterSyncActivity.this, jsonArray.getJSONObject(0));
+                                                SharedPref.InsertLogInData(MasterSyncActivity.this,jsonArray.getJSONObject(0));
                                             }
                                         }
                                     }
@@ -1211,7 +1204,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                         if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
                             if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
                                 SharedPref.putAutomassync(getApplicationContext(), true);
-                                SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                            //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
                                 SlideAlertbox(true);
@@ -1219,7 +1212,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 SharedPref.putAutomassync(getApplicationContext(), true);
-                                SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                            //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
@@ -1247,7 +1240,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                         if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
                             binding.backArrow.setVisibility(View.VISIBLE);
                             SharedPref.putAutomassync(getApplicationContext(), true);
-                            SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                            SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
                             if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
@@ -1255,7 +1248,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                             } else {
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
-                                SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                                SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
                                 SharedPref.putAutomassync(getApplicationContext(), true);
                                 Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -1911,13 +1904,14 @@ public class MasterSyncActivity extends AppCompatActivity {
       SlidesDao.Changestatus("1","0");
       MasterSyncActivity.SlideIds.clear();
         if(servesflag){
+            SharedPref.putSlidestatus(MasterSyncActivity.this,false);
             Intent intent1 = new Intent(MasterSyncActivity.this, SlideServices.class);
             stopService(intent1);
 
             Intent startIntent = new Intent(getApplicationContext(), SlideServices.class);
             startService(startIntent);
-
         }
+       isSingleSlideDowloaingStaus=false;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.slide_downloader_alert_box, null);
         RecyclerView recyclerView = dialogView.findViewById(R.id.recyelerview123);
@@ -1954,12 +1948,26 @@ public class MasterSyncActivity extends AppCompatActivity {
                 if(Integer.valueOf(txt_total.getText().toString())!=0){
                     if(integer==(Integer.valueOf(txt_total.getText().toString()))){
                         if (navigateFrom.equalsIgnoreCase("Login")) {
-                           dialog.dismiss();
-                            commonUtilsMethods.showToastMessage(this, "All Downloading Completed ");
-
+                            if(isSingleSlideDowloaingStaus){
+                                isSingleSlideDowloaingStaus=false;
+                                commonUtilsMethods.showToastMessage(this, "Slide Updated ");
+                            } else {
+                                commonUtilsMethods.showToastMessage(this, "Slides Downloading Completed ");
+                            }
+                            dialog.dismiss();
                         }else {
-                            commonUtilsMethods.showToastMessage(this, "All Downloading Completed ");
+                            if(isSingleSlideDowloaingStaus){
+                                isSingleSlideDowloaingStaus=false;
+                                commonUtilsMethods.showToastMessage(this, "Slide Updated ");
+                            }
+                            else {
+                                commonUtilsMethods.showToastMessage(this, "Slides Downloading Completed ");
+                            }
                         }
+
+
+                    }else {
+                        SharedPref.putSlidestatus(MasterSyncActivity.this,false);
                     }
            }
         });

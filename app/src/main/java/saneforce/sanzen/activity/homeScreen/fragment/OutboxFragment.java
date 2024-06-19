@@ -298,7 +298,7 @@ public class OutboxFragment extends Fragment {
 
         if (!isCallAvailable) {
             if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(listDates.get(ParentPos).getGroupName())) {
-                CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
+          //      CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
             }
             CallOfflineImage(ParentPos, 3, listDates.get(ParentPos).getChildItems().get(3).getEcModelClasses(), modelClass);
         }

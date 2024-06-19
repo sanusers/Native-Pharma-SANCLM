@@ -48,6 +48,7 @@ public class SlideServices extends Service {
                 if(mList.getBackgroundtask().equalsIgnoreCase("1")){
                     if (mList.getDownloadingStaus().equalsIgnoreCase("1")||mList.getDownloadingStaus().equalsIgnoreCase("0")){
                         if(!MasterSyncActivity.SlideIds.contains(mList.getSlideId())) {
+
                             String url = "https://" + SharedPref.getLogInsite(getApplicationContext()) + "/" + SharedPref.getSlideUrl(getApplicationContext()) + mList.getSlideName();
                             Data inputData = new Data.Builder()
                                     .putString("Flag", "1")

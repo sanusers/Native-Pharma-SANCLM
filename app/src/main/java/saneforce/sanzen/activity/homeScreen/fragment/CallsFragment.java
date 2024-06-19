@@ -310,7 +310,7 @@ public class CallsFragment extends Fragment {
 
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         getFromLocal(requireContext(), apiInterface);
-        CallTodayCallsAPI(requireContext(), apiInterface, false);
+       // CallTodayCallsAPI(requireContext(), apiInterface, false);
         db = RoomDB.getDatabase(requireContext());
         masterDataDao =db.masterDataDao();
 

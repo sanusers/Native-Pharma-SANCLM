@@ -377,7 +377,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                                         }
 
                                         if (success) {
-                                            masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0));
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 2));
                                         }
                                     } else {
                                         masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);

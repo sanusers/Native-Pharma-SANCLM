@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.call.fragments.jwOthers;
 
+import static android.Manifest.permission.CAMERA;
+import static androidx.camera.core.impl.utils.ContextUtil.getApplicationContext;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.call.DCRCallActivity.CapPob;
 import static saneforce.sanzen.activity.call.DCRCallActivity.SfCode;
@@ -32,6 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -58,6 +61,7 @@ import saneforce.sanzen.activity.call.pojo.CallCaptureImageList;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.activity.camera.CameraActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentJwothersBinding;
@@ -188,12 +192,14 @@ public class JWOthersFragment extends Fragment {
 
         jwOthersBinding.btnAddImgCapture.setOnClickListener(view -> {
             if (callCaptureImageLists.size() < 2) {
-                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-                    ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, 5);
+                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED )
+                        {
+                    requestMultiplePermissionsLauncher.launch(new String[]{
+                            Manifest.permission.CAMERA,});
                 } else {
-                    // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     captureFile();
-                    // } else captureFileLower();
+
                 }
             } else {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_add_more_images));
@@ -334,4 +340,26 @@ public class JWOthersFragment extends Fragment {
             Log.e("imgError", "--" + e);
         }
     }*/
+
+    public boolean CheckCameraPermission() {
+        int Camera = ContextCompat.checkSelfPermission(requireContext(), CAMERA);
+        return Camera != PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void RequestCameraPermission() {
+        ActivityCompat.requestPermissions(requireActivity(), new String[] {Manifest.permission.CAMERA}, 102);
+
+    }
+
+
+    private final ActivityResultLauncher<String[]> requestMultiplePermissionsLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+                Boolean cameraPermission = result.getOrDefault(Manifest.permission.CAMERA, false);
+                if (Boolean.TRUE.equals(cameraPermission)) {
+                    captureFile();
+                } else {
+                    CommonUtilsMethods. RequestGPSPermission(requireActivity(),"Camera");
+
+                }
+            });
 }
