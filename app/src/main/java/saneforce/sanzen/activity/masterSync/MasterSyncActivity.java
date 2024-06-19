@@ -129,6 +129,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     private TourPlanOfflineDataDao tourPlanOfflineDataDao;
     private TourPlanOnlineDataDao tourPlanOnlineDataDao;
     private SlidesDao SlidesDao;
+    public static boolean isSingleSlideDowloaingStaus;
     private boolean isCallSynced = false, isDateSynced = false;
     private int dayPlanDelayCount = 0;
     public    String isFrom="",SFTP_Date_sp="",SFTP_Date="";
