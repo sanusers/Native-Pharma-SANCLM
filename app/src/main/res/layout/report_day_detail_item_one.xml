@@ -194,6 +194,8 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:visibility="gone"
+                    android:id="@+id/pobLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
@@ -231,6 +233,8 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:visibility="gone"
+                    android:id="@+id/feedBackLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
@@ -272,7 +276,6 @@
                 android:id="@+id/view2"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"
-                android:layout_marginHorizontal="@dimen/_8sdp"
                 android:layout_marginVertical="@dimen/_1sdp"
                 android:background="#ededed"
                 app:layout_constraintBottom_toTopOf="@id/ll2"

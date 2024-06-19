@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class CalendarActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener {
@@ -48,7 +49,6 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
             date1 = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, Leave_Application.leavebinding.etFromDate.getText().toString())));
 
         }
-
         frm_date = selectefromdDate;
         initWidgets();
         selectedDate = LocalDate.now();
@@ -58,20 +58,22 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
     private void initWidgets() {
         calendarRecyclerView = findViewById(R.id.calendarRecyclerView);
         monthYearText = findViewById(R.id.monthYearTV);
+
     }
 
     private void setMonthView() {
+        String pastLeave = SharedPref.getPastLeavePost(this);
         if (frm_date.equals("1")) {
             monthYearText.setText(monthYearFromDate(selectedDate));
             ArrayList<String> daysInMonth = daysInMonthArray(selectedDate);
-            CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this, selectedDate, monthYearFromDate(selectedDate), "", "1"); // Pass selectedDate
+            CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this, selectedDate, monthYearFromDate(selectedDate), "", "1",pastLeave); // Pass selectedDate
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
             calendarRecyclerView.setLayoutManager(layoutManager);
             calendarRecyclerView.setAdapter(calendarAdapter);
         } else {
             monthYearText.setText(monthYearFromDate(date1));
             ArrayList<String> daysInMonth = daysInMonthArray(date1);
-            CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this, date1, monthYearFromDate(date1), Leave_Application.leavebinding.etFromDate.getText().toString(), "2"); // Pass selectedDate
+            CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this, date1, monthYearFromDate(date1), Leave_Application.leavebinding.etFromDate.getText().toString(), "2",pastLeave); // Pass selectedDate
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
             calendarRecyclerView.setLayoutManager(layoutManager);
             calendarRecyclerView.setAdapter(calendarAdapter);
@@ -93,7 +95,11 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
         int currentyear = today.getDayOfYear();
 
         if (frm_date.equals("1")) {
-            bfr_month.setVisibility(View.VISIBLE);
+            if (!SharedPref.getPastLeavePost(this).equalsIgnoreCase("0")){
+                bfr_month.setVisibility(View.GONE);
+            }else {
+                bfr_month.setVisibility(View.VISIBLE);
+            }
 
         } else {
             if (frm_date.equals("2")) {
@@ -168,7 +174,6 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
     public void onItemClick(int position, String dayText) {
         if (!dayText.equals("")) {
             String from_val1, from_val;
-
             List_LeaveDates.clear();
             Leavedetails_adapter l_details = new Leavedetails_adapter(this, List_LeaveDates);
             LinearLayoutManager LayoutManagerpoc = new LinearLayoutManager(CalendarActivity.this);

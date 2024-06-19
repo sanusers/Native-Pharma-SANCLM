@@ -198,6 +198,7 @@
                         android:layout_marginTop="@dimen/_3sdp">
 
                         <TextView
+                            android:id="@+id/textCluster"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/satoshi_medium"

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.Locale;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.dayReport.model.SlideRatingDetalisModelClass;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReportSlideDetailsAdapter.ViewHolder> {
 
@@ -52,14 +54,14 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
         holder.rating_bar.setRating(Float.parseFloat(String.valueOf(callDetailingLists.get(position).getRating())));
         holder.rating_bar.setEnabled(false);
 
+        
         if(!calculateDuration(callDetailingLists.get(position).getStartTime(),callDetailingLists.get(position).getEndTime()).equalsIgnoreCase("00:00:00")){
             holder.imgView.setVisibility(View.VISIBLE);
         }else {
             holder.imgView.setVisibility(View.GONE);
         }
-
         holder.imgView.setOnClickListener(v -> {
-            CharSequence initialGuideTex = Html.fromHtml(" Start Time : " + callDetailingLists.get(position).getStartTime()  +"<br><br>"+ " End Time : " + callDetailingLists.get(position).getEndTime() );
+            CharSequence initialGuideTex = Html.fromHtml(" Start Time : " +TimeUtils.timeConverter(callDetailingLists.get(position).getStartTime())  +"<br><br>"+ " End Time  : " +TimeUtils.timeConverter(callDetailingLists.get(position).getEndTime()));
             showTimelinePopUp(v,initialGuideTex);
         });
 

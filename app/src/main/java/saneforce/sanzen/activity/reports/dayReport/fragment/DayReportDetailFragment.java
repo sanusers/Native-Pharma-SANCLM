@@ -37,6 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.fragments.jwOthers.FeedbackSelectionSide;
 import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
 import saneforce.sanzen.activity.reports.dayReport.DataViewModel;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DayReportDetailAdapter;
@@ -66,7 +67,7 @@ public class DayReportDetailFragment extends Fragment {
 
     CommonUtilsMethods commonUtilsMethods;
     ProgressDialog progressDialog;
-    String rcpaItem, eventCaptureItem = "";
+    String rcpaItem, eventCaptureItem,pobItem,feedBackItem = "";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -162,6 +163,13 @@ public class DayReportDetailFragment extends Fragment {
         String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, dayReportModel.getAdate());
         assert activity != null;
         activity.title.setText(String.format("Day Report ( %s )", date));
+        binding.textDoctor.setText((SharedPref.getDrCap(requireContext())));
+        binding.textChemist.setText((SharedPref.getChmCap(requireContext())));
+        binding.textStock.setText((SharedPref.getStkCap(requireContext())));
+        binding.textUnListDoctor.setText((SharedPref.getUNLcap(requireContext())));
+        binding.textCip.setText((SharedPref.getCipCaption(requireContext())));
+        binding.textHospital.setText((SharedPref.getHospCaption(requireContext())));
+
         int drCount = 0, chmCount = 0, stkCount = 0, undrCount = 0, cipCount = 0, hosCount = 0;
 
         if (SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")) {
@@ -211,6 +219,11 @@ public class DayReportDetailFragment extends Fragment {
         }
         if (SharedPref.getDesig(requireContext()).equals("MGR")) {
             binding.hqLayout.setVisibility(View.VISIBLE);
+        }
+        if (dayReportModel.getRemarks()==null || dayReportModel.getRemarks().equals("")){
+            binding.remarksLayout.setVisibility(View.GONE);
+        }else {
+            binding.remarks.setText(dayReportModel.getRemarks());
         }
     }
 
@@ -307,20 +320,28 @@ public class DayReportDetailFragment extends Fragment {
                 callCheckInOutNeed = SharedPref.getCustSrtNd(requireContext());
                 rcpaItem = SharedPref.getSepRcpaNd(requireContext());
                 eventCaptureItem = SharedPref.getDeNeed(requireContext());
+                pobItem = SharedPref.getDocPobNeed(requireContext());
+                feedBackItem = SharedPref.getDfNeed(requireContext());
                 break;
             case "2":
                 callCheckInOutNeed = SharedPref.getChmSrtNd(requireContext());
                 rcpaItem = SharedPref.getChmRcpaNeed(requireContext());
                 eventCaptureItem = SharedPref.getCeNeed(requireContext());
+                pobItem = SharedPref.getChmPobNeed(requireContext());
+                feedBackItem = SharedPref.getCfNeed(requireContext());
                 break;
             case "3":
                 rcpaItem = "1";
                 eventCaptureItem = SharedPref.getSeNeed(requireContext());
+                pobItem = SharedPref.getStkPobNeed(requireContext());
+                feedBackItem = SharedPref.getSfNeed(requireContext());
                 break;
             case "4":
                 rcpaItem = "1";
                 callCheckInOutNeed = SharedPref.getUnlistSrtNd(requireContext());
                 eventCaptureItem = SharedPref.getNeNeed(requireContext());
+                pobItem = SharedPref.getUnlistedDoctorPobNeed(requireContext());
+                feedBackItem = SharedPref.getNfNeed(requireContext());
                 break;
             case "5":
                 callCheckInOutNeed = SharedPref.getCipSrtNd(requireContext());
@@ -329,10 +350,12 @@ public class DayReportDetailFragment extends Fragment {
                 callCheckInOutNeed = "1";
                 rcpaItem = "1";
                 eventCaptureItem = "1";
+                pobItem = "1";
+                feedBackItem = "1";
                 break;
         }
 
-        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()), dayReportModel.getACode(), dayReportModel.getSF_Code(), rcpaItem, eventCaptureItem);
+        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()), dayReportModel.getACode(), dayReportModel.getSF_Code(), rcpaItem, eventCaptureItem,pobItem, feedBackItem);
         binding.dayReportDetailRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportDetailRecView.setAdapter(adapter);
     }

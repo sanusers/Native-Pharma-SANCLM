@@ -407,7 +407,8 @@ public class SharedPref {
 
     public static final String SLIDE_DOWNLOADING_STATUS = "Slide_downloding_status";
     public static final String LAST_CALL_DATE = "Last_Call_Date";
-     public static SharedPreferences.Editor editor;
+
+    public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -2493,7 +2494,5 @@ public class SharedPref {
     public static String getLastCallDate(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LAST_CALL_DATE, "");
     }
-
-
 
 }

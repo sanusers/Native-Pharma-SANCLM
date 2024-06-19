@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.storage.SharedPref;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
     Context context;
@@ -42,13 +43,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.tv_name.setText(getProductList.get(position).getName());
-
-
-
         holder.tv_samQty.setText(getProductList.get(position).getSample_qty());
         holder.tv_rxQty.setText(getProductList.get(position).getRx_qty());
         holder.tv_rcpa.setText(getProductList.get(position).getRcpa_qty());
-        System.out.println("category--->"+category);
         if(category.equalsIgnoreCase("chemist_") || category.equalsIgnoreCase("stockiest_")){
             holder.img_promoted.setVisibility(View.INVISIBLE);
         }
@@ -60,6 +57,18 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.tv_name.setOnClickListener(view -> {
             commonUtilsMethods.displayPopupWindow(null,context,view,getProductList.get(position).getName());
        });
+        switch (category){
+            case "DOCTOR":
+                if (SharedPref.getRcpaQtyNeed(context).equals("0")){
+                    holder.tv_rcpa.setVisibility(View.VISIBLE);
+                }else{
+                    holder.tv_rcpa.setVisibility(View.INVISIBLE);
+                }
+                break;
+            default:
+                holder.tv_rcpa.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 
     @Override

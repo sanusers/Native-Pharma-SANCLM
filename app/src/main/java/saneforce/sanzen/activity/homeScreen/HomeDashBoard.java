@@ -92,6 +92,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
+import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
 import saneforce.sanzen.activity.activityModule.Activity;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.forms.Forms_activity;
@@ -190,6 +191,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     long delay = 4000;
     Runnable runnable;
     private static boolean isDateSelectionClicked = false;
+    private LeaveViewModel leaveViewModel;
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -297,13 +299,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
         fragmentManager = getSupportFragmentManager();
         gpsTrack = new GPSTrack(this);
-
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
         roomDB=RoomDB.getDatabase(context);
         masterDataDao=roomDB.masterDataDao();
         slidesDao=roomDB.slidesDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
+        leaveViewModel = new LeaveViewModel(this);
 
         tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
@@ -401,6 +403,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             @Override
             public void onDrawerOpened(@NonNull View drawerView) {
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
+                leaveViewModel.updateLeaveStatusMasterSync();
             }
 
             @Override
@@ -1633,7 +1636,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         else
             menu.findItem(R.id.quiz).setVisible(false);
 
-
         if (SharedPref.getSurveyNd(this).equalsIgnoreCase("0"))
             menu.findItem(R.id.survey).setVisible(false);
         else
@@ -1697,7 +1699,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 int mCurrentDate = Integer.parseInt(mCurrDate);
 
 
-                if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
+               /* if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan....");
                     TourplanFlog="0";
                     SharedPref.setTpStatus(HomeDashBoard.this, true);
@@ -1717,7 +1719,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         startActivity(intent);
                 }else {
                     SharedPref.setTpStatus(HomeDashBoard.this, false);
-                }
+                }*/
             }
         }
     }

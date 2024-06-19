@@ -385,7 +385,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
             mapsBinding.tagTvDoctor.setVisibility(View.VISIBLE);
-            mapsBinding.tagTvChemist.setText(SharedPref.getDrCap(this));
+            mapsBinding.tagTvDoctor.setText(SharedPref.getDrCap(this));
         }
 
         if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {

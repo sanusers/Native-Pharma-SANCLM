@@ -26,6 +26,7 @@ import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.WrapContentLinearLayoutManager;
 import saneforce.sanzen.databinding.FragmentProductsBinding;
+import saneforce.sanzen.storage.SharedPref;
 
 public class ProductFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
@@ -51,6 +52,7 @@ public class ProductFragment extends Fragment {
 
         HiddenVisibleFunction();
         AddProductList();
+        changeCaption();
 
         productsBinding.searchPrd.addTextChangedListener(new TextWatcher() {
             @Override
@@ -193,5 +195,38 @@ public class ProductFragment extends Fragment {
             }
         }
         checkProductListAdapter.filterList(filteredNames);
+    }
+    private void changeCaption(){
+        switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
+            case "1":
+                if (SharedPref.getDocProductCaption(requireContext()).isEmpty() || SharedPref.getDocProductCaption(requireContext()).equalsIgnoreCase(null)){
+                    productsBinding.tagPrdName.setText("Product Name");
+                }else{
+                    productsBinding.tagPrdName.setText(SharedPref.getDocProductCaption(requireContext()));
+                }
+                break;
+            case "2":
+                if (SharedPref.getChmProductCaption(requireContext()).isEmpty() || SharedPref.getChmProductCaption(requireContext()).equalsIgnoreCase(null)){
+                    productsBinding.tagPrdName.setText("Product Name");
+                }else{
+                    productsBinding.tagPrdName.setText(SharedPref.getChmProductCaption(requireContext()));
+                }
+                break;
+            case "3":
+                if (SharedPref.getStkProductCaption(requireContext()).isEmpty() || SharedPref.getStkProductCaption(requireContext()).equalsIgnoreCase(null)){
+                    productsBinding.tagPrdName.setText("Product Name");
+                }else{
+                    productsBinding.tagPrdName.setText(SharedPref.getStkProductCaption(requireContext()));
+                }
+                break;
+            case "4":
+                if (SharedPref.getUlProductCaption(requireContext()).isEmpty() || SharedPref.getUlProductCaption(requireContext()).equalsIgnoreCase(null)){
+                    productsBinding.tagPrdName.setText("Product Name");
+                }else{
+                    productsBinding.tagPrdName.setText(SharedPref.getUlProductCaption(requireContext()));
+                }
+                break;
+
+        }
     }
 }
