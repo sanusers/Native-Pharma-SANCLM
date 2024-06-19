@@ -74,18 +74,186 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
         switch (Cus_type) {
             case "1":
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_dr_img));
+                if (SharedPref.getDocProductCaption(this).isEmpty() || SharedPref.getDocProductCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
+                    dcrDetailViewBinding.tagPrdName.setText("Product Name");
+                }else{
+                    dcrDetailViewBinding.tagSamplePrd.setText(SharedPref.getDocProductCaption(this));
+                    dcrDetailViewBinding.tagPrdName.setText(SharedPref.getDocProductCaption(this));
+                }
+                if ( SharedPref.getDrSmpQCap(this).isEmpty() ||  SharedPref.getDrSmpQCap(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSample.setText("Samples");
+                }else {
+                    dcrDetailViewBinding.tagSample.setText(( SharedPref.getDrSmpQCap(this)));
+                }
+                if (SharedPref.getDrRxQCap(this).isEmpty() || SharedPref.getDrRxQCap(this).isEmpty()){
+                    dcrDetailViewBinding.tagRxQty.setText("RX Qty");
+                }else {
+                    dcrDetailViewBinding.tagRxQty.setText(SharedPref.getDrRxQCap(this));
+                }
+                if (SharedPref.getDocInputCaption(this).isEmpty() || SharedPref.getDocInputCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagInput.setText("Input");
+                    dcrDetailViewBinding.tagInputNameMain.setText("Input Name");
+                }else {
+                    dcrDetailViewBinding.tagInput.setText(SharedPref.getDocInputCaption(this));
+                    dcrDetailViewBinding.tagInputNameMain.setText(SharedPref.getDocInputCaption(this));
+                }
+                if (SharedPref.getRcpaQtyNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.VISIBLE);
+                }else{
+                    dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.INVISIBLE);
+                }
+                if (SharedPref.getDocPobNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagPob.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvPob.setVisibility(View.VISIBLE);
+                }
+                if (SharedPref.getDocJointworkNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
+                }
+                if ( SharedPref.getDfNeed(this).isEmpty() || SharedPref.getDfNeed(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagOverallFeedback.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvOverallFeedback.setVisibility(View.INVISIBLE);
+                }else{
+                    dcrDetailViewBinding.tagOverallFeedback.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvOverallFeedback.setVisibility(View.VISIBLE);
+                }
                 break;
             case "2":
                 detailingNeed = SharedPref.getCHMDetailingNeed(this);
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_chemist_img));
+                if (SharedPref.getChmProductCaption(this).isEmpty() || SharedPref.getChmProductCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
+                    dcrDetailViewBinding.tagPrdName.setText("Product Name");
+                }else{
+                    dcrDetailViewBinding.tagSamplePrd.setText(SharedPref.getChmProductCaption(this));
+                    dcrDetailViewBinding.tagPrdName.setText(SharedPref.getChmProductCaption(this));
+                }
+                if ( SharedPref.getChmSmpCap(this).isEmpty() ||  SharedPref.getChmSmpCap(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSample.setText("Samples");
+                }else {
+                    dcrDetailViewBinding.tagSample.setText(( SharedPref.getChmSmpCap(this)));
+                }
+                if (SharedPref.getChmQCap(this).isEmpty() || SharedPref.getChmQCap(this).isEmpty()){
+                    dcrDetailViewBinding.tagRxQty.setText("RX Qty");
+                }else {
+                    dcrDetailViewBinding.tagRxQty.setText(SharedPref.getChmQCap(this));
+                }
+                if (SharedPref.getChmInputCaption(this).isEmpty() || SharedPref.getChmInputCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagInput.setText("Input");
+                    dcrDetailViewBinding.tagInputNameMain.setText("Input Name");
+                }else {
+                    dcrDetailViewBinding.tagInput.setText(SharedPref.getChmInputCaption(this));
+                    dcrDetailViewBinding.tagInputNameMain.setText(SharedPref.getChmInputCaption(this));
+                }
+                if ( SharedPref.getChmPobNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagPob.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvPob.setVisibility(View.VISIBLE);
+                }
+                if (SharedPref.getChmJointworkNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
+                }
+                if (SharedPref.getCfNeed(this).isEmpty() || SharedPref.getCfNeed(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
+                }
                 break;
             case "3":
                 detailingNeed = SharedPref.getSTKDetailingNeed(this);
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_stockist_img));
+                if (SharedPref.getStkProductCaption(this).isEmpty() || SharedPref.getStkProductCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
+                    dcrDetailViewBinding.tagPrdName.setText("Product Name");
+                }else{
+                    dcrDetailViewBinding.tagSamplePrd.setText(SharedPref.getStkProductCaption(this));
+                    dcrDetailViewBinding.tagPrdName.setText(SharedPref.getStkProductCaption(this));
+                }
+                if (SharedPref.getStkQCap(this).isEmpty() || SharedPref.getStkQCap(this).isEmpty()){
+                    dcrDetailViewBinding.tagRxQty.setText("RX Qty");
+                }else {
+                    dcrDetailViewBinding.tagRxQty.setText(SharedPref.getStkQCap(this));
+                }
+                if (SharedPref.getStkInputCaption(this).isEmpty() || SharedPref.getStkInputCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagInput.setText("Input");
+                    dcrDetailViewBinding.tagInputNameMain.setText("Input Name");
+                }else {
+                    dcrDetailViewBinding.tagInput.setText(SharedPref.getStkInputCaption(this));
+                    dcrDetailViewBinding.tagInputNameMain.setText(SharedPref.getStkInputCaption(this));
+                }
+                if ( SharedPref.getStkPobNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagPob.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvPob.setVisibility(View.VISIBLE);
+                }
+                if (SharedPref.getStkJointworkNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
+                }
+                if (SharedPref.getSfNeed(this).isEmpty() || SharedPref.getSfNeed(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
+                }
                 break;
             case "4":
                 detailingNeed = SharedPref.getUNDRDetailingNeed(this);
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_unlistdr_img));
+                if (SharedPref.getUlProductCaption(this).isEmpty() || SharedPref.getUlProductCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
+                    dcrDetailViewBinding.tagPrdName.setText("Product Name");
+                }else{
+                    dcrDetailViewBinding.tagSamplePrd.setText(SharedPref.getUlProductCaption(this));
+                    dcrDetailViewBinding.tagPrdName.setText(SharedPref.getUlProductCaption(this));
+                }
+                if ( SharedPref.getNlSmpQCap(this).isEmpty() ||  SharedPref.getNlSmpQCap(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSample.setText("Samples");
+                }else {
+                    dcrDetailViewBinding.tagSample.setText(( SharedPref.getNlSmpQCap(this)));
+                }
+                if (SharedPref.getNlRxQCap(this).isEmpty() || SharedPref.getNlRxQCap(this).isEmpty()){
+                    dcrDetailViewBinding.tagRxQty.setText("RX Qty");
+                }else {
+                    dcrDetailViewBinding.tagRxQty.setText(SharedPref.getNlRxQCap(this));
+                }
+                if (SharedPref.getUlInputCaption(this).isEmpty() || SharedPref.getUlInputCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagInput.setText("Input");
+                    dcrDetailViewBinding.tagInputNameMain.setText("Input Name");
+                }else {
+                    dcrDetailViewBinding.tagInput.setText(SharedPref.getUlInputCaption(this));
+                    dcrDetailViewBinding.tagInputNameMain.setText(SharedPref.getUlInputCaption(this));
+                }
+                if ( SharedPref.getUnlistedDoctorPobNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagPob.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvPob.setVisibility(View.VISIBLE);
+                }
+                if (SharedPref.getUlJointworkNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
+                }
+                if (SharedPref.getNfNeed(this).isEmpty() || SharedPref.getNfNeed(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
+                }
                 break;
         }
         if(detailingNeed.equalsIgnoreCase("0")){
@@ -125,7 +293,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
     }
 
     private void SetUpCusListAdapter() {
-        adapterCusSingleList = new AdapterCusSingleList(DcrDetailViewActivity.this, dcrDetailModelLists, DcrDetailViewActivity.this);
+        adapterCusSingleList = new AdapterCusSingleList(DcrDetailViewActivity.this, dcrDetailModelLists, DcrDetailViewActivity.this,Cus_type);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         dcrDetailViewBinding.rvDcrListNames.setLayoutManager(mLayoutManager);
         dcrDetailViewBinding.rvDcrListNames.setAdapter(adapterCusSingleList);
@@ -159,15 +327,184 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
         switch (dcrDetailModelList.getType()) {
             case "1":
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_dr_img));
+                if (SharedPref.getDocProductCaption(this).isEmpty() || SharedPref.getDocProductCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
+                    dcrDetailViewBinding.tagPrdName.setText("Product Name");
+                }else{
+                    dcrDetailViewBinding.tagSamplePrd.setText(SharedPref.getDocProductCaption(this));
+                    dcrDetailViewBinding.tagPrdName.setText(SharedPref.getDocProductCaption(this));
+                }
+                if ( SharedPref.getDrSmpQCap(this).isEmpty() ||  SharedPref.getDrSmpQCap(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSample.setText("Samples");
+                }else {
+                    dcrDetailViewBinding.tagSample.setText(( SharedPref.getDrSmpQCap(this)));
+                }
+                if (SharedPref.getDrRxQCap(this).isEmpty() || SharedPref.getDrRxQCap(this).isEmpty()){
+                    dcrDetailViewBinding.tagRxQty.setText("RX Qty");
+                }else {
+                    dcrDetailViewBinding.tagRxQty.setText(SharedPref.getDrRxQCap(this));
+                }
+                if (SharedPref.getDocInputCaption(this).isEmpty() || SharedPref.getDocInputCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagInput.setText("Input");
+                    dcrDetailViewBinding.tagInputNameMain.setText("Input Name");
+                }else {
+                    dcrDetailViewBinding.tagInput.setText(SharedPref.getDocInputCaption(this));
+                    dcrDetailViewBinding.tagInputNameMain.setText(SharedPref.getDocInputCaption(this));
+                }
+                if (SharedPref.getRcpaQtyNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.VISIBLE);
+                }else{
+                    dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.INVISIBLE);
+                }
+                if (SharedPref.getDocPobNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagPob.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvPob.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagPob.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvPob.setVisibility(View.INVISIBLE);
+                }
+                if (SharedPref.getDocJointworkNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
+                }
+                if ( SharedPref.getDfNeed(this).isEmpty() || SharedPref.getDfNeed(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagOverallFeedback.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvOverallFeedback.setVisibility(View.INVISIBLE);
+                }else{
+                    dcrDetailViewBinding.tagOverallFeedback.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvOverallFeedback.setVisibility(View.VISIBLE);
+                }
                 break;
             case "2":
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_chemist_img));
+                if (SharedPref.getChmProductCaption(this).isEmpty() || SharedPref.getChmProductCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
+                    dcrDetailViewBinding.tagPrdName.setText("Product Name");
+                }else{
+                    dcrDetailViewBinding.tagSamplePrd.setText(SharedPref.getChmProductCaption(this));
+                    dcrDetailViewBinding.tagPrdName.setText(SharedPref.getChmProductCaption(this));
+                }
+                if ( SharedPref.getChmSmpCap(this).isEmpty() ||  SharedPref.getChmSmpCap(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSample.setText("Samples");
+                }else {
+                    dcrDetailViewBinding.tagSample.setText(( SharedPref.getChmSmpCap(this)));
+                }
+                if (SharedPref.getChmQCap(this).isEmpty() || SharedPref.getChmQCap(this).isEmpty()){
+                    dcrDetailViewBinding.tagRxQty.setText("RX Qty");
+                }else {
+                    dcrDetailViewBinding.tagRxQty.setText(SharedPref.getChmQCap(this));
+                }
+                if (SharedPref.getChmInputCaption(this).isEmpty() || SharedPref.getChmInputCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagInput.setText("Input");
+                    dcrDetailViewBinding.tagInputNameMain.setText("Input Name");
+                }else {
+                    dcrDetailViewBinding.tagInput.setText(SharedPref.getChmInputCaption(this));
+                    dcrDetailViewBinding.tagInputNameMain.setText(SharedPref.getChmInputCaption(this));
+                }
+                if ( SharedPref.getChmPobNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagPob.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvPob.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagPob.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvPob.setVisibility(View.INVISIBLE);
+                }
+                if (SharedPref.getChmJointworkNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
+                }
+                if (SharedPref.getCfNeed(this).isEmpty() || SharedPref.getCfNeed(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
+                }
+                dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.VISIBLE);
                 break;
             case "3":
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_stockist_img));
+                if (SharedPref.getStkProductCaption(this).isEmpty() || SharedPref.getStkProductCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
+                    dcrDetailViewBinding.tagPrdName.setText("Product Name");
+                }else{
+                    dcrDetailViewBinding.tagSamplePrd.setText(SharedPref.getStkProductCaption(this));
+                    dcrDetailViewBinding.tagPrdName.setText(SharedPref.getStkProductCaption(this));
+                }
+                if (SharedPref.getStkQCap(this).isEmpty() || SharedPref.getStkQCap(this).isEmpty()){
+                    dcrDetailViewBinding.tagRxQty.setText("RX Qty");
+                }else {
+                    dcrDetailViewBinding.tagRxQty.setText(SharedPref.getStkQCap(this));
+                }
+                if (SharedPref.getStkInputCaption(this).isEmpty() || SharedPref.getStkInputCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagInput.setText("Input");
+                    dcrDetailViewBinding.tagInputNameMain.setText("Input Name");
+                }else {
+                    dcrDetailViewBinding.tagInput.setText(SharedPref.getStkInputCaption(this));
+                    dcrDetailViewBinding.tagInputNameMain.setText(SharedPref.getStkInputCaption(this));
+                }
+                if ( SharedPref.getStkPobNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagPob.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvPob.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagPob.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvPob.setVisibility(View.INVISIBLE);
+                }
+                if (SharedPref.getStkJointworkNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
+                }
+                dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.VISIBLE);
                 break;
             case "4":
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_unlistdr_img));
+                if (SharedPref.getUlProductCaption(this).isEmpty() || SharedPref.getUlProductCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
+                    dcrDetailViewBinding.tagPrdName.setText("Product Name");
+                }else{
+                    dcrDetailViewBinding.tagSamplePrd.setText(SharedPref.getUlProductCaption(this));
+                    dcrDetailViewBinding.tagPrdName.setText(SharedPref.getUlProductCaption(this));
+                }
+                if ( SharedPref.getNlSmpQCap(this).isEmpty() ||  SharedPref.getNlSmpQCap(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSample.setText("Samples");
+                }else {
+                    dcrDetailViewBinding.tagSample.setText(( SharedPref.getNlSmpQCap(this)));
+                }
+                if (SharedPref.getNlRxQCap(this).isEmpty() || SharedPref.getNlRxQCap(this).isEmpty()){
+                    dcrDetailViewBinding.tagRxQty.setText("RX Qty");
+                }else {
+                    dcrDetailViewBinding.tagRxQty.setText(SharedPref.getNlRxQCap(this));
+                }
+                if (SharedPref.getUlInputCaption(this).isEmpty() || SharedPref.getUlInputCaption(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagInput.setText("Input");
+                    dcrDetailViewBinding.tagInputNameMain.setText("Input Name");
+                }else {
+                    dcrDetailViewBinding.tagInput.setText(SharedPref.getUlInputCaption(this));
+                    dcrDetailViewBinding.tagInputNameMain.setText(SharedPref.getUlInputCaption(this));
+                }
+                if ( SharedPref.getUnlistedDoctorPobNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagPob.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvPob.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagPob.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvPob.setVisibility(View.INVISIBLE);
+                }
+                if (SharedPref.getUlJointworkNeed(this).equals("0")){
+                    dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
+                    dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
+                }
+                dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.VISIBLE);
                 break;
         }
 

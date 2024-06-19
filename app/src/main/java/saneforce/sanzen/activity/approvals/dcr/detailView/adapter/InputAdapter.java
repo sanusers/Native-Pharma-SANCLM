@@ -18,7 +18,7 @@ public class InputAdapter extends RecyclerView.Adapter<InputAdapter.ViewHolder> 
     Context context;
     ArrayList<SaveCallInputList> getInputList;
 
-    public InputAdapter(Context context, ArrayList<SaveCallInputList> getInputList) {
+    public  InputAdapter(Context context, ArrayList<SaveCallInputList> getInputList) {
         this.context = context;
         this.getInputList = getInputList;
     }

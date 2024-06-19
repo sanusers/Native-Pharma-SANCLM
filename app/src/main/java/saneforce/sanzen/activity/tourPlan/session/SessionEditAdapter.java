@@ -259,6 +259,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
 
         }
+        if (SharedPref.getWrkAreaName(context).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)){
+            holder.textCluster.setText("Cluster");
+        }else{
+            holder.textCluster.setText(SharedPref.getWrkAreaName(context));
+        }
 
         if (!holder.selectedHq.equals("")) {
             getDataFromLocal(holder, holder.selectedHq);
@@ -1578,7 +1583,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         public LinearLayout searchClearIcon;
         public TextView workTypeField, hqField, clusterField, jcField, drField, chemistField, stockiestField, unListedDrField, cipField, hospField;
         public TextView listedDrCapTV, cheCapTV, stockCapTV, unListedDrCapTV, hospCapTV, cipCapTV;
-        public TextView clusterCount, jcCount, drCount, chemistCount, stockiestCount, unListedDrCount, cipCount, hospCount;
+        public TextView clusterCount, jcCount, drCount, chemistCount, stockiestCount, unListedDrCount, cipCount, hospCount,textCluster;
         public LinearLayout sessionDelete, workTypeLayout, hqLayout, clusterLayout, jcLayout, drLayout, chemistLayout, stockiestLayout, unListedDrLayout, cipLayout, hospLayout, remarksLayout;
         public ImageView workTypeArrow, hqArrow, clusterArrow, jcArrow, drArrow, chemistArrow, stockiestArrow, unListedDrArrow, cipArrow, hospArrow;
         public ModelClass.SessionList sessionData = new ModelClass.SessionList();
@@ -1673,6 +1678,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
             listCardView = itemView.findViewById(R.id.listCardView);
             itemRecView = itemView.findViewById(R.id.sessionItemRecView);
+            textCluster = itemView.findViewById(R.id.textCluster);
 
             listedDrCapTV.setText(SharedPref.getDrCap(context));
             cheCapTV.setText(SharedPref.getChmCap(context));

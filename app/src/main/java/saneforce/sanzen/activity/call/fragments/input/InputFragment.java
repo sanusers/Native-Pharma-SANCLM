@@ -25,6 +25,7 @@ import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.WrapContentLinearLayoutManager;
 import saneforce.sanzen.databinding.FragmentInputBinding;
+import saneforce.sanzen.storage.SharedPref;
 
 public class InputFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
@@ -40,6 +41,7 @@ public class InputFragment extends Fragment {
         fragmentInputBinding = FragmentInputBinding.inflate(inflater);
         View v = fragmentInputBinding.getRoot();
         dummyAdapter();
+        changeCaption();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
@@ -90,5 +92,38 @@ public class InputFragment extends Fragment {
             }
         }
         checkInputListAdapter.filterList(filteredNames);
+    }
+    private void changeCaption(){
+        switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
+            case "1":
+                if (SharedPref.getDocInputCaption(requireContext()).isEmpty() || SharedPref.getDocInputCaption(requireContext()).equalsIgnoreCase(null)){
+                    fragmentInputBinding.tagInputName.setText("Input Name");
+                }else{
+                    fragmentInputBinding.tagInputName.setText(SharedPref.getDocInputCaption(requireContext()));
+                }
+                break;
+            case "2":
+                if (SharedPref.getChmInputCaption(requireContext()).isEmpty() || SharedPref.getChmInputCaption(requireContext()).equalsIgnoreCase(null)){
+                    fragmentInputBinding.tagInputName.setText("Input Name");
+                }else{
+                    fragmentInputBinding.tagInputName.setText(SharedPref.getChmInputCaption(requireContext()));
+                }
+                break;
+            case "3":
+                if (SharedPref.getStkInputCaption(requireContext()).isEmpty() || SharedPref.getStkInputCaption(requireContext()).equalsIgnoreCase(null)){
+                    fragmentInputBinding.tagInputName.setText("Input Name");
+                }else{
+                    fragmentInputBinding.tagInputName.setText(SharedPref.getStkInputCaption(requireContext()));
+                }
+                break;
+            case "4":
+                if (SharedPref.getUlInputCaption(requireContext()).isEmpty() || SharedPref.getUlInputCaption(requireContext()).equalsIgnoreCase(null)){
+                    fragmentInputBinding.tagInputName.setText("Input Name");
+                }else{
+                    fragmentInputBinding.tagInputName.setText(SharedPref.getUlInputCaption(requireContext()));
+                }
+                break;
+
+        }
     }
 }

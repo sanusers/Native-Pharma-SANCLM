@@ -72,7 +72,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     CommonUtilsMethods commonUtilsMethods;
     ProductAdapter productAdapter;
     InputAdapter inputAdapter;
-    boolean checkInOutNeed, VisitNeed,isRcpaRequested,isCaptureRequested;
+    boolean checkInOutNeed, VisitNeed,isRcpaRequested,isCaptureRequested,isPobRequested,isFeedBackRequested;
     ArrayList productPromoted = new ArrayList();
     private ValueFilter valueFilter;
     ArrayList<EventCaptureModelClass> EventCaptureData = new ArrayList<>();
@@ -87,7 +87,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     ArrayList<DayReportRcpaModelClass> rcpaModelArray;
 
 
-    public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst,String ActCode,String ReportingSfCode,String rcpaItem,String eventCaptureItem) {
+    public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst,String ActCode,String ReportingSfCode,String rcpaItem,String eventCaptureItem,String pobItem,String feedBackItem) {
         this.context = context;
         this.arrayList = arrayList;
         this.supportModelArray = arrayList;
@@ -99,6 +99,8 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         VisitNeed = nextVst.equalsIgnoreCase("0");
         isRcpaRequested = rcpaItem.equals("0");
         isCaptureRequested = eventCaptureItem.equals("0");
+        isPobRequested = pobItem.equals("0");
+        isFeedBackRequested = feedBackItem.equals("0");
     }
 
     @NonNull
@@ -128,34 +130,157 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         if (isCaptureRequested){
             holder.EventLayout.setVisibility(View.VISIBLE);
         }
-
-       /* if (VisitNeed) {
-            holder.viewNextVisit.setVisibility(View.VISIBLE);
-            holder.rlNextVisit.setVisibility(View.VISIBLE);
-        }*/
+        if (isPobRequested){
+            holder.pobLayOut.setVisibility(View.VISIBLE);
+        }
+        if (isFeedBackRequested){
+            holder.feedBackLayout.setVisibility(View.VISIBLE);
+        }
 
         String detailingNeed = "0";
 
         switch (reportOf) {
             case Constants.DOCTOR: {
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_dr_icon));
+                if (SharedPref.getDocProductCaption(context).isEmpty() || SharedPref.getDocProductCaption(context).equalsIgnoreCase(null)){
+                    holder.textProduct.setText("Product");
+                    holder.textProductName.setText("Product Name");
+                }else{
+                    holder.textProduct.setText(SharedPref.getDocProductCaption(context));
+                    holder.textProductName.setText(SharedPref.getDocProductCaption(context));
+                }
+                if ( SharedPref.getDrSmpQCap(context).isEmpty() ||  SharedPref.getDrSmpQCap(context).equalsIgnoreCase(null)){
+                    holder.textSamples.setText("Samples");
+                }else {
+                    holder.textSamples.setText( SharedPref.getDrSmpQCap(context));
+                }
+                if (SharedPref.getDrRxQCap(context).isEmpty() || SharedPref.getDrRxQCap(context).equalsIgnoreCase(null)){
+                    holder.textRxQty.setText("RX Qty");
+                }else {
+                    holder.textRxQty.setText(SharedPref.getDrRxQCap(context));
+                }
+                if (SharedPref.getDocInputCaption(context).isEmpty() || SharedPref.getDocInputCaption(context).equalsIgnoreCase(null)){
+                    holder.textInput.setText("Input");
+                    holder.textInputName.setText("Input Name");
+                }
+                else {
+                    holder.textInput.setText(SharedPref.getDocInputCaption(context));
+                    holder.textInputName.setText(SharedPref.getDocInputCaption(context));
+                }
+                if (SharedPref.getDocJointworkNeed(context).equals("0")){
+                    holder.jointWorkLayout.setVisibility(View.VISIBLE);
+                    holder.jointView.setVisibility(View.VISIBLE);
+                }else {
+                    holder.jointWorkLayout.setVisibility(View.GONE);
+                    holder.jointView.setVisibility(View.GONE);
+                }
+                holder.SlidercpaLayoutitle.setVisibility(View.VISIBLE);
+                holder.slideDetailsLayout.setVisibility(View.VISIBLE);
                 break;
             }
             case Constants.CHEMIST: {
                 detailingNeed = SharedPref.getCHMDetailingNeed(context);
                 holder.textPromoted.setVisibility(View.INVISIBLE);
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_chemist_icon));
+                if (SharedPref.getChmProductCaption(context).isEmpty() || SharedPref.getChmProductCaption(context).equalsIgnoreCase(null)){
+                    holder.textProduct.setText("Product");
+                    holder.textProductName.setText("Product Name");
+                }else{
+                    holder.textProduct.setText(SharedPref.getChmProductCaption(context));
+                    holder.textProductName.setText(SharedPref.getChmProductCaption(context));
+                }
+                if ( SharedPref.getChmSmpCap(context).isEmpty() ||  SharedPref.getChmSmpCap(context).equalsIgnoreCase(null)){
+                    holder.textSamples.setText("Samples");
+                }else {
+                    holder.textSamples.setText(( SharedPref.getChmSmpCap(context)));
+                }
+                if (SharedPref.getChmQCap(context).isEmpty() || SharedPref.getChmQCap(context).isEmpty()){
+                    holder.textRxQty.setText("RX Qty");
+                }else {
+                    holder.textRxQty.setText(SharedPref.getChmQCap(context));
+                }
+                if (SharedPref.getChmInputCaption(context).isEmpty() || SharedPref.getChmInputCaption(context).equalsIgnoreCase(null)){
+                    holder.textInput.setText("Input");
+                    holder.textInputName.setText("Input Name");
+                }else {
+                    holder.textInput.setText(SharedPref.getChmInputCaption(context));
+                    holder.textInputName.setText(SharedPref.getChmInputCaption(context));
+                }
+                if (SharedPref.getChmJointworkNeed(context).equals("0")){
+                    holder.jointWorkLayout.setVisibility(View.VISIBLE);
+                    holder.jointView.setVisibility(View.VISIBLE);
+                }else {
+                    holder.jointWorkLayout.setVisibility(View.GONE);
+                    holder.jointView.setVisibility(View.GONE);
+                }
                 break;
             }
             case Constants.STOCKIEST: {
                 detailingNeed = SharedPref.getSTKDetailingNeed(context);
                 holder.textPromoted.setVisibility(View.INVISIBLE);
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_stockiest_icon));
+                if (SharedPref.getStkProductCaption(context).isEmpty() || SharedPref.getStkProductCaption(context).equalsIgnoreCase(null)){
+                    holder.textProduct.setText("Product");
+                    holder.textProductName.setText("Product Name");
+                }else{
+                    holder.textProduct.setText(SharedPref.getStkProductCaption(context));
+                    holder.textProductName.setText(SharedPref.getStkProductCaption(context));
+                }
+                if (SharedPref.getStkQCap(context).isEmpty() || SharedPref.getStkQCap(context).isEmpty()){
+                    holder.textRxQty.setText("RX Qty");
+                }else {
+                    holder.textRxQty.setText(SharedPref.getStkQCap(context));
+                }
+                if (SharedPref.getStkInputCaption(context).isEmpty() || SharedPref.getStkInputCaption(context).equalsIgnoreCase(null)){
+                    holder.textInput.setText("Input");
+                    holder.textInputName.setText("Input Name");
+                }else {
+                    holder.textInput.setText(SharedPref.getStkInputCaption(context));
+                    holder.textInputName.setText(SharedPref.getStkInputCaption(context));
+                }
+                if (SharedPref.getStkJointworkNeed(context).equals("0")){
+                    holder.jointWorkLayout.setVisibility(View.VISIBLE);
+                    holder.jointView.setVisibility(View.VISIBLE);
+                }else {
+                    holder.jointWorkLayout.setVisibility(View.GONE);
+                    holder.jointView.setVisibility(View.GONE);
+                }
                 break;
             }
             case Constants.UNLISTED_DOCTOR: {
                 detailingNeed = SharedPref.getUNDRDetailingNeed(context);
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_unlist_dr_icon));
+                if (SharedPref.getUlProductCaption(context).isEmpty() || SharedPref.getUlProductCaption(context).equalsIgnoreCase(null)){
+                    holder.textProduct.setText("Product");
+                    holder.textProductName.setText("Product Name");
+                }else{
+                    holder.textProduct.setText(SharedPref.getUlProductCaption(context));
+                    holder.textProductName.setText(SharedPref.getUlProductCaption(context));
+                }
+                if ( SharedPref.getNlSmpQCap(context).isEmpty() ||  SharedPref.getNlSmpQCap(context).equalsIgnoreCase(null)){
+                    holder.textSamples.setText("Samples");
+                }else {
+                    holder.textSamples.setText(( SharedPref.getNlSmpQCap(context)));
+                }
+                if (SharedPref.getNlRxQCap(context).isEmpty() || SharedPref.getNlRxQCap(context).isEmpty()){
+                    holder.textRxQty.setText("RX Qty");
+                }else {
+                    holder.textRxQty.setText(SharedPref.getNlRxQCap(context));
+                }
+                if (SharedPref.getUlInputCaption(context).isEmpty() || SharedPref.getUlInputCaption(context).equalsIgnoreCase(null)){
+                    holder.textInput.setText("Input");
+                    holder.textInputName.setText("Input Name");
+                }else {
+                    holder.textInput.setText(SharedPref.getUlInputCaption(context));
+                    holder.textInputName.setText(SharedPref.getUlInputCaption(context));
+                }
+                if (SharedPref.getUlJointworkNeed(context).equals("0")){
+                    holder.jointWorkLayout.setVisibility(View.VISIBLE);
+                    holder.jointView.setVisibility(View.VISIBLE);
+                }else {
+                    holder.jointWorkLayout.setVisibility(View.GONE);
+                    holder.jointView.setVisibility(View.GONE);
+                }
                 break;
             }
             case Constants.CIP: {
@@ -360,17 +485,17 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView name, visitTime, modifiedTime, cluster, pob, feedback, jointWork, nextVisit, checkInTime, checkInAddress, checkInMarker;
-        TextView checkOutTime, checkOutAddress, checkOutMarker, overAllRemark, viewMoreTxt,textPromoted;
+        TextView name, visitTime, modifiedTime, cluster, pob, feedback, jointWork, nextVisit, checkInTime, checkInAddress, checkInMarker,textInputName;
+        TextView checkOutTime, checkOutAddress, checkOutMarker, overAllRemark, viewMoreTxt,textPromoted,textProduct,textSamples,textRxQty,textInput,textProductName;
         ImageView nameIcon, viewMoreArrow,rcpa_arrow,slide_arrow;
-        LinearLayout viewMore, checkInOutLayout,EventLayout,rcpaLayout,rcpaLayoutitle, slideDetailsLayout,SlidercpaLayoutitle;
-        RelativeLayout rlNextVisit;
+        LinearLayout viewMore, checkInOutLayout,EventLayout,rcpaLayout,rcpaLayoutitle, slideDetailsLayout,SlidercpaLayoutitle,jointWorkLayout;
+        RelativeLayout rlNextVisit,pobLayOut,feedBackLayout;
         ConstraintLayout PrdLayout, InpLayout, expandLayout;
         CardView slideLayout;
 
 
         RecyclerView rvPrd, rvInput,rvRcpa,rvSlideDetails;
-        View viewNextVisit, view5;
+        View viewNextVisit,jointView, view5;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -412,6 +537,16 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             slide_arrow = itemView.findViewById(R.id.slide_arrow);
             SlidercpaLayoutitle = itemView.findViewById(R.id.SlideLayoutitle);
             textPromoted =  itemView.findViewById(R.id.product_qty);
+            pobLayOut = itemView.findViewById(R.id.pobLayout);
+            feedBackLayout = itemView.findViewById(R.id.feedBackLayout);
+            textProduct = itemView.findViewById(R.id.tag_sample_prd);
+            textSamples = itemView.findViewById(R.id.tag_samples);
+            textRxQty =  itemView.findViewById(R.id.tag_rx_qty);
+            textInput = itemView.findViewById(R.id.tag_input);
+            jointWorkLayout = itemView.findViewById(R.id.ll2);
+            jointView = itemView.findViewById(R.id.view3);
+            textProductName = itemView.findViewById(R.id.tag_prd_name);
+            textInputName = itemView.findViewById(R.id.tag_input_name_main);
             view5 = itemView.findViewById(R.id.view5);
 
         }

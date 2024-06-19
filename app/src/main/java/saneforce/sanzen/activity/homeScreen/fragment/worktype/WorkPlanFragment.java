@@ -156,12 +156,18 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         chk_cluster = "";
         hqCode = SharedPref.getHqCode(requireContext());
 
+
         if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
             binding.btnsumit.setText(requireContext().getString(R.string.final_submit_check_out));
         } else {
             binding.btnsumit.setText(requireContext().getString(R.string.final_submit));
         }
+        if(SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)){
+            binding.txtCluster1.setText("Select Cluster");
+        } else{
+            binding.txtCluster1.setText("select "+ SharedPref.getWrkAreaName(requireContext()));
 
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             binding.progressHq1.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
             binding.progressHq2.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
@@ -670,6 +676,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.txtSave.setTextColor(getResources().getColor(R.color.black));
                     binding.txtSave.setEnabled(true);
                     binding.cardPlan2.setVisibility(View.VISIBLE);
+                    if(SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)){
+                        binding.txtCluster2.setText("Select Cluster");
+                    } else{
+                        binding.txtCluster2.setText("Select"+  SharedPref.getWrkAreaName(requireContext()));
+
+                    }
                     getLocalData();
                     break;
 

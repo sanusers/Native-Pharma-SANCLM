@@ -170,5 +170,16 @@ public class TimeUtils {
         }
         return "time";
     }
+    public static String timeConverter(String time){
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a", Locale.getDefault());
 
+        try {
+            Date date = inputFormat.parse(time);
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

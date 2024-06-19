@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder> {
@@ -23,16 +24,19 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     String current_month,fromdate_val;
     ArrayList<String>ldates=new ArrayList<>();
     private final OnItemListener onItemListener;
+    boolean isPastLeaveRequested;
 
     String setval;
     String val32;
-    public CalendarAdapter(ArrayList<String> daysInMonth, OnItemListener onItemListener, LocalDate selectedDate,String month,String fromdate_val,String setval) {
+    public CalendarAdapter(ArrayList<String> daysInMonth, OnItemListener onItemListener, LocalDate selectedDate,String month,String fromdate_val,String setval,String pastLeave) {
         this.daysOfMonth = daysInMonth;
         this.onItemListener = onItemListener;
         this.selectedDate = selectedDate;
         this.current_month =month;
         this.fromdate_val =fromdate_val;
         this.setval =setval;
+        isPastLeaveRequested = pastLeave.equals("0");
+
         ldates.addAll(Leave_Application.ltypecount);
 
         val32=  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_24, current_month);
@@ -61,32 +65,35 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         String dayText = daysOfMonth.get(position);
         holder.dayOfMonth.setText(dayText);
 
-        if(fromdate_val.equals("") || fromdate_val.equals("null") ){
+        if (fromdate_val.equals("") || fromdate_val.equals("null")) {
 
-        }else{
-            fromdate= LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4,fromdate_val )));
+        } else {
+            fromdate = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, fromdate_val)));
         }
 
         if (!dayText.equals("")) {
 
-            if(setval.equals("1")){
+            if (setval.equals("1")) {
+                if (!isPastLeaveRequested){
+                    try {
+                        int day = Integer.parseInt(dayText);
+                        if (selectedDate != null) {
+                            LocalDate cellDate = selectedDate.withDayOfMonth(day);
+                            currentDate = LocalDate.now();
+                            if (cellDate.isBefore(currentDate)) {
+                                holder.dayOfMonth.setTextColor(Color.parseColor("#B0B0B0"));
+                                holder.itemView.setEnabled(false);
+                            } else {
+                                holder.dayOfMonth.setTextColor(Color.parseColor("#282A3C"));
+                                holder.itemView.setEnabled(true);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
-//                currentDate = LocalDate.now();
-//                int day = Integer.parseInt(dayText);
-//                if (day < currentDate.getDayOfMonth() && selectedDate.getMonth() == currentDate.getMonth() && selectedDate.getDayOfYear() == currentDate.getDayOfYear() ) {
-//                    holder.dayOfMonth.setTextColor(Color.parseColor("#B0B0B0"));
-//                } else if (day == currentDate.getDayOfMonth() && selectedDate.getMonth() == currentDate.getMonth() && selectedDate.getDayOfYear() == currentDate.getDayOfYear()) {
-//                    holder.dayOfMonth.setTextColor(Color.parseColor("#FFFFFF"));
-//                    holder.day_bgd.setBackgroundResource(R.drawable.today_calenderbgd);
-//                } else if(!fromdate_val.equals("") ){
-//                    int day1 = Integer.parseInt(dayText);
-//                    if (day1 < fromdate.getDayOfMonth()&& selectedDate.getMonth() ==fromdate.getMonth()&& selectedDate.getDayOfYear() == currentDate.getDayOfYear()) {
-//
-//                        holder.dayOfMonth.setTextColor(Color.parseColor("#B0B0B0"));
-//                    }
-//                } else {
-//                    holder.dayOfMonth.setTextColor(Color.parseColor("#282A3C"));
-//                }
+                }
+
             }else{
                 currentDate = (fromdate);
                 int day = Integer.parseInt(dayText);

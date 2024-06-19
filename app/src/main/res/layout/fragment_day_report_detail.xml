@@ -475,6 +475,7 @@
                             android:layout_marginBottom="@dimen/_5sdp"/>
 
                         <LinearLayout
+                            android:id="@+id/remarksLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
@@ -584,6 +585,7 @@
                                 android:background="@drawable/selector_box">
 
                                 <TextView
+                                    android:id="@+id/textDoctor"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     app:layout_constraintStart_toStartOf="parent"
@@ -641,6 +643,7 @@
                                 android:background="@drawable/selector_box">
 
                                 <TextView
+                                    android:id="@+id/textChemist"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     app:layout_constraintStart_toStartOf="parent"
@@ -698,6 +701,7 @@
                                 android:background="@drawable/selector_box">
 
                                 <TextView
+                                    android:id="@+id/textStock"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     app:layout_constraintStart_toStartOf="parent"
@@ -755,6 +759,7 @@
                                 android:background="@drawable/selector_box">
 
                                 <TextView
+                                    android:id="@+id/textUnListDoctor"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     app:layout_constraintStart_toStartOf="parent"
@@ -812,6 +817,7 @@
                                 android:background="@drawable/selector_box">
 
                                 <TextView
+                                    android:id="@+id/textCip"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     app:layout_constraintStart_toStartOf="parent"
@@ -869,6 +875,7 @@
                                 android:background="@drawable/selector_box">
 
                                 <TextView
+                                    android:id="@+id/textHospital"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     app:layout_constraintStart_toStartOf="parent"

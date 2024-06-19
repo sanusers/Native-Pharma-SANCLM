@@ -565,7 +565,11 @@ public class MasterSyncActivity extends AppCompatActivity {
     }
 
     public void uiInitialization() {
-
+        if (SharedPref.getWrkAreaName(this).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)){
+            binding.cluster.setText("Cluster");
+        }else{
+            binding.cluster.setText(SharedPref.getWrkAreaName(this));
+        }
         if(!SharedPref.getDesig(this).equalsIgnoreCase("MR")){
             binding.hqName.setText(SharedPref.getHqName(MasterSyncActivity.this));
         rsf = SharedPref.getHqCode(MasterSyncActivity.this);}

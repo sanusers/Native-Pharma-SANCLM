@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.approvals.dcr.detailView.adapter;
 
+import static saneforce.sanzen.activity.approvals.dcr.detailView.DcrDetailViewActivity.dcrDetailModelLists;
 import static saneforce.sanzen.activity.approvals.dcr.detailView.DcrDetailViewActivity.dcrDetailViewBinding;
 
 import android.annotation.SuppressLint;
@@ -72,12 +73,14 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
     ProgressDialog progressDialog;
     ApiInterface apiInterface;
     EventDetailsCapture adapter;
+    String category;
 
     ArrayList<SlideRatingDetalisModelClass> callDetailingLists=new ArrayList<>();
-    public AdapterCusSingleList(Context context, ArrayList<DcrDetailModelList> dcrApprovalNames, OnItemClickListenerApproval listenerApproval) {
+    public AdapterCusSingleList(Context context, ArrayList<DcrDetailModelList> dcrApprovalNames, OnItemClickListenerApproval listenerApproval,String category) {
         this.context = context;
         this.dcrApprovalNames = dcrApprovalNames;
         this.listenerApproval = listenerApproval;
+        this.category = category;
     }
 
     @NonNull
@@ -91,7 +94,6 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
     @Override
     public void onBindViewHolder(@NonNull AdapterCusSingleList.ViewHolder holder, int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
-
         if (DcrDetailViewActivity.SelectedCode.equalsIgnoreCase(dcrApprovalNames.get(position).getCode())) {
             ProductListNew = new ArrayList<>();
             InputListNew = new ArrayList<>();
@@ -110,7 +112,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
             Log.v("size", "--prd--" + ProductListNew.size());
             if (ProductListNew.size() > 0) {
                 dcrDetailViewBinding.constraintMainSample.setVisibility(View.VISIBLE);
-                productAdapter = new ProductAdapter(context, ProductListNew,"");
+                productAdapter = new ProductAdapter(context, ProductListNew,dcrApprovalNames.get(position).getTypeCust());
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
                 dcrDetailViewBinding.rvSamplePrd.setLayoutManager(mLayoutManager);
                 commonUtilsMethods.recycleTestWithDivider(dcrDetailViewBinding.rvSamplePrd);

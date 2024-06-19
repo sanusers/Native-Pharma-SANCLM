@@ -78,8 +78,9 @@ public class ReportsActivity extends AppCompatActivity {
         arrayList.add("Day Check In Report");
         arrayList.add("Customer Check In Report");
         arrayList.add("Visit Monitor");*/
-        arrayList.add("Dash Board");
-
+        if (SharedPref.getDashboard(this).equals("0")){
+            arrayList.add("Dash Board");
+        }
         reportsAdapter = new ReportsAdapter(arrayList, ReportsActivity.this);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ReportsActivity.this, 4);
         binding.recView.setLayoutManager(layoutManager);

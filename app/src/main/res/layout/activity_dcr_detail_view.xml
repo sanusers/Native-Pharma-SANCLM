@@ -293,12 +293,12 @@
                         app:layout_constraintTop_toBottomOf="@id/tag_cluster" />
 
                     <TextView
+                        android:visibility="invisible"
                         android:id="@+id/tag_pob"
                         android:layout_width="@dimen/_40sdp"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:paddingVertical="@dimen/_2sdp"
-
                         android:text="POB"
                         android:textColor="@color/light_grey_2"
                         android:textSize="@dimen/_6ssp"
@@ -309,6 +309,7 @@
                         tools:ignore="TextSizeCheck" />
 
                     <TextView
+                        android:visibility="invisible"
                         android:id="@+id/tv_pob"
                         android:layout_width="@dimen/_40sdp"
                         android:layout_height="wrap_content"
