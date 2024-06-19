@@ -17,6 +17,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -220,6 +221,22 @@ public class CommonUtilsMethods {
                     dialogInterface.dismiss();
                 }).show();
     }
+
+
+
+    public static void RequestGPSPermission(Activity activity,String FunctionName) {
+
+        new android.app.AlertDialog.Builder(activity).setTitle("Alert")  // GPS not found
+                .setCancelable(false).setMessage(FunctionName+" permission is required for this app to function correctly.") // Want to enable?
+                .setPositiveButton("Ok", (dialogInterface, i) -> {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+                    intent.setData(uri);
+                   activity.startActivity(intent);                        dialogInterface.dismiss();
+                }).show();
+    }
+
+
 
     public void loginNavigation(Activity activity) {
         new android.app.AlertDialog.Builder(activity)

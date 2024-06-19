@@ -21,6 +21,7 @@ import java.util.List;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
+import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.utility.location.LocationEvents;
 import saneforce.sanzen.utility.location.LocationFinder;
 import saneforce.sanzen.storage.SharedPref;
@@ -103,12 +104,12 @@ public class CommonAlertBox {
         Button btn_yes = alertLayout.findViewById(R.id.btnYes);
         Button btn_no = alertLayout.findViewById(R.id.btnNo);
         TextView alerttext = alertLayout.findViewById(R.id.ed_alert_msg);
-        alerttext.setText("The tour planning date has exceeded. Please prepare your tour plan....");
+        alerttext.setText(" Tour planning range has exceeded. Please prepare your tour plan....");
         alert.setView(alertLayout);
         AlertDialog dialog = alert.create();
         dialog.show();
         btn_yes.setOnClickListener(v -> {
-            Intent intent = new Intent(activity, ApprovalsActivity.class);
+            Intent intent = new Intent(activity, TourPlanActivity.class);
             activity.startActivity(intent);
             dialog.dismiss();
         });

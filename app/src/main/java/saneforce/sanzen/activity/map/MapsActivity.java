@@ -1,5 +1,8 @@
 package saneforce.sanzen.activity.map;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CAMERA;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static java.lang.Double.parseDouble;
 import static java.lang.Double.valueOf;
@@ -28,11 +31,13 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -43,6 +48,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -85,6 +91,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.camera.CameraActivity;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustListAdapter;
 import saneforce.sanzen.activity.map.custSelection.TagCustSelectionList;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
@@ -113,7 +120,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static ViewTagModel mm = null;
     public static Marker marker;
     public static GoogleMap mMap;
-    public static String SelectedTab, SelectedHqCode, SelectedHqName;
+    public static String SelectedTab="", SelectedHqCode="", SelectedHqName="";
     public static String from_tagging = "", GeoTagImageNeed = "", GeoTagApprovalNeed = "", TaggedLat, TaggedLng, TaggedAdd;
     public static boolean isTagged = false;
     public static ProgressDialog progressDialog = null;
@@ -208,6 +215,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         Bundle extra = getIntent().getExtras();
+        Log.v("MapActvity","Oncreate");
+
+        if(SelectedTab.equalsIgnoreCase("")){
+            SelectedTab="D";
+            SelectedHqCode = SharedPref.getHqCode(MapsActivity.this);
+            SelectedHqName = SharedPref.getHqName(MapsActivity.this);
+        }
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if(!CheckLocPermission()){
+                RequestLocationPermission();
+            }
+        } else {
+            CommonUtilsMethods.RequestGPSPermission(MapsActivity.this);
+        }
+
         if (extra != null) {
             from_tagging = extra.getString("from");
             cust_name = extra.getString("cus_name");
@@ -218,6 +242,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             geoTagStatus = extra.getString("geoTagStatus");
 
         }
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         assert mapFragment != null;
@@ -290,8 +315,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mapsBinding.imgRefreshMap.setVisibility(View.GONE);
                 if (!mapsBinding.tvTaggedAddress.getText().toString().isEmpty() || !mapsBinding.tvTaggedAddress.getText().toString().equalsIgnoreCase("No Address Found")) {
                     if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-                            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.CAMERA}, 5);
+                        if (CheckCameraPermission()) {
+                            RequestCameraPermission();
                         } else {
                             // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             captureFile();
@@ -899,7 +924,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                             progressBar.setVisibility(View.GONE);
                                             showToast(selectedTap);
                                             finish();
-                                            masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0));
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 2));
                                         }
                                     } else {
                                         masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
@@ -1005,14 +1030,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onResume() {
         CommonAlertBox.CheckLocationStatus(MapsActivity.this);
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, true);
-            }
-        } else {
-            CommonUtilsMethods.RequestGPSPermission(MapsActivity.this);
-        }
         timeZoneVerification();
         super.onResume();
     }
@@ -1020,6 +1037,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @SuppressLint({"SetTextI18n", "PotentialBehaviorOverride"})
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
+
+
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if(!CheckLocPermission()){
+                RequestLocationPermission();
+            }
+        } else {
+            CommonUtilsMethods.RequestGPSPermission(MapsActivity.this);
+        }
+
 
         mMap = googleMap;
         gpsTrack = new GPSTrack(this);
@@ -1393,4 +1420,74 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
           CommonUtilsMethods.showCustomDialog(this);
       }
   }
+
+
+    private void RequestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(MapsActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(MapsActivity.this, new String[]{ACCESS_FINE_LOCATION}, 101);
+            } else {
+                ActivityCompat.requestPermissions(MapsActivity.this, new String[]{ACCESS_FINE_LOCATION}, 101);
+            }
+        }
+    }
+    public boolean CheckLocPermission() {
+        int FineLocation = ContextCompat.checkSelfPermission(MapsActivity.this, ACCESS_FINE_LOCATION);
+        int CoarseLocation = ContextCompat.checkSelfPermission(MapsActivity.this, ACCESS_COARSE_LOCATION);
+        return FineLocation == PackageManager.PERMISSION_GRANTED && CoarseLocation == PackageManager.PERMISSION_GRANTED;
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 101) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = getIntent();
+                overridePendingTransition(0, 0);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(intent);
+
+            } else {
+                // Permission denied, show a message to the user
+               CommonUtilsMethods. RequestGPSPermission(MapsActivity.this,"Location");
+            }
+        }else if(requestCode == 102){
+            boolean DontAskAgain = false;
+                for (String allowedPermissions : permissions) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, allowedPermissions)) {
+                        RequestCameraPermission();
+                    } else if (PermissionChecker.checkCallingOrSelfPermission(this, allowedPermissions) != PermissionChecker.PERMISSION_GRANTED) {
+                        DontAskAgain = true;
+                        break;
+                    } else {
+                        captureFile();
+                    }
+                }
+                if (DontAskAgain) {
+                    CommonUtilsMethods. RequestGPSPermission(MapsActivity.this,"Camera");
+
+
+                }
+        }
+    }
+
+    public boolean CheckCameraPermission() {
+        int Camera = ContextCompat.checkSelfPermission(MapsActivity.this, CAMERA);
+        return Camera != PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void RequestCameraPermission() {
+        if (ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.CAMERA)) {
+                ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.CAMERA}, 102);
+            } else {
+                ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.CAMERA}, 102);
+            }
+        }
+    }
+
+
+
+
 }

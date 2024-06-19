@@ -33,27 +33,15 @@
                 android:textStyle="bold" />
 
 
-            <TextView
-                android:id="@+id/text_retry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
+            <ImageView
+                android:id="@+id/reload_img"
+                android:layout_width="@dimen/_10sdp"
                 android:layout_marginRight="@dimen/_3sdp"
-                android:visibility="gone"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="@drawable/background_button_border_black"
-                android:drawableLeft="@drawable/background_drawable_icon"
-                android:fontFamily="@font/satoshi_medium"
-                android:gravity="center"
-                android:padding="@dimen/_3sdp"
-                android:text=" Retry "
-                android:textAllCaps="false"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_8sdp"
-                android:textStyle="bold" />
+                android:layout_alignParentTop="true"
+                android:src="@drawable/reload_img"
+                android:layout_alignParentEnd="true"
+                android:layout_height="@dimen/_10sdp"/>
+
 
         </RelativeLayout>
 

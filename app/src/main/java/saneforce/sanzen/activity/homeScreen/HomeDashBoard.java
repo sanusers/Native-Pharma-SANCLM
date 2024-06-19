@@ -1,5 +1,8 @@
 package saneforce.sanzen.activity.homeScreen;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_MEDIA_AUDIO;
 import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.Manifest.permission.READ_MEDIA_VIDEO;
@@ -60,6 +63,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
@@ -153,6 +157,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     CommonUtilsMethods commonUtilsMethods;
     LocationManager locationManager;
     ApiInterface apiInterface;
+   public static boolean isDcrFrom=false;
 
 //    CustomSetupResponse customSetupResponse;
     IntentFilter intentFilter;
@@ -202,6 +207,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     protected void onResume() {
         timeZoneVerification();
         super.onResume();
+
+        AppIdentify();
         Log.d("ACTIVITY_STATUS", "OnResume");
         commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
         if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -209,28 +216,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             binding.myDrawerLayout.closeDrawer(GravityCompat.START);
         }
 
-        if (Build.VERSION.SDK_INT >= 33) {
-            if (ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(HomeDashBoard.this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(HomeDashBoard.this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
-                CommonUtilsMethods.RequestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_AUDIO, READ_MEDIA_VIDEO}, false);
-            }
-        } else {
-            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, false);
-            }
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 5);
-        }
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
-                CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, false);
-            }
-        } else {
-            CommonUtilsMethods.RequestGPSPermission(HomeDashBoard.this);
-        }
         try {
             if (Build.VERSION.SDK_INT >= 33) {
                 registerReceiver(receiver, intentFilter, RECEIVER_NOT_EXPORTED);
@@ -242,14 +227,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
 
-
         CommonAlertBox.CheckLocationStatus(HomeDashBoard.this);
         if(!SharedPref.getDesig(HomeDashBoard.this).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0")){
             CheckingManatoryApprovals();
         }
         CheckedTpRange();
         checkAndSetEntryDate(this);
-        checkAndSetEntryDate(this);
+        if(isDcrFrom){
+            binding.viewPager.setCurrentItem(1);
+            isDcrFrom=false;
+        }
 
     }
 
@@ -309,8 +296,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
-
         isDateSelectionClicked = false;
+
+        if(SharedPref.getGeoChk(HomeDashBoard.this).equalsIgnoreCase("0")){
+            if(!CheckLocPermission()){
+                RequestLocationPermission();
+            }
+        }
 
         binding.imgNotofication.setOnClickListener(view -> {
             startActivity(new Intent(HomeDashBoard.this, MapViewActvity.class));
@@ -319,7 +311,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                SharedPref.setSetUpClickedTab(getApplicationContext(), String.valueOf(tab.getPosition()));
+
+                Log.v("BBB",""+tab.getPosition());
+                SharedPref.setSetUpClickedTab(getApplicationContext(),tab.getPosition());
             }
 
             @Override
@@ -446,9 +440,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         leftViewPagerAdapter.add(new CallsFragment(), "Calls");
         leftViewPagerAdapter.add(new OutboxFragment(), "Outbox");
         binding.viewPager.setAdapter(leftViewPagerAdapter);
-        binding.viewPager.setCurrentItem(Integer.parseInt(SharedPref.getSetUpClickedTab(context)));
         binding.tabLayout.setupWithViewPager(binding.viewPager);
         binding.viewPager.setOffscreenPageLimit(leftViewPagerAdapter.getCount());
+
+
+
+
+
+
     }
 
     private void CheckInOutDate() {
@@ -1485,7 +1484,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         JsonElement jsonElement = response.body();
                         assert jsonElement != null;
                         JsonArray jsonArray = jsonElement.getAsJsonArray();
-                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 0));
+                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 2));
 
 //                        binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
 //                        binding.tabLayout.setVisibility(View.VISIBLE);
@@ -1618,10 +1617,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         else
             menu.findItem(R.id.activity).setVisible(false);
 
-        if (SharedPref.getGeoChk(this).equalsIgnoreCase("0"))
+        if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")){
             menu.findItem(R.id.nearme).setVisible(true);
-        else
+            menu.findItem(R.id.loctionrefresh).setVisible(true);
+        }
+
+        else{
+            menu.findItem(R.id.loctionrefresh).setVisible(false);
             menu.findItem(R.id.nearme).setVisible(false);
+        }
+
 
         if (SharedPref.getSfType(this).equalsIgnoreCase("2"))
             menu.findItem(R.id.approval).setVisible(true);
@@ -1649,8 +1654,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")) {
             binding.tvLdot.setVisibility(View.VISIBLE);
+            binding.imgLocation.setVisibility(View.VISIBLE);
             binding.imgLocation.setImageResource(R.drawable.location_img);
-        } else binding.imgLocation.setImageResource(R.drawable.locationget_img);
+        } else {
+            binding.imgLocation.setVisibility(View.GONE);
+            binding.imgLocation.setImageResource(R.drawable.locationget_img);}
 
         if (SharedPref.getGeotagNeed(this).equalsIgnoreCase("1"))
             binding.tvDdot.setVisibility(View.VISIBLE);
@@ -1905,5 +1913,43 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         }
       }}
+
+
+    public boolean CheckLocPermission() {
+        int FineLocation = ContextCompat.checkSelfPermission(HomeDashBoard.this, ACCESS_FINE_LOCATION);
+        int CoarseLocation = ContextCompat.checkSelfPermission(HomeDashBoard.this, ACCESS_COARSE_LOCATION);
+        return FineLocation == PackageManager.PERMISSION_GRANTED && CoarseLocation == PackageManager.PERMISSION_GRANTED;
+    }
+
+
+    private void RequestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(HomeDashBoard.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(HomeDashBoard.this, ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(HomeDashBoard.this, new String[]{ACCESS_FINE_LOCATION}, 1);
+            } else {
+                ActivityCompat.requestPermissions(HomeDashBoard.this, new String[]{ACCESS_FINE_LOCATION}, 1);
+            }
+        }
+    }
+
+
+
+    public boolean CheckCameraPermission() {
+        int Camera = ContextCompat.checkSelfPermission(HomeDashBoard.this, CAMERA);
+        return Camera != PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void RequestCameraPermission() {
+        if (ContextCompat.checkSelfPermission(HomeDashBoard.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(HomeDashBoard.this, Manifest.permission.CAMERA)) {
+                ActivityCompat.requestPermissions(HomeDashBoard.this, new String[]{Manifest.permission.CAMERA}, 102);
+            } else {
+                ActivityCompat.requestPermissions(HomeDashBoard.this, new String[]{Manifest.permission.CAMERA}, 102);
+            }
+        }
+    }
+
+
+
 }
 

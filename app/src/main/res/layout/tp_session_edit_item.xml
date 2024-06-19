@@ -150,40 +150,56 @@
                             tools:ignore="SpUsage"
                             android:visibility="visible"/>
 
-                        <LinearLayout
-                            android:id="@+id/hqSelect"
+                        <FrameLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_2sdp"
-                            android:background="@drawable/edittext_stroke"
-                            android:orientation="horizontal"
-                            android:paddingStart="@dimen/_5sdp"
-                            android:paddingEnd="@dimen/_10sdp"
-                            android:paddingTop="@dimen/_5sdp"
-                            android:paddingBottom="@dimen/_5sdp"
-                            android:visibility="visible">
+                            android:layout_marginTop="@dimen/_2sdp">
 
-                            <TextView
-                                android:id="@+id/hqField"
-                                android:layout_width="0dp"
+                            <LinearLayout
+                                android:id="@+id/hqSelect"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:fontFamily="@font/satoshi_medium"
-                                android:text="Select"
-                                android:textColor="@color/text_dark"
-                                android:textSize="@dimen/_6sdp"
-                                android:singleLine="true"
-                                tools:ignore="SpUsage" />
+                                android:background="@drawable/edittext_stroke"
+                                android:orientation="horizontal"
+                                android:paddingStart="@dimen/_5sdp"
+                                android:paddingEnd="@dimen/_10sdp"
+                                android:paddingTop="@dimen/_5sdp"
+                                android:paddingBottom="@dimen/_5sdp"
+                                android:visibility="visible">
 
-                            <ImageView
-                                android:id="@+id/hqArrow"
-                                android:layout_width="@dimen/_6sdp"
-                                android:layout_height="@dimen/_6sdp"
+                                <TextView
+                                    android:id="@+id/hqField"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/satoshi_medium"
+                                    android:text="Select"
+                                    android:textColor="@color/text_dark"
+                                    android:textSize="@dimen/_6sdp"
+                                    android:singleLine="true"
+                                    tools:ignore="SpUsage" />
+
+                                <ImageView
+                                    android:id="@+id/hqArrow"
+                                    android:layout_width="@dimen/_6sdp"
+                                    android:layout_height="@dimen/_6sdp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/arrow_down"
+                                    android:layout_marginStart="@dimen/_3sdp"/>
+
+                            </LinearLayout>
+
+                            <ProgressBar
+                                android:id="@+id/progress_hq"
+                                android:layout_width="@dimen/_10sdp"
+                                android:layout_height="@dimen/_10sdp"
+                                android:layout_centerInParent="true"
                                 android:layout_gravity="center"
-                                android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"/>
+                                android:background="#260C21DD"
+                                android:backgroundTint="#26070707"
+                                android:visibility="gone" />
 
-                        </LinearLayout>
+                        </FrameLayout>
 
                     </LinearLayout>
 

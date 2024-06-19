@@ -739,13 +739,13 @@ public class Leave_Application extends AppCompatActivity {
                             if (jsonElement.isJsonArray()) {
                                 JsonArray jsonArray1 = jsonElement.getAsJsonArray();
                                 jsonArray = new JSONArray(jsonArray1.toString());
-                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LEAVE_STATUS, jsonArray.toString(), 0));
+                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LEAVE_STATUS, jsonArray.toString(), 2));
                             } else if (jsonElement.isJsonObject()) {
                                 JsonObject jsonObject = jsonElement.getAsJsonObject();
                                 JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
                                 if (!jsonObject1.has("success")) {
                                     jsonArray.put(jsonObject1);
-                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LEAVE_STATUS, jsonArray.toString(), 0));
+                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LEAVE_STATUS, jsonArray.toString(), 2));
                                 }
                             }
                         }

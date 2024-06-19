@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -34,7 +36,6 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
 
     CommonUtilsMethods commonUtilsMethods;
     private List<SlidesTableDeatils> list = new ArrayList<>();
-
     RoomDB roomDB;
     public Slide_adapter(Activity activity) {
         this.activity = activity;
@@ -89,14 +90,23 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
 
             }
         }
-        if (list.get(position).getDownloadingStaus().equalsIgnoreCase("0")) {
-            holder.text_retry.setVisibility(View.VISIBLE);
-        } else {
-            holder.text_retry.setVisibility(View.GONE);
+//        if (list.get(position).getDownloadingStaus().equalsIgnoreCase("0")) {
+//            holder.reload_img.setVisibility(View.VISIBLE);
+//        } else {
+//            holder.reload_img.setVisibility(View.GONE);
+//        }
+
+        if(!SharedPref.getSlideDowloadingStatus(activity)){
+            holder.reload_img.setVisibility(View.GONE);
+        }else {
+            if (roomDB.slidesDao().getInProcessCount() != 0) {
+                holder.reload_img.setVisibility(View.GONE);
+            }else {
+                holder.reload_img.setVisibility(View.VISIBLE);
+            }
         }
-        if (roomDB.slidesDao().getInProcessCount() != 0) {
-            holder.text_retry.setVisibility(View.GONE);
-        }
+
+
     }
     public void setSlides(List<SlidesTableDeatils> slides) {
         list.clear();
@@ -111,7 +121,8 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
 
     public class listDataViewholider extends RecyclerView.ViewHolder {
 
-        TextView txt_imagename,text_download_size,text_retry;
+        TextView txt_imagename,text_download_size;
+        ImageView reload_img;
         public  ProgressBar progressBar;
 
         RelativeLayout rl_title_layout;
@@ -122,16 +133,15 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
             txt_imagename = itemView.findViewById(R.id.txt_imagename);
             progressBar = itemView.findViewById(R.id.img_download_progress);
             text_download_size = itemView.findViewById(R.id.txt_download_size);
-            text_retry = itemView.findViewById(R.id.text_retry);
+            reload_img = itemView.findViewById(R.id.reload_img);
             rl_title_layout = itemView.findViewById(R.id.rl_calender_syn);
 
 
-            text_retry.setOnClickListener(view -> {
+            reload_img.setOnClickListener(view -> {
                 int position = getAdapterPosition();
-
-
-
                 if (UtilityClass.isNetworkAvailable(activity)) {
+                    MasterSyncActivity.isSingleSlideDowloaingStaus=true;
+                    text_download_size.setText("Downloading");
                             String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getSlideUrl(activity) + list.get(position).getSlideName();
                             Log.e("DownloadingAPI",""+url);
                             Data inputData = new Data.Builder()

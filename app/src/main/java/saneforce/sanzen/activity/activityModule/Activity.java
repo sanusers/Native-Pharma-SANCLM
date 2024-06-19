@@ -1,7 +1,9 @@
 package saneforce.sanzen.activity.activityModule;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.READ_MEDIA_AUDIO;
 import static android.Manifest.permission.READ_MEDIA_IMAGES;
+import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.view.Gravity.CENTER;
 import static android.view.Gravity.TOP;
@@ -52,12 +54,14 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -95,6 +99,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -127,7 +132,7 @@ public class Activity extends AppCompatActivity {
     GPSTrack gpsTrack;
     Typeface fontregular,fontmedium;
     Uri uri;
-
+    int StorageFlag = 0;
     File file1;
     CommonUtilsMethods commonUtilsMethods;
     public  static TextView FilnameTet;
@@ -146,6 +151,7 @@ public class Activity extends AppCompatActivity {
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         fontmedium = ResourcesCompat.getFont(this, R.font.satoshi_medium);
         fontregular = ResourcesCompat.getFont(this, R.font.satoshi_regular);
+
         binding.txthqName.setText(SharedPref.getHqName(Activity.this));
             binding.btnsumit.setEnabled(false);
             adapter=new ActivityAdapter(getApplicationContext(), ActivityList, classGroup -> {
@@ -159,7 +165,7 @@ public class Activity extends AppCompatActivity {
         getActivity(SharedPref.getHqCode(Activity.this));
 
         binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
-        binding.mainLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+      //  binding.mainLayout.setDrawerLockMode(DrawerLayout.c);
 
         if(!SharedPref.getDesig(this).equalsIgnoreCase("MR")){
             binding.rlheadquates.setVisibility(View.VISIBLE);
@@ -184,40 +190,10 @@ public class Activity extends AppCompatActivity {
             }
         });
 
-        binding.mainLayout.closeDrawer(Gravity.RIGHT);
+
     }
 
 
-
-//    public void showHQ() {
-//
-//              if(workTypeArray3.length()>0){
-//
-//
-//                  try {   for (int i = 0; i < workTypeArray3.length(); i++) {
-//                      JSONObject jsonObject = workTypeArray3.getJSONObject(i);
-//                      HQList.add(jsonObject);
-//
-//
-//                      binding.viewDummy1.setVisibility(View.GONE);
-//                      binding.txtClDone.setVisibility(View.GONE);
-//                      binding.mainLayout.openDrawer(Gravity.RIGHT);
-//                      commonFun();
-//                    ActvityListAdapter adapter1 = new ActvityListAdapter(getApplicationContext(), HQList, new ChooseHeadQuaters() {
-//                    @Override
-//                     public void Choose(String checkname, String ChckedId) {
-//                        getActivity(ChckedId);
-//                        binding.txthqName.setText(checkname);
-//                        binding.mainLayout.closeDrawer(Gravity.RIGHT);
-//                        commonFun();
-//
-//                    }
-//                });
-//                binding.acRecyelerView.setLayoutManager(new LinearLayoutManager(this));
-//                binding.acRecyelerView.setAdapter(adapter1);
-//            }
-//        }catch (Exception a){}}
-//    }
 
 
     public  void getActivity(String hqcode){
@@ -3010,38 +2986,7 @@ public class Activity extends AppCompatActivity {
 //    }
 
 
-    private void RequestStoragePermission() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_MEDIA_IMAGES)) {
-                    ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES}, PICK_FROM_GALLERY);
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES}, PICK_FROM_GALLERY);
-                }
-            }
-        } else {
-            if (ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE))) {
-                    ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
-                }
-            }
-        }
-    }
 
-
-
-    public boolean CheckStoragePermission() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            int Read = ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES);
-            return Read == PackageManager.PERMISSION_GRANTED;
-        } else {
-            int Write = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
-            int Read = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
-            return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
-        }
-    }
 
 
     public void ShowListPopup(TextView NameView, TextView IdView, ArrayList<String> ListName, ArrayList<String> ListIds,String name, boolean isMultipleCheck) {
@@ -3656,8 +3601,71 @@ public class Activity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         CommonAlertBox.CheckLocationStatus(Activity.this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+    }
+
+    public boolean CheckStoragePermission() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            int image = ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES);
+            int video = ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO);
+            int audio = ContextCompat.checkSelfPermission(this, READ_MEDIA_AUDIO);
+            return image == PackageManager.PERMISSION_GRANTED && video == PackageManager.PERMISSION_GRANTED && audio == PackageManager.PERMISSION_GRANTED;
+        } else {
+            int Write = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
+            int Read = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
+            return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
+        }
+    }
+
+    private void RequestStoragePermission() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if ((ActivityCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) || ActivityCompat.checkSelfPermission(this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_MEDIA_IMAGES)) {
+                    ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
+                }
+            }
+        } else {
+            if (ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE))) {
+                    ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
+                }
+            }
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        boolean DontAskAgain = false;
+
+        if (requestCode == 101) {
+            for (String allowedPermissions : permissions) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, allowedPermissions)) {
+                    StorageFlag++;
+                } else if (PermissionChecker.checkCallingOrSelfPermission(this, allowedPermissions) != PermissionChecker.PERMISSION_GRANTED) {
+                    DontAskAgain = true;
+                    StorageFlag++;
+                    break;
+                } else {
+                    Open_Storage();
+                }
+            }
+            if ((DontAskAgain) && (StorageFlag > 1)) {
+                CommonUtilsMethods. RequestGPSPermission(Activity.this,"Files");            }
+        }
     }
 }
 

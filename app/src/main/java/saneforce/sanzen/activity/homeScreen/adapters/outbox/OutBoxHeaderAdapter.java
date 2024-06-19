@@ -357,7 +357,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             Log.v("SendOutboxCall", "--finallyOut--");
             progressDialog.dismiss();
             if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(groupModelClass.getGroupName())) {
-                CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
+          //      CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
             }
             CallDataRestClass.resetcallValues(context);
             RefreshAdapter();

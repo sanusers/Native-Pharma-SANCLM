@@ -92,7 +92,8 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_name.setText(cusListArrayList.get(position).getName());
         if(cusListArrayList.get(position).getCategory().isEmpty())
-            holder.tv_category.setText("---");
+
+            holder.tv_category.setText("");
         else
             holder.tv_category.setText(cusListArrayList.get(position).getCategory());
         holder.tv_specialist.setText(cusListArrayList.get(position).getSpecialist());

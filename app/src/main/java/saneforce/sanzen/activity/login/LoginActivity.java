@@ -153,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else if (SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase("")) {
                     commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.no_network));
                 } else if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
-                    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                    SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
                     startActivity(new Intent(LoginActivity.this, HomeDashBoard.class));
                     commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
                 } else {
@@ -435,7 +435,7 @@ public class LoginActivity extends AppCompatActivity {
             SharedPref.saveHqMain(LoginActivity.this, jsonObject.getString("HQName"));
 
             if (SharedPref.getAutomassyncFromSP(LoginActivity.this)) {
-                SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
                 Intent intent = new Intent(LoginActivity.this, HomeDashBoard.class);
                 startActivity(intent);
             } else {
