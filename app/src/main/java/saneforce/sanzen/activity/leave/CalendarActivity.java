@@ -96,9 +96,11 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
 
         if (frm_date.equals("1")) {
             if (!SharedPref.getPastLeavePost(this).equalsIgnoreCase("0")){
-                bfr_month.setVisibility(View.GONE);
-            }else {
-                bfr_month.setVisibility(View.VISIBLE);
+                if(monthYearText.getText().toString().equals(monthYearFromDate(LocalDate.now()))){
+                    bfr_month.setVisibility(View.GONE);
+                }else {
+                    bfr_month.setVisibility(View.VISIBLE);
+                }
             }
 
         } else {
