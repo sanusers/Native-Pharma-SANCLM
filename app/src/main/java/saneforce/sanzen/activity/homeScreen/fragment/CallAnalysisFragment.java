@@ -67,7 +67,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("Fragment_STATUS","OnResume");
+        HiddenVisibleFunctions();
+        SetcallDetailsInLineChart();
 
     }
     @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
@@ -84,8 +85,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         db = RoomDB.getDatabase(getActivity());
         callTableDao=db.callTableDao();
         masterDataDao = db.masterDataDao();
-        HiddenVisibleFunctions();
-        SetcallDetailsInLineChart();
         return v;
     }
     public static int computePercent(int current, int total) {
@@ -677,126 +676,124 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
 
 
+        if(SharedPref.getDesig(context).equalsIgnoreCase("MR")){
+            try {
+                JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
 
-
-
-try {
-
-
-
-        JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-
-        String Doc_code = "", Chm_code = "", Stk_code = "", Cip_code = "", Hosp_code = "", Unlist_code = "";
-        String doctor = String.valueOf(jsonDoc);
-        if (!doctor.equals("") || !doctor.equals("null")) {
-            count_list.clear();
-            if (jsonDoc.length() > 0) {
-                for (int i = 0; i < jsonDoc.length(); i++) {
-                    JSONObject jsonObject = jsonDoc.getJSONObject(i);
-                    if (!Doc_code.equals(jsonObject.getString("Code"))) {
-                        Doc_code = jsonObject.getString("Code");
-                        count_list.add(Doc_code);
-                        Doc_count = String.valueOf(count_list.size());
+                String Doc_code = "", Chm_code = "", Stk_code = "", Cip_code = "", Hosp_code = "", Unlist_code = "";
+                String doctor = String.valueOf(jsonDoc);
+                if (!doctor.equals("") || !doctor.equals("null")) {
+                    count_list.clear();
+                    if (jsonDoc.length() > 0) {
+                        for (int i = 0; i < jsonDoc.length(); i++) {
+                            JSONObject jsonObject = jsonDoc.getJSONObject(i);
+                            if (!Doc_code.equals(jsonObject.getString("Code"))) {
+                                Doc_code = jsonObject.getString("Code");
+                                count_list.add(Doc_code);
+                                Doc_count = String.valueOf(count_list.size());
+                            }
+                        }
+                    } else {
+                        Doc_count = "0";
                     }
                 }
-            } else {
-                Doc_count = "0";
+
+                JSONArray jsonChm =  masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+                String chemist = String.valueOf(jsonChm);
+                if (!chemist.equals("") || !chemist.equals("null")) {
+                    count_list.clear();
+                    if (jsonChm.length() > 0) {
+                        for (int i = 0; i < jsonChm.length(); i++) {
+                            JSONObject jsonObject = jsonChm.getJSONObject(i);
+                            if (!Chm_code.equals(jsonObject.getString("Code"))) {
+                                Chm_code = jsonObject.getString("Code");
+                                count_list.add(Chm_code);
+                                Che_count = String.valueOf(count_list.size());
+                            }
+                        }
+                    } else {
+                        Che_count = "0";
+                    }
+                }
+                JSONArray jsonstock =  masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+
+                String stockist = String.valueOf(jsonstock);
+                if (!stockist.equals("") || !stockist.equals("null")) {
+                    count_list.clear();
+                    if (jsonstock.length() > 0) {
+                        for (int i = 0; i < jsonstock.length(); i++) {
+                            JSONObject jsonObject = jsonstock.getJSONObject(i);
+                            if (!Stk_code.equals(jsonObject.getString("Code"))) {
+                                Stk_code = jsonObject.getString("Code");
+                                count_list.add(Stk_code);
+                                Strck_count = String.valueOf(count_list.size());
+                            }
+                        }
+                    } else {
+                        Strck_count = "0";
+                    }
+                }
+                JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+                String unlisted = String.valueOf(jsonunlisted);
+                if (!unlisted.equals("") || !unlisted.equals("null")) {
+                    count_list.clear();
+                    if (jsonunlisted.length() > 0) {
+                        for (int i = 0; i < jsonunlisted.length(); i++) {
+                            JSONObject jsonObject = jsonunlisted.getJSONObject(i);
+                            if (!Unlist_code.equals(jsonObject.getString("Code"))) {
+                                Stk_code = jsonObject.getString("Code");
+                                count_list.add(Stk_code);
+                                Unlist_count = String.valueOf(count_list.size());
+                            }
+                        }
+                    } else {
+                        Unlist_count = "0";
+                    }
+                }
+
+
+                JSONArray jsoncip = masterDataDao.getMasterDataTableOrNew(Constants.CIP + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+                String cip = String.valueOf(jsoncip);
+                if (!cip.equals("") || !cip.equals("null")) {
+                    count_list.clear();
+                    if (jsoncip.length() > 0) {
+                        for (int i = 0; i < jsoncip.length(); i++) {
+                            JSONObject jsonObject = jsoncip.getJSONObject(i);
+                            if (!Cip_code.equals(jsonObject.getString("Code"))) {
+                                Cip_code = jsonObject.getString("Code");
+                                count_list.add(Cip_code);
+                                Cip_count = String.valueOf(count_list.size());
+                            }
+                        }
+                    } else {
+                        Cip_count = "0";
+                    }
+                }
+                JSONArray jsonhosp = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+                String hosp = String.valueOf(jsonhosp);
+                if (!hosp.equals("") || !hosp.equals("null")) {
+                    count_list.clear();
+                    if (jsonhosp.length() > 0) {
+                        for (int i = 0; i < jsonhosp.length(); i++) {
+                            JSONObject jsonObject = jsonhosp.getJSONObject(i);
+                            if (!Hosp_code.equals(jsonObject.getString("Code"))) {
+                                Hosp_code = jsonObject.getString("Code");
+                                count_list.add(Hosp_code);
+                                Hosp_count = String.valueOf(count_list.size());
+                            }
+                        }
+                    } else {
+                        Hosp_count = "0";
+                    }
+                }
+
+
+            }catch (Exception a){
+                a.printStackTrace();
             }
         }
 
-        JSONArray jsonChm =  masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-        String chemist = String.valueOf(jsonChm);
-        if (!chemist.equals("") || !chemist.equals("null")) {
-            count_list.clear();
-            if (jsonChm.length() > 0) {
-                for (int i = 0; i < jsonChm.length(); i++) {
-                    JSONObject jsonObject = jsonChm.getJSONObject(i);
-                    if (!Chm_code.equals(jsonObject.getString("Code"))) {
-                        Chm_code = jsonObject.getString("Code");
-                        count_list.add(Chm_code);
-                        Che_count = String.valueOf(count_list.size());
-                    }
-                }
-            } else {
-                Che_count = "0";
-            }
-        }
-        JSONArray jsonstock =  masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
 
-        String stockist = String.valueOf(jsonstock);
-        if (!stockist.equals("") || !stockist.equals("null")) {
-            count_list.clear();
-            if (jsonstock.length() > 0) {
-                for (int i = 0; i < jsonstock.length(); i++) {
-                    JSONObject jsonObject = jsonstock.getJSONObject(i);
-                    if (!Stk_code.equals(jsonObject.getString("Code"))) {
-                        Stk_code = jsonObject.getString("Code");
-                        count_list.add(Stk_code);
-                        Strck_count = String.valueOf(count_list.size());
-                    }
-                }
-            } else {
-                Strck_count = "0";
-            }
-        }
-        JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-        String unlisted = String.valueOf(jsonunlisted);
-        if (!unlisted.equals("") || !unlisted.equals("null")) {
-            count_list.clear();
-            if (jsonunlisted.length() > 0) {
-                for (int i = 0; i < jsonunlisted.length(); i++) {
-                    JSONObject jsonObject = jsonunlisted.getJSONObject(i);
-                    if (!Unlist_code.equals(jsonObject.getString("Code"))) {
-                        Stk_code = jsonObject.getString("Code");
-                        count_list.add(Stk_code);
-                        Unlist_count = String.valueOf(count_list.size());
-                    }
-                }
-            } else {
-                Unlist_count = "0";
-            }
-        }
-
-
-        JSONArray jsoncip = masterDataDao.getMasterDataTableOrNew(Constants.CIP + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-        String cip = String.valueOf(jsoncip);
-        if (!cip.equals("") || !cip.equals("null")) {
-            count_list.clear();
-            if (jsoncip.length() > 0) {
-                for (int i = 0; i < jsoncip.length(); i++) {
-                    JSONObject jsonObject = jsoncip.getJSONObject(i);
-                    if (!Cip_code.equals(jsonObject.getString("Code"))) {
-                        Cip_code = jsonObject.getString("Code");
-                        count_list.add(Cip_code);
-                        Cip_count = String.valueOf(count_list.size());
-                    }
-                }
-            } else {
-                Cip_count = "0";
-            }
-        }
-        JSONArray jsonhosp = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-        String hosp = String.valueOf(jsonhosp);
-        if (!hosp.equals("") || !hosp.equals("null")) {
-            count_list.clear();
-            if (jsonhosp.length() > 0) {
-                for (int i = 0; i < jsonhosp.length(); i++) {
-                    JSONObject jsonObject = jsonhosp.getJSONObject(i);
-                    if (!Hosp_code.equals(jsonObject.getString("Code"))) {
-                        Hosp_code = jsonObject.getString("Code");
-                        count_list.add(Hosp_code);
-                        Hosp_count = String.valueOf(count_list.size());
-                    }
-                }
-            } else {
-                Hosp_count = "0";
-            }
-        }
-
-
-}catch (Exception a){
-    a.printStackTrace();
-}
 
     }
 
@@ -918,7 +915,6 @@ try {
 
 
     }
-
 
 
 }
