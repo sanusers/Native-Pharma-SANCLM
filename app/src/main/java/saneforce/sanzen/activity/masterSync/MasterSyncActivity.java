@@ -963,7 +963,9 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         masterSyncAllModel.add(tpModelArray);
                         masterSyncAllModel.add(slideModelArray);
                         masterSyncAllModel.add(otherModelArray);
-                        masterSyncAllModel.add(setupModelArray);
+                        if(!navigateFrom.equalsIgnoreCase("Login")){
+                            masterSyncAllModel.add(setupModelArray);
+                        }
                     }
 
                     for (int i = 0; i < masterSyncAllModel.size(); i++) {
@@ -1959,7 +1961,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                 commonUtilsMethods.showToastMessage(this, "Slides Downloading Completed ");
                             }
                         }
-
+                        SharedPref.putSlidestatus(MasterSyncActivity.this,true);
 
                     }else {
                         SharedPref.putSlidestatus(MasterSyncActivity.this,false);

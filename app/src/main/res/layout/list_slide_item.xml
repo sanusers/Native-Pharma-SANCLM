@@ -38,7 +38,7 @@
                 android:layout_width="@dimen/_10sdp"
                 android:layout_marginRight="@dimen/_3sdp"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/reload_img"
+                android:src="@drawable/reload"
                 android:layout_alignParentEnd="true"
                 android:layout_height="@dimen/_10sdp"/>
 
