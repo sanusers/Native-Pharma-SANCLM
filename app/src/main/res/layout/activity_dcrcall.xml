@@ -139,7 +139,7 @@
  -->
     <RelativeLayout
         android:id="@+id/rl_btns"
-        android:layout_width="@dimen/_120sdp"
+        android:layout_width="@dimen/_130sdp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_16sdp"
         android:orientation="horizontal"
