@@ -324,7 +324,7 @@ public class CallsFragment extends Fragment {
             }else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                 CommonAlertBox.TpAlert(requireActivity());
             }else {
-                JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.MY_DAY_PLAN).getMasterSyncDataJsonArray();
+                JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
                 try {
