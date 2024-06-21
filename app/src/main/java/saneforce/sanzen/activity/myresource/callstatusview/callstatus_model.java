@@ -3,10 +3,10 @@ package saneforce.sanzen.activity.myresource.callstatusview;
 public class callstatus_model {
 
 
-    String CustCode,CustType,FW_Indicator,Dcr_dt,month_name,CustName,town_code,town_name,Dcr_flag,SF_Code,Trans_SlNo,AMSLNo,Mnth,chkflk,Dcrname;
+    String CustCode, CustType, FW_Indicator, Dcr_dt, month_name, CustName, town_code, town_name, Dcr_flag, SF_Code, Trans_SlNo, AMSLNo, Mnth, chkflk, Dcrname, workType,time;
 
     public callstatus_model(String custCode, String custType, String FW_Indicator, String dcr_dt, String month_name, String custName, String town_code, String town_name,
-                            String dcr_flag, String SF_Code, String trans_SlNo, String AMSLNo,String Mnth,String chkflk,String Dcrname) {
+                            String dcr_flag, String SF_Code, String trans_SlNo, String AMSLNo, String Mnth, String chkflk, String Dcrname, String workType,String time) {
         CustCode = custCode;
         CustType = custType;
         this.FW_Indicator = FW_Indicator;
@@ -21,7 +21,25 @@ public class callstatus_model {
         this.AMSLNo = AMSLNo;
         this.Mnth = Mnth;
         this.chkflk = chkflk;
-     this.Dcrname = Dcrname;
+        this.Dcrname = Dcrname;
+        this.workType = workType;
+        this.time = time;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getWorkType() {
+        return workType;
+    }
+
+    public void setWorkType(String workType) {
+        this.workType = workType;
     }
 
     public String getCustCode() {

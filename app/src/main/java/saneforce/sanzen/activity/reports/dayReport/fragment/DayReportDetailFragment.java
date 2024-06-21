@@ -67,7 +67,7 @@ public class DayReportDetailFragment extends Fragment {
 
     CommonUtilsMethods commonUtilsMethods;
     ProgressDialog progressDialog;
-    String rcpaItem, eventCaptureItem,pobItem,feedBackItem = "";
+    String rcpaItem, eventCaptureItem,pobItem,feedBackItem,inputItem,productItem = "";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -311,6 +311,8 @@ public class DayReportDetailFragment extends Fragment {
                 eventCaptureItem = SharedPref.getDeNeed(requireContext());
                 pobItem = SharedPref.getDocPobNeed(requireContext());
                 feedBackItem = SharedPref.getDfNeed(requireContext());
+                inputItem = SharedPref.getDiNeed(requireContext());
+                productItem = SharedPref.getDpNeed(requireContext());
                 break;
             case "2":
                 callCheckInOutNeed = SharedPref.getChmSrtNd(requireContext());
@@ -318,12 +320,16 @@ public class DayReportDetailFragment extends Fragment {
                 eventCaptureItem = SharedPref.getCeNeed(requireContext());
                 pobItem = SharedPref.getChmPobNeed(requireContext());
                 feedBackItem = SharedPref.getCfNeed(requireContext());
+                inputItem = SharedPref.getCiNeed(requireContext());
+                productItem = SharedPref.getCpNeed(requireContext());
                 break;
             case "3":
                 rcpaItem = "1";
                 eventCaptureItem = SharedPref.getSeNeed(requireContext());
                 pobItem = SharedPref.getStkPobNeed(requireContext());
                 feedBackItem = SharedPref.getSfNeed(requireContext());
+                inputItem = SharedPref.getSiNeed(requireContext());
+                productItem = SharedPref.getSpNeed(requireContext());
                 break;
             case "4":
                 rcpaItem = "1";
@@ -331,6 +337,8 @@ public class DayReportDetailFragment extends Fragment {
                 eventCaptureItem = SharedPref.getNeNeed(requireContext());
                 pobItem = SharedPref.getUnlistedDoctorPobNeed(requireContext());
                 feedBackItem = SharedPref.getNfNeed(requireContext());
+                inputItem = SharedPref.getNiNeed(requireContext());
+                productItem = SharedPref.getNpNeed(requireContext());
                 break;
             case "5":
                 callCheckInOutNeed = SharedPref.getCipSrtNd(requireContext());
@@ -341,10 +349,12 @@ public class DayReportDetailFragment extends Fragment {
                 eventCaptureItem = "1";
                 pobItem = "1";
                 feedBackItem = "1";
+                inputItem = "1";
+                productItem = "1";
                 break;
         }
 
-        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()), dayReportModel.getACode(), dayReportModel.getSF_Code(), rcpaItem, eventCaptureItem,pobItem, feedBackItem);
+        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()), dayReportModel.getACode(), dayReportModel.getSF_Code(), rcpaItem, eventCaptureItem,pobItem, feedBackItem,inputItem,productItem);
         binding.dayReportDetailRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportDetailRecView.setAdapter(adapter);
     }

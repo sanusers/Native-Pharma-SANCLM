@@ -57,7 +57,7 @@ public class Cate_Chemistview extends Fragment {
                     String name = (chemistJsonObject.getString("Name"));
                     String chemistCategoryName = (chemistJsonObject.getString("Chem_Cat_Name"));
                     categoryList.add(new callstatus_model(name, chemistCategoryName, "", "", "", "",
-                            "", "", "", "", "", "", "", "", ""));
+                            "", "", "", "", "", "", "", "", "","",""));
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }

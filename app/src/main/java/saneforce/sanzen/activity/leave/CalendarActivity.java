@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -93,16 +94,14 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
 
         int currentMonth = today.getMonthValue();
         int currentyear = today.getDayOfYear();
-
         if (frm_date.equals("1")) {
             if (!SharedPref.getPastLeavePost(this).equalsIgnoreCase("0")){
-                if(monthYearText.getText().toString().equals(monthYearFromDate(LocalDate.now()))){
+                if (monthYearText.getText().toString().equals(monthYearFromDate(LocalDate.now()))){
                     bfr_month.setVisibility(View.GONE);
                 }else {
                     bfr_month.setVisibility(View.VISIBLE);
                 }
             }
-
         } else {
             if (frm_date.equals("2")) {
                 LocalDate today1 = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, Leave_Application.leavebinding.etFromDate.getText().toString())));

@@ -182,6 +182,7 @@
                                     android:gravity="center|start" />
 
                                 <ImageView
+                                    android:visibility="gone"
                                     android:layout_width="@dimen/_7sdp"
                                     android:layout_height="@dimen/_4sdp"
                                     android:layout_alignParentEnd="true"

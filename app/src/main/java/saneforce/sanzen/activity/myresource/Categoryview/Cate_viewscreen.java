@@ -14,6 +14,7 @@ import java.util.Objects;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.forms.weekoff.forms_viewpager;
+import saneforce.sanzen.storage.SharedPref;
 
 
 public class Cate_viewscreen extends AppCompatActivity {
@@ -43,9 +44,12 @@ public class Cate_viewscreen extends AppCompatActivity {
 
         tabLayout.setupWithViewPager(viewPager);
         formsviewpager = new forms_viewpager(getSupportFragmentManager(), 0);
-        formsviewpager.addFragment(cate_Docview,"Doctor");
-        formsviewpager.addFragment(cate_chemistview, "Chemist");
-
+        if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")){
+            formsviewpager.addFragment(cate_Docview,"Doctor");
+        }
+        if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")){
+            formsviewpager.addFragment(cate_chemistview, "Chemist");
+        }
         viewPager.setAdapter(formsviewpager);        //set the icons
         tabLayout.getTabAt(0);
         tabLayout.getTabAt(1);

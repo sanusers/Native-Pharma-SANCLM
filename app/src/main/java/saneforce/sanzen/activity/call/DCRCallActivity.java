@@ -814,12 +814,13 @@ public class DCRCallActivity extends AppCompatActivity {
                         return false;
                     }
                 }
-
-                if (FeedbackMandatory.equalsIgnoreCase("1")) {
-                    if (jwOthersBinding.tvFeedback.getText().toString().isEmpty()) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_feedback));
-                        moveToPage("JFW/Others");
-                        return false;
+                if (SharedPref.getDfNeed(this).equals("0")) {
+                    if (FeedbackMandatory.equalsIgnoreCase("1")) {
+                        if (jwOthersBinding.tvFeedback.getText().toString().isEmpty()) {
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_feedback));
+                            moveToPage("JFW/Others");
+                            return false;
+                        }
                     }
                 }
 
@@ -855,7 +856,9 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 } else {
                     if (MgrRcpaMandatory.equalsIgnoreCase("0")) {
-                        if(!validateRCPA()) return false;
+                    if (SharedPref.getChmRcpaNeed(this).equals("0")) {
+                        if (!validateRCPA()) return false;
+                    }
                     }
                 }
 
@@ -876,10 +879,12 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
 
                 if (JwMandatory.equalsIgnoreCase("0")) {
-                    if (JWOthersFragment.callAddedJointList.isEmpty()) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.jointwork_need));
-                        moveToPage("JFW/Others");
-                        return false;
+                    if (SharedPref.getChmJointworkNeed(this).equals("0")) {
+                        if (JWOthersFragment.callAddedJointList.isEmpty()) {
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.jointwork_need));
+                            moveToPage("JFW/Others");
+                            return false;
+                        }
                     }
                 }
 

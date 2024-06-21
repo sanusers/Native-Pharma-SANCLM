@@ -27,7 +27,7 @@
         android:title="@string/near_me" />
     <item
         android:id="@+id/approval"
-        android:icon="@drawable/leave"
+        android:icon="@drawable/approval_logo"
         android:title="@string/approvals" />
     <item
         android:id="@+id/quiz"

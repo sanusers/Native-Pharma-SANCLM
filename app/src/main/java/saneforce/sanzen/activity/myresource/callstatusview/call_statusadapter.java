@@ -12,12 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.approvals.geotagging.GeoTaggingModelList;
 
 public class call_statusadapter extends RecyclerView.Adapter<call_statusadapter.ViewHolder> {
     Context context;
     ArrayList<callstatus_model> listeduser;
+
 
     public call_statusadapter(Context context, ArrayList<callstatus_model> listeduser) {
         this.context = context;
@@ -34,10 +39,8 @@ public class call_statusadapter extends RecyclerView.Adapter<call_statusadapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final callstatus_model app_adapt = listeduser.get(position);
-
         holder.Date_view.setText(app_adapt.getDcr_dt());
         holder.cust_type.setText(app_adapt.getDcrname());
-        holder.CustName.setText(app_adapt.getCustName());
         holder.calls_town.setText(app_adapt.getTown_name());
 
         if (app_adapt.getChkflk().equals("1")) {
@@ -46,10 +49,22 @@ public class call_statusadapter extends RecyclerView.Adapter<call_statusadapter.
             holder.cs_line.setVisibility(View.GONE);
         }
         if (app_adapt.getDcrname().equals("")) {
-            holder.CustName.setText(app_adapt.getFW_Indicator());
+            holder.CustName.setText(app_adapt.getWorkType());
             holder.cust_type.setVisibility(View.GONE);
             holder.calls_town.setVisibility(View.GONE);
         } else {
+           /* List<String> valuesList = new ArrayList<>();
+            for (int bean = 0;bean<listeduser.size();bean++){
+                String custName = listeduser.get(bean).getCustName();
+                System.out.println("custName--->"+custName);
+                valuesList.add(custName);
+            }
+            Collections.sort(valuesList);*/
+           /* Collections.sort(listeduser, Comparator.comparing(callstatus_model::getDcr_dt));
+            for (callstatus_model model : listeduser) {
+                System.out.println("dcrDate: " + model.getTime());
+            }*/
+            holder.CustName.setText(app_adapt.getCustName());
             holder.cust_type.setText(app_adapt.getDcrname());
             holder.calls_town.setVisibility(View.VISIBLE);
         }
