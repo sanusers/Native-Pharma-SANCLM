@@ -52,7 +52,7 @@ public class PreCallAnalysisFragment extends Fragment {
     CommonUtilsMethods commonUtilsMethods;
 
     public static void CallPreCallAPI(Context context, Activity activity) {
-        JSONObject json = new JSONObject();
+        JSONObject json =CommonUtilsMethods.CommonObjectParameter(context);
         try {
             json.put("tableName", "getcuslvst");
             if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
@@ -68,16 +68,7 @@ public class PreCallAnalysisFragment extends Fragment {
             json.put("sfcode", SharedPref.getSfCode(context));
             json.put("division_code", SharedPref.getDivisionCode(context));
             json.put("Rsf", SharedPref.getHqCode(context));
-            json.put("sf_type", SharedPref.getSfType(context));
-            json.put("Designation", SharedPref.getDesig(context));
-            json.put("state_code", SharedPref.getStateCode(context));
-            json.put("subdivision_code", SharedPref.getSubdivisionCode(context));
-            json.put("versionNo", context.getString(R.string.app_version));
-            json.put("mod", Constants.APP_MODE);
-            json.put("Device_version", Build.VERSION.RELEASE);
-            json.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            json.put("AppName", context.getString(R.string.str_app_name));
-            json.put("language", SharedPref.getSelectedLanguage(context));
+
             Log.v("json_cus_l_visit", json.toString());
         } catch (Exception ignored) {
 

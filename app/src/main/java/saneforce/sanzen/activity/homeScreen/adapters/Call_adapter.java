@@ -204,15 +204,11 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
     @SuppressLint("DefaultLocale")
 
     private void CallDeleteAPI(String TranslNo, String aDetSLNo, String type, String date, String docCode) {
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
         try {
             jsonObject.put("sfcode",  SharedPref.getSfCode(context));
             jsonObject.put("division_code",  SharedPref.getDivisionCode(context));
             jsonObject.put("Rsf",  SharedPref.getHqCode(context));
-            jsonObject.put("sf_type",  SharedPref.getSfType(context));
-            jsonObject.put("Designation",  SharedPref.getDesig(context));
-            jsonObject.put("state_code",  SharedPref.getStateCode(context));
-            jsonObject.put("subdivision_code",  SharedPref.getSubdivisionCode(context));
             jsonObject.put("amc", aDetSLNo);
             jsonObject.put("CusType", type);
             jsonObject.put("sample_validation", SharedPref.getSampleValidation(context));
@@ -276,17 +272,13 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
     private void CallEditAPI(String transSlno, String aDetSLNo, String docName, String docCode, String type) {
         progressBar = CommonUtilsMethods.createProgressDialog(context);
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
         try {
             jsonObject.put("headerno", transSlno);
             jsonObject.put("detno", aDetSLNo);
             jsonObject.put("sfcode",  SharedPref.getSfCode(context));
             jsonObject.put("division_code",  SharedPref.getDivisionCode(context));
             jsonObject.put("Rsf",  SharedPref.getHqCode(context));
-            jsonObject.put("sf_type",  SharedPref.getSfType(context));
-            jsonObject.put("Designation",  SharedPref.getDesig(context));
-            jsonObject.put("state_code",  SharedPref.getStateCode(context));
-            jsonObject.put("subdivision_code",  SharedPref.getSubdivisionCode(context));
             jsonObject.put("cusname", docName);
             jsonObject.put("custype", type);
             jsonObject.put("pob", "1");

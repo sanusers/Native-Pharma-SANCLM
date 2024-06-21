@@ -111,20 +111,11 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
     private void CallTpDeviationAPI() {
         progressDialog = CommonUtilsMethods.createProgressDialog(TpDeviationApprovalActivity.this);
         try {
+            jsonTpDeviation=CommonUtilsMethods.CommonObjectParameter(TpDeviationApprovalActivity.this);
             jsonTpDeviation.put("tableName", "getdevappr");
             jsonTpDeviation.put("sfcode", SharedPref.getSfType(this));
             jsonTpDeviation.put("division_code", SharedPref.getDivisionCode(this));
             jsonTpDeviation.put("Rsf", SharedPref.getHqCode(this));
-            jsonTpDeviation.put("sf_type", SharedPref.getSfType(this));
-            jsonTpDeviation.put("Designation", SharedPref.getDesig(this));
-            jsonTpDeviation.put("state_code", SharedPref.getStateCode(this));
-            jsonTpDeviation.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            jsonTpDeviation.put("versionNo", getString(R.string.app_version));
-            jsonTpDeviation.put("mod", Constants.APP_MODE);
-            jsonTpDeviation.put("Device_version", Build.VERSION.RELEASE);
-            jsonTpDeviation.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonTpDeviation.put("AppName", getString(R.string.str_app_name));
-            jsonTpDeviation.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_get_tpDev_list", jsonTpDeviation.toString());
         } catch (Exception ignored) {
 

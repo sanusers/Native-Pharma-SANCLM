@@ -67,6 +67,7 @@ CommonUtilsMethods commonUtilsMethods;
     private void CallApprovedRejectTpDeviation(String sfName, String sfCode, String slNo, int position, String status) {
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         try {
+            jsonTpDeviation=CommonUtilsMethods.CommonObjectParameter(context);
             jsonTpDeviation.put("tableName", "savedev_appr");
             jsonTpDeviation.put("slno", slNo);
             jsonTpDeviation.put("status", status);
@@ -74,17 +75,6 @@ CommonUtilsMethods commonUtilsMethods;
             jsonTpDeviation.put("sfname", sfName);
             jsonTpDeviation.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
             jsonTpDeviation.put("Rsf", SharedPref.getHqCode(context));
-            jsonTpDeviation.put("sf_type", SharedPref.getSfType(context));
-            jsonTpDeviation.put("Designation", SharedPref.getDesig(context));
-            jsonTpDeviation.put("state_code", SharedPref.getStateCode(context));
-            jsonTpDeviation.put("subdivision_code", SharedPref.getSubdivisionCode(context));
-            jsonTpDeviation.put("Mode", "");
-            jsonTpDeviation.put("versionNo", context.getString(R.string.app_version));
-            jsonTpDeviation.put("mod", Constants.APP_MODE);
-            jsonTpDeviation.put("Device_version", Build.VERSION.RELEASE);
-            jsonTpDeviation.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonTpDeviation.put("AppName", context.getString(R.string.str_app_name));
-            jsonTpDeviation.put("language", SharedPref.getSelectedLanguage(context));
             Log.v("json_approve_tpDev", jsonTpDeviation.toString());
         } catch (Exception ignored) {
 

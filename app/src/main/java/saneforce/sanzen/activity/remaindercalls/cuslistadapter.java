@@ -220,21 +220,13 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
 
                 api_interface = RetrofitClient.getRetrofit(context, baseUrl + replacedUrl);
 
-                JSONObject jsonObject = new JSONObject();
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
                 jsonObject.put("tableName", remoteTableName);
                 jsonObject.put("sfcode", SharedPref.getSfCode(context));
                 jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                 jsonObject.put("Rsf", hq_code);
                 jsonObject.put("sf_type", SharedPref.getSfType(context));
-                jsonObject.put("Designation", SharedPref.getDesig(context));
-                jsonObject.put("state_code", SharedPref.getStateCode(context));
-                jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
-                jsonObject.put("versionNo", context.getString(R.string.app_version));
-                jsonObject.put("mod", Constants.APP_MODE);
-                jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                jsonObject.put("AppName", context.getString(R.string.str_app_name));
-                jsonObject.put("language", SharedPref.getSelectedLanguage(context));
+
                 Log.d("jsonObject", String.valueOf(jsonObject));
                 Map<String, String> mapString = new HashMap<>();
 

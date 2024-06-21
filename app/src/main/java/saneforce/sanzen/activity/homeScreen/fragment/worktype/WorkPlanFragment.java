@@ -101,8 +101,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     String strClusterID = "", strClusterName = "";
 
     String DayPlanCount = "1", IsFeildWorkFlag = "F0";
-
-    String mSubmitflag = "S0";
     CommonUtilsMethods commonUtilsMethods;
     double latitude, longitude;
     GPSTrack gpsTrack;
@@ -668,7 +666,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     break;
 
                 case R.id.txtAddPlan:
-                    mSubmitflag = "S0";
                     DayPlanCount = "2";
                     binding.llDelete.setVisibility(View.VISIBLE);
                     binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
@@ -722,7 +719,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.txtCluster2.setText("");
                         binding.txtheadquaters2.setText("");
                         DayPlanCount = "1";
-                        mSubmitflag = "S1";
                         binding.cardPlan2.setVisibility(View.GONE);
                     });
 
@@ -786,7 +782,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.txtAddPlan.setEnabled(true);
                     binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
                     binding.txtSave.setEnabled(false);
-                    mSubmitflag = "S1";
                     CreateJson();
                     if (UtilityClass.isNetworkAvailable(requireContext())) {
                         MyDayPlanSubmit();
@@ -813,7 +808,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 binding.txtAddPlan.setEnabled(true);
                 binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
                 binding.txtSave.setEnabled(false);
-                mSubmitflag = "S1";
                 CreateJson();
                 if (UtilityClass.isNetworkAvailable(requireContext())) {
                     MyDayPlanSubmit();
@@ -844,7 +838,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.rlheadquates2.setEnabled(false);
                     binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
                     binding.txtSave.setEnabled(false);
-                    mSubmitflag = "S1";
                     binding.llDelete.setVisibility(View.GONE);
                     CreateJson();
                     if (UtilityClass.isNetworkAvailable(requireContext())) {
@@ -872,7 +865,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 binding.rlheadquates2.setEnabled(false);
                 binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
                 binding.txtSave.setEnabled(false);
-                mSubmitflag = "S1";
                 binding.llDelete.setVisibility(View.GONE);
                 CreateJson();
                 if (UtilityClass.isNetworkAvailable(requireContext())) {
@@ -900,6 +892,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()),  SharedPref.getSfCode(requireContext()));
                 }
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode1);
+
+                  if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg1.equalsIgnoreCase("A"))
+                        HomeDashBoard.binding.viewPager.setCurrentItem(1);
+
+
+
             } else {
                 callOfflineWorkTypeDataDao.insert(new CallOfflineWorkTypeDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), mWTName2, mWTCode2, jsonObject.toString(), "", 0));
                 OutboxFragment.SetupOutBoxAdapter(requireActivity(), requireContext());
@@ -909,6 +907,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()),  SharedPref.getSfCode(requireContext()));
                 }
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode2);
+                if (mFwFlg2.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("A"))
+                    HomeDashBoard.binding.viewPager.setCurrentItem(1);
             }
 
             boolean isTodayAvailable = false;
@@ -1046,7 +1046,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
             }
 
-            jsonObject = new JSONObject();
+            jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
             jsonObject.put("tableName", "dayplan");
             jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
             jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
@@ -1056,10 +1056,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             } else {
                 jsonObject.put("Rsf", SharedPref.getSfCode(requireContext()));
             }
-            jsonObject.put("sf_type",SharedPref.getSfType(requireContext()));
-            jsonObject.put("Designation", SharedPref.getDesig(requireContext()));
-            jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
-            jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(requireContext()));
+
             jsonObject.put("town_code", mTowncode1);
             jsonObject.put("Town_name", mTownname1);
             jsonObject.put("WT_code", mWTCode1);
@@ -1076,20 +1073,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("location", gpsTrack.getLatitude()+":"+gpsTrack.getLongitude());
             jsonObject.put("address",CommonUtilsMethods.gettingAddress(getActivity(), gpsTrack.getLatitude(), gpsTrack.getLongitude(), false));
             jsonObject.put("InsMode", "0");
-            jsonObject.put("Appver", getResources().getString(R.string.app_version));
-            jsonObject.put("Mod", getResources().getString(R.string.app_mode));
             jsonObject.put("SubmittedDate", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
             jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
             jsonObject.put("TpVwFlg", "0");
             jsonObject.put("TP_cluster", "");
             jsonObject.put("TP_worktype", "");
             jsonObject.put("day_flag", "0");
-            jsonObject.put("versionNo", getString(R.string.app_version));
-            jsonObject.put("mod", Constants.APP_MODE);
-            jsonObject.put("Device_version", Build.VERSION.RELEASE);
-            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonObject.put("AppName", getString(R.string.str_app_name));
-            jsonObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
+
 
 
         } catch (Exception ignored) {
@@ -1250,68 +1240,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     public void MyDayPlanSubmit() {
         try {
-        /*    if (DayPlanCount.equalsIgnoreCase("1")) {
-                mHQCode = mHQCode1;
-                mTowncode = mTowncode1;
-                mHQName = mHQName1;
-                mFwFlg = mFwFlg1;
-            } else {
-                if (IsFeildWorkFlag.equalsIgnoreCase("F1")) {
-                    mHQCode = mHQCode1;
-                    mTowncode = mTowncode1;
-                    mHQName = mHQName1;
-
-                } else if (IsFeildWorkFlag.equalsIgnoreCase("F2")) {
-                    mHQCode = mHQCode2;
-                    mTowncode = mTowncode2;
-                    mHQName = mHQName2;
-                } else {
-                    mHQCode = "";
-                    mTowncode = "";
-                    mHQName = "";
-                }
-            }*/
-
             binding.progressSumit.setVisibility(View.VISIBLE);
-
-        /*    JSONObject jsonObject = new JSONObject();
-            jsonObject.put("tableName", "dayplan");
-            jsonObject.put("sfcode", loginResponse.getSF_Code());
-            jsonObject.put("division_code", loginResponse.getDivision_Code());
-            if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
-                jsonObject.put("Rsf", mHQCode1);
-                jsonObject.put("Rsf2", mHQCode2);
-            } else {
-                jsonObject.put("Rsf", loginResponse.getSF_Code());
-            }
-            jsonObject.put("sf_type", loginResponse.getSf_type());
-            jsonObject.put("Designation", SharedPref.getDesig(requireContext()));
-            jsonObject.put("state_code", loginResponse.getState_Code());
-            jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
-            jsonObject.put("town_code", mTowncode1);
-            jsonObject.put("Town_name", mTownname1);
-            jsonObject.put("WT_code", mWTCode1);
-            jsonObject.put("WTName", mWTName1);
-            jsonObject.put("FwFlg", mFwFlg1);
-
-            jsonObject.put("town_code2", mTowncode2);
-            jsonObject.put("Town_name2", mTownname2);
-            jsonObject.put("WT_code2", mWTCode2);
-            jsonObject.put("WTName2", mWTName2);
-            jsonObject.put("FwFlg2", mFwFlg2);
-
-            jsonObject.put("Remarks", mRemarks1);
-            jsonObject.put("location", "");
-            jsonObject.put("location2", "");
-            jsonObject.put("InsMode", "0");
-            jsonObject.put("Appver", getResources().getString(R.string.app_version));
-            jsonObject.put("Mod", "");
-            jsonObject.put("SubmittedDate", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-            jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_15, HomeDashBoard.binding.textDate.getText().toString()));
-            jsonObject.put("TpVwFlg", "0");
-            jsonObject.put("TP_cluster", "");
-            jsonObject.put("TP_worktype", "");*/
-
             Log.e("todayCallList:Object",jsonObject.toString());
 
             Map<String, String> mapString = new HashMap<>();
@@ -1328,10 +1257,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
                             if (json.getString("success").equalsIgnoreCase("true")) {
                                 SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
-                                if(mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F")) {
-                                    HomeDashBoard.binding.viewPager.setCurrentItem(1);
+                                if (DayPlanCount.equalsIgnoreCase("1")) {
+                                    if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg1.equalsIgnoreCase("A"))
+                                        HomeDashBoard.binding.viewPager.setCurrentItem(1);
+                                } else if (DayPlanCount.equalsIgnoreCase("2")) {
+                                    if (mFwFlg2.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("A"))
+                                        HomeDashBoard.binding.viewPager.setCurrentItem(1);
                                 }
-
                                 commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
                                 if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                                     SharedPref.saveHq(requireContext(), mHQName, mHQCode);
@@ -1470,21 +1402,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
                 api_interface = RetrofitClient.getRetrofit(getActivity(), baseUrl + replacedUrl);
 
-                JSONObject jsonObject = new JSONObject();
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
                 jsonObject.put("tableName", remoteTableName);
                 jsonObject.put("sfcode",SharedPref.getSfCode(requireContext()));
                 jsonObject.put("division_code",SharedPref.getDivisionCode(requireContext()));
                 jsonObject.put("Rsf", hqCode);
-                jsonObject.put("sf_type", SharedPref.getSfType(requireContext()));
-                jsonObject.put("Designation", SharedPref.getDesig(requireContext()));
-                jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
-                jsonObject.put("subdivision_code",SharedPref.getSubdivisionCode(requireContext()));
-                jsonObject.put("versionNo", getString(R.string.app_version));
-                jsonObject.put("mod", Constants.APP_MODE);
-                jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                jsonObject.put("AppName", getString(R.string.str_app_name));
-                jsonObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
 
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "table/dcrmasterdata");
@@ -1700,7 +1622,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.txtAddPlan.setEnabled(true);
                         binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
                         binding.txtSave.setEnabled(false);
-                        mSubmitflag = "S1";
+
 
                         String dateOnlyString = sdf.format(FirstPlanDate);
                         String selectedDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_27, dateOnlyString);
@@ -1877,22 +1799,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             try {
                 api_interface = RetrofitClient.getRetrofit(getActivity(), SharedPref.getCallApiUrl(requireContext()));
 
-                JSONObject jsonObject = new JSONObject();
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext ());
                 jsonObject.put("tableName", "gettodaydcr");
                 jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
                 jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
                 jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
-                jsonObject.put("sf_type", SharedPref.getSfType(requireContext()));
-                jsonObject.put("Designation", SharedPref.getDesig(requireContext()));
-                jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
-                jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(requireContext()));
                 jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
-                jsonObject.put("versionNo", getString(R.string.app_version));
-                jsonObject.put("mod", Constants.APP_MODE);
-                jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                jsonObject.put("AppName", getString(R.string.str_app_name));
-                jsonObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
+
 
                 Log.v("Mydayplan", "--json-- " + jsonObject);
 
@@ -1960,8 +1873,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } else {
             address = "No Address Found";
         }
-        jsonCheck = new JSONObject();
-        finalSubmitJSONObject = new JSONObject();
+        jsonCheck = CommonUtilsMethods.CommonObjectParameter(requireContext());
+        finalSubmitJSONObject =CommonUtilsMethods.CommonObjectParameter(requireContext());
         try {
             jsonCheck.put("tableName", "savetp_attendance");
             jsonCheck.put("sfcode", SharedPref.getSfCode(requireContext()));
@@ -1970,42 +1883,20 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonCheck.put("long", longitude);
             jsonCheck.put("address", address);
             jsonCheck.put("update", "1");
-            jsonCheck.put("Appver", getResources().getString(R.string.app_version));
-            jsonCheck.put("Mod", APP_MODE);
-            jsonCheck.put("sf_emp_id",  SharedPref.getSfEmpId(requireContext()));
-            jsonCheck.put("sfname", SharedPref.getSfName(requireContext()));
-            jsonCheck.put("Employee_Id", "");
             jsonCheck.put("Check_In", SharedPref.getCheckInTime(requireContext()));
             jsonCheck.put("Check_Out", CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
             jsonCheck.put("DateTime", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd") + " " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
-            jsonCheck.put("versionNo", getString(R.string.app_version));
-            jsonCheck.put("mod", Constants.APP_MODE);
-            jsonCheck.put("Device_version", Build.VERSION.RELEASE);
-            jsonCheck.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonCheck.put("AppName", getString(R.string.str_app_name));
-            jsonCheck.put("language", SharedPref.getSelectedLanguage(requireContext()));
+
             Log.v("CheckInOut", "--json--" + jsonCheck);
 
             finalSubmitJSONObject.put("tableName", "final_day");
             finalSubmitJSONObject.put("sfcode", SharedPref.getSfCode(requireContext()));
             finalSubmitJSONObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
             finalSubmitJSONObject.put("Rsf", SharedPref.getHqCode(requireContext()));
-            finalSubmitJSONObject.put("sf_type", SharedPref.getSfType(requireContext()));
-            finalSubmitJSONObject.put("Designation", SharedPref.getDesig(requireContext()));
-            finalSubmitJSONObject.put("state_code", SharedPref.getStateCode(requireContext()));
-            finalSubmitJSONObject.put("subdivision_code", SharedPref.getSubdivisionCode(requireContext()));
-            finalSubmitJSONObject.put("day_flag", "0");
-            finalSubmitJSONObject.put("Appver", getResources().getString(R.string.app_version));
-            finalSubmitJSONObject.put("Mod", APP_MODE);
             finalSubmitJSONObject.put("Activity_Dt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
             finalSubmitJSONObject.put("current_Dt", CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_1));
             finalSubmitJSONObject.put("day_remarks", remark);
-            finalSubmitJSONObject.put("versionNo", getString(R.string.app_version));
-            finalSubmitJSONObject.put("mod", Constants.APP_MODE);
-            finalSubmitJSONObject.put("Device_version", Build.VERSION.RELEASE);
-            finalSubmitJSONObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            finalSubmitJSONObject.put("AppName", getString(R.string.str_app_name));
-            finalSubmitJSONObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
+
             Log.v("Final Submit", "--json-- " + finalSubmitJSONObject);
         } catch (JSONException e) {
             e.printStackTrace();

@@ -127,6 +127,7 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
         holder.progressBar.setVisibility(View.VISIBLE);
 
         try {
+            jsonGeoTag=CommonUtilsMethods.CommonObjectParameter(context);
             jsonGeoTag.put("tableName", "savegeo_appr");
             switch (CustMode) {
                 case "D":
@@ -140,12 +141,6 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                     jsonGeoTag.put("unlisted_doctorId", "");
                     jsonGeoTag.put("hospital_mapId", "");
                     jsonGeoTag.put("hospitalId", "");
-                    jsonGeoTag.put("versionNo", context.getString(R.string.app_version));
-                    jsonGeoTag.put("mod", Constants.APP_MODE);
-                    jsonGeoTag.put("Device_version", Build.VERSION.RELEASE);
-                    jsonGeoTag.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                    jsonGeoTag.put("AppName", context.getString(R.string.str_app_name));
-                    jsonGeoTag.put("language", SharedPref.getSelectedLanguage(context));
                     break;
                 case "C":
                     jsonGeoTag.put("doctor_mapId", "");
@@ -199,14 +194,9 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
 
             jsonGeoTag.put("status", Status);
             jsonGeoTag.put("sfcode", SharedPref.getSfCode(context));
-            jsonGeoTag.put("sfname", SharedPref.getSfName(context));
             jsonGeoTag.put("division_code",SharedPref.getDivisionCode(context));
             jsonGeoTag.put("Rsf", hqCode);
-            jsonGeoTag.put("sf_type",SharedPref.getSfType(context));
-            jsonGeoTag.put("Designation", SharedPref.getDesig(context));
-            jsonGeoTag.put("state_code", SharedPref.getStateCode(context));
-            jsonGeoTag.put("subdivision_code", SharedPref.getSubdivisionCode(context));
-            jsonGeoTag.put("Mode", Constants.APP_MODE);
+
             Log.v("json_getGeoTag", jsonGeoTag.toString());
         } catch (Exception ignored) {
 

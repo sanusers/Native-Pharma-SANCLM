@@ -9,8 +9,6 @@ import static android.view.Gravity.CENTER;
 import static android.view.Gravity.TOP;
 
 
-
-
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -99,6 +97,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -118,45 +117,43 @@ public class Activity extends AppCompatActivity {
 
     ActivityBinding binding;
     private static final int PICK_FROM_GALLERY = 101;
-
-
     ApiInterface apiInterface;
-
-    ArrayList<ActivityModelClass> ActivityList=new ArrayList<>();
-    ArrayList<ActivityDetailsModelClass> ActivityDetailsList=new ArrayList<>();
-    ArrayList<ActivityDetailsModelClass> ActivityViewItem=new ArrayList<>();
-    String[] value,valfrom,valto;
+    ArrayList<ActivityModelClass> ActivityList = new ArrayList<>();
+    ArrayList<ActivityDetailsModelClass> ActivityDetailsList = new ArrayList<>();
+    ArrayList<ActivityDetailsModelClass> ActivityViewItem = new ArrayList<>();
+    String[] value, valfrom, valto;
     ActvityList2Adapter adapter1;
 
     ActivityAdapter adapter;
     GPSTrack gpsTrack;
-    Typeface fontregular,fontmedium;
+    Typeface fontregular, fontmedium;
     Uri uri;
     int StorageFlag = 0;
     File file1;
     CommonUtilsMethods commonUtilsMethods;
-    public  static TextView FilnameTet;
+    public static TextView FilnameTet;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
 
-    @Override public void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding=ActivityBinding.inflate(getLayoutInflater());
+        binding = ActivityBinding.inflate(getLayoutInflater());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(binding.getRoot());
         gpsTrack = new GPSTrack(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
-        commonUtilsMethods=new CommonUtilsMethods(this);
-        apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+        commonUtilsMethods = new CommonUtilsMethods(this);
+        apiInterface = RetrofitClient.getRetrofit(Activity.this, SharedPref.getCallApiUrl(Activity.this));
         fontmedium = ResourcesCompat.getFont(this, R.font.satoshi_medium);
         fontregular = ResourcesCompat.getFont(this, R.font.satoshi_regular);
         binding.title.setText(SharedPref.getActivityCap(this));
         binding.listTitle.setText(String.format("List of %s", SharedPref.getActivityCap(this)));
         binding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(this)));
         binding.txthqName.setText(SharedPref.getHqName(Activity.this));
-            binding.btnsumit.setEnabled(false);
-            adapter=new ActivityAdapter(getApplicationContext(), ActivityList, classGroup -> {
+        binding.btnsumit.setEnabled(false);
+        adapter = new ActivityAdapter(Activity.this, ActivityList, classGroup -> {
             binding.namechooseActivity.setText(classGroup.getActivityName());
             binding.llActivityDetailsView.removeAllViews();
             getActivityDetails(classGroup);
@@ -167,11 +164,11 @@ public class Activity extends AppCompatActivity {
         getActivity(SharedPref.getHqCode(Activity.this));
 
         binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
-      //  binding.mainLayout.setDrawerLockMode(DrawerLayout.c);
+        //  binding.mainLayout.setDrawerLockMode(DrawerLayout.c);
 
-        if(!SharedPref.getDesig(this).equalsIgnoreCase("MR")){
+        if (!SharedPref.getDesig(this).equalsIgnoreCase("MR")) {
             binding.rlheadquates.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             binding.rlheadquates.setVisibility(View.GONE);
         }
 
@@ -187,42 +184,30 @@ public class Activity extends AppCompatActivity {
         binding.btnsumit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 saveActivity();
             }
         });
     }
 
-    public  void getActivity(String hqcode){
+    public void getActivity(String hqcode) {
         if (UtilityClass.isNetworkAvailable(this)) {
             binding.progressMain.setVisibility(View.VISIBLE);
             try {
-                JSONObject object = new JSONObject();
+                JSONObject object = commonUtilsMethods.CommonObjectParameter(Activity.this);
                 object.put("tableName", "getdynactivity");
                 object.put("sfcode", SharedPref.getSfCode(this));
                 object.put("division_code", SharedPref.getDivisionCode(this));
                 object.put("Rsf", hqcode);
-                object.put("Designation", SharedPref.getDesig(this));
-                object.put("sf_type", SharedPref.getSfType(this));
-                object.put("state_code", SharedPref.getStateCode(this));
-                object.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-                object.put("versionNo", getString(R.string.app_version));
-                object.put("mod", Constants.APP_MODE);
-                object.put("Device_version", Build.VERSION.RELEASE);
-                object.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                object.put("AppName", getString(R.string.str_app_name));
-                object.put("language", SharedPref.getSelectedLanguage(this));
+                Log.v("JsonObject  :", "" + object.toString());
                 Map<String, String> QuaryParam = new HashMap<>();
                 QuaryParam.put("axn", "get/activity");
-                Log.v("Response :", "" + object.toString());
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), QuaryParam, object.toString());
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(Activity.this), QuaryParam, object.toString());
 
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                         binding.progressMain.setVisibility(View.GONE);
-
-                        Log.v("Response :", "" + response);
+                        Log.v("Response API :", "" + response);
                         JSONArray jsonArray = new JSONArray();
                         if (response.isSuccessful()) {
                             try {
@@ -234,22 +219,24 @@ public class Activity extends AppCompatActivity {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         String[] Activity_Desig = jsonObject.getString("Activity_Desig").split(",\\s*");
                                         List<String> DegList = Arrays.asList(Activity_Desig);
-                                        if (DegList.contains( SharedPref.getDesig(Activity.this))) {
+                                        if (DegList.contains(SharedPref.getDesig(Activity.this))) {
                                             binding.rlNoActivity.setVisibility(View.GONE);
                                             binding.llMainLayout.setVisibility(View.VISIBLE);
                                             binding.rlDetailsMain.setVisibility(View.VISIBLE);
                                             ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available")));
+                                            adapter.notifyDataSetChanged();
                                         }
                                     }
+                                }
 
-                                } else {
+                                if(ActivityList.size()<=0){
+                                    adapter.notifyDataSetChanged();
                                     binding.rlDetailsMain.setVisibility(View.GONE);
                                     binding.rlNoActivity.setVisibility(View.VISIBLE);
                                     binding.llMainLayout.setVisibility(View.GONE);
-                                    CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
-                                    commonUtilsMethods.showToastMessage(getApplicationContext(), "No Activity");
+
+                                    commonUtilsMethods.showToastMessage(Activity.this, "No Activity");
                                 }
-                                adapter.notifyDataSetChanged();
 
                             } catch (Exception a) {
                             }
@@ -268,153 +255,155 @@ public class Activity extends AppCompatActivity {
 
             } catch (Exception a) {
                 a.printStackTrace();
-            }}else {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+            }
+        } else {
+            commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
 
         }
     }
-
 
 
     public void getActivityDetails(ActivityModelClass Data) {
         if (UtilityClass.isNetworkAvailable(this)) {
             binding.progrlessdetail.setVisibility(View.VISIBLE);
-       try {
-            JSONObject object = new JSONObject();
-            object.put("tableName", "getdynactivity_details");
-            object.put("sfcode", SharedPref.getSfCode(this));
-            object.put("division_code", SharedPref.getDivisionCode(this));
-            object.put("Rsf", SharedPref.getHqCode(this));
-            object.put("Designation", SharedPref.getDesig(this));
-            object.put("sf_type",  SharedPref.getSfType(this));
-            object.put("state_code",  SharedPref.getStateCode(this));
-            object.put("subdivision_code",  SharedPref.getSubdivisionCode(this));
-            object.put("slno", Data.getSlNo());
-            object.put("versionNo", getString(R.string.app_version));
-            object.put("mod", Constants.APP_MODE);
-            object.put("Device_version", Build.VERSION.RELEASE);
-            object.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            object.put("AppName", getString(R.string.str_app_name));
-            object.put("language", SharedPref.getSelectedLanguage(this));
-            Map<String, String> QuaryParam = new HashMap<>();
-            QuaryParam.put("axn", "get/activity");
-            Log.v("Response :",""+object.toString());
-            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), QuaryParam, object.toString());
-            call.enqueue(new Callback<JsonElement>() {
-               @Override
-               public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+            try {
+                JSONObject object = commonUtilsMethods.CommonObjectParameter(Activity.this);
+                ;
+                object.put("tableName", "getdynactivity_details");
+                object.put("sfcode", SharedPref.getSfCode(this));
+                object.put("division_code", SharedPref.getDivisionCode(this));
+                object.put("Rsf", SharedPref.getHqCode(this));
+                object.put("slno", Data.getSlNo());
+                Log.v("JsonObject  :", "" + object.toString());
+                Map<String, String> QuaryParam = new HashMap<>();
+                QuaryParam.put("axn", "get/activity");
+
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(Activity.this), QuaryParam, object.toString());
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
 
 
-                   Log.v("Response :",""+response);
-                   JSONArray jsonArray = new JSONArray();
-                   if(response.isSuccessful()){
-                       ActivityDetailsList.clear();
-                       ActivityViewItem.clear();
-                       try {
-                           JsonElement jsonElement = response.body();
-                           jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-                           if(jsonArray.length()>0){
-                               binding.rldatalayout.setVisibility(View.VISIBLE);
-                               binding.btnsumit.setVisibility(View.VISIBLE);
-                               binding.rlNoData.setVisibility(View.GONE);
-                               for(int i=0;i<jsonArray.length();i++){
-                                           JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                           String Control_Id = jsonObject1.getString("Control_Id");
-                                           String Field_Name = jsonObject1.getString("Field_Name");
-                                           String Creation_Id = jsonObject1.getString("Creation_Id");
-                                           String input = jsonObject1.getString("input");
-                                           String madantaory = jsonObject1.getString("Mandatory");
-                                           String Control_Para = jsonObject1.getString("Control_Para");
-                                           String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
-                                           ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name,Control_Id,Creation_Id,input,madantaory,Control_Para,Group_Creation_ID,Data.getSlNo()));
-                               }
-                               int jjj=0;
-                               for (int i = 0; i < ActivityDetailsList.size(); i++) {
-                                   if (ActivityDetailsList.get(i).getControlId().equals("0")) {
-                                       CreateLabelView(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("1")) {
-                                       CreateNameView(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("2")) {
-                                       CreateNumberView(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("3")) {
-                                       CreateMultipleLineViewText(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("4")) {
-                                       CreateSelectionDateView(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("5")) {
-                                       CreateFromAndToDateSelectionView(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("6")) {
-                                       CreateSelectionTimeView(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("7")) {
-                                       CreateFromAndToTimeSelectionView(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("8")) {
-                                       CreateSingleListSelection(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("9")) {
-                                       CreateMultipleListSelection(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("10")) {
-                                       adduploadfile(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("11")) {
-                                       addedittextnumericcurrency(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("12")) {
-                                       CreateSingleListSelection(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("13")) {
-                                       CreateMultipleListSelection(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("15")) {
-                                       CreateSelectionDateWithTimeView(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("16")) {
-                                       CreateFromAndToDateWithTimeSelectionView(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("17")) {
-                                       CreateLocationView(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("18")) {
-                                       addeditcurrencyconvertor(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("19")) {
-                                       digitalsign(ActivityDetailsList.get(i), i);
-                                   }
-                                   jjj++;
-                                   if(ActivityDetailsList.size()==jjj){
-                                       binding.btnsumit.setEnabled(true);
-                                   }
-                                   binding.progrlessdetail.setVisibility(View.GONE); }
-                           }else {
-                               binding.rldatalayout.setVisibility(View.GONE);
-                               binding.rlNoData.setVisibility(View.VISIBLE);
-                               binding.btnsumit.setVisibility(View.GONE);
-                               binding.progrlessdetail.setVisibility(View.GONE);
-                               CommonUtilsMethods commonUtilsMethods=new CommonUtilsMethods(getApplicationContext());
-                               commonUtilsMethods.showToastMessage(getApplicationContext(),"No Activity Details");
-                           }
-                       }catch (Exception a){
-                           Log.e("Error","----- "+a);
-                       }
-                   }
-               }
+                        Log.v("Response :", "" + response);
+                        JSONArray jsonArray = new JSONArray();
+                        if (response.isSuccessful()) {
+                            ActivityDetailsList.clear();
+                            ActivityViewItem.clear();
+                            try {
+                                JsonElement jsonElement = response.body();
+                                jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                if (jsonArray.length() > 0) {
+                                    binding.rldatalayout.setVisibility(View.VISIBLE);
+                                    binding.btnsumit.setVisibility(View.VISIBLE);
+                                    binding.rlNoData.setVisibility(View.GONE);
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                        String Control_Id = jsonObject1.getString("Control_Id");
+                                        String Field_Name = jsonObject1.getString("Field_Name");
+                                        String Creation_Id = jsonObject1.getString("Creation_Id");
+                                        String input = jsonObject1.getString("input");
+                                        String madantaory = jsonObject1.getString("Mandatory");
+                                        String Control_Para = jsonObject1.getString("Control_Para");
+                                        String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
+                                        ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID, Data.getSlNo()));
+                                    }
+                                    int jjj = 0;
+                                    for (int i = 0; i < ActivityDetailsList.size(); i++) {
+                                        if (ActivityDetailsList.get(i).getControlId().equals("0")) {
+                                            CreateLabelView(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("1")) {
+                                            CreateNameView(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("2")) {
+                                            CreateNumberView(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("3")) {
+                                            CreateMultipleLineViewText(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("4")) {
+                                            CreateSelectionDateView(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("5")) {
+                                            CreateFromAndToDateSelectionView(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("6")) {
+                                            CreateSelectionTimeView(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("7")) {
+                                            CreateFromAndToTimeSelectionView(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("8")) {
+                                            CreateSingleListSelection(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("9")) {
+                                            CreateMultipleListSelection(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("10")) {
+                                            adduploadfile(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("11")) {
+                                            addedittextnumericcurrency(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("12")) {
+                                            CreateSingleListSelection(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("13")) {
+                                            CreateMultipleListSelection(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("15")) {
+                                            CreateSelectionDateWithTimeView(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("16")) {
+                                            CreateFromAndToDateWithTimeSelectionView(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("17")) {
+                                            CreateLocationView(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("18")) {
+                                            addeditcurrencyconvertor(ActivityDetailsList.get(i), i);
+                                        } else if (ActivityDetailsList.get(i).getControlId().equals("19")) {
+                                            digitalsign(ActivityDetailsList.get(i), i);
+                                        }
+                                        jjj++;
+                                        if (ActivityDetailsList.size() == jjj) {
+                                            binding.btnsumit.setEnabled(true);
+                                        }
+                                    }
+                                }
+                                    if( ActivityDetailsList.size()>0) {
+                                        binding.progrlessdetail.setVisibility(View.GONE);
+                                        binding.rlNoData.setVisibility(View.GONE);
+                                        binding.rlDetailsMain.setVisibility(View.VISIBLE);
 
-               @Override
-               public void onFailure(Call<JsonElement> call, Throwable t) {
-                   binding.rldatalayout.setVisibility(View.GONE);
-                   binding.rlNoData.setVisibility(View.VISIBLE);
-                   binding.btnsumit.setVisibility(View.GONE);
-               }
-           });
+                                    }else {
+                                        binding.rlNoData.setVisibility(View.VISIBLE);
+                                        binding.rlDetailsMain.setVisibility(View.GONE);
+                                        binding.btnsumit.setVisibility(View.GONE);
+                                        binding.progrlessdetail.setVisibility(View.GONE);
+                                        commonUtilsMethods.showToastMessage(Activity.this, "No Activity Details");
+                                    }
 
-        }catch (Exception a){
-            a.printStackTrace();
-        }
-        }
-        else {
-            commonUtilsMethods.showToastMessage(getApplicationContext(), getString(R.string.no_network));
+
+
+
+                            } catch (Exception a) {
+                                commonUtilsMethods.showToastMessage(Activity.this, "No Activity Details");
+
+                                Log.e("Error", "----- " + a);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonElement> call, Throwable t) {
+                        commonUtilsMethods.showToastMessage(Activity.this, "No Activity Details");
+                        binding.rlNoData.setVisibility(View.VISIBLE);
+                        binding.rlDetailsMain.setVisibility(View.GONE);
+                        binding.btnsumit.setVisibility(View.GONE);
+                        binding.progrlessdetail.setVisibility(View.GONE);
+                    }
+                });
+
+            } catch (Exception a) {
+                a.printStackTrace();
+            }
+        } else {
+            commonUtilsMethods.showToastMessage(Activity.this, getString(R.string.no_network));
 
         }
     }
 
     @SuppressLint("ResourceType")
-    public void CreateLabelView(ActivityDetailsModelClass List, int k){
+    public void CreateLabelView(ActivityDetailsModelClass List, int k) {
         LinearLayout textLinearLayout = new LinearLayout(this);
         textLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        TextView  textlabel = new TextView(this);
+        TextView textlabel = new TextView(this);
         textlabel.setText(List.getFieldName().toUpperCase());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textlabel.setBackgroundResource(R.drawable.backround_lite_gray_border);
         textlabel.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
@@ -426,16 +415,14 @@ public class Activity extends AppCompatActivity {
         textLinearLayout.addView(textlabel);
         textlabel.setId(k);
         binding.llActivityDetailsView.addView(textLinearLayout);
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),List.getFieldName(),"",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), List.getFieldName(), "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
     }
 
 
-    public void CreateNameView(ActivityDetailsModelClass List, int k){
+    public void CreateNameView(ActivityDetailsModelClass List, int k) {
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
         textLinearLayout1.setOrientation(LinearLayout.VERTICAL);
@@ -445,17 +432,15 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
 
         TextView txtLabelName = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            txtLabelName.setText(Html.fromHtml(firstChar + firstChar2 ));
+            txtLabelName.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             txtLabelName.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         txtLabelName.setTextColor(getResources().getColor(R.color.text_dark));
         txtLabelName.setLayoutParams(params1);
@@ -464,8 +449,7 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.addView(txtLabelName);
 
         EditText textcharacter = new EditText(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-        LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textcharacter.setBackgroundColor(Color.WHITE);
@@ -486,7 +470,7 @@ public class Activity extends AppCompatActivity {
         textcharacter.setFilters(fArray);
 
         // CreateName
-        ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
         textcharacter.addTextChangedListener(new TextWatcher() {
@@ -519,11 +503,11 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.setFocusableInTouchMode(true);
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
@@ -534,7 +518,7 @@ public class Activity extends AppCompatActivity {
         textviewdata.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
         textviewdata.setTypeface(fontmedium);
         textLinearLayout1.addView(textviewdata);
-        EditText   textnumber = new EditText(this);
+        EditText textnumber = new EditText(this);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
@@ -554,7 +538,7 @@ public class Activity extends AppCompatActivity {
         fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
         textnumber.setFilters(fArray);
         textLinearLayout1.addView(textnumber);
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
         textnumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -575,12 +559,8 @@ public class Activity extends AppCompatActivity {
     }
 
 
-
-
-    public void CreateMultipleLineViewText(ActivityDetailsModelClass List, int k){
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+    public void CreateMultipleLineViewText(ActivityDetailsModelClass List, int k) {
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -591,17 +571,15 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
 
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         textviewdata.setTypeface(fontmedium);
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textviewdata.setTextColor(getResources().getColor(R.color.text_dark));
@@ -609,11 +587,9 @@ public class Activity extends AppCompatActivity {
         textviewdata.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
         textviewdata.setTypeface(fontmedium);
         textLinearLayout1.addView(textviewdata);
-        EditText   textarea = new EditText(this);
+        EditText textarea = new EditText(this);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
         textarea.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
@@ -637,9 +613,7 @@ public class Activity extends AppCompatActivity {
         fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
         textarea.setFilters(fArray);
 
-        ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
-
-
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
         textarea.addTextChangedListener(new TextWatcher() {
@@ -662,11 +636,9 @@ public class Activity extends AppCompatActivity {
 
     }
 
-    public void CreateSelectionDateView(ActivityDetailsModelClass List, int k){
+    public void CreateSelectionDateView(ActivityDetailsModelClass List, int k) {
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -674,17 +646,15 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.setLayoutParams(param);
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         textviewdata.setTypeface(fontmedium);
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout2 = new LinearLayout(this);
@@ -698,10 +668,8 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.addView(textLinearLayout2);
         textLinearLayout2.setId(k);
 
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(R.dimen._120sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        TextView   textviewdate1 = new TextView(this);
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._120sdp), LinearLayout.LayoutParams.MATCH_PARENT);
+        TextView textviewdate1 = new TextView(this);
 
         params11.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
@@ -721,10 +689,7 @@ public class Activity extends AppCompatActivity {
         textviewdate1.setHint("Select Date");
         textviewdate1.setHintTextColor(getResources().getColor(R.color.text_dark));
         textLinearLayout2.addView(textviewdate1);
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
-
-
-
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
         textviewdate1.addTextChangedListener(new TextWatcher() {
@@ -754,16 +719,13 @@ public class Activity extends AppCompatActivity {
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        Activity.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                textviewdate1.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                                commonFun();
-                            }
-                        },
+                DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        textviewdate1.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        commonFun();
+                    }
+                },
 
 
                         year, month, day);
@@ -775,11 +737,9 @@ public class Activity extends AppCompatActivity {
 
     }
 
-    public void CreateSelectionDateWithTimeView(ActivityDetailsModelClass List, int k){
+    public void CreateSelectionDateWithTimeView(ActivityDetailsModelClass List, int k) {
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -787,18 +747,16 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.setLayoutParams(param);
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout2 = new LinearLayout(this);
@@ -813,10 +771,8 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.addView(textLinearLayout2);
         textLinearLayout2.setId(k);
 
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(R.dimen._120sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        TextView   textviewdate1 = new TextView(this);
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._120sdp), LinearLayout.LayoutParams.MATCH_PARENT);
+        TextView textviewdate1 = new TextView(this);
 
         params11.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
@@ -836,7 +792,7 @@ public class Activity extends AppCompatActivity {
         textviewdate1.setHint("Select Date and Time");
         textviewdate1.setHintTextColor(getResources().getColor(R.color.text_dark));
         textLinearLayout2.addView(textviewdate1);
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
         textviewdate1.addTextChangedListener(new TextWatcher() {
@@ -861,7 +817,7 @@ public class Activity extends AppCompatActivity {
         textviewdate1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view2) {
-                final  Calendar c = Calendar.getInstance();
+                final Calendar c = Calendar.getInstance();
 
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
@@ -869,19 +825,18 @@ public class Activity extends AppCompatActivity {
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this,
-                        (view, year1, monthOfYear, dayOfMonth1) -> {
-                            c.set(year1, monthOfYear, dayOfMonth1);
-                            TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this,
-                                    (view1, hourOfDay, minute1) -> {
-                                        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                                        c.set(Calendar.MINUTE, minute1);
-                                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
-                                        textviewdate1.setText(dateFormat.format(c.getTime()));
-                                        commonFun();   }, hour, minute, false);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this, (view, year1, monthOfYear, dayOfMonth1) -> {
+                    c.set(year1, monthOfYear, dayOfMonth1);
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this, (view1, hourOfDay, minute1) -> {
+                        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        c.set(Calendar.MINUTE, minute1);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+                        textviewdate1.setText(dateFormat.format(c.getTime()));
+                        commonFun();
+                    }, hour, minute, false);
 
-                            timePickerDialog.show();
-                        }, year, month, dayOfMonth);
+                    timePickerDialog.show();
+                }, year, month, dayOfMonth);
 
                 datePickerDialog.show();
             }
@@ -890,29 +845,24 @@ public class Activity extends AppCompatActivity {
     }
 
 
+    public void CreateFromAndToDateSelectionView(ActivityDetailsModelClass List, int k) {
 
-    public void CreateFromAndToDateSelectionView(ActivityDetailsModelClass List, int k){
-
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
         textLinearLayout1.setOrientation(LinearLayout.VERTICAL);
         textLinearLayout1.setLayoutParams(param);
-         binding.llActivityDetailsView.addView(textLinearLayout1);
+        binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         textviewdata.setTypeface(fontmedium);
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout2 = new LinearLayout(this);
@@ -933,11 +883,9 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.addView(textLinearLayout2);
         textLinearLayout2.addView(textLinearLayout3);
         textLinearLayout2.addView(textLinearLayout4);
-        textLinearLayout3.setId(k+23);
+        textLinearLayout3.setId(k + 23);
 
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(R.dimen._120sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._120sdp), LinearLayout.LayoutParams.MATCH_PARENT);
         TextView textviewfromdate = new TextView(this);
 
         Drawable drawable = getDrawable(R.drawable.calendar_img);
@@ -982,32 +930,26 @@ public class Activity extends AppCompatActivity {
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        Activity.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                textviewfromdate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                                commonFun();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        textviewfromdate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        commonFun();
 
-                            }
-                        },
-                        year, month, day);
+                    }
+                }, year, month, day);
                 datePickerDialog.show();
             }
         });
 
-        textLinearLayout4.setId(k+24);
-        LinearLayout.LayoutParams params111 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(R.dimen._120sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        textLinearLayout4.setId(k + 24);
+        LinearLayout.LayoutParams params111 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._120sdp), LinearLayout.LayoutParams.MATCH_PARENT);
         TextView textviewtodate = new TextView(this);
         textviewtodate.setCompoundDrawables(drawable, null, null, null);
         textviewtodate.setHint("Select To Date");
         textviewtodate.setBackgroundColor(Color.WHITE);
         textviewtodate.setBackgroundResource(R.drawable.background_card_white_plan);
-        textviewtodate.	setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
+        textviewtodate.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textviewtodate.setTextColor(getResources().getColor(R.color.text_dark));
         textviewtodate.setHintTextColor(getResources().getColor(R.color.text_dark));
 
@@ -1015,9 +957,7 @@ public class Activity extends AppCompatActivity {
         textviewtodate.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
         textviewtodate.setGravity(CENTER);
         textLinearLayout4.addView(textviewtodate);
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
-
-
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
         textviewtodate.addTextChangedListener(new TextWatcher() {
@@ -1043,13 +983,13 @@ public class Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String fromdate = textviewfromdate.getText().toString();
-                if(fromdate.equals("")){
-                    Toast.makeText(getApplicationContext(),"Please Select From Date",Toast.LENGTH_SHORT).show();
-                }else{
-                    String datee [] = fromdate.split("-");
+                if (fromdate.equals("")) {
+                    Toast.makeText(Activity.this, "Please Select From Date", Toast.LENGTH_SHORT).show();
+                } else {
+                    String datee[] = fromdate.split("-");
                     final Calendar c = Calendar.getInstance();
                     int mYear = Integer.parseInt(datee[2]);
-                    int mMonth = Integer.parseInt(datee[1])-1;
+                    int mMonth = Integer.parseInt(datee[1]) - 1;
                     int mDay = Integer.parseInt(datee[0]);
                     SimpleDateFormat myFormat1 = new SimpleDateFormat("dd-MM-yyyy");
                     Date dateBefore = null;
@@ -1058,10 +998,7 @@ public class Activity extends AppCompatActivity {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this,
-                            (view1, year, monthOfYear, dayOfMonth) ->
-                    textviewtodate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year)
-                            , mYear, mMonth, mDay);
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this, (view1, year, monthOfYear, dayOfMonth) -> textviewtodate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year), mYear, mMonth, mDay);
                     commonFun();
                     datePickerDialog.getDatePicker().setMinDate(dateBefore.getTime());
                     datePickerDialog.show();
@@ -1069,11 +1006,10 @@ public class Activity extends AppCompatActivity {
             }
         });
     }
-    public void CreateFromAndToDateWithTimeSelectionView(ActivityDetailsModelClass List, int k){
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+    public void CreateFromAndToDateWithTimeSelectionView(ActivityDetailsModelClass List, int k) {
+
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -1081,17 +1017,15 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.setLayoutParams(param);
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         textviewdata.setTypeface(fontmedium);
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout2 = new LinearLayout(this);
@@ -1112,17 +1046,14 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.addView(textLinearLayout2);
 
 
-
         textLinearLayout2.addView(textLinearLayout3);
         textLinearLayout2.addView(textLinearLayout4);
 
 
-        textLinearLayout3.setId(k+23);
+        textLinearLayout3.setId(k + 23);
 
 
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(R.dimen._120sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._120sdp), LinearLayout.LayoutParams.MATCH_PARENT);
         TextView textviewfromdate = new TextView(this);
 
         Drawable drawable = getDrawable(R.drawable.calendar_clock);
@@ -1159,13 +1090,11 @@ public class Activity extends AppCompatActivity {
         });
 
 
-
-
         textviewfromdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view2) {
 
-                final  Calendar c = Calendar.getInstance();
+                final Calendar c = Calendar.getInstance();
 
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
@@ -1173,47 +1102,41 @@ public class Activity extends AppCompatActivity {
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this,
-                        (view, year1, monthOfYear, dayOfMonth1) -> {
-                            c.set(year1, monthOfYear, dayOfMonth1);
-                            TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this,
-                                    (view1, hourOfDay, minute1) -> {
-                                        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                                        c.set(Calendar.MINUTE, minute1);
-                                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
-                                        textviewfromdate.setText(dateFormat.format(c.getTime()));
+                DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this, (view, year1, monthOfYear, dayOfMonth1) -> {
+                    c.set(year1, monthOfYear, dayOfMonth1);
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this, (view1, hourOfDay, minute1) -> {
+                        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        c.set(Calendar.MINUTE, minute1);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+                        textviewfromdate.setText(dateFormat.format(c.getTime()));
 
-                                    }, hour, minute, false);
+                    }, hour, minute, false);
 
-                            timePickerDialog.show();
-                            commonFun();
+                    timePickerDialog.show();
+                    commonFun();
 
-                        }, year, month, dayOfMonth);
+                }, year, month, dayOfMonth);
 
                 datePickerDialog.show();
             }
         });
 
-        textLinearLayout4.setId(k+24);
-        LinearLayout.LayoutParams params111 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(R.dimen._120sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        textLinearLayout4.setId(k + 24);
+        LinearLayout.LayoutParams params111 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._120sdp), LinearLayout.LayoutParams.MATCH_PARENT);
         TextView textviewtodate = new TextView(this);
         textviewtodate.setCompoundDrawables(drawable, null, null, null);
         textviewtodate.setHint("Select To DateWithTime");
         textviewtodate.setHintTextColor(getResources().getColor(R.color.text_dark));
         textviewtodate.setBackgroundColor(Color.WHITE);
         textviewtodate.setBackgroundResource(R.drawable.background_card_white_plan);
-        textviewtodate.	setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
+        textviewtodate.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textviewtodate.setTextColor(getResources().getColor(R.color.text_dark));
 
         textviewtodate.setLayoutParams(params111);
         textviewtodate.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
         textviewtodate.setGravity(CENTER);
         textLinearLayout4.addView(textviewtodate);
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
-
-
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
         textviewtodate.addTextChangedListener(new TextWatcher() {
@@ -1235,30 +1158,27 @@ public class Activity extends AppCompatActivity {
         });
 
 
-
-
-
         textviewtodate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view2) {
 
-                String fromdate=textviewfromdate.getText().toString();
+                String fromdate = textviewfromdate.getText().toString();
 
-                if(fromdate.equals("")){
-                    Toast.makeText(getApplicationContext(),"Please Select From Date",Toast.LENGTH_SHORT).show();
-                }else{
+                if (fromdate.equals("")) {
+                    Toast.makeText(Activity.this, "Please Select From Date", Toast.LENGTH_SHORT).show();
+                } else {
 
-                    String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30,TimeUtils.FORMAT_5,fromdate);
-                    String Time = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30,TimeUtils.FORMAT_29,fromdate);
-                    String [] datas = Time.split(":");
+                    String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30, TimeUtils.FORMAT_5, fromdate);
+                    String Time = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30, TimeUtils.FORMAT_29, fromdate);
+                    String[] datas = Time.split(":");
                     final int mHour = Integer.parseInt(datas[0]);
                     final int mMinute = Integer.parseInt(datas[1]);
 
 
-                    String datee [] = date.split("-");
+                    String datee[] = date.split("-");
                     final Calendar c = Calendar.getInstance();
                     int mYear = Integer.parseInt(datee[2]);
-                    int mMonth = Integer.parseInt(datee[1])-1;
+                    int mMonth = Integer.parseInt(datee[1]) - 1;
                     int mDay = Integer.parseInt(datee[0]);
                     SimpleDateFormat myFormat1 = new SimpleDateFormat("dd-MM-yyyy");
                     Date dateBefore = null;
@@ -1267,32 +1187,30 @@ public class Activity extends AppCompatActivity {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this,
-                            (view, year1, monthOfYear, dayOfMonth1) -> {
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this, (view, year1, monthOfYear, dayOfMonth1) -> {
                         c.set(year1, monthOfYear, dayOfMonth1);
-                                TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this,
-                                        (view1, hourOfDay, minute1) -> {
-                                            c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                                            c.set(Calendar.MINUTE, minute1);
-                                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
-                                        if(monthOfYear==mMonth&&year1==mYear&&dayOfMonth1==mDay){
-                                            if (mHour<hourOfDay||mMinute<minute1) {
-                                                textviewtodate.setText(dateFormat.format(c.getTime()));
-                                              } else {
-                                                  Toast.makeText(getApplicationContext(), "Please Select as After From Time ", Toast.LENGTH_LONG).show();
-                                                  textviewtodate.setText("");
-                                              }
-                                        }else {
-                                            textviewtodate.setText(dateFormat.format(c.getTime()));
-                                            commonFun();
+                        TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this, (view1, hourOfDay, minute1) -> {
+                            c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                            c.set(Calendar.MINUTE, minute1);
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+                            if (monthOfYear == mMonth && year1 == mYear && dayOfMonth1 == mDay) {
+                                if (mHour < hourOfDay || mMinute < minute1) {
+                                    textviewtodate.setText(dateFormat.format(c.getTime()));
+                                } else {
+                                    Toast.makeText(Activity.this, "Please Select as After From Time ", Toast.LENGTH_LONG).show();
+                                    textviewtodate.setText("");
+                                }
+                            } else {
+                                textviewtodate.setText(dateFormat.format(c.getTime()));
+                                commonFun();
 
-                                        }
-                                            commonFun();
+                            }
+                            commonFun();
 
-                                          }, mHour, mMinute, false);
+                        }, mHour, mMinute, false);
 
-                                timePickerDialog.show();
-                            }, mYear, mMonth, mDay);
+                        timePickerDialog.show();
+                    }, mYear, mMonth, mDay);
                     datePickerDialog.getDatePicker().setMinDate(dateBefore.getTime());
                     datePickerDialog.show();
 
@@ -1302,16 +1220,12 @@ public class Activity extends AppCompatActivity {
         });
 
 
-
-
     }
 
-    public void CreateSelectionTimeView(ActivityDetailsModelClass List, int k){
+    public void CreateSelectionTimeView(ActivityDetailsModelClass List, int k) {
 
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -1319,18 +1233,16 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.setLayoutParams(param);
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(R.dimen._120sdp),
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._120sdp), LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout2 = new LinearLayout(this);
@@ -1346,9 +1258,7 @@ public class Activity extends AppCompatActivity {
 
         textLinearLayout2.setId(k);
 
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(R.dimen._120sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._120sdp), LinearLayout.LayoutParams.MATCH_PARENT);
         TextView textViewtime1 = new TextView(this);
         textViewtime1.setHint("Select Time");
         Drawable drawable = getDrawable(R.drawable.clock);
@@ -1357,7 +1267,7 @@ public class Activity extends AppCompatActivity {
         textViewtime1.setCompoundDrawables(drawable, null, null, null);
         textViewtime1.setBackgroundColor(Color.WHITE);
         textViewtime1.setBackgroundResource(R.drawable.background_card_white_plan);
-        textViewtime1.	setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
+        textViewtime1.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textViewtime1.setTextColor(getResources().getColor(R.color.text_dark));
         textViewtime1.setHintTextColor(getResources().getColor(R.color.text_dark));
         textViewtime1.setLayoutParams(params11);
@@ -1365,8 +1275,7 @@ public class Activity extends AppCompatActivity {
         textViewtime1.setGravity(CENTER);
 
         textLinearLayout2.addView(textViewtime1);
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
-
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
         textViewtime1.addTextChangedListener(new TextWatcher() {
@@ -1388,7 +1297,6 @@ public class Activity extends AppCompatActivity {
         });
 
 
-
         textViewtime1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1397,18 +1305,16 @@ public class Activity extends AppCompatActivity {
                 int mHour = c.get(Calendar.HOUR_OF_DAY);
                 int mMinute = c.get(Calendar.MINUTE);
 
-                TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this,
-                        new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this, new TimePickerDialog.OnTimeSetListener() {
 
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay,
-                                                  int minute) {
-                                textViewtime1.setText(hourOfDay + ":" + minute);
-                                commonFun();
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        textViewtime1.setText(hourOfDay + ":" + minute);
+                        commonFun();
 
-                            }
+                    }
 
-                        }, mHour, mMinute, true);
+                }, mHour, mMinute, true);
                 timePickerDialog.show();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     timePickerDialog.getWindow().setDecorFitsSystemWindows(true);
@@ -1417,32 +1323,28 @@ public class Activity extends AppCompatActivity {
         });
 
 
-
     }
-    public void CreateFromAndToTimeSelectionView(ActivityDetailsModelClass List, int k){
+
+    public void CreateFromAndToTimeSelectionView(ActivityDetailsModelClass List, int k) {
 
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
         textLinearLayout1.setOrientation(LinearLayout.VERTICAL);
         textLinearLayout1.setLayoutParams(param);
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout2 = new LinearLayout(this);
@@ -1450,7 +1352,8 @@ public class Activity extends AppCompatActivity {
         textLinearLayout2.setLayoutParams(param);
         textviewdata.setTextColor(getResources().getColor(R.color.text_dark));
         textviewdata.setLayoutParams(params1);
-        textviewdata.setTextSize((int) getResources().getDimension(R.dimen._5sdp));;
+        textviewdata.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
+        ;
         textLinearLayout1.addView(textviewdata);
         textLinearLayout1.addView(textLinearLayout2);
 
@@ -1464,13 +1367,11 @@ public class Activity extends AppCompatActivity {
         textLinearLayout2.addView(textLinearLayout4);
 
 
-        textLinearLayout3.setId(k+33);
+        textLinearLayout3.setId(k + 33);
 
 
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                 (int) getResources().getDimension(R.dimen._120sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        TextView   textviewfromtime = new TextView(this);
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._120sdp), LinearLayout.LayoutParams.MATCH_PARENT);
+        TextView textviewfromtime = new TextView(this);
         Drawable drawable = getDrawable(R.drawable.clock);
         drawable.setBounds(0, 0, (int) getResources().getDimension(R.dimen._10sdp), (int) getResources().getDimension(R.dimen._10sdp));
         textviewfromtime.setCompoundDrawables(drawable, null, null, null);
@@ -1481,7 +1382,8 @@ public class Activity extends AppCompatActivity {
         textviewfromtime.setTextColor(getResources().getColor(R.color.text_dark));
         textviewfromtime.setHintTextColor(getResources().getColor(R.color.text_dark));
         textviewfromtime.setLayoutParams(params11);
-        textviewfromtime.setTextSize((int) getResources().getDimension(R.dimen._5sdp));;
+        textviewfromtime.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
+        ;
         textviewfromtime.setGravity(CENTER);
         textLinearLayout3.addView(textviewfromtime);
 
@@ -1502,10 +1404,7 @@ public class Activity extends AppCompatActivity {
 
             }
         });
-        textLinearLayout4.setId(k+34);
-
-
-
+        textLinearLayout4.setId(k + 34);
 
 
         textviewfromtime.setOnClickListener(new View.OnClickListener() {
@@ -1515,17 +1414,15 @@ public class Activity extends AppCompatActivity {
                 int mHour = c.get(Calendar.HOUR_OF_DAY);
                 int mMinute = c.get(Calendar.MINUTE);
 
-                TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this,
-                        new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this, new TimePickerDialog.OnTimeSetListener() {
 
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay,
-                                                  int minute) {
-                                textviewfromtime.setText(hourOfDay + ":" + minute);
-                                commonFun();
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        textviewfromtime.setText(hourOfDay + ":" + minute);
+                        commonFun();
 
-                            }
-                        }, mHour, mMinute, false);
+                    }
+                }, mHour, mMinute, false);
                 timePickerDialog.show();
 
 
@@ -1533,9 +1430,7 @@ public class Activity extends AppCompatActivity {
         });
 
 
-        LinearLayout.LayoutParams params111 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(R.dimen._120sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params111 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._120sdp), LinearLayout.LayoutParams.MATCH_PARENT);
         TextView textviewtotime = new TextView(this);
         textviewtotime.setCompoundDrawables(drawable, null, null, null);
         textviewtotime.setHint("Select To Time");
@@ -1545,11 +1440,11 @@ public class Activity extends AppCompatActivity {
         textviewtotime.setTextColor(getResources().getColor(R.color.text_dark));
         textviewtotime.setHintTextColor(getResources().getColor(R.color.text_dark));
         textviewtotime.setLayoutParams(params111);
-        textviewtotime.setTextSize((int) getResources().getDimension(R.dimen._5sdp));;
+        textviewtotime.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
+        ;
         textviewtotime.setGravity(CENTER);
         textLinearLayout4.addView(textviewtotime);
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
-
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
         textviewtotime.addTextChangedListener(new TextWatcher() {
@@ -1571,16 +1466,14 @@ public class Activity extends AppCompatActivity {
         });
 
 
-
-
         textviewtotime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String data = textviewfromtime.getText().toString();
-                if(data.equalsIgnoreCase("")){
-                    Toast.makeText(getApplicationContext(),"Please Select From Time",Toast.LENGTH_SHORT).show();
-                }else{
-                    String [] datas = data.split(":");
+                if (data.equalsIgnoreCase("")) {
+                    Toast.makeText(Activity.this, "Please Select From Time", Toast.LENGTH_SHORT).show();
+                } else {
+                    String[] datas = data.split(":");
                     final int mHour = Integer.parseInt(datas[0]);
                     final int mMinute = Integer.parseInt(datas[1]);
 
@@ -1589,10 +1482,10 @@ public class Activity extends AppCompatActivity {
                         @Override
                         public void onTimeSet(TimePicker view, int hour, int minute) {
 
-                            if (mHour<hour||mMinute<minute) {
-                                textviewtotime.setText(hour+ ":" + minute);
+                            if (mHour < hour || mMinute < minute) {
+                                textviewtotime.setText(hour + ":" + minute);
                             } else {
-                                Toast.makeText(getApplicationContext(), "Please Select as After From Time ", Toast.LENGTH_LONG).show();
+                                Toast.makeText(Activity.this, "Please Select as After From Time ", Toast.LENGTH_LONG).show();
                                 textviewtotime.setText("");
                             }
                             commonFun();
@@ -1600,13 +1493,12 @@ public class Activity extends AppCompatActivity {
                         }
                     };
 
-                    final TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this,timePickerListener,
-                            mHour,mMinute,false);
-
+                    final TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this, timePickerListener, mHour, mMinute, false);
 
 
                     timePickerDialog.show();
-            }}
+                }
+            }
         });
 
 
@@ -1618,12 +1510,12 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout);
 
 
-        TextView  textcombosingle = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        TextView textcombosingle = new TextView(this);
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textcombosingle.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textcombosingle.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textcombosingle.setText(List.getFieldName());
         }
@@ -1652,9 +1544,7 @@ public class Activity extends AppCompatActivity {
         singlecomboedittext.setHintTextColor(getResources().getColor(R.color.text_dark));
         singlecomboedittext.setHint("Select the " + List.getFieldName());
         textLinearLayout.addView(singlecomboedittext);
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
-
-
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
         singlecomboedittext.addTextChangedListener(new TextWatcher() {
@@ -1697,25 +1587,24 @@ public class Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                ArrayList<String> ListName =new ArrayList<>();
-                ArrayList<String> ListIds =new ArrayList<>();
+                ArrayList<String> ListName = new ArrayList<>();
+                ArrayList<String> ListIds = new ArrayList<>();
                 try {
-                    JSONArray jsonArray=new JSONArray(List.getInput());
-                    if(jsonArray.length()>0){
-                        for (int i=0;i<jsonArray.length();i++){
-                            JSONObject jsonObject=jsonArray.getJSONObject(i);
-                            String[] data=jsonObject.toString().replaceAll("[{}]","").split(",");
-                            String[] mCode =data[0].split(":");
-                            String[] mName =data[1].split(":");
-                            ListName.add(mName[1].replaceAll("\"",""));
-                            ListIds.add(mCode[1].replaceAll("\"",""));
+                    JSONArray jsonArray = new JSONArray(List.getInput());
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String[] data = jsonObject.toString().replaceAll("[{}]", "").split(",");
+                            String[] mCode = data[0].split(":");
+                            String[] mName = data[1].split(":");
+                            ListName.add(mName[1].replaceAll("\"", ""));
+                            ListIds.add(mCode[1].replaceAll("\"", ""));
                         }
-                        ShowListPopup(singlecomboedittext,Idview, ListName,ListIds,List.getFieldName(),false);
+                        ShowListPopup(singlecomboedittext, Idview, ListName, ListIds, List.getFieldName(), false);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
 
 
             }
@@ -1724,25 +1613,22 @@ public class Activity extends AppCompatActivity {
     }
 
 
-
     private void CreateMultipleListSelection(ActivityDetailsModelClass List, int k) {
 
         LinearLayout textLinearLayout = new LinearLayout(this);
         textLinearLayout.setOrientation(LinearLayout.VERTICAL);
         binding.llActivityDetailsView.addView(textLinearLayout);
 
-        TextView   textcombomultiple = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        TextView textcombomultiple = new TextView(this);
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textcombomultiple.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textcombomultiple.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textcombomultiple.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         textcombomultiple.setTypeface(fontmedium);
         params.setMargins((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
@@ -1753,7 +1639,7 @@ public class Activity extends AppCompatActivity {
         textcombomultiple.setId(k);
         textcombomultiple.setTypeface(fontmedium);
 
-        TextView   multicomboeditext = new TextView(this);
+        TextView multicomboeditext = new TextView(this);
         multicomboeditext.setBackgroundColor(Color.WHITE);
         multicomboeditext.setBackgroundResource(R.drawable.background_card_white_plan);
         multicomboeditext.setTextColor(getResources().getColor(R.color.text_dark));
@@ -1761,16 +1647,16 @@ public class Activity extends AppCompatActivity {
         multicomboeditext.setLayoutParams(params);
         multicomboeditext.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
         multicomboeditext.setVisibility(View.VISIBLE);
-        multicomboeditext.setHint("Select the "+List.getFieldName());
+        multicomboeditext.setHint("Select the " + List.getFieldName());
         multicomboeditext.setHintTextColor(getResources().getColor(R.color.text_dark));
         textLinearLayout.addView(multicomboeditext);
         Drawable drawable = getDrawable(R.drawable.right_arrow);
         drawable.setBounds(0, 0, (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._5sdp));
         multicomboeditext.setCompoundDrawables(null, null, drawable, null);
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
-      multicomboeditext.addTextChangedListener(new TextWatcher() {
+        multicomboeditext.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -1787,7 +1673,7 @@ public class Activity extends AppCompatActivity {
 
             }
         });
-        TextView   TextCode = new TextView(this);
+        TextView TextCode = new TextView(this);
 
         TextCode.addTextChangedListener(new TextWatcher() {
             @Override
@@ -1809,20 +1695,20 @@ public class Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                ArrayList<String> ListName =new ArrayList<>();
-                ArrayList<String> ListIds =new ArrayList<>();
+                ArrayList<String> ListName = new ArrayList<>();
+                ArrayList<String> ListIds = new ArrayList<>();
                 try {
-                    JSONArray jsonArray=new JSONArray(List.getInput());
-                    if(jsonArray.length()>0){
-                        for (int i=0;i<jsonArray.length();i++){
-                            JSONObject jsonObject=jsonArray.getJSONObject(i);
-                            String[] data=jsonObject.toString().replaceAll("[{}]","").split(",");
-                            String[] mCode =data[0].split(":");
-                            String[] mName =data[1].split(":");
-                            ListName.add(mName[1].replaceAll("\"",""));
-                            ListIds.add(mCode[1].replaceAll("\"",""));
+                    JSONArray jsonArray = new JSONArray(List.getInput());
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String[] data = jsonObject.toString().replaceAll("[{}]", "").split(",");
+                            String[] mCode = data[0].split(":");
+                            String[] mName = data[1].split(":");
+                            ListName.add(mName[1].replaceAll("\"", ""));
+                            ListIds.add(mCode[1].replaceAll("\"", ""));
                         }
-                        ShowListPopup(multicomboeditext,TextCode, ListName,ListIds,List.getFieldName(),true);
+                        ShowListPopup(multicomboeditext, TextCode, ListName, ListIds, List.getFieldName(), true);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1831,10 +1717,8 @@ public class Activity extends AppCompatActivity {
         });
     }
 
-    public void adduploadfile(ActivityDetailsModelClass List, int k){
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+    public void adduploadfile(ActivityDetailsModelClass List, int k) {
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -1843,17 +1727,15 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
 
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         textviewdata.setTypeface(fontmedium);
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textviewdata.setTextColor(getResources().getColor(R.color.text_dark));
@@ -1865,11 +1747,8 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.addView(textLinearLayout2);
 
 
-
-        TextView    textfileupload = new TextView(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        TextView textfileupload = new TextView(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         Drawable drawable = getDrawable(R.drawable.form);
         drawable.setBounds(0, 0, (int) getResources().getDimension(R.dimen._10sdp), (int) getResources().getDimension(R.dimen._10sdp));
         textfileupload.setCompoundDrawables(drawable, null, null, null);
@@ -1886,8 +1765,7 @@ public class Activity extends AppCompatActivity {
         textLinearLayout2.setId(k);
         textfileupload.setHint("File");
 
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
-
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
         textfileupload.addTextChangedListener(new TextWatcher() {
@@ -1913,7 +1791,7 @@ public class Activity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                FilnameTet=textfileupload;
+                FilnameTet = textfileupload;
                 if (!CheckStoragePermission()) {
                     RequestStoragePermission();
                 } else {
@@ -1923,10 +1801,8 @@ public class Activity extends AppCompatActivity {
         });
     }
 
-    public void addedittextnumericcurrency(ActivityDetailsModelClass List, int k){
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+    public void addedittextnumericcurrency(ActivityDetailsModelClass List, int k) {
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -1937,18 +1813,16 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
 
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         //textviewdata.setBackgroundResource(R.drawable.linearlayoutbgd);
@@ -1958,16 +1832,14 @@ public class Activity extends AppCompatActivity {
         textviewdata.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
         textLinearLayout1.addView(textviewdata);
 
-     //   textLinearLayout1.setBackgroundResource(R.drawable.linearlayoutbgd);
+        //   textLinearLayout1.setBackgroundResource(R.drawable.linearlayoutbgd);
 
         LinearLayout textLinearLayout2 = new LinearLayout(this);
         textLinearLayout2.setOrientation(LinearLayout.HORIZONTAL);
         textLinearLayout1.addView(textLinearLayout2);
         TextView textviewdata1 = new TextView(this);
         textviewdata.setText(List.getFieldName());
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params11.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textviewdata1.setBackgroundColor(Color.WHITE);
@@ -1981,9 +1853,7 @@ public class Activity extends AppCompatActivity {
         textLinearLayout2.addView(textviewdata1);
         EditText textcurrency = new EditText(this);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textcurrency.setBackgroundColor(Color.WHITE);
@@ -1999,10 +1869,7 @@ public class Activity extends AppCompatActivity {
         textcurrency.setHint("Amount");
         textcurrency.setCursorVisible(true);
         textcurrency.setClickable(true);
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
-
-
-
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
         textcurrency.addTextChangedListener(new TextWatcher() {
@@ -2024,11 +1891,9 @@ public class Activity extends AppCompatActivity {
         });
     }
 
-    public void CreateLocationView(ActivityDetailsModelClass List, int k){
+    public void CreateLocationView(ActivityDetailsModelClass List, int k) {
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout MainLayout = new LinearLayout(this);
         MainLayout.setOrientation(LinearLayout.VERTICAL);
@@ -2036,7 +1901,7 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(MainLayout);
 
 
-        TextView LabelText =new TextView(this);
+        TextView LabelText = new TextView(this);
         LabelText.setLayoutParams(param);
         LabelText.setTextColor(getResources().getColor(R.color.text_dark));
         LabelText.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
@@ -2047,9 +1912,7 @@ public class Activity extends AppCompatActivity {
         LabelText.setCompoundDrawables(null, null, drawable, null);
         MainLayout.addView(LabelText);
 
-        LinearLayout.LayoutParams param1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         param1.weight = 1;
         param1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
@@ -2058,7 +1921,7 @@ public class Activity extends AppCompatActivity {
         LatLongLayout.setLayoutParams(param);
 
 
-        TextView LatText=new TextView(this);
+        TextView LatText = new TextView(this);
         LatText.setLayoutParams(param1);
         LatText.setTextColor(getResources().getColor(R.color.text_dark));
         LatText.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
@@ -2066,17 +1929,16 @@ public class Activity extends AppCompatActivity {
         LatText.setHintTextColor(getResources().getColor(R.color.text_dark));
 
 
-        TextView LongText =new TextView(this);
+        TextView LongText = new TextView(this);
         LongText.setLayoutParams(param1);
-        LongText.setPadding((int) getResources().getDimension(R.dimen._4sdp),0, (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
+        LongText.setPadding((int) getResources().getDimension(R.dimen._4sdp), 0, (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         LongText.setTextColor(getResources().getColor(R.color.text_dark));
         LongText.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
         LongText.setHint("Lat :");
         LatText.setHintTextColor(getResources().getColor(R.color.text_dark));
 
 
-
-        TextView AddressText =new TextView(this);
+        TextView AddressText = new TextView(this);
         AddressText.setLayoutParams(param1);
         AddressText.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         AddressText.setTextColor(getResources().getColor(R.color.text_dark));
@@ -2092,46 +1954,44 @@ public class Activity extends AppCompatActivity {
         MainLayout.addView(LatLongLayout);
         MainLayout.addView(AddressText);
 
-        String   address;
-         double latitude = gpsTrack.getLatitude();
-         double  longitude = gpsTrack.getLongitude();
-         if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
-          address = CommonUtilsMethods.gettingAddress(this, latitude, longitude, false);
-        }  else {
-          address = "No Address Found";
+        String address;
+        double latitude = gpsTrack.getLatitude();
+        double longitude = gpsTrack.getLongitude();
+        if (UtilityClass.isNetworkAvailable(Activity.this)) {
+            address = CommonUtilsMethods.gettingAddress(this, latitude, longitude, false);
+        } else {
+            address = "No Address Found";
         }
         AddressText.setText(address);
-        LatText.setText("Lat  :"+String.valueOf(latitude));
-        LongText.setText("Long  :"+String.valueOf(longitude));
-        ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"Lat  :"+latitude+" "+"Long  :"+longitude,address,List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
-
+        LatText.setText("Lat  :" + String.valueOf(latitude));
+        LongText.setText("Long  :" + String.valueOf(longitude));
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "Lat  :" + latitude + " " + "Long  :" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
         LabelText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                commonUtilsMethods.showToastMessage(Activity.this,"Wait For Location");
+                commonUtilsMethods.showToastMessage(Activity.this, "Wait For Location");
 
-                String   address;
+                String address;
                 double latitude = gpsTrack.getLatitude();
-                double  longitude = gpsTrack.getLongitude();
-                if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
+                double longitude = gpsTrack.getLongitude();
+                if (UtilityClass.isNetworkAvailable(Activity.this)) {
                     address = CommonUtilsMethods.gettingAddress(Activity.this, latitude, longitude, false);
-                }  else {
+                } else {
                     address = "No Address Found";
                 }
-                ActivityViewItem.get(k).setAnswerTxt("Lat  :"+latitude+" "+"Long  :"+longitude);
+                ActivityViewItem.get(k).setAnswerTxt("Lat  :" + latitude + " " + "Long  :" + longitude);
                 ActivityViewItem.get(k).setAnswerTxt2(address);
-                LatText.setText("Lat  :"+String.valueOf(latitude));
-                LongText.setText("Long  :"+String.valueOf(longitude));
+                LatText.setText("Lat  :" + String.valueOf(latitude));
+                LongText.setText("Long  :" + String.valueOf(longitude));
             }
         });
 
     }
 
 
-
-    public void addeditcurrencyconvertor(ActivityDetailsModelClass List, int k){
+    public void addeditcurrencyconvertor(ActivityDetailsModelClass List, int k) {
 
         if (!List.getControlPara().equals("")) {
             value = List.getControlPara().split("[/]");
@@ -2142,9 +2002,7 @@ public class Activity extends AppCompatActivity {
             Log.d("testpara", valto[0] + "---" + valto[1]);
         }
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -2159,18 +2017,16 @@ public class Activity extends AppCompatActivity {
 
         TextView textviewdata = new TextView(this);
 
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
@@ -2182,16 +2038,14 @@ public class Activity extends AppCompatActivity {
 
         TextView textviewdat = new TextView(this);
 
-        LinearLayout.LayoutParams params113 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params113 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params113.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
         textviewdat.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textviewdat.setTextColor(getResources().getColor(R.color.text_dark));
         textviewdat.setLayoutParams(params113);
-        textviewdat.setText("( "+List.getControlPara()+" )");
+        textviewdat.setText("( " + List.getControlPara() + " )");
         textviewdat.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
         textLinear.addView(textviewdat);
 
@@ -2202,10 +2056,8 @@ public class Activity extends AppCompatActivity {
 
         TextView textviewdata1 = new TextView(this);
         textviewdata.setText(List.getFieldName());
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        params11.width=120;
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params11.width = 120;
         params11.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
         textviewdata1.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
@@ -2215,10 +2067,8 @@ public class Activity extends AppCompatActivity {
 //        textviewdata1.setText(control_para.get(k));
 //        textviewdata1.setText(valfrom[0]);
         textLinearLayout2.addView(textviewdata1);
-        EditText   txtcurconvert1 = new EditText(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        EditText txtcurconvert1 = new EditText(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
@@ -2237,10 +2087,8 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.addView(textLinearLayout3);
         TextView textviewdata12 = new TextView(this);
         textviewdata.setText(List.getFieldName());
-        LinearLayout.LayoutParams params12 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        params12.width=120;
+        LinearLayout.LayoutParams params12 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params12.width = 120;
         params12.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
         textviewdata12.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
@@ -2249,10 +2097,8 @@ public class Activity extends AppCompatActivity {
         textviewdata12.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
 //        textviewdata12.setText(valto[0]);
         textLinearLayout3.addView(textviewdata12);
-        EditText  txtcurconvert2 = new EditText(this);
-        LinearLayout.LayoutParams params13 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        EditText txtcurconvert2 = new EditText(this);
+        LinearLayout.LayoutParams params13 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params13.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
@@ -2268,16 +2114,14 @@ public class Activity extends AppCompatActivity {
         txtcurconvert2.setEnabled(false);
         txtcurconvert2.setId(k);
         txtcurconvert2.setHint("Amount");
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
     }
 
-    public void digitalsign(ActivityDetailsModelClass List, int k){
+    public void digitalsign(ActivityDetailsModelClass List, int k) {
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -2286,18 +2130,16 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
 
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout2 = new LinearLayout(this);
@@ -2317,10 +2159,8 @@ public class Activity extends AppCompatActivity {
         timeclock.setLayoutParams(params1);
         textLinearLayout2.addView(timeclock);
         textLinearLayout2.setId(k);
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        TextView  textViewtime1 = new TextView(this);
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        TextView textViewtime1 = new TextView(this);
         textViewtime1.setText("Signature");
         textViewtime1.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textViewtime1.setTextColor(Color.BLACK);
@@ -2329,7 +2169,7 @@ public class Activity extends AppCompatActivity {
         textViewtime1.setGravity(CENTER);
 
         textLinearLayout2.addView(textViewtime1);
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
+        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
 
     }
@@ -2981,11 +2821,11 @@ public class Activity extends AppCompatActivity {
 //        }
 //    }
 
-    public void ShowListPopup(TextView NameView, TextView IdView, ArrayList<String> ListName, ArrayList<String> ListIds,String name, boolean isMultipleCheck) {
-        if(isMultipleCheck) {
+    public void ShowListPopup(TextView NameView, TextView IdView, ArrayList<String> ListName, ArrayList<String> ListIds, String name, boolean isMultipleCheck) {
+        if (isMultipleCheck) {
             binding.SlideScreen.viewDummy1.setVisibility(View.VISIBLE);
             binding.SlideScreen.txtClDone.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             binding.SlideScreen.viewDummy1.setVisibility(View.GONE);
             binding.SlideScreen.txtClDone.setVisibility(View.GONE);
         }
@@ -2993,27 +2833,28 @@ public class Activity extends AppCompatActivity {
         List<String> mListName = new ArrayList<>();
         List<String> mListId = new ArrayList<>();
         binding.mainLayout.openDrawer(Gravity.RIGHT);
-        binding.SlideScreen.tvSearchheader.setText("Select "+name);
-        binding.SlideScreen.etSearch.setHint("Search "+name);
-        adapter1 = new ActvityList2Adapter(getApplicationContext(), ListName,ListIds, isMultipleCheck, new CheckBoxInterface() {
+        binding.SlideScreen.tvSearchheader.setText("Select " + name);
+        binding.SlideScreen.etSearch.setHint("Search " + name);
+        adapter1 = new ActvityList2Adapter(Activity.this, ListName, ListIds, isMultipleCheck, new CheckBoxInterface() {
             @Override
-            public void Checked(String checkname,String id) {
-                if(isMultipleCheck) {
+            public void Checked(String checkname, String id) {
+                if (isMultipleCheck) {
                     mListName.add(checkname);
                     mListId.add(id);
-                }else {
+                } else {
                     binding.mainLayout.closeDrawer(Gravity.RIGHT);
                     NameView.setText(checkname);
                     IdView.setText(id);
                 }
             }
+
             @Override
-            public void UnChecked(String checkname,String id) {
+            public void UnChecked(String checkname, String id) {
                 mListName.remove(checkname);
                 mListId.remove(id);
             }
         });
-        binding.SlideScreen.acRecyelerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        binding.SlideScreen.acRecyelerView.setLayoutManager(new LinearLayoutManager(Activity.this));
         binding.SlideScreen.acRecyelerView.setAdapter(adapter1);
 
         binding.SlideScreen.etSearch.addTextChangedListener(new TextWatcher() {
@@ -3039,7 +2880,7 @@ public class Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(isMultipleCheck) {
+                if (isMultipleCheck) {
                     NameView.setText(mListName.toString().replaceAll("[\\[\\]]", ""));
                     IdView.setText(mListId.toString().replaceAll("[\\[\\]]", ""));
                     binding.mainLayout.closeDrawer(Gravity.RIGHT);
@@ -3067,30 +2908,30 @@ public class Activity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode==7) {
-            if (resultCode == RESULT_OK &&data.getData() != null) {
-                    try {
-                        uri = data.getData();
-                        String fullPath = getPathFromURI(Activity.this, uri);
-                        String[] parts = fullPath.split("/");
-                        String filenmae = parts[parts.length - 1];
-                        FilnameTet.setText(String.valueOf(filenmae));
-                                Toast.makeText(getApplicationContext(), "File Accepted", Toast.LENGTH_LONG).show();
+        if (requestCode == 7) {
+            if (resultCode == RESULT_OK && data.getData() != null) {
+                try {
+                    uri = data.getData();
+                    String fullPath = getPathFromURI(Activity.this, uri);
+                    String[] parts = fullPath.split("/");
+                    String filenmae = parts[parts.length - 1];
+                    FilnameTet.setText(String.valueOf(filenmae));
+                    Toast.makeText(Activity.this, "File Accepted", Toast.LENGTH_LONG).show();
 
 
-                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
-                                if (!dir1.exists()) {
-                                    dir1.mkdirs();
-                                }
-                                copyFileOrDirectory(String.valueOf(fullPath), String.valueOf(dir1));
-
-                     } catch (Exception ex) {
-                        Log.v("Error",ex.toString());
-                        Toast.makeText(getApplicationContext(), "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
-                        ex.printStackTrace();
+                    File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
+                    if (!dir1.exists()) {
+                        dir1.mkdirs();
                     }
-                }else {
-                Toast.makeText(getApplicationContext(), "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
+                    copyFileOrDirectory(String.valueOf(fullPath), String.valueOf(dir1));
+
+                } catch (Exception ex) {
+                    Log.v("Error", ex.toString());
+                    Toast.makeText(Activity.this, "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
+                    ex.printStackTrace();
+                }
+            } else {
+                Toast.makeText(Activity.this, "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
             }
             commonFun();
         }
@@ -3116,12 +2957,13 @@ public class Activity extends AppCompatActivity {
         }
         return fileName;
     }
+
     public static void copyFileOrDirectory(String srcDir, String dstDir) {
 
         try {
             File src = new File(srcDir);
             File dst = new File(dstDir, src.getName());
-            Log.d("string",src.getName());
+            Log.d("string", src.getName());
             if (src.isDirectory()) {
                 String files[] = src.list();
                 int filesLength = files.length;
@@ -3142,8 +2984,7 @@ public class Activity extends AppCompatActivity {
 
     // @RequiresApi(api = Build.VERSION_CODES.Q)
     public static void copyFile(File sourceFile, File destFile) throws IOException {
-        if (!destFile.getParentFile().exists())
-            destFile.getParentFile().mkdirs();
+        if (!destFile.getParentFile().exists()) destFile.getParentFile().mkdirs();
 
         if (!destFile.exists()) {
             destFile.createNewFile();
@@ -3172,25 +3013,20 @@ public class Activity extends AppCompatActivity {
 
     }
 
-
-    public  void  saveActivity(){
-
-        int conut=0;
+    public void saveActivity() {
+        int conut = 0;
         try {
-        JSONArray jsonArray=new JSONArray();
-        for (int i = 0; i < ActivityViewItem.size(); i++) {
+            JSONArray jsonArray = new JSONArray();
+            for (int i = 0; i < ActivityViewItem.size(); i++) {
 
                 JSONObject jsonObject = new JSONObject();
                 ActivityDetailsModelClass List = ActivityViewItem.get(i);
-
                 Date today = new Date();
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String dateToStr = format.format(today);
+                String dateToStr = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_1, HomeDashBoard.binding.textDate.getText().toString());
                 SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-                String dateToStr1 = format1.format(today)+" 00:00:00";
-
-                jsonObject.put("sfcode",  SharedPref.getSfCode(this));
-                jsonObject.put("division_code",  SharedPref.getDivisionCode(this));
+                String dateToStr1 = format1.format(today) + " 00:00:00";
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(this));
                 jsonObject.put("act_date", dateToStr);
                 jsonObject.put("dcr_date", dateToStr1);
                 jsonObject.put("update_time", dateToStr);
@@ -3205,17 +3041,17 @@ public class Activity extends AppCompatActivity {
                 jsonObject.put("lat", gpsTrack.getLatitude());
                 jsonObject.put("lng", gpsTrack.getLongitude());
                 jsonObject.put("cusname", "Name");
-                jsonObject.put("DataSF",  SharedPref.getSfCode(this));
+                jsonObject.put("DataSF", SharedPref.getSfCode(this));
                 jsonObject.put("type", "0");
                 jsonObject.put("WT_code", "");
                 jsonObject.put("WTName", "");
                 jsonObject.put("FWFlg", "");
-                jsonObject.put("town_code","");
+                jsonObject.put("town_code", "");
                 jsonObject.put("town_name", "");
                 jsonObject.put("Rsf", SharedPref.getHqCode(Activity.this));
-                jsonObject.put("sf_type",  SharedPref.getSfType(this));
-                jsonObject.put("Designation",  SharedPref.getDesig(this));
-                jsonObject.put("state_code",  SharedPref.getStateCode(this));
+                jsonObject.put("sf_type", SharedPref.getSfType(this));
+                jsonObject.put("Designation", SharedPref.getDesig(this));
+                jsonObject.put("state_code", SharedPref.getStateCode(this));
                 jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
 
 
@@ -3255,141 +3091,130 @@ public class Activity extends AppCompatActivity {
                 conut++;
             }
 
-           if(conut==ActivityViewItem.size()) {
-               binding.progresssumit.setVisibility(View.VISIBLE);
-               JSONObject MainObject = new JSONObject();
-               MainObject.put("tableName", "savedcract");
-               MainObject.put("val", jsonArray);
-               MainObject.put("versionNo", getString(R.string.app_version));
-               MainObject.put("mod", Constants.APP_MODE);
-               MainObject.put("Device_version", Build.VERSION.RELEASE);
-               MainObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-               MainObject.put("AppName", getString(R.string.str_app_name));
-               MainObject.put("language", SharedPref.getSelectedLanguage(this));
-               Map<String, String> QryParam = new HashMap<>();
-               QryParam.put("axn", "save/activity");
-               Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), QryParam, MainObject.toString());
-               call.enqueue(new Callback<JsonElement>() {
-                   @Override
-                   public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-                       if (response.code() == 200 || response.code() == 201) {
-                           commonUtilsMethods.showToastMessage(Activity.this, "Success");
-                           binding.progresssumit.setVisibility(View.GONE);
-                           TaggedImage();
-                       }
-                   }
-
-                   @Override
-                   public void onFailure(Call<JsonElement> call, Throwable t) {
-                       commonUtilsMethods.showToastMessage(Activity.this, t.getMessage());
-                       binding.progresssumit.setVisibility(View.GONE);
-
-                   }
-               });
-           }
-        }catch (Exception a){}
-    }
-
-
-    public void TaggedImage(){
-        binding.progresssumit.setVisibility(View.VISIBLE);
-
-  try {
-      for (int i = 0; i < ActivityViewItem.size(); i++) {
-            ActivityDetailsModelClass List = ActivityViewItem.get(i);
-            if(List.getControlId().equalsIgnoreCase("10")){
-                JSONObject jsonObject =new JSONObject();
-
-
-                Date today = new Date();
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String dateToStr = format.format(today);
-                SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-                String dateToStr1 = format1.format(today)+" 00:00:00";
-
-                jsonObject.put("sfcode", SharedPref.getSfCode(this));
-                jsonObject.put("division_code",  SharedPref.getDivisionCode(this));
-                jsonObject.put("act_date", dateToStr);
-                jsonObject.put("dcr_date", dateToStr1);
-                jsonObject.put("update_time", dateToStr);
-                jsonObject.put("ModTime", "");
-                jsonObject.put("slno", List.getSlno());
-                jsonObject.put("ctrl_id", List.getControlId());
-                jsonObject.put("creat_id", List.getCreationId());
-                jsonObject.put("group_creat_id", List.getCreationId());
-                jsonObject.put("WT", "0");
-                jsonObject.put("Pl", "0");
-                jsonObject.put("cus_code", "0");
-                jsonObject.put("lat", gpsTrack.getLatitude());
-                jsonObject.put("lng", gpsTrack.getLongitude());
-                jsonObject.put("cusname", "Name");
-                jsonObject.put("DataSF",  SharedPref.getSfCode(this));
-                jsonObject.put("type", "0");
-                jsonObject.put("WT_code", "");
-                jsonObject.put("WTName", "");
-                jsonObject.put("FWFlg", "");
-                jsonObject.put("town_code","");
-                jsonObject.put("town_name", "");
-                jsonObject.put("Rsf", SharedPref.getHqCode(Activity.this));
-                jsonObject.put("sf_type",  SharedPref.getSfType(this));
-                jsonObject.put("Designation",  SharedPref.getDesig(this));
-                jsonObject.put("state_code",  SharedPref.getStateCode(this));
-                jsonObject.put("subdivision_code",  SharedPref.getSubdivisionCode(this));
-                jsonObject.put("values", List.getAnswerTxt());
-                jsonObject.put("codes", List.getCodes());
-                jsonObject.put("versionNo", getString(R.string.app_version));
-                jsonObject.put("mod", Constants.APP_MODE);
-                jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                jsonObject.put("AppName", getString(R.string.str_app_name));
-                jsonObject.put("language", SharedPref.getSelectedLanguage(this));
-                JSONArray jsonArray=new JSONArray();
-                jsonArray.put(jsonObject);
-                JSONObject MainObject = new JSONObject();
+            if (conut == ActivityViewItem.size()) {
+                binding.progresssumit.setVisibility(View.VISIBLE);
+                JSONObject MainObject = commonUtilsMethods.CommonObjectParameter(Activity.this);
                 MainObject.put("tableName", "savedcract");
                 MainObject.put("val", jsonArray);
-                MainObject.put("versionNo", getString(R.string.app_version));
-                MainObject.put("mod", Constants.APP_MODE);
-                MainObject.put("Device_version", Build.VERSION.RELEASE);
-                MainObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                MainObject.put("AppName", getString(R.string.str_app_name));
-                MainObject.put("language", SharedPref.getSelectedLanguage(this));
-
-                ApiInterface  apiInterface1= RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
-                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
-                file1 = new File(file.getAbsolutePath() + "/", List.getAnswerTxt());
-                MultipartBody.Part img = convertImg("ActivityFile", String.valueOf(file1));
-                HashMap<String, RequestBody> values = field(MainObject.toString());
-                Call<JsonObject> saveAttachement = apiInterface1.SaveImg(values, img);
-
-                saveAttachement.enqueue(new Callback<JsonObject>() {
+                Log.v("JsonObject  :", "" + MainObject.toString());
+                Map<String, String> QryParam = new HashMap<>();
+                QryParam.put("axn", "save/activity");
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(Activity.this), QryParam, MainObject.toString());
+                call.enqueue(new Callback<JsonElement>() {
                     @Override
-                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                        binding.progresssumit.setVisibility(View.GONE);
-                        if (response.isSuccessful()) {
-                            try {
-                                assert response.body() != null;
-                                JSONObject json = new JSONObject(response.body().toString());
-                                Log.v("ImgUpload", json.toString());
-                                json.getString("success");
-                               commonUtilsMethods.showToastMessage(Activity.this,"ImageUpload SucessFully");
-                            } catch (Exception ignored) {
+                    public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                        if (response.code() == 200 || response.code() == 201) {
+                            commonUtilsMethods.showToastMessage(Activity.this, "Activity Sucessfully");
+                            binding.progresssumit.setVisibility(View.GONE);
+                            TaggedImage();
+                            Intent intent = getIntent();
+                            overridePendingTransition(0, 0);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            finish();
+                            overridePendingTransition(0, 0);
+                            startActivity(intent);
 
-                            }
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                    public void onFailure(Call<JsonElement> call, Throwable t) {
+                        commonUtilsMethods.showToastMessage(Activity.this, t.getMessage());
                         binding.progresssumit.setVisibility(View.GONE);
                     }
                 });
             }
-
+        } catch (Exception a) {
         }
-  }catch (Exception a){}
+    }
+
+    public void TaggedImage() {
+
+
+        try {
+            for (int i = 0; i < ActivityViewItem.size(); i++) {
+                ActivityDetailsModelClass List = ActivityViewItem.get(i);
+                if (List.getControlId().equalsIgnoreCase("10")) {
+                    binding.progresssumit.setVisibility(View.VISIBLE);
+                    JSONObject jsonObject = new JSONObject();
+
+                    Date today = new Date();
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String dateToStr = format.format(today);
+                    SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+                    String dateToStr1 = format1.format(today) + " 00:00:00";
+
+                    jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                    jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                    jsonObject.put("act_date", dateToStr);
+                    jsonObject.put("dcr_date", dateToStr1);
+                    jsonObject.put("update_time", dateToStr);
+                    jsonObject.put("ModTime", "");
+                    jsonObject.put("slno", List.getSlno());
+                    jsonObject.put("ctrl_id", List.getControlId());
+                    jsonObject.put("creat_id", List.getCreationId());
+                    jsonObject.put("group_creat_id", List.getCreationId());
+                    jsonObject.put("WT", "0");
+                    jsonObject.put("Pl", "0");
+                    jsonObject.put("cus_code", "0");
+                    jsonObject.put("lat", gpsTrack.getLatitude());
+                    jsonObject.put("lng", gpsTrack.getLongitude());
+                    jsonObject.put("cusname", "Name");
+                    jsonObject.put("DataSF", SharedPref.getSfCode(this));
+                    jsonObject.put("type", "0");
+                    jsonObject.put("WT_code", "");
+                    jsonObject.put("WTName", "");
+                    jsonObject.put("FWFlg", "");
+                    jsonObject.put("town_code", "");
+                    jsonObject.put("town_name", "");
+                    jsonObject.put("Rsf", SharedPref.getHqCode(Activity.this));
+                    jsonObject.put("values", List.getAnswerTxt());
+                    jsonObject.put("codes", List.getCodes());
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray.put(jsonObject);
+                    JSONObject MainObject = commonUtilsMethods.CommonObjectParameter(Activity.this);
+                    Log.v("JsonObject  :", "" + MainObject.toString());
+                    MainObject.put("tableName", "savedcract");
+                    MainObject.put("val", jsonArray);
+
+
+                    ApiInterface apiInterface1 = RetrofitClient.getRetrofit(Activity.this, SharedPref.getTagApiImageUrl(Activity.this));
+                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
+                    file1 = new File(file.getAbsolutePath() + "/", List.getAnswerTxt());
+                    MultipartBody.Part img = convertImg("ActivityFile", String.valueOf(file1));
+                    HashMap<String, RequestBody> values = field(MainObject.toString());
+                    Call<JsonObject> saveAttachement = apiInterface1.SaveImg(values, img);
+
+                    saveAttachement.enqueue(new Callback<JsonObject>() {
+                        @Override
+                        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                            binding.progresssumit.setVisibility(View.GONE);
+                            if (response.isSuccessful()) {
+                                try {
+                                    assert response.body() != null;
+                                    JSONObject json = new JSONObject(response.body().toString());
+                                    Log.v("ImgUpload", json.toString());
+                                    json.getString("success");
+                                    commonUtilsMethods.showToastMessage(Activity.this, "ImageUpload SucessFully");
+                                } catch (Exception ignored) {
+
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<JsonObject> call, Throwable t) {
+                            binding.progresssumit.setVisibility(View.GONE);
+                        }
+                    });
+                }
+
+            }
+        } catch (Exception a) {
+        }
 
     }
+
     public HashMap<String, RequestBody> field(String val) {
         HashMap<String, RequestBody> xx = new HashMap<>();
         xx.put("data", createFromString(val));
@@ -3452,6 +3277,7 @@ public class Activity extends AppCompatActivity {
 
         return null;
     }
+
     public static String getDataColumn(Context Context, Uri uri, String selection, String[] selectionArgs) {
 
         Cursor cursor = null;
@@ -3488,14 +3314,13 @@ public class Activity extends AppCompatActivity {
     }
 
 
-
     public MultipartBody.Part convertImg(String tag, String path) {
         Log.d("path", tag + "-" + path);
         MultipartBody.Part yy = null;
         try {
             File file;
             if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
-                file = new Compressor(getApplicationContext()).compressToFile(new File(path));
+                file = new Compressor(Activity.this).compressToFile(new File(path));
                 Log.d("path", tag + "-" + path);
             } else {
                 file = new File(path);
@@ -3510,8 +3335,7 @@ public class Activity extends AppCompatActivity {
     }
 
 
-
-    void showHQ(){
+    void showHQ() {
 
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
@@ -3535,7 +3359,6 @@ public class Activity extends AppCompatActivity {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(Activity.this, android.R.layout.simple_list_item_1, list);
             listView.setAdapter(adapter);
             AlertDialog dialog = alertDialog.create();
-            dialog.setCancelable(false);
 
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
@@ -3557,7 +3380,8 @@ public class Activity extends AppCompatActivity {
                     try {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
-                            getActivity(jsonObject.getString("id")); ;
+                            getActivity(jsonObject.getString("id"));
+                            ;
                             break;
                         }
                     } catch (JSONException e) {
@@ -3581,12 +3405,7 @@ public class Activity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            binding.getRoot().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 
@@ -3600,6 +3419,7 @@ public class Activity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
     }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -3638,6 +3458,7 @@ public class Activity extends AppCompatActivity {
             }
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -3656,7 +3477,8 @@ public class Activity extends AppCompatActivity {
                 }
             }
             if ((DontAskAgain) && (StorageFlag > 1)) {
-                CommonUtilsMethods. RequestGPSPermission(Activity.this,"Files");            }
+                CommonUtilsMethods.RequestGPSPermission(Activity.this, "Files");
+            }
         }
     }
 }

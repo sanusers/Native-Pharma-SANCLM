@@ -105,20 +105,11 @@ public class LeaveApprovalActivity extends AppCompatActivity {
     private void CallApiLeave() {
         progressDialog = CommonUtilsMethods.createProgressDialog(LeaveApprovalActivity.this);
         try {
+            jsonLeave=CommonUtilsMethods.CommonObjectParameter(LeaveApprovalActivity.this);
             jsonLeave.put("tableName", "getlvlapproval");
             jsonLeave.put("sfcode", SharedPref.getSfCode(this));
             jsonLeave.put("division_code", SharedPref.getDivisionCode(this));
             jsonLeave.put("Rsf", SharedPref.getHqCode(this));
-            jsonLeave.put("sf_type", SharedPref.getSfType(this));
-            jsonLeave.put("Designation", SharedPref.getDesig(this));
-            jsonLeave.put("state_code", SharedPref.getStateCode(this));
-            jsonLeave.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            jsonLeave.put("versionNo", getString(R.string.app_version));
-            jsonLeave.put("mod", Constants.APP_MODE);
-            jsonLeave.put("Device_version", Build.VERSION.RELEASE);
-            jsonLeave.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonLeave.put("AppName", getString(R.string.str_app_name));
-            jsonLeave.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_get_lvl_list", jsonLeave.toString());
         } catch (Exception ignored) {
 

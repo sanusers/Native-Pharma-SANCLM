@@ -98,7 +98,7 @@
 
             <RelativeLayout
                 android:id="@+id/rlheadquates"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_width="@dimen/_170sdp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_6sdp"
@@ -119,7 +119,7 @@
                     android:layout_marginBottom="@dimen/_2sdp"
                     android:layout_toStartOf="@id/img_arrow_1"
                     android:fontFamily="@font/satoshi_medium"
-                    android:hint="MR_Name"
+                    android:hint="@string/select_hq"
                     android:padding="@dimen/_4sdp"
                     android:textColor="@color/text_dark"
                     android:textColorHint="@color/text_dark"
@@ -139,12 +139,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_6sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:text="List of Activity"
+                android:padding="@dimen/_4sdp"
                 android:id="@+id/list_title"
                 android:textColor="@color/black_45"
-                android:textSize="@dimen/_7sdp"
+                android:textSize="@dimen/_8sdp"
                 android:textStyle="bold"></TextView>
 
 
@@ -175,48 +175,23 @@
                         android:visibility="gone" />
                 </RelativeLayout>
 
-
-
-                <RelativeLayout
-                    android:id="@+id/rlDetailsMain"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/_4sdp"
                     android:layout_weight="1"
-                    android:visibility="visible"
-                    android:background="@drawable/custom_backround_layout"
-                    android:backgroundTint="@color/white">
-
-                    <TextView
-                        android:id="@+id/namechooseActivity"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_3sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        android:layout_marginEnd="@dimen/_3sdp"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="@dimen/_3sdp"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:padding="@dimen/_3sdp"
-                        android:text="Choose Activity"
-                        android:textColor="@color/black_45"
-                        android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"></TextView>
-
-
+                    android:orientation="vertical"
+                    android:layout_height="match_parent">
 
                     <RelativeLayout
                         android:id="@+id/rl_no_data"
                         android:layout_width="match_parent"
                         android:layout_below="@id/namechooseActivity"
-                        android:background="@color/backround_graey"
+                        android:background="@color/white"
                         android:layout_height="match_parent"
                         android:layout_marginStart="@dimen/_3sdp"
                         android:layout_marginTop="@dimen/_3sdp"
                         android:layout_marginEnd="@dimen/_3sdp"
                         android:layout_marginBottom="@dimen/_3sdp"
-                        android:visibility="gone">
+                        android:visibility="visible">
 
                         <ImageView
                             android:id="@+id/img_not_found"
@@ -246,77 +221,109 @@
                             app:layout_constraintTop_toBottomOf="@id/img_not_found" />
                     </RelativeLayout>
 
-
-                    <ScrollView
-                        android:visibility="visible"
-                        android:id="@+id/rldatalayout"
+                    <RelativeLayout
+                        android:id="@+id/rlDetailsMain"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_above="@+id/btnsumit"
-                        android:layout_below="@id/namechooseActivity"
-                        android:layout_marginStart="@dimen/_3sdp"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        android:layout_marginEnd="@dimen/_3sdp"
-                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:layout_margin="@dimen/_4sdp"
+                        android:visibility="gone"
                         android:background="@drawable/custom_backround_layout"
-                        android:backgroundTint="@color/backround_graey">
+                        android:backgroundTint="@color/white">
 
-                        <RelativeLayout
+                        <TextView
+                            android:id="@+id/namechooseActivity"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_3sdp"
+                            android:gravity="center"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_marginEnd="@dimen/_3sdp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginBottom="@dimen/_3sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_3sdp"
+                            android:text="Choose Activity"
+                            android:textColor="@color/black_45"
+                            android:textSize="@dimen/_7sdp"
+                            android:textStyle="bold">
 
+                        </TextView>
 
-                        <LinearLayout
-                            android:id="@+id/llActivityDetailsView"
+                        <ScrollView
+                            android:visibility="visible"
+                            android:id="@+id/rldatalayout"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="vertical">
+                            android:layout_above="@+id/btnsumit"
+                            android:layout_below="@id/namechooseActivity"
+                            android:layout_marginStart="@dimen/_3sdp"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_marginEnd="@dimen/_3sdp"
+                            android:layout_marginBottom="@dimen/_3sdp"
+                            android:background="@drawable/custom_backround_layout"
+                            android:backgroundTint="@color/backround_graey">
 
-                        </LinearLayout>
-
-                            <ProgressBar
-                                android:id="@+id/progrlessdetail"
-                                android:layout_width="@dimen/_25sdp"
-                                android:layout_height="@dimen/_25sdp"
-                                android:layout_centerInParent="true"
-                                android:layout_gravity="center"
-                                android:backgroundTint="@color/black_45"
-                                android:visibility="gone" />
-                        </RelativeLayout>
-
-
-                    </ScrollView>
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
 
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btnsumit"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginStart="@dimen/_3sdp"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        android:layout_marginEnd="@dimen/_3sdp"
-                        android:layout_marginBottom="@dimen/_3sdp"
-                        android:background="@drawable/edittext_stroke"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:gravity="center"
-                        android:padding="@dimen/_4sdp"
-                        android:text="Submit"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
-                        app:backgroundTint="@color/black_45" />
-                    <ProgressBar
-                        android:id="@+id/progresssumit"
-                        android:layout_width="@dimen/_25sdp"
-                        android:layout_height="@dimen/_25sdp"
-                        android:backgroundTint="@color/black_45"
-                        android:layout_centerInParent="true"
-                        android:visibility="gone" />
+                                <LinearLayout
+                                    android:id="@+id/llActivityDetailsView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical">
+
+                                </LinearLayout>
+
+                                <ProgressBar
+                                    android:id="@+id/progrlessdetail"
+                                    android:layout_width="@dimen/_25sdp"
+                                    android:layout_height="@dimen/_25sdp"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="center"
+                                    android:backgroundTint="@color/black_45"
+                                    android:visibility="gone" />
+                            </RelativeLayout>
 
 
-                </RelativeLayout>
+                        </ScrollView>
+
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnsumit"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginStart="@dimen/_3sdp"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_marginEnd="@dimen/_3sdp"
+                            android:layout_marginBottom="@dimen/_3sdp"
+                            android:background="@drawable/edittext_stroke"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="center"
+                            android:padding="@dimen/_4sdp"
+                            android:text="Submit"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_7sdp"
+                            android:textStyle="bold"
+                            app:backgroundTint="@color/black_45" />
+                        <ProgressBar
+                            android:id="@+id/progresssumit"
+                            android:layout_width="@dimen/_25sdp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:backgroundTint="@color/black_45"
+                            android:layout_centerInParent="true"
+                            android:visibility="gone" />
+
+
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+
+
 
             </LinearLayout>
 

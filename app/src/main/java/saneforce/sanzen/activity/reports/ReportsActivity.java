@@ -94,21 +94,11 @@ public class ReportsActivity extends AppCompatActivity {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, SharedPref.getCallApiUrl(ReportsActivity.this));
 
-                        JSONObject jsonObject = new JSONObject();
+                        JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(this);
                         jsonObject.put("sfcode", SharedPref.getSfCode(this));
-                        jsonObject.put("sf_type", SharedPref.getSfType(this));
                         jsonObject.put("divisionCode", SharedPref.getDivisionCode(this));
                         jsonObject.put("Rsf", SharedPref.getHqCode(this));
-                        jsonObject.put("Designation", SharedPref.getDesig(this));
-                        jsonObject.put("state_code", SharedPref.getStateCode(this));
-                        jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
                         jsonObject.put("rptDt", date);
-                        jsonObject.put("versionNo",  getString(R.string.app_version));
-                        jsonObject.put("mod", Constants.APP_MODE);
-                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                        jsonObject.put("AppName", getString(R.string.str_app_name));
-                        jsonObject.put("language", SharedPref.getSelectedLanguage(this));
                         if (report.equalsIgnoreCase("DAY REPORT")) {
                             jsonObject.put("tableName", "getdayrpt_edet");
 

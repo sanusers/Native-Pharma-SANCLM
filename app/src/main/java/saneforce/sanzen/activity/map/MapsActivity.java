@@ -180,24 +180,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
- /*   @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        String finalPath = "/storage/emulated/0";
-        // try {
-        filePath = outputFileUri.getPath();
-        filePath = filePath.substring(1);
-        filePath = finalPath + filePath.substring(filePath.indexOf("/"));
-        String result = String.valueOf(resultCode);
-        if (result.equalsIgnoreCase("-1")) {
-
-            DisplayDialog();
-        }
-       *//* } catch (Exception e) {
-
-        }*//*
-    }*/
-
     //To Hide the bottomNavigation When popup
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -283,7 +265,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mapsBinding.imgRvRight.setVisibility(View.GONE);
                 mapsBinding.imgRefreshMap.setVisibility(View.GONE);
                 mapsBinding.imgCurLoc.setVisibility(View.GONE);
-                mapsBinding.rvList.setVisibility(View.GONE);
+                mapsBinding.tagginglistlayout.setVisibility(View.GONE);
                 mapsBinding.tvCustName.setText(geoTagViewList.get(0).getName());
                 mapsBinding.tagSelection.setText(getResources().getString(R.string.geo_tagging));
 
@@ -362,13 +344,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         mapsBinding.imgRvRight.setOnClickListener(view -> {
-            mapsBinding.rvList.setVisibility(View.GONE);
+            mapsBinding.tagginglistlayout.setVisibility(View.GONE);
             mapsBinding.imgRvRight.setVisibility(View.GONE);
             mapsBinding.imgRvLeft.setVisibility(View.VISIBLE);
         });
 
         mapsBinding.imgRvLeft.setOnClickListener(view -> {
-            mapsBinding.rvList.setVisibility(View.VISIBLE);
+            mapsBinding.tagginglistlayout.setVisibility(View.VISIBLE);
             mapsBinding.imgRvRight.setVisibility(View.VISIBLE);
             mapsBinding.imgRvLeft.setVisibility(View.GONE);
         });
@@ -683,7 +665,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         tv_lng.setText(String.format("Longitude : %s", lng));
         tv_address.setText(mapsBinding.tvTaggedAddress.getText().toString());
 
-        JSONObject jsonImage = new JSONObject();
+        JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(this);
         try {
             jsonImage.put("tableName", "imgupload");
             jsonImage.put("sfcode", SfCode);
@@ -693,21 +675,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             } else {
                 jsonImage.put("Rsf", SelectedHqCode);
             }
-            jsonImage.put("sf_type", SfType);
-            jsonImage.put("Designation", Designation);
-            jsonImage.put("state_code", StateCode);
-            jsonImage.put("subdivision_code", SubDivisionCode);
-            jsonImage.put("versionNo",  getString(R.string.app_version));
-            jsonImage.put("mod", Constants.APP_MODE);
-            jsonImage.put("Device_version", Build.VERSION.RELEASE);
-            jsonImage.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonImage.put("AppName", getString(R.string.str_app_name));
-            jsonImage.put("language", SharedPref.getSelectedLanguage(this));
         } catch (Exception ignored) {
 
         }
 
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
         try {
             jsonObject.put("tableName", "save_geo");
             jsonObject.put("lat", String.valueOf(lat));
@@ -717,7 +689,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             jsonObject.put("cust", SelectedTab);
             jsonObject.put("tagged_time", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd") + " " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
             jsonObject.put("image_name", imageName);
-            jsonObject.put("sfname", SfName);
             jsonObject.put("sfcode", SfCode);
             jsonObject.put("addr", mapsBinding.tvTaggedAddress.getText().toString());
             if (SfType.equalsIgnoreCase("1")) {
@@ -726,16 +697,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 jsonObject.put("tagged_cust_HQ", SelectedHqCode);
             }
             jsonObject.put("cust_name", cust_name);
-            jsonObject.put("mode", Constants.APP_MODE);
-            jsonObject.put("version", getResources().getString(R.string.app_version));
             jsonObject.put("towncode", town_code);
             jsonObject.put("townname", town_name);
-            jsonObject.put("versionNo",  getString(R.string.app_version));
-            jsonObject.put("mod", Constants.APP_MODE);
-            jsonObject.put("Device_version", Build.VERSION.RELEASE);
-            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonObject.put("AppName", getString(R.string.str_app_name));
-            jsonObject.put("language", SharedPref.getSelectedLanguage(this));
+
+
+
             if (GeoTagApprovalNeed.equalsIgnoreCase("0")) {
                 jsonObject.put("status", "1");
             } else {
@@ -767,7 +733,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapsBinding.tvTaggedAddress.setVisibility(View.VISIBLE);
             mapsBinding.constraintMid.setVisibility(View.INVISIBLE);
             mapsBinding.imgRvRight.setVisibility(View.GONE);
-            mapsBinding.rvList.setVisibility(View.GONE);
+            mapsBinding.tagginglistlayout.setVisibility(View.GONE);
         });
     }
 
@@ -901,23 +867,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (UtilityClass.isNetworkAvailable(context)) {
             try {
                 api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-                JSONObject jsonObject = new JSONObject();
+                JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(this);
                 jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
                 jsonObject.put("sfcode", SfCode);
                 jsonObject.put("division_code", DivCode);
                 jsonObject.put("Rsf", hqCode);
-                jsonObject.put("sf_type", SfType);
-                jsonObject.put("Designation", Designation);
-                jsonObject.put("state_code", StateCode);
-                jsonObject.put("subdivision_code", SubDivisionCode);
-                jsonObject.put("versionNo",  getString(R.string.app_version));
-                jsonObject.put("mod", Constants.APP_MODE);
-                jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                jsonObject.put("AppName", getString(R.string.str_app_name));
-                jsonObject.put("language", SharedPref.getSelectedLanguage(this));
-
-// Log.e("test","master sync obj in TP : " + jsonObject);
+ Log.e("test"," : " + jsonObject);
                 Call<JsonElement> call = null;
                 if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")) {
                     Map<String, String> mapString = new HashMap<>();
@@ -1097,7 +1052,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapsBinding.constraintTaggedView.setVisibility(View.VISIBLE);
             mapsBinding.constraintMid.setVisibility(View.INVISIBLE);
             mapsBinding.imgRvRight.setVisibility(View.GONE);
-            mapsBinding.rvList.setVisibility(View.GONE);
+            mapsBinding.tagginglistlayout.setVisibility(View.GONE);
 
             mapsBinding.tvCustName.setText(cust_name);
             mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
@@ -1134,7 +1089,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapsBinding.tvMeters.setVisibility(View.VISIBLE);
             mapsBinding.constraintMid.setVisibility(View.INVISIBLE);
             mapsBinding.imgRvRight.setVisibility(View.GONE);
-            mapsBinding.rvList.setVisibility(View.GONE);
+            mapsBinding.tagginglistlayout.setVisibility(View.GONE);
             mapsBinding.tvCustName.setText(cust_name);
 
 
@@ -1351,10 +1306,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             if (taggedMapListArrayList.size() > 0) {
                 mapsBinding.rvList.setVisibility(View.VISIBLE);
+                mapsBinding.tagginglistlayout.setVisibility(View.VISIBLE);
+                mapsBinding.rvList.setVisibility(View.VISIBLE);
+                mapsBinding.noTagImage.setVisibility(View.GONE);
                 mapsBinding.imgRvRight.setVisibility(View.VISIBLE);
                 mapsBinding.imgRvLeft.setVisibility(View.GONE);
             } else {
+                mapsBinding.tagginglistlayout.setVisibility(View.GONE);
                 mapsBinding.rvList.setVisibility(View.GONE);
+                mapsBinding.noTagImage.setVisibility(View.VISIBLE);
                 mapsBinding.imgRvRight.setVisibility(View.GONE);
                 mapsBinding.imgRvLeft.setVisibility(View.VISIBLE);
             }

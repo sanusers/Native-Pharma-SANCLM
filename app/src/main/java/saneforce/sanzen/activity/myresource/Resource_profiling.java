@@ -472,7 +472,7 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
             String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
             api_interface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl + replacedUrl);
             progressDialog = CommonUtilsMethods.createProgressDialog(this);
-            JSONObject jsonobj = new JSONObject();
+            JSONObject jsonobj = CommonUtilsMethods.CommonObjectParameter(this);
             JSONArray jarr_addctrl = new JSONArray();
 
 

@@ -5,6 +5,7 @@ import static saneforce.sanzen.activity.map.MapsActivity.taggedMapListArrayList;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,8 @@ public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHold
     public TaggingAdapter(Context context, ArrayList<TaggedMapList> taggedMapLists) {
         this.context = context;
         this.taggedMapLists = taggedMapLists;
+
+
     }
 
 

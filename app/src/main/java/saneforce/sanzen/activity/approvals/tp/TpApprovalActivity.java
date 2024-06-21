@@ -139,23 +139,14 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
     private void tpApproval() {
         progressDialog = CommonUtilsMethods.createProgressDialog(getApplicationContext());
         try {
-            jsonTp = new JSONObject();
+            jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
             jsonTp.put("tableName", "savetpapproval");
             jsonTp.put("sfcode", SharedPref.getSfCode(this));
             jsonTp.put("Month", SelectedMonth);
             jsonTp.put("Year", SelectedYear);
             jsonTp.put("division_code", SharedPref.getDivisionCode(this));
             jsonTp.put("Rsf", SelectedSfCode);
-            jsonTp.put("sf_type", SharedPref.getSfType(this));
-            jsonTp.put("Designation", SharedPref.getDesig(this));
-            jsonTp.put("state_code", SharedPref.getStateCode(this));
-            jsonTp.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            jsonTp.put("versionNo", getString(R.string.app_version));
-            jsonTp.put("mod", Constants.APP_MODE);
-            jsonTp.put("Device_version", Build.VERSION.RELEASE);
-            jsonTp.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonTp.put("AppName", getString(R.string.str_app_name));
-            jsonTp.put("language", SharedPref.getSelectedLanguage(this));
+
 
             Log.v("json_tp_Approved", jsonTp.toString());
         } catch (Exception ignored) {
@@ -229,7 +220,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
     private void tpReject(String reason) {
         progressDialog = CommonUtilsMethods.createProgressDialog(TpApprovalActivity.this);
         try {
-            jsonTp = new JSONObject();
+            jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
             jsonTp.put("tableName", "savetpreject");
             jsonTp.put("sfcode", SharedPref.getSfCode(this));
             jsonTp.put("Month", SelectedMonth);
@@ -237,17 +228,6 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             jsonTp.put("reason", reason);
             jsonTp.put("division_code", SharedPref.getDivisionCode(this));
             jsonTp.put("Rsf", SelectedSfCode);
-            jsonTp.put("sf_type", SharedPref.getSfType(this));
-            jsonTp.put("Designation", SharedPref.getDesig(this));
-            jsonTp.put("state_code", SharedPref.getStateCode(this));
-            jsonTp.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            jsonTp.put("versionNo", getString(R.string.app_version));
-            jsonTp.put("mod", Constants.APP_MODE);
-            jsonTp.put("Device_version", Build.VERSION.RELEASE);
-            jsonTp.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonTp.put("AppName", getString(R.string.str_app_name));
-            jsonTp.put("language", SharedPref.getSelectedLanguage(this));
-
             Log.v("json_tp_Reject", jsonTp.toString());
         } catch (Exception ignored) {
 
@@ -309,20 +289,11 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
     private void CallTpListApi() {
         progressDialog = CommonUtilsMethods.createProgressDialog(TpApprovalActivity.this);
         try {
+            jsonTp=CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
             jsonTp.put("tableName", "gettpapproval");
             jsonTp.put("sfcode", SharedPref.getSfCode(this));
             jsonTp.put("division_code", SharedPref.getDivisionCode(this));
             jsonTp.put("Rsf", SharedPref.getHqCode(this));
-            jsonTp.put("sf_type", SharedPref.getSfType(this));
-            jsonTp.put("Designation", SharedPref.getDesig(this));
-            jsonTp.put("state_code", SharedPref.getStateCode(this));
-            jsonTp.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            jsonTp.put("versionNo", getString(R.string.app_version));
-            jsonTp.put("mod", Constants.APP_MODE);
-            jsonTp.put("Device_version", Build.VERSION.RELEASE);
-            jsonTp.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonTp.put("AppName", getString(R.string.str_app_name));
-            jsonTp.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_getTpList", jsonTp.toString());
         } catch (Exception ignored) {
 
@@ -430,23 +401,13 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
     private void GetDetailsApi() {
         try {
-            jsonTp = new JSONObject();
+            jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
             jsonTp.put("tableName", "gettpdetail");
             jsonTp.put("sfcode", SelectedSfCode);
             jsonTp.put("Month", SelectedMonth);
             jsonTp.put("Year", SelectedYear);
             jsonTp.put("division_code", SharedPref.getDivisionCode(this));
             jsonTp.put("Rsf", SelectedSfCode);
-            jsonTp.put("sf_type", SharedPref.getSfType(this));
-            jsonTp.put("Designation", SharedPref.getDesig(this));
-            jsonTp.put("state_code", SharedPref.getStateCode(this));
-            jsonTp.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            jsonTp.put("versionNo", getString(R.string.app_version));
-            jsonTp.put("mod", Constants.APP_MODE);
-            jsonTp.put("Device_version", Build.VERSION.RELEASE);
-            jsonTp.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonTp.put("AppName", getString(R.string.str_app_name));
-            jsonTp.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_getTpDetailedList", jsonTp.toString());
         } catch (Exception ignored) {
 

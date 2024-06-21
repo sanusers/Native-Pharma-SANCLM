@@ -1793,7 +1793,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
             JSONArray jn = new JSONArray();
             JSONObject jnobj = new JSONObject();
-            JSONObject jsonobjlist = new JSONObject();
+            JSONObject jsonobjlist =CommonUtilsMethods.CommonObjectParameter(DCRCallActivity.this);
 
             jsonobjlist.put("Doctor_ID", Doc_code );
             jsonobjlist.put("Doctor_Name", Doc_name);
@@ -1834,27 +1834,14 @@ public class DCRCallActivity extends AppCompatActivity {
                 jsonobjlist.put("ProdsNm", "");
             }
 
-//            for (int i = 0; i < CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
-//                Pro_code = Pro_code + CheckProductListAdapter.saveCallProductListArrayList.get(i).getCode() +  ",";
-//                Pro_name = Pro_name + CheckProductListAdapter.saveCallProductListArrayList.get(i).getName() +  ",";
-//
-//                jsonobjlist.put("Prods", Pro_code);
-//                jsonobjlist.put("ProdsNm", Pro_name);
-//            }
-
             jsonobjlist.put("Remarks", jwOthersBinding.edRemarks.getText());
             jsonobjlist.put("feedback_id",  FeedbackSelectionSide.feedbackCode);
             jsonobjlist.put("feedback_value", FeedbackSelectionSide.feedbackName);
             jsonobjlist.put("location", lat + ":" + lng);
             jsonobjlist.put("geoaddress", CommonUtilsMethods.gettingAddress(this, lat, lng, false));
-            jsonobjlist.put("app_version", getResources().getString(R.string.app_version));
-            jsonobjlist.put("Mode", "Android-Edet");
-            BatteryManager bm = (BatteryManager) this.getSystemService(BATTERY_SERVICE);
-            mBatteryPercent = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-            jsonobjlist.put("battery", String.valueOf(mBatteryPercent));
+
             String pobValue = Objects.requireNonNull(jwOthersBinding.edPob.getText()).toString();
             jsonobjlist.put("rcallpob", pobValue);//sf_emp_id,sfcode,vstTime
-            jsonobjlist.put("sf_emp_id",SharedPref.getSfEmpId(this) );//loginResponse.getSf_emp_id()
             jsonobjlist.put("sfcode", hqcode);
 
             // Get current date and time
@@ -1925,7 +1912,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
             Log.v("final_value_call", "---injonite---");
             JSONArray jsonArray = new JSONArray();
-            jsonSaveDcr = new JSONObject();
+            jsonSaveDcr =CommonUtilsMethods.CommonObjectParameter(DCRCallActivity.this);
 
             JWKCodeList.clear();
             //JointWork
@@ -2181,18 +2168,13 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("address", address);
             jsonSaveDcr.put("sfcode", SfCode);
             jsonSaveDcr.put("Rsf", TodayPlanSfCode);
-            jsonSaveDcr.put("sf_type", SfType);
-            jsonSaveDcr.put("Designation", Designation);
-            jsonSaveDcr.put("state_code", StateCode);
-            jsonSaveDcr.put("subdivision_code", SubDivisionCode);
             jsonSaveDcr.put("division_code", DivCode);
             jsonSaveDcr.put("AppUserSF", TodayPlanSfCode);
-            jsonSaveDcr.put("SFName", SfName);
             jsonSaveDcr.put("SpecCode", "2");
             jsonSaveDcr.put("mappedProds", "");
             jsonSaveDcr.put("mode", "0");
             jsonSaveDcr.put("Appver", getResources().getString(R.string.app_version));
-            jsonSaveDcr.put("Mod", Constants.APP_MODE);
+
 
 
 
@@ -2244,22 +2226,13 @@ public class DCRCallActivity extends AppCompatActivity {
             //EventCapture
             jsonArray = new JSONArray();
             if (callCaptureImageLists.size() > 0) {
-                jsonImage = new JSONObject();
+                jsonImage = CommonUtilsMethods.CommonObjectParameter(DCRCallActivity.this);
                 try {
                     jsonImage.put("tableName", "uploadphoto");
                     jsonImage.put("sfcode", SfCode);
                     jsonImage.put("division_code", DivCode);
                     jsonImage.put("Rsf", TodayPlanSfCode);
-                    jsonImage.put("sf_type", SfType);
-                    jsonImage.put("Designation", Designation);
-                    jsonImage.put("state_code", StateCode);
-                    jsonImage.put("subdivision_code", SubDivisionCode);
-                    jsonImage.put("versionNo", getString(R.string.app_version));
-                    jsonImage.put("mod", Constants.APP_MODE);
-                    jsonImage.put("Device_version", Build.VERSION.RELEASE);
-                    jsonImage.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                    jsonImage.put("AppName", getString(R.string.str_app_name));
-                    jsonImage.put("language", SharedPref.getSelectedLanguage(this));
+
                 } catch (Exception ignored) {
 
                 }
