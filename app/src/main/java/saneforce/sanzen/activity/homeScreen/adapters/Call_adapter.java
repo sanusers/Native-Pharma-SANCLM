@@ -299,7 +299,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
 
         Map<String, String> mapString = new HashMap<>();
-        mapString.put("axn", "edit/dcr");
+        mapString.put("axn", "edit_edet/dcr");
         Call<JsonElement> getEditCallDetails = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
         getEditCallDetails.enqueue(new Callback<JsonElement>() {
             @Override

@@ -3,9 +3,6 @@ package saneforce.sanzen.activity.homeScreen;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.READ_MEDIA_AUDIO;
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.Manifest.permission.READ_MEDIA_VIDEO;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
@@ -63,7 +60,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.PermissionChecker;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
@@ -203,6 +199,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         super.onPostCreate(savedInstanceState);
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("date", selectedDate.toString());
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
@@ -248,7 +249,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             CheckingManatoryApprovals();
         }
         CheckedTpRange();
-        checkAndSetEntryDate(this);
+        checkAndSetEntryDate(this, true);
         if(isDcrFrom){
             binding.viewPager.setCurrentItem(1);
             isDcrFrom=false;
@@ -281,6 +282,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding = ActivityHomeDashBoardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        if (savedInstanceState != null) {
+            binding.textDate.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_27, savedInstanceState.getString("date")));
+            selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+        }
+
         // THIS CODE IS DESIGN
         DisplayMetrics displayMetrics = new DisplayMetrics();
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
@@ -685,7 +692,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         callsatuslist.clear();
         try {
             if (String.valueOf(date.getMonth()).equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("MMMM"))) {
-                JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.MY_DAY_PLAN).getMasterSyncDataJsonArray();
+                JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
 
                 if (workTypeArray.length() > 0) {
                     JSONObject jsonObject = workTypeArray.getJSONObject(0);
@@ -1317,7 +1324,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
-    public static void checkAndSetEntryDate(Context context) {
+    public static void checkAndSetEntryDate(Context context, boolean shouldShowCalender) {
         binding.viewPagerProgress.setVisibility(View.VISIBLE);
         isDateSelectionClicked = false;
         MyDayPlanEntriesNeeded.updateMyDayPlanEntryDates(context, false, new MyDayPlanEntriesNeeded.SyncTaskStatus() {
@@ -1344,7 +1351,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     Log.e("TAG 3", "checkAndSetEntryDate: " + selectedDate);
                 }
                 binding.viewPagerProgress.setVisibility(View.GONE);
-                setupLeftViewPager(context, fragmentManager);
+                if(shouldShowCalender) {
+                    setupLeftViewPager(context, fragmentManager);
+                }else {
+                    isDateSelectionClicked = true;
+                }
             }
 
             @Override
@@ -1352,7 +1363,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 selectedDate = null;
                 binding.textDate.setText(null);
                 binding.viewPagerProgress.setVisibility(View.GONE);
-                setupLeftViewPager(context, fragmentManager);
+                if(shouldShowCalender) {
+                    setupLeftViewPager(context, fragmentManager);
+                } else {
+                    isDateSelectionClicked = true;
+                }
                 Log.e("TAG 4", "checkAndSetEntryDate: " + selectedDate);
             }
         });
@@ -1375,6 +1390,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             case R.id.ll_next_month:
                 calendarDays.clear();
                 selectedDate = selectedDate.plusMonths(1);
+                validateMonth();
                 binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
                 calendarDays = daysInMonthArray(selectedDate);
                 callstatusadapter = new Callstatusadapter(calendarDays, HomeDashBoard.this, selectedDate);
@@ -1387,6 +1403,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             case R.id.ll_bfr_month:
                 calendarDays.clear();
                 selectedDate = selectedDate.minusMonths(1);
+                validateMonth();
                 binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
                 calendarDays = daysInMonthArray(selectedDate);
                 callstatusadapter = new Callstatusadapter(calendarDays, HomeDashBoard.this, selectedDate);
@@ -1428,6 +1445,19 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
+    private void validateMonth() {
+        if(selectedDate.getMonth() == LocalDate.now().getMonth()){
+            binding.viewCalerderLayout.llNextMonth.setVisibility(View.INVISIBLE);
+        }else {
+            binding.viewCalerderLayout.llNextMonth.setVisibility(View.VISIBLE);
+        }
+        if(selectedDate.getMonth() == LocalDate.now().minusMonths(2).getMonth()){
+            binding.viewCalerderLayout.llBfrMonth.setVisibility(View.INVISIBLE);
+        }else {
+            binding.viewCalerderLayout.llBfrMonth.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void setUpCalendar() {
 //        binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.VISIBLE);
 //        if(SequentialEntry.equalsIgnoreCase("0")) {
@@ -1447,6 +1477,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     selectedDate = LocalDate.now();
                 }
                 binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
+                validateMonth();
                 calendarDays.clear();
                 calendarDays = daysInMonthArray(selectedDate);
                 callstatusadapter = new Callstatusadapter(calendarDays, HomeDashBoard.this, selectedDate);
@@ -1512,7 +1543,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         assert jsonElement != null;
                         JsonArray jsonArray = jsonElement.getAsJsonArray();
                         masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 2));
-
+                        checkAndSetEntryDate(HomeDashBoard.this, false);
 //                        binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
 //                        binding.tabLayout.setVisibility(View.VISIBLE);
 //                        binding.viewPager.setVisibility(View.VISIBLE);
@@ -1694,6 +1725,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             binding.imgLocation.setImageResource(R.drawable.location_img);
             menu.findItem(R.id.loctionrefresh).setVisible(true);
         } else {
+            binding.tvLdot.setVisibility(View.GONE);
             binding.imgLocation.setVisibility(View.GONE);
             binding.imgLocation.setImageResource(R.drawable.locationget_img);
             menu.findItem(R.id.loctionrefresh).setVisible(false);

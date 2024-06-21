@@ -600,7 +600,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         leaveStatusStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
 
         callSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CALL_SYNC);
-        myDayPlanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.MY_DAY_PLAN);
+        myDayPlanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_PLAN);
         visitControlStatus = masterDataDao.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
         dateSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DATE_SYNC);
         stockBalanceStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
@@ -728,7 +728,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         dcrModelArray.clear();
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC,  "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC,  "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
-        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN,  Constants.DOCTOR, "gettodaydcr", Constants.MY_DAY_PLAN, myDayPlanStatus, false);
+        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
         MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE,  "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
         //   MasterSyncItemModel EventCallSync = new MasterSyncItemModel("Status", -1, "AdditionalDcr", "gettodycalls", Constants.CALENDER_EVENT_STATUS, calenderEventStaus, false);
         dcrModelArray.add(callSyncModel);
@@ -767,7 +767,9 @@ public class MasterSyncActivity extends AppCompatActivity {
         slideModelArray.add(proSlideModel);
         slideModelArray.add(splSlideModel);
         slideModelArray.add(brandSlideModel);
-        slideModelArray.add(therapticSlideModel);
+        if(SharedPref.getTherapticPresentationNeed(this).equalsIgnoreCase("0")) {
+            slideModelArray.add(therapticSlideModel);
+        }
 
         //Subordinate
         subordinateModelArray.clear();

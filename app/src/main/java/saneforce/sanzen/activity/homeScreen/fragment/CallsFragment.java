@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.homeScreen.fragment;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -197,7 +195,7 @@ public class CallsFragment extends Fragment {
 //                                        binding.recyelerview.setAdapter(adapter);
                                             binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
                                             adapter.notifyDataSetChanged();
-
+                                            SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
                                             if(isProgressNeed) progressDialog.dismiss();
                                         } catch (Exception e) {
                                             if(isProgressNeed) progressDialog.dismiss();
@@ -274,6 +272,7 @@ public class CallsFragment extends Fragment {
 
     public static void SaveDCRData(Context context,ArrayList<CallsModalClass> todayCallListTwo, int i, JSONArray jsonArray2) {
         try {
+            SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("CustCode", todayCallListTwo.get(i).getDocCode());
             jsonObject.put("CustType", todayCallListTwo.get(i).getDocNameID());
@@ -310,7 +309,7 @@ public class CallsFragment extends Fragment {
 
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         getFromLocal(requireContext(), apiInterface);
-       // CallTodayCallsAPI(requireContext(), apiInterface, false);
+        CallTodayCallsAPI(requireContext(), apiInterface, false);
         db = RoomDB.getDatabase(requireContext());
         masterDataDao =db.masterDataDao();
 
@@ -374,7 +373,7 @@ public class CallsFragment extends Fragment {
                     }
                 }
             } else {
-                JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.MY_DAY_PLAN).getMasterSyncDataJsonArray();
+                JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
                 try {

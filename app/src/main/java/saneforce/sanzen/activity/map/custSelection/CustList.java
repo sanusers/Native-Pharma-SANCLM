@@ -1,6 +1,12 @@
 package saneforce.sanzen.activity.map.custSelection;
 
-public class CustList {
+import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class CustList implements Parcelable {
     String name;
     String type;
     String code;
@@ -229,6 +235,55 @@ public class CustList {
 
     }
 
+    protected CustList(Parcel in) {
+        name = in.readString();
+        type = in.readString();
+        code = in.readString();
+        town_code = in.readString();
+        category = in.readString();
+        categoryCode = in.readString();
+        specialist = in.readString();
+        specialistCode = in.readString();
+        position = in.readString();
+        town_name = in.readString();
+        maxTag = in.readString();
+        Tag = in.readString();
+        latitude = in.readString();
+        longitude = in.readString();
+        address = in.readString();
+        isClusterAvailable = in.readByte() != 0;
+        geoTagStatus = in.readString();
+        wedding_date = in.readString();
+        mobile = in.readString();
+        email = in.readString();
+        qualification = in.readString();
+        dob = in.readString();
+        phone = in.readString();
+        PriorityPrdCode = in.readString();
+        dummy = in.readString();
+        totalVisitCount = in.readString();
+        MappedBrands = in.readString();
+        MappedSlides = in.readString();
+        TransNo = in.readString();
+        jsonArray = in.readString();
+        ADetSlNo = in.readString();
+        IsExtra = in.readByte() != 0;
+        totalRcpa = in.readString();
+        Class = in.readString();
+        ClassCode = in.readString();
+    }
+
+    public static final Creator<CustList> CREATOR = new Creator<CustList>() {
+        @Override
+        public CustList createFromParcel(Parcel in) {
+            return new CustList(in);
+        }
+
+        @Override
+        public CustList[] newArray(int size) {
+            return new CustList[size];
+        }
+    };
 
     public String getSpecialistCode() {
         return specialistCode;
@@ -537,5 +592,57 @@ public class CustList {
 
     public void setClassCode(String classCode) {
         ClassCode = classCode;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(this.name);
+        dest.writeString(this.type);
+        dest.writeString(this.code);
+        dest.writeString(this.town_code);
+        dest.writeString(this.category);
+        dest.writeString(this.categoryCode);
+        dest.writeString(this.specialist);
+        dest.writeString(this.specialistCode);
+        dest.writeString(this.position);
+        dest.writeString(this.town_name);
+        dest.writeString(this.maxTag);
+        dest.writeString(this.Tag);
+        dest.writeString(this.latitude);
+        dest.writeString(this.longitude);
+        dest.writeString(this.address);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            dest.writeBoolean(this.isClusterAvailable);
+        } else {
+            dest.writeByte(this.isClusterAvailable ? (byte)1: 0);
+        }
+        dest.writeString(this.geoTagStatus);
+        dest.writeString(this.wedding_date);
+        dest.writeString(this.mobile);
+        dest.writeString(this.email);
+        dest.writeString(this.qualification);
+        dest.writeString(this.dob);
+        dest.writeString(this.phone);
+        dest.writeString(this.PriorityPrdCode);
+        dest.writeString(this.dummy);
+        dest.writeString(this.totalVisitCount);
+        dest.writeString(this.MappedBrands);
+        dest.writeString(this.MappedSlides);
+        dest.writeString(this.TransNo);
+        dest.writeString(this.jsonArray);
+        dest.writeString(this.ADetSlNo);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            dest.writeBoolean(this.IsExtra);
+        }else {
+            dest.writeByte(this.IsExtra ? (byte)1: 0);
+        }
+        dest.writeString(this.totalRcpa);
+        dest.writeString(this.Class);
+        dest.writeString(this.ClassCode);
     }
 }

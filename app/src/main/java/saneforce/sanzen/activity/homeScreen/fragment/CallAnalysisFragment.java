@@ -389,7 +389,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
             entries.add(new Entry(1, xaxis5));
             if (Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7)) > 15) {
-                entries.add(new Entry(2, xaxis5));
+                entries.add(new Entry(2, xaxis6));
             }
 
 

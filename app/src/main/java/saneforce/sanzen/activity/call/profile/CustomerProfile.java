@@ -2,20 +2,25 @@ package saneforce.sanzen.activity.call.profile;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import saneforce.sanzen.R;
@@ -24,6 +29,7 @@ import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
 import saneforce.sanzen.activity.call.profile.preCallAnalysis.PreCallAnalysisFragment;
+import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -65,6 +71,13 @@ public class CustomerProfile extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("call", CallActivityCustDetails);
+        outState.putString("date", HomeDashBoard.selectedDate.toString());
+    }
+
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +92,20 @@ public class CustomerProfile extends AppCompatActivity {
         btn_start = findViewById(R.id.btn_start_det);
         img_back = findViewById(R.id.iv_back);
         cusName = findViewById(R.id.tag_selection);
+        if(savedInstanceState != null) {
+            CallActivityCustDetails = savedInstanceState.getParcelableArrayList("call");
+            HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
+                CommonAlertBox.permissionChangeAlert(this);
+            }
+        }
         cusName.setText(CallActivityCustDetails.get(0).getName());
         isPreAnalysisCalled = false;
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());

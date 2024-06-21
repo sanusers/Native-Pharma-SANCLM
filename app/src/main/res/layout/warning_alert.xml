@@ -107,12 +107,13 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnYes"
-            android:layout_width="@dimen/_40sdp"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/_20sdp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginHorizontal="@dimen/_2sdp"
             android:layout_marginVertical="@dimen/_2sdp"
+            android:paddingHorizontal="@dimen/_10sdp"
             android:background="@drawable/backround_button"
             android:fontFamily="@font/satoshi_bold"
             android:singleLine="true"

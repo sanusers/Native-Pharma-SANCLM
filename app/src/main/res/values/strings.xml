@@ -443,4 +443,5 @@
     <string name="should_have_a_call">Should have a call on selected date to submit!</string>
     <string name="submit">Submit</string>
     <string name="no_pending_dates_to_select">No pending dates to select</string>
+    <string name="continuee">CONTINUE</string>
 </resources>

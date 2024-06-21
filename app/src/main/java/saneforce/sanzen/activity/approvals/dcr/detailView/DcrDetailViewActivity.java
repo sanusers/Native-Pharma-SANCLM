@@ -1,17 +1,23 @@
 package saneforce.sanzen.activity.approvals.dcr.detailView;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
@@ -20,9 +26,12 @@ import saneforce.sanzen.activity.approvals.dcr.detailView.adapter.AdapterCusSing
 import saneforce.sanzen.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DcrDetailModelList;
 import saneforce.sanzen.activity.approvals.tp.pojo.TpModelList;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.databinding.ActivityDcrDetailViewBinding;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class DcrDetailViewActivity extends AppCompatActivity implements OnItemClickListenerApproval {
     public static ArrayList<DcrDetailModelList> dcrDetailModelLists;
@@ -35,6 +44,12 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
 
     CommonUtilsMethods commonUtilsMethods;
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("date", HomeDashBoard.selectedDate.toString());
+    }
+
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +59,21 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
+
+        if(savedInstanceState != null) {
+            HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
+                CommonAlertBox.permissionChangeAlert(this);
+            }
+        }
+
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             cut_name = extra.getString("cut_name");
