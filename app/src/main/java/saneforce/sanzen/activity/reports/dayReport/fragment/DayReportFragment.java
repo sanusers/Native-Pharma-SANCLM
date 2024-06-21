@@ -281,22 +281,13 @@ public class DayReportFragment extends Fragment {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
 
-                        JSONObject jsonObject = new JSONObject();
+                        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
                         jsonObject.put("tableName", "getdayrpt_edet");
                         jsonObject.put("sfcode",SharedPref.getSfCode(requireContext()));
-                        jsonObject.put("sf_type", SharedPref.getSfType(requireContext()));
                         jsonObject.put("divisionCode",SharedPref.getDivisionCode(requireContext()));
                         jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
-                        jsonObject.put("Designation", SharedPref.getDesig(requireContext()));
-                        jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
-                        jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(requireContext()));
                         jsonObject.put("rptDt", date);
-                        jsonObject.put("versionNo", getString(R.string.app_version));
-                        jsonObject.put("mod", Constants.APP_MODE);
-                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                        jsonObject.put("AppName", getString(R.string.str_app_name));
-                        jsonObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
+
                         Log.v("jsonDayReport", "---" + jsonObject);
 
                         Map<String, String> mapString = new HashMap<>();

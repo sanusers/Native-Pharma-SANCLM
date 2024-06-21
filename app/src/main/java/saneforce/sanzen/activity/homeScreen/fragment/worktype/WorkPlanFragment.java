@@ -893,6 +893,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()),  SharedPref.getSfCode(requireContext()));
                 }
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode1);
+
+                  if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg1.equalsIgnoreCase("A"))
+                        HomeDashBoard.binding.viewPager.setCurrentItem(1);
+
+
+
             } else {
                 callOfflineWorkTypeDataDao.insert(new CallOfflineWorkTypeDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), mWTName2, mWTCode2, jsonObject.toString(), "", 0));
                 OutboxFragment.SetupOutBoxAdapter(requireActivity(), requireContext());
@@ -902,6 +908,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()),  SharedPref.getSfCode(requireContext()));
                 }
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode2);
+                if (mFwFlg2.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("A"))
+                    HomeDashBoard.binding.viewPager.setCurrentItem(1);
             }
 
             boolean isTodayAvailable = false;
@@ -1009,6 +1017,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             SharedPref.setDayPlanStartedDate(requireContext(), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
             OutboxFragment.SetupOutBoxAdapter(requireActivity(), requireContext());
             SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
+
             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.save_wt_locally));
         } catch (Exception ignored) {
 
@@ -1039,7 +1048,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
             }
 
-            jsonObject = new JSONObject();
+            jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
             jsonObject.put("tableName", "dayplan");
             jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
             jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
@@ -1049,10 +1058,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             } else {
                 jsonObject.put("Rsf", SharedPref.getSfCode(requireContext()));
             }
-            jsonObject.put("sf_type",SharedPref.getSfType(requireContext()));
-            jsonObject.put("Designation", SharedPref.getDesig(requireContext()));
-            jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
-            jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(requireContext()));
+
             jsonObject.put("town_code", mTowncode1);
             jsonObject.put("Town_name", mTownname1);
             jsonObject.put("WT_code", mWTCode1);
@@ -1069,20 +1075,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("location", gpsTrack.getLatitude()+":"+gpsTrack.getLongitude());
             jsonObject.put("address",CommonUtilsMethods.gettingAddress(getActivity(), gpsTrack.getLatitude(), gpsTrack.getLongitude(), false));
             jsonObject.put("InsMode", "0");
-            jsonObject.put("Appver", getResources().getString(R.string.app_version));
-            jsonObject.put("Mod", getResources().getString(R.string.app_mode));
             jsonObject.put("SubmittedDate", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
             jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_15, HomeDashBoard.binding.textDate.getText().toString()));
             jsonObject.put("TpVwFlg", "0");
             jsonObject.put("TP_cluster", "");
             jsonObject.put("TP_worktype", "");
             jsonObject.put("day_flag", "0");
-            jsonObject.put("versionNo", getString(R.string.app_version));
-            jsonObject.put("mod", Constants.APP_MODE);
-            jsonObject.put("Device_version", Build.VERSION.RELEASE);
-            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonObject.put("AppName", getString(R.string.str_app_name));
-            jsonObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
+
 
 
         } catch (Exception ignored) {
@@ -1405,21 +1404,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
                 api_interface = RetrofitClient.getRetrofit(getActivity(), baseUrl + replacedUrl);
 
-                JSONObject jsonObject = new JSONObject();
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
                 jsonObject.put("tableName", remoteTableName);
                 jsonObject.put("sfcode",SharedPref.getSfCode(requireContext()));
                 jsonObject.put("division_code",SharedPref.getDivisionCode(requireContext()));
                 jsonObject.put("Rsf", hqCode);
-                jsonObject.put("sf_type", SharedPref.getSfType(requireContext()));
-                jsonObject.put("Designation", SharedPref.getDesig(requireContext()));
-                jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
-                jsonObject.put("subdivision_code",SharedPref.getSubdivisionCode(requireContext()));
-                jsonObject.put("versionNo", getString(R.string.app_version));
-                jsonObject.put("mod", Constants.APP_MODE);
-                jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                jsonObject.put("AppName", getString(R.string.str_app_name));
-                jsonObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
 
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "table/dcrmasterdata");
@@ -1812,22 +1801,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             try {
                 api_interface = RetrofitClient.getRetrofit(getActivity(), SharedPref.getCallApiUrl(requireContext()));
 
-                JSONObject jsonObject = new JSONObject();
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext ());
                 jsonObject.put("tableName", "gettodaydcr");
                 jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
                 jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
                 jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
-                jsonObject.put("sf_type", SharedPref.getSfType(requireContext()));
-                jsonObject.put("Designation", SharedPref.getDesig(requireContext()));
-                jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
-                jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(requireContext()));
                 jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
-                jsonObject.put("versionNo", getString(R.string.app_version));
-                jsonObject.put("mod", Constants.APP_MODE);
-                jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                jsonObject.put("AppName", getString(R.string.str_app_name));
-                jsonObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
+
 
                 Log.v("Mydayplan", "--json-- " + jsonObject);
 
@@ -1895,8 +1875,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } else {
             address = "No Address Found";
         }
-        jsonCheck = new JSONObject();
-        finalSubmitJSONObject = new JSONObject();
+        jsonCheck = CommonUtilsMethods.CommonObjectParameter(requireContext());
+        finalSubmitJSONObject =CommonUtilsMethods.CommonObjectParameter(requireContext());
         try {
             jsonCheck.put("tableName", "savetp_attendance");
             jsonCheck.put("sfcode", SharedPref.getSfCode(requireContext()));
@@ -1905,42 +1885,20 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonCheck.put("long", longitude);
             jsonCheck.put("address", address);
             jsonCheck.put("update", "1");
-            jsonCheck.put("Appver", getResources().getString(R.string.app_version));
-            jsonCheck.put("Mod", APP_MODE);
-            jsonCheck.put("sf_emp_id",  SharedPref.getSfEmpId(requireContext()));
-            jsonCheck.put("sfname", SharedPref.getSfName(requireContext()));
-            jsonCheck.put("Employee_Id", "");
             jsonCheck.put("Check_In", SharedPref.getCheckInTime(requireContext()));
             jsonCheck.put("Check_Out", CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
             jsonCheck.put("DateTime", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd") + " " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
-            jsonCheck.put("versionNo", getString(R.string.app_version));
-            jsonCheck.put("mod", Constants.APP_MODE);
-            jsonCheck.put("Device_version", Build.VERSION.RELEASE);
-            jsonCheck.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonCheck.put("AppName", getString(R.string.str_app_name));
-            jsonCheck.put("language", SharedPref.getSelectedLanguage(requireContext()));
+
             Log.v("CheckInOut", "--json--" + jsonCheck);
 
             finalSubmitJSONObject.put("tableName", "final_day");
             finalSubmitJSONObject.put("sfcode", SharedPref.getSfCode(requireContext()));
             finalSubmitJSONObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
             finalSubmitJSONObject.put("Rsf", SharedPref.getHqCode(requireContext()));
-            finalSubmitJSONObject.put("sf_type", SharedPref.getSfType(requireContext()));
-            finalSubmitJSONObject.put("Designation", SharedPref.getDesig(requireContext()));
-            finalSubmitJSONObject.put("state_code", SharedPref.getStateCode(requireContext()));
-            finalSubmitJSONObject.put("subdivision_code", SharedPref.getSubdivisionCode(requireContext()));
-            finalSubmitJSONObject.put("day_flag", "0");
-            finalSubmitJSONObject.put("Appver", getResources().getString(R.string.app_version));
-            finalSubmitJSONObject.put("Mod", APP_MODE);
             finalSubmitJSONObject.put("Activity_Dt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
             finalSubmitJSONObject.put("current_Dt", CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_1));
             finalSubmitJSONObject.put("day_remarks", remark);
-            finalSubmitJSONObject.put("versionNo", getString(R.string.app_version));
-            finalSubmitJSONObject.put("mod", Constants.APP_MODE);
-            finalSubmitJSONObject.put("Device_version", Build.VERSION.RELEASE);
-            finalSubmitJSONObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            finalSubmitJSONObject.put("AppName", getString(R.string.str_app_name));
-            finalSubmitJSONObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
+
             Log.v("Final Submit", "--json-- " + finalSubmitJSONObject);
         } catch (JSONException e) {
             e.printStackTrace();

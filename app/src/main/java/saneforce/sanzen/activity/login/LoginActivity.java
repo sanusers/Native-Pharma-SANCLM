@@ -391,6 +391,10 @@ public class LoginActivity extends AppCompatActivity {
             jsonObject.put("language", SharedPref.getSelectedLanguage(this));
             jsonObject.put("AppDeviceRegId", fcmToken);
             jsonObject.put("Tt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2));
+            jsonObject.put("key",SharedPref.getLicenseKey(this));
+            jsonObject.put("Configurl",SharedPref.getBaseWebUrl(this));
+
+
             jsonObject.put("location", "0.0 : 0.0");
             Log.v("Login", "--json-" + jsonObject);
             loginViewModel.loginProcess(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()), jsonObject.toString()).observe(LoginActivity.this, new Observer<JsonElement>() {

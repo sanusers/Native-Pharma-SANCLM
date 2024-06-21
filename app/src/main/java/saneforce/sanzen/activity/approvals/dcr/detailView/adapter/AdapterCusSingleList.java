@@ -251,23 +251,14 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                 if (status) {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
-                        JSONObject jsonObject = new JSONObject();
+                        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
                         jsonObject.put("tableName", "getevent_rpt");
                         jsonObject.put("dcr_cd", DcrDetailViewActivity.dcr_id);
                         jsonObject.put("dcrdetail_cd",DcrDetailViewActivity.Details_id);
                         jsonObject.put("sfcode", SharedPref.getSfCode(context));
                         jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                         jsonObject.put("Rsf", DcrApprovalActivity.SelectedSfCode);
-                        jsonObject.put("sf_type", SharedPref.getSfType(context));
-                        jsonObject.put("Designation", SharedPref.getDesig(context));
-                        jsonObject.put("state_code", SharedPref.getStateCode(context));
-                        jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
-                        jsonObject.put("versionNo", context.getString(R.string.app_version));
-                        jsonObject.put("mod", Constants.APP_MODE);
-                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                        jsonObject.put("AppName", context.getString(R.string.str_app_name));
-                        jsonObject.put("language", SharedPref.getSelectedLanguage(context));
+
                         Log.d("paramObject",jsonObject.toString());
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
@@ -350,22 +341,12 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                 if (status) {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
-                        JSONObject jsonObject = new JSONObject();
+                        JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(context);
                         jsonObject.put("tableName", "getdcr_rcpa");
                         jsonObject.put("dcrdetail_cd", DcrDetailViewActivity.Details_id);
                         jsonObject.put("sfcode", SharedPref.getSfCode(context));
                         jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                         jsonObject.put("Rsf",DcrApprovalActivity.SelectedSfCode);
-                        jsonObject.put("sf_type", SharedPref.getSfType(context));
-                        jsonObject.put("Designation", SharedPref.getDesig(context));
-                        jsonObject.put("state_code", SharedPref.getStateCode(context));
-                        jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
-                        jsonObject.put("versionNo", context.getString(R.string.app_version));
-                        jsonObject.put("mod", Constants.APP_MODE);
-                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                        jsonObject.put("AppName", context.getString(R.string.str_app_name));
-                        jsonObject.put("language", SharedPref.getSelectedLanguage(context));
                         Log.d("paramObject",jsonObject.toString());
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
@@ -436,25 +417,14 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                 if (status) {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
-                        JSONObject jsonObject = new JSONObject();
+                        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
                         jsonObject.put("tableName", "getslidedet");
                         jsonObject.put("ACd", DcrDetailViewActivity.dcr_id);
                         jsonObject.put("Mslcd", DcrDetailViewActivity.SelectedCode);
                         jsonObject.put("sfcode", SharedPref.getSfCode(context));
                         jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                         jsonObject.put("Rsf",DcrApprovalActivity.SelectedSfCode);
-                        jsonObject.put("sf_type", SharedPref.getSfType(context));
-                        jsonObject.put("Designation", SharedPref.getDesig(context));
-                        jsonObject.put("state_code", SharedPref.getStateCode(context));
-                        jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
-                        jsonObject.put("app_version", context.getResources().getString(R.string.app_version));
-                        jsonObject.put("Mode", context.getResources().getString(R.string.app_mode));
-                        jsonObject.put("versionNo", context.getString(R.string.app_version));
-                        jsonObject.put("mod", Constants.APP_MODE);
-                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                        jsonObject.put("AppName", context.getString(R.string.str_app_name));
-                        jsonObject.put("language", SharedPref.getSelectedLanguage(context));
+
                         Log.d("paramObject",jsonObject.toString());
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");

@@ -21,6 +21,7 @@ import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -43,18 +44,15 @@ public class LeaveViewModel extends ViewModel {
     public void updateLeaveStatusMasterSync() {
 
         ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
-        JSONObject leaveStatusObject = new JSONObject();
+        JSONObject leaveStatusObject = CommonUtilsMethods.CommonObjectParameter(context);
 
         try {
             leaveStatusObject.put("tableName", "getleavestatus");
             leaveStatusObject.put("sfcode", SharedPref.getSfCode(context));
             leaveStatusObject.put("division_code", SharedPref.getDivisionCode(context));
             leaveStatusObject.put("Rsf", SharedPref.getHqCode(context));
-            leaveStatusObject.put("sf_type", SharedPref.getSfType(context));
             leaveStatusObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-            leaveStatusObject.put("Designation", SharedPref.getDesig(context));
-            leaveStatusObject.put("state_code", SharedPref.getStateCode(context));
-            leaveStatusObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+
             System.out.println("leaveStatusObject--->" + leaveStatusObject);
         } catch (Exception exception) {
             exception.printStackTrace();

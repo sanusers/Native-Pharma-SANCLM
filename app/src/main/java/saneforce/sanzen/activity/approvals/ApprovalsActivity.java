@@ -100,23 +100,15 @@ public class ApprovalsActivity extends AppCompatActivity {
         progressDialog = CommonUtilsMethods.createProgressDialog(ApprovalsActivity.this);
 
         try {
+            jsonGetCount=CommonUtilsMethods.CommonObjectParameter(ApprovalsActivity.this);
             jsonGetCount.put("tableName", "getapprovalcheck");
             jsonGetCount.put("sfcode", SharedPref.getSfCode(this));
             jsonGetCount.put("division_code", SharedPref.getDivisionCode(this));
             jsonGetCount.put("Rsf", SharedPref.getHqCode(this));
-            jsonGetCount.put("sf_type", SharedPref.getSfType(this));
-            jsonGetCount.put("Designation", SharedPref.getDesig(this));
-            jsonGetCount.put("state_code", SharedPref.getStateCode(this));
-            jsonGetCount.put("subdivision_code", SharedPref.getSubdivisionCode(this));
             jsonGetCount.put("Tp_need", SharedPref.getTpNeed(this));
             jsonGetCount.put("geotag_need", SharedPref.getGeotagNeed(this));
             jsonGetCount.put("TPdev_need", SharedPref.getTpdcrMgrappr(this));
-            jsonGetCount.put("versionNo", getString(R.string.app_version));
-            jsonGetCount.put("mod", Constants.APP_MODE);
-            jsonGetCount.put("Device_version", Build.VERSION.RELEASE);
-            jsonGetCount.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonGetCount.put("AppName", getString(R.string.str_app_name));
-            jsonGetCount.put("language", SharedPref.getSelectedLanguage(this));
+
 
             Log.v("json_get_full_dcr_list", jsonGetCount.toString());
 

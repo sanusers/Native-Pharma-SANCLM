@@ -84,23 +84,13 @@ public class CallsFragment extends Fragment {
                     if(status) {
                         SharedPref.setTodayCallList(context, "");
                         try {
-                            JSONObject jsonObject = new JSONObject();
+                            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
                             jsonObject.put("tableName", "gettodycalls");
                             jsonObject.put("sfcode", SharedPref.getSfCode(context));
                             jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
                             jsonObject.put("day_flag", "0");
                             jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                             jsonObject.put("Rsf", SharedPref.getHqCode(context));
-                            jsonObject.put("sf_type", SharedPref.getSfType(context));
-                            jsonObject.put("Designation", SharedPref.getDesig(context));
-                            jsonObject.put("state_code", SharedPref.getStateCode(context));
-                            jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
-                            jsonObject.put("versionNo", context.getString(R.string.app_version));
-                            jsonObject.put("mod", Constants.APP_MODE);
-                            jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                            jsonObject.put("AppName", context.getString(R.string.str_app_name));
-                            jsonObject.put("language", SharedPref.getSelectedLanguage(context));
                             Log.v("TodayCalls", "--json--" + jsonObject);
 
                             Map<String, String> mapString = new HashMap<>();

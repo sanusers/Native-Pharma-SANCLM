@@ -64,22 +64,12 @@ public class MyDayPlanEntriesNeeded {
     public static void syncCallAndDate(Context context) {
 //        callSyncSuccess = 0;
 //        dateSyncSuccess = 0;
-        JSONObject jj = new JSONObject();
+        JSONObject jj = CommonUtilsMethods.CommonObjectParameter(context);
         try {
             jj.put("tableName", "gethome"); // -> call sync
             jj.put("sfcode", SharedPref.getSfCode(context));
             jj.put("division_code", SharedPref.getDivisionCode(context));
             jj.put("Rsf", SharedPref.getHqCode(context));
-            jj.put("sf_type", SharedPref.getSfType(context));
-            jj.put("Designation", SharedPref.getDesig(context));
-            jj.put("state_code", SharedPref.getStateCode(context));
-            jj.put("subdivision_code", SharedPref.getSubdivisionCode(context));
-            jj.put("versionNo", context.getString(R.string.app_version));
-            jj.put("mod", Constants.APP_MODE);
-            jj.put("Device_version", Build.VERSION.RELEASE);
-            jj.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jj.put("AppName", context.getString(R.string.str_app_name));
-            jj.put("language", SharedPref.getSelectedLanguage(context));
         } catch (Exception e) {
             e.printStackTrace();
         }

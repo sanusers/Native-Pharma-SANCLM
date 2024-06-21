@@ -491,7 +491,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 address = "No Address Found";
             }
             SharedPref.setCheckInTime(getApplicationContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-            jsonCheck = new JSONObject();
+            jsonCheck =CommonUtilsMethods.CommonObjectParameter(this);
             try {
                 jsonCheck.put("tableName", "savetp_attendance");
                 jsonCheck.put("sfcode", SharedPref.getSfCode(this));
@@ -500,20 +500,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 jsonCheck.put("long", longitude);
                 jsonCheck.put("address", address);
                 jsonCheck.put("update", "0");
-                jsonCheck.put("Appver", getResources().getString(R.string.app_version));
-                jsonCheck.put("Mod", APP_MODE);
-                jsonCheck.put("sf_emp_id", SharedPref.getSfEmpId(this));
-                jsonCheck.put("sfname", SharedPref.getSfName(this));
-                jsonCheck.put("Employee_Id", "");
                 jsonCheck.put("Check_In", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
                 jsonCheck.put("Check_Out", "");
                 jsonCheck.put("DateTime", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-                jsonCheck.put("versionNo", getString(R.string.app_version));
-                jsonCheck.put("mod", Constants.APP_MODE);
-                jsonCheck.put("Device_version", Build.VERSION.RELEASE);
-                jsonCheck.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                jsonCheck.put("AppName", getString(R.string.str_app_name));
-                jsonCheck.put("language", SharedPref.getSelectedLanguage(this));
                 Log.v("CheckInOut", "--json--" + jsonCheck.toString());
             } catch (JSONException ignored) {
             }
@@ -1104,25 +1093,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
     private void CallChangePasswordAPI(String oldPwd, String newPwd, String confirmPwd,ProgressBar progressBar) {
-        JSONObject jj = new JSONObject();
+        JSONObject jj =CommonUtilsMethods.CommonObjectParameter(this);
         try {
             jj.put("tableName", "savechpwd");
             jj.put("sfcode", SharedPref.getSfCode(this));
             jj.put("division_code", SharedPref.getDivisionCode(this));
             jj.put("Rsf", SharedPref.getHqCode(this));
-            jj.put("sf_type", SharedPref.getSfType(this));
-            jj.put("Designation", SharedPref.getDesig(this));
-            jj.put("state_code", SharedPref.getStateCode(this));
-            jj.put("subdivision_code", SharedPref.getSubdivisionCode(this));
             jj.put("txOPW", oldPwd);
             jj.put("txNPW", newPwd);
             jj.put("txCPW", confirmPwd);
-            jj.put("versionNo", getString(R.string.app_version));
-            jj.put("mod", Constants.APP_MODE);
-            jj.put("Device_version", Build.VERSION.RELEASE);
-            jj.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jj.put("AppName", getString(R.string.str_app_name));
-            jj.put("language", SharedPref.getSelectedLanguage(this));
+
             Log.d("PassWord_Change", String.valueOf(jj));
         } catch (Exception ignored) {
 
@@ -1479,22 +1459,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     private void callAPIDateSync() {
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
-        JSONObject jj = new JSONObject();
+        JSONObject jj = CommonUtilsMethods.CommonObjectParameter(context);
         try {
             jj.put("tableName", "getdcrdate");
             jj.put("sfcode", SharedPref.getSfCode(this));
             jj.put("division_code", SharedPref.getDivisionCode(this));
             jj.put("Rsf", SharedPref.getHqCode(this));
-            jj.put("sf_type", SharedPref.getSfType(this));
-            jj.put("Designation", SharedPref.getDesig(this));
-            jj.put("state_code", SharedPref.getStateCode(this));
-            jj.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            jj.put("versionNo", getString(R.string.app_version));
-            jj.put("mod", Constants.APP_MODE);
-            jj.put("Device_version", Build.VERSION.RELEASE);
-            jj.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jj.put("AppName", getString(R.string.str_app_name));
-            jj.put("language", SharedPref.getSelectedLanguage(this));
             Log.d("object", jj.toString());
         } catch (Exception ignored) {
         }
@@ -1634,8 +1604,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public void AppIdentify() {
 
         Menu menu = binding.navView.getMenu();
-
-        menu.findItem(R.id.activity).setTitle(SharedPref.getActivityCap(this));
         menu.findItem(R.id.remaindercall).setTitle(SharedPref.getRemainderCallCap(this));
 
         if (SharedPref.getTpNeed(this).equalsIgnoreCase("0")) {
@@ -1645,12 +1613,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             menu.findItem(R.id.tp).setVisible(false);
         }
 
-        if (SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
-            menu.findItem(R.id.activity).setVisible(true);
-        }
-        else {
-            menu.findItem(R.id.activity).setVisible(false);
-        }
+
 
         if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")){
             menu.findItem(R.id.nearme).setVisible(true);
@@ -1874,24 +1837,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
   public  void CheckingManatoryApprovals(){
         if(UtilityClass.isNetworkAvailable(HomeDashBoard.this)){
         try {
-              JSONObject jsonGetCount=new JSONObject();
+              JSONObject jsonGetCount=CommonUtilsMethods.CommonObjectParameter(HomeDashBoard.this);
               jsonGetCount.put("tableName", "getapprovalcheck");
               jsonGetCount.put("sfcode", SharedPref.getSfCode(this));
               jsonGetCount.put("division_code", SharedPref.getDivisionCode(this));
               jsonGetCount.put("Rsf", SharedPref.getHqCode(this));
-              jsonGetCount.put("sf_type", SharedPref.getSfType(this));
-              jsonGetCount.put("Designation", SharedPref.getDesig(this));
-              jsonGetCount.put("state_code", SharedPref.getStateCode(this));
-              jsonGetCount.put("subdivision_code", SharedPref.getSubdivisionCode(this));
               jsonGetCount.put("Tp_need", SharedPref.getTpNeed(this));
               jsonGetCount.put("geotag_need", SharedPref.getGeotagNeed(this));
               jsonGetCount.put("TPdev_need", SharedPref.getTpdcrMgrappr(this));
-              jsonGetCount.put("versionNo", getString(R.string.app_version));
-              jsonGetCount.put("mod", Constants.APP_MODE);
-              jsonGetCount.put("Device_version", Build.VERSION.RELEASE);
-              jsonGetCount.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-              jsonGetCount.put("AppName", getString(R.string.str_app_name));
-              jsonGetCount.put("language", SharedPref.getSelectedLanguage(this));
+
 
 
           Map<String, String> mapString = new HashMap<>();

@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -418,23 +419,42 @@
         android:padding="@dimen/_4sdp"
         android:src="@drawable/img_curr_loc"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/rv_list"
+        app:layout_constraintRight_toLeftOf="@id/tagginglistlayout"
         app:layout_constraintTop_toBottomOf="@id/constraint_tagged_view"
         app:layout_constraintVertical_bias="0.0"
         tools:ignore="ContentDescription" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_list"
+    <RelativeLayout
+        android:id="@+id/tagginglistlayout"
         android:layout_width="@dimen/_130sdp"
-        android:layout_height="0dp"
-        android:background="@color/white"
         android:visibility="visible"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toRightOf="@id/img_rv_right"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_top" />
+        app:layout_constraintTop_toBottomOf="@id/view_top"
+        android:layout_height="0dp">
+        <ImageView
+            android:id="@+id/noTagImage"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_gravity="center"
+            android:layout_height="@dimen/_50sdp"
+            android:background="@color/white"
+            android:layout_centerInParent="true"
+            android:visibility="visible"
+            android:src="@drawable/no_tagging_list_img"
+            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list"
+            android:layout_width="@dimen/_130sdp"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+
 
     <ImageView
         android:id="@+id/img_rv_right"

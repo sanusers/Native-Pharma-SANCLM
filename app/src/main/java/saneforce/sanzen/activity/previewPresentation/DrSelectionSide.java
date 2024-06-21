@@ -234,22 +234,11 @@ public class DrSelectionSide extends Fragment {
         if (UtilityClass.isNetworkAvailable(context)) {
             try {
                 apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
-                JSONObject jsonObject = new JSONObject();
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
                 jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
                 jsonObject.put("sfcode", SharedPref.getSfCode(context));
                 jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                 jsonObject.put("Rsf", hqCode);
-                jsonObject.put("sf_type", SharedPref.getSfType(context));
-                jsonObject.put("Designation", SharedPref.getDesig(context));
-                jsonObject.put("state_code", SharedPref.getStateCode(context));
-                jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
-                jsonObject.put("versionNo",  getString(R.string.app_version));
-                jsonObject.put("mod", Constants.APP_MODE);
-                jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                jsonObject.put("AppName", getString(R.string.str_app_name));
-                jsonObject.put("language", SharedPref.getSelectedLanguage(requireContext()));
-
                 Call<JsonElement> call = null;
                 Map<String, String> mapString = new HashMap<>();
                 if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")) {

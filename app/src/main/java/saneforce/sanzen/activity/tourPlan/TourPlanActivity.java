@@ -1051,23 +1051,13 @@ public class TourPlanActivity extends AppCompatActivity {
             if (status) {
                 try {
                     apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
-                    JSONObject jsonObject = new JSONObject();
+                    JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(TourPlanActivity.this);
                     jsonObject.put("tableName", "getall_tp");
                     jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
                     jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
                     jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
-                    jsonObject.put("sf_type", SharedPref.getSfType(TourPlanActivity.this));
-                    jsonObject.put("Designation", SharedPref.getDesig(TourPlanActivity.this));
-                    jsonObject.put("state_code", SharedPref.getStateCode(TourPlanActivity.this));
-                    jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(TourPlanActivity.this));
                     jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_31, LocalDate.now().getMonth().toString()));
                     jsonObject.put("tp_year", LocalDate.now().getYear());
-                    jsonObject.put("versionNo", getString(R.string.app_version));
-                    jsonObject.put("mod", Constants.APP_MODE);
-                    jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                    jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                    jsonObject.put("AppName", getString(R.string.str_app_name));
-                    jsonObject.put("language", SharedPref.getSelectedLanguage(this));
                     Log.v("tpGetPlan", "--json--" + jsonObject);
 
                     Map<String, String> mapString = new HashMap<>();
@@ -1484,23 +1474,14 @@ public class TourPlanActivity extends AppCompatActivity {
     public void get1MonthRemoteTPData(LocalDate localDate1) {
         try {
             apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
-            JSONObject jsonObject = new JSONObject();
+            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(TourPlanActivity.this);
             jsonObject.put("tableName", "gettpdetail");
             jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
             jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
             jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
-            jsonObject.put("sf_type", SharedPref.getSfType(TourPlanActivity.this));
-            jsonObject.put("Designation", SharedPref.getDesig(TourPlanActivity.this));
-            jsonObject.put("state_code", SharedPref.getStateCode(TourPlanActivity.this));
-            jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(TourPlanActivity.this));
             jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
             jsonObject.put("Year", localDate1.getYear());
-            jsonObject.put("versionNo",  getResources().getString(R.string.app_version));
-            jsonObject.put("mod", Constants.APP_MODE);
-            jsonObject.put("Device_version", Build.VERSION.RELEASE);
-            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonObject.put("AppName", getString(R.string.str_app_name));
-            jsonObject.put("language", SharedPref.getSelectedLanguage(this));
+
 
 
             Map<String, String> mapString = new HashMap<>();
@@ -1574,22 +1555,14 @@ public class TourPlanActivity extends AppCompatActivity {
                 if (status) {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
-                        JSONObject jsonObject = new JSONObject();
+                        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(TourPlanActivity.this);
                         jsonObject.put("tableName", "tpsend_appr");
                         jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
-                        jsonObject.put("SFName", SharedPref.getSfName(TourPlanActivity.this));
                         jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
                         jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
-                        jsonObject.put("Designation", SharedPref.getDesig(TourPlanActivity.this));
-                        jsonObject.put("state_code", SharedPref.getStateCode(TourPlanActivity.this));
                         jsonObject.put("TPMonth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_31, localDate1.getMonth().toString()));
                         jsonObject.put("TPYear", localDate1.getYear());
-                        jsonObject.put("versionNo", getString(R.string.app_version));
-                        jsonObject.put("mod", Constants.APP_MODE);
-                        jsonObject.put("Device_version", Build.VERSION.RELEASE);
-                        jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-                        jsonObject.put("AppName", getString(R.string.str_app_name));
-                        jsonObject.put("language", SharedPref.getSelectedLanguage(TourPlanActivity.this));
+
 
                         Log.v("ApprovalObject",""+jsonObject.toString());
 

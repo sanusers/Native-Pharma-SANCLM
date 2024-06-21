@@ -111,7 +111,8 @@ public class OutboxFragment extends Fragment {
         OutboxFragment.context = context;
         outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
         outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
-        outBoxHeaderAdapter.notifyDataSetChanged();
+        notifyedmethod();
+
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -349,7 +350,7 @@ public class OutboxFragment extends Fragment {
             }else {
                 modelClass.setSynced(1);
             }
-            outBoxHeaderAdapter.notifyDataSetChanged();
+            notifyedmethod();
             sendingOfflineCalls();
         }
     }
@@ -406,7 +407,7 @@ public class OutboxFragment extends Fragment {
         }
         callOfflineECDataDao.deleteOfflineEC(id);
         listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses().remove(currentPos);
-        outBoxHeaderAdapter.notifyDataSetChanged();
+        notifyedmethod();
         CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
     }
 
@@ -445,7 +446,7 @@ public class OutboxFragment extends Fragment {
                             Log.v("SendOutboxCall", "---" + e);
                         }
                     }
-                    outBoxHeaderAdapter.notifyDataSetChanged();
+                    notifyedmethod();
                 }
 
                 @SuppressLint("NotifyDataSetChanged")
@@ -456,7 +457,7 @@ public class OutboxFragment extends Fragment {
                     outBoxCallList.setSyncCount(syncCount + 1);
                     UpdateEcData(date, cusCode, cusName, Constants.CALL_FAILED, 1);
                     CallOfflineCalls(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getOutBoxCallLists(), modelClass);
-                    outBoxHeaderAdapter.notifyDataSetChanged();
+                    notifyedmethod();
                 }
             });
 
@@ -575,19 +576,19 @@ public class OutboxFragment extends Fragment {
                             checkClass.setCheckStatus(1);
                         }
                         CallCheckInOut(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getCheckInOutModelClasses(), modelClass);
-                        outBoxHeaderAdapter.notifyDataSetChanged();
+                        notifyedmethod();
                     } catch (Exception e) {
                         offlineCheckInOutDataDao.deleteOfflineCheckInOut(checkClass.getDates(), checkClass.getCheckCount());
                         listDates.get(ParentPos).getChildItems().get(ChildPos).getCheckInOutModelClasses().remove(CurrentPos);
                         CallCheckInOut(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getCheckInOutModelClasses(), modelClass);
-                        outBoxHeaderAdapter.notifyDataSetChanged();
+                        notifyedmethod();
                     }
 
 
                 } else {
                     checkClass.setCheckStatus(1);
                     CallCheckInOut(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getCheckInOutModelClasses(), modelClass);
-                    outBoxHeaderAdapter.notifyDataSetChanged();
+                    notifyedmethod();
                 }
             }
 
@@ -597,7 +598,7 @@ public class OutboxFragment extends Fragment {
                 offlineCheckInOutDataDao.updateCheckInOutStatus(checkClass.getId(), 1);
                 checkClass.setCheckStatus(1);
                 CallCheckInOut(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getCheckInOutModelClasses(), modelClass);
-                outBoxHeaderAdapter.notifyDataSetChanged();
+                notifyedmethod();
             }
         });
     }
@@ -622,17 +623,17 @@ public class OutboxFragment extends Fragment {
                             workPlanModelClass.setSyncStatus(1);
                         }
                         CallAPIWorkPlan(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getWorkPlanModelClass(), modelClass);
-                        outBoxHeaderAdapter.notifyDataSetChanged();
+                        notifyedmethod();
                     } catch (Exception ignored) {
                         offlineWorkTypeDataDao.delete(workPlanModelClass.getDate());
                         listDates.get(ParentPos).getChildItems().get(ChildPos).setWorkPlanModelClass(null);
                         CallAPIWorkPlan(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getWorkPlanModelClass(), modelClass);
-                        outBoxHeaderAdapter.notifyDataSetChanged();
+                        notifyedmethod();
                     }
                 }else {
                     workPlanModelClass.setSyncStatus(1);
                     CallAPIWorkPlan(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getWorkPlanModelClass(), modelClass);
-                    outBoxHeaderAdapter.notifyDataSetChanged();
+                    notifyedmethod();
                 }
             }
 
@@ -641,7 +642,7 @@ public class OutboxFragment extends Fragment {
                 offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
                 workPlanModelClass.setSyncStatus(1);
                 CallAPIWorkPlan(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getWorkPlanModelClass(), modelClass);
-                outBoxHeaderAdapter.notifyDataSetChanged();
+                notifyedmethod();
             }
         });
     }
@@ -667,17 +668,17 @@ public class OutboxFragment extends Fragment {
                             daySubmitModelClass.setSyncStatus(1);
                         }
                         CallAPIDaySubmit(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getDaySubmitModelClass(), modelClass);
-                        outBoxHeaderAdapter.notifyDataSetChanged();
+                        notifyedmethod();
                     } catch (Exception ignored) {
                         offlineDaySubmitDao.delete(daySubmitModelClass.getDate());
                         offlineDaySubmitDao.updateDaySubmitStatus(daySubmitModelClass.getDate(), 1);
                         CallAPIDaySubmit(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getDaySubmitModelClass(), modelClass);
-                        outBoxHeaderAdapter.notifyDataSetChanged();
+                        notifyedmethod();
                     }
                 }else {
                     daySubmitModelClass.setSyncStatus(1);
                     CallAPIDaySubmit(ParentPos, ChildPos, listDates.get(ParentPos).getChildItems().get(ChildPos).getDaySubmitModelClass(), modelClass);
-                    outBoxHeaderAdapter.notifyDataSetChanged();
+                    notifyedmethod();
                 }
             }
 
@@ -874,4 +875,16 @@ public class OutboxFragment extends Fragment {
 
 //        new Handler().postDelayed(this::refreshPendingFunction, 200);
     }
+
+
+   public static void notifyedmethod(){
+        outBoxHeaderAdapter.notifyDataSetChanged();
+       if(listDates.size()>0){
+           outBoxBinding.rvOutBoxHead.setVisibility(View.VISIBLE);
+           outBoxBinding.outboxEmtyImage.setVisibility(View.GONE);
+       }else {
+           outBoxBinding.rvOutBoxHead.setVisibility(View.GONE);
+           outBoxBinding.outboxEmtyImage.setVisibility(View.VISIBLE);
+       }
+   }
 }

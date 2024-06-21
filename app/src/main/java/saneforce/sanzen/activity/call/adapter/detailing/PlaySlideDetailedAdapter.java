@@ -62,6 +62,7 @@ import saneforce.sanzen.activity.call.pojo.detailing.LoadBitmap;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
+import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -237,22 +238,12 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 
     public void sendScribbleImg(MultipartBody.Part img, final Dialog dialog, String path, String scribbleFileName, String SlideName) {
         dialog.dismiss();
-        JSONObject jsonImage = new JSONObject();
+        JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(context);
         try {
             jsonImage.put("tableName", "uploadscribble");
             jsonImage.put("sfcode", SharedPref.getSfCode(context));
             jsonImage.put("division_code", SharedPref.getDivisionCode(context));
             jsonImage.put("Rsf", SharedPref.getHqCode(context));
-            jsonImage.put("sf_type", SharedPref.getSfType(context));
-            jsonImage.put("Designation", SharedPref.getDesig(context));
-            jsonImage.put("state_code", SharedPref.getStateCode(context));
-            jsonImage.put("subdivision_code",SharedPref.getSubdivisionCode(context));
-            jsonImage.put("versionNo", context.getString(R.string.app_version));
-            jsonImage.put("mod", Constants.APP_MODE);
-            jsonImage.put("Device_version", Build.VERSION.RELEASE);
-            jsonImage.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonImage.put("AppName", context.getString(R.string.str_app_name));
-            jsonImage.put("language", SharedPref.getSelectedLanguage(context));
             Log.v("scribbleUpload", jsonImage.toString());
         } catch (Exception ignored) {
         }

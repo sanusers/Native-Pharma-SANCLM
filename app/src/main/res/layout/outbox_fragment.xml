@@ -4,50 +4,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/_4sdp">
-
-
-    <ExpandableListView
-        android:id="@+id/Expandapleview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/r_layout"
-        android:layout_marginTop="@dimen/_2sdp"
-        android:divider="#B774737F"
-        android:visibility="gone"
-        android:dividerHeight="0.5dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvOutBoxHead"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/r_layout"
-        android:layout_marginTop="@dimen/_2sdp"
-        android:divider="#B774737F"
-        android:visibility="visible"
-        android:dividerHeight="0.5dp" />
-
     <RelativeLayout
-        android:id="@+id/r_layout"
+        android:layout_above="@+id/r_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/outboxEmtyImage"
+        android:visibility="visible"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/outbox_emty_img"
+        android:layout_height="@dimen/_50sdp">
+    </ImageView>
 
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/clear_calls"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOutBoxHead"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_23sdp"
-            android:layout_marginTop="@dimen/_4sdp"
-            android:layout_marginBottom="@dimen/_4sdp"
-            android:background="@drawable/edittext_stroke"
-            android:text="Clear Calls"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_7sdp"
-            app:backgroundTint="@color/black_45" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:divider="#B774737F"
+            android:visibility="visible"
+            android:dividerHeight="0.5dp" />
+    </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/r_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/clear_calls"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_23sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginBottom="@dimen/_4sdp"
+                android:background="@drawable/edittext_stroke"
+                android:text="Clear Calls"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_7sdp"
+                app:backgroundTint="@color/black_45" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
 
-</RelativeLayout>
+
+

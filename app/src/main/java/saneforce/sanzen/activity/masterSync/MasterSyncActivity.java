@@ -1020,22 +1020,13 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         try {
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-            JSONObject jsonObject = new JSONObject();
+            JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(this);
             jsonObject.put("tableName", remoteTableName);
             jsonObject.put("sfcode", SharedPref.getSfCode(this));
             jsonObject.put("division_code", SharedPref.getDivisionCode(this));
             jsonObject.put("Rsf", rsf);
-            jsonObject.put("sf_type", SharedPref.getSfType(this));
+
             jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-            jsonObject.put("Designation", SharedPref.getDesig(this));
-            jsonObject.put("state_code", SharedPref.getStateCode(this));
-            jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            jsonObject.put("versionNo",  getResources().getString(R.string.app_version));
-            jsonObject.put("mod", Constants.APP_MODE);
-            jsonObject.put("Device_version", Build.VERSION.RELEASE);
-            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonObject.put("AppName", getString(R.string.str_app_name));
-            jsonObject.put("language", SharedPref.getSelectedLanguage(this));
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
             switch (remoteTableName) {
                 case "getholiday":

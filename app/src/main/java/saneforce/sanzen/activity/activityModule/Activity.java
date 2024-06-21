@@ -117,10 +117,7 @@ public class Activity extends AppCompatActivity {
 
     ActivityBinding binding;
     private static final int PICK_FROM_GALLERY = 101;
-
-
     ApiInterface apiInterface;
-
     ArrayList<ActivityModelClass> ActivityList = new ArrayList<>();
     ArrayList<ActivityDetailsModelClass> ActivityDetailsList = new ArrayList<>();
     ArrayList<ActivityDetailsModelClass> ActivityViewItem = new ArrayList<>();
@@ -148,7 +145,7 @@ public class Activity extends AppCompatActivity {
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(this);
-        apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+        apiInterface = RetrofitClient.getRetrofit(Activity.this, SharedPref.getCallApiUrl(Activity.this));
         fontmedium = ResourcesCompat.getFont(this, R.font.satoshi_medium);
         fontregular = ResourcesCompat.getFont(this, R.font.satoshi_regular);
         binding.title.setText(SharedPref.getActivityCap(this));
@@ -156,7 +153,7 @@ public class Activity extends AppCompatActivity {
         binding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(this)));
         binding.txthqName.setText(SharedPref.getHqName(Activity.this));
         binding.btnsumit.setEnabled(false);
-        adapter = new ActivityAdapter(getApplicationContext(), ActivityList, classGroup -> {
+        adapter = new ActivityAdapter(Activity.this, ActivityList, classGroup -> {
             binding.namechooseActivity.setText(classGroup.getActivityName());
             binding.llActivityDetailsView.removeAllViews();
             getActivityDetails(classGroup);
@@ -204,7 +201,7 @@ public class Activity extends AppCompatActivity {
                 Log.v("JsonObject  :", "" + object.toString());
                 Map<String, String> QuaryParam = new HashMap<>();
                 QuaryParam.put("axn", "get/activity");
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), QuaryParam, object.toString());
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(Activity.this), QuaryParam, object.toString());
 
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
@@ -227,17 +224,19 @@ public class Activity extends AppCompatActivity {
                                             binding.llMainLayout.setVisibility(View.VISIBLE);
                                             binding.rlDetailsMain.setVisibility(View.VISIBLE);
                                             ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available")));
+                                            adapter.notifyDataSetChanged();
                                         }
                                     }
+                                }
 
-                                } else {
+                                if(ActivityList.size()<=0){
+                                    adapter.notifyDataSetChanged();
                                     binding.rlDetailsMain.setVisibility(View.GONE);
                                     binding.rlNoActivity.setVisibility(View.VISIBLE);
                                     binding.llMainLayout.setVisibility(View.GONE);
-                                    CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
-                                    commonUtilsMethods.showToastMessage(getApplicationContext(), "No Activity");
+
+                                    commonUtilsMethods.showToastMessage(Activity.this, "No Activity");
                                 }
-                                adapter.notifyDataSetChanged();
 
                             } catch (Exception a) {
                             }
@@ -279,7 +278,7 @@ public class Activity extends AppCompatActivity {
                 Map<String, String> QuaryParam = new HashMap<>();
                 QuaryParam.put("axn", "get/activity");
 
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), QuaryParam, object.toString());
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(Activity.this), QuaryParam, object.toString());
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
@@ -353,17 +352,27 @@ public class Activity extends AppCompatActivity {
                                         if (ActivityDetailsList.size() == jjj) {
                                             binding.btnsumit.setEnabled(true);
                                         }
-                                        binding.progrlessdetail.setVisibility(View.GONE);
                                     }
-                                } else {
-                                    binding.rldatalayout.setVisibility(View.GONE);
-                                    binding.rlNoData.setVisibility(View.VISIBLE);
-                                    binding.btnsumit.setVisibility(View.GONE);
-                                    binding.progrlessdetail.setVisibility(View.GONE);
-                                    CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
-                                    commonUtilsMethods.showToastMessage(getApplicationContext(), "No Activity Details");
                                 }
+                                    if( ActivityDetailsList.size()>0) {
+                                        binding.progrlessdetail.setVisibility(View.GONE);
+                                        binding.rlNoData.setVisibility(View.GONE);
+                                        binding.rlDetailsMain.setVisibility(View.VISIBLE);
+
+                                    }else {
+                                        binding.rlNoData.setVisibility(View.VISIBLE);
+                                        binding.rlDetailsMain.setVisibility(View.GONE);
+                                        binding.btnsumit.setVisibility(View.GONE);
+                                        binding.progrlessdetail.setVisibility(View.GONE);
+                                        commonUtilsMethods.showToastMessage(Activity.this, "No Activity Details");
+                                    }
+
+
+
+
                             } catch (Exception a) {
+                                commonUtilsMethods.showToastMessage(Activity.this, "No Activity Details");
+
                                 Log.e("Error", "----- " + a);
                             }
                         }
@@ -371,9 +380,11 @@ public class Activity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<JsonElement> call, Throwable t) {
-                        binding.rldatalayout.setVisibility(View.GONE);
+                        commonUtilsMethods.showToastMessage(Activity.this, "No Activity Details");
                         binding.rlNoData.setVisibility(View.VISIBLE);
+                        binding.rlDetailsMain.setVisibility(View.GONE);
                         binding.btnsumit.setVisibility(View.GONE);
+                        binding.progrlessdetail.setVisibility(View.GONE);
                     }
                 });
 
@@ -381,7 +392,7 @@ public class Activity extends AppCompatActivity {
                 a.printStackTrace();
             }
         } else {
-            commonUtilsMethods.showToastMessage(getApplicationContext(), getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(Activity.this, getString(R.string.no_network));
 
         }
     }
@@ -973,7 +984,7 @@ public class Activity extends AppCompatActivity {
             public void onClick(View view) {
                 String fromdate = textviewfromdate.getText().toString();
                 if (fromdate.equals("")) {
-                    Toast.makeText(getApplicationContext(), "Please Select From Date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Activity.this, "Please Select From Date", Toast.LENGTH_SHORT).show();
                 } else {
                     String datee[] = fromdate.split("-");
                     final Calendar c = Calendar.getInstance();
@@ -1154,7 +1165,7 @@ public class Activity extends AppCompatActivity {
                 String fromdate = textviewfromdate.getText().toString();
 
                 if (fromdate.equals("")) {
-                    Toast.makeText(getApplicationContext(), "Please Select From Date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Activity.this, "Please Select From Date", Toast.LENGTH_SHORT).show();
                 } else {
 
                     String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30, TimeUtils.FORMAT_5, fromdate);
@@ -1186,7 +1197,7 @@ public class Activity extends AppCompatActivity {
                                 if (mHour < hourOfDay || mMinute < minute1) {
                                     textviewtodate.setText(dateFormat.format(c.getTime()));
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "Please Select as After From Time ", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Activity.this, "Please Select as After From Time ", Toast.LENGTH_LONG).show();
                                     textviewtodate.setText("");
                                 }
                             } else {
@@ -1460,7 +1471,7 @@ public class Activity extends AppCompatActivity {
             public void onClick(View view) {
                 String data = textviewfromtime.getText().toString();
                 if (data.equalsIgnoreCase("")) {
-                    Toast.makeText(getApplicationContext(), "Please Select From Time", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Activity.this, "Please Select From Time", Toast.LENGTH_SHORT).show();
                 } else {
                     String[] datas = data.split(":");
                     final int mHour = Integer.parseInt(datas[0]);
@@ -1474,7 +1485,7 @@ public class Activity extends AppCompatActivity {
                             if (mHour < hour || mMinute < minute) {
                                 textviewtotime.setText(hour + ":" + minute);
                             } else {
-                                Toast.makeText(getApplicationContext(), "Please Select as After From Time ", Toast.LENGTH_LONG).show();
+                                Toast.makeText(Activity.this, "Please Select as After From Time ", Toast.LENGTH_LONG).show();
                                 textviewtotime.setText("");
                             }
                             commonFun();
@@ -1946,7 +1957,7 @@ public class Activity extends AppCompatActivity {
         String address;
         double latitude = gpsTrack.getLatitude();
         double longitude = gpsTrack.getLongitude();
-        if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
+        if (UtilityClass.isNetworkAvailable(Activity.this)) {
             address = CommonUtilsMethods.gettingAddress(this, latitude, longitude, false);
         } else {
             address = "No Address Found";
@@ -1965,7 +1976,7 @@ public class Activity extends AppCompatActivity {
                 String address;
                 double latitude = gpsTrack.getLatitude();
                 double longitude = gpsTrack.getLongitude();
-                if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
+                if (UtilityClass.isNetworkAvailable(Activity.this)) {
                     address = CommonUtilsMethods.gettingAddress(Activity.this, latitude, longitude, false);
                 } else {
                     address = "No Address Found";
@@ -2824,7 +2835,7 @@ public class Activity extends AppCompatActivity {
         binding.mainLayout.openDrawer(Gravity.RIGHT);
         binding.SlideScreen.tvSearchheader.setText("Select " + name);
         binding.SlideScreen.etSearch.setHint("Search " + name);
-        adapter1 = new ActvityList2Adapter(getApplicationContext(), ListName, ListIds, isMultipleCheck, new CheckBoxInterface() {
+        adapter1 = new ActvityList2Adapter(Activity.this, ListName, ListIds, isMultipleCheck, new CheckBoxInterface() {
             @Override
             public void Checked(String checkname, String id) {
                 if (isMultipleCheck) {
@@ -2843,7 +2854,7 @@ public class Activity extends AppCompatActivity {
                 mListId.remove(id);
             }
         });
-        binding.SlideScreen.acRecyelerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        binding.SlideScreen.acRecyelerView.setLayoutManager(new LinearLayoutManager(Activity.this));
         binding.SlideScreen.acRecyelerView.setAdapter(adapter1);
 
         binding.SlideScreen.etSearch.addTextChangedListener(new TextWatcher() {
@@ -2905,7 +2916,7 @@ public class Activity extends AppCompatActivity {
                     String[] parts = fullPath.split("/");
                     String filenmae = parts[parts.length - 1];
                     FilnameTet.setText(String.valueOf(filenmae));
-                    Toast.makeText(getApplicationContext(), "File Accepted", Toast.LENGTH_LONG).show();
+                    Toast.makeText(Activity.this, "File Accepted", Toast.LENGTH_LONG).show();
 
 
                     File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
@@ -2916,11 +2927,11 @@ public class Activity extends AppCompatActivity {
 
                 } catch (Exception ex) {
                     Log.v("Error", ex.toString());
-                    Toast.makeText(getApplicationContext(), "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Activity.this, "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
                     ex.printStackTrace();
                 }
             } else {
-                Toast.makeText(getApplicationContext(), "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Activity.this, "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
             }
             commonFun();
         }
@@ -3088,14 +3099,21 @@ public class Activity extends AppCompatActivity {
                 Log.v("JsonObject  :", "" + MainObject.toString());
                 Map<String, String> QryParam = new HashMap<>();
                 QryParam.put("axn", "save/activity");
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), QryParam, MainObject.toString());
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(Activity.this), QryParam, MainObject.toString());
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                         if (response.code() == 200 || response.code() == 201) {
-                            commonUtilsMethods.showToastMessage(Activity.this, "Activity SucessFully");
+                            commonUtilsMethods.showToastMessage(Activity.this, "Activity Sucessfully");
                             binding.progresssumit.setVisibility(View.GONE);
                             TaggedImage();
+                            Intent intent = getIntent();
+                            overridePendingTransition(0, 0);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            finish();
+                            overridePendingTransition(0, 0);
+                            startActivity(intent);
+
                         }
                     }
 
@@ -3160,7 +3178,7 @@ public class Activity extends AppCompatActivity {
                     MainObject.put("val", jsonArray);
 
 
-                    ApiInterface apiInterface1 = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
+                    ApiInterface apiInterface1 = RetrofitClient.getRetrofit(Activity.this, SharedPref.getTagApiImageUrl(Activity.this));
                     File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
                     file1 = new File(file.getAbsolutePath() + "/", List.getAnswerTxt());
                     MultipartBody.Part img = convertImg("ActivityFile", String.valueOf(file1));
@@ -3302,7 +3320,7 @@ public class Activity extends AppCompatActivity {
         try {
             File file;
             if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
-                file = new Compressor(getApplicationContext()).compressToFile(new File(path));
+                file = new Compressor(Activity.this).compressToFile(new File(path));
                 Log.d("path", tag + "-" + path);
             } else {
                 file = new File(path);
@@ -3341,7 +3359,6 @@ public class Activity extends AppCompatActivity {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(Activity.this, android.R.layout.simple_list_item_1, list);
             listView.setAdapter(adapter);
             AlertDialog dialog = alertDialog.create();
-            dialog.setCancelable(false);
 
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
