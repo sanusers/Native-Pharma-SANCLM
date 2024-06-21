@@ -235,23 +235,23 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             menu.findItem(R.id.approval).setVisible(false);
         }
 
-        if(SharedPref.getTpdcrMgrappr(this).equalsIgnoreCase("0")) {
+        if (SharedPref.getTpdcrMgrappr(this).equalsIgnoreCase("0")) {
             binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.VISIBLE);
             binding.viewCalerderLayout.txtTpDeviationRele.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.GONE);
             binding.viewCalerderLayout.txtTpDeviationRele.setVisibility(View.GONE);
         }
 
         CommonAlertBox.CheckLocationStatus(HomeDashBoard.this);
-        if(!SharedPref.getDesig(HomeDashBoard.this).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0")){
+        if (!SharedPref.getDesig(HomeDashBoard.this).equalsIgnoreCase("MR") && SharedPref.getApprMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0")) {
             CheckingManatoryApprovals();
         }
         CheckedTpRange();
         checkAndSetEntryDate(this);
-        if(isDcrFrom){
+        if (isDcrFrom) {
             binding.viewPager.setCurrentItem(1);
-            isDcrFrom=false;
+            isDcrFrom = false;
         }
 
     }
@@ -302,9 +302,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         gpsTrack = new GPSTrack(this);
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
-        roomDB=RoomDB.getDatabase(context);
-        masterDataDao=roomDB.masterDataDao();
-        slidesDao=roomDB.slidesDao();
+        roomDB = RoomDB.getDatabase(context);
+        masterDataDao = roomDB.masterDataDao();
+        slidesDao = roomDB.slidesDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
         leaveViewModel = new LeaveViewModel(this);
 
@@ -314,8 +314,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
         isDateSelectionClicked = false;
 
-        if(SharedPref.getGeoChk(HomeDashBoard.this).equalsIgnoreCase("0")){
-            if(!CheckLocPermission()){
+        if (SharedPref.getGeoChk(HomeDashBoard.this).equalsIgnoreCase("0")) {
+            if (!CheckLocPermission()) {
                 RequestLocationPermission();
             }
         }
@@ -328,8 +328,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
 
-                Log.v("BBB",""+tab.getPosition());
-                SharedPref.setSetUpClickedTab(getApplicationContext(),tab.getPosition());
+                Log.v("BBB", "" + tab.getPosition());
+                SharedPref.setSetUpClickedTab(getApplicationContext(), tab.getPosition());
             }
 
             @Override
@@ -379,7 +379,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
 
-
         gpsTrack = new GPSTrack(this);
         latitude = gpsTrack.getLatitude();
         longitude = gpsTrack.getLongitude();
@@ -390,7 +389,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
 
-        Log.e("addresss"," :"+latitude+"   :"+longitude+" :"+address);
+        Log.e("addresss", " :" + latitude + "   :" + longitude + " :" + address);
 
         binding.rlDateLayoout.setOnClickListener(this);
         binding.viewCalerderLayout.rlCalenderSyn.setOnClickListener(this);
@@ -491,7 +490,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 address = "No Address Found";
             }
             SharedPref.setCheckInTime(getApplicationContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-            jsonCheck =CommonUtilsMethods.CommonObjectParameter(this);
+            jsonCheck = CommonUtilsMethods.CommonObjectParameter(this);
             try {
                 jsonCheck.put("tableName", "savetp_attendance");
                 jsonCheck.put("sfcode", SharedPref.getSfCode(this));
@@ -604,10 +603,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             CustomPresentationNeed = SharedPref.getCustomizationPresentationNeed(this);
             if (PresentationNeed.equalsIgnoreCase("0")) {
 //                if (CustomPresentationNeed.equalsIgnoreCase("0")) {
-                    binding.llPresentation.setVisibility(View.VISIBLE);
-                } else {
-                    binding.llPresentation.setVisibility(View.GONE);
-                }
+                binding.llPresentation.setVisibility(View.VISIBLE);
+            } else {
+                binding.llPresentation.setVisibility(View.GONE);
+            }
 //                binding.llSlide.setVisibility(View.VISIBLE);
 //            } else {
 //                binding.llPresentation.setVisibility(View.GONE);
@@ -864,7 +863,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             //    commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Logout Successfully")
-            Toast.makeText(HomeDashBoard.this,"Logout Successfully",Toast.LENGTH_SHORT).show();
+            Toast.makeText(HomeDashBoard.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
             finish();
         });
 
@@ -872,7 +871,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         sf_name.setText(SharedPref.getDsName(this));
         Cluster.setText(SharedPref.getHqNameMain(this));
 
-        if(SharedPref.getPwdSetup(this).equalsIgnoreCase("0")){
+        if (SharedPref.getPwdSetup(this).equalsIgnoreCase("0")) {
             l_click.setVisibility(View.VISIBLE);
         } else {
             l_click.setVisibility(View.GONE);
@@ -940,7 +939,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     String truncated = str.substring(0, 30);
                     old_password.setText(truncated);
                     old_password.setSelection(truncated.length());
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Maximum password length reached. Please keep it under 30 characters");
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Maximum password length reached. Please keep it under 30 characters");
                 }
             }
 
@@ -971,7 +970,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     String truncated = str.substring(0, 30);
                     new_password.setText(truncated);
                     new_password.setSelection(truncated.length());
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Maximum password length reached. Please keep it under 30 characters");
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Maximum password length reached. Please keep it under 30 characters");
                 }
             }
 
@@ -1002,7 +1001,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     String truncated = str.substring(0, 30);
                     remain_password.setText(truncated);
                     remain_password.setSelection(truncated.length());
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Maximum password length reached. Please keep it under 30 characters");
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Maximum password length reached. Please keep it under 30 characters");
                 }
             }
 
@@ -1021,7 +1020,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         new_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(new_password)});
         remain_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(remain_password)});
         String password = SharedPref.getLoginUserPwd(this).toLowerCase();
-        System.out.println("loginPassword--->"+password);
+        System.out.println("loginPassword--->" + password);
 
         old_view.setOnClickListener(v -> {
             if (!old_password.getText().toString().equals("")) {
@@ -1076,8 +1075,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         if (UtilityClass.isNetworkAvailable(this)) {
                             progressBar.setVisibility(View.VISIBLE);
                             CallChangePasswordAPI(old_password.getText().toString(), new_password.getText().toString(), remain_password.getText().toString(), progressBar);
-                        }else{
-                            commonUtilsMethods.showToastMessage(this,"Please check Your Internet Connection");
+                        } else {
+                            commonUtilsMethods.showToastMessage(this, "Please check Your Internet Connection");
                         }
                     } catch (Exception ignored) {
                     }
@@ -1092,8 +1091,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         dialogPwdChange.show();
     }
 
-    private void CallChangePasswordAPI(String oldPwd, String newPwd, String confirmPwd,ProgressBar progressBar) {
-        JSONObject jj =CommonUtilsMethods.CommonObjectParameter(this);
+    private void CallChangePasswordAPI(String oldPwd, String newPwd, String confirmPwd, ProgressBar progressBar) {
+        JSONObject jj = CommonUtilsMethods.CommonObjectParameter(this);
         try {
             jj.put("tableName", "savechpwd");
             jj.put("sfcode", SharedPref.getSfCode(this));
@@ -1165,7 +1164,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.tour_plan))) {
-            Intent intent=new Intent(getApplicationContext(), TourPlanActivity.class);
+            Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
             startActivity(intent);
 
             return true;
@@ -1199,7 +1198,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 public void onClick(DialogInterface dialog, int which) {
                     roomDB.slidesDao().deleteAllData();
 
-                    File slidesFolder=null;
+                    File slidesFolder = null;
                     if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                         slidesFolder = new File(HomeDashBoard.this.getExternalFilesDir(null), "Slides");
                     }
@@ -1341,7 +1340,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @SuppressLint({"NonConstantResourceId", "NotifyDataSetChanged"})
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.rl_calender_syn:
                 binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.VISIBLE);
                 callAPIDateSync();
@@ -1420,36 +1419,36 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //                }
 //        else
 //        if(!MyDayPlanEntriesNeeded.datesNeeded.isEmpty() || !SharedPref.getSelectedDateCal(this).isEmpty()) {
-            SetUpHolidayWeekEndData();
-            if (isDateSelectionClicked) {
-                getCallsDataToCalender();
-                if (selectedDate == null) {
-                    selectedDate = LocalDate.now();
-                }
-                binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
-                calendarDays.clear();
-                calendarDays = daysInMonthArray(selectedDate);
-                callstatusadapter = new Callstatusadapter(calendarDays, HomeDashBoard.this, selectedDate);
-                binding.viewCalerderLayout.calendarRecyclerView.setLayoutManager(new GridLayoutManager(this, 7));
-                binding.viewCalerderLayout.calendarRecyclerView.setAdapter(callstatusadapter);
-
-                binding.viewCalerderLayout.getRoot().setVisibility(View.VISIBLE);
-                //   binding.tabLayout.getRoot().setVisibility(View.GONE);
-                binding.tabLayout.setVisibility(View.GONE);
-                binding.viewPager.setVisibility(View.GONE);
-            }else {
-                binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
-                //  binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
-                binding.tabLayout.setVisibility(View.VISIBLE);
-                if(SharedPref.getTpdcrMgrappr(this).equalsIgnoreCase("0")) {
-                    binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.VISIBLE);
-                    binding.viewCalerderLayout.txtTpDeviationRele.setVisibility(View.VISIBLE);
-                }else {
-                    binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.GONE);
-                    binding.viewCalerderLayout.txtTpDeviationRele.setVisibility(View.GONE);
-                }
-                binding.viewPager.setVisibility(View.VISIBLE);
+        SetUpHolidayWeekEndData();
+        if (isDateSelectionClicked) {
+            getCallsDataToCalender();
+            if (selectedDate == null) {
+                selectedDate = LocalDate.now();
             }
+            binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
+            calendarDays.clear();
+            calendarDays = daysInMonthArray(selectedDate);
+            callstatusadapter = new Callstatusadapter(calendarDays, HomeDashBoard.this, selectedDate);
+            binding.viewCalerderLayout.calendarRecyclerView.setLayoutManager(new GridLayoutManager(this, 7));
+            binding.viewCalerderLayout.calendarRecyclerView.setAdapter(callstatusadapter);
+
+            binding.viewCalerderLayout.getRoot().setVisibility(View.VISIBLE);
+            //   binding.tabLayout.getRoot().setVisibility(View.GONE);
+            binding.tabLayout.setVisibility(View.GONE);
+            binding.viewPager.setVisibility(View.GONE);
+        } else {
+            binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
+            //  binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
+            binding.tabLayout.setVisibility(View.VISIBLE);
+            if (SharedPref.getTpdcrMgrappr(this).equalsIgnoreCase("0")) {
+                binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.VISIBLE);
+                binding.viewCalerderLayout.txtTpDeviationRele.setVisibility(View.VISIBLE);
+            } else {
+                binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.GONE);
+                binding.viewCalerderLayout.txtTpDeviationRele.setVisibility(View.GONE);
+            }
+            binding.viewPager.setVisibility(View.VISIBLE);
+        }
 //        }
 //        else {
 //            commonUtilsMethods.showToastMessage(this, "No pending dates to select");
@@ -1608,18 +1607,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (SharedPref.getTpNeed(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.tp).setVisible(true);
-        }
-        else {
+        } else {
             menu.findItem(R.id.tp).setVisible(false);
         }
 
 
-
-        if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")){
+        if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.nearme).setVisible(true);
             menu.findItem(R.id.loctionrefresh).setVisible(true);
-        }
-        else{
+        } else {
             menu.findItem(R.id.loctionrefresh).setVisible(false);
             menu.findItem(R.id.nearme).setVisible(false);
         }
@@ -1632,22 +1628,19 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.quiz).setVisible(false);
-        }
-        else {
+        } else {
             menu.findItem(R.id.quiz).setVisible(false);
         }
 
         if (SharedPref.getSurveyNd(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.survey).setVisible(false);
-        }
-        else {
+        } else {
             menu.findItem(R.id.survey).setVisible(false);
         }
 
         if (SharedPref.getRmdrNeed(this).equalsIgnoreCase("0"))
             menu.findItem(R.id.remaindercall).setVisible(true);
-        else
-            menu.findItem(R.id.remaindercall).setVisible(false);
+        else menu.findItem(R.id.remaindercall).setVisible(false);
 
         menu.findItem(R.id.form).setVisible(false);
 
@@ -1684,12 +1677,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
 
-  public void CheckedTpRange() {
+    public void CheckedTpRange() {
 
         if (!SharedPref.getskipDate(HomeDashBoard.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
-            if (SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") &&
-                    !SharedPref.getTpStartDate(context).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("-1") &&
-                    !SharedPref.getTpEndDate(context).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(context).equalsIgnoreCase("-1")) {
+            if (SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("-1") && !SharedPref.getTpEndDate(context).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(context).equalsIgnoreCase("-1")) {
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
                 SimpleDateFormat date = new SimpleDateFormat("dd", Locale.ENGLISH);
@@ -1777,7 +1768,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        slidesDao.Changestatus("0","1");
+        slidesDao.Changestatus("0", "1");
 
     }
 
@@ -1789,6 +1780,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
         fileOrDirectory.delete();
     }
+
     private void timeZoneVerification() {
         runnable = new Runnable() {
             public void run() {
@@ -1800,7 +1792,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             @Override
                             public void run() {
                                 if (isAutoTimeZoneEnabled) {
-                                    if (customDialog!=null){
+                                    if (customDialog != null) {
                                         customDialog.dismiss();
                                         customDialog.cancel();
                                     }
@@ -1817,6 +1809,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         };
         handler1.postDelayed(runnable, delay);
     }
+
     private void timeZoneVerificationDialog() {
         DialogTimezoneBinding timezoneBinding = DialogTimezoneBinding.inflate(LayoutInflater.from(context));
         AlertDialog.Builder builder = new AlertDialog.Builder(HomeDashBoard.this, 0);
@@ -1833,75 +1826,74 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
 
+    public void CheckingManatoryApprovals() {
+        if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
+            try {
+                JSONObject jsonGetCount = CommonUtilsMethods.CommonObjectParameter(HomeDashBoard.this);
+                jsonGetCount.put("tableName", "getapprovalcheck");
+                jsonGetCount.put("sfcode", SharedPref.getSfCode(this));
+                jsonGetCount.put("division_code", SharedPref.getDivisionCode(this));
+                jsonGetCount.put("Rsf", SharedPref.getHqCode(this));
+                jsonGetCount.put("Tp_need", SharedPref.getTpNeed(this));
+                jsonGetCount.put("geotag_need", SharedPref.getGeotagNeed(this));
+                jsonGetCount.put("TPdev_need", SharedPref.getTpdcrMgrappr(this));
 
-  public  void CheckingManatoryApprovals(){
-        if(UtilityClass.isNetworkAvailable(HomeDashBoard.this)){
-        try {
-              JSONObject jsonGetCount=CommonUtilsMethods.CommonObjectParameter(HomeDashBoard.this);
-              jsonGetCount.put("tableName", "getapprovalcheck");
-              jsonGetCount.put("sfcode", SharedPref.getSfCode(this));
-              jsonGetCount.put("division_code", SharedPref.getDivisionCode(this));
-              jsonGetCount.put("Rsf", SharedPref.getHqCode(this));
-              jsonGetCount.put("Tp_need", SharedPref.getTpNeed(this));
-              jsonGetCount.put("geotag_need", SharedPref.getGeotagNeed(this));
-              jsonGetCount.put("TPdev_need", SharedPref.getTpdcrMgrappr(this));
+                Map<String, String> mapString = new HashMap<>();
+                mapString.put("axn", "get/approvals");
+                Call<JsonElement> callGetCountApprovals = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonGetCount.toString());
+                callGetCountApprovals.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        assert response.body() != null;
+                        Log.v("counts", "-0-" + response.body());
+                        if (response.isSuccessful()) {
+                            try {
 
+                                int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0, GeoTagCount = 0;
+                                JSONObject jsonObject1 = new JSONObject(response.body().toString());
+                                JSONArray jsonArray = jsonObject1.getJSONArray("apprCount");
 
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonCounts = jsonArray.getJSONObject(i);
+                                    if (jsonCounts.has("dcrappr_count"))
+                                        DcrCount = jsonCounts.getInt("dcrappr_count");
+                                    if (jsonCounts.has("tpappr_count"))
+                                        TpCount = jsonCounts.getInt("tpappr_count");
+                                    if (jsonCounts.has("leaveappr_count"))
+                                        LeaveCount = jsonCounts.getInt("leaveappr_count");
+                                    if (jsonCounts.has("devappr_count"))
+                                        DeviationCount = jsonCounts.getInt("devappr_count");
+                                    if (jsonCounts.has("geotag_count"))
+                                        GeoTagCount = jsonCounts.getInt("geotag_count");
+                                }
 
-          Map<String, String> mapString = new HashMap<>();
-          mapString.put("axn", "get/approvals");
-          Call<JsonElement> callGetCountApprovals = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonGetCount.toString());
-          callGetCountApprovals.enqueue(new Callback<JsonElement>() {
-              @Override
-              public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                  assert response.body() != null;
-                  Log.v("counts", "-0-" + response.body());
-                  if (response.isSuccessful()) {
-                      try {
+                                if (DcrCount > 0 || TpCount > 0 || LeaveCount > 0 || DeviationCount > 0 || GeoTagCount > 0) {
+                                    SharedPref.setApprvalManatoryStatus(HomeDashBoard.this, true);
+                                    if (!SharedPref.getApprovalskipDate(HomeDashBoard.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
+                                        SharedPref.setApprovalsCounts(HomeDashBoard.this, "false");
+                                        Intent intent = new Intent(HomeDashBoard.this, ApprovalsActivity.class);
+                                        startActivity(intent);
+                                    }
+                                } else {
+                                    SharedPref.setApprvalManatoryStatus(HomeDashBoard.this, false);
+                                }
 
-                          int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0, GeoTagCount = 0;
-                          JSONObject jsonObject1 = new JSONObject(response.body().toString());
-                          JSONArray jsonArray = jsonObject1.getJSONArray("apprCount");
+                            } catch (Exception e) {
 
-                          for (int i = 0; i < jsonArray.length(); i++) {
-                              JSONObject jsonCounts = jsonArray.getJSONObject(i);
-                              if (jsonCounts.has("dcrappr_count"))
-                                  DcrCount = jsonCounts.getInt("dcrappr_count");
-                              if (jsonCounts.has("tpappr_count"))
-                                  TpCount = jsonCounts.getInt("tpappr_count");
-                              if (jsonCounts.has("leaveappr_count"))
-                                  LeaveCount = jsonCounts.getInt("leaveappr_count");
-                              if (jsonCounts.has("devappr_count"))
-                                  DeviationCount = jsonCounts.getInt("devappr_count");
-                              if (jsonCounts.has("geotag_count"))
-                                  GeoTagCount = jsonCounts.getInt("geotag_count");
-                          }
+                            }
+                        }
+                    }
 
-                          if(DcrCount>0 ||TpCount>0  ||LeaveCount>0  ||DeviationCount>0 ||GeoTagCount>0 ){
-                              SharedPref.setApprvalManatoryStatus(HomeDashBoard.this,true);
-                              if(!SharedPref.getApprovalskipDate(HomeDashBoard.this).equalsIgnoreCase( TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))){
-                                  SharedPref.setApprovalsCounts(HomeDashBoard.this, "false");
-                                  Intent intent=new Intent(HomeDashBoard. this,ApprovalsActivity.class);
-                                  startActivity(intent);
-                              }
-                          }else {
-                              SharedPref.setApprvalManatoryStatus(HomeDashBoard.this,false);
-                          }
+                    @Override
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 
-                      } catch (Exception e) {
+                    }
+                });
+            } catch (Exception ignored) {
 
-                      }
-                  }
-              }
-
-              @Override
-              public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-
-              }
-          });} catch (Exception ignored) {
-
+            }
         }
-      }}
+    }
 
 
     public boolean CheckLocPermission() {
@@ -1922,7 +1914,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
 
-
     public boolean CheckCameraPermission() {
         int Camera = ContextCompat.checkSelfPermission(HomeDashBoard.this, CAMERA);
         return Camera != PackageManager.PERMISSION_GRANTED;
@@ -1937,7 +1928,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         }
     }
-
 
 
 }
