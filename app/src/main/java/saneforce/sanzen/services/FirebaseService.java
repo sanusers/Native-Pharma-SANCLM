@@ -25,6 +25,8 @@ public class FirebaseService extends FirebaseMessagingService {
     Random random;
     String imageUrl = "", title = "", body = "";
     int notificationId = 0;
+    public static int badgeCount = 0;
+
 
 
     @Override
@@ -50,7 +52,6 @@ public class FirebaseService extends FirebaseMessagingService {
         title = remoteMessage.getNotification().getTitle();
         body = remoteMessage.getNotification().getBody();
         notificationId = random.nextInt(1000);
-
         createNotification();
     }
 
@@ -62,5 +63,6 @@ public class FirebaseService extends FirebaseMessagingService {
         NotificationClass notificationClass = new NotificationClass(this,title, body, imageUrl, pendingIntent);
         notificationClass.createNotification();
     }
+
 
 }

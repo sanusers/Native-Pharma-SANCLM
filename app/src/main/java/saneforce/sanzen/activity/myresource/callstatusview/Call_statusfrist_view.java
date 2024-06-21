@@ -18,11 +18,13 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityCallStatusfristViewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class Call_statusfrist_view extends Fragment {
@@ -58,8 +60,8 @@ public class Call_statusfrist_view extends Fragment {
             call_list.clear();
             String Dates_call = "", vALDATE = "";
 
-            String CustType = "", FW_Indicator = "", Mnth = "", CustName = "", town_name = "", date_format = "", chckflk = "";
-            String CustCode = "", Dcr_dt = "", month_name = "", town_code = "", Dcr_flag = "", SF_Code = "", Trans_SlNo = "", AMSLNo = "", val = "";
+            String CustType = "", FW_Indicator = "", Mnth = "", CustName = "", town_name = "", date_format = "", chckflk = "",workType= "",time = "";
+            String CustCode = "", Dcr_dt = "", month_name = "", town_code = "", Dcr_flag = "", SF_Code = "", Trans_SlNo = "", AMSLNo = "", medicalPersonnel = "";
 
             JSONArray jsonvst_ctl = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
             JSONArray jsonvst_wrktype = new JSONArray(masterDataDao.getDataByKey(Constants.WORK_TYPE));
@@ -90,6 +92,7 @@ public class Call_statusfrist_view extends Fragment {
                             Dcr_dt = jsonObject.getString("Dcr_dt");
                             CustType = jsonObject.getString("CustType");
                             FW_Indicator = jsonObject.getString("FW_Indicator");
+                            workType = jsonObject.getString("WorkType_Name");
                             Mnth = jsonObject.getString("Mnth");
                             CustName = jsonObject.getString("CustName");
                             town_name = jsonObject.getString("town_name");
@@ -100,9 +103,11 @@ public class Call_statusfrist_view extends Fragment {
                             SF_Code = jsonObject.getString("SF_Code");
                             Trans_SlNo = jsonObject.getString("Trans_SlNo");
                             AMSLNo = jsonObject.getString("AMSLNo");
+                            time = jsonObject.getString("vtm");
                         } else {
                             CustType = jsonObject.getString("CustType");
                             FW_Indicator = jsonObject.getString("FW_Indicator");
+                            workType = jsonObject.getString("WorkType_Name");
                             Mnth = jsonObject.getString("Mnth");
                             CustName = jsonObject.getString("CustName");
                             town_name = jsonObject.getString("town_name");
@@ -116,21 +121,39 @@ public class Call_statusfrist_view extends Fragment {
                             SF_Code = jsonObject.getString("SF_Code");
                             Trans_SlNo = jsonObject.getString("Trans_SlNo");
                             AMSLNo = jsonObject.getString("AMSLNo");
+                            time = jsonObject.getString("vtm");
                         }
                         if (CustType.equals("0")) {
-                            val = "";
+                            medicalPersonnel = "";
                         } else if (CustType.equals("1")) {
-                            val = ("Doctor");
+                            if (SharedPref.getDrCap(requireContext()).isEmpty()|| SharedPref.getDrCap(requireContext())==null){
+                                medicalPersonnel = "Doctor";
+                            }else {
+                                medicalPersonnel = SharedPref.getDrCap(requireContext());
+                            }
                         } else if (CustType.equals("2")) {
-                            val = ("Chemist");
+                            if (SharedPref.getChmCap(requireContext()).isEmpty()|| SharedPref.getChmCap(requireContext())==null){
+                                medicalPersonnel = "Chemist";
+                            }else {
+                                medicalPersonnel = SharedPref.getChmCap(requireContext());
+                            }
                         } else if (CustType.equals("3")) {
-                            val = ("Stockist");
+                            if (SharedPref.getStkCap(requireContext()).isEmpty()|| SharedPref.getStkCap(requireContext())==null){
+                                medicalPersonnel = "StockList";
+                            }else {
+                                medicalPersonnel = SharedPref.getStkCap(requireContext());
+                            }
+
                         } else if (CustType.equals("4")) {
-                            val = ("Unlisted Doctor");
+                            if (SharedPref.getUNLcap(requireContext()).isEmpty()|| SharedPref.getUNLcap(requireContext())==null){
+                                medicalPersonnel = "UnListed Doctor";
+                            }else {
+                                medicalPersonnel = SharedPref.getUNLcap(requireContext());
+                            }
                         }
 
                         call_list.add(new callstatus_model(CustCode, CustType, FW_Indicator, date_format, month_name, CustName, town_code, town_name, Dcr_flag, SF_Code, Trans_SlNo, AMSLNo,
-                                Mnth, chckflk, val));
+                                Mnth, chckflk, medicalPersonnel,workType,time));
 
                         call_statusadap = new call_statusadapter(getActivity(), call_list);
                         LinearLayoutManager manager = new LinearLayoutManager(getActivity());

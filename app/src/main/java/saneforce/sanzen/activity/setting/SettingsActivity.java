@@ -77,6 +77,7 @@ public class SettingsActivity extends AppCompatActivity {
         binding.tvDeviceId.setText(deviceId);
         SharedPref.saveDeviceId(getApplicationContext(), deviceId);
         binding.btnSaveSettings.setEnabled(true);
+        binding.spinnerLanguage.setEnabled(false);
         SetUpLanguage();
         if (!SharedPref.getSaveUrlSetting(getApplicationContext()).equalsIgnoreCase("")) {
             binding.etWebUrl.setText(SharedPref.getSaveUrlSetting(getApplicationContext()));

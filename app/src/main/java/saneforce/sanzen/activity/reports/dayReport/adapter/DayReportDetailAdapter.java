@@ -72,7 +72,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     CommonUtilsMethods commonUtilsMethods;
     ProductAdapter productAdapter;
     InputAdapter inputAdapter;
-    boolean checkInOutNeed, VisitNeed,isRcpaRequested,isCaptureRequested,isPobRequested,isFeedBackRequested;
+    boolean checkInOutNeed, VisitNeed,isRcpaRequested,isCaptureRequested,isPobRequested,isFeedBackRequested,isInputRequested,isProductRequested;
     ArrayList productPromoted = new ArrayList();
     private ValueFilter valueFilter;
     ArrayList<EventCaptureModelClass> EventCaptureData = new ArrayList<>();
@@ -87,7 +87,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     ArrayList<DayReportRcpaModelClass> rcpaModelArray;
 
 
-    public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst,String ActCode,String ReportingSfCode,String rcpaItem,String eventCaptureItem,String pobItem,String feedBackItem) {
+    public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst,String ActCode,String ReportingSfCode,String rcpaItem,String eventCaptureItem,String pobItem,String feedBackItem,String inputItem,String productItem) {
         this.context = context;
         this.arrayList = arrayList;
         this.supportModelArray = arrayList;
@@ -101,6 +101,8 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         isCaptureRequested = eventCaptureItem.equals("0");
         isPobRequested = pobItem.equals("0");
         isFeedBackRequested = feedBackItem.equals("0");
+        isInputRequested = inputItem.equals("0");
+        isProductRequested = productItem.equals("0");
     }
 
     @NonNull
@@ -135,6 +137,12 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         }
         if (isFeedBackRequested){
             holder.feedBackLayout.setVisibility(View.VISIBLE);
+        }
+        if (isInputRequested && !dataModel.getGifts().isEmpty()){
+            holder.InpLayout.setVisibility(View.VISIBLE);
+        }
+        if (isProductRequested && !dataModel.getProducts().isEmpty()){
+            holder.PrdLayout.setVisibility(View.VISIBLE);
         }
 
         String detailingNeed = "0";
@@ -175,7 +183,6 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     holder.jointView.setVisibility(View.GONE);
                 }
                 holder.SlidercpaLayoutitle.setVisibility(View.VISIBLE);
-                holder.slideDetailsLayout.setVisibility(View.VISIBLE);
                 break;
             }
             case Constants.CHEMIST: {
@@ -380,18 +387,18 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         holder.SlidercpaLayoutitle.setOnClickListener(view -> {
 
             if(holder.slideDetailsLayout.getVisibility()==View.VISIBLE){
-                holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+                holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.click_logo));
                 holder.slideDetailsLayout.setVisibility(View.GONE);
             }else {
-                holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
                 if(callDetailingLists.size()>0){
+                    holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
                     if(dataModel.getTrans_Detail_Slno().equalsIgnoreCase(Slededataid)){
                         holder.slideDetailsLayout.setVisibility(View.VISIBLE);
                     }else {
-                        SldeDetails(holder.rvSlideDetails,holder.slideDetailsLayout,position);
+                        SldeDetails(holder.rvSlideDetails,holder.slideDetailsLayout,position,holder);
                     }
                 }else {
-                    SldeDetails(holder.rvSlideDetails,holder.slideDetailsLayout,position);
+                    SldeDetails(holder.rvSlideDetails,holder.slideDetailsLayout,position,holder);
                 }
 
 
@@ -766,7 +773,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     }
 
 
-    public  void SldeDetails(RecyclerView recyclerView ,LinearLayout layout,int position){
+    public  void SldeDetails(RecyclerView recyclerView , LinearLayout layout, int position,MyViewHolder holder){
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         if (UtilityClass.isNetworkAvailable(context)) {
             NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
@@ -810,6 +817,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                             }.getType();
                                             callDetailingLists = new Gson().fromJson(String.valueOf(jsonArray), typeToken);
                                             if(callDetailingLists.size()>0){
+                                                holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
                                                 DayReportSlideDetailsAdapter adapter=new DayReportSlideDetailsAdapter(callDetailingLists,context);
                                                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
                                                 commonUtilsMethods.recycleTestWithDivider(recyclerView);
@@ -817,6 +825,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                 layout.setVisibility(View.VISIBLE);
                                                 Slededataid=arrayList.get(position).getTrans_Detail_Slno();
                                             }else {
+                                                holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.click_logo));
                                                 commonUtilsMethods.showToastMessage(context, " Slides   Details Not Available");
                                             }
                                         }

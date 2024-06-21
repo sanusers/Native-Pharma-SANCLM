@@ -69,6 +69,9 @@ public class MyResource_Activity extends AppCompatActivity {
 
     private MasterDataDao masterDataDao;
     boolean isLeaveEntitlementRequested;
+    boolean isInputRequested,isProductRequested;
+    int inputCount = 0;
+
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +88,7 @@ public class MyResource_Activity extends AppCompatActivity {
         roomDB = RoomDB.getDatabase(getApplicationContext());
 
         masterDataDao = roomDB.masterDataDao();
+        setUp();
 
         isLeaveEntitlementRequested = SharedPref.getLeaveEntitlementNeed(this).equals("0");
         Bundle bundle = getIntent().getExtras();
@@ -288,11 +292,29 @@ public class MyResource_Activity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
+            String dcrCaption=  SharedPref.getDrCap(this);
+            if (dcrCaption==null || dcrCaption.isEmpty()){
+                dcrCaption = "Doctor";
+            }
+            else{
+                dcrCaption = SharedPref.getDrCap(this);
+            }
             input_count = String.valueOf(inputcount.size());
             product_count = String.valueOf(productcount.size());
-            listed_data.add(new Resourcemodel_class("Input", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray().length()), "7"));
-            listed_data.add(new Resourcemodel_class("Product", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray().length()), "8"));
+            JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray();
+            for (int i = 0; i < input.length(); i++) {
+                JSONObject jsonObject = input.getJSONObject(i);
+                int code = jsonObject.getInt("Code");
+                if (code >= 0) {
+                    inputCount++;
+                }
+            }
+            if (isInputRequested){
+                listed_data.add(new Resourcemodel_class("Input", String.valueOf(inputCount), "7"));
+            }
+            if (isProductRequested){
+                listed_data.add(new Resourcemodel_class("Product", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray().length()), "8"));
+            }
             listed_data.add(new Resourcemodel_class(SharedPref.getClusterCap(this), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + synhqval1).getMasterSyncDataJsonArray().length()), "9"));
             listed_data.add(new Resourcemodel_class("Holiday / Weekly off", masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray().length() + " / " + masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray().length(), "10"));
             listed_data.add(new Resourcemodel_class("Category", String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));
@@ -302,10 +324,10 @@ public class MyResource_Activity extends AppCompatActivity {
             }
             if (SharedPref.getVstNd(getApplicationContext()).equalsIgnoreCase("0")) {
 //                listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
-                listed_data.add(new Resourcemodel_class("Doctor Visit", "", "14"));
+                listed_data.add(new Resourcemodel_class(dcrCaption+ " "+"Visit", "", "14"));
             }
 //            listed_data.add(new Resourcemodel_class("Calls Status",  String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray().length()), "12"));
-            listed_data.add(new Resourcemodel_class("Calls Status",  "", "15"));
+            listed_data.add(new Resourcemodel_class("Calls Summary",  "", "15"));
             Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count);
 
             resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1);//13
@@ -437,5 +459,9 @@ public class MyResource_Activity extends AppCompatActivity {
         appRecyclerView.setAdapter(appAdapter_0);
         appRecyclerView.setLayoutManager(new LinearLayoutManager(MyResource_Activity.this));
     }
+   private void setUp(){
+        isInputRequested = SharedPref.getDiNeed(this).equals("0") || SharedPref.getCiNeed(this).equals("0") ||  SharedPref.getSiNeed(this).equals("0") || SharedPref.getNiNeed(this).equals("0");
+        isProductRequested = SharedPref.getDpNeed(this).equals("0") || SharedPref.getCpNeed(this).equals("0") ||  SharedPref.getSpNeed(this).equals("0") || SharedPref.getNpNeed(this).equals("0");
+   }
 
 }

@@ -37,6 +37,7 @@ public class NotificationClass extends ContextWrapper {
     int notificationId = 0;
     Uri soundUri;
 
+
     public NotificationClass (Context base, String title, String body, String imageUrl, PendingIntent pendingIntent) {
         super(base);
         this.title = title;
@@ -68,13 +69,13 @@ public class NotificationClass extends ContextWrapper {
             channel.setShowBadge(false);
             channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             notificationManager.createNotificationChannel(channel);
+
         }
 
     }
 
 
     public void createNotification () {
-
         notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setAutoCancel(true)
                 .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
