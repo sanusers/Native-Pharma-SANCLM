@@ -1,15 +1,12 @@
 package saneforce.sanzen.commonClasses;
 
-import static androidx.core.content.ContextCompat.startActivity;
-import static java.security.AccessController.getContext;
+import static saneforce.sanzen.commonClasses.Constants.APP_MODE;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -18,9 +15,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.text.InputFilter;
@@ -47,6 +42,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -474,5 +472,29 @@ public class CommonUtilsMethods {
         } else {
             return android.provider.Settings.System.getInt(c.getContentResolver(), Settings.System.AUTO_TIME_ZONE, 0) == 1;
         }
+    }
+
+    public static JSONObject  CommonObjectParameter(Context context){
+        JSONObject jsonObject =new JSONObject();
+        try {
+            jsonObject.put("AppName", context.getString(R.string.str_app_name));
+            jsonObject.put("Appver", context.getResources().getString(R.string.app_version));
+            jsonObject.put("Mod", APP_MODE);
+            jsonObject.put("sf_emp_id", SharedPref.getSfEmpId(context));
+            jsonObject.put("sfname", SharedPref.getSfName(context));
+            jsonObject.put("Device_version", Build.VERSION.RELEASE);
+            jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonObject.put("language", SharedPref.getSelectedLanguage(context));
+            jsonObject.put("sf_type", SharedPref.getSfType(context));
+            jsonObject.put("Designation", SharedPref.getDesig(context));
+            jsonObject.put("state_code", SharedPref.getStateCode(context));
+            jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+            jsonObject.put("key", SharedPref.getLicenseKey(context));
+            jsonObject.put("Configurl", SharedPref.getBaseWebUrl(context));
+
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+        return jsonObject;
     }
     }
