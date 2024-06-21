@@ -35,6 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.activityModule.Activity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.adapters.Call_adapter;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
@@ -66,12 +67,9 @@ public class CallsFragment extends Fragment {
     public static boolean isNeedtoAdd;
     public static ProgressDialog progressDialog;
     ApiInterface apiInterface;
-
     private RoomDB db;
     private static MasterDataDao masterDataDao;
     CommonUtilsMethods commonUtilsMethods;
-
-
     public static  Context Mcontext;
 
     public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, boolean isProgressNeed) {
@@ -116,13 +114,10 @@ public class CallsFragment extends Fragment {
                                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                     binding.rlSyncCall.setEnabled(true);
                                     if(response.isSuccessful()) {
-
                                         try {
                                             assert response.body() != null;
                                             SharedPref.setTodayCallList(context, response.body().toString());
                                             JSONArray jsonArray = new JSONArray(response.body().toString());
-
-
                                             JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
                                             JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
                                             ArrayList<CallsModalClass> TodayCallListOne = new ArrayList<>();
@@ -187,14 +182,6 @@ public class CallsFragment extends Fragment {
                                                 }
                                                 CallDataRestClass.resetcallValues(context);
                                             }
-
-//                                        binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
-//                                        adapter = new Call_adapter(context, TodayCallList, finalApiInterface);
-//                                        LinearLayoutManager manager = new LinearLayoutManager(context);
-//                                        binding.recyelerview.setNestedScrollingEnabled(false);
-//                                        binding.recyelerview.setHasFixedSize(true);
-//                                        binding.recyelerview.setLayoutManager(manager);
-//                                        binding.recyelerview.setAdapter(adapter);
                                             binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
                                             adapter.notifyDataSetChanged();
 
@@ -261,13 +248,6 @@ public class CallsFragment extends Fragment {
             binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
 
             adapter.notifyDataSetChanged();
-//            adapter = new Call_adapter(context, TodayCallList, apiInterface);
-//            LinearLayoutManager manager = new LinearLayoutManager(context);
-//            binding.recyelerview.setNestedScrollingEnabled(false);
-//            binding.recyelerview.setHasFixedSize(true);
-//            binding.recyelerview.setLayoutManager(manager);
-//            binding.recyelerview.setAdapter(adapter);
-//            adapter.notifyDataSetChanged();
         } catch (Exception ignored) {
         }
     }
@@ -315,6 +295,14 @@ public class CallsFragment extends Fragment {
         masterDataDao =db.masterDataDao();
 
 
+        if(SharedPref.getActivityNd(requireContext()).equalsIgnoreCase("0")){
+            binding.TvAddActivty.setVisibility(View.VISIBLE);
+        }else {
+            binding.TvAddActivty.setVisibility(View.GONE);
+        }
+        binding.TvAddActivty.setText("ADD "+SharedPref.getActivityCap(requireContext()));
+
+
         adapter = new Call_adapter(requireContext(), TodayCallList, apiInterface);
         LinearLayoutManager manager = new LinearLayoutManager(requireContext());
         binding.recyelerview.setNestedScrollingEnabled(false);
@@ -346,6 +334,42 @@ public class CallsFragment extends Fragment {
                 CommonAlertBox.ApprovalAlert(requireActivity());
             }else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                 CommonAlertBox.TpAlert(requireActivity());
+            }else {
+                JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.MY_DAY_PLAN).getMasterSyncDataJsonArray();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+                try {
+                    if(workTypeArray.length() > 0) {
+                        JSONObject FirstSeasonDayPlanObject = workTypeArray.getJSONObject(0);
+                        String DayPlanDate1 = FirstSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
+                        Date FirstPlanDate = sdf.parse(DayPlanDate1);
+                        String CurrentDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                        Date CurentDate = sdf.parse(CurrentDate);
+                        if(workTypeArray.length() > 1) {
+                            JSONObject SecondSeasonDayPlanObject = workTypeArray.getJSONObject(1);
+                            String DayPlanDate2 = SecondSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
+                            Date SecondPlanDate = sdf.parse(DayPlanDate2);
+                            if((FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) || (SecondPlanDate != null && SecondPlanDate.equals(CurentDate))) {
+                                startActivity(new Intent(requireActivity(), Activity.class));
+                            }else {
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
+                            }
+                        }else {
+                            if(FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) {
+                                startActivity(new Intent(requireActivity(), Activity.class));
+                            }else {
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
+                            }
+                        }
+                    }else{
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+            }
+
+
             }
         });
 

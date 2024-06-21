@@ -129,6 +129,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
     private void RejectedLeave(String leave_id, int Position, String reason) {
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         try {
+            jsonLeave=CommonUtilsMethods.CommonObjectParameter(context);
             jsonLeave.put("tableName", "leaveapproverej");
             jsonLeave.put("LvID", leave_id);
             jsonLeave.put("LvAPPFlag", "1");
@@ -136,16 +137,6 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             jsonLeave.put("sfcode", SharedPref.getSfCode(context));
             jsonLeave.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
             jsonLeave.put("Rsf", SharedPref.getHqCode(context));
-            jsonLeave.put("sf_type", SharedPref.getSfType(context));
-            jsonLeave.put("Designation", SharedPref.getDesig(context));
-            jsonLeave.put("state_code", SharedPref.getStateCode(context));
-            jsonLeave.put("subdivision_code", SharedPref.getSubdivisionCode(context));
-            jsonLeave.put("versionNo", context.getString(R.string.app_version));
-            jsonLeave.put("mod", Constants.APP_MODE);
-            jsonLeave.put("Device_version", Build.VERSION.RELEASE);
-            jsonLeave.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonLeave.put("AppName", context.getString(R.string.str_app_name));
-            jsonLeave.put("language", SharedPref.getSelectedLanguage(context));
             Log.v("reject_leave", jsonLeave.toString());
         } catch (Exception ignored) {
 
@@ -191,6 +182,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
     private void ApprovedLeave(String leave_id, int Position) {
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         try {
+            jsonLeave=CommonUtilsMethods.CommonObjectParameter(context);
             jsonLeave.put("tableName", "leaveapproverej");
             jsonLeave.put("LvID", leave_id);
             jsonLeave.put("LvAPPFlag", "0");
@@ -198,16 +190,6 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             jsonLeave.put("sfcode", SharedPref.getSfCode(context));
             jsonLeave.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
             jsonLeave.put("Rsf", SharedPref.getHqCode(context));
-            jsonLeave.put("sf_type",SharedPref.getSfType(context));
-            jsonLeave.put("Designation",SharedPref.getDesig(context));
-            jsonLeave.put("state_code", SharedPref.getStateCode(context));
-            jsonLeave.put("subdivision_code", SharedPref.getSubdivisionCode(context));
-            jsonLeave.put("versionNo", context.getString(R.string.app_version));
-            jsonLeave.put("mod", Constants.APP_MODE);
-            jsonLeave.put("Device_version", Build.VERSION.RELEASE);
-            jsonLeave.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonLeave.put("AppName", context.getString(R.string.str_app_name));
-            jsonLeave.put("language", SharedPref.getSelectedLanguage(context));
         } catch (Exception ignored) {
 
         }

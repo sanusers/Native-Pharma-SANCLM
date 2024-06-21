@@ -101,8 +101,10 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             adapterModels.add(new AdapterModel(SharedPref.getStkCap(context), String.valueOf(countStk)));
         if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0"))
             adapterModels.add(new AdapterModel(SharedPref.getUNLcap(context), String.valueOf(countUnDr)));
-        if (SharedPref.getCipNeed(context).equalsIgnoreCase("0")) adapterModels.add(new AdapterModel(SharedPref.getCipCaption(context), "0"));
-        if (SharedPref.getHospNeed(context).equalsIgnoreCase("0")) adapterModels.add(new AdapterModel(SharedPref.getHospCaption(context), "0"));
+        if (SharedPref.getCipNeed(context).equalsIgnoreCase("0"))
+            adapterModels.add(new AdapterModel(SharedPref.getCipCaption(context), "0"));
+        if (SharedPref.getHospNeed(context).equalsIgnoreCase("0"))
+            adapterModels.add(new AdapterModel(SharedPref.getHospCaption(context), "0"));
 
         adapterCusMainList = new AdapterCusMainList(context, dcrDetailedList, SaveProductList, saveInputList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
@@ -131,21 +133,12 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
 
         try {
+            jsonDcrContentList = CommonUtilsMethods.CommonObjectParameter(DcrApprovalActivity.this);
             jsonDcrContentList.put("tableName", "getvwdcrone");
             jsonDcrContentList.put("Trans_SlNo", SelectedTransCode);
             jsonDcrContentList.put("sfcode", SelectedSfCode);
             jsonDcrContentList.put("division_code", SharedPref.getDivisionCode(this));
             jsonDcrContentList.put("Rsf", SharedPref.getHqCode(this));
-            jsonDcrContentList.put("sf_type", SharedPref.getSfType(this));
-            jsonDcrContentList.put("Designation", SharedPref.getDesig(this));
-            jsonDcrContentList.put("state_code", SharedPref.getStateCode(this));
-            jsonDcrContentList.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            jsonDcrContentList.put("versionNo", getString(R.string.app_version));
-            jsonDcrContentList.put("mod", Constants.APP_MODE);
-            jsonDcrContentList.put("Device_version", Build.VERSION.RELEASE);
-            jsonDcrContentList.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonDcrContentList.put("AppName", getString(R.string.str_app_name));
-            jsonDcrContentList.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_get_full_dcr_list", jsonDcrContentList.toString());
 
         } catch (Exception ignored) {
@@ -350,7 +343,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             });
 
             btn_reject.setOnClickListener(view14 -> {
-                if(UtilityClass.isNetworkAvailable(this)){
+                if (UtilityClass.isNetworkAvailable(this)) {
                     if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
                         rejectApproval(ed_reason.getText().toString());
                     } else {
@@ -369,22 +362,13 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     private void rejectApproval(String toString) {
         progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
         try {
+            jsonReject = CommonUtilsMethods.CommonObjectParameter(DcrApprovalActivity.this);
             jsonReject.put("tableName", "dcrreject");
             jsonReject.put("date", SelectedActivityDate);
             jsonReject.put("reason", toString);
             jsonReject.put("sfcode", SelectedSfCode);
             jsonReject.put("division_code", SharedPref.getDivisionCode(this));
             jsonReject.put("Rsf", SharedPref.getHqCode(this));
-            jsonReject.put("sf_type", SharedPref.getSfType(this));
-            jsonReject.put("Designation", SharedPref.getDesig(this));
-            jsonReject.put("state_code", SharedPref.getStateCode(this));
-            jsonReject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            jsonReject.put("versionNo", getString(R.string.app_version));
-            jsonReject.put("mod", Constants.APP_MODE);
-            jsonReject.put("Device_version", Build.VERSION.RELEASE);
-            jsonReject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonReject.put("AppName", getString(R.string.str_app_name));
-            jsonReject.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_send_approval", jsonReject.toString());
         } catch (Exception ignored) {
 
@@ -444,21 +428,12 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     private void CallApprovalApi() {
         progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
         try {
+            jsonAccept = CommonUtilsMethods.CommonObjectParameter(DcrApprovalActivity.this);
             jsonAccept.put("tableName", "dcrapproval");
             jsonAccept.put("date", SelectedActivityDate);
             jsonAccept.put("sfcode", SelectedSfCode);
             jsonAccept.put("division_code", SharedPref.getDivisionCode(this));
             jsonAccept.put("Rsf", SharedPref.getHqCode(this));
-            jsonAccept.put("sf_type", SharedPref.getSfType(this));
-            jsonAccept.put("Designation", SharedPref.getDesig(this));
-            jsonAccept.put("state_code", SharedPref.getStateCode(this));
-            jsonAccept.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            jsonAccept.put("versionNo", getString(R.string.app_version));
-            jsonAccept.put("mod", Constants.APP_MODE);
-            jsonAccept.put("Device_version", Build.VERSION.RELEASE);
-            jsonAccept.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonAccept.put("AppName", getString(R.string.str_app_name));
-            jsonAccept.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_send_approval", jsonAccept.toString());
         } catch (Exception ignored) {
 
@@ -516,20 +491,11 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     private void CallDcrListApi() {
         progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
         try {
+            jsonDcrList = CommonUtilsMethods.CommonObjectParameter(DcrApprovalActivity.this);
             jsonDcrList.put("tableName", "getvwdcr");
             jsonDcrList.put("sfcode", SharedPref.getSfCode(this));
             jsonDcrList.put("division_code", SharedPref.getDivisionCode(this));
             jsonDcrList.put("Rsf", SharedPref.getHqCode(this));
-            jsonDcrList.put("sf_type", SharedPref.getSfType(this));
-            jsonDcrList.put("Designation", SharedPref.getDesig(this));
-            jsonDcrList.put("state_code", SharedPref.getStateCode(this));
-            jsonDcrList.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            jsonDcrList.put("versionNo", getString(R.string.app_version));
-            jsonDcrList.put("mod", Constants.APP_MODE);
-            jsonDcrList.put("Device_version", Build.VERSION.RELEASE);
-            jsonDcrList.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonDcrList.put("AppName", getString(R.string.str_app_name));
-            jsonDcrList.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_getDcr_list", jsonDcrList.toString());
         } catch (Exception ignored) {
 
@@ -549,7 +515,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
-                            dcrApprovalLists.add(new DCRApprovalList(json.getString("Trans_SlNo"), json.getString("Sf_Name"), json.getString("Activity_Date"), json.getString("Plan_Name"), json.getString("WorkType_Name"), json.getString("Sf_Code"), json.getString("FieldWork_Indicator"), json.getString("Submission_Date"), json.getString("Hlfday"),json.getString("Remarks"),json.getString("Additional_Temp_Details")));
+                            dcrApprovalLists.add(new DCRApprovalList(json.getString("Trans_SlNo"), json.getString("Sf_Name"), json.getString("Activity_Date"), json.getString("Plan_Name"), json.getString("WorkType_Name"), json.getString("Sf_Code"), json.getString("FieldWork_Indicator"), json.getString("Submission_Date"), json.getString("Hlfday"), json.getString("Remarks"), json.getString("Additional_Temp_Details")));
                         }
                         adapterDcrApprovalList = new AdapterDcrApprovalList(DcrApprovalActivity.this, DcrApprovalActivity.this, dcrApprovalLists, DcrApprovalActivity.this);
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -573,8 +539,6 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     }
 
 
-
-
     @Override
     public void onClick(DCRApprovalList dcrApprovalList, int pos) {
 
@@ -593,9 +557,9 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         SelectedPosition = pos;
 
         getDcrContentList();
-        if(dcrApprovalList.getFieldWork_indicator().equalsIgnoreCase("F")){
+        if (dcrApprovalList.getFieldWork_indicator().equalsIgnoreCase("F")) {
             dcrCallApprovalBinding.rvSelectionList.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             dcrCallApprovalBinding.rvSelectionList.setVisibility(View.GONE);
         }
         dcrCallApprovalBinding.constraintDcrListContent.setVisibility(View.VISIBLE);

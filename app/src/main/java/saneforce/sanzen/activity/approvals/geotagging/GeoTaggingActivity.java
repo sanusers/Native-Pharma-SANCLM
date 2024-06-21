@@ -224,21 +224,11 @@ public class GeoTaggingActivity extends AppCompatActivity {
 
     private void CallGeoTagApi() {
         progressDialog = CommonUtilsMethods.createProgressDialog(GeoTaggingActivity.this);
-        try {
+        try {jsonGeoTagList=CommonUtilsMethods.CommonObjectParameter(GeoTaggingActivity.this);
             jsonGeoTagList.put("tableName", "getgeoappr");
             jsonGeoTagList.put("sfcode", SharedPref.getSfCode(this));
             jsonGeoTagList.put("division_code", SharedPref.getDivisionCode(this));
             jsonGeoTagList.put("Rsf", SharedPref.getHqCode(this));
-            jsonGeoTagList.put("sf_type", SharedPref.getSfType(this));
-            jsonGeoTagList.put("Designation", SharedPref.getDesig(this));
-            jsonGeoTagList.put("state_code", SharedPref.getStateCode(this));
-            jsonGeoTagList.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            jsonGeoTagList.put("versionNo", getString(R.string.app_version));
-            jsonGeoTagList.put("mod", Constants.APP_MODE);
-            jsonGeoTagList.put("Device_version", Build.VERSION.RELEASE);
-            jsonGeoTagList.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
-            jsonGeoTagList.put("AppName", getString(R.string.str_app_name));
-            jsonGeoTagList.put("language", SharedPref.getSelectedLanguage(this));
             Log.v("json_getGeoTag_list", jsonGeoTagList.toString());
         } catch (Exception ignored) {
 
