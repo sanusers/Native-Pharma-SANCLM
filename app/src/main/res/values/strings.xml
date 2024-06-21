@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">Test.H.4</string>
+    <string name="app_version" translatable="false">Test.H.5</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -89,12 +89,12 @@
     <string name="start_detaling">Start Detailing</string>
     <string name="filter_by">Filter by</string>
     <string name="loc_not_detect"> Location cannot detected </string>
-    <string name="loc_setting">Kindly enable the location</string>
+    <string name="loc_setting">Please enable the location</string>
     <string name="tagged_successfully"> Tagged Successfully</string>
     <string name="toast_no_img_found">No Image Found</string>
     <string name="hq_sel">HeadQuater Selection</string>
     <string name="presentation">Presentation</string>
-    <string name="presentation_saved_already">Already a Presentation has saved in the same name.\nKindly change the name and try again! </string>
+    <string name="presentation_saved_already">Presentation name already exists. Please change the name and try again </string>
     <string name="create_presentation">Create Presentation</string>
     <string name="enter_presentation_name">Enter the Presentation name</string>
     <string name="title_activity_create_presentation">CreatePresentation</string>
@@ -196,8 +196,8 @@
     <string name="select_chemist_name">Select Chemist Name</string>
     <string name="select_chemist">Select Chemist</string>
     <string name="select_worktype">Select WorkType</string>
-    <string name="wt_already_selected">Work Type already been selected for session</string>
-    <string name="hq_already_selected">HQ already been selected for the same work type for session</string>
+    <string name="wt_already_selected">Work Type already has  been selected for session  </string>
+    <string name="hq_already_selected">HQ  already has  been selected for session  </string>
     <string name="complete_session">Complete Session </string>
     <string name="select_hq_in_session">Select Head Quarters in session </string>
     <string name="select_clusters_in_session">Select Clusters in session </string>
@@ -279,7 +279,7 @@
     <string name="competitor_added">Competitor Added Successfully</string>
     <string name="no_comp_available">No Competitor Available for this Product!</string>
     <string name="prd_comp_available">This Product &amp; Company Already Available!</string>
-    <string name="already_sel_prd">Already Selected this Product!</string>
+    <string name="already_sel_prd">Product already selected!</string>
     <string name="call_saved_locally">No Network Available, Call Saved Locally</string>
     <string name="average">Average</string>
     <string name="calls">Calls</string>
@@ -302,19 +302,19 @@
     <string name="call_saved_something_wrong">Call Saved! Something Wrong</string>
     <string name="save_todaywork_plan">Save TodayWorkPlan</string>
     <string name="save_wt_locally">Locally Saved WorkPlan</string>
-    <string name="submit_mydayplan">Kindly submit My DayPlan</string>
-    <string name="submit_checkin">Kindly CheckIn</string>
+    <string name="submit_mydayplan">Please submit My DayPlan</string>
+    <string name="submit_checkin">Please CheckIn</string>
     <string name="enter_old_pwd">Enter old password</string>
     <string name="enter_new_pwd">Enter new password</string>
     <string name="enter_repeat_pwd">Enter repeat password</string>
     <string name="chg_new_pwd"> change new password</string>
-    <string name="change_new_password"> Old password and new password both are the same, change to something else</string>
+    <string name="change_new_password"> Old password and new password both are the same . Please change…</string>
     <string name="chk_old_pwd">Old password is wrong! Enter again</string>
     <string name="pwd_not_match">Repeat Password is incorrect</string>
     <string name="pwd_changed_successfully">Password changed successfully</string>
     <string name="exceed_tag_limit">Exceed the Tag limitation !!</string>
-    <string name="not_able_to_find_address">Not able to find address! Kindly try again</string>
-    <string name="save_settings_con_screen">Kindly Save Settings in Configuration Screen</string>
+    <string name="not_able_to_find_address">Not able to find address! Please try again</string>
+    <string name="save_settings_con_screen">Please Save Settings in Configuration Screen</string>
     <string name="enter_username">Enter your username</string>
     <string name="enter_userid">Enter User Id</string>
     <string name="enter_password">Enter password</string>
@@ -333,9 +333,9 @@
     <string name="you_re_going_to_visit">You\'re going to visit</string>
     <string name="confirm_check_in">Confirm Check IN?</string>
     <string name="hi">Hi, </string>
-    <string name="toast_leave_posted">Leave Posted Today</string>
-    <string name="contact_admin_in">Kindly Contact Admin to Check IN</string>
-    <string name="contact_admin_out">Kindly Contact Admin to Check OUT</string>
+    <string name="toast_leave_posted">Already leave  posted</string>
+    <string name="contact_admin_in">Please Contact Admin to Check IN</string>
+    <string name="contact_admin_out">Please Contact Admin to Check OUT</string>
     <string name="latitude_longitude"><![CDATA[Latitude & Longitude]]></string>
     <string name="speciality_selection">Speciality Selection</string>
     <string name="therapist_selection">Therapist Selection</string>
@@ -357,7 +357,7 @@
     <string name="select_a_language">Select a language</string>
     <string name="user_id">User ID</string>
     <string name="enter_user_id">Enter User ID</string>
-    <string name="mismatch">User Id or Password</string>
+    <string name="mismatch">Check User Id or Password</string>
     <string name="password">Password</string>
     <string name="enterpassword">Enter Password</string>
     <string name="english">English</string>
@@ -391,7 +391,7 @@
     <string name="no_camera_detected">No Camera Detected</string>
     <string name="image_saved">Image has been saved</string>
     <string name="sequential_entry_cannot_change_date">Since in Sequential Entry, cannot change the date!</string>
-    <string name="kindly_submit_field_work">Kindly Submit Field Work</string>
+    <string name="kindly_submit_field_work">Please Submit Field Work</string>
     <string name="unable_to_add_call_for_non_field_work">Unable to add call for non field work</string>
     <string name="please_enter_the_remarks">Please enter the remarks!</string>
     <string name="workplan_submit_ack">You are trying to complete the day.\nAre you sure, you want to submit?</string>
@@ -443,4 +443,5 @@
     <string name="should_have_a_call">Should have a call on selected date to submit!</string>
     <string name="submit">Submit</string>
     <string name="no_pending_dates_to_select">No pending dates to select</string>
+    <string name="continuee">CONTINUE</string>
 </resources>

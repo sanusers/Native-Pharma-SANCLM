@@ -71,7 +71,7 @@ public class Cate_Doctorview extends Fragment {
 
 //                     ----------------
                         cate_list.add(new callstatus_model(Doc_Cat_Name, Name, "", "", "", "",
-                                "", "", "", "", "", "", "", "", ""));
+                                "", "", "", "", "", "", "", "", "","",""));
 
 
                     }

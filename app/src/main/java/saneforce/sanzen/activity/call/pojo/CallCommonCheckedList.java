@@ -1,11 +1,43 @@
 package saneforce.sanzen.activity.call.pojo;
 
-public class CallCommonCheckedList {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class CallCommonCheckedList implements Parcelable {
     boolean checkedItem;
     String name;
     String category;
     String ActualStock;
     String CurrentStock;
+
+    protected CallCommonCheckedList(Parcel in) {
+        checkedItem = in.readByte() != 0;
+        name = in.readString();
+        category = in.readString();
+        ActualStock = in.readString();
+        CurrentStock = in.readString();
+        StockCode = in.readString();
+        categoryExtra = in.readString();
+        code = in.readString();
+        stock_balance = in.readString();
+        totalVisit = in.readString();
+        town_code = in.readString();
+        town_name = in.readString();
+    }
+
+    public static final Creator<CallCommonCheckedList> CREATOR = new Creator<CallCommonCheckedList>() {
+        @Override
+        public CallCommonCheckedList createFromParcel(Parcel in) {
+            return new CallCommonCheckedList(in);
+        }
+
+        @Override
+        public CallCommonCheckedList[] newArray(int size) {
+            return new CallCommonCheckedList[size];
+        }
+    };
 
     public String getActualStock() {
         return ActualStock;
@@ -166,5 +198,26 @@ public class CallCommonCheckedList {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeByte((byte) (checkedItem ? 1 : 0));
+        dest.writeString(name);
+        dest.writeString(category);
+        dest.writeString(ActualStock);
+        dest.writeString(CurrentStock);
+        dest.writeString(StockCode);
+        dest.writeString(categoryExtra);
+        dest.writeString(code);
+        dest.writeString(stock_balance);
+        dest.writeString(totalVisit);
+        dest.writeString(town_code);
+        dest.writeString(town_name);
     }
 }

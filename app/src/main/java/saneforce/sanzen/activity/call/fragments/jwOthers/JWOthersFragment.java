@@ -118,6 +118,21 @@ public class JWOthersFragment extends Fragment {
         }
     });
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("EDITREMARKS", editRemarks);
+        outState.putString("EDITPOB", editPob);
+        outState.putString("EDITFEEDBACK", editFeedback);
+        for(int i=0; i<callCaptureImageLists.size();i++) {
+            CallCaptureImageList callCaptureImageList = callCaptureImageLists.get(i);
+            callCaptureImageList.setImg_view(null);
+            callCaptureImageLists.set(i, callCaptureImageList);
+        }
+        outState.putParcelableArrayList("CAPTURE", callCaptureImageLists);
+        outState.putParcelableArrayList("JOINTWORK", callAddedJointList);
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     @Nullable
     @Override
@@ -130,10 +145,42 @@ public class JWOthersFragment extends Fragment {
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         gson = new Gson();
+        if (savedInstanceState != null) {
+            editRemarks = savedInstanceState.getString("EDITREMARKS");
+            editPob = savedInstanceState.getString("EDITPOB");
+            editFeedback = savedInstanceState.getString("EDITFEEDBACK");
+            callCaptureImageLists = savedInstanceState.getParcelableArrayList("CAPTURE");
+            callAddedJointList = savedInstanceState.getParcelableArrayList("JOINTWORK");
+            if(editFeedback != null && !editFeedback.isEmpty()) {
+                jwOthersBinding.tvFeedback.setHint("");
+                jwOthersBinding.tvFeedback.setText(editFeedback);
+            }
+            if(editPob != null && !editPob.isEmpty()) {
+                jwOthersBinding.edPob.setText(editPob);
+            }
+            if(editRemarks != null && !editRemarks.isEmpty()) {
+                jwOthersBinding.edRemarks.setText(editRemarks);
+            }
+            if(callCaptureImageLists != null && !callCaptureImageLists.isEmpty()) {
+                for(int i=0; i<callCaptureImageLists.size();i++) {
+                    CallCaptureImageList callCaptureImageList = callCaptureImageLists.get(i);
+                    Bitmap photo = BitmapFactory.decodeFile(callCaptureImageList.getFilePath());
+                    callCaptureImageList.setImg_view(photo);
+                    callCaptureImageLists.set(i, callCaptureImageList);
+                }
+//                adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
+//                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+//                jwOthersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
+//                jwOthersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
+//                jwOthersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+//                jwOthersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
+            }
+            Log.e("JW", "onCreateView: " + editRemarks + " -> " + editPob + " -> " + editFeedback);
+        }
         HiddenVisibleFunction();
         SetupAdapter();
 
-        if(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_5, HomeDashBoard.binding.textDate.getText().toString()).equalsIgnoreCase(SharedPref.getJWKDATE(requireContext()))) {
+        if(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, HomeDashBoard.selectedDate.toString()).equalsIgnoreCase(SharedPref.getJWKDATE(requireContext()))) {
             if (isFromActivity.equalsIgnoreCase("new")) {
                 Log.v("Testing","new");
                 String getjwkcode = SharedPref.getJWKCODE(requireContext());

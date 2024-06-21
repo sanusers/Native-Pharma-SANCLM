@@ -18,11 +18,15 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
+import saneforce.sanzen.activity.approvals.geotagging.GeoTaggingModelList;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityCallStatusThridViewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class Call_status_thrid_view extends Fragment {
@@ -37,6 +41,7 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
 
     RoomDB roomDB;
     MasterDataDao masterDataDao;
+
     @SuppressLint("ObsoleteSdkInt")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Callstatusthridview = ActivityCallStatusThridViewBinding.inflate(inflater);
@@ -61,8 +66,8 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
             call_list.clear();
             String Dates_call = "", vALDATE = "";
 
-            String CustType="",FW_Indicator="",Mnth="",CustName="",town_name="",date_format="",chckflk="";
-            String CustCode="",Dcr_dt="",month_name="",town_code="",Dcr_flag="",SF_Code="",Trans_SlNo="",AMSLNo="",  val="";
+            String CustType="",FW_Indicator="",Mnth="",CustName="",town_name="",date_format="",chckflk="",workType;
+            String CustCode="",Dcr_dt="",month_name="",town_code="",Dcr_flag="",SF_Code="",Trans_SlNo="",AMSLNo="",  medicalPersonnel="",time = "";
 
             JSONArray jsonvst_ctl = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
             JSONArray jsonvst_wrktype = new JSONArray(masterDataDao.getDataByKey(Constants.WORK_TYPE));
@@ -70,6 +75,7 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
             if (jsonvst_ctl.length() > 0) {
                 for (int i = 0; i < jsonvst_ctl.length(); i++) {
                     JSONObject jsonObject = jsonvst_ctl.getJSONObject(i);
+
 //    "CustCode":"559116",
 //    "CustType":"1",
 //    "FW_Indicator":"F",
@@ -92,61 +98,69 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
 
                             Dates_call = jsonObject.getString("Dcr_dt");
                             Dcr_dt = jsonObject.getString("Dcr_dt");
-
                             CustType = jsonObject.getString("CustType");
                             FW_Indicator = jsonObject.getString("FW_Indicator");
+                            workType = jsonObject.getString("WorkType_Name");
                             Mnth = jsonObject.getString("Mnth");
                             CustName = jsonObject.getString("CustName");
                             town_name = jsonObject.getString("town_name");
-
-
-
                             CustCode = jsonObject.getString("CustCode");
-
                             month_name = jsonObject.getString("month_name");
                             town_code = jsonObject.getString("town_code");
                             Dcr_flag = jsonObject.getString("Dcr_flag");
                             SF_Code = jsonObject.getString("SF_Code");
                             Trans_SlNo = jsonObject.getString("Trans_SlNo");
                             AMSLNo = jsonObject.getString("AMSLNo");
+                            time = jsonObject.getString("vtm");
 
 
                         } else {
                             CustType = jsonObject.getString("CustType");
                             FW_Indicator = jsonObject.getString("FW_Indicator");
+                            workType = jsonObject.getString("WorkType_Name");
                             Mnth = jsonObject.getString("Mnth");
                             CustName = jsonObject.getString("CustName");
                             town_name = jsonObject.getString("town_name");
                             Dcr_dt = "";
                             chckflk="";
                             date_format="";
-
-
                             CustCode = jsonObject.getString("CustCode");
-
                             month_name = jsonObject.getString("month_name");
                             town_code = jsonObject.getString("town_code");
                             Dcr_flag = jsonObject.getString("Dcr_flag");
                             SF_Code = jsonObject.getString("SF_Code");
                             Trans_SlNo = jsonObject.getString("Trans_SlNo");
                             AMSLNo = jsonObject.getString("AMSLNo");
+                            time = jsonObject.getString("vtm");
 
                         }
-                        if(CustType.equals("0")){
-                            val="";
+                        if (CustType.equals("0")) {
+                            medicalPersonnel = "";
+                        } else if (CustType.equals("1")) {
+                            if (SharedPref.getDrCap(requireContext()).isEmpty()|| SharedPref.getDrCap(requireContext())==null){
+                                medicalPersonnel = "Doctor";
+                            }else {
+                                medicalPersonnel = SharedPref.getDrCap(requireContext());
+                            }
+                        } else if (CustType.equals("2")) {
+                            if (SharedPref.getChmCap(requireContext()).isEmpty()|| SharedPref.getChmCap(requireContext())==null){
+                                medicalPersonnel = "Chemist";
+                            }else {
+                                medicalPersonnel = SharedPref.getChmCap(requireContext());
+                            }
+                        } else if (CustType.equals("3")) {
+                            if (SharedPref.getStkCap(requireContext()).isEmpty()|| SharedPref.getStkCap(requireContext())==null){
+                                medicalPersonnel = "StockList";
+                            }else {
+                                medicalPersonnel = SharedPref.getStkCap(requireContext());
+                            }
 
-                        }else if(CustType.equals("1")){
-                            val=("Doctor");
-
-                        }else if(CustType.equals("2")){
-                            val=("Chemist");
-
-                        }else if(CustType.equals("3")){
-                            val=("Stockist");
-
-                        }else if(CustType.equals("4")){
-                            val=("Unlisted Doctor");
-
+                        } else if (CustType.equals("4")) {
+                            if (SharedPref.getUNLcap(requireContext()).isEmpty()|| SharedPref.getUNLcap(requireContext())==null){
+                                medicalPersonnel = "UnListed Doctor";
+                            }else {
+                                medicalPersonnel = SharedPref.getUNLcap(requireContext());
+                            }
                         }
 
 
@@ -161,10 +175,7 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
     }*/
 
 
-                        call_list.add(new callstatus_model(CustCode, CustType, FW_Indicator, date_format, month_name, CustName, town_code, town_name, Dcr_flag, SF_Code, Trans_SlNo, AMSLNo,
-                                Mnth,chckflk,val));//
-
-
+                        call_list.add(new callstatus_model(CustCode, CustType, FW_Indicator, date_format, month_name, CustName, town_code, town_name, Dcr_flag, SF_Code, Trans_SlNo, AMSLNo, Mnth, chckflk, medicalPersonnel, workType, time));
 
 
                         call_statusadap = new call_statusadapter(getActivity(), call_list);
@@ -204,9 +215,6 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
 
 
     }
-
-
-
 
 
 }

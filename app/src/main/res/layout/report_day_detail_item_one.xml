@@ -911,11 +911,11 @@
 
                         <ImageView
                             android:id="@+id/slide_arrow"
-                            android:layout_width="@dimen/_7sdp"
-                            android:layout_height="@dimen/_7sdp"
+                            android:layout_width="@dimen/_9sdp"
+                            android:layout_height="@dimen/_9sdp"
                             android:layout_gravity="center"
                             android:layout_marginStart="@dimen/_5sdp"
-                            android:src="@drawable/arrow_down" />
+                            android:src="@drawable/click_logo" />
 
                     </LinearLayout>
 

@@ -180,7 +180,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date));
                 } else if(!SharedPref.getDayPlanStartedDate(context).isEmpty() && MyDayPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.complete_day));
-                } else if(!MyDayPlanEntriesNeeded.datesNeeded.isEmpty() && !SharedPref.getSelectedDateCal(context).isEmpty()) {
+                } else if(MyDayPlanEntriesNeeded.datesNeeded.isEmpty() && SharedPref.getSelectedDateCal(context).isEmpty()) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_pending_dates_to_select));
                 } else if (isApplicableDate) {
                     SharedPref.setSelectedDateCal(context, String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()));
@@ -191,7 +191,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                     HomeDashBoard.binding.viewDummy.setVisibility(View.VISIBLE);
                     HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
 //                    if (HomeDashBoard.SequentialEntry.equalsIgnoreCase("0")) {
-                        HomeDashBoard.checkAndSetEntryDate(context);
+                        HomeDashBoard.checkAndSetEntryDate(context, true);
 //                    }
                 } else {
                     Log.e("call status", "onBindViewHolder: " );

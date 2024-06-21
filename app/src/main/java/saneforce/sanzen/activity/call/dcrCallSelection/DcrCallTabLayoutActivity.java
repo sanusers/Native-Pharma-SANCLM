@@ -2,15 +2,21 @@ package saneforce.sanzen.activity.call.dcrCallSelection;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.TabLayoutAdapter;
@@ -20,6 +26,7 @@ import saneforce.sanzen.activity.call.dcrCallSelection.fragments.HospitalFragmen
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.ListedDoctorFragment;
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.StockiestFragment;
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.UnlistedDoctorFragment;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -28,6 +35,7 @@ import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class DcrCallTabLayoutActivity extends AppCompatActivity {
 
@@ -52,6 +60,12 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("date", HomeDashBoard.selectedDate.toString());
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dcrSelectionBinding = CallDcrSelectionBinding.inflate(getLayoutInflater());
@@ -61,6 +75,20 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
+
+        if(savedInstanceState != null) {
+            HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
+                CommonAlertBox.permissionChangeAlert(this);
+            }
+        }
 
         getRequiredData();
 

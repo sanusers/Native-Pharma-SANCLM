@@ -219,7 +219,9 @@ public class UnlistedDoctorFragment extends Fragment {
                 filteredNames.add(s);
             }
         }
-        adapterDCRCallSelection.filterList(filteredNames);
+        if(adapterDCRCallSelection != null) {
+            adapterDCRCallSelection.filterList(filteredNames);
+        }
     }
 
     public  void CustomizeFiltered(){

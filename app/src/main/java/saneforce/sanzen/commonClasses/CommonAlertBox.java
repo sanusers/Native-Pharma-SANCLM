@@ -21,6 +21,7 @@ import java.util.List;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.utility.location.LocationEvents;
 import saneforce.sanzen.utility.location.LocationFinder;
@@ -184,5 +185,30 @@ public class CommonAlertBox {
         return locate;
     }
 
+    public static void permissionChangeAlert(Activity activity) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+        alert.setCancelable(false);
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.warning_alert, null);
+        Button btn_yes = alertLayout.findViewById(R.id.btnYes);
+        Button btn_no = alertLayout.findViewById(R.id.btnNo);
+        btn_no.setVisibility(View.GONE);
+        btn_yes.setText(activity.getResources().getString(R.string.continuee));
+        TextView alertText = alertLayout.findViewById(R.id.ed_alert_msg);
+        alertText.setText("You have tried to change the permission, so we are blocking you to do further process. You will be redirected to home screen.\nPlease click CONTINUE to proceed further.");
+        alert.setView(alertLayout);
+        AlertDialog dialog = alert.create();
+        dialog.setCancelable(false);
+        dialog.show();
+        btn_yes.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, HomeDashBoard.class);
+            activity.startActivity(intent);
+            activity.finishAffinity();
+            dialog.dismiss();
+        });
+        btn_no.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+    }
 
 }

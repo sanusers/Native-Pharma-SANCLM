@@ -8,7 +8,6 @@ import static saneforce.sanzen.commonClasses.Constants.APP_MODE;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -195,7 +194,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         boolean toSync = false;
         if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
             try {
-                JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.MY_DAY_PLAN).getMasterSyncDataJsonArray();
+                JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
                 if(workTypeArray.length() > 0) {
                     JSONObject FirstSeasonDayPlanObject = workTypeArray.getJSONObject(0);
                     String DayPlanDate1 = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_4, FirstSeasonDayPlanObject.getJSONObject("TPDt").getString("date"));
@@ -913,7 +912,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             boolean isTodayAvailable = false;
-            JSONArray jsonData = masterDataDao.getMasterDataTableOrNew(Constants.MY_DAY_PLAN).getMasterSyncDataJsonArray();
+            JSONArray jsonData = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
 
             if (jsonData.length() > 0) {
                 for (int i = 0; i < jsonData.length(); i++) {
@@ -929,7 +928,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonObjectwt = new JSONObject();
                 jsonObjectwt.put("SFCode",SharedPref.getSfCode(requireContext()));
                 JSONObject TPDtSecondSeasonObject = new JSONObject();
-                TPDtSecondSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_15, HomeDashBoard.binding.textDate.getText().toString()));
+                TPDtSecondSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
                 jsonObjectwt.put("TPDt", TPDtSecondSeasonObject);
                 jsonObjectwt.put("WT", mWTCode2);
                 jsonObjectwt.put("WTNm", mWTName2);
@@ -944,11 +943,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonObjectwt.put("TP_cluster", "");
                 jsonObjectwt.put("TP_worktype", "");
                 jsonData.put(SecondSeasonObject);
-                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, jsonData.toString(), 2));
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, jsonData.toString(), 2));
             } else {
                 FisrstSeasonObject.put("SFCode", SharedPref.getSfCode(requireContext()));
                 JSONObject TPDtFisrstSeasonObject = new JSONObject();
-                TPDtFisrstSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_15, HomeDashBoard.binding.textDate.getText().toString()));
+                TPDtFisrstSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
                 FisrstSeasonObject.put("TPDt", TPDtFisrstSeasonObject);
                 FisrstSeasonObject.put("WT", mWTCode1);
                 FisrstSeasonObject.put("WTNm", mWTName1);
@@ -966,7 +965,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 SecondSeasonObject.put("SFCode",SharedPref.getSfCode(requireContext()));
                 JSONObject TPDtSecondSeasonObject = new JSONObject();
-                TPDtSecondSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_15, HomeDashBoard.binding.textDate.getText().toString()));
+                TPDtSecondSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
                 SecondSeasonObject.put("TPDt", TPDtSecondSeasonObject);
                 SecondSeasonObject.put("WT", mWTCode2);
                 SecondSeasonObject.put("WTNm", mWTName2);
@@ -981,7 +980,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 SecondSeasonObject.put("TP_cluster", "");
                 SecondSeasonObject.put("TP_worktype", "");
                 MydayPlanDataList.put(SecondSeasonObject);
-                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, MydayPlanDataList.toString(), 2));
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, MydayPlanDataList.toString(), 2));
             }
 
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
@@ -990,7 +989,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String custType = jsonObject.getString("CustType");
                 String time = jsonObject.getString("Dcr_dt");
-                if(custType.equalsIgnoreCase("0") && time.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()))){
+                if(custType.equalsIgnoreCase("0") && time.equalsIgnoreCase( HomeDashBoard.selectedDate.toString())){
                     isCallSyncAvailable = true;
                     break;
                 }
@@ -999,7 +998,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("CustCode", "");
                 jsonObject.put("CustType", "0");
-                jsonObject.put("Dcr_dt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
+                jsonObject.put("Dcr_dt", HomeDashBoard.selectedDate.toString());
                 jsonObject.put("month_name", "");
                 jsonObject.put("Mnth", "");
                 jsonObject.put("Yr", "");
@@ -1014,10 +1013,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonArray.put(jsonObject);
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
             }
-            SharedPref.setDayPlanStartedDate(requireContext(), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
+            SharedPref.setDayPlanStartedDate(requireContext(), HomeDashBoard.selectedDate.toString());
             OutboxFragment.SetupOutBoxAdapter(requireActivity(), requireContext());
             SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
-
             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.save_wt_locally));
         } catch (Exception ignored) {
 
@@ -1076,7 +1074,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("address",CommonUtilsMethods.gettingAddress(getActivity(), gpsTrack.getLatitude(), gpsTrack.getLongitude(), false));
             jsonObject.put("InsMode", "0");
             jsonObject.put("SubmittedDate", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-            jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_15, HomeDashBoard.binding.textDate.getText().toString()));
+            jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
             jsonObject.put("TpVwFlg", "0");
             jsonObject.put("TP_cluster", "");
             jsonObject.put("TP_worktype", "");
@@ -1143,7 +1141,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     Log.v("FinalSubmit", response.body() + "--" + response.isSuccessful());
                     if(response.isSuccessful()) {
                         try {
-                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, "[]", 2));
+                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 2));
 //                            MyDayPlanEntriesNeeded.syncCallAndDate(requireContext());
                             updateLocalData();
                             SharedPref.setDayPlanStartedDate(requireContext(), "");
@@ -1152,7 +1150,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             FinalSubmitStatus = jsonObject.getString("Msg");
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.day_submitted_successfully));
                             progressDialog.dismiss();
-                            HomeDashBoard.checkAndSetEntryDate(requireContext());
+                            HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
                         } catch (Exception ignored) {
                             progressDialog.dismiss();
                         }
@@ -1183,7 +1181,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 String dayStatus = jsonObject.optString("day_status");
                 String date = jsonObject.optString("Dcr_dt");
                 if(cusType.equalsIgnoreCase("0")
-                        && date.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()))
+                        && date.equalsIgnoreCase( HomeDashBoard.selectedDate.toString())
                         && !dayStatus.equalsIgnoreCase("1")) {
                     jsonObject.put("day_status", "1");
                     jsonArray.put(index, jsonObject);
@@ -1195,7 +1193,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             for (int index = 0; index<jsonArray.length(); index++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(index);
                 String date = jsonObject.getJSONObject("dt").getString("date").substring(0, 10);
-                if(date.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()))) {
+                if(date.equalsIgnoreCase( HomeDashBoard.selectedDate.toString())) {
                     jsonArray.remove(index);
                     break;
                 }
@@ -1282,7 +1280,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                                 FisrstSeasonObject.put("SFCode",SharedPref.getSfCode(requireContext()));
                                 JSONObject TPDtFisrstSeasonObject = new JSONObject();
-                                TPDtFisrstSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_15, HomeDashBoard.binding.textDate.getText().toString()));
+                                TPDtFisrstSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
                                 FisrstSeasonObject.put("TPDt", TPDtFisrstSeasonObject);
                                 FisrstSeasonObject.put("WT", mWTCode1);
                                 FisrstSeasonObject.put("WTNm", mWTName1);
@@ -1300,7 +1298,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 if (DayPlanCount.equalsIgnoreCase("2")) {
                                     SecondSeasonObject.put("SFCode",SharedPref.getSfCode(requireContext()));
                                     JSONObject TPDtSecondSeasonObject = new JSONObject();
-                                    TPDtSecondSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_15, HomeDashBoard.binding.textDate.getText().toString()));
+                                    TPDtSecondSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
                                     SecondSeasonObject.put("TPDt", TPDtSecondSeasonObject);
                                     SecondSeasonObject.put("WT", mWTCode2);
                                     SecondSeasonObject.put("WTNm", mWTName2);
@@ -1316,7 +1314,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     SecondSeasonObject.put("TP_worktype", "");
                                     MydayPlanDataList.put(SecondSeasonObject);
                                 }
-                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, MydayPlanDataList.toString(), 2));
+                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, MydayPlanDataList.toString(), 2));
 
                                 JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
                                 boolean isCallSyncAvailable = false;
@@ -1324,7 +1322,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                                     String custType = jsonObject.getString("CustType");
                                     String time = jsonObject.getString("Dcr_dt");
-                                    if(custType.equalsIgnoreCase("0") && time.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()))){
+                                    if(custType.equalsIgnoreCase("0") && time.equalsIgnoreCase( HomeDashBoard.selectedDate.toString())){
                                         isCallSyncAvailable = true;
                                         break;
                                     }
@@ -1333,7 +1331,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     JSONObject jsonObject = new JSONObject();
                                     jsonObject.put("CustCode", "");
                                     jsonObject.put("CustType", "0");
-                                    jsonObject.put("Dcr_dt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
+                                    jsonObject.put("Dcr_dt", HomeDashBoard.selectedDate.toString());
                                     jsonObject.put("month_name", "");
                                     jsonObject.put("Mnth", "");
                                     jsonObject.put("Yr", "");
@@ -1348,7 +1346,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     jsonArray.put(jsonObject);
                                     masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
                                 }
-                                SharedPref.setDayPlanStartedDate(requireContext(), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
+                                SharedPref.setDayPlanStartedDate(requireContext(), HomeDashBoard.selectedDate.toString());
 
                             } else {
                                 setUpMyDayplan();
@@ -1505,7 +1503,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
         try {
             binding.progressWt1.setVisibility(View.VISIBLE);
-            JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.MY_DAY_PLAN).getMasterSyncDataJsonArray();
+            JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
             JSONArray worktypedata = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
             SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(),false,false);
 
@@ -1562,7 +1560,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         mHQName1 = FirstSeasonDayPlanObject.getString("HQNm");
                         mRemarks1 = FirstSeasonDayPlanObject.getString("Rem");
                         chk_cluster = FirstSeasonDayPlanObject.getString("Pl");
-                        SharedPref.setDayPlanStartedDate(requireContext(),  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
+                        SharedPref.setDayPlanStartedDate(requireContext(), HomeDashBoard.selectedDate.toString());
 
                         if(worktypedata.length()>0) {
                             for (int i = 0; i<worktypedata.length(); i++) {
@@ -1747,7 +1745,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
             }else {
                 SharedPref.setDayPlanStartedDate(requireContext(), "");
-                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, "[]", 2));
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 2));
                 binding.txtWorktype1.setText("");
                 binding.txtCluster1.setText("");
                 binding.txtheadquaters1.setText("");
@@ -1837,12 +1835,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                             jsonArray.put(jsonObject2);
                                             success = true;
                                         }else if(jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
-                                            masterDataDao.saveMasterSyncStatus(Constants.MY_DAY_PLAN, 1);
+                                            masterDataDao.saveMasterSyncStatus(Constants.WORK_PLAN, 1);
                                         }
                                     }
 
                                     if(success) {
-                                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, jsonArray.toString(), 2));
+                                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, jsonArray.toString(), 2));
                                     }
                                 }
 
@@ -1925,7 +1923,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     CallDialogAfterCheckOut();
                 }
             }
-            HomeDashBoard.checkAndSetEntryDate(requireContext());
+            HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
         }
     }
 

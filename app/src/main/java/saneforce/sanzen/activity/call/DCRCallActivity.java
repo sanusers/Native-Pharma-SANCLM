@@ -8,11 +8,13 @@ import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment
 import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment.jwOthersBinding;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.IsFromDCR;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
@@ -22,6 +24,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -35,6 +38,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
@@ -48,8 +52,10 @@ import org.json.JSONObject;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -181,6 +187,14 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("call", CallActivityCustDetails);
+        outState.putString("date", HomeDashBoard.selectedDate.toString());
+        Log.d("save instance", "onSaveInstanceState: " + outState.size() + " -> " + Arrays.toString(outState.keySet().toArray()));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dcrCallBinding = ActivityDcrcallBinding.inflate(getLayoutInflater());
@@ -196,6 +210,53 @@ public class DCRCallActivity extends AppCompatActivity {
         callsUtil = new CallsUtil(this);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
+        if(savedInstanceState != null) {
+            Log.i("TAG1", "onCreate: " + savedInstanceState.size());
+            Log.i("TAG2", "onCreate: " + Arrays.toString(savedInstanceState.keySet().toArray()));
+            CallActivityCustDetails = savedInstanceState.getParcelableArrayList("call");
+            HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+//            CommonAlertBox.permissionChangeAlert(this);
+//            if(SharedPref.getGeoNeed(this).equalsIgnoreCase("0")) {
+                if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                        || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED
+                        || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED
+                        || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED
+                        || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                            || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
+                    CommonAlertBox.permissionChangeAlert(this);
+                }
+//                    Log.e("TAG", "onCreate: Location permission disabled FL");
+//                }
+//                if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                    Log.e("TAG", "onCreate: Location permission disabled CL");
+//                }
+//            }
+//            boolean ecNeed = false;
+//            if(CallActivityCustDetails != null && !CallActivityCustDetails.isEmpty()) {
+//                switch (CallActivityCustDetails.get(0).getType()) {
+//                    case "1":
+//                        if(SharedPref.getDeNeed(this).equalsIgnoreCase("0")) ecNeed = true;
+//                        break;
+//                    case "2":
+//                        if(SharedPref.getCeNeed(this).equalsIgnoreCase("0")) ecNeed = true;
+//                        break;
+//                    case "3":
+//                        if(SharedPref.getSeNeed(this).equalsIgnoreCase("0")) ecNeed = true;
+//                        break;
+//                    case "4":
+//                        if(SharedPref.getNeNeed(this).equalsIgnoreCase("0")) ecNeed = true;
+//                        break;
+//                }
+//                if(ecNeed){
+//                    if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//                        Log.e("TAG", "onCreate: Camera permission disabled");
+//                    }
+//                }
+//            }
+//            HomeDashBoard.binding.textDate.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_27, savedInstanceState.getString("date")));
+        }
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             isDetailingRequired = extra.getString(Constants.DETAILING_REQUIRED);
@@ -355,8 +416,8 @@ public class DCRCallActivity extends AppCompatActivity {
                         //progressDialog.dismiss();
                     }
                     storingSlide.clear();
-                    SharedPref.setLastCallDate(this, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
-                    SharedPref.setDayPlanStartedDate(this,  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
+                    SharedPref.setLastCallDate(this, HomeDashBoard.selectedDate.toString());
+                    SharedPref.setDayPlanStartedDate(this, HomeDashBoard.selectedDate.toString());
 //                    if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
                         //    progressDialog.dismiss();
 //                        dialogCheckOut.show();
@@ -753,12 +814,13 @@ public class DCRCallActivity extends AppCompatActivity {
                         return false;
                     }
                 }
-
-                if (FeedbackMandatory.equalsIgnoreCase("1")) {
-                    if (jwOthersBinding.tvFeedback.getText().toString().isEmpty()) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_feedback));
-                        moveToPage("JFW/Others");
-                        return false;
+                if (SharedPref.getDfNeed(this).equals("0")) {
+                    if (FeedbackMandatory.equalsIgnoreCase("1")) {
+                        if (jwOthersBinding.tvFeedback.getText().toString().isEmpty()) {
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_feedback));
+                            moveToPage("JFW/Others");
+                            return false;
+                        }
                     }
                 }
 
@@ -794,7 +856,9 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 } else {
                     if (MgrRcpaMandatory.equalsIgnoreCase("0")) {
-                        if(!validateRCPA()) return false;
+                    if (SharedPref.getChmRcpaNeed(this).equals("0")) {
+                        if (!validateRCPA()) return false;
+                    }
                     }
                 }
 
@@ -815,10 +879,12 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
 
                 if (JwMandatory.equalsIgnoreCase("0")) {
-                    if (JWOthersFragment.callAddedJointList.isEmpty()) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.jointwork_need));
-                        moveToPage("JFW/Others");
-                        return false;
+                    if (SharedPref.getChmJointworkNeed(this).equals("0")) {
+                        if (JWOthersFragment.callAddedJointList.isEmpty()) {
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.jointwork_need));
+                            moveToPage("JFW/Others");
+                            return false;
+                        }
                     }
                 }
 
@@ -1864,7 +1930,7 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             Log.v("final_value_call", "---inputzise---"+ jsonArray.toString()                                                                                                          );
             jsonSaveDcr.put("JointWork", jsonArray);
-            SharedPref.setJWKCODE(context, JWKCodeList,TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_5, HomeDashBoard.binding.textDate.getText().toString()));
+            SharedPref.setJWKCODE(context, JWKCodeList, HomeDashBoard.selectedDate.toString());
 
             //Input
             jsonArray = new JSONArray();
@@ -2094,7 +2160,7 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("CustCode", CallActivityCustDetails.get(0).getCode());
             jsonSaveDcr.put("CustName", CallActivityCustDetails.get(0).getName());
             if (isFromActivity.equalsIgnoreCase("new")) {
-                if(lat == 0.0 || lng == 0.0){
+                if(SharedPref.getGeoChk(this).equalsIgnoreCase("0") && (lat == 0.0 || lng == 0.0)) {
                     commonUtilsMethods.showToastMessage(this, "Gathering location information failed, Please try again!");
                     isCreateJsonSuccess = false;
                     return;
@@ -2132,14 +2198,17 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("town_name", CallActivityCustDetails.get(0).getTown_name());
             if(isFromActivity.equalsIgnoreCase("edit_online")) {
                 jsonSaveDcr.put("town_code", new JSONObject(CallActivityCustDetails.get(0).getJsonArray()).getJSONArray("DCRDetail").getJSONObject(0).getString("SDP"));
-                jsonSaveDcr.put("town_name", new JSONObject(CallActivityCustDetails.get(0).getJsonArray()).getJSONArray("DCRDetail").getJSONObject(0).getString("SDP_Name"));
+                String townName =  new JSONObject(CallActivityCustDetails.get(0).getJsonArray()).getJSONArray("DCRDetail").getJSONObject(0).getString("SDP_Name");
+                int index = townName.indexOf("(");
+                townName = townName.substring(0, index).trim();
+                jsonSaveDcr.put("town_name", townName);
             }
             jsonSaveDcr.put("ModTime", CurrentDate + " " + CurrentTime);
-            jsonSaveDcr.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_15, HomeDashBoard.binding.textDate.getText().toString()));
+            jsonSaveDcr.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
             jsonSaveDcr.put("day_flag", "0");
 
             if (isFromActivity.equalsIgnoreCase("new")) {
-                jsonSaveDcr.put("vstTime", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()) + " " + CurrentTime);
+                jsonSaveDcr.put("vstTime",  HomeDashBoard.selectedDate.toString() + " " + CurrentTime);
             } else {
                 jsonSaveDcr.put("vstTime", VistTime);
             }
@@ -2748,7 +2817,7 @@ public class DCRCallActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         CommonAlertBox.CheckLocationStatus(DCRCallActivity.this);
-
+        Log.e("TAG", "onResume: ");
         timeZoneVerification();
     }
     @Override

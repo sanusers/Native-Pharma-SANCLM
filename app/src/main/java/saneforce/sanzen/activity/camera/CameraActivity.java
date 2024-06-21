@@ -37,12 +37,17 @@ import androidx.core.content.ContextCompat;
 
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.databinding.ActivityCameraBinding;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class CameraActivity extends AppCompatActivity implements ImageReader.OnImageAvailableListener {
 
@@ -78,6 +83,13 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     }
 
     @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("date", HomeDashBoard.selectedDate.toString());
+        Log.d("save instance", "onSaveInstanceState: " + outState.size() + " -> " + Arrays.toString(outState.keySet().toArray()));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityCameraBinding = ActivityCameraBinding.inflate(getLayoutInflater());
@@ -86,6 +98,20 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
         commonUtilsMethods = new CommonUtilsMethods(this);
         commonUtilsMethods.setUpLanguage(this);
         gpsTrack = new GPSTrack(this);
+
+        if(savedInstanceState != null) {
+            HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
+                CommonAlertBox.permissionChangeAlert(this);
+            }
+        }
 
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
@@ -216,6 +242,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
                 if(permissionRequestCount == 3){
                     permissionRequestCount = 0;
                     setResult(RESULT_CANCELED);
+                    finish();
                 }
                 commonUtilsMethods.showToastMessage(this, getString(R.string.camera_permission_needed));
                 isImageCaptured = false;
