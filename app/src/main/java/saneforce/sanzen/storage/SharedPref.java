@@ -4,12 +4,11 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import org.json.JSONObject;
 import java.util.List;
-
-import saneforce.sanzen.activity.call.DCRCallActivity;
 
 
 public class SharedPref {
@@ -24,7 +23,7 @@ public class SharedPref {
     public static final String BASE_WEB_URL = "base_web_wrl";
     public static final String PHP_PATH_URL = "php_path_url";
     public static final String REPORTS_URL = "reports_url";
-    public static final String SLIDES_URL = "slides_url";
+    public static final String SLIDES_PATH = "SLIDES_PATH";
     public static final String LOGO_URL = "logo_url";
     public static final String CALL_API_URL = "call_api_url";
     public static final String LOGI_SITE = "log_site";
@@ -732,6 +731,8 @@ public class SharedPref {
         editor.putString(UNDR_DETAILING_NEED, jsonObject.getString("Detailing_undr"));
         editor.putString(EDIT_CALL_DEL_NEED, jsonObject.getString("EditCallDelNeed"));
         editor.putString(ACTIVITY_CAP, jsonObject.getString("ActivityCap"));
+        editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\",""));
+            Log.v("SLIDES_PATH",jsonObject.getString("slide_folder").replaceAll("\\\\",""));
         editor.apply();
 
     }catch (Exception ignore){
@@ -1942,7 +1943,7 @@ public class SharedPref {
         editor.putString(LOGI_SITE, site).apply();
     }
 
-    public static void saveUrls(Context context, String baseUrl, String licenseKey, String baseWebUrl, String PhpPathUrl, String reportsUrl, String SlidesUrl, String logoUrl, boolean settingState) {
+    public static void saveUrls(Context context, String baseUrl, String licenseKey, String baseWebUrl, String PhpPathUrl, String reportsUrl, String logoUrl, boolean settingState) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(BASE_URL, baseUrl);
@@ -1950,7 +1951,6 @@ public class SharedPref {
         editor.putString(BASE_WEB_URL, baseWebUrl);
         editor.putString(PHP_PATH_URL, PhpPathUrl);
         editor.putString(REPORTS_URL, reportsUrl);
-        editor.putString(SLIDES_URL, SlidesUrl);
         editor.putString(LOGO_URL, logoUrl);
         editor.putBoolean(SETTING_STATE, settingState);
         editor.apply();
@@ -1982,7 +1982,7 @@ public class SharedPref {
     }
 
     public static String getSlideUrl(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDES_URL, "");
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDES_PATH, "");
     }
 
     public static String getLogoUrl(Context context) {

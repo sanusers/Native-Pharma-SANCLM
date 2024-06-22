@@ -89,11 +89,6 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
 
             }
         }
-//        if (list.get(position).getDownloadingStaus().equalsIgnoreCase("0")) {
-//            holder.reload_img.setVisibility(View.VISIBLE);
-//        } else {
-//            holder.reload_img.setVisibility(View.GONE);
-//        }
 
         if(!SharedPref.getSlideDowloadingStatus(activity)){
             holder.reload_img.setVisibility(View.GONE);
