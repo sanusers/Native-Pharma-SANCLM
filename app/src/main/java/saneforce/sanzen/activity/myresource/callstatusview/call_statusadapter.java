@@ -53,19 +53,9 @@ public class call_statusadapter extends RecyclerView.Adapter<call_statusadapter.
             holder.cust_type.setVisibility(View.GONE);
             holder.calls_town.setVisibility(View.GONE);
         } else {
-           /* List<String> valuesList = new ArrayList<>();
-            for (int bean = 0;bean<listeduser.size();bean++){
-                String custName = listeduser.get(bean).getCustName();
-                System.out.println("custName--->"+custName);
-                valuesList.add(custName);
-            }
-            Collections.sort(valuesList);*/
-           /* Collections.sort(listeduser, Comparator.comparing(callstatus_model::getDcr_dt));
-            for (callstatus_model model : listeduser) {
-                System.out.println("dcrDate: " + model.getTime());
-            }*/
             holder.CustName.setText(app_adapt.getCustName());
             holder.cust_type.setText(app_adapt.getDcrname());
+            holder.cust_type.setVisibility(View.VISIBLE);
             holder.calls_town.setVisibility(View.VISIBLE);
         }
 
