@@ -1267,7 +1267,6 @@ public class DCRCallActivity extends AppCompatActivity {
 //                            }
                             arrayStore.add(new StoreImageTypeUrl("", SlideName, SlideType, "", "0", "", remArray.toString(), ProductName, ProductCode, false));
                         }
-                        Log.e("TAG", "jsonExtractOnline: " + timeDuration);
                         DetailedFragment.callDetailingLists.add(new CallDetailingList(ProductName, ProductCode, SlideName, SlideType, "", StartTime.trim() + " " + EndTime.trim(), StartTime.trim(), Integer.parseInt(Rating), PrdFeedBack, Date, timeDuration));
                     }
                 }
@@ -1384,9 +1383,14 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
+            Log.e("TAG1", "jsonExtractOnline: " + JWOthersFragment.editRemarks);
             //Remarks
-            if (funStringValidation(js.getString("Activity_Remarks")))
+            JWOthersFragment.editRemarks = "";
+            JWOthersFragment.editPob = "";
+            if (funStringValidation(js.getString("Activity_Remarks"))) {
                 JWOthersFragment.editRemarks = js.getString("Activity_Remarks");
+            }
+            Log.e("TAG2", "jsonExtractOnline: " + JWOthersFragment.editRemarks);
 
             //POB
             if (js.has("POB")) {
@@ -2200,7 +2204,9 @@ public class DCRCallActivity extends AppCompatActivity {
                 jsonSaveDcr.put("town_code", new JSONObject(CallActivityCustDetails.get(0).getJsonArray()).getJSONArray("DCRDetail").getJSONObject(0).getString("SDP"));
                 String townName =  new JSONObject(CallActivityCustDetails.get(0).getJsonArray()).getJSONArray("DCRDetail").getJSONObject(0).getString("SDP_Name");
                 int index = townName.indexOf("(");
-                townName = townName.substring(0, index).trim();
+                if(index > 0) {
+                    townName = townName.substring(0, index).trim();
+                }
                 jsonSaveDcr.put("town_name", townName);
             }
             jsonSaveDcr.put("ModTime", CurrentDate + " " + CurrentTime);

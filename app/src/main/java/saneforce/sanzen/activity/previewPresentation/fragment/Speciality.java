@@ -66,7 +66,6 @@ public class Speciality extends Fragment {
                 JSONObject productObject = prodSlide.getJSONObject(i);
                 String id = productObject.getString("SlideId");
                 String code = productObject.getString("Code");
-                Log.e("product", "getRequiredData: " + code + " -> " + id);
                 if(brandToProducts.containsKey(code)){
                     brandToProducts.get(code).put(id, productObject);
                 }else {
@@ -207,7 +206,6 @@ public class Speciality extends Fragment {
                 JSONObject productObject = prodSlide.getJSONObject(i);
                 String id = productObject.getString("SlideId");
                 String code = productObject.getString("Code");
-                Log.e("product", "getRequiredData: " + code + " -> " + id);
                 if(brandToProducts.containsKey(code)){
                     brandToProducts.get(code).put(id, productObject);
                 }else {
