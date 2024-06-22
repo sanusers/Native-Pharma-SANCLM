@@ -1489,8 +1489,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
     private void callAPIDateSync() {
-        progressDialog = CommonUtilsMethods.createProgressDialog(context);
-        JSONObject jj = CommonUtilsMethods.CommonObjectParameter(context);
+//        progressDialog = CommonUtilsMethods.createProgressDialog(this);
+        JSONObject jj = CommonUtilsMethods.CommonObjectParameter(this);
         try {
             jj.put("tableName", "getdcrdate");
             jj.put("sfcode", SharedPref.getSfCode(this));
@@ -1518,10 +1518,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //                        binding.tabLayout.setVisibility(View.VISIBLE);
 //                        binding.viewPager.setVisibility(View.VISIBLE);
                         commonUtilsMethods.showToastMessage(HomeDashBoard.this, context.getString(R.string.synced_successfully));
-                        progressDialog.dismiss();
+//                        progressDialog.dismiss();
                         setUpCalendar();
                     } catch (Exception ignored) {
-                        progressDialog.dismiss();
+//                        progressDialog.dismiss();
                     }
                 }
             }

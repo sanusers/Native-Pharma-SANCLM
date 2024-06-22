@@ -10,7 +10,7 @@
         <item name="android:windowMinWidthMinor">90%</item>
     </style>
 
-    <style name="CustomTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="CustomTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/dark_purple</item>
         <item name="colorPrimaryVariant">@color/light_purple</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -20,7 +20,7 @@
         <item name="colorOnSecondary">@color/black</item>
     </style>
 
-    <style name="Theme.SANCLMA" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.SANCLMA" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/dark_purple</item>
         <item name="colorPrimaryVariant">@color/light_purple</item>

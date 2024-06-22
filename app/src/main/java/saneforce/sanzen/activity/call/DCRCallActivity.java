@@ -840,7 +840,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 }
 
-                if (JwMandatory.equalsIgnoreCase("0")) {
+                if (JwNeed.equalsIgnoreCase("0") && JwMandatory.equalsIgnoreCase("0")) {
                     if (JWOthersFragment.callAddedJointList.isEmpty()) {
                         commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.jointwork_need));
                         moveToPage("JFW/Others");
@@ -878,7 +878,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 }
 
-                if (JwMandatory.equalsIgnoreCase("0")) {
+                if (JwNeed.equalsIgnoreCase("0") && JwMandatory.equalsIgnoreCase("0")) {
                     if (SharedPref.getChmJointworkNeed(this).equals("0")) {
                         if (JWOthersFragment.callAddedJointList.isEmpty()) {
                             commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.jointwork_need));
@@ -929,7 +929,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         return false;
                     }
                 }
-                if (JwMandatory.equalsIgnoreCase("0")) {
+                if (JwNeed.equalsIgnoreCase("0") && JwMandatory.equalsIgnoreCase("0")) {
                     if (JWOthersFragment.callAddedJointList.isEmpty()) {
                         commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.jointwork_need));
                         moveToPage("JFW/Others");

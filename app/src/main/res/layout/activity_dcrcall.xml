@@ -139,7 +139,7 @@
  -->
     <RelativeLayout
         android:id="@+id/rl_btns"
-        android:layout_width="@dimen/_130sdp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_16sdp"
         android:orientation="horizontal"
@@ -153,10 +153,10 @@
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginHorizontal="@dimen/_5sdp"
             android:layout_marginVertical="@dimen/_5sdp"
+            android:layout_toStartOf="@id/btn_final_submit"
             android:background="@drawable/bg_border_with_pink"
             android:fontFamily="@font/satoshi_bold"
             android:paddingHorizontal="@dimen/_15sdp"
@@ -175,7 +175,6 @@
             android:layout_marginHorizontal="@dimen/_5sdp"
             android:layout_marginVertical="@dimen/_5sdp"
             android:paddingHorizontal="@dimen/_15sdp"
-            android:layout_toEndOf="@id/btn_cancel"
             android:background="@drawable/bg_purple"
             android:fontFamily="@font/satoshi_bold"
             android:text="@string/submit"
