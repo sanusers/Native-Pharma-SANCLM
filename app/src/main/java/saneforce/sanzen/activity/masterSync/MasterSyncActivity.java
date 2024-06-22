@@ -1931,57 +1931,42 @@ public class MasterSyncActivity extends AppCompatActivity {
           navigateFrom="Slide";
       });
 
-     SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);
-    slidesViewModel.getAllSlides().observe(this, slides -> {
+        SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);
+       slidesViewModel.getAllSlides().observe(this, slides -> {
         Collections.sort(slides, Comparator.comparingInt(s -> Integer.parseInt(s.getListSlidePosition())));
         adapter.setSlides(slides);
     });
 
-
     slidesViewModel.GetDowloaingCount().observe(this,integer -> {
         txt_downloadcount.setText(String.valueOf(integer)+" / ");
+    });
 
-                if(Integer.valueOf(txt_total.getText().toString())!=0){
-                    if(integer==(Integer.valueOf(txt_total.getText().toString()))){
-                        if (navigateFrom.equalsIgnoreCase("Login")) {
-                            if(isSingleSlideDowloaingStaus){
-                                isSingleSlideDowloaingStaus=false;
-                                commonUtilsMethods.showToastMessage(this, "Slide Updated ");
-                            } else {
-                                commonUtilsMethods.showToastMessage(this, "Slides Downloading Completed ");
-                            }
-                            dialog.dismiss();
-                        }else {
-                            if(isSingleSlideDowloaingStaus){
-                                isSingleSlideDowloaingStaus=false;
-                                commonUtilsMethods.showToastMessage(this, "Slide Updated ");
-                            }
-                            else {
-                                commonUtilsMethods.showToastMessage(this, "Slides Downloading Completed ");
-                            }
-                        }
-                        SharedPref.putSlidestatus(MasterSyncActivity.this,true);
+    txt_total.setText(String.valueOf(SlidesDao.TotalSlidecount()));
 
-                    }else {
-                        SharedPref.putSlidestatus(MasterSyncActivity.this,false);
-                    }
-           }
-        });
-        slidesViewModel.SlideTotalCount().observe(this,integer -> {
-            txt_total.setText(String.valueOf(integer));
 
-        });
-      slidesViewModel.SlideNewCount().observe(this,integer -> {
-          if (navigateFrom.equalsIgnoreCase("Login")) {
-              if (integer == 0) {
+      slidesViewModel.getCountOfDownloadingProcessDone().observe(this, integer -> {
+          if (integer == (Integer.valueOf(SlidesDao.TotalSlidecount()))) {
+              SharedPref.putSlidestatus(MasterSyncActivity.this, true);
+              if (isSingleSlideDowloaingStaus) {
+                  isSingleSlideDowloaingStaus = false;
+                  commonUtilsMethods.showToastMessage(this, "Slide Updated ");
+              } else {
+                  commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
+              }
+
+              if (navigateFrom.equalsIgnoreCase("Login")) {
                   Intent intent = new Intent(context, HomeDashBoard.class);
                   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                   startActivity(intent);
                   finish();
               }
+          } else {
+              SharedPref.putSlidestatus(MasterSyncActivity.this, false);
           }
-
       });
+
+
+
     }
 
 

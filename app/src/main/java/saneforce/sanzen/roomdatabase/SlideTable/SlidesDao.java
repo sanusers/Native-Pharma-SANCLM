@@ -38,18 +38,21 @@ public interface SlidesDao {
 
     @Query("SELECT COUNT(*) FROM SlidesTableDeatils WHERE DownloadingStaus = '3'")
     LiveData<Integer> getCountOfSlidesWithDownloadingStatus();
-
+    @Query("SELECT COUNT(*) FROM SlidesTableDeatils WHERE DownloadingStaus = '3' OR DownloadingStaus = '0'")
+    LiveData<Integer> getCountOfDownloadingProcessDone();
     @Query("SELECT COUNT(*) FROM SlidesTableDeatils WHERE DownloadingStaus = '1'")
     LiveData<Integer> getCountNewStatus();
     @Query("SELECT COUNT(*) FROM SlidesTableDeatils WHERE DownloadingStaus = '2'")
     int getInProcessCount();
 
     @Query("SELECT COUNT(*) FROM SlidesTableDeatils")
-    LiveData<Integer> TotalSlidecount();
+     int TotalSlidecount();
     @Query("SELECT SlideId FROM SlidesTableDeatils")
     List<String> getAllSlideIds();
     @Query("DELETE FROM SlidesTableDeatils WHERE SlideId = :slideId")
     void deleteSlideById(String slideId);
+
+
       @Query("Update SlidesTableDeatils set `Background task`=:New WHERE `Background task` = :old")
      void Changestatus(String New,String old);
 

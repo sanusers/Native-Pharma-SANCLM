@@ -297,7 +297,7 @@ public class SettingsActivity extends AppCompatActivity {
                                     SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
 
                                     String[] splitUrl = logoUrl.split("/");
-                                    SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
+                                    SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, logoUrl, true);
                                     SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
                                     downloadImage(baseWebUrl + logoUrl, splitUrl[splitUrl.length - 1], enteredUrl);
                                     licenseKeyValid = true;

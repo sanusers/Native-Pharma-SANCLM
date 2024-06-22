@@ -46,7 +46,7 @@ public class SlideServices extends Service {
             ArrayList<SlidesTableDeatils> List= SlidesDao.cursorToArrayList();
             for (SlidesTableDeatils mList:List){
                 if(mList.getBackgroundtask().equalsIgnoreCase("1")){
-                    if (mList.getDownloadingStaus().equalsIgnoreCase("1")||mList.getDownloadingStaus().equalsIgnoreCase("0")){
+                    if (mList.getDownloadingStaus().equalsIgnoreCase("1")){
                         if(!MasterSyncActivity.SlideIds.contains(mList.getSlideId())) {
 
                             String url = "https://" + SharedPref.getLogInsite(getApplicationContext()) + "/" + SharedPref.getSlideUrl(getApplicationContext()) + mList.getSlideName();

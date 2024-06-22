@@ -1226,7 +1226,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         }
                     }
 
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Cleared Successfully");
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, " Slides Cleared Successfully");
 
                 }
             });
