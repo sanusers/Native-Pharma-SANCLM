@@ -202,7 +202,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("date", selectedDate.toString());
+        if(selectedDate != null) {
+            outState.putString("date", selectedDate.toString());
+        }
+        outState.putBoolean("isSaved", true);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
@@ -283,9 +286,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
             binding.textDate.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_27, savedInstanceState.getString("date")));
-            selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+            if(savedInstanceState.getString("date") != null) {
+                selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+            }
         }
 
         // THIS CODE IS DESIGN
@@ -1332,6 +1337,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 }
                 binding.viewPagerProgress.setVisibility(View.GONE);
                 if(shouldShowCalender) {
+                    if(HomeDashBoard.selectedDate != null && !SharedPref.getLastCallDate(context).equalsIgnoreCase(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)))) {
+                        SharedPref.setLastCallDate(context, "");
+                    }
                     setupLeftViewPager(context, fragmentManager);
                 }else {
                     isDateSelectionClicked = true;

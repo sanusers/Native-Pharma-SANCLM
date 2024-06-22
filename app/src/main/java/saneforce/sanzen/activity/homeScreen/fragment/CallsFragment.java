@@ -172,7 +172,6 @@ public class CallsFragment extends Fragment {
                                             }
                                             binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
                                             adapter.notifyDataSetChanged();
-                                            SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
                                             if(isProgressNeed) progressDialog.dismiss();
                                         } catch (Exception e) {
                                             if(isProgressNeed) progressDialog.dismiss();

@@ -190,7 +190,10 @@ public class DCRCallActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("call", CallActivityCustDetails);
-        outState.putString("date", HomeDashBoard.selectedDate.toString());
+        if(HomeDashBoard.selectedDate != null) {
+            outState.putString("date", HomeDashBoard.selectedDate.toString());
+        }
+        outState.putBoolean("isSaved", true);
         Log.d("save instance", "onSaveInstanceState: " + outState.size() + " -> " + Arrays.toString(outState.keySet().toArray()));
     }
 
@@ -210,11 +213,13 @@ public class DCRCallActivity extends AppCompatActivity {
         callsUtil = new CallsUtil(this);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
-        if(savedInstanceState != null) {
+        if(savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
             Log.i("TAG1", "onCreate: " + savedInstanceState.size());
             Log.i("TAG2", "onCreate: " + Arrays.toString(savedInstanceState.keySet().toArray()));
             CallActivityCustDetails = savedInstanceState.getParcelableArrayList("call");
-            HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+            if(savedInstanceState.getString("date") != null) {
+                HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+            }
 //            CommonAlertBox.permissionChangeAlert(this);
 //            if(SharedPref.getGeoNeed(this).equalsIgnoreCase("0")) {
                 if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED

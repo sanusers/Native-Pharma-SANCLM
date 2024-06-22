@@ -85,7 +85,10 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("date", HomeDashBoard.selectedDate.toString());
+        if(HomeDashBoard.selectedDate != null) {
+            outState.putString("date", HomeDashBoard.selectedDate.toString());
+        }
+        outState.putBoolean("isSaved", true);
         Log.d("save instance", "onSaveInstanceState: " + outState.size() + " -> " + Arrays.toString(outState.keySet().toArray()));
     }
 
@@ -99,8 +102,10 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
         commonUtilsMethods.setUpLanguage(this);
         gpsTrack = new GPSTrack(this);
 
-        if(savedInstanceState != null) {
-            HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+        if(savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
+            if(savedInstanceState.getString("date") != null) {
+                HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+            }
             if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
