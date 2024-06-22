@@ -162,15 +162,15 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 if (userId.isEmpty()) {
                     binding.userId.requestFocus();
-               commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_user_id));
+                    commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_user_id));
                 } else if (userPwd.isEmpty()) {
                     binding.password.requestFocus();
-               commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_password));
+                    commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_password));
                 } else {
                     if (UtilityClass.isNetworkAvailable(LoginActivity.this)) {
                         login(userId, userPwd);
                     } else {
-                   commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.no_network));
+                        commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.no_network));
                     }
                 }
             }
@@ -397,7 +397,7 @@ public class LoginActivity extends AppCompatActivity {
 
             jsonObject.put("location", "0.0 : 0.0");
             Log.v("Login", "--json-" + jsonObject);
-            loginViewModel.loginProcess(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()), jsonObject.toString()).observe(LoginActivity.this, new Observer<JsonElement>() {
+            loginViewModel.loginProcess(this, SharedPref.getCallApiUrl(getApplicationContext()), jsonObject.toString()).observe(LoginActivity.this, new Observer<JsonElement>() {
                 @Override
                 public void onChanged(JsonElement jsonObject) {
                     binding.progressBar.setVisibility(View.GONE);

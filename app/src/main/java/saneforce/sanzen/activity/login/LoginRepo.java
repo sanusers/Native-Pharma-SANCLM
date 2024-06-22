@@ -40,19 +40,21 @@ public class LoginRepo {
             @Override
             public void onFailure (@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 Log.e("test","login failed : " + t);
-                if(!SharedPref.getLoginId(context).equalsIgnoreCase("")){
-                    LoginActivity.binding.progressBar.setVisibility(View.GONE);
-                    LoginActivity.binding.loginBtn.setEnabled(true);
-                    Toast.makeText(context.getApplicationContext(), R.string.please_try_again,Toast.LENGTH_SHORT).show();
-                   context.startActivity(new Intent(context, HomeDashBoard.class));
-
-                }else {
-                    LoginActivity.binding.progressBar.setVisibility(View.GONE);
-                    LoginActivity.binding.loginBtn.setEnabled(true);
-                    Toast.makeText(context.getApplicationContext(), R.string.please_try_again,Toast.LENGTH_SHORT).show();
+                try {
+                    if(!SharedPref.getLoginId(context).equalsIgnoreCase("")) {
+                        LoginActivity.binding.progressBar.setVisibility(View.GONE);
+                        LoginActivity.binding.loginBtn.setEnabled(true);
+                        Toast.makeText(context, R.string.please_try_again, Toast.LENGTH_SHORT).show();
+                        context.startActivity(new Intent(context, HomeDashBoard.class));
+                    }else {
+                        LoginActivity.binding.progressBar.setVisibility(View.GONE);
+                        LoginActivity.binding.loginBtn.setEnabled(true);
+                        Toast.makeText(context, R.string.please_try_again, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e("Login", "onFailure: " + e.getMessage());
+                    e.printStackTrace();
                 }
-
-
             }
         });
 
