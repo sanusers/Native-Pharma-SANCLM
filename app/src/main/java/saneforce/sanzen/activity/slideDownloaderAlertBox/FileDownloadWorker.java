@@ -57,7 +57,7 @@ public class FileDownloadWorker extends Worker {
      String    fileId = getInputData().getString("Slide_id");
      String  downloadFileName = getInputData().getString("Slide_name");
      String  Flag = getInputData().getString("Flag");
-        String  FilePosition = getInputData().getString("FilePosition");
+     String  FilePosition = getInputData().getString("FilePosition");
 
      try {
             URL url = new URL(url1);
@@ -77,12 +77,20 @@ public class FileDownloadWorker extends Worker {
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                 apkStorage = new File(getApplicationContext().getExternalFilesDir(null) + "/Slides/");
             } else {
+                slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downlaoding Failure","0","0","1",FilePosition));
+                if(Flag.equalsIgnoreCase("1")){
+                    ServicesRestarmehtod();
+                }
                 return Result.failure();
             }
 
             if (!apkStorage.exists()) {
                 if (!apkStorage.mkdirs()) {
                     Log.e(TAG, "Directory Creation Failed.");
+                    slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downlaoding Failure","0","0","1",FilePosition));
+                    if(Flag.equalsIgnoreCase("1")){
+                        ServicesRestarmehtod();
+                    }
                     return    Result.failure();
                 }
             }
@@ -99,6 +107,10 @@ public class FileDownloadWorker extends Worker {
 
             if (!outputFile.createNewFile()) {
                 Log.e(TAG, "File Creation Failed.");
+                slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downlaoding Failure","0","0","1",FilePosition));
+                if(Flag.equalsIgnoreCase("1")){
+                    ServicesRestarmehtod();
+                }
                 return  Result.failure();            }
 
             FileOutputStream fos = new FileOutputStream(outputFile);
@@ -178,7 +190,7 @@ public class FileDownloadWorker extends Worker {
 
 
 
-    boolean Thumbnail(String fileName){
+   public boolean Thumbnail(String fileName){
 
         String fileFormat = SupportClass.getFileExtension(fileName);
         File sourceFile = new File(getApplicationContext().getExternalFilesDir(null) + "/Slides/", fileName);
@@ -223,7 +235,7 @@ public class FileDownloadWorker extends Worker {
         return false;
     }
 
-    void ServicesRestarmehtod(){
+  public   void ServicesRestarmehtod(){
 
             Intent Intent = new Intent(getApplicationContext(), SlideServices.class);
             getApplicationContext().stopService(Intent);

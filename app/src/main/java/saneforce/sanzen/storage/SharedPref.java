@@ -732,7 +732,6 @@ public class SharedPref {
         editor.putString(EDIT_CALL_DEL_NEED, jsonObject.getString("EditCallDelNeed"));
         editor.putString(ACTIVITY_CAP, jsonObject.getString("ActivityCap"));
         editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\",""));
-            Log.v("SLIDES_PATH",jsonObject.getString("slide_folder").replaceAll("\\\\",""));
         editor.apply();
 
     }catch (Exception ignore){

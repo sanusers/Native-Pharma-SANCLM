@@ -251,7 +251,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mWTCode1 = SelectedWorkType.getString("Code");
                     mWTName1 = SelectedWorkType.getString("Name");
 
-                    if (SelectedWorkType.getString("FWFlg").equalsIgnoreCase("F")) {
+                    if (SelectedWorkType.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
                         IsFeildWorkFlag = "F1";
                         NeedClusterFlag1 = true;
                         rlculster.setVisibility(View.VISIBLE);
@@ -271,7 +271,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mFwFlg2 = SelectedWorkType.getString("FWFlg");
                     mWTCode2 = SelectedWorkType.getString("Code");
                     mWTName2 = SelectedWorkType.getString("Name");
-                    if (SelectedWorkType.getString("FWFlg").equalsIgnoreCase("F")) {
+                    if (SelectedWorkType.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
                         NeedClusterFlag2 = true;
                         IsFeildWorkFlag = "F2";
                         rlculster.setVisibility(View.VISIBLE);
@@ -1548,7 +1548,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                     Date FirstPlanDate = sdf.parse(DayplanDate1);
                     Date CurentDate = sdf.parse(CurrentDate);
-                    String TerritoryFlag1 = "Y", TerritoryFlag2 = "Y";
+                    String TerritoryFlag1 = "", TerritoryFlag2 = "";
 
                     if(Objects.requireNonNull(FirstPlanDate).equals(CurentDate)) {
                         mTowncode1 = FirstSeasonDayPlanObject.getString("Pl");

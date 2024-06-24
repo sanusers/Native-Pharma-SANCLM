@@ -47,7 +47,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/satoshi_medium"
             android:gravity="center"
-            android:text="@string/yet_to_add_rcpa"
+            android:text="@string/no_records_avail"
             android:textColor="@color/dark_purple"
             android:textSize="@dimen/_7ssp" />
     </LinearLayout>

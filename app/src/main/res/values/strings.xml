@@ -161,6 +161,7 @@
     <string name="geo_tagging">Geo Tagging</string>
     <string name="address">Address</string>
     <string name="yet_to_add_rcpa">Yet to add RCPA</string>
+    <string name="no_records_avail">No Records Available</string>
     <string name="competitor_product">Competitor Product</string>
     <string name="clear">Clear</string>
     <string name="comp_prd">Competitor Product</string>
