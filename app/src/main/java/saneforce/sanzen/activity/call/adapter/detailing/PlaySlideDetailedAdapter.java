@@ -473,7 +473,9 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         });
 
         rl_stop.setOnClickListener(v -> {
-            arrayStore.clear();
+            if(arrayStore != null) {
+                arrayStore.clear();
+            }
             act.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             if (PlaySlideDetailedAdapter.preVal) {
                 int timecount = 0;

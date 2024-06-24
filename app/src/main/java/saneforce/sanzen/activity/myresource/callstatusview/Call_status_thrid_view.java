@@ -76,20 +76,6 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
                 for (int i = 0; i < jsonvst_ctl.length(); i++) {
                     JSONObject jsonObject = jsonvst_ctl.getJSONObject(i);
 
-//    "CustCode":"559116",
-//    "CustType":"1",
-//    "FW_Indicator":"F",
-//    "Dcr_dt":"2024-03-12",
-//    "month_name":"March",
-//    "Mnth":3,
-//    "Yr":2024,
-//    "CustName":"ADAM FARUKH",
-//    "town_code":"122200",
-//    "town_name":"Dharmapuri ( Vignesh MR 2 )",
-//    "Dcr_flag":1,
-//    "SF_Code":"MGR0941",
-//    "Trans_SlNo":"DP3-760",
-//    "AMSLNo":"DP3-620"
                     if(jsonObject.getString("Mnth").equals(previousMonth)) {
                         if (!Dates_call.equals(jsonObject.getString("Dcr_dt"))) {
                             date_format=(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, jsonObject.getString("Dcr_dt")));;
@@ -191,21 +177,6 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
 //                        view_list.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
 //                        view_list.setAdapter(call_statusadap);
 
-
-//    "CustCode":"",
-//    "CustType":"0",
-//    "FW_Indicator":"N",
-//    "Dcr_dt":"2024-01-01",
-//    "month_name":"January",
-//    "Mnth":1,
-//    "Yr":2024,
-//    "CustName":"",
-//    "town_code":"",
-//    "town_name":"",
-//    "Dcr_flag":1,
-//    "SF_Code":"MGR0941",
-//    "Trans_SlNo":"DP3-697",
-//    "AMSLNo":""
                     }
                 }
             }

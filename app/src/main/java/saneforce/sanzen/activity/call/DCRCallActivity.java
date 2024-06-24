@@ -154,7 +154,7 @@ public class DCRCallActivity extends AppCompatActivity {
     JSONObject remObj;
     double CompFullValues = 0;
     boolean isCreateJsonSuccess;
-    String FwFlag;
+    String FwFlag, workTypeName;
     Dialog dialogCheckOut;
     Button btnCheckOut;
     TextView tv_address, tv_dateTime;
@@ -624,6 +624,7 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonObject.put("month_name", CommonUtilsMethods.getCurrentInstance("MMMM"));
             jsonObject.put("Mnth", CommonUtilsMethods.getCurrentInstance("M"));
             jsonObject.put("Yr", CommonUtilsMethods.getCurrentInstance("yyyy"));
+            jsonObject.put("vtm", CommonUtilsMethods.getCurrentInstance("hh:mm aa"));
             jsonObject.put("CustName", CallActivityCustDetails.get(0).getName());
             jsonObject.put("town_code", CallActivityCustDetails.get(0).getTown_code());
             jsonObject.put("town_name", CallActivityCustDetails.get(0).getTown_name());
@@ -631,6 +632,7 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonObject.put("SF_Code", SfCode);
             jsonObject.put("Trans_SlNo", "");
             jsonObject.put("FW_Indicator", FwFlag);
+            jsonObject.put("WorkType_Name", workTypeName);
             jsonObject.put("AMSLNo", "");
             jsonObject.put("versionNo",  getResources().getString(R.string.app_version));
             jsonObject.put("mod", Constants.APP_MODE);
@@ -639,7 +641,6 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonObject.put("AppName", getString(R.string.str_app_name));
             jsonObject.put("language", SharedPref.getSelectedLanguage(this));
             jsonArray.put(jsonObject);
-
             MasterDataTable inputdata =new MasterDataTable();
             inputdata.setMasterKey(Constants.CALL_SYNC);
             inputdata.setMasterValues(jsonArray.toString());
@@ -660,6 +661,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     jsonObject.put("month_name", CommonUtilsMethods.getCurrentInstance("MMMM"));
                     jsonObject.put("Mnth", CommonUtilsMethods.getCurrentInstance("M"));
                     jsonObject.put("Yr", CommonUtilsMethods.getCurrentInstance("yyyy"));
+                    jsonObject.put("vtm", CommonUtilsMethods.getCurrentInstance("hh:mm aa"));
                     jsonObject.put("CustName", AdditionalCusListAdapter.saveAdditionalCallArrayList.get(i).getName());
                     jsonObject.put("town_code", AdditionalCusListAdapter.saveAdditionalCallArrayList.get(i).getTown_code());
                     jsonObject.put("town_name", AdditionalCusListAdapter.saveAdditionalCallArrayList.get(i).getTown_name());
@@ -667,6 +669,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     jsonObject.put("SF_Code", SfCode);
                     jsonObject.put("Trans_SlNo", "");
                     jsonObject.put("FW_Indicator", FwFlag);
+                    jsonObject.put("WorkType_Name", workTypeName);
                     jsonObject.put("AMSLNo", "");
                     jsonArray.put(jsonObject);
 
@@ -688,7 +691,7 @@ public class DCRCallActivity extends AppCompatActivity {
             CallDataRestClass.resetcallValues(context);
 
         } catch (Exception ignored) {
-
+            ignored.printStackTrace();
         }
     }
 
@@ -2200,6 +2203,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     jsonSaveDcr.put("WTName", workTypeData.getString("Name"));
                     jsonSaveDcr.put("FWFlg", workTypeData.getString("FWFlg"));
                     FwFlag = workTypeData.getString("FWFlg");
+                    workTypeName = workTypeData.getString("Name");
                 }
             }
 

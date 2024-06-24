@@ -1892,22 +1892,20 @@ public class MasterSyncActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
     }
 
-
-  public void SlideAlertbox(boolean servesflag){
-      SlidesDao.Changestatus("1","0");
-      MasterSyncActivity.SlideIds.clear();
-        if(servesflag){
-            SharedPref.putSlidestatus(MasterSyncActivity.this,false);
+    public void SlideAlertbox(boolean servesflag) {
+        SlidesDao.Changestatus("1", "0");
+        MasterSyncActivity.SlideIds.clear();
+        if(servesflag) {
+            SharedPref.putSlidestatus(MasterSyncActivity.this, false);
             Intent intent1 = new Intent(MasterSyncActivity.this, SlideServices.class);
             stopService(intent1);
 
             Intent startIntent = new Intent(getApplicationContext(), SlideServices.class);
             startService(startIntent);
         }
-       isSingleSlideDowloaingStaus=false;
+        isSingleSlideDowloaingStaus = false;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.slide_downloader_alert_box, null);
         RecyclerView recyclerView = dialogView.findViewById(R.id.recyelerview123);
@@ -1923,52 +1921,47 @@ public class MasterSyncActivity extends AppCompatActivity {
         builder.setView(dialogView);
         Dialog dialog = builder.create();
         dialog.setCancelable(false);
-        dialog.show();
+        if(!isFinishing()) {
+            dialog.show();
+        }
 
-
-      cancel_img.setOnClickListener(view -> {
-          dialog.dismiss();
-          navigateFrom="Slide";
-      });
+        cancel_img.setOnClickListener(view -> {
+            dialog.dismiss();
+            navigateFrom = "Slide";
+        });
 
         SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);
-       slidesViewModel.getAllSlides().observe(this, slides -> {
-        Collections.sort(slides, Comparator.comparingInt(s -> Integer.parseInt(s.getListSlidePosition())));
-        adapter.setSlides(slides);
-    });
+        slidesViewModel.getAllSlides().observe(this, slides -> {
+            Collections.sort(slides, Comparator.comparingInt(s -> Integer.parseInt(s.getListSlidePosition())));
+            adapter.setSlides(slides);
+        });
 
-    slidesViewModel.GetDowloaingCount().observe(this,integer -> {
-        txt_downloadcount.setText(String.valueOf(integer)+" / ");
-    });
+        slidesViewModel.GetDowloaingCount().observe(this, integer -> {
+            txt_downloadcount.setText(String.valueOf(integer) + " / ");
+        });
 
-    txt_total.setText(String.valueOf(SlidesDao.TotalSlidecount()));
+        txt_total.setText(String.valueOf(SlidesDao.TotalSlidecount()));
 
+        slidesViewModel.getCountOfDownloadingProcessDone().observe(this, integer -> {
+            if(integer == (Integer.valueOf(SlidesDao.TotalSlidecount()))) {
+                SharedPref.putSlidestatus(MasterSyncActivity.this, true);
+                if(isSingleSlideDowloaingStaus) {
+                    isSingleSlideDowloaingStaus = false;
+                    commonUtilsMethods.showToastMessage(this, "Slide Updated ");
+                }else {
+                    commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
+                }
 
-      slidesViewModel.getCountOfDownloadingProcessDone().observe(this, integer -> {
-          if (integer == (Integer.valueOf(SlidesDao.TotalSlidecount()))) {
-              SharedPref.putSlidestatus(MasterSyncActivity.this, true);
-              if (isSingleSlideDowloaingStaus) {
-                  isSingleSlideDowloaingStaus = false;
-                  commonUtilsMethods.showToastMessage(this, "Slide Updated ");
-              } else {
-                  commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
-              }
-
-              if (navigateFrom.equalsIgnoreCase("Login")) {
-                  Intent intent = new Intent(context, HomeDashBoard.class);
-                  intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                  startActivity(intent);
-                  finish();
-              }
-          } else {
-              SharedPref.putSlidestatus(MasterSyncActivity.this, false);
-          }
-      });
-
-
-
+                if(navigateFrom.equalsIgnoreCase("Login")) {
+                    Intent intent = new Intent(context, HomeDashBoard.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+            }else {
+                SharedPref.putSlidestatus(MasterSyncActivity.this, false);
+            }
+        });
     }
-
-
 
 }

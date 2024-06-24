@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.firebase.crashlytics'
 }
 
 apply plugin: 'com.google.gms.google-services'
@@ -100,7 +101,7 @@ dependencies {
     implementation "com.google.firebase:firebase-analytics"
     implementation "com.google.firebase:firebase-crashlytics"
 //    implementation "com.google.firebase:firebase-auth:22.1.2"
-    implementation platform("com.google.firebase:firebase-bom:26.0.0")
+    implementation platform("com.google.firebase:firebase-bom:33.1.1")
 
     //To use java Local(Date) library below api level 26
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")

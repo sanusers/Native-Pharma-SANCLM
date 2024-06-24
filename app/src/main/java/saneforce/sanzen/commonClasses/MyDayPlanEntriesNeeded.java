@@ -128,6 +128,7 @@ public class MyDayPlanEntriesNeeded {
     private static void setupMyDayPlanEntriesNeeded(Context context) {
         datesNeeded.clear();
         TreeMap<String, String> dates = new TreeMap<>();
+        boolean isCallDataAvailable = false;
         try {
             LocalDate dateBefore;
             LocalDate currentDate = LocalDate.now().plusDays(1);
@@ -136,6 +137,7 @@ public class MyDayPlanEntriesNeeded {
 
             JSONArray dcrdatas = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
             if(dcrdatas.length()>0) {
+                isCallDataAvailable = true;
                 for (int i = 0; i<dcrdatas.length(); i++) {
                     JSONObject jsonObject = dcrdatas.getJSONObject(i);
                     String cusType = jsonObject.optString("CustType");
@@ -197,10 +199,14 @@ public class MyDayPlanEntriesNeeded {
             Log.e("set date switched2 ", "setupMyDayPlanEntriesNeeded: " + SharedPref.getSelectedDateCal(context));
             syncTaskStatus.datesFound();
         }
-        else if(SharedPref.getSelectedDateCal(context).isEmpty() && !datesNeeded.isEmpty()){
+        else if(SharedPref.getSelectedDateCal(context).isEmpty() && !datesNeeded.isEmpty() && isCallDataAvailable){
             SharedPref.setSelectedDateCal(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, datesNeeded.first()));
             Log.e("set date first", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
             syncTaskStatus.datesFound();
+        }
+        else if(SharedPref.getSelectedDateCal(context).isEmpty() && !datesNeeded.isEmpty() && !isCallDataAvailable){
+            Log.e("not set date first", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
+            syncTaskStatus.noDatesFound();
         }
         else if(dates.containsKey(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)) && Objects.requireNonNull(dates.get(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))).equalsIgnoreCase("01") && datesNeeded.isEmpty()) {
             SharedPref.setSelectedDateCal(context, "");

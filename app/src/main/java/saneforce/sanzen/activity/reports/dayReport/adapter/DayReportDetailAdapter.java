@@ -458,10 +458,13 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             for (String s : newArray) {
                 String[] item = s.split("[(]");
 
-                String Rcpa = item[3];
-                if (item[3].contains("^")) {
-                    String[] rcpa = item[3].replace("^", ",").split("[,]");
-                    Rcpa = rcpa[1];
+                String Rcpa = "";
+                if(item.length > 2) {
+                    Rcpa = item[3];
+                    if(item[3].contains("^")) {
+                        String[] rcpa = item[3].replace("^", ",").split("[,]");
+                        Rcpa = rcpa[1];
+                    }
                 }
                 Log.e("PromotedCode", productPromoted + " ???? " + item[0]);
                 if (productPromoted.contains(item[0].trim())) {
