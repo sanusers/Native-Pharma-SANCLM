@@ -59,7 +59,7 @@
                     android:background="@drawable/backround_text"
                     android:backgroundTint="@color/bg_pink10"
                     android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/card11"
@@ -83,10 +83,10 @@
                         android:textSize="@dimen/_7sdp"
                         tools:ignore="SpUsage" />
 
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/rejected_reason"
                         android:layout_below="@id/txt_rejection"
                         android:layout_marginStart="@dimen/_4sdp"
                         android:layout_toRightOf="@+id/card11"
@@ -98,11 +98,11 @@
                         android:textSize="@dimen/_7sdp"
                         tools:ignore="SpUsage" />
 
-
                     <ImageView
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
                         android:padding="@dimen/_4sdp"
+                        android:id="@+id/close_rejected_reason"
                         android:layout_alignParentRight="true"
                         android:src="@drawable/pink_cross">
 

@@ -75,7 +75,10 @@ public class CustomerProfile extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("call", CallActivityCustDetails);
-        outState.putString("date", HomeDashBoard.selectedDate.toString());
+        if(HomeDashBoard.selectedDate != null) {
+            outState.putString("date", HomeDashBoard.selectedDate.toString());
+        }
+        outState.putBoolean("isSaved", true);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -92,9 +95,11 @@ public class CustomerProfile extends AppCompatActivity {
         btn_start = findViewById(R.id.btn_start_det);
         img_back = findViewById(R.id.iv_back);
         cusName = findViewById(R.id.tag_selection);
-        if(savedInstanceState != null) {
+        if(savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
             CallActivityCustDetails = savedInstanceState.getParcelableArrayList("call");
-            HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+            if(savedInstanceState.getString("date") != null) {
+                HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+            }
             if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED

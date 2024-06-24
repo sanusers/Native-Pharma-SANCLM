@@ -232,36 +232,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
                 brandProductArrayList.set(0, brandModelClass);
             }
 
-//            for (int i = 0; i < brandSlide.length(); i++) {
-//                JSONObject brandObject = brandSlide.getJSONObject(i);
-//                String brandName = "";
-//                String brandCode = brandObject.getString("Product_Brd_Code");
-//                String priority = brandObject.getString("Priority");
-//
-//                ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
-//                for (int j = 0; j < prodSlide.length(); j++) {
-//                    JSONObject productObject = prodSlide.getJSONObject(j);
-//                    if (productObject.getString("Code").equalsIgnoreCase(brandCode)) {
-//                        brandName = productObject.getString("Name");
-//                        String code = productObject.getString("Code");
-//                        String slideId = productObject.getString("SlideId");
-//                        String fileName = productObject.getString("FilePath");
-//                        String slidePriority = productObject.getString("Priority");
-//                        BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
-//                        productArrayList.add(product);
-//                    }
-//                }
-//                boolean brandSelected = i == 0;
-//                if (!brandCodeList.contains(brandCode)) { //To avoid repeated of same brand
-//                    BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, brandSelected, productArrayList);
-//                    brandProductArrayList.add(brandModelClass);
-//                    brandCodeList.add(brandCode);
-//                }
-//            }
-
-            //savedPresentation.size will be > 0 only when we lunch this activity by click on "Edit" in Presentation Activity.
-            //savedPresentation.size will be 0 when we launch this activity by click on create presentation btn in Presentation Activity.
-            if (savedPresentation.size() > 0) { //Changing image selection state if there are data in savedPresentation.same time load data of selected image to the SelectedSlideAdapter
+            if (!savedPresentation.isEmpty()) { //Changing image selection state if there are data in savedPresentation.same time load data of selected image to the SelectedSlideAdapter
                 for (BrandModelClass.Product savedProduct : savedPresentation) {
                     for (BrandModelClass brandModelClass : brandProductArrayList) {
                         if (savedProduct.getBrandCode().equals(brandModelClass.brandCode)) {
@@ -349,8 +320,6 @@ public class CreatePresentationActivity extends AppCompatActivity {
             binding.save.setEnabled(!selectedSlideArrayList.isEmpty());
         };
 
-
-        Collections.sort(arrayList, (product, t1) -> product.getPriority().compareTo(t1.getPriority()));
 
         slideImageAdapter = new SlideImageAdapter(CreatePresentationActivity.this, arrayList, imageSelectionInterface);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(CreatePresentationActivity.this, 2);

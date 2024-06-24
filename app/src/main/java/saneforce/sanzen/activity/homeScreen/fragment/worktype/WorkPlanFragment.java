@@ -41,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,7 +88,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("StaticFieldLeak")
     public static WorkplanFragmentBinding binding;
     ProgressDialog progressDialog;
-    String CheckInOutStatus, FinalSubmitStatus, hqCode = "";
+    String CheckInOutStatus, FinalSubmitStatus, hqCode = "", rejectedReason = "";
     JSONObject jsonObject = new JSONObject();
 
     ArrayList<JSONObject> workType_list1 = new ArrayList<>();
@@ -191,6 +192,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.rlcluster2.setOnClickListener(this);
         binding.rlheadquates2.setOnClickListener(this);
         binding.llDelete.setOnClickListener(this);
+        binding.closeRejectedReason.setOnClickListener(this);
+
         boolean toSync = false;
         if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
             try {
@@ -586,6 +589,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         try {
             switch (v.getId()){
+                case R.id.close_rejected_reason:
+                    binding.rlRejReason.setVisibility(View.GONE);
+                    binding.rejectedReason.setText("");
+                    binding.rejectedReason.setVisibility(View.GONE);
+                    break;
 
                 case R.id.rlworktype1:
                     if(HomeDashBoard.binding.textDate.getText().toString().equalsIgnoreCase("")) {
@@ -740,7 +748,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
             } else if(mTowncode1.isEmpty() && mFwFlg1.equalsIgnoreCase("F")) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_cluster));
-            } else if((SharedPref.getLastCallDate(requireContext()).isEmpty() || !SharedPref.getLastCallDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)))) && mFwFlg1.equalsIgnoreCase("F")) {
+            } else if((mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F"))
+                    && ((SharedPref.getLastCallDate(requireContext()).isEmpty()
+                        || !SharedPref.getLastCallDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)))))) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.should_have_a_call));
             } else {
                 if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
@@ -1505,7 +1515,32 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             binding.progressWt1.setVisibility(View.VISIBLE);
             JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
             JSONArray worktypedata = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+            JSONArray dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
             SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(),false,false);
+            rejectedReason = "";
+
+            if(dateSync.length()>0) {
+                for (int i = 0; i<dateSync.length(); i++) {
+                    JSONObject jsonObject = dateSync.getJSONObject(i);
+                    String dateString = jsonObject.getJSONObject("dt").getString("date").substring(0, 10);
+                    LocalDate date = LocalDate.parse(dateString);
+                    LocalDate currentDate = HomeDashBoard.selectedDate;
+                    if(date.isEqual(currentDate)) {
+                        rejectedReason = jsonObject.optString("reason");
+                        break;
+                    }
+                }
+            }
+
+            if(!rejectedReason.isEmpty()) {
+                binding.rlRejReason.setVisibility(View.VISIBLE);
+                binding.rejectedReason.setText(rejectedReason);
+                binding.rejectedReason.setVisibility(View.VISIBLE);
+            }else {
+                binding.rlRejReason.setVisibility(View.GONE);
+                binding.rejectedReason.setText("");
+                binding.rejectedReason.setVisibility(View.GONE);
+            }
 
             mTowncode1 = "";
             mTownname1 = "";
