@@ -336,9 +336,11 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
 
     private void filter(String text) {
         ArrayList<DcrDetailModelList> filteredNames = new ArrayList<>();
-        for (DcrDetailModelList s : dcrDetailModelLists) {
-            if (s.getName().toLowerCase().contains(text.toLowerCase())) {
-                filteredNames.add(s);
+        if(dcrDetailModelLists != null && !dcrDetailModelLists.isEmpty()) {
+            for (DcrDetailModelList s : dcrDetailModelLists) {
+                if(s.getName().toLowerCase().contains(text.toLowerCase())) {
+                    filteredNames.add(s);
+                }
             }
         }
         adapterCusSingleList.filterList(filteredNames);
