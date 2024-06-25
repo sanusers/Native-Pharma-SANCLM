@@ -144,7 +144,11 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         if (isProductRequested && !dataModel.getProducts().isEmpty()){
             holder.PrdLayout.setVisibility(View.VISIBLE);
         }
-
+        if(SharedPref.getWrkAreaName(context).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)){
+            holder.clusterText.setText("Cluster");
+        } else{
+            holder.clusterText.setText(SharedPref.getWrkAreaName(context));
+        }
         String detailingNeed = "0";
 
         switch (reportOf) {
@@ -493,7 +497,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, visitTime, modifiedTime, cluster, pob, feedback, jointWork, nextVisit, checkInTime, checkInAddress, checkInMarker,textInputName;
-        TextView checkOutTime, checkOutAddress, checkOutMarker, overAllRemark, viewMoreTxt,textPromoted,textProduct,textSamples,textRxQty,textInput,textProductName;
+        TextView checkOutTime, checkOutAddress, checkOutMarker, overAllRemark, viewMoreTxt,textPromoted,textProduct,textSamples,textRxQty,textInput,textProductName,clusterText;
         ImageView nameIcon, viewMoreArrow,rcpa_arrow,slide_arrow;
         LinearLayout viewMore, checkInOutLayout,EventLayout,rcpaLayout,rcpaLayoutitle, slideDetailsLayout,SlidercpaLayoutitle,jointWorkLayout;
         RelativeLayout rlNextVisit,pobLayOut,feedBackLayout;
@@ -555,6 +559,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             textProductName = itemView.findViewById(R.id.tag_prd_name);
             textInputName = itemView.findViewById(R.id.tag_input_name_main);
             view5 = itemView.findViewById(R.id.view5);
+            clusterText = itemView.findViewById(R.id.clusterTxt);
 
         }
     }

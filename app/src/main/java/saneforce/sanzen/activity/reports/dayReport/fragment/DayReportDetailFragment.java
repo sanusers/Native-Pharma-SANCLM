@@ -217,13 +217,17 @@ public class DayReportDetailFragment extends Fragment {
             binding.view3.setVisibility(View.VISIBLE);
             binding.workType2.setText(dayReportModel.getAdditional_Temp_Details());
         }
-        if (SharedPref.getDesig(requireContext()).equals("MGR")) {
-            binding.hqLayout.setVisibility(View.VISIBLE);
-        }
+            binding.hqLayout.setVisibility(View.GONE);
+
         if (dayReportModel.getRemarks()==null || dayReportModel.getRemarks().equals("")){
             binding.remarksLayout.setVisibility(View.GONE);
         }else {
             binding.remarks.setText(dayReportModel.getRemarks());
+        }
+        if(SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)){
+            binding.clusterTxt.setText("Cluster");
+        } else{
+            binding.clusterTxt.setText(SharedPref.getWrkAreaName(requireContext()));
         }
     }
 

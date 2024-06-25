@@ -1,6 +1,8 @@
 package saneforce.sanzen.activity.myresource.callstatusview;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,14 +14,24 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import saneforce.sanzen.activity.approvals.geotagging.GeoTaggingModelList;
 import saneforce.sanzen.commonClasses.Constants;
@@ -30,9 +42,6 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class Call_status_thrid_view extends Fragment {
-
-
-
     call_statusadapter call_statusadap;
     ArrayList<callstatus_model> call_list = new ArrayList<>();
     ArrayList<String> dateflt = new ArrayList<>();
@@ -41,6 +50,7 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
 
     RoomDB roomDB;
     MasterDataDao masterDataDao;
+    String doctorName;
 
     @SuppressLint("ObsoleteSdkInt")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,51 +61,38 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
         roomDB= RoomDB.getDatabase(requireContext());
         masterDataDao=roomDB.masterDataDao();
         Calendar c = Calendar.getInstance();
-        // Go back one month
-        // Format the previous month in "MM" format
+
         SimpleDateFormat df = new SimpleDateFormat("M");
          previousMonth = df.format(c.getTime());
 
         System.out.println("Previous month in third MM format: " + previousMonth);
+
+
+        setUp();
         callsview();
 
         return v;
     }
+
     public void callsview() {
+        System.out.println("callsViewName--->" + doctorName);
         try {
             call_list.clear();
             String Dates_call = "", vALDATE = "";
-
-            String CustType="",FW_Indicator="",Mnth="",CustName="",town_name="",date_format="",chckflk="",workType;
-            String CustCode="",Dcr_dt="",month_name="",town_code="",Dcr_flag="",SF_Code="",Trans_SlNo="",AMSLNo="",  medicalPersonnel="",time = "";
+            String CustType = "", FW_Indicator = "", Mnth = "", CustName = "", town_name = "", date_format = "", chckflk = "", workType;
+            String CustCode = "", Dcr_dt = "", month_name = "", town_code = "", Dcr_flag = "", SF_Code = "", Trans_SlNo = "", AMSLNo = "", medicalPersonnel = "", time = "";
 
             JSONArray jsonvst_ctl = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
             JSONArray jsonvst_wrktype = new JSONArray(masterDataDao.getDataByKey(Constants.WORK_TYPE));
-            Log.d("callstatus", String.valueOf(jsonvst_ctl));
+
             if (jsonvst_ctl.length() > 0) {
                 for (int i = 0; i < jsonvst_ctl.length(); i++) {
                     JSONObject jsonObject = jsonvst_ctl.getJSONObject(i);
-
-//    "CustCode":"559116",
-//    "CustType":"1",
-//    "FW_Indicator":"F",
-//    "Dcr_dt":"2024-03-12",
-//    "month_name":"March",
-//    "Mnth":3,
-//    "Yr":2024,
-//    "CustName":"ADAM FARUKH",
-//    "town_code":"122200",
-//    "town_name":"Dharmapuri ( Vignesh MR 2 )",
-//    "Dcr_flag":1,
-//    "SF_Code":"MGR0941",
-//    "Trans_SlNo":"DP3-760",
-//    "AMSLNo":"DP3-620"
-                    if(jsonObject.getString("Mnth").equals(previousMonth)) {
+                    if (jsonObject.getString("Mnth").equals(previousMonth)) {
                         if (!Dates_call.equals(jsonObject.getString("Dcr_dt"))) {
-                            date_format=(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, jsonObject.getString("Dcr_dt")));;
+                            date_format = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, jsonObject.getString("Dcr_dt"));
 
-                            chckflk="1";
-
+                            chckflk = "1";
                             Dates_call = jsonObject.getString("Dcr_dt");
                             Dcr_dt = jsonObject.getString("Dcr_dt");
                             CustType = jsonObject.getString("CustType");
@@ -112,8 +109,6 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
                             Trans_SlNo = jsonObject.getString("Trans_SlNo");
                             AMSLNo = jsonObject.getString("AMSLNo");
                             time = jsonObject.getString("vtm");
-
-
                         } else {
                             CustType = jsonObject.getString("CustType");
                             FW_Indicator = jsonObject.getString("FW_Indicator");
@@ -122,8 +117,8 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
                             CustName = jsonObject.getString("CustName");
                             town_name = jsonObject.getString("town_name");
                             Dcr_dt = "";
-                            chckflk="";
-                            date_format="";
+                            chckflk = "";
+                            date_format = "";
                             CustCode = jsonObject.getString("CustCode");
                             month_name = jsonObject.getString("month_name");
                             town_code = jsonObject.getString("town_code");
@@ -132,89 +127,89 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
                             Trans_SlNo = jsonObject.getString("Trans_SlNo");
                             AMSLNo = jsonObject.getString("AMSLNo");
                             time = jsonObject.getString("vtm");
-
                         }
+
                         if (CustType.equals("0")) {
                             medicalPersonnel = "";
                         } else if (CustType.equals("1")) {
-                            if (SharedPref.getDrCap(requireContext()).isEmpty()|| SharedPref.getDrCap(requireContext())==null){
+                            if (SharedPref.getDrCap(requireContext()).isEmpty() || SharedPref.getDrCap(requireContext()) == null) {
                                 medicalPersonnel = "Doctor";
-                            }else {
+                            } else {
                                 medicalPersonnel = SharedPref.getDrCap(requireContext());
                             }
                         } else if (CustType.equals("2")) {
-                            if (SharedPref.getChmCap(requireContext()).isEmpty()|| SharedPref.getChmCap(requireContext())==null){
+                            if (SharedPref.getChmCap(requireContext()).isEmpty() || SharedPref.getChmCap(requireContext()) == null) {
                                 medicalPersonnel = "Chemist";
-                            }else {
+                            } else {
                                 medicalPersonnel = SharedPref.getChmCap(requireContext());
                             }
                         } else if (CustType.equals("3")) {
-                            if (SharedPref.getStkCap(requireContext()).isEmpty()|| SharedPref.getStkCap(requireContext())==null){
+                            if (SharedPref.getStkCap(requireContext()).isEmpty() || SharedPref.getStkCap(requireContext()) == null) {
                                 medicalPersonnel = "StockList";
-                            }else {
+                            } else {
                                 medicalPersonnel = SharedPref.getStkCap(requireContext());
                             }
-
                         } else if (CustType.equals("4")) {
-                            if (SharedPref.getUNLcap(requireContext()).isEmpty()|| SharedPref.getUNLcap(requireContext())==null){
+                            if (SharedPref.getUNLcap(requireContext()).isEmpty() || SharedPref.getUNLcap(requireContext()) == null) {
                                 medicalPersonnel = "UnListed Doctor";
-                            }else {
+                            } else {
                                 medicalPersonnel = SharedPref.getUNLcap(requireContext());
                             }
                         }
 
-
-   /* for (int i1 = 0; i1 < jsonvst_wrktype.length(); i1++) {
-        JSONObject jsonObject1 = jsonvst_wrktype.getJSONObject(i1);
-        String fw_name=jsonObject1.getString("FWFlg");
-
-        if(FW_Indicator.equals(fw_name)){
-            val=jsonObject1.getString("Name");
-            Log.d("frist_string", val);
-        }
-    }*/
-
-
+                        String name = CustName;
                         call_list.add(new callstatus_model(CustCode, CustType, FW_Indicator, date_format, month_name, CustName, town_code, town_name, Dcr_flag, SF_Code, Trans_SlNo, AMSLNo, Mnth, chckflk, medicalPersonnel, workType, time));
-
-
-                        call_statusadap = new call_statusadapter(getActivity(), call_list);
-                        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
-                        manager.setOrientation(LinearLayoutManager.VERTICAL);
-                        Callstatusthridview.viewList.setLayoutManager(manager);
-                        Callstatusthridview.viewList.setAdapter(call_statusadap);
-                        call_statusadap.notifyDataSetChanged();
-
-
-//                        call_statusadap = new call_statusadapter(context, call_list);
-//                        view_list.setItemAnimator(new DefaultItemAnimator());
-//                        view_list.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
-//                        view_list.setAdapter(call_statusadap);
-
-
-//    "CustCode":"",
-//    "CustType":"0",
-//    "FW_Indicator":"N",
-//    "Dcr_dt":"2024-01-01",
-//    "month_name":"January",
-//    "Mnth":1,
-//    "Yr":2024,
-//    "CustName":"",
-//    "town_code":"",
-//    "town_name":"",
-//    "Dcr_flag":1,
-//    "SF_Code":"MGR0941",
-//    "Trans_SlNo":"DP3-697",
-//    "AMSLNo":""
                     }
                 }
+
+                call_statusadap = new call_statusadapter(getActivity(), call_list);
+                LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+                manager.setOrientation(LinearLayoutManager.VERTICAL);
+                Callstatusthridview.viewList.setLayoutManager(manager);
+                Callstatusthridview.viewList.setAdapter(call_statusadap);
+                call_statusadap.notifyDataSetChanged();
             }
         } catch (Exception E) {
             E.printStackTrace();
         }
+    }
+private void setUp()  {
+    JSONArray jsonvst_ctl = null;
+    try {
+        jsonvst_ctl = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+        Map<String, List<String>> namesByDate = new HashMap<>();
 
+        for (int i = 0; i < jsonvst_ctl.length(); i++) {
+            JSONObject jsonObject = jsonvst_ctl.getJSONObject(i);
+            String currentDcrDt = jsonObject.getString("Dcr_dt");
+            String custName = jsonObject.getString("CustName");
 
+            if (namesByDate.containsKey(currentDcrDt)) {
+                namesByDate.get(currentDcrDt).add(custName);
+            } else {
+                List<String> namesList = new ArrayList<>();
+                namesList.add(custName);
+                namesByDate.put(currentDcrDt, namesList);
+            }
+        }
+
+        for (Map.Entry<String, List<String>> entry : namesByDate.entrySet()) {
+            String date = entry.getKey();
+            List<String> namesList = entry.getValue();
+
+            Collections.sort(namesList);
+
+            System.out.println("Date: " + date);
+
+            for (String name : namesList) {
+                doctorName  = name;
+                System.out.println("doctorName: " + doctorName);
+
+            }
+        }
+    } catch (JSONException e) {
+        throw new RuntimeException(e);
     }
 
-
+}
 }
