@@ -47,7 +47,7 @@ public class FirebaseService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived (@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Log.e("test","remote msg notification : " + remoteMessage.getNotification().getBody());
+        System.out.println("message--->"+ remoteMessage.getNotification().getBody());
         imageUrl = String.valueOf(remoteMessage.getNotification().getImageUrl());
         title = remoteMessage.getNotification().getTitle();
         body = remoteMessage.getNotification().getBody();
@@ -59,7 +59,6 @@ public class FirebaseService extends FirebaseMessagingService {
         Intent intent = new Intent(this, HomeDashBoard.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         NotificationClass notificationClass = new NotificationClass(this,title, body, imageUrl, pendingIntent);
         notificationClass.createNotification();
     }

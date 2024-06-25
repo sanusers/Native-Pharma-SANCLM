@@ -160,12 +160,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } else {
             binding.btnsumit.setText(requireContext().getString(R.string.final_submit));
         }
-        if(SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)){
-            binding.txtCluster1.setText("Select Cluster");
-        } else{
-            binding.txtCluster1.setText("select "+ SharedPref.getWrkAreaName(requireContext()));
 
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             binding.progressHq1.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
             binding.progressHq2.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
@@ -195,6 +190,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.closeRejectedReason.setOnClickListener(this);
 
         boolean toSync = false;
+        if(SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)){
+            binding.txtCluster1.setHint("Select Cluster");
+        } else{
+            binding.txtCluster1.setHint("select "+ SharedPref.getWrkAreaName(requireContext()));
+
+        }
         if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
             try {
                 JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
@@ -325,7 +326,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         HomeDashBoard.binding.llNav.wkRecyelerView.setVisibility(View.VISIBLE);
         HomeDashBoard.binding.llNav.wkListView.setVisibility(View.GONE);
         HomeDashBoard.binding.drMainlayout.openDrawer(GravityCompat.END);
-        HomeDashBoard.binding.llNav.tvSearchheader.setText("Cluster");
+        if(SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)){
+            HomeDashBoard.binding.llNav.tvSearchheader.setText("Cluster");
+        } else{
+            HomeDashBoard.binding.llNav.tvSearchheader.setText(SharedPref.getWrkAreaName(requireContext()));
+
+        }
+
         updateClusterList(DayPlanCount);
         MultiClusterAdapter multiClusterAdapter = new MultiClusterAdapter(getActivity(), multiple_cluster_list, new OnClusterClicklistener() {
             @Override
@@ -681,9 +688,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.txtSave.setEnabled(true);
                     binding.cardPlan2.setVisibility(View.VISIBLE);
                     if(SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)){
-                        binding.txtCluster2.setText("Select Cluster");
+                        binding.txtCluster2.setHint("Select Cluster");
                     } else{
-                        binding.txtCluster2.setText("Select"+  SharedPref.getWrkAreaName(requireContext()));
+                        binding.txtCluster2.setHint("Select"+  SharedPref.getWrkAreaName(requireContext()));
 
                     }
                     getLocalData();

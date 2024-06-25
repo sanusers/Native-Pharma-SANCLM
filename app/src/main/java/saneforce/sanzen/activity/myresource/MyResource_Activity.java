@@ -269,7 +269,6 @@ public class MyResource_Activity extends AppCompatActivity {
                 inputcount.clear();
                 productcount.clear();
                 String input_val="",product_val="";
-
                 JSONArray jsoninput = masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray();
                 for (int i = 0; i < jsoninput.length(); i++) {
                     JSONObject jsonObject = jsoninput.getJSONObject(i);
@@ -301,6 +300,7 @@ public class MyResource_Activity extends AppCompatActivity {
             }
             input_count = String.valueOf(inputcount.size());
             product_count = String.valueOf(productcount.size());
+            inputCount = 0;
             JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray();
             for (int i = 0; i < input.length(); i++) {
                 JSONObject jsonObject = input.getJSONObject(i);

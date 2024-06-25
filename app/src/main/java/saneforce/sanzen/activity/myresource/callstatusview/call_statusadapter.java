@@ -42,7 +42,6 @@ public class call_statusadapter extends RecyclerView.Adapter<call_statusadapter.
         holder.Date_view.setText(app_adapt.getDcr_dt());
         holder.cust_type.setText(app_adapt.getDcrname());
         holder.calls_town.setText(app_adapt.getTown_name());
-
         if (app_adapt.getChkflk().equals("1")) {
             holder.cs_line.setVisibility(View.VISIBLE);
         } else {
@@ -58,29 +57,7 @@ public class call_statusadapter extends RecyclerView.Adapter<call_statusadapter.
             holder.cust_type.setVisibility(View.VISIBLE);
             holder.calls_town.setVisibility(View.VISIBLE);
         }
-
-        /*
-        if(app_adapt.getCustType().equals("0")){
-
-        }else if(app_adapt.getCustType().equals("1")){
-            holder.cust_type.setText("Doctor");
-            holder.calls_town.setVisibility(View.VISIBLE);
-        }else if(app_adapt.getCustType().equals("2")){
-            holder.cust_type.setText("Chemist");
-            holder.calls_town.setVisibility(View.VISIBLE);
-        }else if(app_adapt.getCustType().equals("3")){
-            holder.cust_type.setText("Stockist");
-            holder.calls_town.setVisibility(View.VISIBLE);
-        }else if(app_adapt.getCustType().equals("4")){
-            holder.cust_type.setText("Unlisted Doctor");
-            holder.calls_town.setVisibility(View.VISIBLE);
-        }
-*/
-        Log.d("logcheck", app_adapt.getDcrname());
-
-
     }
-
     @Override
     public int getItemCount() {
         return listeduser.size();
