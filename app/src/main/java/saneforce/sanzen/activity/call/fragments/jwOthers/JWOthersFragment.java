@@ -180,7 +180,7 @@ public class JWOthersFragment extends Fragment {
         HiddenVisibleFunction();
         SetupAdapter();
 
-        if(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, HomeDashBoard.selectedDate.toString()).equalsIgnoreCase(SharedPref.getJWKDATE(requireContext()))) {
+        if(HomeDashBoard.selectedDate.toString().equalsIgnoreCase(SharedPref.getJWKDATE(requireContext()))) {
             if (isFromActivity.equalsIgnoreCase("new")) {
                 Log.v("Testing","new");
                 String getjwkcode = SharedPref.getJWKCODE(requireContext());

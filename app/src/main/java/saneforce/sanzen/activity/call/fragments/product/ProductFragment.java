@@ -126,7 +126,7 @@ public class ProductFragment extends Fragment {
                     if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
                         productsBinding.tagRxQty.setVisibility(View.VISIBLE);
 //                    if (DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
-                        productsBinding.tagRcpa.setVisibility(View.VISIBLE);
+                    productsBinding.tagRcpa.setVisibility(View.VISIBLE);
 //                    }
                 } else {
                     productsBinding.tagRxQty.setText("Qty");
@@ -144,7 +144,7 @@ public class ProductFragment extends Fragment {
 //                    productsBinding.tagSamples.setVisibility(View.GONE);
                     productsBinding.tagPromoted.setVisibility(View.GONE);
 //                    if (DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
-                        productsBinding.tagRcpa.setVisibility(View.VISIBLE);
+                    productsBinding.tagRcpa.setVisibility(View.VISIBLE);
 //                    }
                 }
 
