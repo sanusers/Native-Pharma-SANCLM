@@ -689,7 +689,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         cipModelArray.clear();
         if (SharedPref.getCipNeed(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel ciModel = new MasterSyncItemModel(SharedPref.getCipCaption(this), Constants.DOCTOR, "getcip", Constants.CIP + hqCode, cipStatus, false);
-            cipModelArray.add(ciModel);
+//            cipModelArray.add(ciModel);
         } else binding.cip.setVisibility(View.GONE);
 
         //Cluster

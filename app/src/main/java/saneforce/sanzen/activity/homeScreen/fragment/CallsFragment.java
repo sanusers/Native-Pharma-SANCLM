@@ -340,17 +340,17 @@ public class CallsFragment extends Fragment {
                             if((FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) || (SecondPlanDate != null && SecondPlanDate.equals(CurentDate))) {
                                 startActivity(new Intent(requireActivity(), Activity.class));
                             }else {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                             }
                         }else {
                             if(FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) {
                                 startActivity(new Intent(requireActivity(), Activity.class));
                             }else {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                             }
                         }
                     }else{
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -373,7 +373,7 @@ public class CallsFragment extends Fragment {
             if (SharedPref.getSfCode(requireContext()).equalsIgnoreCase("0")) {
                 if (SharedPref.getSkipCheckIn(requireContext())) {
                     if (SharedPref.getHqCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getHqCode(requireContext()).isEmpty()) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                     } else {
                         startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
                     }
@@ -408,7 +408,7 @@ public class CallsFragment extends Fragment {
                                 else
                                     startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
                             }else {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                             }
                         }else {
                             if(FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) {
@@ -417,7 +417,7 @@ public class CallsFragment extends Fragment {
                                 else
                                     startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
                             }else {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                             }
                         }
                     }else{

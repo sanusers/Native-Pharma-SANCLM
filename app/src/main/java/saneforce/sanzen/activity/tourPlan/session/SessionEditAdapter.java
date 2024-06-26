@@ -1051,8 +1051,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         MasterSyncItemModel cheModel = new MasterSyncItemModel(Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode);
         MasterSyncItemModel stockModel = new MasterSyncItemModel(Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode);
         MasterSyncItemModel unListModel = new MasterSyncItemModel(Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode);
-        MasterSyncItemModel hospModel = new MasterSyncItemModel(Constants.DOCTOR, "gethospital", Constants.HOSPITAL + hqCode);
-        MasterSyncItemModel ciModel = new MasterSyncItemModel(Constants.DOCTOR, "getcip", Constants.CIP + hqCode);
+//        MasterSyncItemModel hospModel = new MasterSyncItemModel(Constants.DOCTOR, "gethospital", Constants.HOSPITAL + hqCode);
+//        MasterSyncItemModel ciModel = new MasterSyncItemModel(Constants.DOCTOR, "getcip", Constants.CIP + hqCode);
         MasterSyncItemModel cluster = new MasterSyncItemModel(Constants.DOCTOR, "getterritory", Constants.CLUSTER + hqCode);
         MasterSyncItemModel jWorkModel = new MasterSyncItemModel(Constants.SUBORDINATE, "getjointwork", Constants.JOINT_WORK + hqCode);
 
@@ -1060,8 +1060,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         masterSyncArray.add(cheModel);
         masterSyncArray.add(stockModel);
         masterSyncArray.add(unListModel);
-        masterSyncArray.add(hospModel);
-        masterSyncArray.add(ciModel);
+//        masterSyncArray.add(hospModel);
+//        masterSyncArray.add(ciModel);
         masterSyncArray.add(cluster);
         masterSyncArray.add(jWorkModel);
         for (int i = 0; i < masterSyncArray.size(); i++) {
@@ -1134,7 +1134,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 }
                             }
                             synccount++;
-                            if(synccount==8){
+                            if(synccount==6){
                                 holder.progress_hq.setVisibility(View.GONE);
                             }
                         }
@@ -1144,7 +1144,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             Log.e("test", "failed : " + t);
                             masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                             synccount++;
-                            if(synccount==8){
+                            if(synccount==6){
                                 holder.progress_hq.setVisibility(View.GONE);
                             }
                         }

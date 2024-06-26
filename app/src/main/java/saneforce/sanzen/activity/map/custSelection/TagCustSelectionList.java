@@ -335,15 +335,15 @@ public class TagCustSelectionList extends AppCompatActivity {
         MasterSyncItemModel cheModel = new MasterSyncItemModel("Doctor", "getchemist", Constants.CHEMIST + hqCode);
         MasterSyncItemModel stockModel = new MasterSyncItemModel("Doctor", "getstockist", Constants.STOCKIEST + hqCode);
         MasterSyncItemModel unListModel = new MasterSyncItemModel("Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode);
-        MasterSyncItemModel hospModel = new MasterSyncItemModel("Doctor", "gethospital", Constants.HOSPITAL + hqCode);
-        MasterSyncItemModel ciModel = new MasterSyncItemModel("Doctor", "getcip", Constants.CIP + hqCode);
+//        MasterSyncItemModel hospModel = new MasterSyncItemModel("Doctor", "gethospital", Constants.HOSPITAL + hqCode);
+//        MasterSyncItemModel ciModel = new MasterSyncItemModel("Doctor", "getcip", Constants.CIP + hqCode);
 
         masterSyncArray.add(doctorModel);
         masterSyncArray.add(cheModel);
         masterSyncArray.add(stockModel);
         masterSyncArray.add(unListModel);
-        masterSyncArray.add(hospModel);
-        masterSyncArray.add(ciModel);
+//        masterSyncArray.add(hospModel);
+//        masterSyncArray.add(ciModel);
         for (int i = 0; i < masterSyncArray.size(); i++) {
             sync(masterSyncArray.get(i), hqCode);
         }

@@ -302,7 +302,7 @@
     <string name="call_saved_something_wrong">Call Saved! Something Wrong</string>
     <string name="save_todaywork_plan">Save TodayWorkPlan</string>
     <string name="save_wt_locally">Locally Saved WorkPlan</string>
-    <string name="submit_mydayplan">Please submit My DayPlan</string>
+    <string name="submit_work_plan">Please submit Work Plan</string>
     <string name="submit_checkin">Please CheckIn</string>
     <string name="enter_old_pwd">Enter old password</string>
     <string name="enter_new_pwd">Enter new password</string>
@@ -444,4 +444,5 @@
     <string name="submit">Submit</string>
     <string name="no_pending_dates_to_select">No pending dates to select</string>
     <string name="continuee">CONTINUE</string>
+    <string name="head_quarters_syncing">Head Quarters Syncing...</string>
 </resources>
