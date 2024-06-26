@@ -80,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
     CallTableDao callTableDao;
     private LoginDataDao loginDataDao;
     private CallsUtil callsUtil;
+    String appAccess = "";
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
@@ -405,8 +406,14 @@ public class LoginActivity extends AppCompatActivity {
                         if (responseObject.getBoolean("success")) {
                             if (responseObject.getString("Android_Detailing").equals("1")) {
                                 Log.v("Android_Detailing", "--json-" + responseObject);
-                                commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
-                                process(responseObject);
+                                appAccess = responseObject.getString("sanzen_edet");
+                                System.out.println("appAccess--->"+appAccess);
+                                if (appAccess.equals("1")) {
+                                    process(responseObject);
+                                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
+                                }else{
+                                    CommonUtilsMethods.accessDialogBox(LoginActivity.this);
+                                }
                             } else {
                                 commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.access_denied));
                             }

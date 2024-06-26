@@ -1174,6 +1174,18 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                 SharedPref.InsertLogInData(MasterSyncActivity.this,jsonArray.getJSONObject(0));
                                             }
                                         }
+                                        JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
+                                        for (int bean = 0; bean < input.length(); bean++) {
+                                            try {
+                                                JSONObject setUpObject = input.getJSONObject(bean);
+                                                String appAccess = setUpObject.getString("sanzen_edet");
+                                                if (appAccess.equals("0")){
+                                                    CommonUtilsMethods.accessDialogBox(MasterSyncActivity.this);
+                                                }
+                                            } catch (JSONException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        }
                                     }
                                 } else {
                                     masterSyncItemModels.get(position).setSyncSuccess(1);

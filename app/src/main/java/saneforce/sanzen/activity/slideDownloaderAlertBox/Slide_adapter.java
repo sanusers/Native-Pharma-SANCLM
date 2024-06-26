@@ -37,7 +37,8 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
     CommonUtilsMethods commonUtilsMethods;
     private List<SlidesTableDeatils> list = new ArrayList<>();
     RoomDB roomDB;
-    public Slide_adapter(Activity activity) {
+    public
+    Slide_adapter(Activity activity) {
         this.activity = activity;
         commonUtilsMethods=new CommonUtilsMethods(activity);
         roomDB=RoomDB.getDatabase(activity);

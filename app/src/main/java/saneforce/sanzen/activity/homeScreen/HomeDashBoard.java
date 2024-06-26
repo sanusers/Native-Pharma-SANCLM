@@ -212,6 +212,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onResume() {
         timeZoneVerification();
+        accessibility();
         super.onResume();
 
         AppIdentify();
@@ -1979,6 +1980,22 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
 
-
+private void accessibility(){
+    JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
+    for (int bean = 0; bean < input.length(); bean++) {
+        try {
+            JSONObject setUpObject = input.getJSONObject(bean);
+            String appAccess = setUpObject.getString("sanzen_edet");
+             if (!appAccess.equals("1")){
+                 CommonUtilsMethods.accessDialogBox(this);
+             }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    if (!SharedPref.getAppAccess(this).equals("1")){
+        CommonUtilsMethods.accessDialogBox(this);
+    }
+}
 }
 

@@ -497,4 +497,14 @@ public class CommonUtilsMethods {
         }
         return jsonObject;
     }
+    public static void accessDialogBox(Activity activity) {
+        new android.app.AlertDialog.Builder(activity)
+                .setTitle(" Access Denied")
+                .setCancelable(false)
+                .setIcon(R.drawable.access_denied)
+                .setMessage(" You do not have the necessary permissions to access this Application. Please contact your administrator for further assistance.")
+                .setPositiveButton("", (dialogInterface, i) -> {
+                })
+                .show();
+    }
     }

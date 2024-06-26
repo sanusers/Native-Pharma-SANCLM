@@ -411,7 +411,9 @@ public class SharedPref {
     public static final String UNDR_DETAILING_NEED = "Detailing_undr";
     public static final String EDIT_CALL_DEL_NEED = "EditCallDelNeed";
     public static final String ACTIVITY_CAP = "ActivityCap";
-     public static SharedPreferences.Editor editor;
+    public static final String SANZEN_EDET = "sanzen_edet";
+
+    public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -730,6 +732,7 @@ public class SharedPref {
         editor.putString(STK_DETAILING_NEED, jsonObject.getString("Detailing_stk"));
         editor.putString(UNDR_DETAILING_NEED, jsonObject.getString("Detailing_undr"));
         editor.putString(EDIT_CALL_DEL_NEED, jsonObject.getString("EditCallDelNeed"));
+        editor.putString(SANZEN_EDET, jsonObject.getString("sanzen_edet"));
         editor.putString(ACTIVITY_CAP, jsonObject.getString("ActivityCap"));
         editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\",""));
             Log.v("SLIDES_PATH",jsonObject.getString("slide_folder").replaceAll("\\\\",""));
@@ -2522,5 +2525,8 @@ public class SharedPref {
 
     public static String getActivityCap(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ACTIVITY_CAP, "");
+    }
+    public static String getAppAccess(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SANZEN_EDET, "");
     }
 }
