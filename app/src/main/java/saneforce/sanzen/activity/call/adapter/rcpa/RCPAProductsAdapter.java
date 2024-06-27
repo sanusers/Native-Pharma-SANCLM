@@ -116,11 +116,7 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
             ViewHolder.rv_added_comp_list.setAdapter(rcpaCompListAdapter);
         }
 
-        if(SharedPref.getRcpaCompetitorAdd(context).equalsIgnoreCase("0")){
-            holder.btn_add_comp.setVisibility(View.VISIBLE);
-        }else {
-            holder.btn_add_comp.setVisibility(View.GONE);
-        }
+       
 
         holder.btn_add_comp.setOnClickListener(view -> {
             try {

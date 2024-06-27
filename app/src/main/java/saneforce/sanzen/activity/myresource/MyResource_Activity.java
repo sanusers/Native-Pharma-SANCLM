@@ -322,12 +322,13 @@ public class MyResource_Activity extends AppCompatActivity {
             if (isLeaveEntitlementRequested){
                 listed_data.add(new Resourcemodel_class("LeaveStatus",String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length()),"13"));
             }
-            if (SharedPref.getVstNd(getApplicationContext()).equalsIgnoreCase("0")) {
+            if (SharedPref.getVstNd(getApplicationContext()).equals("0") && SharedPref.getSfType(this).equals("1")) {
 //                listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
                 listed_data.add(new Resourcemodel_class(dcrCaption+ " "+"Visit", "", "14"));
             }
 //            listed_data.add(new Resourcemodel_class("Calls Status",  String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray().length()), "12"));
             listed_data.add(new Resourcemodel_class("Calls Summary",  "", "15"));
+            listed_data.add(new Resourcemodel_class("Date Summary","","16"));
             Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count);
 
             resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1);//13

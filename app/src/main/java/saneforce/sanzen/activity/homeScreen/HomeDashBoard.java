@@ -383,6 +383,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         getRequiredData();
         AppIdentify();
         onClickListener();
+        accessibility();
         if (SharedPref.getSrtNd(this).equalsIgnoreCase("0") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
             SharedPref.setCheckInTime(getApplicationContext(), "");
             SharedPref.setSkipCheckIn(getApplicationContext(), true);
@@ -390,8 +391,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } else {
             SharedPref.setSkipCheckIn(getApplicationContext(), false);
         }
-
-
 
         gpsTrack = new GPSTrack(this);
         latitude = gpsTrack.getLatitude();

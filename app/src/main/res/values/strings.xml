@@ -436,7 +436,6 @@
     <string name="geoTagging_ap_not_available">Geo Tagging approvals not available</string>
 
 
-
     <string name="alert">Alert</string>
     <string name="please_select_a_date">Please Select a date!</string>
     <string name="remarks_must_contain_at_least_3_characters">Remarks must contain at least 3 characters</string>
@@ -445,4 +444,5 @@
     <string name="no_pending_dates_to_select">No pending dates to select</string>
     <string name="continuee">CONTINUE</string>
     <string name="head_quarters_syncing">Head Quarters Syncing...</string>
+    <string name="date_summary">Date Summary</string>
 </resources>

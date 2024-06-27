@@ -1179,7 +1179,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                             try {
                                                 JSONObject setUpObject = input.getJSONObject(bean);
                                                 String appAccess = setUpObject.getString("sanzen_edet");
-                                                if (appAccess.equals("0")){
+                                                if (!appAccess.equals("1")){
                                                     CommonUtilsMethods.accessDialogBox(MasterSyncActivity.this);
                                                 }
                                             } catch (JSONException e) {
