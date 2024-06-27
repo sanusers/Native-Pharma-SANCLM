@@ -32,6 +32,7 @@ import java.util.HashSet;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.forms.weekoff.weekoff_viewscreen;
 import saneforce.sanzen.activity.myresource.Categoryview.Cate_viewscreen;
+import saneforce.sanzen.activity.myresource.Categoryview.DateSyncActivity;
 import saneforce.sanzen.activity.myresource.callstatusview.Callsstatus_screenview;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -452,6 +453,14 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
                         Intent l1 = new Intent(context, Callsstatus_screenview.class);
                         context.startActivity(l1);
+                        MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
+                        MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                        break;
+
+                    case ("16"):
+                        MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
+                        Intent intent = new Intent(context, DateSyncActivity.class);
+                        context.startActivity(intent);
                         MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
                         MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                         break;

@@ -105,7 +105,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
         if (!Cus_visitTime.isEmpty()) dcrDetailViewBinding.tvVisitTime.setText(Cus_visitTime);
         if (!Cus_modTime.isEmpty()) dcrDetailViewBinding.tvModifiedTime.setText(Cus_modTime);
         String detailingNeed = "0";
-
+        System.out.println("dcrSample--->"+ SharedPref.getDrSmpQCap(this));
         switch (Cus_type) {
             case "1":
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_dr_img));
@@ -117,8 +117,11 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                     dcrDetailViewBinding.tagPrdName.setText(SharedPref.getDocProductCaption(this));
                 }
                 if ( SharedPref.getDrSmpQCap(this).isEmpty() ||  SharedPref.getDrSmpQCap(this).equalsIgnoreCase(null)){
+                    dcrDetailViewBinding.tagSamples1.setText("Samples");
                     dcrDetailViewBinding.tagSample.setText("Samples");
+
                 }else {
+                    dcrDetailViewBinding.tagSamples1.setText(( SharedPref.getDrSmpQCap(this)));
                     dcrDetailViewBinding.tagSample.setText(( SharedPref.getDrSmpQCap(this)));
                 }
                 if (SharedPref.getDrRxQCap(this).isEmpty() || SharedPref.getDrRxQCap(this).isEmpty()){
@@ -168,9 +171,9 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                     dcrDetailViewBinding.tagPrdName.setText(SharedPref.getChmProductCaption(this));
                 }
                 if ( SharedPref.getChmSmpCap(this).isEmpty() ||  SharedPref.getChmSmpCap(this).equalsIgnoreCase(null)){
-                    dcrDetailViewBinding.tagSample.setText("Samples");
+                    dcrDetailViewBinding.tagSamples1.setText("Samples");
                 }else {
-                    dcrDetailViewBinding.tagSample.setText(( SharedPref.getChmSmpCap(this)));
+                    dcrDetailViewBinding.tagSamples1.setText(( SharedPref.getChmSmpCap(this)));
                 }
                 if (SharedPref.getChmQCap(this).isEmpty() || SharedPref.getChmQCap(this).isEmpty()){
                     dcrDetailViewBinding.tagRxQty.setText("RX Qty");
@@ -255,9 +258,9 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                     dcrDetailViewBinding.tagPrdName.setText(SharedPref.getUlProductCaption(this));
                 }
                 if ( SharedPref.getNlSmpQCap(this).isEmpty() ||  SharedPref.getNlSmpQCap(this).equalsIgnoreCase(null)){
-                    dcrDetailViewBinding.tagSample.setText("Samples");
+                    dcrDetailViewBinding.tagSamples1.setText("Samples");
                 }else {
-                    dcrDetailViewBinding.tagSample.setText(( SharedPref.getNlSmpQCap(this)));
+                    dcrDetailViewBinding.tagSamples1.setText(( SharedPref.getNlSmpQCap(this)));
                 }
                 if (SharedPref.getNlRxQCap(this).isEmpty() || SharedPref.getNlRxQCap(this).isEmpty()){
                     dcrDetailViewBinding.tagRxQty.setText("RX Qty");

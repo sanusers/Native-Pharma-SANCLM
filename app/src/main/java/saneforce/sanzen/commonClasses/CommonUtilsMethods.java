@@ -503,8 +503,22 @@ public class CommonUtilsMethods {
                 .setCancelable(false)
                 .setIcon(R.drawable.access_denied)
                 .setMessage(" You do not have the necessary permissions to access this Application. Please contact your administrator for further assistance.")
-                .setPositiveButton("", (dialogInterface, i) -> {
+                .setPositiveButton("Ok", (dialogInterface, i) -> {
+                    Intent intent = new Intent(activity, LoginActivity.class);
+                    activity.startActivity(intent);
+                    dialogInterface.dismiss();
                 })
                 .show();
+    }
+    public static String convertDate(String originalDateString) {
+        SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        SimpleDateFormat targetFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
+        Date date = null;
+        try {
+            date = originalFormat.parse(originalDateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return targetFormat.format(date);
     }
     }
