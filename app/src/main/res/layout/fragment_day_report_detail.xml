@@ -163,8 +163,7 @@
                             android:background="@color/pink" />
 
                         <LinearLayout
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/_3sdp"
                             android:orientation="vertical">
@@ -181,15 +180,16 @@
 
                             <TextView
                                 android:id="@+id/rejectedReasonTxt"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="Reason"
+                                android:maxLines="2"
                                 android:textSize="@dimen/_5sdp"
                                 android:textColor="@color/text_dark"
                                 android:textStyle="bold"
                                 android:fontFamily="@font/satoshi_medium"
                                 android:layout_marginTop="@dimen/_1sdp"
-                                tools:ignore="SpUsage" />
+                                 />
 
                         </LinearLayout>
 

@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
@@ -322,7 +323,7 @@ public class MyResource_Activity extends AppCompatActivity {
             if (isLeaveEntitlementRequested){
                 listed_data.add(new Resourcemodel_class("LeaveStatus",String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length()),"13"));
             }
-            if (SharedPref.getVstNd(getApplicationContext()).equalsIgnoreCase("0")) {
+            if (SharedPref.getVstNd(getApplicationContext()).equalsIgnoreCase("0") && SharedPref.getDesig(getApplicationContext()).equalsIgnoreCase("MR")) {
 //                listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
                 listed_data.add(new Resourcemodel_class(dcrCaption+ " "+"Visit", "", "14"));
             }
@@ -394,30 +395,24 @@ public class MyResource_Activity extends AppCompatActivity {
 
     @SuppressLint("WrongConstant")
     public void syn_hq() {
+        List<String> SyHqList=new ArrayList<>();
+        SyHqList=SharedPref.getsyn_hqcode(this);
         try {
             listresource.clear();
             //add
-            if (MasterSyncActivity.HQCODE_SYN.isEmpty()) {
-                MasterSyncActivity.HQCODE_SYN.add(SharedPref.getHqCode(MyResource_Activity.this));
-                SharedPref.setsyn_hqcode(this, String.valueOf(MasterSyncActivity.HQCODE_SYN));
-            }
 
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE ).getMasterSyncDataJsonArray();
             headtext_id.setText("Headquarters");
 
             ArrayList<String> list = new ArrayList<>();
-            String dup_hq = "";
             if (jsonArray.length() > 0) {
-                list.add(SharedPref.getsyn_hqcode(this));
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    for (String str : MasterSyncActivity.HQCODE_SYN) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if (str.equalsIgnoreCase(jsonObject.getString("id")) && (!dup_hq.equals(jsonObject.getString("id")))) {
-                            dup_hq = jsonObject.getString("id");
+                        if (SyHqList.contains(jsonObject.getString("id")) && (!list.contains(jsonObject.getString("id")))) {
+                            list .add(jsonObject.getString("id")) ;
                             listresource.add(new Resourcemodel_class(jsonObject.getString("id"), jsonObject.getString("name"), "", "", "", "", "", "", "", "", "", "", "",
                                     "", "", "", "", "", "", "", "", "", "","","","","","","",""));
                         }
-                    }
 
                     Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(this, listresource, "1");
                     appAdapter3.setOnItemClickListener(new Res_sidescreenAdapter.OnItemClickListener() {

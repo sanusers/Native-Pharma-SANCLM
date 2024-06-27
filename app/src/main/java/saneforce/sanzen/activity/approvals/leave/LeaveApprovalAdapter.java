@@ -193,7 +193,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
         } catch (Exception ignored) {
 
         }
-
+        Log.e("Response :",""+jsonLeave.toString());
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "save/approvals");
         Call<JsonElement> callApprovedLeave = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonLeave.toString());
@@ -201,6 +201,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
         callApprovedLeave.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                Log.e("Response :",""+response);
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {

@@ -144,7 +144,7 @@ public class RCPASelectPrdSide extends Fragment {
                             RCPAFragment.PrdCode = prdList.get(holder.getBindingAdapterPosition()).getCode();
                             RCPAFragment.rcpaBinding.tvSelectProduct.setText(prdList.get(holder.getBindingAdapterPosition()).getName());
                             RCPAFragment.rcpaBinding.tvRate.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
-                            RCPAFragment.rcpaBinding.edQty.setText("1");
+                            RCPAFragment.rcpaBinding.edQty.setText("0");
                             RCPAFragment.rcpaBinding.tvValue.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
                             dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
                         } else {

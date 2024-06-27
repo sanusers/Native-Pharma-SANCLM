@@ -55,11 +55,13 @@ public class FileDownloadWorker extends Worker {
 
      String    url1 = getInputData().getString("file_url");
      String    fileId = getInputData().getString("Slide_id");
-     String  downloadFileName = getInputData().getString("Slide_name");
-     String  Flag = getInputData().getString("Flag");
-     String  FilePosition = getInputData().getString("FilePosition");
+     String    downloadFileName = getInputData().getString("Slide_name");
+     String    Flag = getInputData().getString("Flag");
+     String    FilePosition = getInputData().getString("FilePosition");
 
      try {
+
+
             URL url = new URL(url1);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -73,7 +75,6 @@ public class FileDownloadWorker extends Worker {
                 }
                 return Result.failure();
             }
-
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                 apkStorage = new File(getApplicationContext().getExternalFilesDir(null) + "/Slides/");
             } else {
@@ -136,7 +137,8 @@ public class FileDownloadWorker extends Worker {
                 File unzipDir = new File(getApplicationContext().getExternalFilesDir(null), "/Slides/");
                 unzip(filePath, unzipDir);
             }
-          slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,String.valueOf(progressTex),"3","100","1",FilePosition));
+             slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,String.valueOf(progressTex),"3","100","1",FilePosition));
+
             fos.close();
             is.close();
             Thumbnail(downloadFileName);
@@ -190,7 +192,7 @@ public class FileDownloadWorker extends Worker {
 
 
 
-   public boolean Thumbnail(String fileName){
+    boolean Thumbnail(String fileName){
 
         String fileFormat = SupportClass.getFileExtension(fileName);
         File sourceFile = new File(getApplicationContext().getExternalFilesDir(null) + "/Slides/", fileName);

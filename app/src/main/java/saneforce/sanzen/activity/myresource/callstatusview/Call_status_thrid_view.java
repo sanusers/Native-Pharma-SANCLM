@@ -90,6 +90,8 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
 //    "SF_Code":"MGR0941",
 //    "Trans_SlNo":"DP3-760",
 //    "AMSLNo":"DP3-620"
+
+
                     if(jsonObject.getString("Mnth").equals(previousMonth)) {
                         if (!Dates_call.equals(jsonObject.getString("Dcr_dt"))) {
                             date_format=(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, jsonObject.getString("Dcr_dt")));;
@@ -111,7 +113,7 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
                             SF_Code = jsonObject.getString("SF_Code");
                             Trans_SlNo = jsonObject.getString("Trans_SlNo");
                             AMSLNo = jsonObject.getString("AMSLNo");
-                            time = jsonObject.getString("vtm");
+                        //    time = jsonObject.getString("vtm");
 
 
                         } else {
@@ -131,7 +133,7 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
                             SF_Code = jsonObject.getString("SF_Code");
                             Trans_SlNo = jsonObject.getString("Trans_SlNo");
                             AMSLNo = jsonObject.getString("AMSLNo");
-                            time = jsonObject.getString("vtm");
+                          //  time = jsonObject.getString("vtm");
 
                         }
                         if (CustType.equals("0")) {

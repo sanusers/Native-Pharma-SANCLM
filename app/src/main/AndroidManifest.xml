@@ -73,6 +73,12 @@
             android:exported="false"
             android:screenOrientation="landscape" >
         </activity>
+
+        <activity
+            android:name=".activity.FAQ.FAQ"
+            android:exported="false"
+            android:screenOrientation="landscape" >
+        </activity>
         <activity
             android:name=".activity.PrivacyPolicyActvity.PrivacyPolicyActivity"
             android:exported="false"

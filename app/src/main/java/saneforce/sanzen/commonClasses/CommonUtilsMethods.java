@@ -1,5 +1,6 @@
 package saneforce.sanzen.commonClasses;
 
+import static android.content.Context.BATTERY_SERVICE;
 import static saneforce.sanzen.commonClasses.Constants.APP_MODE;
 
 import android.annotation.SuppressLint;
@@ -15,6 +16,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Parcelable;
 import android.provider.Settings;
@@ -477,6 +479,9 @@ public class CommonUtilsMethods {
     public static JSONObject  CommonObjectParameter(Context context){
         JSONObject jsonObject =new JSONObject();
         try {
+            BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
+            int mBatteryPercent = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+
             jsonObject.put("AppName", context.getString(R.string.str_app_name));
             jsonObject.put("Appver", context.getResources().getString(R.string.app_version));
             jsonObject.put("Mod", APP_MODE);
@@ -491,6 +496,8 @@ public class CommonUtilsMethods {
             jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
             jsonObject.put("key", SharedPref.getLicenseKey(context));
             jsonObject.put("Configurl", SharedPref.getBaseWebUrl(context));
+            jsonObject.put("battery", String.valueOf(mBatteryPercent));
+
 
         } catch (JSONException e) {
           e.printStackTrace();

@@ -9,9 +9,10 @@
 
     <TextView
         android:id="@+id/tv_prd_name"
-        android:layout_width="@dimen/_70sdp"
+        android:layout_width="@dimen/_80sdp"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/_2sdp"
+        android:layout_marginStart="@dimen/_6sdp"
         android:fontFamily="@font/satoshi_bold"
         android:paddingHorizontal="@dimen/_3sdp"
         android:paddingVertical="@dimen/_3sdp"
@@ -20,11 +21,11 @@
         android:textColor="@color/dark_purple"
         android:textSize="@dimen/_7ssp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/img_promoted"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/img_promoted"

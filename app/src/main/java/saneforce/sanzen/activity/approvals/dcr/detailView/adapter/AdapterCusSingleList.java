@@ -281,7 +281,6 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                                 setEventCaptureData(EventCaptureData);
                                             }else {
                                                 dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
-                                                dcrDetailViewBinding.rvEventListview.setVisibility(View.GONE);
                                                 dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
                                                 commonUtilsMethods.showToastMessage(context, "No Event Capture");
                                             }

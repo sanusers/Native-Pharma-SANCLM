@@ -147,13 +147,16 @@ public class ChemistFragment extends Fragment {
                         }
                     }
                 } else {
-                    if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
-                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
-                            cusListArrayList = SaveData(jsonObject, i);
-                        }
-                    } else {
-                        cusListArrayList = SaveData(jsonObject, i);
-                    }
+                    // This not need TbBased DCR
+
+//                 if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
+//                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+//                            cusListArrayList = SaveData(jsonObject, i);
+//                        }
+//                    } else {
+//                        cusListArrayList = SaveData(jsonObject, i);
+//                    }
+                    cusListArrayList = SaveData(jsonObject, i);
                 }
             }
 

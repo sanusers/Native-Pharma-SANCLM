@@ -99,6 +99,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     JSONObject SelectedHQ;
     ApiInterface api_interface;
 
+    List<String> SynqList=new ArrayList<>();
+
     String strClusterID = "", strClusterName = "";
 
     String DayPlanCount = "1", IsFeildWorkFlag = "F0";
@@ -262,6 +264,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             rlHQ.setVisibility(View.VISIBLE);
                         }
                     } else {
+                        NeedClusterFlag1 = false;
                         mTowncode1 = "";
                         mTownname1 = "";
                         mHQCode1 = "";
@@ -282,6 +285,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             rlHQ.setVisibility(View.VISIBLE);
                         }
                     } else {
+                        NeedClusterFlag2 = true;
                         mTowncode2 = "";
                         mTownname2 = "";
                         mHQCode2 = "";
@@ -1004,18 +1008,33 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     break;
                 }
             }
+
+
+            String FW_Inticator ;
+            String Workname;
+
+            if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F")) {
+                FW_Inticator = "F";
+                Workname="Field Work";
+            } else {
+                FW_Inticator = mFwFlg1;
+                Workname=mWTName1;
+            }
+//month_name .Mnth  Yr
             if(!isCallSyncAvailable) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("CustCode", "");
                 jsonObject.put("CustType", "0");
                 jsonObject.put("Dcr_dt", HomeDashBoard.selectedDate.toString());
-                jsonObject.put("month_name", "");
-                jsonObject.put("Mnth", "");
-                jsonObject.put("Yr", "");
+                jsonObject.put("month_name", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_9,HomeDashBoard.selectedDate.toString()));
+                jsonObject.put("Mnth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_31,HomeDashBoard.selectedDate.toString()));
+                jsonObject.put("Yr", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_10,HomeDashBoard.selectedDate.toString()));
                 jsonObject.put("CustName", "");
                 jsonObject.put("town_code", "");
+                jsonObject.put("FW_Indicator", FW_Inticator);
+                jsonObject.put("WorkType_Name", Workname);
                 jsonObject.put("town_name", "");
-                jsonObject.put("Dcr_flag", "");
+                jsonObject.put("Dcr_flag", "0");
                 jsonObject.put("SF_Code", "");
                 jsonObject.put("Trans_SlNo", "");
                 jsonObject.put("AMSLNo", "");
@@ -1382,6 +1401,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
 
     public void getData(String hqCode) {
+        SynqList=SharedPref.getsyn_hqcode(requireContext());
+        SynqList.add(hqCode);
+        SharedPref.setSyncHQ(requireContext(),SynqList);
         if (DayPlanCount.equalsIgnoreCase("1")) {
             binding.progressHq1.setVisibility(View.VISIBLE);
         } else {

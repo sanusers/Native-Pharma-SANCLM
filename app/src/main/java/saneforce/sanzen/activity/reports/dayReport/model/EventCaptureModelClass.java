@@ -8,7 +8,6 @@ public class EventCaptureModelClass {
         this.title = title;
         this.remarks = remarks;
     }
-
     public String getSf_code() {
         return sf_code;
     }

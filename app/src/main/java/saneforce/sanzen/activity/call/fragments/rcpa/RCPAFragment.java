@@ -75,7 +75,7 @@ public class RCPAFragment extends Fragment {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_chemist));
             } else if (rcpaBinding.tvSelectProduct.getText().toString().isEmpty() || rcpaBinding.tvSelectProduct.getText().toString().equalsIgnoreCase("Select")) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_prd));
-            } else if (Objects.requireNonNull(rcpaBinding.edQty.getText()).toString().equalsIgnoreCase("0")) {
+            } else if (Objects.requireNonNull(rcpaBinding.edQty.getText()).toString().equalsIgnoreCase("0") ||rcpaBinding.edQty.getText().toString().isEmpty()) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.enter_qty));
             } else {
                 rcpaBinding.llNoRcpa.setVisibility(View.GONE);

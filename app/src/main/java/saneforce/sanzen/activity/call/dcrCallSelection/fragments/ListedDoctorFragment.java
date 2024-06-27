@@ -390,15 +390,19 @@ public class ListedDoctorFragment extends Fragment {
                         }
                     } else {
                         Log.v("DrCall", "333");
-                        if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
-                            Log.v("DrCall", "444");
-                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
-                                custListArrayList = SaveData(jsonObject, i);
-                            }
-                        } else {
-                            Log.v("DrCall", "555");
-                            custListArrayList = SaveData(jsonObject, i);
-                        }
+
+                        // This not need TbBased DCR
+//                        if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
+//                            Log.v("DrCall", "444");
+//                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+//                                custListArrayList = SaveData(jsonObject, i);
+//                            }
+//                        } else {
+//                            Log.v("DrCall", "555");
+//                            custListArrayList = SaveData(jsonObject, i);
+//                        }
+
+                        custListArrayList = SaveData(jsonObject, i);
                     }
                 } catch (Exception e) {
                     Log.v("DrCall", "dr--error-1-" + e);

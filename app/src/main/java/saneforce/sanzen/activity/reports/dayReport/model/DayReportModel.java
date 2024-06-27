@@ -55,6 +55,16 @@ public class DayReportModel implements Serializable {
   private String Confirmed = "";
   private String Additional_Temp_Details = "";
 
+  private String  ReasonforRejection="";
+
+  public String getReasonforRejection() {
+    return ReasonforRejection;
+  }
+
+  public void setReasonforRejection(String reasonforRejection) {
+    ReasonforRejection = reasonforRejection;
+  }
+
   public String getAdditional_Temp_Details() {
     return Additional_Temp_Details;
   }
@@ -63,7 +73,7 @@ public class DayReportModel implements Serializable {
     Additional_Temp_Details = additional_Temp_Details;
   }
 
-  public DayReportModel(String udr, String intime, String drs, String inaddress, String halfDay_FW_Type, String outtime, String chm, String desig_Code, String SF_Code, String stk, String cip, String adate, String hos, String SF_Name, String rmdr, String rptdate, String wtype, String FWFlg, DayReportModel.Activity_Date activity_Date, String outaddress, String ACode, String remarks, String terrWrk, int typ, String confirmed, String Additional_Temp_Details) {
+  public DayReportModel(String udr, String intime, String drs, String inaddress, String halfDay_FW_Type, String outtime, String chm, String desig_Code, String SF_Code, String stk, String cip, String adate, String hos, String SF_Name, String rmdr, String rptdate, String wtype, String FWFlg, DayReportModel.Activity_Date activity_Date, String outaddress, String ACode, String remarks, String terrWrk, int typ, String confirmed, String Additional_Temp_Details,String ReasonforRejection) {
     Udr = udr;
     this.intime = intime;
     Drs = drs;
@@ -90,6 +100,7 @@ public class DayReportModel implements Serializable {
     Typ = typ;
     Confirmed = confirmed;
     this.Additional_Temp_Details = Additional_Temp_Details;
+    this.ReasonforRejection = ReasonforRejection;
   }
 
   public String getConfirmed() {
@@ -322,5 +333,7 @@ public class DayReportModel implements Serializable {
     public void setTimezone_type(Integer timezone_type) {
       this.timezone_type = timezone_type;
     }
+
+
   }
 }

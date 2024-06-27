@@ -7,7 +7,12 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -2333,15 +2338,23 @@ public class SharedPref {
     public static String getJWKDATE(Context context) {
         return context.getSharedPreferences(SETHQ_DETAILS, MODE_PRIVATE).getString(JWKDATE, "");
     }
-    public static void setsyn_hqcode(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(SETSYNHQ, MODE_PRIVATE);
+    public static void setSyncHQ(Context context, List<String> List) {
+        Gson  gson = new Gson();
+        String json = gson.toJson(List);
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(SETSYN_HQCODE, status).apply();
+        editor.putString(SETSYN_HQCODE, json).apply();
+    }
+    public static List<String> getsyn_hqcode(Context context) {
+        Gson  gson = new Gson();
+        String json =  context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SETSYN_HQCODE, null);
+        if (json == null) {
+            return new ArrayList<>();
+        }Type type = new TypeToken<List<String>>() {}.getType();
+        return gson.fromJson(json, type);
     }
 
-    public static String getsyn_hqcode(Context context) {
-        return context.getSharedPreferences(SETSYNHQ, MODE_PRIVATE).getString(SETSYN_HQCODE, "");
-    }
+
 
     public static void setTpStatus(Context context, boolean status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);

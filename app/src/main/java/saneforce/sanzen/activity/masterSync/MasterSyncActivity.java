@@ -112,7 +112,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> subordinateModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> otherModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
-    public static ArrayList<String> HQCODE_SYN = new ArrayList<>();
+    public  List<String> HQCODE_SYN = new ArrayList<>();
     public static ArrayList<String> SlideIds = new ArrayList<>();
     SharedPreferences sharedpreferences;
     LocalDate localDate;
@@ -152,6 +152,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         sharedpreferences = getSharedPreferences("SLIDES", MODE_PRIVATE);
+        HQCODE_SYN.addAll(SharedPref.getsyn_hqcode(context));
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString(Constants.NAVIGATE_FROM);
@@ -280,8 +281,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                             if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
                                 rsf = jsonObject.getString("id");
                                  //myresource
-                                HQCODE_SYN.add(jsonObject.getString("id"));
-                                SharedPref.setsyn_hqcode(this, String.valueOf(HQCODE_SYN));
+
                                 prepareArray(rsf); // replace the new rsf value
                                 masterSyncAll(false);
                                 break;
@@ -720,22 +720,31 @@ public class MasterSyncActivity extends AppCompatActivity {
         //Leave
         leaveModelArray.clear();
         MasterSyncItemModel leaveModel = new MasterSyncItemModel(Constants.LEAVE,  "Leave", "getleavetype", Constants.LEAVE, leaveStatus, false);
-        MasterSyncItemModel leaveStatusModel = new MasterSyncItemModel(Constants.LEAVE_STATUS, "Leave", "getleavestatus", Constants.LEAVE_STATUS, leaveStatusStatus, false);
         leaveModelArray.add(leaveModel);
-        leaveModelArray.add(leaveStatusModel);
+        if(SharedPref.getLeaveEntitlementNeed(this).equalsIgnoreCase("0")){
+            MasterSyncItemModel leaveStatusModel = new MasterSyncItemModel(Constants.LEAVE_STATUS, "Leave", "getleavestatus", Constants.LEAVE_STATUS, leaveStatusStatus, false);
+            leaveModelArray.add(leaveStatusModel);
+        }
+
+
 
         //DCR
         dcrModelArray.clear();
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC,  "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC,  "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
         MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
-        MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE,  "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
+
         //   MasterSyncItemModel EventCallSync = new MasterSyncItemModel("Status", -1, "AdditionalDcr", "gettodycalls", Constants.CALENDER_EVENT_STATUS, calenderEventStaus, false);
         dcrModelArray.add(callSyncModel);
         dcrModelArray.add(dateSyncModel);
         dcrModelArray.add(myDayPlanModel);
-        dcrModelArray.add(stockBalanceModel);
-        if(SharedPref.getVstNd(this).equalsIgnoreCase("0")) {
+
+
+        if(SharedPref.getSampleValidation(this).equalsIgnoreCase("1")||SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
+            MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE,  "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
+            dcrModelArray.add(stockBalanceModel);
+        }
+            if(SharedPref.getVstNd(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel visitControlModel = new MasterSyncItemModel(Constants.VISIT_CONTROL, "AdditionalDcr", "getvisit_contro", Constants.VISIT_CONTROL, visitControlStatus, false);
             dcrModelArray.add(visitControlModel);
         }
@@ -948,7 +957,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                     masterSyncAllModel.clear();
                     itemCount = 0;
                     apiSuccessCount = 0;
-
+                    HQCODE_SYN.add(rsf);
+                    SharedPref.setSyncHQ(MasterSyncActivity.this, HQCODE_SYN);
                     //Whenever hq changed true , we need to sync only dr,chemist,stockiest,unListDr,hosp,cip,cluster and joint work
                     masterSyncAllModel.add(doctorModelArray);
                     masterSyncAllModel.add(chemistModelArray);
@@ -960,14 +970,14 @@ public class MasterSyncActivity extends AppCompatActivity {
                     masterSyncAllModel.add(subordinateModelArray);
 
                     if (!hqChanged) {
+                        masterSyncAllModel.add(workTypeModelArray);
                         masterSyncAllModel.add(inputModelArray);
                         masterSyncAllModel.add(productModelArray);
                         masterSyncAllModel.add(leaveModelArray);
                         masterSyncAllModel.add(dcrModelArray);
-                        masterSyncAllModel.add(workTypeModelArray);
-                        masterSyncAllModel.add(tpModelArray);
                         masterSyncAllModel.add(slideModelArray);
                         masterSyncAllModel.add(otherModelArray);
+                        masterSyncAllModel.add(tpModelArray);
                         if(!navigateFrom.equalsIgnoreCase("Login")){
                             masterSyncAllModel.add(setupModelArray);
                         }
@@ -1103,6 +1113,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                         masterSyncItemModels.get(position).setPBarVisibility(false);
                         ++apiSuccessCount;
+                        Log.e("response :   ",  remoteTableName + " : " + response.body().toString());
 
                         boolean success = false;
                         JSONArray jsonArray = new JSONArray();
@@ -1172,6 +1183,14 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         } else  if(!navigateFrom.equalsIgnoreCase("Login") && masterOf.equalsIgnoreCase(Constants.SETUP) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
                                             if (jsonArray.length() > 0){
                                                 SharedPref.InsertLogInData(MasterSyncActivity.this,jsonArray.getJSONObject(0));
+                                               if(!navigateFrom.equalsIgnoreCase("Slide")) {
+                                                   Intent intent = getIntent();
+                                                   overridePendingTransition(0, 0);
+                                                   intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                                   finish();
+                                                   overridePendingTransition(0, 0);
+                                                   startActivity(intent);
+                                               }
                                             }
                                         }
                                     }

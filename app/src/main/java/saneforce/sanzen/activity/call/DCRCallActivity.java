@@ -154,7 +154,7 @@ public class DCRCallActivity extends AppCompatActivity {
     JSONObject remObj;
     double CompFullValues = 0;
     boolean isCreateJsonSuccess;
-    String FwFlag;
+    String FwFlag,FeildName;
     Dialog dialogCheckOut;
     Button btnCheckOut;
     TextView tv_address, tv_dateTime;
@@ -632,6 +632,8 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonObject.put("Trans_SlNo", "");
             jsonObject.put("FW_Indicator", FwFlag);
             jsonObject.put("AMSLNo", "");
+            jsonObject.put("WorkType_Name", FeildName);
+            jsonObject.put("day_status", "0");
             jsonObject.put("versionNo",  getResources().getString(R.string.app_version));
             jsonObject.put("mod", Constants.APP_MODE);
             jsonObject.put("Device_version", Build.VERSION.RELEASE);
@@ -667,6 +669,8 @@ public class DCRCallActivity extends AppCompatActivity {
                     jsonObject.put("SF_Code", SfCode);
                     jsonObject.put("Trans_SlNo", "");
                     jsonObject.put("FW_Indicator", FwFlag);
+                    jsonObject.put("WorkType_Name", FeildName);
+                    jsonObject.put("day_status", "0");
                     jsonObject.put("AMSLNo", "");
                     jsonArray.put(jsonObject);
 
@@ -2200,6 +2204,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     jsonSaveDcr.put("WTName", workTypeData.getString("Name"));
                     jsonSaveDcr.put("FWFlg", workTypeData.getString("FWFlg"));
                     FwFlag = workTypeData.getString("FWFlg");
+                    FeildName= workTypeData.getString("Name");
                 }
             }
 

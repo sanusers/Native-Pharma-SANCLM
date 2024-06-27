@@ -315,8 +315,12 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         }
 
         dcrCallApprovalBinding.tagCluster1.setText(SharedPref.getClusterCap(DcrApprovalActivity.this));
-        CallDcrListApi();
 
+        if (UtilityClass.isNetworkAvailable(this)) {
+            CallDcrListApi();
+        } else {
+            commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
+        }
         dcrCallApprovalBinding.searchDcr.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -362,7 +366,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             Button btn_cancel = dialogReject.findViewById(R.id.btn_cancel);
             Button btn_reject = dialogReject.findViewById(R.id.btn_reject);
 
-            ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
+            ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason,250)});
 
             btn_cancel.setOnClickListener(view1 -> {
                 ed_reason.setText("");

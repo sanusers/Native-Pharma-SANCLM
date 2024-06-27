@@ -37,7 +37,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="@font/satoshi_regular"
           android:gravity="center"
-          android:text="No Last Visit Date"
+          android:text="--"
           android:textColor="@color/bg_txt_color"
           android:textSize="@dimen/_6sdp"
           android:textStyle="bold" />
@@ -62,7 +62,7 @@
           android:fontFamily="@font/satoshi_regular"
           android:gravity="center"
           android:padding="@dimen/_3sdp"
-          android:text="No Feedback"
+          android:text="--"
           android:textColor="@color/bg_txt_color"
           android:textSize="@dimen/_6sdp"
           android:textStyle="bold" />
@@ -87,7 +87,7 @@
           android:padding="@dimen/_3sdp"
           android:fontFamily="@font/satoshi_regular"
           android:gravity="center"
-          android:text="No Remarks"
+          android:text="--"
           android:textColor="@color/bg_txt_color"
           android:textSize="@dimen/_6sdp"
           android:textStyle="bold" />

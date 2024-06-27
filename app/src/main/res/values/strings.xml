@@ -221,6 +221,7 @@
     <string name="all_brands">All Brands</string>
     <string name="refresh">Refresh Location</string>
     <string name="tour_plan">Tour Plan</string>
+    <string name="faq">FAQ</string>
     <string name="leave_application">Leave Application</string>
     <string name="reports">Reports</string>
     <string name="activity">Activity</string>
@@ -358,7 +359,7 @@
     <string name="select_a_language">Select a language</string>
     <string name="user_id">User ID</string>
     <string name="enter_user_id">Enter User ID</string>
-    <string name="mismatch">Check User Id or Password</string>
+    <string name="mismatch">Check User Id and Password</string>
     <string name="password">Password</string>
     <string name="enterpassword">Enter Password</string>
     <string name="english">English</string>
