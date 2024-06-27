@@ -439,7 +439,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                             listresource.add(new Resourcemodel_class("", custom_name, custom_id, town_name, "", Vist_Date, "", Dcr_count, listed, "",
                                                                                      max_vistcount, "", "", "", "", "", "", "", "", "", "", "", "","","","","","","",""));
 
-
                                         }
                                     }
                                 }

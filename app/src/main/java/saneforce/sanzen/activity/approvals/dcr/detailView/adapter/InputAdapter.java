@@ -1,9 +1,12 @@
 package saneforce.sanzen.activity.approvals.dcr.detailView.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,6 +37,10 @@ public class InputAdapter extends RecyclerView.Adapter<InputAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull InputAdapter.ViewHolder holder, int position) {
         holder.tv_name.setText(getInputList.get(position).getInput_name());
         holder.tv_qty.setText(getInputList.get(position).getInp_qty());
+        holder.tv_name.setOnClickListener(v -> {
+            popUp(holder.tv_name,getInputList.get(position).getInput_name());
+
+        });
     }
 
     @Override
@@ -49,5 +56,16 @@ public class InputAdapter extends RecyclerView.Adapter<InputAdapter.ViewHolder> 
             tv_name = itemView.findViewById(R.id.tv_input_name);
             tv_qty = itemView.findViewById(R.id.tv_inp_qty);
         }
+    }
+
+    private void popUp(View v, String name) {
+        PopupWindow popup = new PopupWindow(context);
+        View layout = LayoutInflater.from(context).inflate(R.layout.popup_text, null);
+        popup.setContentView(layout);
+        popup.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        TextView tv_name = layout.findViewById(R.id.tv_name);
+        tv_name.setText(name);
+        popup.setOutsideTouchable(true);
+        popup.showAsDropDown(v);
     }
 }

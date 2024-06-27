@@ -91,6 +91,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.FAQ.FAQ;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
 import saneforce.sanzen.activity.activityModule.Activity;
@@ -1182,6 +1183,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             return true;
         }
+
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.faq))) {
+            Intent intent=new Intent(getApplicationContext(), FAQ.class);
+            startActivity(intent);
+
+            return true;
+        }
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.quiz))) {
             startActivity(new Intent(HomeDashBoard.this, QuizActivity.class));
             return true;
@@ -1647,12 +1655,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (SharedPref.getTpNeed(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.tp).setVisible(true);
-        }
-        else {
+        } else {
             menu.findItem(R.id.tp).setVisible(false);
         }
 
 
+        if (SharedPref.getFaq(this).equalsIgnoreCase("0")) {
+            menu.findItem(R.id.faq).setVisible(true);
+        } else {
+            menu.findItem(R.id.faq).setVisible(false);
+        }
 
         if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")){
             menu.findItem(R.id.nearme).setVisible(true);
@@ -1745,7 +1757,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 int mCurrentDate = Integer.parseInt(mCurrDate);
 
 
-               /* if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
+             if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan....");
                     TourplanFlog="0";
                     SharedPref.setTpStatus(HomeDashBoard.this, true);
@@ -1765,7 +1777,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         startActivity(intent);
                 }else {
                     SharedPref.setTpStatus(HomeDashBoard.this, false);
-                }*/
+                }
             }
         }
     }

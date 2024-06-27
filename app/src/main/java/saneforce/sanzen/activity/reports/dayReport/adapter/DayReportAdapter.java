@@ -130,6 +130,22 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         }
 
 
+        holder.drIcon.setOnClickListener(v -> {
+            popUp(holder.drIcon,SharedPref.getDrCap(context));
+
+        });
+        holder.cheIcon.setOnClickListener(v -> {
+            popUp(holder.cheIcon,SharedPref.getChmCap(context));
+
+        });
+        holder.stockIcon.setOnClickListener(v -> {
+            popUp(holder.stockIcon,SharedPref.getStkCap(context));
+
+        });
+        holder.unDrIcon.setOnClickListener(v -> {
+            popUp(holder.unDrIcon,SharedPref.getUNLcap(context));
+
+        });
 
         holder.remarks.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,10 +193,10 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.bg_lite_blue)));
         } else if (status==0 && confirmStatus==2) {
             holder.status.setText("Rejected"); // red
-            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.red_60)));
+            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.red_10)));
         } else if (status==0  && confirmStatus==3) {
             holder.status.setText("ReEntry");
-            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.pink_10)));
+            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.yellow_10)));
         }else if (status==1  && confirmStatus==1) {
             holder.status.setText("Approved");
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.green_10)));

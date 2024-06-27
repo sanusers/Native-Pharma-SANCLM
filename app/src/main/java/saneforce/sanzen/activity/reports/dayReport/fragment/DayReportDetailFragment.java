@@ -204,6 +204,8 @@ public class DayReportDetailFragment extends Fragment {
         }
         if ((dayReportModel.getTyp() == 0 || dayReportModel.getTyp() == 1) && Integer.parseInt(dayReportModel.getConfirmed()) == 2) {
             binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
+            binding.rejectedReasonTxt.setText(dayReportModel.getReasonforRejection());
+
         } else {
             binding.rejectionReasonLayout.setVisibility(View.GONE);
         }

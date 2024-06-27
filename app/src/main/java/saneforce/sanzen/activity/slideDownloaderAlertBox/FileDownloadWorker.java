@@ -55,11 +55,13 @@ public class FileDownloadWorker extends Worker {
 
      String    url1 = getInputData().getString("file_url");
      String    fileId = getInputData().getString("Slide_id");
-     String  downloadFileName = getInputData().getString("Slide_name");
-     String  Flag = getInputData().getString("Flag");
-        String  FilePosition = getInputData().getString("FilePosition");
+     String    downloadFileName = getInputData().getString("Slide_name");
+     String    Flag = getInputData().getString("Flag");
+     String    FilePosition = getInputData().getString("FilePosition");
 
      try {
+
+
             URL url = new URL(url1);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -73,16 +75,23 @@ public class FileDownloadWorker extends Worker {
                 }
                 return Result.failure();
             }
-
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                 apkStorage = new File(getApplicationContext().getExternalFilesDir(null) + "/Slides/");
             } else {
+                slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downlaoding Failure","0","0","1",FilePosition));
+                if(Flag.equalsIgnoreCase("1")){
+                    ServicesRestarmehtod();
+                }
                 return Result.failure();
             }
 
             if (!apkStorage.exists()) {
                 if (!apkStorage.mkdirs()) {
                     Log.e(TAG, "Directory Creation Failed.");
+                    slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downlaoding Failure","0","0","1",FilePosition));
+                    if(Flag.equalsIgnoreCase("1")){
+                        ServicesRestarmehtod();
+                    }
                     return    Result.failure();
                 }
             }
@@ -99,6 +108,10 @@ public class FileDownloadWorker extends Worker {
 
             if (!outputFile.createNewFile()) {
                 Log.e(TAG, "File Creation Failed.");
+                slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downlaoding Failure","0","0","1",FilePosition));
+                if(Flag.equalsIgnoreCase("1")){
+                    ServicesRestarmehtod();
+                }
                 return  Result.failure();            }
 
             FileOutputStream fos = new FileOutputStream(outputFile);
@@ -124,7 +137,8 @@ public class FileDownloadWorker extends Worker {
                 File unzipDir = new File(getApplicationContext().getExternalFilesDir(null), "/Slides/");
                 unzip(filePath, unzipDir);
             }
-          slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,String.valueOf(progressTex),"3","100","1",FilePosition));
+             slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,String.valueOf(progressTex),"3","100","1",FilePosition));
+
             fos.close();
             is.close();
             Thumbnail(downloadFileName);
@@ -223,7 +237,7 @@ public class FileDownloadWorker extends Worker {
         return false;
     }
 
-    void ServicesRestarmehtod(){
+  public   void ServicesRestarmehtod(){
 
             Intent Intent = new Intent(getApplicationContext(), SlideServices.class);
             getApplicationContext().stopService(Intent);

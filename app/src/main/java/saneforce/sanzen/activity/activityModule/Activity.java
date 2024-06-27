@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.activityModule;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_MEDIA_AUDIO;
 import static android.Manifest.permission.READ_MEDIA_IMAGES;
@@ -22,6 +24,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 
 
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,8 +41,11 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -458,7 +464,7 @@ public class Activity extends AppCompatActivity {
         textcharacter.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
         textcharacter.setLayoutParams(params);
         textcharacter.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
-
+        textcharacter.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         textLinearLayout1.addView(textcharacter);
         textcharacter.setInputType(InputType.TYPE_CLASS_TEXT);
         textcharacter.setId(k);
@@ -487,6 +493,19 @@ public class Activity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 ActivityViewItem.get(k).setAnswerTxt(textcharacter.getText().toString());
+
+            }
+        });
+
+        textcharacter.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
+                    hideKeyboard(v);
+                    v.clearFocus();
+                    return true;
+                }
+                return false;
 
             }
         });
@@ -522,7 +541,7 @@ public class Activity extends AppCompatActivity {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
-
+        textnumber.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         textnumber.setBackgroundColor(Color.WHITE);
         textnumber.setBackgroundResource(R.drawable.background_card_white_plan);
         textnumber.setTextColor(getResources().getColor(R.color.text_dark));
@@ -556,6 +575,19 @@ public class Activity extends AppCompatActivity {
 
             }
         });
+        textnumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
+                    hideKeyboard(v);
+                    v.clearFocus();
+                    return true;
+                }
+                return false;
+
+            }
+        });
+
     }
 
 
@@ -596,6 +628,7 @@ public class Activity extends AppCompatActivity {
         textarea.setTextColor(getResources().getColor(R.color.text_dark));
         textarea.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
         textarea.setGravity(TOP);
+        textarea.setImeOptions(EditorInfo.IME_ACTION_NEXT);
 
         textarea.setLayoutParams(params);
         textLinearLayout1.addView(textarea);
@@ -633,7 +666,18 @@ public class Activity extends AppCompatActivity {
 
             }
         });
+        textarea.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
+                    hideKeyboard(v);
+                    v.clearFocus();
+                    return true;
+                }
+                return false;
 
+            }
+        });
     }
 
     public void CreateSelectionDateView(ActivityDetailsModelClass List, int k) {
@@ -1857,6 +1901,7 @@ public class Activity extends AppCompatActivity {
 
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textcurrency.setBackgroundColor(Color.WHITE);
+        textcurrency.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         textcurrency.setBackgroundResource(R.drawable.background_card_white_plan);
         textcurrency.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textcurrency.setTextColor(getResources().getColor(R.color.text_dark));
@@ -1965,26 +2010,39 @@ public class Activity extends AppCompatActivity {
         AddressText.setText(address);
         LatText.setText("Lat  :" + String.valueOf(latitude));
         LongText.setText("Long  :" + String.valueOf(longitude));
-        ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "Lat  :" + latitude + " " + "Long  :" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
+
+        if (latitude == 0.0 || longitude == 0.0)
+            ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+        else
+            ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "Lat  :" + latitude + " " + "Long  :" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         LabelText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                commonUtilsMethods.showToastMessage(Activity.this, "Wait For Location");
-
-                String address;
-                double latitude = gpsTrack.getLatitude();
-                double longitude = gpsTrack.getLongitude();
-                if (UtilityClass.isNetworkAvailable(Activity.this)) {
-                    address = CommonUtilsMethods.gettingAddress(Activity.this, latitude, longitude, false);
+                LocationManager  locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    if(!CheckLocPermission()){
+                        RequestLocationPermission();
+                    }else {
+                        commonUtilsMethods.showToastMessage(Activity.this, "Wait For Location");
+                        String address;
+                        double latitude = gpsTrack.getLatitude();
+                        double longitude = gpsTrack.getLongitude();
+                        if (UtilityClass.isNetworkAvailable(Activity.this)) {
+                            address = CommonUtilsMethods.gettingAddress(Activity.this, latitude, longitude, false);
+                        } else {
+                            address = "No Address Found";
+                        }
+                        ActivityViewItem.get(k).setAnswerTxt("Lat  :" + latitude + " " + "Long  :" + longitude);
+                        ActivityViewItem.get(k).setAnswerTxt2(address);
+                        LatText.setText("Lat  :" + String.valueOf(latitude));
+                        LongText.setText("Long  :" + String.valueOf(longitude));
+                    }
                 } else {
-                    address = "No Address Found";
+                    CommonUtilsMethods.RequestGPSPermission(Activity.this);
                 }
-                ActivityViewItem.get(k).setAnswerTxt("Lat  :" + latitude + " " + "Long  :" + longitude);
-                ActivityViewItem.get(k).setAnswerTxt2(address);
-                LatText.setText("Lat  :" + String.valueOf(latitude));
-                LongText.setText("Long  :" + String.valueOf(longitude));
+
             }
         });
 
@@ -2075,6 +2133,7 @@ public class Activity extends AppCompatActivity {
         txtcurconvert1.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         txtcurconvert1.setTextColor(getResources().getColor(R.color.text_dark));
         txtcurconvert1.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
+        txtcurconvert1.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         txtcurconvert1.setLayoutParams(params);
 
         textLinearLayout2.addView(txtcurconvert1);
@@ -2106,6 +2165,7 @@ public class Activity extends AppCompatActivity {
         txtcurconvert2.setTextColor(getResources().getColor(R.color.text_dark));
         txtcurconvert2.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
         txtcurconvert2.setLayoutParams(params13);
+        txtcurconvert2.setImeOptions(EditorInfo.IME_ACTION_NEXT);
 
         textLinearLayout3.addView(txtcurconvert2);
         txtcurconvert2.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -2115,8 +2175,6 @@ public class Activity extends AppCompatActivity {
         txtcurconvert2.setId(k);
         txtcurconvert2.setHint("Amount");
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-
-
     }
 
     public void digitalsign(ActivityDetailsModelClass List, int k) {
@@ -3055,7 +3113,7 @@ public class Activity extends AppCompatActivity {
                 jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
 
 
-                if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16") || List.getControlId().equalsIgnoreCase("17")) {
+                if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16") ) {
                     if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
                         commonUtilsMethods.showToastMessage(Activity.this, "Fill The From " + List.getFieldName());
                         break;
@@ -3069,7 +3127,7 @@ public class Activity extends AppCompatActivity {
                     }
                 } else if (List.getControlId().equalsIgnoreCase("17")) {
                     if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(Activity.this, "Fill The " + List.getFieldName() + "");
+                        commonUtilsMethods.showToastMessage(Activity.this, "Choose The " + List.getFieldName() + "");
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
@@ -3479,7 +3537,41 @@ public class Activity extends AppCompatActivity {
             if ((DontAskAgain) && (StorageFlag > 1)) {
                 CommonUtilsMethods.RequestGPSPermission(Activity.this, "Files");
             }
+        } if (requestCode == 102) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = getIntent();
+                overridePendingTransition(0, 0);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(intent);
+
+            } else {
+                // Permission denied, show a message to the user
+                CommonUtilsMethods. RequestGPSPermission(Activity.this,"Location");
+            }
         }
     }
+    public void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+
+    private void RequestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(Activity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(Activity.this, ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(Activity.this, new String[]{ACCESS_FINE_LOCATION}, 102);
+            } else {
+                ActivityCompat.requestPermissions(Activity.this, new String[]{ACCESS_FINE_LOCATION}, 102);
+            }
+        }
+    }
+    public boolean CheckLocPermission() {
+        int FineLocation = ContextCompat.checkSelfPermission(Activity.this, ACCESS_FINE_LOCATION);
+        int CoarseLocation = ContextCompat.checkSelfPermission(Activity.this, ACCESS_COARSE_LOCATION);
+        return FineLocation == PackageManager.PERMISSION_GRANTED && CoarseLocation == PackageManager.PERMISSION_GRANTED;
+    }
+
 }
 

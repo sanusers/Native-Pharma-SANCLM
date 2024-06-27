@@ -99,6 +99,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     JSONObject SelectedHQ;
     ApiInterface api_interface;
 
+    List<String> SynqList=new ArrayList<>();
+
     String strClusterID = "", strClusterName = "";
 
     String DayPlanCount = "1", IsFeildWorkFlag = "F0";
@@ -270,7 +272,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mWTCode1 = SelectedWorkType.getString("Code");
                     mWTName1 = SelectedWorkType.getString("Name");
 
-                    if (SelectedWorkType.getString("FWFlg").equalsIgnoreCase("F")) {
+                    if (SelectedWorkType.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
                         IsFeildWorkFlag = "F1";
                         NeedClusterFlag1 = true;
                         rlculster.setVisibility(View.VISIBLE);
@@ -278,6 +280,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             rlHQ.setVisibility(View.VISIBLE);
                         }
                     } else {
+                        NeedClusterFlag1 = false;
                         mTowncode1 = "";
                         mTownname1 = "";
                         mHQCode1 = "";
@@ -290,7 +293,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mFwFlg2 = SelectedWorkType.getString("FWFlg");
                     mWTCode2 = SelectedWorkType.getString("Code");
                     mWTName2 = SelectedWorkType.getString("Name");
-                    if (SelectedWorkType.getString("FWFlg").equalsIgnoreCase("F")) {
+                    if (SelectedWorkType.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
                         NeedClusterFlag2 = true;
                         IsFeildWorkFlag = "F2";
                         rlculster.setVisibility(View.VISIBLE);
@@ -298,6 +301,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             rlHQ.setVisibility(View.VISIBLE);
                         }
                     } else {
+                        NeedClusterFlag2 = true;
                         mTowncode2 = "";
                         mTownname2 = "";
                         mHQCode2 = "";
@@ -1030,18 +1034,33 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     break;
                 }
             }
+
+
+            String FW_Inticator ;
+            String Workname;
+
+            if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F")) {
+                FW_Inticator = "F";
+                Workname="Field Work";
+            } else {
+                FW_Inticator = mFwFlg1;
+                Workname=mWTName1;
+            }
+//month_name .Mnth  Yr
             if(!isCallSyncAvailable) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("CustCode", "");
                 jsonObject.put("CustType", "0");
                 jsonObject.put("Dcr_dt", HomeDashBoard.selectedDate.toString());
-                jsonObject.put("month_name", "");
-                jsonObject.put("Mnth", "");
-                jsonObject.put("Yr", "");
+                jsonObject.put("month_name", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_9,HomeDashBoard.selectedDate.toString()));
+                jsonObject.put("Mnth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_31,HomeDashBoard.selectedDate.toString()));
+                jsonObject.put("Yr", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_10,HomeDashBoard.selectedDate.toString()));
                 jsonObject.put("CustName", "");
                 jsonObject.put("town_code", "");
+                jsonObject.put("FW_Indicator", FW_Inticator);
+                jsonObject.put("WorkType_Name", Workname);
                 jsonObject.put("town_name", "");
-                jsonObject.put("Dcr_flag", "");
+                jsonObject.put("Dcr_flag", "0");
                 jsonObject.put("SF_Code", "");
                 jsonObject.put("Trans_SlNo", "");
                 jsonObject.put("AMSLNo", "");
@@ -1408,6 +1427,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
 
     public void getData(String hqCode) {
+        SynqList=SharedPref.getsyn_hqcode(requireContext());
+        SynqList.add(hqCode);
+        SharedPref.setSyncHQ(requireContext(),SynqList);
         if (DayPlanCount.equalsIgnoreCase("1")) {
             binding.progressHq1.setVisibility(View.VISIBLE);
         } else {
@@ -1606,7 +1628,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                     Date FirstPlanDate = sdf.parse(DayplanDate1);
                     Date CurentDate = sdf.parse(CurrentDate);
-                    String TerritoryFlag1 = "Y", TerritoryFlag2 = "Y";
+                    String TerritoryFlag1 = "", TerritoryFlag2 = "";
 
                     if(Objects.requireNonNull(FirstPlanDate).equals(CurentDate)) {
                         mTowncode1 = FirstSeasonDayPlanObject.getString("Pl");

@@ -103,7 +103,7 @@ public class Call_statusfrist_view extends Fragment {
                             SF_Code = jsonObject.getString("SF_Code");
                             Trans_SlNo = jsonObject.getString("Trans_SlNo");
                             AMSLNo = jsonObject.getString("AMSLNo");
-                            time = jsonObject.getString("vtm");
+                          //  time = jsonObject.getString("vtm");
                         } else {
                             CustType = jsonObject.getString("CustType");
                             FW_Indicator = jsonObject.getString("FW_Indicator");
@@ -121,7 +121,7 @@ public class Call_statusfrist_view extends Fragment {
                             SF_Code = jsonObject.getString("SF_Code");
                             Trans_SlNo = jsonObject.getString("Trans_SlNo");
                             AMSLNo = jsonObject.getString("AMSLNo");
-                            time = jsonObject.getString("vtm");
+                           // time = jsonObject.getString("vtm");
                         }
                         if (CustType.equals("0")) {
                             medicalPersonnel = "";

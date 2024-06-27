@@ -51,24 +51,27 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
         holder.CompetitorProductName.setText(rcpaList.get(position).getCompPName().length() > 16 ? rcpaList.get(position).getCompPName().substring(0, 16) + "..." : rcpaList.get(position).getCompPName());
         holder.ComprdQty.setText(rcpaList.get(position).getCPQty());
         holder.comName.setText(rcpaList.get(position).getCompName().length() > 16 ? rcpaList.get(position).getCompName().substring(0, 16) + "..." : rcpaList.get(position).getCompName());
-        int opValue = Integer.parseInt(rcpaList.get(position).getOPValue());
-        int cpValue = Integer.parseInt(rcpaList.get(position).getCPValue());
-        int totValue = opValue+cpValue;
-
-
-
-
-
-        if (!rcpaList.get(position).getCPRemarks().isEmpty()) {
-            holder.img_remarks.setEnabled(true);
-            holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.img_remarks_0));
+        double opValue = Double.valueOf(rcpaList.get(position).getOPValue());
+        double cpValue = Double.valueOf(rcpaList.get(position).getCPValue());
+        String totalvalue;
+        String formattedAverage = String.format("%.1f", opValue+cpValue);
+        if (formattedAverage.endsWith(".0")) {
+            totalvalue=formattedAverage.substring(0,formattedAverage.length()-2);
         } else {
-            holder.img_remarks.setEnabled(false);
-            holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.img_remarks_1));
+            totalvalue=formattedAverage;
         }
 
 
 
+        if (!rcpaList.get(position).getCPRemarks().isEmpty()) {
+            holder. img_remarks.setVisibility(View.VISIBLE);
+            holder.img_remarks.setEnabled(true);
+            holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.img_remarks_0));
+        } else {
+           holder. img_remarks.setVisibility(View.GONE);
+            holder.img_remarks.setEnabled(false);
+            holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.img_remarks_1));
+        }
 
 
 
@@ -88,7 +91,7 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
             popUp(v, rcpaList.get(position).getCPRemarks());
         });
         holder.infoView.setOnClickListener(v -> {
-            ratePopUp(v,rcpaList.get(position).getOPRate(),rcpaList.get(position).getOPQty(),rcpaList.get(position).getOPRate(),rcpaList.get(position).getOPValue(),rcpaList.get(position).getCPQty(),rcpaList.get(position).getCPRate(),rcpaList.get(position).getCPValue(),totValue);
+            ratePopUp(v,rcpaList.get(position).getOPRate(),rcpaList.get(position).getOPQty(),rcpaList.get(position).getOPRate(),rcpaList.get(position).getOPValue(),rcpaList.get(position).getCPQty(),rcpaList.get(position).getCPRate(),rcpaList.get(position).getCPValue(),totalvalue);
             notifyDataSetChanged();
         });
     }
@@ -134,7 +137,7 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
 
 
 
-    private void ratePopUp(View v,String rate,String opQty,String opRate,String opValue,String cpQty,String cpRate,String cpValue,int totValue) {
+    private void ratePopUp(View v,String rate,String opQty,String opRate,String opValue,String cpQty,String cpRate,String cpValue,String totValue) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = layoutInflater.inflate(R.layout.dialog_rcpa_rate, null);
         PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, false);
@@ -152,7 +155,7 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
         textCompQty.setText(cpQty);
         txtCompRate.setText(cpRate);
         textCompValue.setText(cpValue);
-        textTotal.setText(String.valueOf(totValue));
+        textTotal.setText(totValue);
         v.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         int infoViewWidth = v.getMeasuredWidth();
@@ -161,4 +164,21 @@ public class ReoportRcpaAdapter extends RecyclerView.Adapter<ReoportRcpaAdapter.
         popupWindow.showAsDropDown(v, xOffset, 0);
     }
 
+    private static boolean isInteger(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private static boolean isDouble(String value) {
+        try {
+            Double.parseDouble(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 }

@@ -21,6 +21,7 @@ import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanzen.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.UtilityClass;
 
 public class AdapterDcrApprovalList extends RecyclerView.Adapter<AdapterDcrApprovalList.ViewHolder> {
     Context context;
@@ -65,8 +66,13 @@ public class AdapterDcrApprovalList extends RecyclerView.Adapter<AdapterDcrAppro
 
 
         holder.constraint_main.setOnClickListener(view -> {
-            onItemClickListenerApproval.onClick(new DCRApprovalList(dcrApprovalLists.get(position).getTrans_slNo(), dcrApprovalLists.get(position).getSf_name(), dcrApprovalLists.get(position).getActivity_date(), dcrApprovalLists.get(position).getPlan_name(), dcrApprovalLists.get(position).getWorkType_name(), dcrApprovalLists.get(position).getSfCode(), dcrApprovalLists.get(position).getFieldWork_indicator(), dcrApprovalLists.get(position).getSubmission_date_sub(), dcrApprovalLists.get(position).getOther_wt(), dcrApprovalLists.get(position).getRemarks(),dcrApprovalLists.get(position).getAdditional_Temp_Details()), holder.getBindingAdapterPosition());
-            notifyDataSetChanged();
+            if (UtilityClass.isNetworkAvailable(context)) {
+                onItemClickListenerApproval.onClick(new DCRApprovalList(dcrApprovalLists.get(position).getTrans_slNo(), dcrApprovalLists.get(position).getSf_name(), dcrApprovalLists.get(position).getActivity_date(), dcrApprovalLists.get(position).getPlan_name(), dcrApprovalLists.get(position).getWorkType_name(), dcrApprovalLists.get(position).getSfCode(), dcrApprovalLists.get(position).getFieldWork_indicator(), dcrApprovalLists.get(position).getSubmission_date_sub(), dcrApprovalLists.get(position).getOther_wt(), dcrApprovalLists.get(position).getRemarks(),dcrApprovalLists.get(position).getAdditional_Temp_Details()), holder.getBindingAdapterPosition());
+                notifyDataSetChanged();
+            } else {
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+            }
+
         });
     }
 

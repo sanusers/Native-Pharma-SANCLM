@@ -105,7 +105,7 @@ public class Call_status_second_view extends Fragment {
                             SF_Code = jsonObject.getString("SF_Code");
                             Trans_SlNo = jsonObject.getString("Trans_SlNo");
                             AMSLNo = jsonObject.getString("AMSLNo");
-                            time = jsonObject.getString("vtm");
+                            //  time = jsonObject.getString("vtm");
 
 
 
@@ -129,7 +129,7 @@ public class Call_status_second_view extends Fragment {
                             SF_Code = jsonObject.getString("SF_Code");
                             Trans_SlNo = jsonObject.getString("Trans_SlNo");
                             AMSLNo = jsonObject.getString("AMSLNo");
-                            time = jsonObject.getString("vtm");
+                          //  time = jsonObject.getString("vtm");
 
                         }
                         if (CustType.equals("0")) {

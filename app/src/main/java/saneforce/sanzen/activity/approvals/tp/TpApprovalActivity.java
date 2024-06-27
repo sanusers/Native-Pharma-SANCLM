@@ -424,6 +424,9 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     tpDetailedModelsList.clear();
+                    totalWeekOffDays=0;
+                    totalPlannedDays=0;
+                    totalHolidays=0;
                     try {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         if (jsonArray.length() > 0) {

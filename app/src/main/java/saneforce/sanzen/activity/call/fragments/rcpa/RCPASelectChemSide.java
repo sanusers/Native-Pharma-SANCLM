@@ -91,33 +91,34 @@ public class RCPASelectChemSide extends Fragment {
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + DCRCallActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
-                if(SharedPref.getGeotagNeedChe(context).equalsIgnoreCase("1")) {
-                    if(!jsonObject.getString("lat").isEmpty() && !jsonObject.getString("long").isEmpty()) {
-                        if(SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
-                            float[] distance = new float[2];
-                            Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
-                            if(distance[0]<DcrCallTabLayoutActivity.limitKm * 1000.0) {
-//                                if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
-                                ChemFullList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code")));
-//                                }
-                            }
-                        }else {
-                            float[] distance = new float[2];
-                            Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
-                            if(distance[0]<DcrCallTabLayoutActivity.limitKm * 1000.0) {
-                                ChemFullList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code")));
-                            }
-                        }
-                    }
-                }else {
-                    if(SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
-                        if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
-                            ChemFullList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code")));
-                        }
-                    }else {
-                        ChemFullList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code")));
-                    }
-                }
+//                if(SharedPref.getGeotagNeedChe(context).equalsIgnoreCase("1")) {
+//                    if(!jsonObject.getString("lat").isEmpty() && !jsonObject.getString("long").isEmpty()) {
+//                        if(SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
+//                            float[] distance = new float[2];
+//                            Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
+//                            if(distance[0]<DcrCallTabLayoutActivity.limitKm * 1000.0) {
+////                                if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
+//                                ChemFullList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code")));
+////                                }
+//                            }
+//                        }else {
+//                            float[] distance = new float[2];
+//                            Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
+//                            if(distance[0]<DcrCallTabLayoutActivity.limitKm * 1000.0) {
+//                                ChemFullList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code")));
+//                            }
+//                        }
+//                    }
+//                }else {
+//                    if(SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
+//                        if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+//                            ChemFullList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code")));
+//                        }
+//                    }else {
+//                        ChemFullList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code")));
+//                    }
+//                }
+                ChemFullList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code")));
             }
 
             int count = ChemFullList.size();
