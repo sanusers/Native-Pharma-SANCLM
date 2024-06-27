@@ -766,9 +766,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void submitMyDayPlan() {
         if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
-            if(binding.txtWorktype1.isEnabled()) {
+            if(binding.rlworktype1.isEnabled()) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-            } else if(binding.txtWorktype2.isEnabled() && !mWTName2.isEmpty()) {
+            } else if(binding.rlworktype2.isEnabled() && !mWTName2.isEmpty()) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
             } else if(mWTName1.isEmpty() ) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
@@ -1515,9 +1515,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-
     private void getDatabaseHeadQuarters(String hqCode) {
-
         cluster.clear();
         multiple_cluster_list.clear();
         try {
@@ -1536,16 +1534,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
 
     public void setUpMyDayplan() {
-
         try {
             binding.progressWt1.setVisibility(View.VISIBLE);
             JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
-            JSONArray worktypedata = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+            JSONArray workTypeData = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
             JSONArray dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
             SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(),false,false);
             rejectedReason = "";
 
-            if(dateSync.length()>0) {
+            if(dateSync.length() > 0 && HomeDashBoard.selectedDate != null) {
                 for (int i = 0; i<dateSync.length(); i++) {
                     JSONObject jsonObject = dateSync.getJSONObject(i);
                     String dateString = jsonObject.getJSONObject("dt").getString("date").substring(0, 10);
@@ -1623,9 +1620,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         chk_cluster = FirstSeasonDayPlanObject.getString("Pl");
                         SharedPref.setDayPlanStartedDate(requireContext(), HomeDashBoard.selectedDate.toString());
 
-                        if(worktypedata.length()>0) {
-                            for (int i = 0; i<worktypedata.length(); i++) {
-                                JSONObject mJsonObject = worktypedata.getJSONObject(i);
+                        if(workTypeData.length()>0) {
+                            for (int i = 0; i<workTypeData.length(); i++) {
+                                JSONObject mJsonObject = workTypeData.getJSONObject(i);
                                 if(mJsonObject.getString("Code").equalsIgnoreCase(mWTCode1)) {
                                     TerritoryFlag1 = mJsonObject.getString("TerrSlFlg");
                                 }
@@ -1684,11 +1681,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
                         binding.txtSave.setEnabled(false);
 
-
                         String dateOnlyString = sdf.format(FirstPlanDate);
                         String selectedDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_27, dateOnlyString);
                         HomeDashBoard.binding.textDate.setText(selectedDate);
-
                     }
 //                else {
 //                    HomeDashBoard.binding.textDate.setText(CommonUtilsMethods.getCurrentInstance("MMMM d, yyyy"));
@@ -1731,10 +1726,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             SharedPref.setDayPlanStartedDate(requireContext(),  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
                             //   mRemarks1 = SecondSeasonDayPlanObject.getString("Rem");
 
-
-                            if(worktypedata.length()>0) {
-                                for (int i = 0; i<worktypedata.length(); i++) {
-                                    JSONObject mJsonObject = worktypedata.getJSONObject(i);
+                            if(workTypeData.length()>0) {
+                                for (int i = 0; i<workTypeData.length(); i++) {
+                                    JSONObject mJsonObject = workTypeData.getJSONObject(i);
                                     if(mJsonObject.getString("Code").equalsIgnoreCase(mWTCode2)) {
                                         TerritoryFlag2 = mJsonObject.getString("TerrSlFlg");
                                     }
@@ -1792,11 +1786,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.cardPlan2.setVisibility(View.GONE);
                         }
 
-
                     }else {
                         binding.cardPlan2.setVisibility(View.GONE);
                     }
-
 
                     if(mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F")) {
                         SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(), true, true);

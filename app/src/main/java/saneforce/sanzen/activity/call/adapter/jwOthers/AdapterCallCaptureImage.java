@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment;
 import saneforce.sanzen.activity.call.pojo.CallCaptureImageList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -64,7 +66,20 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
         switch (isFromActivity) {
             case "new":
-                holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
+                if(callCaptureImageList.getImg_view() == null){
+                    try {
+                        Bitmap photo = BitmapFactory.decodeFile(callCaptureImageList.getFilePath());
+                        holder.img_view.setImageBitmap(photo);
+                        CallCaptureImageList callCaptureImageList1 = JWOthersFragment.callCaptureImageLists.get(position);
+                        callCaptureImageList1.setImg_view(photo);
+                        JWOthersFragment.callCaptureImageLists.set(position, callCaptureImageList1);
+                    } catch (Exception e) {
+                        Log.e("EC", "onBindViewHolder: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                } else {
+                    holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
+                }
                 break;
             case "edit_local":
                 File imgFile = new File(callCaptureImageList.getFilePath());

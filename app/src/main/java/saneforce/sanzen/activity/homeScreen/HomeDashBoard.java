@@ -1537,7 +1537,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                progressDialog.dismiss();
+//                progressDialog.dismiss();
                 commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.toast_response_failed));
             }
         });
