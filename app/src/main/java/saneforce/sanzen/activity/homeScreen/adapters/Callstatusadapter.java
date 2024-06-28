@@ -28,7 +28,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.modelClass.EventCalenderModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.MyDayPlanEntriesNeeded;
+import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
@@ -54,7 +54,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         masterDataDao = roomDB.masterDataDao();
         dateStrings.clear();
         selectedDate = SharedPref.getSelectedDateCal(context);
-        dateStrings = MyDayPlanEntriesNeeded.datesNeeded;
+        dateStrings = WorkPlanEntriesNeeded.datesNeeded;
 //        try {
 //            JSONArray getMissedDates = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
 //            for (int i = 0; i < getMissedDates.length(); i++) {
@@ -178,9 +178,9 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
 
                 if(SequentialEntry.equalsIgnoreCase("0")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date));
-                } else if(!SharedPref.getDayPlanStartedDate(context).isEmpty() && MyDayPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {
+                } else if(!SharedPref.getDayPlanStartedDate(context).isEmpty() && WorkPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.complete_day));
-                } else if(MyDayPlanEntriesNeeded.datesNeeded.isEmpty() && SharedPref.getSelectedDateCal(context).isEmpty()) {
+                } else if(WorkPlanEntriesNeeded.datesNeeded.isEmpty() && SharedPref.getSelectedDateCal(context).isEmpty()) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_pending_dates_to_select));
                 } else if (isApplicableDate) {
                     SharedPref.setSelectedDateCal(context, String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()));

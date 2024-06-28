@@ -163,40 +163,42 @@ public class SettingsActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 TextView textView = (TextView) view;
                 String selectedLanguage = "";
-                switch (textView.getText().toString().toUpperCase()) {
-                    case "ENGLISH": {
-                        selectedLanguage = "en";
-                        break;
-                    }
-                    case "BURMESE": {
-                        selectedLanguage = "my";
-                        break;
-                    }
-                    case "FRENCH": {
-                        selectedLanguage = "fr";
-                        break;
-                    }
-                    case "MANDARIN": {
-                        selectedLanguage = "zh";
-                        break;
-                    }
-                    case "PORTUGUESE": {
-                        selectedLanguage = "pt";
-                        break;
-                    }
-                    case "SPANISH": {
-                        selectedLanguage = "es";
-                        break;
-                    }
-                    case "THAILAND": {
-                        selectedLanguage = "th";
-                        break;
-                    }
-                    case "VIETNAMESE": {
-                        selectedLanguage = "vi";
-                        break;
-                    }
+                if(textView != null) {
+                    switch (textView.getText().toString().toUpperCase()){
+                        case "ENGLISH":{
+                            selectedLanguage = "en";
+                            break;
+                        }
+                        case "BURMESE":{
+                            selectedLanguage = "my";
+                            break;
+                        }
+                        case "FRENCH":{
+                            selectedLanguage = "fr";
+                            break;
+                        }
+                        case "MANDARIN":{
+                            selectedLanguage = "zh";
+                            break;
+                        }
+                        case "PORTUGUESE":{
+                            selectedLanguage = "pt";
+                            break;
+                        }
+                        case "SPANISH":{
+                            selectedLanguage = "es";
+                            break;
+                        }
+                        case "THAILAND":{
+                            selectedLanguage = "th";
+                            break;
+                        }
+                        case "VIETNAMESE":{
+                            selectedLanguage = "vi";
+                            break;
+                        }
 
+                    }
                 }
                 SelectedLanguage(selectedLanguage);
                 SharedPref.saveSelectedLanguage(SettingsActivity.this, selectedLanguage);
