@@ -288,7 +288,7 @@ public class CallsFragment extends Fragment {
         }else {
             binding.TvAddActivty.setVisibility(View.GONE);
         }
-        binding.TvAddActivty.setText("ADD "+SharedPref.getActivityCap(requireContext()));
+        binding.TvAddActivty.setText("Add "+SharedPref.getActivityCap(requireContext()));
 
 
         adapter = new Call_adapter(requireContext(), TodayCallList, apiInterface);
