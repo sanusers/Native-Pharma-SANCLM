@@ -283,7 +283,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                  //myresource
 
                                 prepareArray(rsf); // replace the new rsf value
-                                masterSyncAll(false);
+                                masterSyncAll(true);
                                 break;
                             }
                         } catch (JSONException e) {
@@ -554,8 +554,11 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         });
 
-        binding.masterSyncAll.setOnClickListener(view -> masterSyncAll(false));
 
+
+        binding.masterSyncAll.setOnClickListener(v -> {
+            masterSyncAll(false);
+        });
     }
 
     public void uiInitialization() {
@@ -970,6 +973,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                     masterSyncAllModel.add(subordinateModelArray);
 
                     if (!hqChanged) {
+                        String dateAndTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_16);
+                        binding.lastSyncTime.setText(dateAndTime);
+                        SharedPref.saveMasterLastSync(getApplicationContext(), dateAndTime);
                         masterSyncAllModel.add(workTypeModelArray);
                         masterSyncAllModel.add(inputModelArray);
                         masterSyncAllModel.add(productModelArray);
@@ -1141,9 +1147,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                                     if (success) {
                                         masterSyncItemModels.get(position).setCount(jsonArray.length());
                                         masterSyncItemModels.get(position).setSyncSuccess(2);
-                                        String dateAndTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_16);
-                                        binding.lastSyncTime.setText(dateAndTime);
-                                        SharedPref.saveMasterLastSync(getApplicationContext(), dateAndTime);
                                         masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 2));
                                         if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)){
                                             isCallSynced = true;
@@ -1558,9 +1561,11 @@ public class MasterSyncActivity extends AppCompatActivity {
             ArrayList<ModelClass> modelClasses = new ArrayList<>();
 
             ArrayList<String> holidayDateArray = new ArrayList<>();
+            ArrayList<String> holidayNameArray = new ArrayList<>();
             for (int i = 0; i < holidayJSONArray.length(); i++) { //Getting Holiday dates from Holiday master data for the selected month
-                if (holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate.getMonthValue())))
+                if (holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate.getMonthValue()))){
                     holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
+                    holidayNameArray.add(holidayJSONArray.getJSONObject(i).getString("Holiday_Name"));}
             }
 
             JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
@@ -1624,15 +1629,16 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 LocalWeelyHolidayFlag =false;
                             }
                             else {
-                                if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
-                                    sessionList.setWorkType(weeklyOffWorkTypeModel);
-                                    LocalWeelyHolidayFlag =true;
-                                }
-                                else if (holidayDateArray.contains(day)) {
+                                if (holidayDateArray.contains(day)) {
+                                    int index = holidayDateArray.indexOf(day);
+                                    sessionList.setRemarks(holidayNameArray.get(index));  // add holiday work type model object when current date is declared as holiday
                                     sessionList.setWorkType(holidayWorkTypeModel);  // add holiday work type model object when current date is declared as holiday
-                                    LocalWeelyHolidayFlag =true;
-                                }else {
-                                    LocalWeelyHolidayFlag =false;
+                                    LocalWeelyHolidayFlag = true;
+                                } else if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
+                                    sessionList.setWorkType(weeklyOffWorkTypeModel);
+                                    LocalWeelyHolidayFlag = true;
+                                } else {
+                                    LocalWeelyHolidayFlag = false;
                                 }
 
                                 ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
@@ -1677,16 +1683,16 @@ public class MasterSyncActivity extends AppCompatActivity {
                             modelClasses.add(modelClass);
                             LocalWeelyHolidayFlag =false;
                         }else {
-
-                            if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
-                                sessionList.setWorkType(weeklyOffWorkTypeModel);
-                                LocalWeelyHolidayFlag =true;
-                            }
-                            else if (holidayDateArray.contains(day)) {
+                            if (holidayDateArray.contains(day)) {
+                                int index = holidayDateArray.indexOf(day);
+                                sessionList.setRemarks(holidayNameArray.get(index));
                                 sessionList.setWorkType(holidayWorkTypeModel);  // add holiday work type model object when current date is declared as holiday
-                                LocalWeelyHolidayFlag =true;
-                            }else {
-                                LocalWeelyHolidayFlag =false;
+                                LocalWeelyHolidayFlag = true;
+                            } else if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
+                                sessionList.setWorkType(weeklyOffWorkTypeModel);
+                                LocalWeelyHolidayFlag = true;
+                            } else {
+                                LocalWeelyHolidayFlag = false;
                             }
                             ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
                             sessionLists.add(sessionList);
