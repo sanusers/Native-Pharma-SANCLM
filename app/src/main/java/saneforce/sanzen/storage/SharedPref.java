@@ -426,7 +426,6 @@ public class SharedPref {
         editor.clear().apply();
     }
 
-
     public static void InsertLogInData(Context context, JSONObject jsonObject){
         try{
 
@@ -747,8 +746,6 @@ public class SharedPref {
         }
 
     }
-
-
 
     public static String getSfName(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SF_NAME, "");
@@ -1963,7 +1960,6 @@ public class SharedPref {
         editor.apply();
     }
 
-
     public static String getLogInsite(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(LOGI_SITE, "");
     }
@@ -2082,8 +2078,6 @@ public class SharedPref {
         editor = sharedPreferences.edit();
         editor.putString(MASTER_LAST_SYNC, date).apply();
     }
-
-
 
     public static void setSaveUrlSetting(Context context, String token) {
         sharedPreferences = context.getSharedPreferences(SP_NAME_NOT_DELETE, MODE_PRIVATE);
@@ -2261,7 +2255,6 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SELECTED_DATE_CAL, "");
     }
 
-
     public static void setTodayDayPlanSfCode(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2288,18 +2281,15 @@ public class SharedPref {
         editor.putBoolean(SYNC_STATUS, mas_sync).apply();
     }
 
-
     public static void putSlidestatus(Context context, boolean status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putBoolean(SLIDE_DOWNLOADING_STATUS, status).apply();
     }
 
-
     public static boolean getSlideDowloadingStatus(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(SLIDE_DOWNLOADING_STATUS, false);
     }
-
 
     public static boolean getAutomassyncFromSP(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(SYNC_STATUS, false);
@@ -2357,8 +2347,6 @@ public class SharedPref {
         return gson.fromJson(json, type);
     }
 
-
-
     public static void setTpStatus(Context context, boolean status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2378,12 +2366,7 @@ public class SharedPref {
     public static boolean getApprovalManatoryStatus(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(APPROVAL_MANATORY_STATUS, false);
     }
-
-
-
-
     // APPROVAL_SKIPDATE
-
 
     public static void setApprovalSKIPDate(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -2394,10 +2377,6 @@ public class SharedPref {
     public static String getApprovalskipDate(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(APPROVAL_SKIPDATE, "");
     }
-
-
-
-
 
     public static void setTpSKIPDate(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -2439,70 +2418,28 @@ public class SharedPref {
         editor.putString(DAY_PLAN_STARTED, date).apply();
     }
 
-    public static void setDcrSequential(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(DCR_SEQUENTIAL, status).apply();
-    }
-
     public static String getDcrSequential(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DCR_SEQUENTIAL, "");
-    }
-
-    public static void setPresentationNeed(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(PRESENTATION_NEED, status).apply();
     }
 
     public static String getPresentationNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(PRESENTATION_NEED, "");
     }
 
-    public static void setCustomizationPresentationNeed(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(CUSTOMIZATION_PRESENTATION_NEED, status).apply();
-    }
-
     public static String getCustomizationPresentationNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CUSTOMIZATION_PRESENTATION_NEED, "");
-    }
-
-    public static void setTherapticPresentationNeed(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(THERAPTIC_PRESENTATION_NEED, status).apply();
     }
 
     public static String getTherapticPresentationNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(THERAPTIC_PRESENTATION_NEED, "");
     }
 
-    public static void setStockistPobNeed(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(STOCKIST_POB_NEED, status).apply();
-    }
-
     public static String getStockistPobNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STOCKIST_POB_NEED, "");
     }
 
-    public static void setUnlistedDoctorPobNeed(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(UNLISTED_DOCTOR_POB_NEED, status).apply();
-    }
-
     public static String getUnlistedDoctorPobNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(UNLISTED_DOCTOR_POB_NEED, "");
-    }
-
-    public static void setAdditionalCallNeed(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(ADDITIONAL_CALL_NEED, status).apply();
     }
 
     public static String getAdditionalCallNeed(Context context) {

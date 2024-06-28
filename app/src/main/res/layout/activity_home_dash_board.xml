@@ -539,6 +539,18 @@
                         android:orientation="horizontal"
                         android:visibility="visible">
 
+                        <ImageView
+                            android:id="@+id/sequential_dot"
+                            android:layout_width="@dimen/_10sdp"
+                            android:layout_height="@dimen/_10sdp"
+                            android:layout_marginLeft="@dimen/_2sdp"
+                            android:background="@drawable/round_back_brown"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="center"
+                            android:visibility="gone"
+                            android:src="@drawable/baseline_repeat_24"
+                            android:padding="3dp"/>
+
                         <TextView
                             android:id="@+id/tvLdot"
                             android:layout_width="@dimen/_10sdp"

@@ -792,7 +792,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         }
         try {
-            JSONArray dcrdatas = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+            JSONArray dcrdatas = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
             if (dcrdatas.length() > 0) {
                 for (int i = 0; i < dcrdatas.length(); i++) {
 
@@ -1701,6 +1701,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             menu.findItem(R.id.remaindercall).setVisible(false);
 
         menu.findItem(R.id.form).setVisible(false);
+
+        if(SharedPref.getDcrSequential(this).equalsIgnoreCase("0")) {
+            binding.sequentialDot.setVisibility(View.VISIBLE);
+        } else {
+            binding.sequentialDot.setVisibility(View.GONE);
+        }
 
         if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")) {
             binding.tvLdot.setVisibility(View.VISIBLE);

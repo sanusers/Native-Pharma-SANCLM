@@ -45,18 +45,18 @@ public class DateSyncAdapter extends RecyclerView.Adapter<DateSyncAdapter.ViewHo
          } else if (itemModel.getTbname().equals("missed")) {
              statusName = "Missed Released";
              statusColor = R.color.Hilo_bay_60;
-         } else if (itemModel.getTbname().equals("dcr") && itemModel.getFlg().equals("2")) {
+         } else if (itemModel.getTbname().equalsIgnoreCase("dcr") && itemModel.getFlg().equals("2")) {
              statusName = "Re Entry";
              statusColor = R.color.pink_60;
-         } else if (itemModel.getTbname().equals("dcr") && itemModel.getFlg().equals("3")) {
+         } else if (itemModel.getTbname().equalsIgnoreCase("dcr") && itemModel.getFlg().equals("3")) {
              statusName = "Rejected";
              statusColor = R.color.brown_60;
-         } else if (itemModel.getTbname().equals("dcr") && itemModel.getFlg().equals("0")){
+         } else if (itemModel.getTbname().equalsIgnoreCase("dcr") && itemModel.getFlg().equals("0")){
              statusName = "Working";
              statusColor = R.color.yellow_45;
          }
          holder.textStatus.setText(statusName);
-        holder.textStatus.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), statusColor));
+         holder.textStatus.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), statusColor));
 
     }
 
