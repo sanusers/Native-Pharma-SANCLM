@@ -359,7 +359,7 @@
     <string name="select_a_language">Select a language</string>
     <string name="user_id">User ID</string>
     <string name="enter_user_id">Enter User ID</string>
-    <string name="mismatch">Check User Id and Password</string>
+    <string name="mismatch">Invalid User Id and Password</string>
     <string name="password">Password</string>
     <string name="enterpassword">Enter Password</string>
     <string name="english">English</string>
