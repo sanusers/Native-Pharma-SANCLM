@@ -1200,6 +1200,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                            MyDayPlanEntriesNeeded.syncCallAndDate(requireContext());
                             updateLocalData();
                             SharedPref.setDayPlanStartedDate(requireContext(), "");
+                            SharedPref.setLastCallDate(requireContext(), "");
+                            SharedPref.setSelectedDateCal(requireContext(), "");
                             JSONObject jsonObject = new JSONObject(response.body().toString());
                             HomeDashBoard.canMoveNextDate = false;
                             FinalSubmitStatus = jsonObject.getString("Msg");
@@ -2107,6 +2109,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
             SharedPref.setCheckInTime(requireContext(), "");
             SharedPref.setCheckDateTodayPlan(requireContext(), "");
+            SharedPref.setLastCallDate(requireContext(), "");
+            SharedPref.setSelectedDateCal(requireContext(), "");
             SetupOutBoxAdapter(requireActivity(), requireContext());
             if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
                 if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {

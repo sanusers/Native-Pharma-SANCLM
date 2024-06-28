@@ -193,7 +193,7 @@ public class MyDayPlanEntriesNeeded {
         Log.i("TAG", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
         if(!SharedPref.getDayPlanStartedDate(context).isEmpty() && datesNeeded.contains(SharedPref.getDayPlanStartedDate(context)))  {
             Log.e("set date switched1 ", "setupMyDayPlanEntriesNeeded: " + SharedPref.getDayPlanStartedDate(context));
-            SharedPref.setSelectedDateCal(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, SharedPref.getDayPlanStartedDate(context)));
+//            SharedPref.setSelectedDateCal(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, SharedPref.getDayPlanStartedDate(context)));
 //            syncTaskStatus.datesFound();
             date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, SharedPref.getDayPlanStartedDate(context));
         }
