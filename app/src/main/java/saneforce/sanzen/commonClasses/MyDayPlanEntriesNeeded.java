@@ -232,7 +232,7 @@ public class MyDayPlanEntriesNeeded {
 //            syncTaskStatus.noDatesFound();
         }
         if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
-            if(date != null && date.isEmpty()) {
+            if(date != null && !date.isEmpty()) {
                 SharedPref.setSelectedDateCal(context, date);
                 syncTaskStatus.datesFound();
             } else {
