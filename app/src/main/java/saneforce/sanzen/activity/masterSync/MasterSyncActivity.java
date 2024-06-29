@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -60,7 +59,7 @@ import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.commonClasses.MyDayPlanEntriesNeeded;
+import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityMasterSyncBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -1062,7 +1061,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     break;
                 }
                 case "gettodaydcr": {
-                    MyDayPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new MyDayPlanEntriesNeeded.SyncTaskStatus() {
+                    WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
                         @Override
                         public void datesFound() {
                             try {

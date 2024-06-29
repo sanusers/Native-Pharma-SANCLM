@@ -1,8 +1,6 @@
 package saneforce.sanzen.commonClasses;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -14,14 +12,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -40,7 +34,7 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
-public class MyDayPlanEntriesNeeded {
+public class WorkPlanEntriesNeeded {
 
     public static TreeSet<String> datesNeeded = new TreeSet<>();
     private static MasterDataDao masterDataDao;
@@ -53,7 +47,7 @@ public class MyDayPlanEntriesNeeded {
         masterDataDao = RoomDB.getDatabase(context).masterDataDao();
         offlineDaySubmitDao = RoomDB.getDatabase(context).offlineDaySubmitDao();
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
-        MyDayPlanEntriesNeeded.syncTaskStatus = syncTaskStatus;
+        WorkPlanEntriesNeeded.syncTaskStatus = syncTaskStatus;
 //        if(shouldSync) {
 //            syncCallAndDate(context);
 //        }else {
@@ -193,7 +187,7 @@ public class MyDayPlanEntriesNeeded {
         Log.i("TAG", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
         if(!SharedPref.getDayPlanStartedDate(context).isEmpty() && datesNeeded.contains(SharedPref.getDayPlanStartedDate(context)))  {
             Log.e("set date switched1 ", "setupMyDayPlanEntriesNeeded: " + SharedPref.getDayPlanStartedDate(context));
-            SharedPref.setSelectedDateCal(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, SharedPref.getDayPlanStartedDate(context)));
+//            SharedPref.setSelectedDateCal(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, SharedPref.getDayPlanStartedDate(context)));
 //            syncTaskStatus.datesFound();
             date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, SharedPref.getDayPlanStartedDate(context));
         }
@@ -232,7 +226,7 @@ public class MyDayPlanEntriesNeeded {
 //            syncTaskStatus.noDatesFound();
         }
         if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
-            if(date != null && date.isEmpty()) {
+            if(date != null && !date.isEmpty()) {
                 SharedPref.setSelectedDateCal(context, date);
                 syncTaskStatus.datesFound();
             } else {

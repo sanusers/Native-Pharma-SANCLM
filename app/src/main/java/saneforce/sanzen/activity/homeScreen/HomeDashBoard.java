@@ -6,7 +6,6 @@ import static android.Manifest.permission.CAMERA;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
-import static saneforce.sanzen.commonClasses.Constants.APP_MODE;
 
 import static saneforce.sanzen.commonClasses.Constants.CONNECTIVITY_ACTION;
 
@@ -121,7 +120,7 @@ import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
-import saneforce.sanzen.commonClasses.MyDayPlanEntriesNeeded;
+import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityHomeDashBoardBinding;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
@@ -1320,7 +1319,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static void checkAndSetEntryDate(Context context, boolean shouldShowCalender) {
         binding.viewPagerProgress.setVisibility(View.VISIBLE);
         isDateSelectionClicked = false;
-        MyDayPlanEntriesNeeded.updateMyDayPlanEntryDates(context, false, new MyDayPlanEntriesNeeded.SyncTaskStatus() {
+        WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(context, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
             @Override
             public void datesFound() {
                 if (SequentialEntry != null && SequentialEntry.equalsIgnoreCase("0")) {

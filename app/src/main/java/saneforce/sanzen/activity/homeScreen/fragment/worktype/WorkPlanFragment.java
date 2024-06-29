@@ -485,11 +485,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     if (DayPlanCount.equalsIgnoreCase("1")) {
                         mHQCode1 = SelectedHQ.getString("id");
                         mHQName1 = SelectedHQ.getString("name");
-                        getData(SelectedHQ.getString("id"));
+                        getData(SelectedHQ.getString("id"), false);
                     } else {
                         mHQCode2 = SelectedHQ.getString("id");
                         mHQName2 = SelectedHQ.getString("name");
-                        getData(SelectedHQ.getString("id"));
+                        getData(SelectedHQ.getString("id"), false);
                     }
                 } else {
                     TextHQ.setText("");
@@ -1200,6 +1200,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                            MyDayPlanEntriesNeeded.syncCallAndDate(requireContext());
                             updateLocalData();
                             SharedPref.setDayPlanStartedDate(requireContext(), "");
+                            SharedPref.setLastCallDate(requireContext(), "");
+                            SharedPref.setSelectedDateCal(requireContext(), "");
                             JSONObject jsonObject = new JSONObject(response.body().toString());
                             HomeDashBoard.canMoveNextDate = false;
                             FinalSubmitStatus = jsonObject.getString("Msg");
@@ -1426,10 +1428,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    public void getData(String hqCode) {
+    public void getData(String hqCode, boolean shouldShowHQProgressDialog) {
         SynqList=SharedPref.getsyn_hqcode(requireContext());
         SynqList.add(hqCode);
         SharedPref.setSyncHQ(requireContext(),SynqList);
+        if(shouldShowHQProgressDialog) {
+            syncProgressDialog.show();
+            syncCount = 0;
+        }
         if (DayPlanCount.equalsIgnoreCase("1")) {
             binding.progressHq1.setVisibility(View.VISIBLE);
         } else {
@@ -1445,14 +1451,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //        list.add(new MasterSyncItemModel("Hospital", 0, "Doctor", "gethospital", Constants.HOSPITAL + hqCode, 0, false));
 //        list.add(new MasterSyncItemModel("CIP", 0, "Doctor", "getcip", Constants.CIP + hqCode, 0, false));
         list.add(new MasterSyncItemModel("Cluster", "Doctor", "getterritory", Constants.CLUSTER + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Joint Work", Constants.SUBORDINATE, "getjointwork", Constants.JOINT_WORK + hqCode, 0, false));
 
 
         for (int i = 0; i < list.size(); i++) {
-            syncMaster(list.get(i).getMasterOf(), list.get(i).getRemoteTableName(), list.get(i).getLocalTableKeyName(), hqCode);
+            syncMaster(list.get(i).getMasterOf(), list.get(i).getRemoteTableName(), list.get(i).getLocalTableKeyName(), hqCode, shouldShowHQProgressDialog);
         }
     }
 
-    public void syncMaster(String masterFor, String remoteTableName, String LocalTableKeyName, String hqCode) {
+    public void syncMaster(String masterFor, String remoteTableName, String LocalTableKeyName, String hqCode, boolean shouldShowHQProgressDialog) {
         if (UtilityClass.isNetworkAvailable(requireContext())) {
             try {
                 String baseUrl = SharedPref.getBaseWebUrl(requireContext());
@@ -1515,16 +1522,35 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     e.printStackTrace();
                                 }
                             }
+                            if(shouldShowHQProgressDialog) {
+                                syncCount++;
+                                if(syncCount == 6) {
+                                    syncCount = 0;
+                                    syncProgressDialog.dismiss();
+                                }
+                            }
                         }
 
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-
-
+                            if(shouldShowHQProgressDialog) {
+                                syncCount++;
+                                if(syncCount == 6) {
+                                    syncCount = 0;
+                                    syncProgressDialog.dismiss();
+                                }
+                            }
                         }
                     });
                 }
             } catch (Exception e) {
+                if(shouldShowHQProgressDialog) {
+                    syncCount++;
+                    if(syncCount == 6) {
+                        syncCount = 0;
+                        syncProgressDialog.dismiss();
+                    }
+                }
                 e.printStackTrace();
             }
         } else {
@@ -1548,7 +1574,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 cluster.add(jsonObject);
             }
-            Log.e("TAG", "getDatabaseHeadQuarters: " + Arrays.toString(multiple_cluster_list.toArray()));
         } catch (Exception a) {
             a.printStackTrace();
         }
@@ -1820,12 +1845,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                     if(!mHQCode1.isEmpty()) {
                         if(!masterDataDao.getMasterSyncDataOfHQ(Constants.DOCTOR + mHQCode1) || !(masterDataDao.isDataAvailable(Constants.DOCTOR + mHQCode1))) {
-                            syncData(mHQCode1);
+                            getData(mHQCode1, true);
                         }
                     }
                     if(!mHQCode2.isEmpty()) {
                         if(!masterDataDao.getMasterSyncDataOfHQ(Constants.DOCTOR + mHQCode2) || !(masterDataDao.isDataAvailable(Constants.DOCTOR + mHQCode2))) {
-                            syncData(mHQCode2);
+                            getData(mHQCode2, true);
                         }
                     }
                 }
@@ -1877,112 +1902,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             a.printStackTrace();
         }
         binding.progressWt1.setVisibility(View.GONE);
-    }
-
-    private void syncData(String hqCode){
-        if (UtilityClass.isNetworkAvailable(requireContext())) {
-            syncProgressDialog.show();
-            syncCount=0;
-            MasterSyncItemModel doctorModel = new MasterSyncItemModel(Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode);
-            MasterSyncItemModel cheModel = new MasterSyncItemModel(Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode);
-            MasterSyncItemModel stockModel = new MasterSyncItemModel(Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode);
-            MasterSyncItemModel unListModel = new MasterSyncItemModel(Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode);
-//            MasterSyncItemModel hospModel = new MasterSyncItemModel(Constants.DOCTOR, "gethospital", Constants.HOSPITAL + hqCode);
-//            MasterSyncItemModel ciModel = new MasterSyncItemModel(Constants.DOCTOR, "getcip", Constants.CIP + hqCode);
-            MasterSyncItemModel cluster = new MasterSyncItemModel(Constants.DOCTOR, "getterritory", Constants.CLUSTER + hqCode);
-            MasterSyncItemModel jWorkModel = new MasterSyncItemModel(Constants.SUBORDINATE, "getjointwork", Constants.JOINT_WORK + hqCode);
-            masterSyncArray.add(doctorModel);
-            masterSyncArray.add(cheModel);
-            masterSyncArray.add(stockModel);
-            masterSyncArray.add(unListModel);
-//            masterSyncArray.add(hospModel);
-//            masterSyncArray.add(ciModel);
-            masterSyncArray.add(cluster);
-            masterSyncArray.add(jWorkModel);
-            for (int i = 0; i<masterSyncArray.size(); i++) {
-                sync(masterSyncArray.get(i), hqCode);
-            }
-        } else {
-            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
-        }
-    }
-
-    public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode) {
-        if (UtilityClass.isNetworkAvailable(requireContext())) {
-            try {
-                JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(requireContext());
-                jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
-                jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
-                jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
-                jsonObject.put("Rsf", hqCode);
-                jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-                ApiInterface apiInterface = RetrofitClient.getRetrofit(requireContext().getApplicationContext(), SharedPref.getCallApiUrl(requireContext().getApplicationContext()));
-                Call<JsonElement> call = null;
-                Map<String, String> mapString = new HashMap<>();
-                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.DOCTOR)) {
-                    mapString.put("axn", "table/dcrmasterdata");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
-                } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.SUBORDINATE)) {
-                    mapString.put("axn", "table/subordinates");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
-                }
-                if (call != null) {
-                    call.enqueue(new Callback<JsonElement>() {
-                        @Override
-                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                            boolean success = false;
-                            if (response.isSuccessful()) {
-                                try {
-                                    JsonElement jsonElement = response.body();
-                                    JSONArray jsonArray = new JSONArray();
-                                    if (jsonElement != null) {
-                                        if (jsonElement.isJsonArray()) {
-                                            JsonArray jsonArray1 = jsonElement.getAsJsonArray();
-                                            jsonArray = new JSONArray(jsonArray1.toString());
-                                            success = true;
-                                        } else if (jsonElement.isJsonObject()) {
-                                            JsonObject jsonObject = jsonElement.getAsJsonObject();
-                                            JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
-                                            if (!jsonObject1.has("success")) { // json object with "success" : "fail" will be received only when api call is failed ,"success will not be received when api call is success
-                                                jsonArray.put(jsonObject1);
-                                                success = true;
-                                            } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
-                                                masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-                                            }
-                                        }
-                                        if (success) {
-                                            masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 2));
-                                        }
-                                    } else {
-                                        masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            syncCount++;
-                            if(syncCount==6){
-                                syncProgressDialog.dismiss();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                            Log.e("test", "failed : " + t);
-                            masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-                            syncCount++;
-                            if(syncCount==6){
-                                syncProgressDialog.dismiss();
-                            }
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
-        }
     }
 
       public void syncMyDayPlan() {
@@ -2107,6 +2026,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
             SharedPref.setCheckInTime(requireContext(), "");
             SharedPref.setCheckDateTodayPlan(requireContext(), "");
+            SharedPref.setLastCallDate(requireContext(), "");
+            SharedPref.setSelectedDateCal(requireContext(), "");
             SetupOutBoxAdapter(requireActivity(), requireContext());
             if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
                 if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
