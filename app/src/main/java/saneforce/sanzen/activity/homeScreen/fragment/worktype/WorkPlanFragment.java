@@ -210,7 +210,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         if(SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)){
             binding.txtCluster1.setHint("Select Cluster");
         } else{
-            binding.txtCluster1.setHint("select "+ SharedPref.getWrkAreaName(requireContext()));
+            binding.txtCluster1.setHint("Select "+ SharedPref.getWrkAreaName(requireContext()));
 
         }
         if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
