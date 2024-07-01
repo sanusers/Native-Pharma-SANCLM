@@ -53,6 +53,7 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -369,11 +370,10 @@ public class DCRCallActivity extends AppCompatActivity {
         }
     }
 
-    private void  submitCall() {
+    private void submitCall() {
 
         if(save_valid.equalsIgnoreCase("1")) {
             Remainder_calls();
-
         }else {
             isCreateJsonSuccess = true;
             if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
@@ -616,14 +616,17 @@ public class DCRCallActivity extends AppCompatActivity {
     private void InsertVisitControl() {
 
         try {
+            String mnt = String.valueOf(HomeDashBoard.selectedDate.getMonth().getValue());
+            String month = HomeDashBoard.selectedDate.getMonth().name(), year = String.valueOf(HomeDashBoard.selectedDate.getYear());
+            Log.e("TAG", "InsertVisitControl: " + mnt + " -< " + month + " -< " + year);
             JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("CustCode", CallActivityCustDetails.get(0).getCode());
             jsonObject.put("CustType", CallActivityCustDetails.get(0).getType());
             jsonObject.put("Dcr_dt", HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
-            jsonObject.put("month_name", CommonUtilsMethods.getCurrentInstance("MMMM"));
-            jsonObject.put("Mnth", CommonUtilsMethods.getCurrentInstance("M"));
-            jsonObject.put("Yr", CommonUtilsMethods.getCurrentInstance("yyyy"));
+            jsonObject.put("month_name", month);
+            jsonObject.put("Mnth", mnt);
+            jsonObject.put("Yr", year);
             jsonObject.put("vtm", CommonUtilsMethods.getCurrentInstance("hh:mm aa"));
             jsonObject.put("CustName", CallActivityCustDetails.get(0).getName());
             jsonObject.put("town_code", CallActivityCustDetails.get(0).getTown_code());
@@ -642,6 +645,7 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonObject.put("AppName", getString(R.string.str_app_name));
             jsonObject.put("language", SharedPref.getSelectedLanguage(this));
             jsonArray.put(jsonObject);
+            Log.d("VC", "InsertVisitControl: " + jsonObject);
             MasterDataTable inputdata =new MasterDataTable();
             inputdata.setMasterKey(Constants.CALL_SYNC);
             inputdata.setMasterValues(jsonArray.toString());
@@ -659,9 +663,9 @@ public class DCRCallActivity extends AppCompatActivity {
                     jsonObject.put("CustCode", AdditionalCusListAdapter.saveAdditionalCallArrayList.get(i).getCode());
                     jsonObject.put("CustType", "1");
                     jsonObject.put("Dcr_dt", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
-                    jsonObject.put("month_name", CommonUtilsMethods.getCurrentInstance("MMMM"));
-                    jsonObject.put("Mnth", CommonUtilsMethods.getCurrentInstance("M"));
-                    jsonObject.put("Yr", CommonUtilsMethods.getCurrentInstance("yyyy"));
+                    jsonObject.put("month_name", month);
+                    jsonObject.put("Mnth", mnt);
+                    jsonObject.put("Yr", year);
                     jsonObject.put("vtm", CommonUtilsMethods.getCurrentInstance("hh:mm aa"));
                     jsonObject.put("CustName", AdditionalCusListAdapter.saveAdditionalCallArrayList.get(i).getName());
                     jsonObject.put("town_code", AdditionalCusListAdapter.saveAdditionalCallArrayList.get(i).getTown_code());

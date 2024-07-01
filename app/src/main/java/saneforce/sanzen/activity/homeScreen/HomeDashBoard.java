@@ -1427,7 +1427,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 break;
 
             case R.id.img_sync:
-
                 Intent intent1 = new Intent(HomeDashBoard.this, MasterSyncActivity.class);
                 startActivity(intent1);
                 break;
@@ -1442,7 +1441,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
     private void validateMonth(LocalDate date) {
-
         if(LocalDate.now().getDayOfMonth() == JoiningMonth && LocalDate.now().getYear()==JoinYear){
             binding.viewCalerderLayout.llNextMonth.setVisibility(View.INVISIBLE);
             binding.viewCalerderLayout.llBfrMonth.setVisibility(View.INVISIBLE);
@@ -1461,14 +1459,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }else if(date.getMonth()==LocalDate.now().minusMonths(1).getMonth()){
                 binding.viewCalerderLayout.llNextMonth.setVisibility(View.VISIBLE);
                 binding.viewCalerderLayout.llBfrMonth.setVisibility(View.VISIBLE);
-
             }else {
                 binding.viewCalerderLayout.llNextMonth.setVisibility(View.VISIBLE);
                 binding.viewCalerderLayout.llBfrMonth.setVisibility(View.INVISIBLE);
             }
         }
-
-
 
     }
 
