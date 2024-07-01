@@ -131,7 +131,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     public static boolean isSingleSlideDowloaingStaus;
     private boolean isCallSynced = false, isDateSynced = false;
     private int dayPlanDelayCount = 0;
-    public    String isFrom="",SFTP_Date_sp="",SFTP_Date="";
+    public    String SFTP_Date_sp="",SFTP_Date="";
     public   int JoningDate,JoiningMonth, JoinYear;
 
 

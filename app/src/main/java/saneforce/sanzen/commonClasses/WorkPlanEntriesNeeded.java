@@ -247,4 +247,13 @@ public class WorkPlanEntriesNeeded {
         void datesFound();
         void noDatesFound();
     }
+
+
+
+
+   public void Squential(Context context){
+
+
+
+   }
 }

@@ -1081,16 +1081,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setOnMarkerClickListener(this);
             mapsBinding.btnTag.setVisibility(View.GONE);
             mapsBinding.constraintTaggedView.setVisibility(View.VISIBLE);
-            if (geoTagStatus.equals("0")){
-                mapsBinding.textApproval.setVisibility(View.VISIBLE);
-            }else {
-                mapsBinding.textApproval.setVisibility(View.GONE);
-            }
-            if (geoTagStatus.equals("1")) {
-                mapsBinding.textPending.setVisibility(View.VISIBLE);
-            }else{
-                mapsBinding.textPending.setVisibility(View.GONE);
-            }
+
             mapsBinding.tvMeters.setVisibility(View.VISIBLE);
             mapsBinding.constraintMid.setVisibility(View.INVISIBLE);
             mapsBinding.imgRvRight.setVisibility(View.GONE);

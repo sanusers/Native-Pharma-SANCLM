@@ -626,4 +626,10 @@ public class TagCustSelectionList extends AppCompatActivity {
         }
         custListAdapter.filterList(filtered_names);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AddCustList(SharedPref.getSfCode(this));
+    }
 }
