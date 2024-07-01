@@ -193,7 +193,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     Runnable runnable;
     private static boolean isDateSelectionClicked = false;
     private LeaveViewModel leaveViewModel;
-
+    public    String isFrom="",SFTP_Date_sp="",SFTP_Date="";
+    public   int JoningDate,JoiningMonth, JoinYear;
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -1385,7 +1386,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             case R.id.ll_next_month:
                 calendarDays.clear();
                 selectedDate = selectedDate.plusMonths(1);
-                validateMonth();
+                validateMonth(selectedDate);
                 binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
                 calendarDays = daysInMonthArray(selectedDate);
                 callstatusadapter = new Callstatusadapter(calendarDays, HomeDashBoard.this, selectedDate);
@@ -1398,7 +1399,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             case R.id.ll_bfr_month:
                 calendarDays.clear();
                 selectedDate = selectedDate.minusMonths(1);
-                validateMonth();
+                validateMonth(selectedDate);
                 binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
                 calendarDays = daysInMonthArray(selectedDate);
                 callstatusadapter = new Callstatusadapter(calendarDays, HomeDashBoard.this, selectedDate);
@@ -1440,17 +1441,35 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
-    private void validateMonth() {
-        if(selectedDate.getMonth() == LocalDate.now().getMonth()){
+    private void validateMonth(LocalDate date) {
+
+        if(LocalDate.now().getDayOfMonth() == JoiningMonth && LocalDate.now().getYear()==JoinYear){
             binding.viewCalerderLayout.llNextMonth.setVisibility(View.INVISIBLE);
-        }else {
-            binding.viewCalerderLayout.llNextMonth.setVisibility(View.VISIBLE);
-        }
-        if(selectedDate.getMonth() == LocalDate.now().minusMonths(2).getMonth()){
             binding.viewCalerderLayout.llBfrMonth.setVisibility(View.INVISIBLE);
+        }else if(LocalDate.now().minusMonths(1).getDayOfMonth() == JoiningMonth && LocalDate.now().getYear()==JoinYear) {
+            if (date.getMonth() == LocalDate.now().getMonth()) {
+                binding.viewCalerderLayout.llNextMonth.setVisibility(View.INVISIBLE);
+                binding.viewCalerderLayout.llBfrMonth.setVisibility(View.VISIBLE);
+            } else if (date.getMonth() == LocalDate.now().minusMonths(1).getMonth()) {
+                binding.viewCalerderLayout.llNextMonth.setVisibility(View.VISIBLE);
+                binding.viewCalerderLayout.llBfrMonth.setVisibility(View.VISIBLE);
+            }
         }else {
-            binding.viewCalerderLayout.llBfrMonth.setVisibility(View.VISIBLE);
+            if(date.getMonth() == LocalDate.now().getMonth()){
+                binding.viewCalerderLayout.llNextMonth.setVisibility(View.INVISIBLE);
+                binding.viewCalerderLayout.llBfrMonth.setVisibility(View.VISIBLE);
+            }else if(date.getMonth()==LocalDate.now().minusMonths(1).getMonth()){
+                binding.viewCalerderLayout.llNextMonth.setVisibility(View.VISIBLE);
+                binding.viewCalerderLayout.llBfrMonth.setVisibility(View.VISIBLE);
+
+            }else {
+                binding.viewCalerderLayout.llNextMonth.setVisibility(View.VISIBLE);
+                binding.viewCalerderLayout.llBfrMonth.setVisibility(View.INVISIBLE);
+            }
         }
+
+
+
     }
 
     private void setUpCalendar() {
@@ -1472,7 +1491,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     selectedDate = LocalDate.now();
                 }
                 binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
-                validateMonth();
+                validateMonth(selectedDate);
                 calendarDays.clear();
                 calendarDays = daysInMonthArray(selectedDate);
                 callstatusadapter = new Callstatusadapter(calendarDays, HomeDashBoard.this, selectedDate);
@@ -1733,6 +1752,22 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (SharedPref.getGeotagNeedCip(this).equalsIgnoreCase("1"))
             binding.tvHdot.setVisibility(View.VISIBLE);
+
+
+
+        try {
+            SFTP_Date_sp = SharedPref.getSftpDate(HomeDashBoard.this);
+            JSONObject obj = new JSONObject(SFTP_Date_sp);
+            SFTP_Date = obj.getString("date");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        JoningDate=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_7,SFTP_Date));
+        JoiningMonth=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_8,SFTP_Date));
+        JoinYear=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_10,SFTP_Date));
+
 
     }
 
@@ -2013,5 +2048,7 @@ private void accessibility(){
         CommonUtilsMethods.accessDialogBox(this);
     }
 }
+
+
 }
 

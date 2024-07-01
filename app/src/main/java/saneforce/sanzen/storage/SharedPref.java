@@ -415,7 +415,11 @@ public class SharedPref {
     public static final String STK_DETAILING_NEED = "Detailing_stk";
     public static final String UNDR_DETAILING_NEED = "Detailing_undr";
     public static final String EDIT_CALL_DEL_NEED = "EditCallDelNeed";
+
     public static final String ACTIVITY_CAP = "ActivityCap";
+    public static final String JOINGMONTH = "JOING_MONTH";
+    public static final String JOININGDATE = "JOINING_DATE";
+    public static final String JOININGYEAR = "JOINING_YEAR";
     public static final String SANZEN_EDET = "sanzen_edet";
 
     public static SharedPreferences.Editor editor;
@@ -2478,4 +2482,23 @@ public class SharedPref {
     public static String getAppAccess(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SANZEN_EDET, "");
     }
+    public static void setJointDate(Context context, int date,int month,int year) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putInt(JOININGDATE, date);
+        editor.putInt(JOINGMONTH, month);
+        editor.putInt(JOININGYEAR, year).apply();
+    }
+
+
+    public static int getJoiningDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(JOININGDATE, 0);
+    }
+    public static int getJoiningMonth(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(JOINGMONTH, 0);
+    }
+    public static int getJoiningYear(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(JOININGYEAR, 0);
+    }
+
 }

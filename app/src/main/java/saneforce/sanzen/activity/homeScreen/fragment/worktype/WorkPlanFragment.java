@@ -84,7 +84,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     public String chk_cluster = "";
     public static ArrayList<Multicheckclass_clust> listSelectedCluster = new ArrayList<>();
-    public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "", mFinalRemarks = "";
+    public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "", mFinalRemarks = "",mTerratiry1="",mTerratiry2;
     @SuppressLint("StaticFieldLeak")
     public static WorkplanFragmentBinding binding;
     ProgressDialog progressDialog;
@@ -271,7 +271,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mFwFlg1 = SelectedWorkType.getString("FWFlg");
                     mWTCode1 = SelectedWorkType.getString("Code");
                     mWTName1 = SelectedWorkType.getString("Name");
-
+                    mTerratiry1=SelectedWorkType.getString("TerrSlFlg");
                     if (SelectedWorkType.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
                         IsFeildWorkFlag = "F1";
                         NeedClusterFlag1 = true;
@@ -293,6 +293,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mFwFlg2 = SelectedWorkType.getString("FWFlg");
                     mWTCode2 = SelectedWorkType.getString("Code");
                     mWTName2 = SelectedWorkType.getString("Name");
+                    mTerratiry2=SelectedWorkType.getString("TerrSlFlg");
                     if (SelectedWorkType.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
                         NeedClusterFlag2 = true;
                         IsFeildWorkFlag = "F2";
@@ -536,7 +537,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     continue;
                 }
                 if (SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
-
                     if (DayPlanCount.equalsIgnoreCase("1")) {
                         if (!(mWTCode2).equalsIgnoreCase(object.getString("Code"))) {
                             workType_list1.add(object);
@@ -547,8 +547,24 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 } else {
+                    if (DayPlanCount.equalsIgnoreCase("1")) {
+                        if (mWTCode2.equalsIgnoreCase(object.getString("Code"))) {
+                            if(object.getString("TerrSlFlg").equalsIgnoreCase("Y")){
+                                   workType_list1.add(object);
+                               }
+                        }else {
+                            workType_list1.add(object);
+                        }
+                    } else {
+                        if (mWTCode1.equalsIgnoreCase(object.getString("Code"))) {
+                            if(object.getString("TerrSlFlg").equalsIgnoreCase("Y")){
+                                workType_list1.add(object);
+                            }
+                        }else {
+                            workType_list1.add(object);
+                        }
+                    }
 
-                    workType_list1.add(object);
                 }
             }
 
