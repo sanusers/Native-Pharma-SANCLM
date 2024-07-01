@@ -93,9 +93,9 @@
                         android:fontFamily="@font/satoshi_medium"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:layout_marginBottom="@dimen/_2sdp"
-                        android:text="Update Sample Given"
                         android:textColor="@color/black_45"
                         android:textSize="@dimen/_7sdp"
+                        tools:text="Update Sample Given"
                         tools:ignore="SpUsage" />
 
                     <ImageView

@@ -134,7 +134,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                     if (menuItem.getItemId() == R.id.menuEdit) {
                         CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID());
                     } else if (menuItem.getItemId() == R.id.menuDelete) {
-                        Dialog   dialog = new Dialog(context);
+                        Dialog dialog = new Dialog(context);
                         dialog.setContentView(R.layout.dcr_cancel_alert);
                         dialog.setCancelable(false);
                         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -242,6 +242,9 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         }
                         SharedPref.setTodayCallList(context, jsonArray.toString());
                         commonUtilsMethods.showToastMessage(context, "Call Deleted");
+                        if(jsonArray.length() <= 0) {
+                            SharedPref.setLastCallDate(context, "");
+                        }
 
 
                      /*   JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
