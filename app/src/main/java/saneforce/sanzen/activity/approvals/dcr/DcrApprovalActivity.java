@@ -518,7 +518,9 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                 filteredNames.add(s);
             }
         }
-        adapterDcrApprovalList.filterList(filteredNames);
+        if(adapterDcrApprovalList != null) {
+            adapterDcrApprovalList.filterList(filteredNames);
+        }
     }
 
     @Override
@@ -535,8 +537,8 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonDcrList.put("division_code", SharedPref.getDivisionCode(this));
             jsonDcrList.put("Rsf", SharedPref.getHqCode(this));
             Log.v("json_getDcr_list", jsonDcrList.toString());
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
@@ -559,8 +561,8 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                         dcrCallApprovalBinding.rvDcrList.setLayoutManager(mLayoutManager);
                         dcrCallApprovalBinding.rvDcrList.setAdapter(adapterDcrApprovalList);
-                    } catch (Exception ignored) {
-
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 } else {
                     progressDialog.dismiss();

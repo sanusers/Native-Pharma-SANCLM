@@ -230,9 +230,11 @@ public class ChemistFragment extends Fragment {
 
     private void filter(String text) {
         ArrayList<CustList> filteredNames = new ArrayList<>();
-        for (CustList s : cusListArrayList) {
-            if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getTown_name().toLowerCase().contains(text.toLowerCase()) || s.getSpecialist().toLowerCase().contains(text.toLowerCase())) {
-                filteredNames.add(s);
+        if(cusListArrayList != null) {
+            for (CustList s : cusListArrayList) {
+                if(s.getName().toLowerCase().contains(text.toLowerCase()) || s.getTown_name().toLowerCase().contains(text.toLowerCase()) || s.getSpecialist().toLowerCase().contains(text.toLowerCase())) {
+                    filteredNames.add(s);
+                }
             }
         }
         adapterDCRCallSelection.filterList(filteredNames);

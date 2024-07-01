@@ -209,13 +209,15 @@ public class TagCustSelectionList extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                arrayAdapter.getFilter().filter(charSequence, new Filter.FilterListener() {
-                    @Override
-                    public void onFilterComplete(int count) {
-                        if (count > 0) {
+                if(arrayAdapter != null) {
+                    arrayAdapter.getFilter().filter(charSequence, new Filter.FilterListener() {
+                        @Override
+                        public void onFilterComplete(int count) {
+                            if(count>0) {
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
 
             @Override

@@ -55,10 +55,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     public static String key;
     public static JSONArray Doctor_list, Chemist_list, Stockiest_list, unlistered_list, cip_list, hos_list;
     public static ArrayList<String> count_list = new ArrayList<>();
-     public static Context context;
+    public static Context context;
     CommonUtilsMethods commonUtilsMethods;
-   public static  String  Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
-
+    public static  String  Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
     public static int DrCallsCount, CheCallsCount, StkCallsCount, UnlCallSCount, CipCallsCount, HosCallsCount;
 
     static CallTableDao callTableDao;
@@ -69,8 +68,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         super.onResume();
         HiddenVisibleFunctions();
         SetcallDetailsInLineChart();
-
     }
+
     @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Nullable
     @Override
@@ -78,7 +77,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         Log.d("Fragment_STATUS","OnResume");
         callAnalysisBinding = CallAnalysisFagmentBinding.inflate(inflater);
         View v = callAnalysisBinding.getRoot();
-        setScreenDesign();
+//        setScreenDesign();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         context = requireContext();
@@ -87,6 +86,13 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         masterDataDao = db.masterDataDao();
         return v;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setScreenDesign();
+    }
+
     public static int computePercent(int current, int total) {
         int percent = 0;
         if (total > 0) percent = current * 100 / total;
@@ -225,7 +231,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     setLineChartData("6", context);
                 }
 
-
 //            } else {
 //                callAnalysisBinding.inChart.llMonthlayout.setVisibility(View.GONE);
 //                callAnalysisBinding.llDocChild.setOnClickListener(null);
@@ -261,11 +266,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 //
 //
 //            }
-
         } catch (Exception a) {
             a.printStackTrace();
         }
-
 
     }
 
@@ -274,7 +277,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         //   A  -  CurrentMonth  A1  is = 1-15 ,A2  is = 1-31
         //   B  -  PastMonth     B1  is = 1-15 ,B2  is = 1-31
         //  C -  PastMonth      C1  is = 1-15 ,C2  is = 1-31
-
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd");
         SimpleDateFormat sdfs = new SimpleDateFormat("MMMM");
@@ -287,7 +289,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         String MonthCLastDate = sdf.format(lastDate);
         String month = String.valueOf(MonthC.get(Calendar.MONTH) + 1);
 
-
         Calendar MonthB = Calendar.getInstance();
         MonthB.add(Calendar.MONTH, -1);
         MonthB.set(Calendar.DAY_OF_MONTH, 1);
@@ -298,7 +299,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
         String month1 = String.valueOf(MonthB.get(Calendar.MONTH) + 1);
 
-
         Calendar MonthA = Calendar.getInstance();
         MonthA.set(Calendar.DAY_OF_MONTH, 1);
         MonthA.set(Calendar.DAY_OF_MONTH, MonthA.getActualMaximum(Calendar.DAY_OF_MONTH));
@@ -308,8 +308,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         ArrayList<Entry> entries = new ArrayList<>();
         boolean isMonthC = callTableDao.isMonthDataAvailableForCustType(Custype, month);
         boolean isMonthB = callTableDao.isMonthDataAvailableForCustType(Custype, month1);
-
-
 
         List<Integer> listYrange = new ArrayList<>();
         if (isMonthC) {
@@ -385,12 +383,10 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             listYrange.add(xaxis5);
             listYrange.add(xaxis6);
 
-
             entries.add(new Entry(1, xaxis5));
             if (Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7)) > 15) {
                 entries.add(new Entry(2, xaxis6));
             }
-
 
         }
         LineDataSet dataSet = new LineDataSet(entries, "");
@@ -414,7 +410,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             customTypeface = context.getResources().getFont(R.font.satoshi_medium);
         }
 
-
         XAxis xAxis = callAnalysisBinding.inChart.lineChart.getXAxis();
         xAxis.setAxisMinimum(0f);
         xAxis.setAxisMaximum(7f);
@@ -430,11 +425,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         xAxis.setTextSize(12);
         xAxis.setDrawAxisLine(false);
 
-
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getAxisLabel(float value, AxisBase axis) {
-
 
                 if (isMonthC) {
 
@@ -461,7 +454,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     } else {
                         return "";
                     }
-
 
                 } else if (isMonthB) {
                     if (value == 0f) {
@@ -501,7 +493,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     }
                 }
 
-
             }
 
             private String getSuperscript(String text) {
@@ -520,7 +511,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 return result.toString();
             }
         });
-
 
         callAnalysisBinding.inChart.lineChart.getXAxis().setEnabled(true);
         callAnalysisBinding.inChart.lineChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -547,7 +537,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             leftYAxis.setAxisMaximum(100);
         }
 
-
         leftYAxis.setLabelCount(6, true);
         leftYAxis.setDrawLimitLinesBehindData(true);
         leftYAxis.setDrawLabels(true);
@@ -563,7 +552,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         leftYAxis.setZeroLineColor(context.getResources().getColor(R.color.gray_45));
         leftYAxis.setZeroLineWidth(1.2f);
 
-
         CustomMarkerView mv = new CustomMarkerView(context, R.layout.linechartpopup, Custype, callTableDao, key);
         mv.setChartView(callAnalysisBinding.inChart.lineChart);
 
@@ -573,7 +561,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         rightAxis.setDrawAxisLine(false);
         rightAxis.setDrawLabels(false);
         callAnalysisBinding.inChart.lineChart.setDrawMarkerViews(true);
-
 
         callAnalysisBinding.inChart.lineChart.getAxisRight().setEnabled(false);
         callAnalysisBinding.inChart.lineChart.getDescription().setEnabled(false);
@@ -619,8 +606,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
     }
 
-
-
     private void HiddenVisibleFunctions() {
         if (SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")) {
             callAnalysisBinding.llDocHead.setVisibility(View.VISIBLE);
@@ -658,8 +643,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             return false;
         });
 
-
-
         callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
         callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
         callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
@@ -673,8 +656,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         callAnalysisBinding.llUnliChild.setOnClickListener(this);
         callAnalysisBinding.llHosChild.setOnClickListener(this);
         callAnalysisBinding.llCipChild.setOnClickListener(this);
-
-
 
         if(SharedPref.getDesig(context).equalsIgnoreCase("MR")){
             try {
@@ -751,7 +732,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     }
                 }
 
-
                 JSONArray jsoncip = masterDataDao.getMasterDataTableOrNew(Constants.CIP + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
                 String cip = String.valueOf(jsoncip);
                 if (!cip.equals("") || !cip.equals("null")) {
@@ -787,20 +767,15 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     }
                 }
 
-
             }catch (Exception a){
                 a.printStackTrace();
             }
         }
 
-
-
     }
-
 
     @Override
     public void onClick(View v) {
-
 
         switch (v.getId()) {
 
@@ -816,7 +791,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 setLineChartData("1",context);
 
-
                 break;
             case R.id.ll_che_child:
                 callAnalysisBinding.textAverage.setText(String.format("%s %s %s", getString(R.string.average), callAnalysisBinding.txtCheName.getText().toString(), getString(R.string.calls)));
@@ -829,7 +803,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.inChart.lineChart.clear();
 
                 setLineChartData("2", context);
-
 
                 break;
             case R.id.ll_stock_child:
@@ -844,7 +817,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 setLineChartData("3", context);
 
-
                 break;
             case R.id.ll_unli_child:
                 callAnalysisBinding.textAverage.setText(String.format("%s %s %s", getString(R.string.average), callAnalysisBinding.txtUnliName.getText().toString(), getString(R.string.calls)));
@@ -857,7 +829,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.inChart.lineChart.clear();
 
                 setLineChartData("4", context);
-
 
                 break;
             case R.id.ll_cip_child:
@@ -872,7 +843,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 setLineChartData("5", context);
 
-
                 break;
             case R.id.ll_hos_child:
                 callAnalysisBinding.textAverage.setText(String.format("%s %s %s", getString(R.string.average), callAnalysisBinding.txtHosName.getText().toString(), getString(R.string.calls)));
@@ -885,17 +855,12 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.inChart.lineChart.clear();
                 setLineChartData("6",  context);
                 break;
-
         }
-
     }
-
 
     public void onDestroyView() {
-
         super.onDestroyView();
     }
-
 
     void setScreenDesign (){
         ViewTreeObserver vto = callAnalysisBinding.callAnalysisLayout.getViewTreeObserver();
@@ -903,7 +868,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             int getwidhtlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredWidth();
             int getlayoutlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredHeight();
             int width = (getwidhtlayout / 3 - 8);
-            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, getlayoutlayout - getResources().getDimensionPixelSize(R.dimen._22sdp));
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, getlayoutlayout - requireContext().getResources().getDimensionPixelSize(R.dimen._22sdp));
             param.setMargins(0, 5, 10, 0);
             callAnalysisBinding.llDocChild.setLayoutParams(param);
             callAnalysisBinding.llCheChild.setLayoutParams(param);
@@ -912,10 +877,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             callAnalysisBinding.llHosChild.setLayoutParams(param);
             callAnalysisBinding.llCipChild.setLayoutParams(param);
         });
-
-
     }
-
 
 }
 
