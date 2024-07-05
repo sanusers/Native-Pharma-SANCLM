@@ -168,7 +168,7 @@ public class DynamicActivity extends AppCompatActivity {
         getActivity(SharedPref.getHqCode(DynamicActivity.this));
 
         binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
-        //  binding.mainLayout.setDrawerLockMode(DrawerLayout.c);
+
 
         if (!SharedPref.getDesig(this).equalsIgnoreCase("MR")) {
             binding.rlheadquates.setVisibility(View.VISIBLE);
