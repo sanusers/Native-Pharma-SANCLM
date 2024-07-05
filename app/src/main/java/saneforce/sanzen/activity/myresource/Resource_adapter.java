@@ -96,7 +96,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
 
 
                     case ("1"):
-                        rec_val="D";
+                        rec_val = "D";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.DOCTOR + synhqval1);
                         JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + synhqval1).getMasterSyncDataJsonArray();
                         Valcount = "";
@@ -128,8 +128,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
 
                                     Log.e("dcr_doctorTown_Name", Town_Name);
 
-                                    listresource.add(new Resourcemodel_class(docval, custom_name, cluster, category, CategoryCode, "Rx", SpecialtyCode, specialty, Lat, Long, docval, MyResource_Activity.Key, Qual,
-                                            Addrs, DOB, DOW, Mobile, Phone, DrEmail, ListedDr_Sex, Town_Code, Town_Name, "D","","","","","","",""));
+                                    listresource.add(new Resourcemodel_class(docval, custom_name, cluster, category, CategoryCode, "Rx", SpecialtyCode, specialty, Lat, Long, docval, MyResource_Activity.Key, Qual, Addrs, DOB, DOW, Mobile, Phone, DrEmail, ListedDr_Sex, Town_Code, Town_Name, "D", "", "", "", "", "", "", ""));
 
 
                                 }
@@ -139,7 +138,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         break;
 
                     case ("2"):
-                        rec_val="C";
+                        rec_val = "C";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.CHEMIST + synhqval1);
                         JSONArray jsonchemist = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + synhqval1).getMasterSyncDataJsonArray();
                         String chmval = "";
@@ -162,8 +161,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String addrs = (jsonObject.getString("addrs"));
 
 
-                                    listresource.add(new Resourcemodel_class(Code, custom_name, cluster, "", "", "", "", "", Lat, Long, chmval,
-                                            MyResource_Activity.Key, "", addrs, "", "", Chemists_Mobile, Chemists_Phone, Chemists_Email, "", "", cluster, "C","","","","","","",""));
+                                    listresource.add(new Resourcemodel_class(Code, custom_name, cluster, "", "", "", "", "", Lat, Long, chmval, MyResource_Activity.Key, "", addrs, "", "", Chemists_Mobile, Chemists_Phone, Chemists_Email, "", "", cluster, "C", "", "", "", "", "", "", ""));
 
                                 }
                             }
@@ -172,7 +170,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         break;
 
                     case ("3"):
-                        rec_val="S";
+                        rec_val = "S";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.STOCKIEST + synhqval1);
                         JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + synhqval1).getMasterSyncDataJsonArray();
                         String strck_val = "";
@@ -195,8 +193,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String Addr = (jsonObject.getString("Addr"));
 
 
-                                    listresource.add(new Resourcemodel_class(Code, custom_name, cluster, "", "", "", "", "", Lat, Long, strck_val,
-                                            MyResource_Activity.Key, "", Addr, "", "", Stockiest_Mobile, Stockiest_Phone, Stockiest_Email, "", "", "", "S","","","","","","",""));
+                                    listresource.add(new Resourcemodel_class(Code, custom_name, cluster, "", "", "", "", "", Lat, Long, strck_val, MyResource_Activity.Key, "", Addr, "", "", Stockiest_Mobile, Stockiest_Phone, Stockiest_Email, "", "", "", "S", "", "", "", "", "", "", ""));
 
 
                                 }
@@ -206,7 +203,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         break;
 
                     case ("4"):
-                        rec_val="U";
+                        rec_val = "U";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR + synhqval1);
                         JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + synhqval1).getMasterSyncDataJsonArray();
                         String unlist_val = "";
@@ -236,8 +233,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String Phone = (jsonObject.getString("Phone"));
                                     String addr = (jsonObject.getString("addr"));
 
-                                    listresource.add(new Resourcemodel_class(Code, custom_name, cluster, category, Category, "", Specialty, specialty, Lat, Long, unlist_val,
-                                            MyResource_Activity.Key, Qual, addr, "", "", Mobile, Phone, Email, "", "", cluster, "U","","","","","","",""));
+                                    listresource.add(new Resourcemodel_class(Code, custom_name, cluster, category, Category, "", Specialty, specialty, Lat, Long, unlist_val, MyResource_Activity.Key, Qual, addr, "", "", Mobile, Phone, Email, "", "", cluster, "U", "", "", "", "", "", "", ""));
                                 }
                             }
                         }
@@ -255,7 +251,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         break;
 
                     case ("7"):
-                        rec_val="I";
+                        rec_val = "I";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.INPUT);
                         JSONArray jsoninput = masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray();
                         String input_val = "";
@@ -275,13 +271,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String to_date = jsonTDate.getString("date");
                                     String[] Toval = to_date.split(" ");
 
-                                    listresource.add(new Resourcemodel_class("",custom_name, "", "", "", "","", "", Frm_val[0], Toval[0],
-                                            "", "", "","","","","","","","","","","","","","","","","",""));
-
-                                    Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "11");
-                                    appRecyclerView.setAdapter(appAdapter3);
-                                    appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-                                    appAdapter3.notifyDataSetChanged();
+                                    listresource.add(new Resourcemodel_class("", custom_name, "", "", "", "", "", "", Frm_val[0], Toval[0], "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
                                 }
                             }
                         }
@@ -299,12 +289,11 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         if (jsonproduct.length() > 0) {
                             for (int i = 0; i < jsonproduct.length(); i++) {
                                 JSONObject jsonObject = jsonproduct.getJSONObject(i);
-                                if (!product_val.equals(jsonObject.getString("Code"))&& (!jsonObject.getString("Code").equals("-1"))) {
+                                if (!product_val.equals(jsonObject.getString("Code")) && (!jsonObject.getString("Code").equals("-1"))) {
                                     String custom_name = (jsonObject.getString("Name"));
                                     String product_type = (jsonObject.getString("Product_Mode"));
 
-                                    listresource.add(new Resourcemodel_class("", custom_name, "", product_type, "", "", "", "", "", "",
-                                            "", "", "", "", "", "", "", "", "", "", "", "", "","","","","","","",""));
+                                    listresource.add(new Resourcemodel_class("", custom_name, "", product_type, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
                                 }
                             }
                         }
@@ -323,8 +312,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                 if (!culst_val.equals(jsonObject.getString("Code"))) {
 //                                culst_val = jsonObject.getString("Code");
                                     String custom_name = (jsonObject.getString("Name"));
-                                    listresource.add(new Resourcemodel_class("", custom_name, "", "", "", "", "", "", "", "",
-                                            "", "", "", "", "", "", "", "", "", "", "", "", "","","","","","","",""));
+                                    listresource.add(new Resourcemodel_class("", custom_name, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
                                 }
                             }
                         }
@@ -349,38 +337,33 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
 
                         break;
 
-                    case ("12") :
+                    case ("12"):
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.WORK_TYPE);
                         JSONArray jsonWorkType = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
                         String workType_al = "";
                         String TPDCR = "";
                         Valcount = "1";
-                        if (jsonWorkType.length()>0){
-                            for (int bean = 0;bean<jsonWorkType.length();bean++){
+                        if (jsonWorkType.length() > 0) {
+                            for (int bean = 0; bean < jsonWorkType.length(); bean++) {
                                 JSONObject jsonObject = jsonWorkType.getJSONObject(bean);
                                 String workType = jsonObject.getString("Name");
                                 String tpDcr = jsonObject.getString("TP_DCR");
-                                if (tpDcr.equals("T")){
+                                if (tpDcr.equals("T")) {
                                     TPDCR = "TP";
-                                }else {
+                                } else {
                                     TPDCR = "TP , DCR";
                                 }
-                                System.out.println("jsonObjectWorkType--->"+jsonObject);
-                                listresource.add(new Resourcemodel_class("","", "", "", "", "","", "", "", "",
-                                        "", "", "","","","","","","","","","","",workType,TPDCR,"workType","","","",""));
-                                Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "");
-                                appRecyclerView.setAdapter(appAdapter3);
-                                appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-                                appAdapter3.notifyDataSetChanged();
+                                System.out.println("jsonObjectWorkType--->" + jsonObject);
+                                listresource.add(new Resourcemodel_class("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", workType, TPDCR, "workType", "", "", "", ""));
                             }
                         }
                         break;
 
-                    case ("13") :
+                    case ("13"):
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.LEAVE_STATUS);
                         JSONArray leaveStatus = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
-                        if (leaveStatus.length()>0){
-                            for (int bean = 0;bean<leaveStatus.length();bean++){
+                        if (leaveStatus.length() > 0) {
+                            for (int bean = 0; bean < leaveStatus.length(); bean++) {
                                 JSONObject jsonObject = leaveStatus.getJSONObject(bean);
                                 String leaveType = jsonObject.getString("Leave_Type_Code");
                                 String eligible = jsonObject.getString("Elig");
@@ -389,18 +372,14 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                 int eligibleCount = Integer.parseInt(eligible);
                                 int availableCount = Integer.parseInt(available);
                                 int takenCount = Integer.parseInt(taken);
-                                if (availableCount<0){
+                                if (availableCount < 0) {
                                     available = "0";
                                 }
-                                if (eligibleCount<takenCount) {
+                                if (eligibleCount < takenCount) {
                                     taken = eligible;
                                 }
-                                listresource.add(new Resourcemodel_class("","", "", "", "", "","", "", "", "",
-                                        "", "", "","","","","","","","","","","","","","leaveStatus",leaveType,eligible,available,taken));
-                                Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "");
-                                appRecyclerView.setAdapter(appAdapter3);
-                                appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-                                appAdapter3.notifyDataSetChanged();
+                                listresource.add(new Resourcemodel_class("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "leaveStatus", leaveType, eligible, available, taken));
+
                             }
                         }
                         break;
@@ -436,8 +415,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                             String result = custom_name;
                                             Log.d("doc_list", result);
 
-                                            listresource.add(new Resourcemodel_class("", custom_name, custom_id, town_name, "", Vist_Date, "", Dcr_count, listed, "",
-                                                                                     max_vistcount, "", "", "", "", "", "", "", "", "", "", "", "","","","","","","",""));
+                                            listresource.add(new Resourcemodel_class("", custom_name, custom_id, town_name, "", Vist_Date, "", Dcr_count, listed, "", max_vistcount, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
 
                                         }
                                     }
@@ -467,22 +445,13 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                     default:
                         throw new IllegalStateException("Unexpected value: " + app_adapt.getListed_data());
                 }
-//                MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
-//                MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
+
 
                 search_list.addAll(listresource);
 
 
-
-              /*  if (MyResource_Activity.drawerLayout.isDrawerOpen(Gravity.END)) {
-                    MyResource_Activity.drawerLayout.closeDrawer(Gravity.END);
-
-                } else {
-                    MyResource_Activity.drawerLayout.openDrawer(Gravity.END);
-
-                }*/
                 MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-                Res_sidescreenAdapter appAdapter = new Res_sidescreenAdapter(context, listresource, Valcount);
+                Res_sidescreenAdapter appAdapter = new Res_sidescreenAdapter(context, listresource, Valcount, synhqval1);
                 appRecyclerView.setAdapter(appAdapter);
                 appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                 appAdapter.notifyDataSetChanged();

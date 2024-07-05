@@ -367,16 +367,16 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
             district.setText("");
         });
 
-        tag_clk.setOnClickListener(view -> {
-            Intent visit = new Intent(this, MyResource_mapview.class);
-            visit.putExtra("type", doc_code);
-            visit.putExtra("cust_name", "Res_doc");
-            visit.putExtra("Dcr_name", docname);
-            visit.putExtra("pos_name", Dcr_posname);//Town_name
-            visit.putExtra("Town_loct", Town_val);
-
-            startActivity(visit);
-        });
+//        tag_clk.setOnClickListener(view -> {
+//            Intent visit = new Intent(this, MyResource_mapview.class);
+//            visit.putExtra("type", doc_code);
+//            visit.putExtra("cust_name", "Res_doc");
+//            visit.putExtra("Dcr_name", docname);
+//            visit.putExtra("pos_name", Dcr_posname);//Town_name
+//            visit.putExtra("Town_loct", Town_val);
+//
+//            startActivity(visit);
+//        });
 
         close_sideview.setOnClickListener(view -> {
             Resource_profiling.drawer_Layout12.closeDrawer(GravityCompat.END);

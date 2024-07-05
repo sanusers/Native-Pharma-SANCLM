@@ -42,7 +42,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
     ArrayList<String> resList1 = new ArrayList<>();
 
     Context context;
-    String split_val;
+    String split_val, hqcode;
     String cdate2 = "";
 
     String Doc_geoneed, Che_geoneed, Stk_geoneed, Cip_geoneed, Ult_geoneed;
@@ -61,10 +61,11 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
     private OnItemClickListener onItemClickListener;
 
 
-    public Res_sidescreenAdapter(Context context, ArrayList<Resourcemodel_class> resList, String split_val) {
+    public Res_sidescreenAdapter(Context context, ArrayList<Resourcemodel_class> resList, String split_val, String Hqcode) {
         this.context = context;
         this.resList = resList;
         this.split_val = split_val;
+        this.hqcode = Hqcode;
 
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
@@ -88,27 +89,20 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String count = String.valueOf((position + 1));
         final Resourcemodel_class app_adapt = resList.get(position);
-        System.out.println("leaveWorkTypes--->"+app_adapt.getWorkType());
-        System.out.println("eligibility--->"+app_adapt.getEligible());
+        System.out.println("leaveWorkTypes--->" + app_adapt.getWorkType());
+        System.out.println("eligibility--->" + app_adapt.getEligible());
         Doc_geoneed = SharedPref.getGeotagNeed(context);
         Che_geoneed = SharedPref.getGeotagNeedChe(context);
         Stk_geoneed = SharedPref.getGeotagNeedStock(context);
         Cip_geoneed = SharedPref.getGeotagNeedCip(context);
         Ult_geoneed = SharedPref.getGeotagNeedUnlst(context);
 
-//        if((Doc_geoneed.equals("1") || Che_geoneed.equals("1") || Stk_geoneed.equals("1") || Cip_geoneed.equals("1") || Ult_geoneed.equals("1"))
-//                && ((!app_adapt.getLatitude().isEmpty() || !app_adapt.getLongtitude().isEmpty())
-//                && (((!app_adapt.getLatitude().equalsIgnoreCase("0.0") || !app_adapt.getLongtitude().equalsIgnoreCase("0.0"))
-//                || (!app_adapt.getLatitude().equalsIgnoreCase("0") || !app_adapt.getLongtitude().equalsIgnoreCase("0"))))
-//                )
-//        ) {
-//            holder.Res_View.setVisibility(View.VISIBLE);
-//        }else {
+        if ((Doc_geoneed.equals("1") || Che_geoneed.equals("1") || Stk_geoneed.equals("1") || Cip_geoneed.equals("1") || Ult_geoneed.equals("1")) && ((!app_adapt.getLatitude().isEmpty() || !app_adapt.getLongtitude().isEmpty()) && (((!app_adapt.getLatitude().equalsIgnoreCase("0.0") || !app_adapt.getLongtitude().equalsIgnoreCase("0.0")) || (!app_adapt.getLatitude().equalsIgnoreCase("0") || !app_adapt.getLongtitude().equalsIgnoreCase("0")))))) {
+            holder.Res_View.setVisibility(View.VISIBLE);
+        } else {
             holder.Res_View.setVisibility(View.GONE);
-//        }
+        }
         if (!split_val.equals("2")) {
-
-
 
 
             if (!app_adapt.getDcr_name().equals("") && !app_adapt.getDcr_name().equals("null")) {
@@ -175,40 +169,40 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 holder.Res_Edit.setVisibility(View.GONE);
                 holder.Res_Table2.setVisibility(View.GONE);
             }
-            if(split_val.equals("1")&&!app_adapt.getLatitude().equals("") && !app_adapt.getLongtitude().equals("")){
+            if (split_val.equals("1") && !app_adapt.getLatitude().equals("") && !app_adapt.getLongtitude().equals("")) {
                 holder.Res_Table1.setVisibility(View.VISIBLE);
                 holder.Res_category.setVisibility(View.VISIBLE);
 
-                holder.Res_category.setText("From: "+TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
-                holder.Res_rx.setText("To: "+TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
+                holder.Res_category.setText("From: " + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
+                holder.Res_rx.setText("To: " + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
             }
 
-  //        input filter_add
-            if(split_val.equalsIgnoreCase("11")){
-                if(!app_adapt.getLatitude().equals("") && !app_adapt.getLongtitude().equals("")){
+            //        input filter_add
+            if (split_val.equalsIgnoreCase("11")) {
+                if (!app_adapt.getLatitude().equals("") && !app_adapt.getLongtitude().equals("")) {
                     holder.Res_Table1.setVisibility(View.VISIBLE);
                     holder.Res_category.setVisibility(View.VISIBLE);
 
-                    holder.Res_category.setText("From: "+TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
-                    holder.Res_rx.setText("To: "+TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
+                    holder.Res_category.setText("From: " + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
+                    holder.Res_rx.setText("To: " + TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
                 }
             }
             //workType
-            if (app_adapt.getType().equals("workType")){
+            if (app_adapt.getType().equals("workType")) {
                 holder.Res_Name.setText(app_adapt.getWorkType());
                 holder.Res_Table1.setVisibility(View.VISIBLE);
                 holder.Res_category.setVisibility(View.VISIBLE);
                 holder.Res_category.setText(app_adapt.getTP_DCR());
             }
-            if (app_adapt.getType().equals("leaveStatus")){
+            if (app_adapt.getType().equals("leaveStatus")) {
                 holder.Res_category.setVisibility(View.VISIBLE);
                 holder.Res_Table1.setVisibility(View.VISIBLE);
                 holder.Res_Table2.setVisibility(View.VISIBLE);
                 holder.available.setVisibility(View.VISIBLE);
-                holder.Res_Name.setText("LeaveType :"+" "+app_adapt.getLeaveTypes());
-                holder.Res_category.setText("Eligible :"+" "+app_adapt.getEligible());
-                holder.available.setText("Available :"+" "+app_adapt.getAvailable());
-                holder.Res_rx.setText("Taken :"+" "+app_adapt.getTaken());
+                holder.Res_Name.setText("LeaveType :" + " " + app_adapt.getLeaveTypes());
+                holder.Res_category.setText("Eligible :" + " " + app_adapt.getEligible());
+                holder.available.setText("Available :" + " " + app_adapt.getAvailable());
+                holder.Res_rx.setText("Taken :" + " " + app_adapt.getTaken());
             }
 
             holder.listcount.setText(count + " )");
@@ -245,15 +239,12 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
                 } else {
                     Intent click = new Intent(context, MyResource_mapview.class);
-                    click.putExtra("type", app_adapt.getRes_id());
-                    click.putExtra("cust_name", app_adapt.getCustoum_name());
-                    click.putExtra("Dcr_name", "");
-                    click.putExtra("pos_name", "");
-                    click.putExtra("Town_loct", "");
+                    click.putExtra("HQ_CODE", hqcode);
+                    click.putExtra("DCR_CODE", app_adapt.getDcr_code());
+                    click.putExtra("CUST_FLAG", Resource_adapter.rec_val);
                     context.startActivity(click);
                 }
             });
-
 
 
         } else {
@@ -329,20 +320,17 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
     }
 
 
-
     @Override
     public int getItemCount() {
         return resList.size();
     }
 
 
-
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView Res_Name, Res_category, Res_specialty, Res_rx, Res_culter, listcount;
         public LinearLayout Res_Edit, Res_View, Res_Table1, Res_Table2, Click_Res, res_view, vistcntrl_view, Res_visitcntl, end_line, topline, line_endshow;
 
-        public TextView visit_dt,available;  //cutom_name1,date_visit,cutom_name2,date_visit2,cutom_name3,date_visit3
+        public TextView visit_dt, available;  //cutom_name1,date_visit,cutom_name2,date_visit2,cutom_name3,date_visit3
         public RecyclerView tertry_list;
 
 
@@ -376,6 +364,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
         }
     }
+
     public interface OnItemClickListener {
         void onItemClick(Resourcemodel_class item);
     }

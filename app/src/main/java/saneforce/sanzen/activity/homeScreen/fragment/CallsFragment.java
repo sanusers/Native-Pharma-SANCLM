@@ -33,7 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.activityModule.Activity;
+import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.adapters.Call_adapter;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
@@ -333,13 +333,13 @@ public class CallsFragment extends Fragment {
                             String DayPlanDate2 = SecondSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
                             Date SecondPlanDate = sdf.parse(DayPlanDate2);
                             if((FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) || (SecondPlanDate != null && SecondPlanDate.equals(CurentDate))) {
-                                startActivity(new Intent(requireActivity(), Activity.class));
+                                startActivity(new Intent(requireActivity(), DynamicActivity.class));
                             }else {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                             }
                         }else {
                             if(FirstPlanDate != null && FirstPlanDate.equals(CurentDate)) {
-                                startActivity(new Intent(requireActivity(), Activity.class));
+                                startActivity(new Intent(requireActivity(), DynamicActivity.class));
                             }else {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                             }
