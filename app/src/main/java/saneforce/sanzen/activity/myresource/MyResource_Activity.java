@@ -63,14 +63,14 @@ public class MyResource_Activity extends AppCompatActivity {
     Resource_adapter resourceAdapter;
     HashMap<String, Integer> idCounts = new HashMap<>();
     String Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
-    String navigateFrom = "", input_count="",product_count="";
+    String navigateFrom = "", input_count = "", product_count = "";
     public static ActivityMyResourceBinding binding;
     LocalDate date_n;
     private RoomDB roomDB;
 
     private MasterDataDao masterDataDao;
     boolean isLeaveEntitlementRequested;
-    boolean isInputRequested,isProductRequested;
+    boolean isInputRequested, isProductRequested;
     int inputCount = 0;
 
 
@@ -259,21 +259,20 @@ public class MyResource_Activity extends AppCompatActivity {
                 listed_data.add(new Resourcemodel_class(SharedPref.getStkCap(this), Strck_count, "3"));
             if (SharedPref.getUnlNeed(this).equalsIgnoreCase("0"))
                 listed_data.add(new Resourcemodel_class(SharedPref.getUNLcap(this), Unlist_count, "4"));
-            if (SharedPref.getHospNeed(this).equalsIgnoreCase("0"))
-                listed_data.add(new Resourcemodel_class(SharedPref.getHospCaption(this), Hosp_count, "5"));
-            if (SharedPref.getCipINeed(this).equalsIgnoreCase("0"))
-                listed_data.add(new Resourcemodel_class(SharedPref.getCipCaption(this), Cip_count, "6"));
-
+//            if (SharedPref.getHospNeed(this).equalsIgnoreCase("0"))
+//                listed_data.add(new Resourcemodel_class(SharedPref.getHospCaption(this), Hosp_count, "5"));
+//            if (SharedPref.getCipINeed(this).equalsIgnoreCase("0"))
+//                listed_data.add(new Resourcemodel_class(SharedPref.getCipCaption(this), Cip_count, "6"));
 
 
             try {
                 inputcount.clear();
                 productcount.clear();
-                String input_val="",product_val="";
+                String input_val = "", product_val = "";
                 JSONArray jsoninput = masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray();
                 for (int i = 0; i < jsoninput.length(); i++) {
                     JSONObject jsonObject = jsoninput.getJSONObject(i);
-                    if(!input_val.equals(jsonObject.getString("Code"))&& (!jsonObject.getString("Code").equalsIgnoreCase("-1"))) {
+                    if (!input_val.equals(jsonObject.getString("Code")) && (!jsonObject.getString("Code").equalsIgnoreCase("-1"))) {
                         inputcount.add(jsonObject.getString("Code"));
                     }
                 }
@@ -282,7 +281,7 @@ public class MyResource_Activity extends AppCompatActivity {
 
                 for (int i = 0; i < jsonproduct.length(); i++) {
                     JSONObject jsonObject = jsonproduct.getJSONObject(i);
-                    if(!product_val.equals(jsonObject.getString("Code"))&& (!jsonObject.getString("Code").equalsIgnoreCase("-1"))) {
+                    if (!product_val.equals(jsonObject.getString("Code")) && (!jsonObject.getString("Code").equalsIgnoreCase("-1"))) {
 
                         productcount.add(jsonObject.getString("Code"));
                     }
@@ -292,11 +291,10 @@ public class MyResource_Activity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            String dcrCaption=  SharedPref.getDrCap(this);
-            if (dcrCaption==null || dcrCaption.isEmpty()){
+            String dcrCaption = SharedPref.getDrCap(this);
+            if (dcrCaption == null || dcrCaption.isEmpty()) {
                 dcrCaption = "Doctor";
-            }
-            else{
+            } else {
                 dcrCaption = SharedPref.getDrCap(this);
             }
             input_count = String.valueOf(inputcount.size());
@@ -310,26 +308,26 @@ public class MyResource_Activity extends AppCompatActivity {
                     inputCount++;
                 }
             }
-            if (isInputRequested){
+            if (isInputRequested) {
                 listed_data.add(new Resourcemodel_class("Input", String.valueOf(inputCount), "7"));
             }
-            if (isProductRequested){
+            if (isProductRequested) {
                 listed_data.add(new Resourcemodel_class("Product", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray().length()), "8"));
             }
             listed_data.add(new Resourcemodel_class(SharedPref.getClusterCap(this), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + synhqval1).getMasterSyncDataJsonArray().length()), "9"));
             listed_data.add(new Resourcemodel_class("Holiday / Weekly off", masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray().length() + " / " + masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray().length(), "10"));
             listed_data.add(new Resourcemodel_class("Category", String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));
             listed_data.add(new Resourcemodel_class("WorkType", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray().length()), "12"));
-            if (isLeaveEntitlementRequested){
-                listed_data.add(new Resourcemodel_class("LeaveStatus",String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length()),"13"));
+            if (isLeaveEntitlementRequested) {
+                listed_data.add(new Resourcemodel_class("LeaveStatus", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length()), "13"));
             }
             if (SharedPref.getVstNd(getApplicationContext()).equalsIgnoreCase("0") && SharedPref.getDesig(getApplicationContext()).equalsIgnoreCase("MR")) {
 //                listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
-                listed_data.add(new Resourcemodel_class(dcrCaption+ " "+"Visit", "", "14"));
+                listed_data.add(new Resourcemodel_class(dcrCaption + " " + "Visit", "", "14"));
             }
 //            listed_data.add(new Resourcemodel_class("Calls Status",  String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray().length()), "12"));
-            listed_data.add(new Resourcemodel_class("Calls Summary",  "", "15"));
-            listed_data.add(new Resourcemodel_class("Date Summary","","16"));
+            listed_data.add(new Resourcemodel_class("Calls Summary", "", "15"));
+            listed_data.add(new Resourcemodel_class("Date Summary", "", "16"));
             Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count);
 
             resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1);//13
@@ -396,26 +394,25 @@ public class MyResource_Activity extends AppCompatActivity {
 
     @SuppressLint("WrongConstant")
     public void syn_hq() {
-        List<String> SyHqList=new ArrayList<>();
-        SyHqList=SharedPref.getsyn_hqcode(this);
+        List<String> SyHqList = new ArrayList<>();
+        SyHqList = SharedPref.getsyn_hqcode(this);
         try {
             listresource.clear();
             //add
 
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE ).getMasterSyncDataJsonArray();
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
             headtext_id.setText("Headquarters");
 
             ArrayList<String> list = new ArrayList<>();
             if (jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if (SyHqList.contains(jsonObject.getString("id")) && (!list.contains(jsonObject.getString("id")))) {
-                            list .add(jsonObject.getString("id")) ;
-                            listresource.add(new Resourcemodel_class(jsonObject.getString("id"), jsonObject.getString("name"), "", "", "", "", "", "", "", "", "", "", "",
-                                    "", "", "", "", "", "", "", "", "", "","","","","","","",""));
-                        }
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    if (SyHqList.contains(jsonObject.getString("id")) && (!list.contains(jsonObject.getString("id")))) {
+                        list.add(jsonObject.getString("id"));
+                        listresource.add(new Resourcemodel_class(jsonObject.getString("id"), jsonObject.getString("name"), "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                    }
 
-                    Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(this, listresource, "1");
+                    Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(this, listresource, "1", "");
                     appAdapter3.setOnItemClickListener(new Res_sidescreenAdapter.OnItemClickListener() {
                         public void onItemClick(Resourcemodel_class item) {
                             binding.hqHead.setText(item.getDcr_name());
@@ -440,11 +437,11 @@ public class MyResource_Activity extends AppCompatActivity {
     private void filter(String text) {
         ArrayList<Resourcemodel_class> filterdNames = new ArrayList<>();
         for (Resourcemodel_class s : listresource) {
-            if (s.getDcr_name().toLowerCase().contains(text.toLowerCase()) || s.getRes_custname().toLowerCase().contains(text.toLowerCase()) || s.getRes_Specialty().toLowerCase().contains(text.toLowerCase()) || s.getRes_Category().toLowerCase().contains(text.toLowerCase()) ||s.getWorkType().toLowerCase().contains(text.toLowerCase())||s.getLeaveTypes().toLowerCase().contains(text.toLowerCase())) {//getRes_Category
+            if (s.getDcr_name().toLowerCase().contains(text.toLowerCase()) || s.getRes_custname().toLowerCase().contains(text.toLowerCase()) || s.getRes_Specialty().toLowerCase().contains(text.toLowerCase()) || s.getRes_Category().toLowerCase().contains(text.toLowerCase()) || s.getWorkType().toLowerCase().contains(text.toLowerCase()) || s.getLeaveTypes().toLowerCase().contains(text.toLowerCase())) {//getRes_Category
                 filterdNames.add(s);
             }
         }
-        Res_sidescreenAdapter appAdapter_0 = new Res_sidescreenAdapter(MyResource_Activity.this, listresource, Valcount);
+        Res_sidescreenAdapter appAdapter_0 = new Res_sidescreenAdapter(MyResource_Activity.this, listresource, Valcount, "");
         appAdapter_0.filterList(filterdNames);
         appAdapter_0.setOnItemClickListener(item -> {
             UtilityClass.hideKeyboard(this);
@@ -455,9 +452,10 @@ public class MyResource_Activity extends AppCompatActivity {
         appRecyclerView.setAdapter(appAdapter_0);
         appRecyclerView.setLayoutManager(new LinearLayoutManager(MyResource_Activity.this));
     }
-   private void setUp(){
-        isInputRequested = SharedPref.getDiNeed(this).equals("0") || SharedPref.getCiNeed(this).equals("0") ||  SharedPref.getSiNeed(this).equals("0") || SharedPref.getNiNeed(this).equals("0");
-        isProductRequested = SharedPref.getDpNeed(this).equals("0") || SharedPref.getCpNeed(this).equals("0") ||  SharedPref.getSpNeed(this).equals("0") || SharedPref.getNpNeed(this).equals("0");
-   }
+
+    private void setUp() {
+        isInputRequested = SharedPref.getDiNeed(this).equals("0") || SharedPref.getCiNeed(this).equals("0") || SharedPref.getSiNeed(this).equals("0") || SharedPref.getNiNeed(this).equals("0");
+        isProductRequested = SharedPref.getDpNeed(this).equals("0") || SharedPref.getCpNeed(this).equals("0") || SharedPref.getSpNeed(this).equals("0") || SharedPref.getNpNeed(this).equals("0");
+    }
 
 }

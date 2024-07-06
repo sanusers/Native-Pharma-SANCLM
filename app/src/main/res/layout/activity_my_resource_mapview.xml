@@ -67,13 +67,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+
                 android:background="@drawable/pink_full"
                 android:layout_marginLeft="@dimen/_4sdp"
                 android:layout_marginRight="@dimen/_4sdp"
                 android:layout_weight="1.8"
                 android:gravity="center"
                 android:padding="@dimen/_4sdp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/Doc_taggsave"
@@ -190,7 +191,7 @@
                         android:gravity="center"
                         android:text="14"
                         android:textColor="#F1536E"
-                        android:textSize="@dimen/_8sdp"
+                        android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
@@ -202,6 +203,7 @@
                         android:gravity="center"
                         android:paddingBottom="@dimen/_2sdp"
                         android:text="km"
+                        android:visibility="visible"
                         android:textColor="#F1536E"
                         android:textSize="@dimen/_6sdp"
                         tools:ignore="SpUsage" />

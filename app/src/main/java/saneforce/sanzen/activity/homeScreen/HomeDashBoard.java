@@ -110,7 +110,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.FAQ.FAQ;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
-import saneforce.sanzen.activity.activityModule.Activity;
+import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.forms.Forms_activity;
 import saneforce.sanzen.activity.homeScreen.adapters.Callstatusadapter;
@@ -1243,7 +1243,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
         if (item.getTitle().toString().equalsIgnoreCase(SharedPref.getActivityCap(this))) {
-            startActivity(new Intent(HomeDashBoard.this, Activity.class));
+            startActivity(new Intent(HomeDashBoard.this, DynamicActivity.class));
             return true;
         }
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.my_resource))) {

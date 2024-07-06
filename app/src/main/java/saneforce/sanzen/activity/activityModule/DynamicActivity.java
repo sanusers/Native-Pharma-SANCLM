@@ -67,7 +67,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
@@ -104,7 +103,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
-import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -119,7 +117,7 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
-public class Activity extends AppCompatActivity {
+public class DynamicActivity extends AppCompatActivity {
 
     ActivityBinding binding;
     private static final int PICK_FROM_GALLERY = 101;
@@ -151,15 +149,15 @@ public class Activity extends AppCompatActivity {
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(this);
-        apiInterface = RetrofitClient.getRetrofit(Activity.this, SharedPref.getCallApiUrl(Activity.this));
+        apiInterface = RetrofitClient.getRetrofit(DynamicActivity.this, SharedPref.getCallApiUrl(DynamicActivity.this));
         fontmedium = ResourcesCompat.getFont(this, R.font.satoshi_medium);
         fontregular = ResourcesCompat.getFont(this, R.font.satoshi_regular);
         binding.title.setText(SharedPref.getActivityCap(this));
         binding.listTitle.setText(String.format("List of %s", SharedPref.getActivityCap(this)));
         binding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(this)));
-        binding.txthqName.setText(SharedPref.getHqName(Activity.this));
+        binding.txthqName.setText(SharedPref.getHqName(DynamicActivity.this));
         binding.btnsumit.setEnabled(false);
-        adapter = new ActivityAdapter(Activity.this, ActivityList, classGroup -> {
+        adapter = new ActivityAdapter(DynamicActivity.this, ActivityList, classGroup -> {
             binding.namechooseActivity.setText(classGroup.getActivityName());
             binding.llActivityDetailsView.removeAllViews();
             getActivityDetails(classGroup);
@@ -167,10 +165,10 @@ public class Activity extends AppCompatActivity {
         binding.skRecylerview.setLayoutManager(new LinearLayoutManager(this));
         binding.skRecylerview.setAdapter(adapter);
 
-        getActivity(SharedPref.getHqCode(Activity.this));
+        getActivity(SharedPref.getHqCode(DynamicActivity.this));
 
         binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
-        //  binding.mainLayout.setDrawerLockMode(DrawerLayout.c);
+
 
         if (!SharedPref.getDesig(this).equalsIgnoreCase("MR")) {
             binding.rlheadquates.setVisibility(View.VISIBLE);
@@ -199,7 +197,7 @@ public class Activity extends AppCompatActivity {
         if (UtilityClass.isNetworkAvailable(this)) {
             binding.progressMain.setVisibility(View.VISIBLE);
             try {
-                JSONObject object = commonUtilsMethods.CommonObjectParameter(Activity.this);
+                JSONObject object = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
                 object.put("tableName", "getdynactivity");
                 object.put("sfcode", SharedPref.getSfCode(this));
                 object.put("division_code", SharedPref.getDivisionCode(this));
@@ -207,7 +205,7 @@ public class Activity extends AppCompatActivity {
                 Log.v("JsonObject  :", "" + object.toString());
                 Map<String, String> QuaryParam = new HashMap<>();
                 QuaryParam.put("axn", "get/activity");
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(Activity.this), QuaryParam, object.toString());
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(DynamicActivity.this), QuaryParam, object.toString());
 
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
@@ -225,7 +223,7 @@ public class Activity extends AppCompatActivity {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         String[] Activity_Desig = jsonObject.getString("Activity_Desig").split(",\\s*");
                                         List<String> DegList = Arrays.asList(Activity_Desig);
-                                        if (DegList.contains(SharedPref.getDesig(Activity.this))) {
+                                        if (DegList.contains(SharedPref.getDesig(DynamicActivity.this))) {
                                             binding.rlNoActivity.setVisibility(View.GONE);
                                             binding.llMainLayout.setVisibility(View.VISIBLE);
                                             binding.rlDetailsMain.setVisibility(View.VISIBLE);
@@ -241,7 +239,7 @@ public class Activity extends AppCompatActivity {
                                     binding.rlNoActivity.setVisibility(View.VISIBLE);
                                     binding.llMainLayout.setVisibility(View.GONE);
 
-                                    commonUtilsMethods.showToastMessage(Activity.this, "No Activity");
+                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity");
                                 }
 
                             } catch (Exception a) {
@@ -273,7 +271,7 @@ public class Activity extends AppCompatActivity {
         if (UtilityClass.isNetworkAvailable(this)) {
             binding.progrlessdetail.setVisibility(View.VISIBLE);
             try {
-                JSONObject object = commonUtilsMethods.CommonObjectParameter(Activity.this);
+                JSONObject object = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
                 ;
                 object.put("tableName", "getdynactivity_details");
                 object.put("sfcode", SharedPref.getSfCode(this));
@@ -284,7 +282,7 @@ public class Activity extends AppCompatActivity {
                 Map<String, String> QuaryParam = new HashMap<>();
                 QuaryParam.put("axn", "get/activity");
 
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(Activity.this), QuaryParam, object.toString());
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(DynamicActivity.this), QuaryParam, object.toString());
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
@@ -370,14 +368,14 @@ public class Activity extends AppCompatActivity {
                                         binding.rlDetailsMain.setVisibility(View.GONE);
                                         binding.btnsumit.setVisibility(View.GONE);
                                         binding.progrlessdetail.setVisibility(View.GONE);
-                                        commonUtilsMethods.showToastMessage(Activity.this, "No Activity Details");
+                                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
                                     }
 
 
 
 
                             } catch (Exception a) {
-                                commonUtilsMethods.showToastMessage(Activity.this, "No Activity Details");
+                                commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
 
                                 Log.e("Error", "----- " + a);
                             }
@@ -386,7 +384,7 @@ public class Activity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<JsonElement> call, Throwable t) {
-                        commonUtilsMethods.showToastMessage(Activity.this, "No Activity Details");
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
                         binding.rlNoData.setVisibility(View.VISIBLE);
                         binding.rlDetailsMain.setVisibility(View.GONE);
                         binding.btnsumit.setVisibility(View.GONE);
@@ -398,7 +396,7 @@ public class Activity extends AppCompatActivity {
                 a.printStackTrace();
             }
         } else {
-            commonUtilsMethods.showToastMessage(Activity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no_network));
 
         }
     }
@@ -763,7 +761,7 @@ public class Activity extends AppCompatActivity {
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(DynamicActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         textviewdate1.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
@@ -869,9 +867,9 @@ public class Activity extends AppCompatActivity {
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this, (view, year1, monthOfYear, dayOfMonth1) -> {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(DynamicActivity.this, (view, year1, monthOfYear, dayOfMonth1) -> {
                     c.set(year1, monthOfYear, dayOfMonth1);
-                    TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this, (view1, hourOfDay, minute1) -> {
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(DynamicActivity.this, (view1, hourOfDay, minute1) -> {
                         c.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         c.set(Calendar.MINUTE, minute1);
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
@@ -974,7 +972,7 @@ public class Activity extends AppCompatActivity {
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(DynamicActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         textviewfromdate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
@@ -1028,7 +1026,7 @@ public class Activity extends AppCompatActivity {
             public void onClick(View view) {
                 String fromdate = textviewfromdate.getText().toString();
                 if (fromdate.equals("")) {
-                    Toast.makeText(Activity.this, "Please Select From Date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DynamicActivity.this, "Please Select From Date", Toast.LENGTH_SHORT).show();
                 } else {
                     String datee[] = fromdate.split("-");
                     final Calendar c = Calendar.getInstance();
@@ -1042,7 +1040,7 @@ public class Activity extends AppCompatActivity {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this, (view1, year, monthOfYear, dayOfMonth) -> textviewtodate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year), mYear, mMonth, mDay);
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(DynamicActivity.this, (view1, year, monthOfYear, dayOfMonth) -> textviewtodate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year), mYear, mMonth, mDay);
                     commonFun();
                     datePickerDialog.getDatePicker().setMinDate(dateBefore.getTime());
                     datePickerDialog.show();
@@ -1146,9 +1144,9 @@ public class Activity extends AppCompatActivity {
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this, (view, year1, monthOfYear, dayOfMonth1) -> {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(DynamicActivity.this, (view, year1, monthOfYear, dayOfMonth1) -> {
                     c.set(year1, monthOfYear, dayOfMonth1);
-                    TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this, (view1, hourOfDay, minute1) -> {
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(DynamicActivity.this, (view1, hourOfDay, minute1) -> {
                         c.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         c.set(Calendar.MINUTE, minute1);
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
@@ -1209,7 +1207,7 @@ public class Activity extends AppCompatActivity {
                 String fromdate = textviewfromdate.getText().toString();
 
                 if (fromdate.equals("")) {
-                    Toast.makeText(Activity.this, "Please Select From Date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DynamicActivity.this, "Please Select From Date", Toast.LENGTH_SHORT).show();
                 } else {
 
                     String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30, TimeUtils.FORMAT_5, fromdate);
@@ -1231,9 +1229,9 @@ public class Activity extends AppCompatActivity {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this, (view, year1, monthOfYear, dayOfMonth1) -> {
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(DynamicActivity.this, (view, year1, monthOfYear, dayOfMonth1) -> {
                         c.set(year1, monthOfYear, dayOfMonth1);
-                        TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this, (view1, hourOfDay, minute1) -> {
+                        TimePickerDialog timePickerDialog = new TimePickerDialog(DynamicActivity.this, (view1, hourOfDay, minute1) -> {
                             c.set(Calendar.HOUR_OF_DAY, hourOfDay);
                             c.set(Calendar.MINUTE, minute1);
                             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
@@ -1241,7 +1239,7 @@ public class Activity extends AppCompatActivity {
                                 if (mHour < hourOfDay || mMinute < minute1) {
                                     textviewtodate.setText(dateFormat.format(c.getTime()));
                                 } else {
-                                    Toast.makeText(Activity.this, "Please Select as After From Time ", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(DynamicActivity.this, "Please Select as After From Time ", Toast.LENGTH_LONG).show();
                                     textviewtodate.setText("");
                                 }
                             } else {
@@ -1349,7 +1347,7 @@ public class Activity extends AppCompatActivity {
                 int mHour = c.get(Calendar.HOUR_OF_DAY);
                 int mMinute = c.get(Calendar.MINUTE);
 
-                TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(DynamicActivity.this, new TimePickerDialog.OnTimeSetListener() {
 
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -1458,7 +1456,7 @@ public class Activity extends AppCompatActivity {
                 int mHour = c.get(Calendar.HOUR_OF_DAY);
                 int mMinute = c.get(Calendar.MINUTE);
 
-                TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(DynamicActivity.this, new TimePickerDialog.OnTimeSetListener() {
 
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -1515,7 +1513,7 @@ public class Activity extends AppCompatActivity {
             public void onClick(View view) {
                 String data = textviewfromtime.getText().toString();
                 if (data.equalsIgnoreCase("")) {
-                    Toast.makeText(Activity.this, "Please Select From Time", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DynamicActivity.this, "Please Select From Time", Toast.LENGTH_SHORT).show();
                 } else {
                     String[] datas = data.split(":");
                     final int mHour = Integer.parseInt(datas[0]);
@@ -1529,7 +1527,7 @@ public class Activity extends AppCompatActivity {
                             if (mHour < hour || mMinute < minute) {
                                 textviewtotime.setText(hour + ":" + minute);
                             } else {
-                                Toast.makeText(Activity.this, "Please Select as After From Time ", Toast.LENGTH_LONG).show();
+                                Toast.makeText(DynamicActivity.this, "Please Select as After From Time ", Toast.LENGTH_LONG).show();
                                 textviewtotime.setText("");
                             }
                             commonFun();
@@ -1537,7 +1535,7 @@ public class Activity extends AppCompatActivity {
                         }
                     };
 
-                    final TimePickerDialog timePickerDialog = new TimePickerDialog(Activity.this, timePickerListener, mHour, mMinute, false);
+                    final TimePickerDialog timePickerDialog = new TimePickerDialog(DynamicActivity.this, timePickerListener, mHour, mMinute, false);
 
 
                     timePickerDialog.show();
@@ -2002,7 +2000,7 @@ public class Activity extends AppCompatActivity {
         String address;
         double latitude = gpsTrack.getLatitude();
         double longitude = gpsTrack.getLongitude();
-        if (UtilityClass.isNetworkAvailable(Activity.this)) {
+        if (UtilityClass.isNetworkAvailable(DynamicActivity.this)) {
             address = CommonUtilsMethods.gettingAddress(this, latitude, longitude, false);
         } else {
             address = "No Address Found";
@@ -2025,12 +2023,12 @@ public class Activity extends AppCompatActivity {
                     if(!CheckLocPermission()){
                         RequestLocationPermission();
                     }else {
-                        commonUtilsMethods.showToastMessage(Activity.this, "Wait For Location");
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Wait For Location");
                         String address;
                         double latitude = gpsTrack.getLatitude();
                         double longitude = gpsTrack.getLongitude();
-                        if (UtilityClass.isNetworkAvailable(Activity.this)) {
-                            address = CommonUtilsMethods.gettingAddress(Activity.this, latitude, longitude, false);
+                        if (UtilityClass.isNetworkAvailable(DynamicActivity.this)) {
+                            address = CommonUtilsMethods.gettingAddress(DynamicActivity.this, latitude, longitude, false);
                         } else {
                             address = "No Address Found";
                         }
@@ -2040,7 +2038,7 @@ public class Activity extends AppCompatActivity {
                         LongText.setText("Long  :" + String.valueOf(longitude));
                     }
                 } else {
-                    CommonUtilsMethods.RequestGPSPermission(Activity.this);
+                    CommonUtilsMethods.RequestGPSPermission(DynamicActivity.this);
                 }
 
             }
@@ -2893,7 +2891,7 @@ public class Activity extends AppCompatActivity {
         binding.mainLayout.openDrawer(Gravity.RIGHT);
         binding.SlideScreen.tvSearchheader.setText("Select " + name);
         binding.SlideScreen.etSearch.setHint("Search " + name);
-        adapter1 = new ActvityList2Adapter(Activity.this, ListName, ListIds, isMultipleCheck, new CheckBoxInterface() {
+        adapter1 = new ActvityList2Adapter(DynamicActivity.this, ListName, ListIds, isMultipleCheck, new CheckBoxInterface() {
             @Override
             public void Checked(String checkname, String id) {
                 if (isMultipleCheck) {
@@ -2912,7 +2910,7 @@ public class Activity extends AppCompatActivity {
                 mListId.remove(id);
             }
         });
-        binding.SlideScreen.acRecyelerView.setLayoutManager(new LinearLayoutManager(Activity.this));
+        binding.SlideScreen.acRecyelerView.setLayoutManager(new LinearLayoutManager(DynamicActivity.this));
         binding.SlideScreen.acRecyelerView.setAdapter(adapter1);
 
         binding.SlideScreen.etSearch.addTextChangedListener(new TextWatcher() {
@@ -2970,11 +2968,11 @@ public class Activity extends AppCompatActivity {
             if (resultCode == RESULT_OK && data.getData() != null) {
                 try {
                     uri = data.getData();
-                    String fullPath = getPathFromURI(Activity.this, uri);
+                    String fullPath = getPathFromURI(DynamicActivity.this, uri);
                     String[] parts = fullPath.split("/");
                     String filenmae = parts[parts.length - 1];
                     FilnameTet.setText(String.valueOf(filenmae));
-                    Toast.makeText(Activity.this, "File Accepted", Toast.LENGTH_LONG).show();
+                    Toast.makeText(DynamicActivity.this, "File Accepted", Toast.LENGTH_LONG).show();
 
 
                     File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
@@ -2985,11 +2983,11 @@ public class Activity extends AppCompatActivity {
 
                 } catch (Exception ex) {
                     Log.v("Error", ex.toString());
-                    Toast.makeText(Activity.this, "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DynamicActivity.this, "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
                     ex.printStackTrace();
                 }
             } else {
-                Toast.makeText(Activity.this, "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DynamicActivity.this, "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
             }
             commonFun();
         }
@@ -3106,7 +3104,7 @@ public class Activity extends AppCompatActivity {
                 jsonObject.put("FWFlg", "");
                 jsonObject.put("town_code", "");
                 jsonObject.put("town_name", "");
-                jsonObject.put("Rsf", SharedPref.getHqCode(Activity.this));
+                jsonObject.put("Rsf", SharedPref.getHqCode(DynamicActivity.this));
                 jsonObject.put("sf_type", SharedPref.getSfType(this));
                 jsonObject.put("Designation", SharedPref.getDesig(this));
                 jsonObject.put("state_code", SharedPref.getStateCode(this));
@@ -3115,10 +3113,10 @@ public class Activity extends AppCompatActivity {
 
                 if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16") ) {
                     if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
-                        commonUtilsMethods.showToastMessage(Activity.this, "Fill The From " + List.getFieldName());
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The From " + List.getFieldName());
                         break;
                     } else if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
-                        commonUtilsMethods.showToastMessage(Activity.this, "Fill The To" + List.getFieldName());
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The To" + List.getFieldName());
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
@@ -3127,7 +3125,7 @@ public class Activity extends AppCompatActivity {
                     }
                 } else if (List.getControlId().equalsIgnoreCase("17")) {
                     if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(Activity.this, "Choose The " + List.getFieldName() + "");
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Choose The " + List.getFieldName() + "");
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
@@ -3137,7 +3135,7 @@ public class Activity extends AppCompatActivity {
 
                 } else {
                     if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(Activity.this, "Fill The " + List.getFieldName() + "");
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The " + List.getFieldName() + "");
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt());
@@ -3151,18 +3149,18 @@ public class Activity extends AppCompatActivity {
 
             if (conut == ActivityViewItem.size()) {
                 binding.progresssumit.setVisibility(View.VISIBLE);
-                JSONObject MainObject = commonUtilsMethods.CommonObjectParameter(Activity.this);
+                JSONObject MainObject = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
                 MainObject.put("tableName", "savedcract");
                 MainObject.put("val", jsonArray);
                 Log.v("JsonObject  :", "" + MainObject.toString());
                 Map<String, String> QryParam = new HashMap<>();
                 QryParam.put("axn", "save/activity");
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(Activity.this), QryParam, MainObject.toString());
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(DynamicActivity.this), QryParam, MainObject.toString());
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                         if (response.code() == 200 || response.code() == 201) {
-                            commonUtilsMethods.showToastMessage(Activity.this, "Activity Sucessfully");
+                            commonUtilsMethods.showToastMessage(DynamicActivity.this, "Activity Sucessfully");
                             binding.progresssumit.setVisibility(View.GONE);
                             TaggedImage();
                             Intent intent = getIntent();
@@ -3177,7 +3175,7 @@ public class Activity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<JsonElement> call, Throwable t) {
-                        commonUtilsMethods.showToastMessage(Activity.this, t.getMessage());
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, t.getMessage());
                         binding.progresssumit.setVisibility(View.GONE);
                     }
                 });
@@ -3225,18 +3223,18 @@ public class Activity extends AppCompatActivity {
                     jsonObject.put("FWFlg", "");
                     jsonObject.put("town_code", "");
                     jsonObject.put("town_name", "");
-                    jsonObject.put("Rsf", SharedPref.getHqCode(Activity.this));
+                    jsonObject.put("Rsf", SharedPref.getHqCode(DynamicActivity.this));
                     jsonObject.put("values", List.getAnswerTxt());
                     jsonObject.put("codes", List.getCodes());
                     JSONArray jsonArray = new JSONArray();
                     jsonArray.put(jsonObject);
-                    JSONObject MainObject = commonUtilsMethods.CommonObjectParameter(Activity.this);
+                    JSONObject MainObject = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
                     Log.v("JsonObject  :", "" + MainObject.toString());
                     MainObject.put("tableName", "savedcract");
                     MainObject.put("val", jsonArray);
 
 
-                    ApiInterface apiInterface1 = RetrofitClient.getRetrofit(Activity.this, SharedPref.getTagApiImageUrl(Activity.this));
+                    ApiInterface apiInterface1 = RetrofitClient.getRetrofit(DynamicActivity.this, SharedPref.getTagApiImageUrl(DynamicActivity.this));
                     File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
                     file1 = new File(file.getAbsolutePath() + "/", List.getAnswerTxt());
                     MultipartBody.Part img = convertImg("ActivityFile", String.valueOf(file1));
@@ -3253,7 +3251,7 @@ public class Activity extends AppCompatActivity {
                                     JSONObject json = new JSONObject(response.body().toString());
                                     Log.v("ImgUpload", json.toString());
                                     json.getString("success");
-                                    commonUtilsMethods.showToastMessage(Activity.this, "ImageUpload SucessFully");
+                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "ImageUpload SucessFully");
                                 } catch (Exception ignored) {
 
                                 }
@@ -3378,7 +3376,7 @@ public class Activity extends AppCompatActivity {
         try {
             File file;
             if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
-                file = new Compressor(Activity.this).compressToFile(new File(path));
+                file = new Compressor(DynamicActivity.this).compressToFile(new File(path));
                 Log.d("path", tag + "-" + path);
             } else {
                 file = new File(path);
@@ -3406,15 +3404,15 @@ public class Activity extends AppCompatActivity {
                 }
             }
 
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(Activity.this);
-            LayoutInflater inflater = Activity.this.getLayoutInflater();
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(DynamicActivity.this);
+            LayoutInflater inflater = DynamicActivity.this.getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.dialog_listview, null);
             alertDialog.setView(dialogView);
             TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
             ListView listView = dialogView.findViewById(R.id.listView);
             SearchView searchView = dialogView.findViewById(R.id.searchET);
             headerTxt.setText(getResources().getText(R.string.select_hq));
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(Activity.this, android.R.layout.simple_list_item_1, list);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(DynamicActivity.this, android.R.layout.simple_list_item_1, list);
             listView.setAdapter(adapter);
             AlertDialog dialog = alertDialog.create();
 
@@ -3470,7 +3468,7 @@ public class Activity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        CommonAlertBox.CheckLocationStatus(Activity.this);
+        CommonAlertBox.CheckLocationStatus(DynamicActivity.this);
     }
 
     @Override
@@ -3535,7 +3533,7 @@ public class Activity extends AppCompatActivity {
                 }
             }
             if ((DontAskAgain) && (StorageFlag > 1)) {
-                CommonUtilsMethods.RequestGPSPermission(Activity.this, "Files");
+                CommonUtilsMethods.RequestGPSPermission(DynamicActivity.this, "Files");
             }
         } if (requestCode == 102) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -3548,28 +3546,28 @@ public class Activity extends AppCompatActivity {
 
             } else {
                 // Permission denied, show a message to the user
-                CommonUtilsMethods. RequestGPSPermission(Activity.this,"Location");
+                CommonUtilsMethods. RequestGPSPermission(DynamicActivity.this,"Location");
             }
         }
     }
     public void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(DynamicActivity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 
     private void RequestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(Activity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(Activity.this, ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(Activity.this, new String[]{ACCESS_FINE_LOCATION}, 102);
+        if (ContextCompat.checkSelfPermission(DynamicActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(DynamicActivity.this, ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(DynamicActivity.this, new String[]{ACCESS_FINE_LOCATION}, 102);
             } else {
-                ActivityCompat.requestPermissions(Activity.this, new String[]{ACCESS_FINE_LOCATION}, 102);
+                ActivityCompat.requestPermissions(DynamicActivity.this, new String[]{ACCESS_FINE_LOCATION}, 102);
             }
         }
     }
     public boolean CheckLocPermission() {
-        int FineLocation = ContextCompat.checkSelfPermission(Activity.this, ACCESS_FINE_LOCATION);
-        int CoarseLocation = ContextCompat.checkSelfPermission(Activity.this, ACCESS_COARSE_LOCATION);
+        int FineLocation = ContextCompat.checkSelfPermission(DynamicActivity.this, ACCESS_FINE_LOCATION);
+        int CoarseLocation = ContextCompat.checkSelfPermission(DynamicActivity.this, ACCESS_COARSE_LOCATION);
         return FineLocation == PackageManager.PERMISSION_GRANTED && CoarseLocation == PackageManager.PERMISSION_GRANTED;
     }
 

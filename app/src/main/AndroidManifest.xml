@@ -68,6 +68,7 @@
         tools:targetApi="31">
         <activity
             android:name=".activity.myresource.Categoryview.DateSyncActivity"
+            android:screenOrientation="landscape"
             android:exported="false" />
         <activity
             android:name=".activity.reports.dayReport.MapViewActvity"
@@ -90,7 +91,7 @@
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".activity.activityModule.Activity"
+            android:name=".activity.activityModule.DynamicActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:theme="@style/CustomTheme" />

@@ -10,9 +10,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="saneforce.sanzen" />
-                  <option name="mobileSdkAppId" value="1:181318048632:android:9dc02f9b82baecf2acc68d" />
-                  <option name="projectId" value="sanclm" />
-                  <option name="projectNumber" value="181318048632" />
+                  <option name="mobileSdkAppId" value="1:563573079267:android:4937bf394f0083eb6959d6" />
+                  <option name="projectId" value="san-zen" />
+                  <option name="projectNumber" value="563573079267" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
