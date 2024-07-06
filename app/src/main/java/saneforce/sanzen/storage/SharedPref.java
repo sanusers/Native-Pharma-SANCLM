@@ -411,6 +411,8 @@ public class SharedPref {
 
     public static final String SLIDE_DOWNLOADING_STATUS = "Slide_downloding_status";
     public static final String LAST_CALL_DATE = "Last_Call_Date";
+    public static final String LAST_OUTBOX_ALERT_DATE = "Last_Outbox_Alert_Date";
+
     public static final String CHM_DETAILING_NEED = "Detailing_chem";
     public static final String STK_DETAILING_NEED = "Detailing_stk";
     public static final String UNDR_DETAILING_NEED = "Detailing_undr";
@@ -2420,6 +2422,16 @@ public class SharedPref {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(DAY_PLAN_STARTED, date).apply();
+    }
+
+    public static String getLastOutboxAlertDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LAST_OUTBOX_ALERT_DATE, "");
+    }
+
+    public static void setLastOutboxAlertDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LAST_OUTBOX_ALERT_DATE, date).apply();
     }
 
     public static String getDcrSequential(Context context) {

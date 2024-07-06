@@ -66,7 +66,7 @@ public class AdapterInputAdditionalCall extends RecyclerView.Adapter<AdapterInpu
         if (addedInpList.get(position).getInp_qty().isEmpty()) {
             holder.edt_inp_qty.setHint("0");
         }
-
+        holder.tv_select_input.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, addedInpList.get(position).getInput_name()));
 
         holder.edt_inp_qty.setOnTouchListener((v, event) -> {
             if (InputValidation.equalsIgnoreCase("1")) {

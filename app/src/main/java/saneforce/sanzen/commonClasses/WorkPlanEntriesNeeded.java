@@ -258,8 +258,8 @@ public class WorkPlanEntriesNeeded {
                 }
             }
 
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
-            for (String date : datesNeeded) {
+            TreeSet<String> datesNeededDup = new TreeSet<>(datesNeeded);
+            for (String date : datesNeededDup) {
                 String dayName = LocalDate.parse(date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)).getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
                 if(weeklyOffDays.contains(dayName)) {
                     datesNeeded.remove(date);

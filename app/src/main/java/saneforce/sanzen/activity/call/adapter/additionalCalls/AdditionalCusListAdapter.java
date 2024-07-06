@@ -31,6 +31,7 @@ import saneforce.sanzen.activity.call.adapter.additionalCalls.finalSavedAdapter.
 import saneforce.sanzen.activity.call.fragments.additionalCall.AdditionalCallFragment;
 import saneforce.sanzen.activity.call.pojo.additionalCalls.SaveAdditionalCall;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -93,7 +94,7 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
             holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
         }
 
-        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, checked_arrayList.get(position).getName()));
+        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, checked_arrayList.get(position).getName()));
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if (holder.checkBox.isPressed()) {
@@ -170,7 +171,7 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
+                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(HomeDashBoard.selectedDate.toString()) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
                             isVisitedToday = true;
                             break;
                         }

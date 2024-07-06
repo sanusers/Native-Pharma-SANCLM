@@ -87,7 +87,7 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
             holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
         }
 
-        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, checked_arrayList.get(position).getName()));
+        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, checked_arrayList.get(position).getName()));
 
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {

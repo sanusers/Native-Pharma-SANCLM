@@ -113,7 +113,7 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
         }*/
 
         holder.tv_name.setOnClickListener(view -> {
-            commonUtilsMethods.displayPopupWindow(activity, context, view, custListArrayList.get(position).getName());
+            commonUtilsMethods.displayPopupWindow(context, view, custListArrayList.get(position).getName());
         });
 
 

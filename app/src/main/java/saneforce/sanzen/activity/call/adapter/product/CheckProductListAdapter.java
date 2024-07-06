@@ -115,7 +115,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
         }
 
 
-        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, callCommonCheckedListArrayList.get(position).getName()));
+        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, callCommonCheckedListArrayList.get(position).getName()));
 
       /*  Queries    	  Qty	          Sample	          Sale	          Sale/Sample
         Selected	  Available	        ok	               ok	             ok

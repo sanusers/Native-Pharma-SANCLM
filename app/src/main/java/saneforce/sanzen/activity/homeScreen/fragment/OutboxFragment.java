@@ -7,7 +7,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -31,9 +30,11 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MultipartBody;
@@ -105,7 +106,7 @@ public class OutboxFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     public static void SetupOutBoxAdapter(Activity activity, Context context) {
-        listDates = callsUtil.getOutBoxDate();
+        listDates = callsUtil.getOutBoxDatesWithData();
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         OutboxFragment.context = context;
@@ -134,6 +135,8 @@ public class OutboxFragment extends Fragment {
 
         outBoxBinding.clearCalls.setOnClickListener(v1 -> {
             if(!listDates.isEmpty()) {
+                Set<String> dates = callsUtil.getOutboxDates();
+                String datesString = Arrays.toString(dates.toArray()).replace("[", "").replace("]", "").replaceAll(",", "\n-");
                 Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.dcr_cancel_alert);
                 dialog.setCancelable(false);
@@ -141,8 +144,9 @@ public class OutboxFragment extends Fragment {
                 dialog.show();
                 TextView btn_yes = dialog.findViewById(R.id.btn_yes);
                 TextView btn_no = dialog.findViewById(R.id.btn_no);
-                TextView title = dialog.findViewById(R.id.ed_alert_msg);
-                title.setText(R.string.are_you_sure_you_want_to_clear);
+                TextView message = dialog.findViewById(R.id.ed_alert_msg);
+                String content = "Available Outbox dates are :\n- " + datesString + "\n\n" + context.getString(R.string.are_you_sure_you_want_to_clear);
+                message.setText(content);
                 btn_yes.setOnClickListener(view12 -> {
                     clearCalls();
                     dialog.dismiss();

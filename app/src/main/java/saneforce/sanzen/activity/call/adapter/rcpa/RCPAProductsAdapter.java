@@ -43,7 +43,6 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
-import saneforce.sanzen.storage.SharedPref;
 
 public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapter.ViewHolder> {
     Context context;
@@ -89,7 +88,7 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
         holder.tv_value.setText(ProductList.get(position).getValue());
         holder.tv_total.setText(ProductList.get(position).getTotalPrdValue());
 
-        holder.prd_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, holder.prd_name.getText().toString()));
+        holder.prd_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, holder.prd_name.getText().toString()));
 
         if (CompList.size() > 0) {
             holder.constraint_comp_list.setVisibility(View.VISIBLE);

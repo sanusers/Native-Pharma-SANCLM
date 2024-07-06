@@ -172,9 +172,6 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         str2 = gpsTrack.getLongitude();
         add_crt = getAddress(str1, str2);
 
-
-
-
         String Dcr_list = masterDataDao.getDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
         String chm_list = masterDataDao.getDataByKey(Constants.CHEMIST + SharedPref.getHqCode(this));
         String str_list = masterDataDao.getDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(this));
@@ -260,7 +257,9 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
 
 
     public void DCR_VAlues(JSONArray jsonArray, String val) {
-        mMap.clear();
+        if(mMap != null) {
+            mMap.clear();
+        }
         listed_cust.clear();
         try {
             if (jsonArray.length() > 0) {
@@ -268,14 +267,14 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (Cust_type.equals(jsonObject.getString("Code"))) {
                         String latitude = "", longtitue = "", address = "";
-                        if (val.equals("1")) {
+                        if (val != null && val.equals("1")) {
                             latitude = (jsonObject.getString("Lat"));
                             longtitue = (jsonObject.getString("Long"));
                             address = (jsonObject.getString("Addrs"));
                         } else {
                             latitude = (jsonObject.getString("lat"));
                             longtitue = (jsonObject.getString("long"));
-                            if (val.equals("4")) {
+                            if (val != null && val.equals("4")) {
                                 address = (jsonObject.getString("addr"));
                             } else {
                                 address = (jsonObject.getString("addrs"));
@@ -370,7 +369,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         geocoder = new Geocoder(this, Locale.getDefault());
         try {
             addresses = geocoder.getFromLocation(la, ln, 1);
-            if (addresses.size() == 0) {
+            if (addresses == null || addresses.isEmpty()) {
 
             } else {
                 address = addresses.get(0).getAddressLine(0);
@@ -389,7 +388,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
 
     public void enableGPS() {
         final LocationManager manager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (isFineLocationPermissionGranted() && (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
+        if (manager != null && isFineLocationPermissionGranted() && (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
             showSettingsAlert(manager);
         } else if (!isFineLocationPermissionGranted()) {
         }
@@ -489,7 +488,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         dialog.setContentView(R.layout.res_imageview);
         ImageView popupImageView = dialog.findViewById(R.id.webview);
         if (val == 1) {
-            if (imge.equals("") || imge.contains("noimage") || imge.endsWith(".jpg")) {
+            if (imge == null || imge.isEmpty() || imge.contains("noimage") || imge.endsWith(".jpg")) {
             } else {
                 String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
                 String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());

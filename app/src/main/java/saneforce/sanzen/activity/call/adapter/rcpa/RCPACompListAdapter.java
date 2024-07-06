@@ -91,9 +91,9 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
         }
 
 
-        holder.tv_company.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, holder.tv_company.getText().toString()));
+        holder.tv_company.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, holder.tv_company.getText().toString()));
 
-        holder.tv_brand.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, holder.tv_brand.getText().toString()));
+        holder.tv_brand.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, holder.tv_brand.getText().toString()));
 
 
         holder.ed_qty.setKeyImeChangeListener((keyCode, event) -> {

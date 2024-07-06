@@ -159,6 +159,8 @@ public class DayReportDetailFragment extends Fragment {
         }.getType();
         dayReportModel = new Gson().fromJson(dataViewModel.getDetailedData().getValue(), type);
 
+        if(dayReportModel == null) return;
+
         ReportFragContainerActivity activity = (ReportFragContainerActivity) getActivity();
         String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, dayReportModel.getAdate());
         assert activity != null;

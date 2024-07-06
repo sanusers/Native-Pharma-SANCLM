@@ -45,7 +45,7 @@ public class AdapterNestedProduct extends RecyclerView.Adapter<AdapterNestedProd
         commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_sam_name.setText(nestedProduct.get(position).getPrd_name());
 
-        holder.tv_sam_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, nestedProduct.get(position).getPrd_name()));
+        holder.tv_sam_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, nestedProduct.get(position).getPrd_name()));
 
         boolean isSampleNeed = false;
         if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {

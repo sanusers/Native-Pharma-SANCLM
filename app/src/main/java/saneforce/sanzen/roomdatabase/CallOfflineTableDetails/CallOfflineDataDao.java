@@ -32,6 +32,9 @@ public interface CallOfflineDataDao {
     @Query("SELECT COUNT(1) > 0 FROM CALL_OFFLINE_TABLE")
     boolean isAvailableCall();
 
+    @Query("SELECT COUNT(1) > 0 FROM CALL_OFFLINE_TABLE WHERE `CALL_DATE` = :date")
+    boolean isAvailableCallOnDate(String date);
+
     @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_TABLE` WHERE `CALL_SYNC_STATUS` = :status)")
     boolean isAvailableCall(String status);
 
@@ -75,7 +78,6 @@ public interface CallOfflineDataDao {
         CallOfflineDataTable callOfflineDataTable = getCallOfflineData(cusCode, date);
         CallOfflineDataTable callOfflineDataTable1 = new CallOfflineDataTable(date, time, null, outTime, cusCode, cusName, cusType, values, 0, status);
         if(callOfflineDataTable != null){
-            callOfflineDataTable.setCallDate(date);
             callOfflineDataTable.setCallTime(time);
             callOfflineDataTable.setCallOutTime(outTime);
             callOfflineDataTable.setCallCustomerCode(cusCode);

@@ -79,7 +79,7 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
         holder.tv_input_stk.setText(saveCallInputLists.get(position).getBalance_inp_stk());
         holder.ed_inpQty.setText(saveCallInputLists.get(position).getInp_qty());
 
-        holder.tv_inp_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, saveCallInputLists.get(position).getInput_name()));
+        holder.tv_inp_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, saveCallInputLists.get(position).getInput_name()));
 
         holder.ed_inpQty.setOnTouchListener((v, event) -> {
             if (InputValidation.equalsIgnoreCase("1")) {

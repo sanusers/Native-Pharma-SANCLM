@@ -159,7 +159,7 @@ public class DCRCallActivity extends AppCompatActivity {
     Dialog dialogCheckOut;
     Button btnCheckOut;
     TextView tv_address, tv_dateTime;
-    String address, latEdit, lngEdit,VistTime;
+    String address, latEdit, lngEdit, VistTime, activityDate;
     int mBatteryPercent = 0;
 
     RoomDB roomDB;
@@ -395,8 +395,10 @@ public class DCRCallActivity extends AppCompatActivity {
 
                     if(isFromActivity.equalsIgnoreCase("new")) {
                         InsertVisitControl();
+                        callOfflineDataDao.saveOfflineCallOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
+                    }else if(isFromActivity.equalsIgnoreCase("edit_local")) {
+                        callOfflineDataDao.saveOfflineCallOut(activityDate, CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
                     }
-                    callOfflineDataDao.saveOfflineCallOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
 //                                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
 //                                    dialogCheckOut.show();
 //                                } else {
@@ -1535,6 +1537,7 @@ public class DCRCallActivity extends AppCompatActivity {
             JSONObject json = new JSONObject(jsonArray);
 
             VistTime = json.getString("vstTime");
+            activityDate = json.getString("ReqDt");
             int iEnd = json.getString("Entry_location").indexOf(":");
             if (iEnd != -1) {
                 latEdit = json.getString("Entry_location").substring(0, iEnd);
@@ -1545,6 +1548,8 @@ public class DCRCallActivity extends AppCompatActivity {
             Log.v("jsonExtractLocal", "----" + latEdit + "---" + lngEdit);
 
             //Remarks
+            JWOthersFragment.editRemarks = "";
+            JWOthersFragment.editPob = "";
             if (funStringValidation(json.getString("Remarks")))
                 JWOthersFragment.editRemarks = json.getString("Remarks");
 
@@ -1946,7 +1951,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 JWKCodeList.add(JWOthersFragment.callAddedJointList.get(i).getCode());
                 jsonArray.put(json_joint);
             }
-            Log.v("final_value_call", "---inputzise---"+ jsonArray.toString()                                                                                                          );
+            Log.v("final_value_call", "---inputzise---"+ jsonArray);
             jsonSaveDcr.put("JointWork", jsonArray);
             SharedPref.setJWKCODE(context, JWKCodeList, HomeDashBoard.selectedDate.toString());
 
@@ -2226,6 +2231,9 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             jsonSaveDcr.put("ModTime", CurrentDate + " " + CurrentTime);
             jsonSaveDcr.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
+            if(isFromActivity.equalsIgnoreCase("edit_local")) {
+                jsonSaveDcr.put("ReqDt", activityDate);
+            }
             jsonSaveDcr.put("day_flag", "0");
 
             if (isFromActivity.equalsIgnoreCase("new")) {
@@ -2251,7 +2259,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
             //EventCapture
             jsonArray = new JSONArray();
-            if (callCaptureImageLists.size() > 0) {
+            if (!callCaptureImageLists.isEmpty()) {
                 jsonImage = CommonUtilsMethods.CommonObjectParameter(DCRCallActivity.this);
                 try {
                     jsonImage.put("tableName", "uploadphoto");

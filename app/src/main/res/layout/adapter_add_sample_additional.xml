@@ -62,6 +62,7 @@
         android:imeOptions="actionDone"
         android:inputType="number"
         android:visibility="gone"
+        android:maxLength="4"
         android:paddingHorizontal="@dimen/_3sdp"
         android:paddingVertical="@dimen/_5sdp"
         android:textColor="@color/bg_txt_color"

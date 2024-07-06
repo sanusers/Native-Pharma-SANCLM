@@ -64,6 +64,7 @@ import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
+import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.CallTableDetails.CallTableDao;
 import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -83,6 +84,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
 
     MasterDataDao masterDataDao;
     private CallOfflineECDataDao callOfflineECDataDao;
+    private CallOfflineDataDao callOfflineDataDao;
     private CallTableDao callTableDao;
     private CallsUtil callsUtil;
 
@@ -95,6 +97,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         roomDB=RoomDB.getDatabase(context);
         masterDataDao=roomDB.masterDataDao();
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
+        callOfflineDataDao = roomDB.callOfflineDataDao();
         callTableDao = roomDB.callTableDao();
         callsUtil = new CallsUtil(context);
     }
@@ -235,6 +238,9 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                     }
                                 }
                             }
+                        }
+                        if(!callOfflineDataDao.isAvailableCallOnDate(outBoxCallLists.get(position).getDates())) {
+                            SharedPref.setLastCallDate(context, "");
                         }
                         removeAt(position);
                     });

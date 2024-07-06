@@ -105,7 +105,7 @@ public class CommonAlertBox {
         Button btn_yes = alertLayout.findViewById(R.id.btnYes);
         Button btn_no = alertLayout.findViewById(R.id.btnNo);
         TextView alerttext = alertLayout.findViewById(R.id.ed_alert_msg);
-        alerttext.setText(" Tour planning range has exceeded. Please prepare your tour plan....");
+        alerttext.setText(R.string.tp_alert_content);
         alert.setView(alertLayout);
         AlertDialog dialog = alert.create();
         dialog.show();
@@ -128,7 +128,7 @@ public class CommonAlertBox {
         Button btn_yes = alertLayout.findViewById(R.id.btnYes);
         Button btn_no = alertLayout.findViewById(R.id.btnNo);
         TextView alerttext = alertLayout.findViewById(R.id.ed_alert_msg);
-        alerttext.setText("Team approvals are still pending. Please clear all approvals...");
+        alerttext.setText(R.string.clear_all_approvals_content);
         alert.setView(alertLayout);
         AlertDialog dialog = alert.create();
         dialog.show();
@@ -155,27 +155,29 @@ public class CommonAlertBox {
                     mlocation = location;
                     if (location != null) {
                         Log.d("Location1233", location.getLatitude() + " : " + location.getLongitude());
-                    }
-                    try {
-                        boolean isMock = false;
-                        isMock = location.isFromMockProvider();
-                        if (isMock) {
-                            AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-                            alert.setCancelable(false);
-                            LayoutInflater inflater = activity.getLayoutInflater();
-                            View alertLayout = inflater.inflate(R.layout.fake_gps_alert_box, null);
-                            Button btnOk = alertLayout.findViewById(R.id.BtnClose);
-                            alert.setView(alertLayout);
-                            AlertDialog dialog = alert.create();
-                            dialog.show();
-                            btnOk.setOnClickListener(v -> {
-                                activity.finishAffinity();
-                                System.exit(0);
-                                dialog.dismiss();
-                            });
+                        try {
+                            boolean isMock = false;
+                            isMock = location.isFromMockProvider();
+                            if(isMock) {
+                                AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+                                alert.setCancelable(false);
+                                LayoutInflater inflater = activity.getLayoutInflater();
+                                View alertLayout = inflater.inflate(R.layout.fake_gps_alert_box, null);
+                                Button btnOk = alertLayout.findViewById(R.id.BtnClose);
+                                alert.setView(alertLayout);
+                                AlertDialog dialog = alert.create();
+                                dialog.show();
+                                btnOk.setOnClickListener(v -> {
+                                    activity.finishAffinity();
+                                    System.exit(0);
+                                    dialog.dismiss();
+                                });
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else {
+                        Log.e("Location CAB", "OnLocationReceived: Location null" );
                     }
                 }
             });
@@ -195,7 +197,7 @@ public class CommonAlertBox {
         btn_no.setVisibility(View.GONE);
         btn_yes.setText(activity.getResources().getString(R.string.continuee));
         TextView alertText = alertLayout.findViewById(R.id.ed_alert_msg);
-        alertText.setText("You have tried to change the permission, so we are blocking you to do further process. You will be redirected to home screen.\nPlease click CONTINUE to proceed further.");
+        alertText.setText(R.string.permission_change_content);
         alert.setView(alertLayout);
         AlertDialog dialog = alert.create();
         dialog.setCancelable(false);
@@ -206,7 +208,24 @@ public class CommonAlertBox {
             activity.finishAffinity();
             dialog.dismiss();
         });
-        btn_no.setOnClickListener(view -> {
+    }
+
+    public static void outboxDataAvailableAlert(Activity activity) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+        alert.setCancelable(false);
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.warning_alert, null);
+        Button btn_yes = alertLayout.findViewById(R.id.btnYes);
+        Button btn_no = alertLayout.findViewById(R.id.btnNo);
+        TextView alertText = alertLayout.findViewById(R.id.ed_alert_msg);
+        btn_no.setVisibility(View.GONE);
+        btn_yes.setText(activity.getResources().getString(R.string.continuee));
+        alertText.setText(R.string.outboxAlertContent);
+        alert.setView(alertLayout);
+        AlertDialog dialog = alert.create();
+        dialog.setCancelable(false);
+        dialog.show();
+        btn_yes.setOnClickListener(v -> {
             dialog.dismiss();
         });
     }

@@ -1052,14 +1052,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
 
-            String FW_Inticator ;
+            String FW_Indicator ;
             String Workname;
 
             if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F")) {
-                FW_Inticator = "F";
+                FW_Indicator = "F";
                 Workname="Field Work";
             } else {
-                FW_Inticator = mFwFlg1;
+                FW_Indicator = mFwFlg1;
                 Workname=mWTName1;
             }
 //month_name .Mnth  Yr
@@ -1071,9 +1071,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonObject.put("month_name", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_9,HomeDashBoard.selectedDate.toString()));
                 jsonObject.put("Mnth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_31,HomeDashBoard.selectedDate.toString()));
                 jsonObject.put("Yr", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_10,HomeDashBoard.selectedDate.toString()));
+                jsonObject.put("vtm", CommonUtilsMethods.getCurrentInstance("hh:mm aa"));
                 jsonObject.put("CustName", "");
                 jsonObject.put("town_code", "");
-                jsonObject.put("FW_Indicator", FW_Inticator);
+                jsonObject.put("FW_Indicator", FW_Indicator);
                 jsonObject.put("WorkType_Name", Workname);
                 jsonObject.put("town_name", "");
                 jsonObject.put("Dcr_flag", "0");
@@ -1401,18 +1402,33 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     }
                                 }
                                 if(!isCallSyncAvailable) {
+                                    
+                                    String FW_Indicator ;
+                                    String Workname;
+
+                                    if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F")) {
+                                        FW_Indicator = "F";
+                                        Workname="Field Work";
+                                    } else {
+                                        FW_Indicator = mFwFlg1;
+                                        Workname=mWTName1;
+                                    }
+                                    
                                     JSONObject jsonObject = new JSONObject();
                                     jsonObject.put("CustCode", "");
                                     jsonObject.put("CustType", "0");
                                     jsonObject.put("Dcr_dt", HomeDashBoard.selectedDate.toString());
-                                    jsonObject.put("month_name", "");
-                                    jsonObject.put("Mnth", "");
-                                    jsonObject.put("Yr", "");
+                                    jsonObject.put("month_name", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_9,HomeDashBoard.selectedDate.toString()));
+                                    jsonObject.put("Mnth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_31,HomeDashBoard.selectedDate.toString()));
+                                    jsonObject.put("Yr", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_10,HomeDashBoard.selectedDate.toString()));
+                                    jsonObject.put("vtm", CommonUtilsMethods.getCurrentInstance("hh:mm aa"));
+                                    jsonObject.put("FW_Indicator", FW_Indicator);
+                                    jsonObject.put("WorkType_Name", Workname);
                                     jsonObject.put("CustName", "");
                                     jsonObject.put("town_code", "");
                                     jsonObject.put("town_name", "");
                                     jsonObject.put("Dcr_flag", "");
-                                    jsonObject.put("SF_Code", "");
+                                    jsonObject.put("SF_Code", hqCode);
                                     jsonObject.put("Trans_SlNo", "");
                                     jsonObject.put("AMSLNo", "");
                                     jsonObject.put("day_status", "0");
@@ -2037,7 +2053,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         } else {
             updateLocalData();
-            offlineDaySubmitDao.insert(new OfflineDaySubmitDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), finalSubmitJSONObject.toString()));
+            if(offlineDaySubmitDao.getDaySubmit(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4))) != null) {
+                commonUtilsMethods.showToastMessage(context, "Already submitted Work Plan!");
+            }else {
+                offlineDaySubmitDao.insert(new OfflineDaySubmitDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), finalSubmitJSONObject.toString()));
+            }
             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.day_submit_saved_locally));
             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
             SharedPref.setCheckInTime(requireContext(), "");

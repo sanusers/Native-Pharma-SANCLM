@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +18,7 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -101,16 +103,31 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
 
         holder.img_del_img.setOnClickListener(v -> {
-            File fileDelete = new File(callCaptureImageList.getFilePath());
-            if (fileDelete.exists()) {
-                if (fileDelete.delete()) {
-                    System.out.println("file Deleted :" + callCaptureImageList.getFilePath());
-                } else {
-                    System.out.println("file not Deleted :" + callCaptureImageList.getFilePath());
+            Dialog dialog = new Dialog(context);
+            dialog.setContentView(R.layout.dcr_cancel_alert);
+            dialog.setCancelable(false);
+            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.show();
+            TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+            TextView btn_no = dialog.findViewById(R.id.btn_no);
+            TextView title = dialog.findViewById(R.id.ed_alert_msg);
+            title.setText(R.string.are_you_sure_to_delete);
+            btn_yes.setOnClickListener(view -> {
+                dialog.dismiss();
+                File fileDelete = new File(callCaptureImageList.getFilePath());
+                if(fileDelete.exists()) {
+                    if(fileDelete.delete()) {
+                        System.out.println("file Deleted :" + callCaptureImageList.getFilePath());
+                    }else {
+                        System.out.println("file not Deleted :" + callCaptureImageList.getFilePath());
+                    }
                 }
-            }
-            callOfflineECDataDao.deleteOfflineECImage(callCaptureImageList.getSystemImgName());
-            removeAt(holder.getBindingAdapterPosition());
+                callOfflineECDataDao.deleteOfflineECImage(callCaptureImageList.getSystemImgName());
+                removeAt(holder.getBindingAdapterPosition());
+            });
+            btn_no.setOnClickListener(view -> {
+                dialog.dismiss();
+            });
         });
 
 

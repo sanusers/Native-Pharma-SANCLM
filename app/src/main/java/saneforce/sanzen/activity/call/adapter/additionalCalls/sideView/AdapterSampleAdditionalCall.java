@@ -95,7 +95,7 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
         } else {
             holder.tv_sample_stock.setVisibility(View.GONE);
         }
-
+        holder.tv_select_sample.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, addedProductList.get(position).getPrd_name()));
 
         holder.edt_sam_qty.setOnTouchListener((v, event) -> {
             if (SampleValidation.equalsIgnoreCase("1")) {

@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">R.1.0</string>
+    <string name="app_version" translatable="false">R.1.1</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -447,4 +447,12 @@
     <string name="continuee">CONTINUE</string>
     <string name="head_quarters_syncing">Head Quarters Syncing...</string>
     <string name="date_summary">Date Summary</string>
+    <string name="check_for_update">Check For Update</string>
+    <string name="downloading_update">Downloading Update</string>
+    <string name="new_app_is_ready">Update Downloaded.\nNew app is ready to be installed!</string>
+    <string name="install">Install</string>
+    <string name="permission_change_content">You have tried to change the permission, so we are blocking you to do further process. You will be redirected to home screen.\nPlease click CONTINUE to proceed further.</string>
+    <string name="clear_all_approvals_content">Team approvals are still pending. Please clear all approvals...</string>
+    <string name="tp_alert_content">" Tour planning range has exceeded. Please prepare your tour plan...."</string>
+    <string name="outboxAlertContent">You are already having 3 or more day calls in the outbox. It is recommended to Sync Outbox</string>
 </resources>

@@ -177,7 +177,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                         }
                         AssignCountValues();
                     } catch (Exception e) {
-                        commonUtilsMethods.showToastMessage(ApprovalsActivity.this,getString(R.string.something_wrong));
+                        commonUtilsMethods.showToastMessage(ApprovalsActivity.this, getString(R.string.something_wrong));
                         Log.v("counts", "-error-" + e);
                     }
                 }
@@ -185,7 +185,7 @@ public class ApprovalsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                commonUtilsMethods.showToastMessage(getApplicationContext(),getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(ApprovalsActivity.this, getString(R.string.toast_response_failed));
                 progressDialog.dismiss();
             }
         });

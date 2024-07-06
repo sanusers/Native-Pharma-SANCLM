@@ -68,13 +68,18 @@ public class CallsUtil {
         return callOfflineDataDao.isAvailableCall(Constants.DUPLICATE_CALL) || callOfflineECDataDao.isAvailableEc() || offlineCheckInOutDataDao.isAvailableCheckInOut() || offlineDaySubmitDao.isAvailableDaySubmit() || callOfflineDataDao.isAvailableCall() || callOfflineWorkTypeDataDao.isAvailableWT();
     }
 
-    public ArrayList<GroupModelClass> getOutBoxDate() {
+    public Set<String> getOutboxDates() {
         Set<String> dates = new HashSet<>();
         dates.addAll(callOfflineDataDao.getAllCallOfflineDates());
         dates.addAll(callOfflineECDataDao.getAllCallOfflineECDates());
         dates.addAll(callOfflineWorkTypeDataDao.getAllCallOfflineWTDates());
         dates.addAll(offlineCheckInOutDataDao.getAllOfflineCheckInOutDates());
         dates.addAll(offlineDaySubmitDao.getAllOfflineDaySubmitDates());
+        return dates;
+    }
+
+    public ArrayList<GroupModelClass> getOutBoxDatesWithData() {
+        Set<String> dates = getOutboxDates();
         ArrayList<GroupModelClass> listData = new ArrayList<>();
         ArrayList<ChildListModelClass> groupNamesList;
         if (!dates.isEmpty()) {

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="@dimen/_5sdp">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:fontFamily="@font/satoshi_medium"
+        android:text="@string/downloading_update"
+        android:textColor="@color/black_45"
+        android:textSize="@dimen/_8ssp"
+        android:textStyle="bold" />
+
+    <ProgressBar
+        android:id="@+id/download_progress"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:max="100"
+        android:layout_below="@id/title"
+        android:progressTint="@color/Green_45" />
+
+    <TextView
+        android:id="@+id/txt_download_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/download_progress"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:fontFamily="@font/satoshi_medium"
+        tools:text="14.9 MB / 17.5 MB"
+        android:textColor="@color/gray_45"
+        android:textSize="@dimen/_6ssp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/progress_percentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/download_progress"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:fontFamily="@font/satoshi_medium"
+        tools:text="88 %"
+        android:textColor="@color/gray_45"
+        android:textSize="@dimen/_6ssp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

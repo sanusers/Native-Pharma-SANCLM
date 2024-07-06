@@ -233,7 +233,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
             }
         });
 
-        holder.tv_prd_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, productListArrayList.get(position).getName()));
+        holder.tv_prd_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, productListArrayList.get(position).getName()));
 
         holder.ed_samplesQty.setOnClickListener(view -> {
             if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale")) {

@@ -394,7 +394,7 @@ public class CommonUtilsMethods {
         }
     }
 
-    public void displayPopupWindow(Activity activity, Context context, View view, String name) {
+    public void displayPopupWindow(Context context, View view, String name) {
         PopupWindow popup = new PopupWindow(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.popup_text, null);

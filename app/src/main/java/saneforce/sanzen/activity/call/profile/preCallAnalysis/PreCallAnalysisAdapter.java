@@ -57,7 +57,7 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
                     holder.view_rx.setVisibility(View.GONE);
                 }
 
-                if (PreCallAnalysisFragment.RCPANeed.equalsIgnoreCase("0")) {
+                if (PreCallAnalysisFragment.PrdRCPANeed.equalsIgnoreCase("1")) {
                     holder.txt_rcpa.setVisibility(View.VISIBLE);
                     holder.view_rcpa.setVisibility(View.VISIBLE);
                 } else {
@@ -81,7 +81,7 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
                     holder.view_rx.setVisibility(View.GONE);
                 }
 
-                if (PreCallAnalysisFragment.RCPANeed.equalsIgnoreCase("0")) {
+                if (PreCallAnalysisFragment.PrdRCPANeed.equalsIgnoreCase("1")) {
                     holder.txt_rcpa.setVisibility(View.VISIBLE);
                     holder.view_rcpa.setVisibility(View.VISIBLE);
                 } else {
@@ -108,7 +108,7 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
                     holder.view_rx.setVisibility(View.GONE);
                 }
 
-                if (PreCallAnalysisFragment.RCPANeed.equalsIgnoreCase("0")) {
+                if (PreCallAnalysisFragment.PrdRCPANeed.equalsIgnoreCase("1")) {
                     holder.txt_rcpa.setVisibility(View.VISIBLE);
                     holder.view_rcpa.setVisibility(View.VISIBLE);
                 } else {

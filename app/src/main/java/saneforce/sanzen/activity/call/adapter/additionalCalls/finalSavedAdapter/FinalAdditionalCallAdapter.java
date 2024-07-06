@@ -192,7 +192,7 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
         }
 
 
-        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, saveAdditionalCalls.get(position).getName()));
+        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, saveAdditionalCalls.get(position).getName()));
 
 
         holder.img_del_add_call.setOnClickListener(view -> {

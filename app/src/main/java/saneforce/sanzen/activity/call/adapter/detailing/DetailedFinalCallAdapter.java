@@ -67,7 +67,7 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
         holder.tv_brand_name.setText(callDetailingLists.get(position).getBrandName());
         holder.tv_timeline.setText(callDetailingLists.get(position).getDuration());
         holder.ratingBar.setRating(Float.parseFloat(String.valueOf(callDetailingLists.get(position).getRating())));
-        holder.tv_brand_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, callDetailingLists.get(position).getBrandName()));
+        holder.tv_brand_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, callDetailingLists.get(position).getBrandName()));
 
         if (!callDetailingLists.get(position).getFeedback().isEmpty()) {
             holder.img_feedback.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.img_feedback_red));

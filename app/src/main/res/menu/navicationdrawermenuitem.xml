@@ -41,16 +41,24 @@
          android:id="@+id/form"
         android:icon="@drawable/form"
         android:title="@string/forms"/>
+
     <item
         android:id="@+id/remaindercall"
         android:icon="@drawable/profiling"
         android:title="@string/remainder_call" />
+
     <item
         android:id="@+id/faq"
         android:icon="@drawable/faq"
         android:title="@string/faq" />
+
     <item
         android:id="@+id/ClearSlide"
         android:icon="@drawable/img_clear"
         android:title="@string/clear_slides" />
+
+    <item
+        android:id="@+id/check_for_update"
+        android:icon="@drawable/refresh_icon"
+        android:title="@string/check_for_update" />
 </menu>

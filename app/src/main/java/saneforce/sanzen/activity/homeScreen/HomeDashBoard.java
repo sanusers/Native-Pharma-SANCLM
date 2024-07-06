@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -51,6 +52,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -64,11 +67,25 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.google.android.gms.tasks.OnCanceledListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallState;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
+import org.checkerframework.checker.units.qual.C;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -120,6 +137,7 @@ import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
+import saneforce.sanzen.commonClasses.InAppUpdate;
 import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityHomeDashBoardBinding;
@@ -128,6 +146,7 @@ import saneforce.sanzen.databinding.DialogTimezoneBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.activity.remaindercalls.RemaindercallsActivity;
+import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
@@ -193,8 +212,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     Runnable runnable;
     private static boolean isDateSelectionClicked = false;
     private LeaveViewModel leaveViewModel;
-    public    String isFrom="",SFTP_Date_sp="",SFTP_Date="";
-    public   int JoningDate,JoiningMonth, JoinYear;
+    public String isFrom="", SFTP_Date_sp="", SFTP_Date="";
+    public int JoningDate, JoiningMonth, JoinYear;
+    private InAppUpdate inAppUpdate;
+    private static CallsUtil callsUtil;
+    private static HomeDashBoard activity;
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -278,6 +301,28 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == InAppUpdate.updateRequestCode) {
+            if (resultCode != RESULT_OK) {
+                commonUtilsMethods.showToastMessage(this, "Update canceled !");
+                // Handle update failure or cancellation
+            }
+//            else {
+//                commonUtilsMethods.showToastMessage(this, "Updated");
+//            }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (inAppUpdate != null) {
+            inAppUpdate.stopUpdate();
+        }
+    }
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -288,6 +333,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
+        activity = this;
         if (savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
             if(savedInstanceState.getString("date") != null) {
                 binding.textDate.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_27, savedInstanceState.getString("date")));
@@ -321,6 +367,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         slidesDao=roomDB.slidesDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
         leaveViewModel = new LeaveViewModel(this);
+        callsUtil = new CallsUtil(this);
+        inAppUpdate = new InAppUpdate(this);
 
         tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
@@ -424,7 +472,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             @Override
             public void onDrawerOpened(@NonNull View drawerView) {
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
-                leaveViewModel.updateLeaveStatusMasterSync();
+//                leaveViewModel.updateLeaveStatusMasterSync();
             }
 
             @Override
@@ -1296,6 +1344,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
 
+        if(item.getTitle().toString().equalsIgnoreCase(getString(R.string.check_for_update))) {
+            inAppUpdate.doCheckAndUpdate();
+        }
+
         return true;
     }
 
@@ -1323,6 +1375,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(context, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
             @Override
             public void datesFound() {
+
+                if(callsUtil!= null && callsUtil.getOutboxDates().size() > 2 && !SharedPref.getLastOutboxAlertDate(context).equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_4))) {
+                    CommonAlertBox.outboxDataAvailableAlert(activity);
+                    SharedPref.setLastOutboxAlertDate(context, CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_4));
+                }
+
                 if (SequentialEntry != null && SequentialEntry.equalsIgnoreCase("0")) {
                     String dateRequired = SharedPref.getSelectedDateCal(context);
                     String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, dateRequired);
@@ -1385,6 +1443,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             case R.id.ll_next_month:
                 calendarDays.clear();
+                if(selectedDate == null) {
+                    selectedDate = LocalDate.now();
+                }
                 selectedDate = selectedDate.plusMonths(1);
                 validateMonth(selectedDate);
                 binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
@@ -1398,6 +1459,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             case R.id.ll_bfr_month:
                 calendarDays.clear();
+                if(selectedDate == null) {
+                    selectedDate = LocalDate.now();
+                }
                 selectedDate = selectedDate.minusMonths(1);
                 validateMonth(selectedDate);
                 binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
@@ -1551,6 +1615,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         setUpCalendar();
                     } catch (Exception ignored) {
 //                        progressDialog.dismiss();
+                        binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
                     }
                 }
             }
@@ -1559,6 +1624,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 //                progressDialog.dismiss();
                 commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.toast_response_failed));
+                binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -1757,13 +1823,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        JoningDate=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_7,SFTP_Date));
-        JoiningMonth=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_8,SFTP_Date));
-        JoinYear=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_10,SFTP_Date));
-
-
+        if(SFTP_Date != null && !SFTP_Date.isEmpty()) {
+            JoningDate = Integer.parseInt(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_7, SFTP_Date));
+            JoiningMonth = Integer.parseInt(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_8, SFTP_Date));
+            JoinYear = Integer.parseInt(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_10, SFTP_Date));
+        }
     }
 
     public void commonFun() {

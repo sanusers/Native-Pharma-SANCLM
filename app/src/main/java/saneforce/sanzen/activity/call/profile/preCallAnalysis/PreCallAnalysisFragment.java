@@ -3,7 +3,6 @@ package saneforce.sanzen.activity.call.profile.preCallAnalysis;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,7 +31,6 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.profile.CustomerProfile;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentPrecallAnalysisBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -43,7 +41,7 @@ public class PreCallAnalysisFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentPrecallAnalysisBinding preCallAnalysisBinding;
     public static ApiInterface apiInterface;
-    public static String PrdSamNeed, PrdRxNeed, RCPANeed, CallFeedbackNeed;
+    public static String PrdSamNeed, PrdRxNeed, PrdRCPANeed, CallFeedbackNeed;
     public static PreCallAnalysisAdapter adapter;
     public static ArrayList<PreCallAnalysisModelClass> ProductList = new ArrayList<>();
     static List<DCRLastVisitDetails> dcrLastVstDetails = new ArrayList<>();
@@ -222,7 +220,7 @@ public class PreCallAnalysisFragment extends Fragment {
                     preCallAnalysisBinding.rxCaption.setVisibility(View.GONE);
                     preCallAnalysisBinding.rxCaptionLine.setVisibility(View.GONE);
                 }
-                if (RCPANeed.equalsIgnoreCase("0")) {
+                if (PrdRCPANeed.equalsIgnoreCase("1")) {
                     preCallAnalysisBinding.rcpaCaption.setVisibility(View.VISIBLE);
                     preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.VISIBLE);
                 } else {
@@ -252,7 +250,7 @@ public class PreCallAnalysisFragment extends Fragment {
                     preCallAnalysisBinding.rxCaption.setVisibility(View.GONE);
                     preCallAnalysisBinding.rxCaptionLine.setVisibility(View.GONE);
                 }
-                if (RCPANeed.equalsIgnoreCase("0")) {
+                if (PrdRCPANeed.equalsIgnoreCase("1")) {
                     preCallAnalysisBinding.rcpaCaption.setVisibility(View.VISIBLE);
                     preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.VISIBLE);
                 } else {
@@ -292,8 +290,13 @@ public class PreCallAnalysisFragment extends Fragment {
                     preCallAnalysisBinding.tvTagFeedback.setVisibility(View.GONE);
                     preCallAnalysisBinding.tvFeedback.setVisibility(View.GONE);
                 }
-                preCallAnalysisBinding.rcpaCaption.setVisibility(View.GONE);
-                preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.GONE);
+                if (PrdRCPANeed.equalsIgnoreCase("1")) {
+                    preCallAnalysisBinding.rcpaCaption.setVisibility(View.VISIBLE);
+                    preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.VISIBLE);
+                } else {
+                    preCallAnalysisBinding.rcpaCaption.setVisibility(View.GONE);
+                    preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.GONE);
+                }
                 break;
         }
     }
@@ -323,7 +326,7 @@ public class PreCallAnalysisFragment extends Fragment {
             case "1":
                 PrdSamNeed = SharedPref.getDrSampNd(requireContext());
                 PrdRxNeed =  SharedPref.getDrRxNd(requireContext());
-                RCPANeed =  SharedPref.getRcpaNd(requireContext());
+                PrdRCPANeed =  SharedPref.getRcpaQtyNeed(requireContext());
                 CallFeedbackNeed = SharedPref.getDfNeed(requireContext());
                 if (SharedPref.getDocProductCaption(requireContext()).isEmpty() || SharedPref.getDocProductCaption(requireContext()).equalsIgnoreCase(null)){
                     preCallAnalysisBinding.prodCaption.setText("Product");
@@ -340,7 +343,7 @@ public class PreCallAnalysisFragment extends Fragment {
             case "2":
                 PrdSamNeed = SharedPref.getChmsamqtyNeed(requireContext());
                 PrdRxNeed = SharedPref.getChmRxQty(requireContext());;//1
-                RCPANeed = SharedPref.getChmRcpaNeed(requireContext());
+                PrdRCPANeed = SharedPref.getRcpaQtyNeed(requireContext());
                 CallFeedbackNeed = SharedPref.getCfNeed(requireContext());
                 if (SharedPref.getChmProductCaption(requireContext()).isEmpty() || SharedPref.getChmProductCaption(requireContext()).equalsIgnoreCase(null)){
                     preCallAnalysisBinding.prodCaption.setText("Product");
@@ -357,7 +360,7 @@ public class PreCallAnalysisFragment extends Fragment {
             case "3":
                 PrdSamNeed = "0";
                 PrdRxNeed = SharedPref.getStkPobNeed(requireContext());
-                RCPANeed = "0";
+                PrdRCPANeed = SharedPref.getRcpaQtyNeed(requireContext());
                 CallFeedbackNeed = SharedPref.getSfNeed(requireContext());
                 if (SharedPref.getStkProductCaption(requireContext()).isEmpty() || SharedPref.getStkProductCaption(requireContext()).equalsIgnoreCase(null)){
                     preCallAnalysisBinding.prodCaption.setText("Product");
@@ -374,7 +377,7 @@ public class PreCallAnalysisFragment extends Fragment {
             case "4":
                 PrdRxNeed = SharedPref.getUlPobNeed(requireContext());
                 PrdSamNeed = "0";
-                RCPANeed = "0";
+                PrdRCPANeed = SharedPref.getRcpaQtyNeed(requireContext());
                 CallFeedbackNeed = SharedPref.getNfNeed(requireContext());
                 if (SharedPref.getUlProductCaption(requireContext()).isEmpty() || SharedPref.getUlProductCaption(requireContext()).equalsIgnoreCase(null)){
                     preCallAnalysisBinding.prodCaption.setText("Product");
@@ -393,7 +396,7 @@ public class PreCallAnalysisFragment extends Fragment {
             case "6":
                 PrdSamNeed = "0";
                 PrdRxNeed = "0";
-                RCPANeed = "0";
+                PrdRCPANeed = "0";
                 CallFeedbackNeed = SharedPref.getHfNeed(requireContext());
                 break;
         }
