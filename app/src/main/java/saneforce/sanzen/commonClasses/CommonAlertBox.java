@@ -226,6 +226,7 @@ public class CommonAlertBox {
         dialog.setCancelable(false);
         dialog.show();
         btn_yes.setOnClickListener(v -> {
+            HomeDashBoard.binding.viewPager.setCurrentItem(2);
             dialog.dismiss();
         });
     }

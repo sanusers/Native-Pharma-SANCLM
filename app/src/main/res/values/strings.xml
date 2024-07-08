@@ -454,5 +454,6 @@
     <string name="permission_change_content">You have tried to change the permission, so we are blocking you to do further process. You will be redirected to home screen.\nPlease click CONTINUE to proceed further.</string>
     <string name="clear_all_approvals_content">Team approvals are still pending. Please clear all approvals...</string>
     <string name="tp_alert_content">" Tour planning range has exceeded. Please prepare your tour plan...."</string>
-    <string name="outboxAlertContent">You are already having 3 or more day calls in the outbox. It is recommended to Sync Outbox</string>
+    <string name="outboxAlertContent">You are already having 3 or more day calls in the Outbox.
+        It is recommended to Sync Outbox Calls</string>
 </resources>

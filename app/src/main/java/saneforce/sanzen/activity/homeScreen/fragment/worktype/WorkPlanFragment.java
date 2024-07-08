@@ -1724,12 +1724,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.txtCluster1.setText("");
                             binding.txtheadquaters1.setText("");
                             SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
+                            if(!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                                SharedPref.saveHq(requireContext(), mHQName1, mHQCode1);
+                            }else {
+                                SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
+                            }
                         }else if(TerritoryFlag1.equalsIgnoreCase("Y")) {
                             if(!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                                 binding.rlheadquates1.setVisibility(View.VISIBLE);
-//                                if(mFwFlg1.equalsIgnoreCase("F")) {
                                     SharedPref.saveHq(requireContext(), mHQName1, mHQCode1);
-//                                }
                             }else {
                                 binding.rlheadquates1.setVisibility(View.GONE);
                                 SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
@@ -1829,7 +1832,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 binding.txtWorktype2.setText(mWTName2);
                                 binding.txtCluster2.setText("");
                                 binding.txtheadquaters2.setText("");
-
+                                if(!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                                    SharedPref.saveHq(requireContext(), mHQName2, mHQCode2);
+                                }else {
+                                    SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
+                                }
                             }else if(TerritoryFlag2.equalsIgnoreCase("Y")) {
                                 if(!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                                     binding.rlheadquates2.setVisibility(View.VISIBLE);
