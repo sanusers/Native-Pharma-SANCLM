@@ -397,7 +397,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         InsertVisitControl();
                         callOfflineDataDao.saveOfflineCallOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
                     }else if(isFromActivity.equalsIgnoreCase("edit_local")) {
-                        callOfflineDataDao.saveOfflineCallOut(activityDate, CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
+                        callOfflineDataDao.saveOfflineCallOut(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_15, TimeUtils.FORMAT_4, activityDate), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
                     }
 //                                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
 //                                    dialogCheckOut.show();
