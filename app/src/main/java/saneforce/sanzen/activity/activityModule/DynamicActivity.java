@@ -223,7 +223,7 @@ public class DynamicActivity extends AppCompatActivity {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         String[] Activity_Desig = jsonObject.getString("Activity_Desig").split(",\\s*");
                                         List<String> DegList = Arrays.asList(Activity_Desig);
-                                        if (DegList.contains(SharedPref.getDesig(DynamicActivity.this))) {
+                                        if (DegList.contains(SharedPref.getDsName(DynamicActivity.this))) {
                                             binding.rlNoActivity.setVisibility(View.GONE);
                                             binding.llMainLayout.setVisibility(View.VISIBLE);
                                             binding.rlDetailsMain.setVisibility(View.VISIBLE);
