@@ -208,7 +208,7 @@ public class Leave_Application extends AppCompatActivity {
                 Toast.makeText(this, "Select To Date", Toast.LENGTH_SHORT).show();
             } else if (leavebinding.LeaveType.getText().toString().equals("")) {
                 Toast.makeText(this, "Select Leave Type", Toast.LENGTH_SHORT).show();
-            } else if (leavebinding.edReason.getText().toString().isEmpty()) {
+            } else if (leavebinding.edReason.getText().toString().isEmpty()||leavebinding.edReason.getText().toString().equalsIgnoreCase("")) {
                 Toast.makeText(this, "Enter  Reason for leave", Toast.LENGTH_SHORT).show();
             } else {
                 Submit();

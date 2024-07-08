@@ -99,7 +99,7 @@
             <RelativeLayout
                 android:id="@+id/rlheadquates"
                 android:visibility="visible"
-                android:layout_width="@dimen/_170sdp"
+                android:layout_width="@dimen/_250sdp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_6sdp"
                 android:layout_marginTop="@dimen/_6sdp"
