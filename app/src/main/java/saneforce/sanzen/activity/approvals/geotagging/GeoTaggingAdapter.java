@@ -103,7 +103,7 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
             intent.putExtra("from", "view_tag_approval");
             geoTagViewList.clear();
             geoTagViewList.add(new GeoTaggingModelList(geoTaggingModelLists.get(position).getName(), geoTaggingModelLists.get(position).getLatitude(), geoTaggingModelLists.get(position).getLongitude(), geoTaggingModelLists.get(position).getAddress()));
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+         //   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         });
         holder.btn_approved.setOnClickListener(v -> {
