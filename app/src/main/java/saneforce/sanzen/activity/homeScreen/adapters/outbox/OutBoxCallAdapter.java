@@ -69,6 +69,7 @@ import saneforce.sanzen.roomdatabase.CallTableDetails.CallTableDao;
 import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 
@@ -85,6 +86,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
     MasterDataDao masterDataDao;
     private CallOfflineECDataDao callOfflineECDataDao;
     private CallOfflineDataDao callOfflineDataDao;
+    private OfflineDaySubmitDao offlineDaySubmitDao;
     private CallTableDao callTableDao;
     private CallsUtil callsUtil;
 
@@ -98,6 +100,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         masterDataDao=roomDB.masterDataDao();
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
+        offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
         callTableDao = roomDB.callTableDao();
         callsUtil = new CallsUtil(context);
     }
@@ -151,7 +154,15 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
             final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
             popup.inflate(R.menu.call_menu);
             MenuItem editMenu = popup.getMenu().findItem(R.id.menuEdit);
+            MenuItem deleteMenu = popup.getMenu().findItem(R.id.menuDelete);
             editMenu.setVisible(!status.equalsIgnoreCase(Constants.DUPLICATE_CALL));
+            if(offlineDaySubmitDao.getDaySubmit(outBoxCallLists.get(position).getDates()) != null) {
+                editMenu.setVisible(false);
+                deleteMenu.setVisible(false);
+            } else {
+                editMenu.setVisible(true);
+                deleteMenu.setVisible(true);
+            }
             popup.setOnMenuItemClickListener(menuItem -> {
                 if (menuItem.getItemId() == R.id.menuSync) {
                     if (UtilityClass.isNetworkAvailable(context)) {

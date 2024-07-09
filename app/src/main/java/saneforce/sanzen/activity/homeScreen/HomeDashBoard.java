@@ -17,7 +17,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -52,8 +51,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -67,25 +64,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 
-import com.google.android.gms.tasks.OnCanceledListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
-import com.google.android.play.core.appupdate.AppUpdateManager;
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.install.InstallState;
-import com.google.android.play.core.install.InstallStateUpdatedListener;
-import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.InstallStatus;
-import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
-import org.checkerframework.checker.units.qual.C;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -204,7 +187,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private static FragmentManager fragmentManager;
     public static boolean canMoveNextDate = true;
 
-    public static String TourplanFlog ="";
+    public static String TourplanFlog ="", SFDCR_Date_sp ="", SFDCR_Date ="";
     AlertDialog customDialog;
     Handler mainHandler = new Handler(Looper.getMainLooper());
     Handler handler1 = new Handler();
@@ -212,8 +195,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     Runnable runnable;
     private static boolean isDateSelectionClicked = false;
     private LeaveViewModel leaveViewModel;
-    public String isFrom="", SFTP_Date_sp="", SFTP_Date="";
-    public int JoningDate, JoiningMonth, JoinYear;
+    public String isFrom="";
+    public static int JoiningDate, JoiningMonth, JoiningYear;
     private InAppUpdate inAppUpdate;
     private static CallsUtil callsUtil;
     private static HomeDashBoard activity;
@@ -1505,14 +1488,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
     private void validateMonth(LocalDate date) {
-        if(LocalDate.now().getDayOfMonth() == JoiningMonth && LocalDate.now().getYear()==JoinYear){
+        if(LocalDate.now().getMonth().getValue() == JoiningMonth && LocalDate.now().getYear() == JoiningYear){
             binding.viewCalerderLayout.llNextMonth.setVisibility(View.INVISIBLE);
             binding.viewCalerderLayout.llBfrMonth.setVisibility(View.INVISIBLE);
-        }else if(LocalDate.now().minusMonths(1).getDayOfMonth() == JoiningMonth && LocalDate.now().getYear()==JoinYear) {
+        }else if(LocalDate.now().minusMonths(1).getMonth().getValue() == JoiningMonth && LocalDate.now().minusMonths(1).getYear() == JoiningYear) {
             if (date.getMonth() == LocalDate.now().getMonth()) {
                 binding.viewCalerderLayout.llNextMonth.setVisibility(View.INVISIBLE);
                 binding.viewCalerderLayout.llBfrMonth.setVisibility(View.VISIBLE);
             } else if (date.getMonth() == LocalDate.now().minusMonths(1).getMonth()) {
+                binding.viewCalerderLayout.llNextMonth.setVisibility(View.VISIBLE);
+                binding.viewCalerderLayout.llBfrMonth.setVisibility(View.INVISIBLE);
+            } else {
                 binding.viewCalerderLayout.llNextMonth.setVisibility(View.VISIBLE);
                 binding.viewCalerderLayout.llBfrMonth.setVisibility(View.VISIBLE);
             }
@@ -1520,7 +1506,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             if(date.getMonth() == LocalDate.now().getMonth()){
                 binding.viewCalerderLayout.llNextMonth.setVisibility(View.INVISIBLE);
                 binding.viewCalerderLayout.llBfrMonth.setVisibility(View.VISIBLE);
-            }else if(date.getMonth()==LocalDate.now().minusMonths(1).getMonth()){
+            }else if(date.getMonth() == LocalDate.now().minusMonths(1).getMonth()){
                 binding.viewCalerderLayout.llNextMonth.setVisibility(View.VISIBLE);
                 binding.viewCalerderLayout.llBfrMonth.setVisibility(View.VISIBLE);
             }else {
@@ -1814,19 +1800,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (SharedPref.getGeotagNeedCip(this).equalsIgnoreCase("1"))
             binding.tvHdot.setVisibility(View.VISIBLE);
 
-
-
         try {
-            SFTP_Date_sp = SharedPref.getSftpDate(HomeDashBoard.this);
-            JSONObject obj = new JSONObject(SFTP_Date_sp);
-            SFTP_Date = obj.getString("date");
+            SFDCR_Date_sp = SharedPref.getSfDCRDate(HomeDashBoard.this);
+            JSONObject obj = new JSONObject(SFDCR_Date_sp);
+            SFDCR_Date = obj.getString("date");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(SFTP_Date != null && !SFTP_Date.isEmpty()) {
-            JoningDate = Integer.parseInt(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_7, SFTP_Date));
-            JoiningMonth = Integer.parseInt(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_8, SFTP_Date));
-            JoinYear = Integer.parseInt(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_10, SFTP_Date));
+        if(SFDCR_Date != null && !SFDCR_Date.isEmpty()) {
+            JoiningDate = Integer.parseInt(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_7, SFDCR_Date));
+            JoiningMonth = Integer.parseInt(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_8, SFDCR_Date));
+            JoiningYear = Integer.parseInt(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_10, SFDCR_Date));
         }
     }
 

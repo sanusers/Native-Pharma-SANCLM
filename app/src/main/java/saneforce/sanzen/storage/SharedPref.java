@@ -266,6 +266,7 @@ public class SharedPref {
     public static final String DIS_RAD = "DisRad";
     public static final String DEVICE_REG_ID = "DeviceRegId";
     public static final String SFTP_DATE = "SFTPDate";
+    public static final String SFDCR_DATE = "SFDCRDate";
     public static final String MCL_DET = "MCLDet";
     public static final String RMDR_NEED = "RmdrNeed";
     public static final String EXPENSE_NEED = "expense_need";
@@ -654,6 +655,7 @@ public class SharedPref {
         editor.putString(DIS_RAD, jsonObject.getString("DisRad"));
         editor.putString(DEVICE_REG_ID, jsonObject.getString("DeviceRegId"));
         editor.putString(SFTP_DATE, jsonObject.getString("SFTPDate"));
+        editor.putString(SFDCR_DATE, jsonObject.getString("SFDCRDate"));
         editor.putString(MCL_DET, jsonObject.getString("MCLDet"));
         editor.putString(RMDR_NEED, jsonObject.getString("RmdrNeed"));
         editor.putString(EXPENSE_NEED, jsonObject.getString("expense_need"));
@@ -1607,6 +1609,10 @@ public class SharedPref {
 
     public static String getSftpDate(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SFTP_DATE, "");
+    }
+
+    public static String getSfDCRDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SFDCR_DATE, "");
     }
 
     public static String getMclDet(Context context) {

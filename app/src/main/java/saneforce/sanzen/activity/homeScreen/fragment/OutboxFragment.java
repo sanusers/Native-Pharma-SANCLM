@@ -68,6 +68,7 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkCheckInterface;
 import saneforce.sanzen.utility.NetworkUtil;
+import saneforce.sanzen.utility.TimeUtils;
 
 
 public class OutboxFragment extends Fragment {
@@ -136,7 +137,11 @@ public class OutboxFragment extends Fragment {
         outBoxBinding.clearCalls.setOnClickListener(v1 -> {
             if(!listDates.isEmpty()) {
                 Set<String> dates = callsUtil.getOutboxDates();
-                String datesString = Arrays.toString(dates.toArray()).replace("[", "").replace("]", "").replaceAll(",", "\n-");
+                ArrayList<String> finalDates = new ArrayList<>();
+                for (String date : dates) {
+                    finalDates.add(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_17, date));
+                }
+                String datesString = Arrays.toString(finalDates.toArray()).replace("[", "").replace("]", "").replaceAll(",", "\n-");
                 Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.dcr_cancel_alert);
                 dialog.setCancelable(false);

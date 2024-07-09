@@ -31,6 +31,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -133,11 +134,15 @@ public class WorkPlanEntriesNeeded {
         String planningDate = "";
         TreeSet<String> pastDates = new TreeSet<>();
         isPlanningDateFound = false;
+
         try {
             LocalDate dateBefore;
             LocalDate currentDate = LocalDate.now().plusDays(1);
             LocalDate limitDate = LocalDate.now().minusDays(91);
             boolean isTodayPresent = false, isTodayNotFinished = false;
+            String SFDCR_Date_sp = SharedPref.getSfDCRDate(context);
+            JSONObject obj = new JSONObject(SFDCR_Date_sp);
+            String SFDCR_Date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_4, obj.getString("date"));
 
             if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
                 pastDates = getAllDatesForPastThreeMonths();
@@ -266,14 +271,27 @@ public class WorkPlanEntriesNeeded {
                 }
             }
 
+            if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+                pastDates.addAll(datesNeeded);
+                datesNeeded = pastDates;
+                Log.i("past dates", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(pastDates.toArray()));
+            }
+
+            datesNeededDup = new TreeSet<>(datesNeeded);
+            for (String dt : datesNeededDup) {
+                LocalDate date = LocalDate.parse(dt, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                LocalDate joiningDate = LocalDate.parse(SFDCR_Date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                if(date.isBefore(joiningDate)) {
+                    datesNeeded.remove(dt);
+                } else if(date.isEqual(joiningDate)) {
+                    break;
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
-            pastDates.addAll(datesNeeded);
-            datesNeeded = pastDates;
-            Log.i("past dates", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(pastDates.toArray()));
-        }
+
+
         String date = null;
         Log.i("TAG", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
         if(!SharedPref.getDayPlanStartedDate(context).isEmpty() && datesNeeded.contains(SharedPref.getDayPlanStartedDate(context)))  {
