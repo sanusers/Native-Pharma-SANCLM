@@ -405,7 +405,7 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         JSONObject responseObject = new JSONObject(jsonObject.toString());
                         if (responseObject.getBoolean("success")) {
-                            if (responseObject.getString("Android_Detailing").equals("1")) {
+//                            if (responseObject.getString("Android_Detailing").equals("1")) {
                                 Log.v("Android_Detailing", "--json-" + responseObject);
                                 appAccess = responseObject.getString("sanzen_edet");
                                 System.out.println("appAccess--->"+appAccess);
@@ -415,9 +415,9 @@ public class LoginActivity extends AppCompatActivity {
                                 }else{
                                     CommonUtilsMethods.accessDialogBox(LoginActivity.this);
                                 }
-                            } else {
-                                commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.access_denied));
-                            }
+//                            } else {
+//                                commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.access_denied));
+//                            }
                         } else {
                             if (responseObject.has("msg")) {
                                 commonUtilsMethods.showToastMessage(LoginActivity.this, responseObject.getString("msg"));
