@@ -296,43 +296,27 @@ public class WorkPlanEntriesNeeded {
         Log.i("TAG", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
         if(!SharedPref.getDayPlanStartedDate(context).isEmpty() && datesNeeded.contains(SharedPref.getDayPlanStartedDate(context)))  {
             Log.e("set date switched1 ", "setupMyDayPlanEntriesNeeded: " + SharedPref.getDayPlanStartedDate(context));
-//            SharedPref.setSelectedDateCal(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, SharedPref.getDayPlanStartedDate(context)));
-//            syncTaskStatus.datesFound();
             date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, SharedPref.getDayPlanStartedDate(context));
         }
         else if(!SharedPref.getSelectedDateCal(context).isEmpty() && datesNeeded.contains(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)))) {
             Log.e("set date switched2 ", "setupMyDayPlanEntriesNeeded: " + SharedPref.getSelectedDateCal(context));
-//            syncTaskStatus.datesFound();
             date = SharedPref.getSelectedDateCal(context);
         }
         else if(SharedPref.getSelectedDateCal(context).isEmpty() && !datesNeeded.isEmpty() && isCallDataAvailable){
-//            SharedPref.setSelectedDateCal(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, datesNeeded.first()));
             Log.e("set date first", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
-//            syncTaskStatus.datesFound();
             date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, datesNeeded.first());
         }
         else if(SharedPref.getSelectedDateCal(context).isEmpty() && !datesNeeded.isEmpty() && !isCallDataAvailable){
             Log.e("not set date first", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
-//            syncTaskStatus.noDatesFound();
         }
         else if(dates.containsKey(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)) && Objects.requireNonNull(dates.get(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))).equalsIgnoreCase("01") && datesNeeded.isEmpty()) {
-//            SharedPref.setSelectedDateCal(context, "");
             Log.e("set date today finished", "setupMyDayPlanEntriesNeeded: dates empty");
-//            syncTaskStatus.noDatesFound();
         }
         else if(!datesNeeded.isEmpty()) {
-//            if(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_34).equalsIgnoreCase(SharedPref.getSelectedDateCal(context))) {
-//                new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.not_chose_after_date));
-//                Log.e("TAG", "setupMyDayPlanEntriesNeeded: today" );
-//            }
-//            SharedPref.setSelectedDateCal(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, datesNeeded.first()));
             Log.e("set date", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
-//            syncTaskStatus.datesFound();
             date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, datesNeeded.first());
         }else {
-//            SharedPref.setSelectedDateCal(context, "");
             Log.e("set date empty", "setupMyDayPlanEntriesNeeded: dates empty");
-//            syncTaskStatus.noDatesFound();
         }
 
         if(isPlanningDateFound) {

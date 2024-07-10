@@ -101,7 +101,7 @@ public class MyResource_Activity extends AppCompatActivity {
             getOnBackPressedDispatcher().onBackPressed();
         });
         Log.d("div_name", SharedPref.getDesigCode(this) + "--" + SharedPref.getDesig(this));
-        if (!SharedPref.getDesig(this).equals("MR")) {
+        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
             binding.hqView.setVisibility(View.VISIBLE);
             binding.hqHead.setText(SharedPref.getHqName(MyResource_Activity.this));
         }
@@ -321,7 +321,7 @@ public class MyResource_Activity extends AppCompatActivity {
             if (isLeaveEntitlementRequested) {
                 listed_data.add(new Resourcemodel_class("LeaveStatus", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length()), "13"));
             }
-            if (SharedPref.getVstNd(getApplicationContext()).equalsIgnoreCase("0") && SharedPref.getDesig(getApplicationContext()).equalsIgnoreCase("MR")) {
+            if (SharedPref.getVstNd(getApplicationContext()).equalsIgnoreCase("0") && SharedPref.getSfType(this).equalsIgnoreCase("1")) {
 //                listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
                 listed_data.add(new Resourcemodel_class(dcrCaption + " " + "Visit", "", "14"));
             }

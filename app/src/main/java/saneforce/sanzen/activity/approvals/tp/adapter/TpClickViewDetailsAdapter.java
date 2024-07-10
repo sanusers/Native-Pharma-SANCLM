@@ -115,7 +115,7 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
             }
 
 
-            if (!SharedPref.getDesig(context).equalsIgnoreCase("MR")) {
+            if (SharedPref.getSfType(context).equalsIgnoreCase("2")) {
                 if (!tpDetailedModels.get(position).getHqName().isEmpty()) {
                     holder.constraint_hq.setVisibility(View.VISIBLE);
                     holder.tv_hq.setText(tpDetailedModels.get(position).getHqName());

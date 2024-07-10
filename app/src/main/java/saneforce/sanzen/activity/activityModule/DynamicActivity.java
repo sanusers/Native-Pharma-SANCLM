@@ -170,7 +170,7 @@ public class DynamicActivity extends AppCompatActivity {
         binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
 
-        if (!SharedPref.getDesig(this).equalsIgnoreCase("MR")) {
+        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
             binding.rlheadquates.setVisibility(View.VISIBLE);
         } else {
             binding.rlheadquates.setVisibility(View.GONE);
@@ -2021,23 +2021,25 @@ public class DynamicActivity extends AppCompatActivity {
         LabelText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LocationManager  locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    if(!CheckLocPermission()){
+                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    if(!CheckLocPermission()) {
                         RequestLocationPermission();
                     }else {
                         commonUtilsMethods.showToastMessage(DynamicActivity.this, "Wait For Location");
                         String address;
                         double latitude = gpsTrack.getLatitude();
                         double longitude = gpsTrack.getLongitude();
-                            address = CommonUtilsMethods.gettingAddress(DynamicActivity.this, latitude, longitude, false);
+                        address = CommonUtilsMethods.gettingAddress(DynamicActivity.this, latitude, longitude, false);
 
-                        ActivityViewItem.get(k).setAnswerTxt("Lat  :" + latitude + " " + "Long  :" + longitude);
-                        ActivityViewItem.get(k).setAnswerTxt2(address);
+                        if(ActivityViewItem != null && ActivityViewItem.size() > k) {
+                            ActivityViewItem.get(k).setAnswerTxt("Lat  :" + latitude + " " + "Long  :" + longitude);
+                            ActivityViewItem.get(k).setAnswerTxt2(address);
+                        }
                         LatText.setText("Lat  :" + String.valueOf(latitude));
                         LongText.setText("Long  :" + String.valueOf(longitude));
                     }
-                } else {
+                }else {
                     CommonUtilsMethods.RequestGPSPermission(DynamicActivity.this);
                 }
 

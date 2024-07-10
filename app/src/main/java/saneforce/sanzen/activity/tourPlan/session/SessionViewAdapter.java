@@ -61,7 +61,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
 
        if (holder.data.getHQ().getName().equals("")){
            holder.hqLayout.setVisibility(View.GONE);
-       }else if(SharedPref.getDesig(context).equalsIgnoreCase("MR")){
+       }else if(SharedPref.getSfType(context).equalsIgnoreCase("1")){
            holder.hqLayout.setVisibility(View.GONE);
        } else{
            holder.hqTV.setText(holder.data.getHQ().getName());

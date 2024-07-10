@@ -92,7 +92,7 @@ public class RemaindercallsActivity extends AppCompatActivity {
 
 
             remcallbinding.townname.setOnClickListener(v -> {
-                if (!SharedPref.getDesig(this).equals("MR")) {
+                if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
                     show_hq();
                     remcallbinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
                 }

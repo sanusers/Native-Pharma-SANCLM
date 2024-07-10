@@ -2257,10 +2257,10 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SKIP_CHECK_IN, false);
     }
 
-    public static void setSelectedDateCal(Context context, String status) {
+    public static void setSelectedDateCal(Context context, String date) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(SELECTED_DATE_CAL, status).apply();
+        editor.putString(SELECTED_DATE_CAL, date).apply();
     }
 
     public static String getSelectedDateCal(Context context) {

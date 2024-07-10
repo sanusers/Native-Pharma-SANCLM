@@ -32,6 +32,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -43,6 +44,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.adapters.outbox.OutBoxHeaderAdapter;
 import saneforce.sanzen.activity.homeScreen.modelClass.CheckInOutModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.DaySubmitModelClass;
@@ -84,7 +86,7 @@ public class OutboxFragment extends Fragment {
     CommonUtilsMethods commonUtilsMethods;
     private static Context context;
     private RoomDB db;
-    private MasterDataDao masterDataDao;
+    private static MasterDataDao masterDataDao;
     private OfflineCheckInOutDataDao offlineCheckInOutDataDao;
     private CallOfflineECDataDao callOfflineECDataDao;
     private CallOfflineWorkTypeDataDao offlineWorkTypeDataDao;
@@ -114,7 +116,9 @@ public class OutboxFragment extends Fragment {
         outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
         outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
         notifyedmethod();
-
+//        if(callsUtil.getOutboxDates().isEmpty()) {
+//            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC_DUP, "[]", 0));
+//        }
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -134,7 +138,7 @@ public class OutboxFragment extends Fragment {
 
         new Handler().postDelayed(this::refreshPendingFunction, 200);
 
-        outBoxBinding.clearCalls.setOnClickListener(v1 -> {
+        outBoxBinding.clearAll.setOnClickListener(v1 -> {
             if(!listDates.isEmpty()) {
                 Set<String> dates = callsUtil.getOutboxDates();
                 ArrayList<String> finalDates = new ArrayList<>();
@@ -153,7 +157,9 @@ public class OutboxFragment extends Fragment {
                 String content = "Available Outbox dates are :\n- " + datesString + "\n\n" + context.getString(R.string.are_you_sure_you_want_to_clear);
                 message.setText(content);
                 btn_yes.setOnClickListener(view12 -> {
+                    addDateSyncDataBack(dates);
                     clearCalls();
+                    HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
                     dialog.dismiss();
                 });
                 btn_no.setOnClickListener(view12 -> {
@@ -165,15 +171,50 @@ public class OutboxFragment extends Fragment {
         return v;
     }
 
+    private void addDateSyncDataBack(Set<String> outboxDates) {
+        try {
+            JSONArray dateSyncArray = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
+            JSONArray dateSyncDupArray = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC_DUP).getMasterSyncDataJsonArray();
+            Set<JSONObject> dateSyncObjects = new HashSet<>();
+
+            for (int index = 0; index< dateSyncDupArray.length(); index++) {
+                JSONObject jsonObject = dateSyncDupArray.getJSONObject(index);
+                String date = jsonObject.getJSONObject("dt").getString("date").substring(0, 10);
+                if(outboxDates.contains(date)) {
+                    dateSyncObjects.add(jsonObject);
+                }
+            }
+
+            for (int i = 0; i<dateSyncArray.length(); i++) {
+                dateSyncObjects.add(dateSyncArray.getJSONObject(i));
+            }
+
+            dateSyncArray = new JSONArray();
+            for (JSONObject jsonObject : dateSyncObjects) {
+                dateSyncArray.put(jsonObject);
+            }
+
+            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, dateSyncArray.toString(), 0));
+        } catch (Exception e) {
+            Log.e("Outbox clear calls", "addDateSyncDataBack: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     private void clearCalls() {
         ArrayList<OutBoxCallList> outBoxCallLists = callsUtil.getAllOutBoxCallsList();
+        Set<String> dates = callsUtil.getOutboxDates();
         try {
+            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 0));
             if (!outBoxCallLists.isEmpty()) {
                 JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     for (int j = 0; j < outBoxCallLists.size(); j++) {
-                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(j).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(outBoxCallLists.get(j).getCusCode())) {
+                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(j).getDates()) && (jsonObject.getString("CustCode").equalsIgnoreCase(outBoxCallLists.get(j).getCusCode()) || jsonObject.getString("CustCode").isEmpty())) {
+                            jsonArray.remove(i);
+                            i--;
+                        } else if(dates.contains(jsonObject.getString("Dcr_dt")) && jsonObject.getString("CustCode").isEmpty()) {
                             jsonArray.remove(i);
                             i--;
                         }
@@ -202,6 +243,8 @@ public class OutboxFragment extends Fragment {
                 SharedPref.setCheckDateTodayPlan(requireContext(), "");
             }
         }
+        SharedPref.setSelectedDateCal(requireContext(), "");
+        SharedPref.setDayPlanStartedDate(requireContext(), "");
         callsUtil.deleteOfflineCalls();
         listDates.clear();
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(requireActivity(), requireContext(), listDates);

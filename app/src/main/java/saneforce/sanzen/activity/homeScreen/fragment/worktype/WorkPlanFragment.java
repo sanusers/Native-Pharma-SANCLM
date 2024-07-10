@@ -186,7 +186,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
         api_interface = RetrofitClient.getRetrofit(getContext(), SharedPref.getCallApiUrl(requireContext()));
 
-        if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
             binding.rlheadquates1.setVisibility(View.VISIBLE);
             binding.rlheadquates2.setVisibility(View.VISIBLE);
         } else {
@@ -276,7 +276,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         IsFeildWorkFlag = "F1";
                         NeedClusterFlag1 = true;
                         rlculster.setVisibility(View.VISIBLE);
-                        if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                             rlHQ.setVisibility(View.VISIBLE);
                         }
                     } else {
@@ -298,7 +298,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         NeedClusterFlag2 = true;
                         IsFeildWorkFlag = "F2";
                         rlculster.setVisibility(View.VISIBLE);
-                        if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                             rlHQ.setVisibility(View.VISIBLE);
                         }
                     } else {
@@ -536,7 +536,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 if (object.getString("FWFlg").equalsIgnoreCase("L")) {
                     continue;
                 }
-                if (SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
                     if (DayPlanCount.equalsIgnoreCase("1")) {
                         if (!(mWTCode2).equalsIgnoreCase(object.getString("Code"))) {
                             workType_list1.add(object);
@@ -582,7 +582,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                cluster.add(Object1);
 //            }
 
-            if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+            if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                 JSONArray workTypeArray3 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                 for (int i = 0; i < workTypeArray3.length(); i++) {
                     JSONObject jsonObject = workTypeArray3.getJSONObject(i);
@@ -646,9 +646,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     break;
 
                 case R.id.rlcluster1:
-                    if(binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                    if(binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
-                    }else if(SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                    }else if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
                         if(binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
                         }else {
@@ -666,9 +666,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 case R.id.rlcluster2:
 
-                    if(binding.txtheadquaters2.getText().toString().equalsIgnoreCase("") && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                    if(binding.txtheadquaters2.getText().toString().equalsIgnoreCase("") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
-                    }else if(SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                    }else if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
                         if(binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
                         }else {
@@ -697,7 +697,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     break;
                 case R.id.txtSave:
 
-                    if(SharedPref.getApprovalManatoryStatus(requireContext())&&!SharedPref.getDesig(requireActivity()).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
+                    if(SharedPref.getApprovalManatoryStatus(requireContext())&& SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
                         CommonAlertBox.ApprovalAlert(requireActivity());
                     }else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                         CommonAlertBox.TpAlert(requireActivity());
@@ -732,7 +732,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     break;
 
                 case R.id.btnsumit:
-                    if(SharedPref.getApprovalManatoryStatus(requireContext())&&!SharedPref.getDesig(requireActivity()).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
+                    if(SharedPref.getApprovalManatoryStatus(requireContext())&& SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
                         CommonAlertBox.ApprovalAlert(requireActivity());
                     }else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                         CommonAlertBox.TpAlert(requireActivity());
@@ -817,7 +817,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private void saveMyDayPlan() {
         if (DayPlanCount.equalsIgnoreCase("1")) {
             if (NeedClusterFlag1) {
-                if (binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                if (binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
                 } else if (binding.txtCluster1.getText().toString().equalsIgnoreCase("")) {
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_cluster));
@@ -873,7 +873,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         } else {
             if (NeedClusterFlag1) {
-                if (binding.txtheadquaters2.getText().toString().equalsIgnoreCase("") && !SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                if (binding.txtheadquaters2.getText().toString().equalsIgnoreCase("") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
                 } else if (binding.txtCluster2.getText().toString().equalsIgnoreCase("")) {
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_cluster));
@@ -942,7 +942,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             if (isWhich.equalsIgnoreCase("1")) {
                 callOfflineWorkTypeDataDao.insert(new CallOfflineWorkTypeDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), mWTName1, mWTCode1, jsonObject.toString(), "", 0));
-                if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                     SharedPref.saveHq(requireContext(), mHQName1, mHQCode1);
                 } else {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()),  SharedPref.getSfCode(requireContext()));
@@ -957,7 +957,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             } else {
                 callOfflineWorkTypeDataDao.insert(new CallOfflineWorkTypeDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), mWTName2, mWTCode2, jsonObject.toString(), "", 0));
                 OutboxFragment.SetupOutBoxAdapter(requireActivity(), requireContext());
-                if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                     SharedPref.saveHq(requireContext(), mHQName2, mHQCode2);
                 } else {
                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()),  SharedPref.getSfCode(requireContext()));
@@ -1122,7 +1122,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("tableName", "dayplan");
             jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
             jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
-            if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+            if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                 jsonObject.put("Rsf", mHQCode1);
                 jsonObject.put("Rsf2", mHQCode2);
             } else {
@@ -1339,7 +1339,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                         HomeDashBoard.binding.viewPager.setCurrentItem(1);
                                 }
                                 commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
-                                if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                                     SharedPref.saveHq(requireContext(), mHQName, mHQCode);
                                 } else {
                                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()),  SharedPref.getSfCode(requireContext()));
@@ -1724,13 +1724,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.txtCluster1.setText("");
                             binding.txtheadquaters1.setText("");
                             SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
-                            if(!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                            if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                                 SharedPref.saveHq(requireContext(), mHQName1, mHQCode1);
                             }else {
                                 SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                             }
                         }else if(TerritoryFlag1.equalsIgnoreCase("Y")) {
-                            if(!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                            if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                                 binding.rlheadquates1.setVisibility(View.VISIBLE);
                                     SharedPref.saveHq(requireContext(), mHQName1, mHQCode1);
                             }else {
@@ -1832,13 +1832,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 binding.txtWorktype2.setText(mWTName2);
                                 binding.txtCluster2.setText("");
                                 binding.txtheadquaters2.setText("");
-                                if(!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                                if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                                     SharedPref.saveHq(requireContext(), mHQName2, mHQCode2);
                                 }else {
                                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                                 }
                             }else if(TerritoryFlag2.equalsIgnoreCase("Y")) {
-                                if(!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                                if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                                     binding.rlheadquates2.setVisibility(View.VISIBLE);
                                     if(mFwFlg2.equalsIgnoreCase("F")) {
                                         SharedPref.saveHq(requireContext(), mHQName2, mHQCode2);
@@ -1907,7 +1907,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 DayPlanCount = "1";
 //                    HomeDashBoard.binding.textDate.setText("");
 //                    SharedPref.setSelectedDateCal(requireContext(), "");
-                if(!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
+                if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                     SharedPref.saveHq(requireContext(), SharedPref.getHqName(requireContext()), "");
                     SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
                 }else {

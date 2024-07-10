@@ -110,14 +110,14 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
             if (UtilityClass.isNetworkAvailable(context)){
                 CallApi("0", geoTaggingModelLists.get(position).getMapId(), geoTaggingModelLists.get(position).getCust_mode(), geoTaggingModelLists.get(position).getCode(), geoTaggingModelLists.get(position).getHqCode(), holder.getBindingAdapterPosition(),holder);
             }else {
-                Toast.makeText(context,"Please check a Internet connection",Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_check_your_internet_connection));
             }
         });
         holder.btn_rejected.setOnClickListener(v -> {
             if (UtilityClass.isNetworkAvailable(context)) {
                 CallApi("2", geoTaggingModelLists.get(position).getMapId(), geoTaggingModelLists.get(position).getCust_mode(), geoTaggingModelLists.get(position).getCode(), geoTaggingModelLists.get(position).getHqCode(), holder.getBindingAdapterPosition(), holder);
             }else {
-                Toast.makeText(context,"Please check a Internet connection",Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_check_your_internet_connection));
             }
         });
 

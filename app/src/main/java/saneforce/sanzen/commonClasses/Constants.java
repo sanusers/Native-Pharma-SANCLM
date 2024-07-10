@@ -38,6 +38,7 @@ public class Constants {
     public static final String VISIT_CONTROL = "Visit Control";
     public static final String MISSED_DATE = "Missed Date";
     public static final String DATE_SYNC = "Date Sync";
+    public static final String DATE_SYNC_DUP = "Date Sync Dup";
     public static final String STOCK_BALANCE_MASTER = "Stock_Balance_Master";
     public static final String STOCK_BALANCE = "Stock Balance";
     public static final String INPUT_BALANCE = "Input Balance";

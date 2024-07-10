@@ -331,7 +331,7 @@ public class Leave_Application extends AppCompatActivity {
                     }
                     leavebinding.leaveSide.closeDrawer(Gravity.END);
                 } else {
-                    commonUtilsMethods.showToastMessage(this, "Please Check Your Internet Connection");
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.please_check_your_internet_connection));
                 }
             });
 

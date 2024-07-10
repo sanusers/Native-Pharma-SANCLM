@@ -14,6 +14,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -36,9 +37,11 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
+import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
 
@@ -48,19 +51,19 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
-    private RoomDB roomDB;
-    private CallOfflineECDataDao callOfflineECDataDao;
-    private CallOfflineDataDao callOfflineDataDao;
-
+    private final CallOfflineECDataDao callOfflineECDataDao;
+    private final CallOfflineDataDao callOfflineDataDao;
+    private final OfflineDaySubmitDao offlineDaySubmitDao;
 
     public OutBoxECAdapter(Activity activity, Context context, ArrayList<EcModelClass> ecModelClasses) {
         this.activity = activity;
         this.context = context;
         this.ecModelClasses = ecModelClasses;
         commonUtilsMethods = new CommonUtilsMethods(context);
-        roomDB = RoomDB.getDatabase(context);
+        RoomDB roomDB = RoomDB.getDatabase(context);
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
+        offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
     }
 
     @NonNull
@@ -92,6 +95,12 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
             final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
             popup.inflate(R.menu.ec_call_menu);
+            MenuItem deleteMenu = popup.getMenu().findItem(R.id.menuDelete);
+            if(offlineDaySubmitDao.getDaySubmit(ecModelClasses.get(position).getDates()) != null) {
+                deleteMenu.setVisible(false);
+            } else {
+                deleteMenu.setVisible(true);
+            }
             popup.setOnMenuItemClickListener(menuItem -> {
                 if (menuItem.getItemId() == R.id.menuSync) {
                     CallImageApi();

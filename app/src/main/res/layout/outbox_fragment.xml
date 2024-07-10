@@ -35,13 +35,13 @@
 
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/clear_calls"
+                android:id="@+id/clear_all"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_23sdp"
                 android:layout_marginTop="@dimen/_4sdp"
                 android:layout_marginBottom="@dimen/_4sdp"
                 android:background="@drawable/edittext_stroke"
-                android:text="Clear Calls"
+                android:text="@string/clear_all"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_7sdp"

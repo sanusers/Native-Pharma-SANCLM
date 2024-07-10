@@ -256,7 +256,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         CommonAlertBox.CheckLocationStatus(HomeDashBoard.this);
-        if(!SharedPref.getDesig(HomeDashBoard.this).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0")){
+        if(SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2")&& SharedPref.getApprMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0")){
             CheckingManatoryApprovals();
         }
         CheckedTpRange();
@@ -1568,51 +1568,57 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
     private void callAPIDateSync() {
+        if(UtilityClass.isNetworkAvailable(this)) {
 //        progressDialog = CommonUtilsMethods.createProgressDialog(this);
-        JSONObject jj = CommonUtilsMethods.CommonObjectParameter(this);
-        try {
-            jj.put("tableName", "getdcrdate");
-            jj.put("sfcode", SharedPref.getSfCode(this));
-            jj.put("division_code", SharedPref.getDivisionCode(this));
-            jj.put("Rsf", SharedPref.getHqCode(this));
-            Log.d("object", jj.toString());
-        } catch (Exception ignored) {
-        }
+            JSONObject jj = CommonUtilsMethods.CommonObjectParameter(this);
+            try {
+                jj.put("tableName", "getdcrdate");
+                jj.put("sfcode", SharedPref.getSfCode(this));
+                jj.put("division_code", SharedPref.getDivisionCode(this));
+                jj.put("Rsf", SharedPref.getHqCode(this));
+                Log.d("object", jj.toString());
+            } catch (Exception ignored) {
+            }
 
-        Map<String, String> mapString = new HashMap<>();
-        mapString.put("axn", "home");
-        Call<JsonElement> callSyncDate = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jj.toString());
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "home");
+            Call<JsonElement> callSyncDate = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jj.toString());
 
-        callSyncDate.enqueue(new Callback<JsonElement>() {
-            @Override
-            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        JsonElement jsonElement = response.body();
-                        assert jsonElement != null;
-                        JsonArray jsonArray = jsonElement.getAsJsonArray();
-                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 2));
-                        checkAndSetEntryDate(HomeDashBoard.this, false);
+            callSyncDate.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    if(response.isSuccessful()) {
+                        try {
+                            JsonElement jsonElement = response.body();
+                            assert jsonElement != null;
+                            JsonArray jsonArray = jsonElement.getAsJsonArray();
+                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 2));
+                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC_DUP, jsonArray.toString(), 2));
+                            checkAndSetEntryDate(HomeDashBoard.this, false);
 //                        binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
 //                        binding.tabLayout.setVisibility(View.VISIBLE);
 //                        binding.viewPager.setVisibility(View.VISIBLE);
-                        commonUtilsMethods.showToastMessage(HomeDashBoard.this, context.getString(R.string.synced_successfully));
+                            commonUtilsMethods.showToastMessage(HomeDashBoard.this, context.getString(R.string.synced_successfully));
 //                        progressDialog.dismiss();
-                        setUpCalendar();
-                    } catch (Exception ignored) {
+                            setUpCalendar();
+                        } catch (Exception ignored) {
 //                        progressDialog.dismiss();
-                        binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
+                            binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 //                progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.toast_response_failed));
-                binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
-            }
-        });
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.toast_response_failed));
+                    binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+            binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
+        }
     }
 
 

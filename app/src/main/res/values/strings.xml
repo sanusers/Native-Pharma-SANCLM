@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">R.1.1</string>
+    <string name="app_version" translatable="false">R.1.2</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -456,4 +456,6 @@
     <string name="tp_alert_content">" Tour planning range has exceeded. Please prepare your tour plan...."</string>
     <string name="outboxAlertContent">You are already having 3 or more day calls in the Outbox.
         It is recommended to Sync Outbox Calls</string>
+    <string name="please_check_your_internet_connection">Please Check Your Internet Connection</string>
+    <string name="clear_all">Clear All</string>
 </resources>

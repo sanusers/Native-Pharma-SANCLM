@@ -118,7 +118,7 @@ public class ApprovalsActivity extends AppCompatActivity {
 
 
         approvalsBinding.ivBack.setOnClickListener(view -> {
-            if(!SharedPref.getDesig(ApprovalsActivity.this).equalsIgnoreCase("MR")&& SharedPref.getApprMandatoryNeed(ApprovalsActivity.this).equalsIgnoreCase("0")) {
+            if(SharedPref.getSfType(ApprovalsActivity.this).equalsIgnoreCase("2")&& SharedPref.getApprMandatoryNeed(ApprovalsActivity.this).equalsIgnoreCase("0")) {
                  SharedPref.setApprovalSKIPDate(ApprovalsActivity.this, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
             }
             getOnBackPressedDispatcher().onBackPressed();

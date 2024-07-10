@@ -117,7 +117,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.txtCipCount.setText(String.valueOf(CipCallsCount));
                 callAnalysisBinding.txtHosCount.setText(String.valueOf(HosCallsCount));
 
-                if (!SharedPref.getDesig(context).equalsIgnoreCase("MR")) {
+                if (SharedPref.getSfType(context).equalsIgnoreCase("2")) {
                     callAnalysisBinding.imgDoc.setVisibility(View.VISIBLE);
                     callAnalysisBinding.imgChe.setVisibility(View.VISIBLE);
                     callAnalysisBinding.imgStock.setVisibility(View.VISIBLE);
@@ -657,7 +657,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         callAnalysisBinding.llHosChild.setOnClickListener(this);
         callAnalysisBinding.llCipChild.setOnClickListener(this);
 
-        if(SharedPref.getDesig(context).equalsIgnoreCase("MR")){
+        if(SharedPref.getSfType(context).equalsIgnoreCase("1")){
             try {
                 JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
 

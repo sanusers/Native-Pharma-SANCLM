@@ -74,7 +74,7 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
             if (holder.workTypeModelArray.size() == 1) {
                 holder.workType.setText(holder.workTypeModelArray.get(0).getName());
                 holder.hqName.setText(holder.hqModelArray.get(0).getName());
-                if (!SharedPref.getDesig(context).equalsIgnoreCase("MR")) {
+                if (SharedPref.getSfType(context).equalsIgnoreCase("2")) {
                     holder.hqName.setVisibility(View.VISIBLE);
                     holder.view.setVisibility(View.VISIBLE);
                 } else {
@@ -89,7 +89,7 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
                 holder.hqName.setText(holder.hqModelArray.get(0).getName());
                 holder.workType2.setText(holder.workTypeModelArray.get(1).getName());
                 holder.hqName2.setText(holder.hqModelArray.get(1).getName());
-                if (!SharedPref.getDesig(context).equalsIgnoreCase("MR")) {
+                if (SharedPref.getSfType(context).equalsIgnoreCase("2")) {
                     holder.hqName.setVisibility(View.VISIBLE);
                     holder.view.setVisibility(View.VISIBLE);
                     holder.hqName2.setVisibility(View.VISIBLE);
@@ -111,7 +111,7 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
                 holder.hqName3.setText(holder.hqModelArray.get(2).getName());
 
 
-                if (!SharedPref.getDesig(context).equalsIgnoreCase("MR")) {
+                if (SharedPref.getSfType(context).equalsIgnoreCase("2")) {
                     holder.hqName.setVisibility(View.VISIBLE);
                     holder.view.setVisibility(View.VISIBLE);
                     holder.hqName2.setVisibility(View.VISIBLE);

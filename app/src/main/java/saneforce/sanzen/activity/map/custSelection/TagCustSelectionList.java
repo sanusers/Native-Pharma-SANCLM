@@ -626,7 +626,9 @@ public class TagCustSelectionList extends AppCompatActivity {
                 filtered_names.add(s);
             }
         }
-        custListAdapter.filterList(filtered_names);
+        if(custListAdapter != null) {
+            custListAdapter.filterList(filtered_names);
+        }
     }
 
     @Override

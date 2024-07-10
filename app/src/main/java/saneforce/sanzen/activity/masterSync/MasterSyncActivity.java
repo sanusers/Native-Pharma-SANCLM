@@ -186,7 +186,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         if (navigateFrom.equalsIgnoreCase("Login")) {
             binding.backArrow.setVisibility(View.GONE);
-            if (!SharedPref.getDesig(this).equalsIgnoreCase("MR")) { //MGR
+            if (SharedPref.getSfType(this).equalsIgnoreCase("2")) { //MGR
                 mgrInitialSync = true;
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
                    /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
@@ -566,7 +566,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         }else{
             binding.cluster.setText(SharedPref.getWrkAreaName(this));
         }
-        if(!SharedPref.getDesig(this).equalsIgnoreCase("MR")){
+        if(SharedPref.getSfType(this).equalsIgnoreCase("2")){
             binding.hqName.setText(SharedPref.getHqName(MasterSyncActivity.this));
         rsf = SharedPref.getHqCode(MasterSyncActivity.this);}
         else {
@@ -1153,6 +1153,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         }
                                         else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.DATE_SYNC)){
                                             isDateSynced = true;
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC_DUP, jsonArray.toString(), 2));
                                         }
                                         if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
                                             if (jsonArray.length() > 0) {
