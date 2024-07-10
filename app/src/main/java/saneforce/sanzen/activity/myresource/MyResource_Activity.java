@@ -1,8 +1,12 @@
 package saneforce.sanzen.activity.myresource;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static saneforce.sanzen.commonClasses.UtilityClass.hideKeyboard;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,9 +17,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,7 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
+import saneforce.sanzen.activity.myresource.myresourcemodel.MyResourceInterface;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -72,6 +80,9 @@ public class MyResource_Activity extends AppCompatActivity {
     boolean isLeaveEntitlementRequested;
     boolean isInputRequested, isProductRequested;
     int inputCount = 0;
+
+    Res_sidescreenAdapter appAdapter;
+
 
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -126,12 +137,13 @@ public class MyResource_Activity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                appAdapter.getFilter().filter(charSequence);
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                filter(editable.toString());
+
+
             }
         });
     }
@@ -330,7 +342,34 @@ public class MyResource_Activity extends AppCompatActivity {
             listed_data.add(new Resourcemodel_class("Date Summary", "", "16"));
             Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count);
 
-            resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1);//13
+            resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1, new MyResourceInterface() {
+                @Override
+                public void onclickItem(ArrayList<Resourcemodel_class> resourcelis, String split_val, String Hqcode) {
+                    MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+                    appAdapter = new Res_sidescreenAdapter(MyResource_Activity.this, resourcelis, split_val, Hqcode, new SidelistViewInterface() {
+                        @Override
+                        public void OnCilckItem(String HQ_CODE, String DCR_CODE, String CUST_FLAG) {
+
+                            if(!CheckLocPermission()){
+                                RequestLocationPermission();
+                            }else {
+                                Intent click = new Intent(MyResource_Activity.this, MyResource_mapview.class);
+                                click.putExtra("HQ_CODE", HQ_CODE);
+                                click.putExtra("DCR_CODE", DCR_CODE);
+                                click.putExtra("CUST_FLAG", CUST_FLAG);
+                                startActivity(click);
+                            }
+
+                        }
+
+
+                    });
+                    appRecyclerView.setAdapter(appAdapter);
+                    appRecyclerView.setLayoutManager(new LinearLayoutManager(MyResource_Activity.this));
+                    appAdapter.notifyDataSetChanged();
+
+                }
+            });//13
             binding.resourceId.setItemAnimator(new DefaultItemAnimator());
             binding.resourceId.setLayoutManager(new GridLayoutManager(MyResource_Activity.this, 4, GridLayoutManager.VERTICAL, false));
             binding.resourceId.setAdapter(resourceAdapter);
@@ -412,17 +451,17 @@ public class MyResource_Activity extends AppCompatActivity {
                         listresource.add(new Resourcemodel_class(jsonObject.getString("id"), jsonObject.getString("name"), "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
                     }
 
-                    Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(this, listresource, "1", "");
-                    appAdapter3.setOnItemClickListener(new Res_sidescreenAdapter.OnItemClickListener() {
+                    appAdapter = new Res_sidescreenAdapter(this, listresource, "1", "",null);
+                    appAdapter.setOnItemClickListener(new Res_sidescreenAdapter.OnItemClickListener() {
                         public void onItemClick(Resourcemodel_class item) {
                             binding.hqHead.setText(item.getDcr_name());
                             et_Custsearch.getText().clear();
                             Resource_list(item.getDcr_code());
                         }
                     });
-                    appRecyclerView.setAdapter(appAdapter3);
+                    appRecyclerView.setAdapter(appAdapter);
                     appRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-                    appAdapter3.notifyDataSetChanged();
+                    appAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -434,28 +473,40 @@ public class MyResource_Activity extends AppCompatActivity {
         }
     }
 
-    private void filter(String text) {
-        ArrayList<Resourcemodel_class> filterdNames = new ArrayList<>();
-        for (Resourcemodel_class s : listresource) {
-            if (s.getDcr_name().toLowerCase().contains(text.toLowerCase()) || s.getRes_custname().toLowerCase().contains(text.toLowerCase()) || s.getRes_Specialty().toLowerCase().contains(text.toLowerCase()) || s.getRes_Category().toLowerCase().contains(text.toLowerCase()) || s.getWorkType().toLowerCase().contains(text.toLowerCase()) || s.getLeaveTypes().toLowerCase().contains(text.toLowerCase())) {//getRes_Category
-                filterdNames.add(s);
-            }
-        }
-        Res_sidescreenAdapter appAdapter_0 = new Res_sidescreenAdapter(MyResource_Activity.this, listresource, Valcount, "");
-        appAdapter_0.filterList(filterdNames);
-        appAdapter_0.setOnItemClickListener(item -> {
-            UtilityClass.hideKeyboard(this);
-            et_Custsearch.getText().clear();
-            binding.hqHead.setText(item.getDcr_name());
-            Resource_list(item.getDcr_code());
-        });
-        appRecyclerView.setAdapter(appAdapter_0);
-        appRecyclerView.setLayoutManager(new LinearLayoutManager(MyResource_Activity.this));
-    }
+
 
     private void setUp() {
         isInputRequested = SharedPref.getDiNeed(this).equals("0") || SharedPref.getCiNeed(this).equals("0") || SharedPref.getSiNeed(this).equals("0") || SharedPref.getNiNeed(this).equals("0");
         isProductRequested = SharedPref.getDpNeed(this).equals("0") || SharedPref.getCpNeed(this).equals("0") || SharedPref.getSpNeed(this).equals("0") || SharedPref.getNpNeed(this).equals("0");
+    }
+
+
+   public void onRequestLocationPermission(){}
+    private void RequestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(MyResource_Activity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MyResource_Activity.this, ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(MyResource_Activity.this, new String[]{ACCESS_FINE_LOCATION}, 101);
+            } else {
+                ActivityCompat.requestPermissions(MyResource_Activity.this, new String[]{ACCESS_FINE_LOCATION}, 101);
+            }
+        }
+    }
+    public boolean CheckLocPermission() {
+        int FineLocation = ContextCompat.checkSelfPermission(MyResource_Activity.this, ACCESS_FINE_LOCATION);
+        int CoarseLocation = ContextCompat.checkSelfPermission(MyResource_Activity.this, ACCESS_COARSE_LOCATION);
+        return FineLocation == PackageManager.PERMISSION_GRANTED && CoarseLocation == PackageManager.PERMISSION_GRANTED;
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 101) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                // Permission denied, show a message to the user
+                CommonUtilsMethods. RequestGPSPermission(MyResource_Activity.this,"Location");
+            }
+        }
     }
 
 }

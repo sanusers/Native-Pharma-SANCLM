@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,8 +25,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -39,6 +42,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
 
     ArrayList<Resourcemodel_class> resList;
+    ArrayList<Resourcemodel_class> FillteredList;
     ArrayList<String> resList1 = new ArrayList<>();
 
     Context context;
@@ -60,12 +64,15 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
     Resource_adapter resourceAdapter;
     private OnItemClickListener onItemClickListener;
 
+    SidelistViewInterface sidelistViewInterface;
 
-    public Res_sidescreenAdapter(Context context, ArrayList<Resourcemodel_class> resList, String split_val, String Hqcode) {
+    public Res_sidescreenAdapter(Context context, ArrayList<Resourcemodel_class> resList, String split_val, String Hqcode, SidelistViewInterface sidelistViewInterface) {
         this.context = context;
         this.resList = resList;
+        this.FillteredList = resList;
         this.split_val = split_val;
         this.hqcode = Hqcode;
+        this.sidelistViewInterface = sidelistViewInterface;
 
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
@@ -88,7 +95,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String count = String.valueOf((position + 1));
-        final Resourcemodel_class app_adapt = resList.get(position);
+        final Resourcemodel_class app_adapt = FillteredList.get(position);
         System.out.println("leaveWorkTypes--->" + app_adapt.getWorkType());
         System.out.println("eligibility--->" + app_adapt.getEligible());
         Doc_geoneed = SharedPref.getGeotagNeed(context);
@@ -97,7 +104,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         Cip_geoneed = SharedPref.getGeotagNeedCip(context);
         Ult_geoneed = SharedPref.getGeotagNeedUnlst(context);
 
-        if ((Doc_geoneed.equals("1") || Che_geoneed.equals("1") || Stk_geoneed.equals("1") || Cip_geoneed.equals("1") || Ult_geoneed.equals("1")) && ((!app_adapt.getLatitude().isEmpty() || !app_adapt.getLongtitude().isEmpty()) && (((!app_adapt.getLatitude().equalsIgnoreCase("0.0") || !app_adapt.getLongtitude().equalsIgnoreCase("0.0")) || (!app_adapt.getLatitude().equalsIgnoreCase("0") || !app_adapt.getLongtitude().equalsIgnoreCase("0")))))) {
+        if (SharedPref.getGeoChk(context).equalsIgnoreCase("0")&& ((!app_adapt.getLatitude().isEmpty() || !app_adapt.getLongtitude().isEmpty()) && (((!app_adapt.getLatitude().equalsIgnoreCase("0.0") || !app_adapt.getLongtitude().equalsIgnoreCase("0.0")) || (!app_adapt.getLatitude().equalsIgnoreCase("0") || !app_adapt.getLongtitude().equalsIgnoreCase("0")))))) {
             holder.Res_View.setVisibility(View.VISIBLE);
         } else {
             holder.Res_View.setVisibility(View.GONE);
@@ -113,7 +120,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 MyResource_Activity.datalist = app_adapt.getDcr_code();
 
                 if (onItemClickListener != null) {
-                    onItemClickListener.onItemClick(resList.get(position));
+                    onItemClickListener.onItemClick(FillteredList.get(position));
                 }
                 MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
             });
@@ -238,11 +245,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 if (app_adapt.Latitude.equals("") || app_adapt.Latitude.equals("null")) {
 
                 } else {
-                    Intent click = new Intent(context, MyResource_mapview.class);
-                    click.putExtra("HQ_CODE", hqcode);
-                    click.putExtra("DCR_CODE", app_adapt.getDcr_code());
-                    click.putExtra("CUST_FLAG", Resource_adapter.rec_val);
-                    context.startActivity(click);
+                    sidelistViewInterface.OnCilckItem(hqcode, app_adapt.getDcr_code(), Resource_adapter.rec_val);
                 }
             });
 
@@ -322,7 +325,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
     @Override
     public int getItemCount() {
-        return resList.size();
+        return FillteredList.size();
     }
 
 
@@ -368,6 +371,31 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
     public interface OnItemClickListener {
         void onItemClick(Resourcemodel_class item);
     }
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String searchString = constraint.toString().toLowerCase();
 
+                ArrayList<Resourcemodel_class> filtered = new ArrayList<>();
+                for (Resourcemodel_class s : resList) {
+                    if (s.getDcr_name().toLowerCase().contains(searchString.toLowerCase()) || s.getRes_custname().toLowerCase().contains(searchString.toLowerCase()) || s.getRes_Specialty().toLowerCase().contains(searchString.toLowerCase()) || s.getRes_Category().toLowerCase().contains(searchString.toLowerCase()) || s.getWorkType().toLowerCase().contains(searchString.toLowerCase()) || s.getLeaveTypes().toLowerCase().contains(searchString.toLowerCase())) {//getRes_Category
+                        filtered.add(s);
+                    }
+
+                }
+                FillteredList = filtered;
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = FillteredList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                FillteredList = (ArrayList<Resourcemodel_class>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
 
 }
