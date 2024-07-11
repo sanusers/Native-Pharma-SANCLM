@@ -393,7 +393,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 CreateJsonFileCall();
                 if(isCreateJsonSuccess) {
 
-                    if(isFromActivity.equalsIgnoreCase("new")) {
+                    if(isFromActivity.equalsIgnoreCase("new") || isFromActivity.equalsIgnoreCase("edit_online")) {
                         InsertVisitControl();
                         callOfflineDataDao.saveOfflineCallOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
                     }else if(isFromActivity.equalsIgnoreCase("edit_local")) {
