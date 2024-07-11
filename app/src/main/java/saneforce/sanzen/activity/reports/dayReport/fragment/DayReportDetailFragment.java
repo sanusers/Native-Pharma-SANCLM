@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -155,83 +156,95 @@ public class DayReportDetailFragment extends Fragment {
 
     public void initialisation() {
 
-        Type type = new TypeToken<DayReportModel>() {
-        }.getType();
-        dayReportModel = new Gson().fromJson(dataViewModel.getDetailedData().getValue(), type);
+        try {
+            Type type = new TypeToken<DayReportModel>() {
+            }.getType();
 
-        if(dayReportModel == null) return;
+//        dataViewModel.getDetailedData().observe(getViewLifecycleOwner(), data -> {
+//            dayReportModel = new Gson().fromJson(data, type);
+//        });
+            dayReportModel = new Gson().fromJson(dataViewModel.getDetailedData().getValue(), type);
 
-        ReportFragContainerActivity activity = (ReportFragContainerActivity) getActivity();
-        String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, dayReportModel.getAdate());
-        assert activity != null;
-        activity.title.setText(String.format("Day Report ( %s )", date));
-        binding.textDoctor.setText((SharedPref.getDrCap(requireContext())));
-        binding.textChemist.setText((SharedPref.getChmCap(requireContext())));
-        binding.textStock.setText((SharedPref.getStkCap(requireContext())));
-        binding.textUnListDoctor.setText((SharedPref.getUNLcap(requireContext())));
-        binding.textCip.setText((SharedPref.getCipCaption(requireContext())));
-        binding.textHospital.setText((SharedPref.getHospCaption(requireContext())));
+            if(dayReportModel == null) {
+                Log.e("DayReportDetailedFrag", "initialisation: dayReportModel -> null");
+                return;
+            }
 
-        int drCount = 0, chmCount = 0, stkCount = 0, undrCount = 0, cipCount = 0, hosCount = 0;
+            ReportFragContainerActivity activity = (ReportFragContainerActivity) getActivity();
+            String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, dayReportModel.getAdate());
+            assert activity != null;
+            activity.title.setText(String.format("Day Report ( %s )", date));
+            binding.textDoctor.setText((SharedPref.getDrCap(requireContext())));
+            binding.textChemist.setText((SharedPref.getChmCap(requireContext())));
+            binding.textStock.setText((SharedPref.getStkCap(requireContext())));
+            binding.textUnListDoctor.setText((SharedPref.getUNLcap(requireContext())));
+            binding.textCip.setText((SharedPref.getCipCaption(requireContext())));
+            binding.textHospital.setText((SharedPref.getHospCaption(requireContext())));
 
-        if (SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")) {
-            binding.drLayout.setVisibility(View.VISIBLE);
-            drCount = Integer.parseInt(dayReportModel.getDrs());
-            binding.drCount.setText(dayReportModel.getDrs());
-        }
-        if (SharedPref.getChmNeed(requireContext()).equalsIgnoreCase("0")) {
-            binding.cheLayout.setVisibility(View.VISIBLE);
-            chmCount = Integer.parseInt(dayReportModel.getChm());
-            binding.cheCount.setText(dayReportModel.getChm());
-        }
-        if (SharedPref.getStkNeed(requireContext()).equalsIgnoreCase("0")) {
-            binding.stkLayout.setVisibility(View.VISIBLE);
-            stkCount = Integer.parseInt(dayReportModel.getStk());
-            binding.stkCount.setText(dayReportModel.getStk());
-        }
-        if (SharedPref.getUnlNeed(requireContext()).equalsIgnoreCase("0")) {
-            binding.unDrLayout.setVisibility(View.VISIBLE);
-            cipCount = Integer.parseInt(dayReportModel.getUdr());
-            binding.unDrCount.setText(dayReportModel.getUdr());
-        }
-        if (SharedPref.getCipNeed(requireContext()).equalsIgnoreCase("0")) {
-            binding.cipLayout.setVisibility(View.VISIBLE);
-            undrCount = Integer.parseInt(dayReportModel.getCip());
-            binding.cipCount.setText(dayReportModel.getCip());
-        }
-        if (SharedPref.getHospNeed(requireContext()).equalsIgnoreCase("0")) {
-            binding.hospLayout.setVisibility(View.VISIBLE);
-            hosCount = Integer.parseInt(dayReportModel.getCip());
-            binding.hospCount.setText(dayReportModel.getHos());
-        }
-        if ((dayReportModel.getTyp() == 0 || dayReportModel.getTyp() == 1) && Integer.parseInt(dayReportModel.getConfirmed()) == 2) {
-            binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
-            binding.rejectedReasonTxt.setText(dayReportModel.getReasonforRejection());
+            int drCount = 0, chmCount = 0, stkCount = 0, undrCount = 0, cipCount = 0, hosCount = 0;
 
-        } else {
-            binding.rejectionReasonLayout.setVisibility(View.GONE);
-        }
+            if(SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")) {
+                binding.drLayout.setVisibility(View.VISIBLE);
+                drCount = Integer.parseInt(dayReportModel.getDrs());
+                binding.drCount.setText(dayReportModel.getDrs());
+            }
+            if(SharedPref.getChmNeed(requireContext()).equalsIgnoreCase("0")) {
+                binding.cheLayout.setVisibility(View.VISIBLE);
+                chmCount = Integer.parseInt(dayReportModel.getChm());
+                binding.cheCount.setText(dayReportModel.getChm());
+            }
+            if(SharedPref.getStkNeed(requireContext()).equalsIgnoreCase("0")) {
+                binding.stkLayout.setVisibility(View.VISIBLE);
+                stkCount = Integer.parseInt(dayReportModel.getStk());
+                binding.stkCount.setText(dayReportModel.getStk());
+            }
+            if(SharedPref.getUnlNeed(requireContext()).equalsIgnoreCase("0")) {
+                binding.unDrLayout.setVisibility(View.VISIBLE);
+                cipCount = Integer.parseInt(dayReportModel.getUdr());
+                binding.unDrCount.setText(dayReportModel.getUdr());
+            }
+            if(SharedPref.getCipNeed(requireContext()).equalsIgnoreCase("0")) {
+                binding.cipLayout.setVisibility(View.VISIBLE);
+                undrCount = Integer.parseInt(dayReportModel.getCip());
+                binding.cipCount.setText(dayReportModel.getCip());
+            }
+            if(SharedPref.getHospNeed(requireContext()).equalsIgnoreCase("0")) {
+                binding.hospLayout.setVisibility(View.VISIBLE);
+                hosCount = Integer.parseInt(dayReportModel.getCip());
+                binding.hospCount.setText(dayReportModel.getHos());
+            }
+            if((dayReportModel.getTyp() == 0 || dayReportModel.getTyp() == 1) && Integer.parseInt(dayReportModel.getConfirmed()) == 2) {
+                binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
+                binding.rejectedReasonTxt.setText(dayReportModel.getReasonforRejection());
 
-        binding.name.setText(dayReportModel.getSF_Name());
-        binding.workType.setText(dayReportModel.getWtype());
-        binding.cluster.setText(dayReportModel.getTerrWrk());
-        binding.allCount.setText(String.valueOf(drCount + chmCount + stkCount + cipCount + undrCount + hosCount));
-        if (dayReportModel.getAdditional_Temp_Details() != null && !dayReportModel.getAdditional_Temp_Details().equals("")) {
-            binding.ll2.setVisibility(View.VISIBLE);
-            binding.view3.setVisibility(View.VISIBLE);
-            binding.workType2.setText(dayReportModel.getAdditional_Temp_Details());
-        }
+            }else {
+                binding.rejectionReasonLayout.setVisibility(View.GONE);
+            }
+
+            binding.name.setText(dayReportModel.getSF_Name());
+            binding.workType.setText(dayReportModel.getWtype());
+            binding.cluster.setText(dayReportModel.getTerrWrk());
+            binding.allCount.setText(String.valueOf(drCount + chmCount + stkCount + cipCount + undrCount + hosCount));
+            if(dayReportModel.getAdditional_Temp_Details() != null && !dayReportModel.getAdditional_Temp_Details().equals("")) {
+                binding.ll2.setVisibility(View.VISIBLE);
+                binding.view3.setVisibility(View.VISIBLE);
+                binding.workType2.setText(dayReportModel.getAdditional_Temp_Details());
+            }
             binding.hqLayout.setVisibility(View.GONE);
 
-        if (dayReportModel.getRemarks()==null || dayReportModel.getRemarks().equals("")){
-            binding.remarksLayout.setVisibility(View.GONE);
-        }else {
-            binding.remarks.setText(dayReportModel.getRemarks());
-        }
-        if(SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)){
-            binding.clusterTxt.setText("Cluster");
-        } else{
-            binding.clusterTxt.setText(SharedPref.getWrkAreaName(requireContext()));
+            if(dayReportModel.getRemarks() == null || dayReportModel.getRemarks().equals("")) {
+                binding.remarksLayout.setVisibility(View.GONE);
+            }else {
+                binding.remarks.setText(dayReportModel.getRemarks());
+            }
+            if(SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)) {
+                binding.clusterTxt.setText("Cluster");
+            }else {
+                binding.clusterTxt.setText(SharedPref.getWrkAreaName(requireContext()));
+            }
+        } catch (Exception e){
+            Log.e("DayReportDetailFrag", "initialisation: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

@@ -137,7 +137,9 @@ public class MyResource_Activity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                appAdapter.getFilter().filter(charSequence);
+                if(appAdapter != null) {
+                    appAdapter.getFilter().filter(charSequence);
+                }
             }
 
             @Override
