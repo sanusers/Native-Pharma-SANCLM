@@ -34,6 +34,7 @@ import saneforce.sanzen.activity.forms.weekoff.weekoff_viewscreen;
 import saneforce.sanzen.activity.myresource.Categoryview.Cate_viewscreen;
 import saneforce.sanzen.activity.myresource.Categoryview.DateSyncActivity;
 import saneforce.sanzen.activity.myresource.callstatusview.Callsstatus_screenview;
+import saneforce.sanzen.activity.myresource.myresourcemodel.MyResourceInterface;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -55,11 +56,13 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
     String listed, pos_check = "";
     public static String rec_val = "";
     String synhqval1;
+    MyResourceInterface myResourceInterface;
 
-    public Resource_adapter(Context context, ArrayList<Resourcemodel_class> listeduser, String synhqval1) {
+    public Resource_adapter(Context context, ArrayList<Resourcemodel_class> listeduser, String synhqval1, MyResourceInterface myResourceInterface) {
         this.context = context;
         this.listeduser = listeduser;
         this.synhqval1 = synhqval1;
+        this.myResourceInterface = myResourceInterface;
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
     }
@@ -135,6 +138,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                             }
                         }
                         MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                        search_list.addAll(listresource);
+                        myResourceInterface.onclickItem(listresource,Valcount,synhqval1);
                         break;
 
                     case ("2"):
@@ -167,6 +172,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                             }
                         }
                         MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                        search_list.addAll(listresource);
+                        myResourceInterface.onclickItem(listresource,Valcount,synhqval1);
                         break;
 
                     case ("3"):
@@ -200,6 +207,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                             }
                         }
                         MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                        search_list.addAll(listresource);
+                        myResourceInterface.onclickItem(listresource,Valcount,synhqval1);
                         break;
 
                     case ("4"):
@@ -238,6 +247,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                             }
                         }
                         MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                        search_list.addAll(listresource);
+                        myResourceInterface.onclickItem(listresource,Valcount,synhqval1);
                         break;
 
                     case ("5"):
@@ -276,6 +287,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                             }
                         }
                         MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                        search_list.addAll(listresource);
+                        myResourceInterface.onclickItem(listresource,Valcount,synhqval1);
                         break;
 
                     case ("8"):
@@ -298,6 +311,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                             }
                         }
                         MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                        search_list.addAll(listresource);
+                        myResourceInterface.onclickItem(listresource,Valcount,synhqval1);
                         break;
 
                     case ("9"):
@@ -316,7 +331,10 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                 }
                             }
                         }
+
                         MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                        search_list.addAll(listresource);
+                        myResourceInterface.onclickItem(listresource,Valcount,synhqval1);
                         break;
 
                     case ("10"):
@@ -357,6 +375,9 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                 listresource.add(new Resourcemodel_class("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", workType, TPDCR, "workType", "", "", "", ""));
                             }
                         }
+                        MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                        search_list.addAll(listresource);
+                        myResourceInterface.onclickItem(listresource,Valcount,synhqval1);
                         break;
 
                     case ("13"):
@@ -382,6 +403,9 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
 
                             }
                         }
+                        MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
+                        search_list.addAll(listresource);
+                        myResourceInterface.onclickItem(listresource,Valcount,synhqval1);
                         break;
 
                     case ("14"):
@@ -423,7 +447,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                             }
                         }
                         MyResource_Activity.binding.drawerLayout.openDrawer(Gravity.END);
-
+                        search_list.addAll(listresource);
+                        myResourceInterface.onclickItem(listresource,Valcount,synhqval1);
                         break;
 
                     case ("15"):
@@ -447,16 +472,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                 }
 
 
-                search_list.addAll(listresource);
 
 
-                MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-                Res_sidescreenAdapter appAdapter = new Res_sidescreenAdapter(context, listresource, Valcount, synhqval1);
-                appRecyclerView.setAdapter(appAdapter);
-                appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-                appAdapter.notifyDataSetChanged();
-
-                search_list.addAll(listresource);
             } catch (Exception e) {
                 e.printStackTrace();
             }
