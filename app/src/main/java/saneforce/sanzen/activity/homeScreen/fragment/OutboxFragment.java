@@ -475,6 +475,7 @@ public class OutboxFragment extends Fragment {
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    Log.v("Response",""+response);
                     if (response.isSuccessful()) {
                         try {
                             JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
@@ -504,6 +505,7 @@ public class OutboxFragment extends Fragment {
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    Log.v("CallsResponse",""+t.getMessage().toString());
                     callsUtil.updateOfflineUpdateStatusEC(date, cusCode, syncCount + 1, Constants.CALL_FAILED, 1);
                     outBoxCallList.setStatus(Constants.DUPLICATE_CALL);
                     outBoxCallList.setSyncCount(syncCount + 1);
