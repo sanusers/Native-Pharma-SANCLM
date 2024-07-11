@@ -50,10 +50,14 @@ public class FillteredAdapter extends BaseAdapter {
 
         LinearLayout linearLayout =itemView.findViewById(R.id.ListLayout);
         TextView textView = itemView.findViewById(R.id.itemTitle);
-        textView.setText(dataList.get(i).getName());
+        if(dataList.size() > i) {
+            textView.setText(dataList.get(i).getName());
+        }
 
         linearLayout.setOnClickListener(view -> {
-            interfacce.ChooseValues(dataList.get(i));
+            if(dataList.size() > i) {
+                interfacce.ChooseValues(dataList.get(i));
+            }
         });
 
         return itemView;

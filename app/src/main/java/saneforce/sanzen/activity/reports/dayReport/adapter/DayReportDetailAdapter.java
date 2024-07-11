@@ -463,7 +463,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 String[] item = s.split("[(]");
 
                 String Rcpa = "";
-                if(item.length > 2) {
+                if(item.length > 3) {
                     Rcpa = item[3];
                     if(item[3].contains("^")) {
                         String[] rcpa = item[3].replace("^", ",").split("[,]");
