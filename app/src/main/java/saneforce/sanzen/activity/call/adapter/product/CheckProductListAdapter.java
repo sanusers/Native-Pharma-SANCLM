@@ -112,6 +112,9 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
         } else if (holder.tv_category.getText().toString().equalsIgnoreCase("SL/SM")) {
             holder.tv_category.setTextColor(ContextCompat.getColor(context, R.color.txt_sale_sample));
             holder.tv_category.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_sale_sample));
+        } else {
+            holder.tv_category.setTextColor(ContextCompat.getColor(context, R.color.white));
+            holder.tv_category.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_white_without_border));
         }
 
 

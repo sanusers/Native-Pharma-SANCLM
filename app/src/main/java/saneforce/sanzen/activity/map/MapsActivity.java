@@ -296,7 +296,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(true);
                 mMap.getUiSettings().setCompassEnabled(false);
                 mMap.getUiSettings().setRotateGesturesEnabled(true);
+                mapsBinding.progressBar.setVisibility(View.GONE);
             });
+        } else if(from_tagging.equalsIgnoreCase("tagging")) {
+            mapsBinding.imgRefreshMap.setVisibility(View.VISIBLE);
+            mapsBinding.imgCurLoc.setVisibility(View.VISIBLE);
+            getRequiredData();
+            mapFragment.getMapAsync(this);
+            mapsBinding.progressBar.setVisibility(View.GONE);
         } else {
             mapsBinding.imgRefreshMap.setVisibility(View.VISIBLE);
             mapsBinding.imgCurLoc.setVisibility(View.VISIBLE);
@@ -630,6 +637,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         int transparent = 0x12FD0B0B;
         CircleOptions circle = new CircleOptions().center(latLng).radius(limitKm * 1000.0).strokeWidth(4).strokeColor(Color.RED).fillColor(transparent).clickable(true);
         mMap.addCircle(circle);
+        mapsBinding.progressBar.setVisibility(View.GONE);
     }
 
     public boolean CurrentLoc() {
@@ -1146,6 +1154,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @SuppressLint("PotentialBehaviorOverride")
     private void AddTaggedDetails(String selected, String sfCode) {
+        mapsBinding.progressBar.setVisibility(View.VISIBLE);
         taggedMapListArrayList.clear();
         mMap.clear();
         list.clear();
@@ -1318,6 +1327,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             addCircle(mMap);
         } catch (Exception e) {
             Log.v("map_camera_tt", "error----" + e);
+            mapsBinding.progressBar.setVisibility(View.GONE);
         }
     }
 
