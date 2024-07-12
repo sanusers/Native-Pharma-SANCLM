@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/_8sdp"
                 android:gravity="left"
-                android:text=" Tittle  :"
+                android:text=" Title  :"
                 android:fontFamily="@font/satoshi_medium"
                 android:visibility="visible"
                 android:textColor="@color/black"
