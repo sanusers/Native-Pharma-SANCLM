@@ -256,7 +256,7 @@ public class OutboxFragment extends Fragment {
     private void refreshPendingFunction() {
 
         Log.e("RefreshStatus","Is Working");
-//        SendOfflineData(this::sendingOfflineCalls);
+        SendOfflineData(this::sendingOfflineCalls);
 
     }
 
