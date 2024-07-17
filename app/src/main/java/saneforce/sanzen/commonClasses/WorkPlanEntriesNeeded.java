@@ -298,6 +298,10 @@ public class WorkPlanEntriesNeeded {
             Log.e("set date switched1 ", "setupMyDayPlanEntriesNeeded: " + SharedPref.getDayPlanStartedDate(context));
             date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, SharedPref.getDayPlanStartedDate(context));
         }
+        else if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+            Log.e("set date sequential", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
+            date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, datesNeeded.first());
+        }
         else if(!SharedPref.getSelectedDateCal(context).isEmpty() && datesNeeded.contains(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)))) {
             Log.e("set date switched2 ", "setupMyDayPlanEntriesNeeded: " + SharedPref.getSelectedDateCal(context));
             date = SharedPref.getSelectedDateCal(context);

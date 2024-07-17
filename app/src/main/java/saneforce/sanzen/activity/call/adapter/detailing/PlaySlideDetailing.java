@@ -102,6 +102,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
 
     public static void populateBottomViewAdapterNew(ArrayList<BrandModelClass.Product> productsList) {
         bottomPreviewDetailedAdapter = new BottomPreviewDetailedAdapter(context, productsList, binding.viewPager);
+        arrayList = productsList;
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         binding.recView.setLayoutManager(layoutManager);
         binding.recView.setAdapter(bottomPreviewDetailedAdapter);

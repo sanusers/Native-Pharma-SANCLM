@@ -1225,7 +1225,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.day_submitted_successfully));
                             progressDialog.dismiss();
                             HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
-                        } catch (Exception ignored) {
+                        } catch (Exception e) {
+                            Log.e("WP", "onResponse: " + e.getMessage());
+                            e.printStackTrace();
                             progressDialog.dismiss();
                         }
                     }else {

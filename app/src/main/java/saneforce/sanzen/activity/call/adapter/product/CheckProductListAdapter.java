@@ -178,7 +178,10 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
             isCheckedPrd = false;
             callCommonCheckedListArrayList.get(adapterPosition).setCheckedItem(true);
             checkAndSetNoProductCheckedOrUnchecked();
-            saveCallProductListArrayList.add(new SaveCallProductList(callCommonCheckedListArrayList.get(adapterPosition).getName(), callCommonCheckedListArrayList.get(adapterPosition).getCode(), callCommonCheckedListArrayList.get(adapterPosition).getCategoryExtra(), callCommonCheckedListArrayList.get(adapterPosition).getStock_balance(), callCommonCheckedListArrayList.get(adapterPosition).getStock_balance(), "", "", "", "1", true));
+            SaveCallProductList saveCallProductList = new SaveCallProductList(callCommonCheckedListArrayList.get(adapterPosition).getName(), callCommonCheckedListArrayList.get(adapterPosition).getCode(), callCommonCheckedListArrayList.get(adapterPosition).getCategoryExtra(), callCommonCheckedListArrayList.get(adapterPosition).getStock_balance(), callCommonCheckedListArrayList.get(adapterPosition).getStock_balance(), "", "", "", "1", true);
+            if(!saveCallProductListArrayList.contains(saveCallProductList)) {
+                saveCallProductListArrayList.add(saveCallProductList);
+            }
             AssignRecyclerView(activity, context, saveCallProductListArrayList, callCommonCheckedListArrayList);
         } else {
             new CountDownTimer(80, 80) {

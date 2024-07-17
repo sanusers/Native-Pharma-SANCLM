@@ -1393,8 +1393,9 @@ public class DCRCallActivity extends AppCompatActivity {
             if (js.has("Worked_with_Name")) {
                 if (!js.getString("Worked_with_Name").isEmpty()) {
                     String[] separatedjoints = js.getString("Worked_with_Name").split(",");
-                    for (String s : separatedjoints) {
-                        JWOthersFragment.callAddedJointList.add(new CallCommonCheckedList(s, ""));
+                    String[] separatedjointscode = js.getString("Worked_with_Code").split("\\$\\$");
+                    for (int index = 0; index < separatedjoints.length; index++) {
+                        JWOthersFragment.callAddedJointList.add(new CallCommonCheckedList(separatedjoints[index], separatedjointscode[index]));
                     }
                 }
             }
@@ -1458,7 +1459,7 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
             //RCPA
-            if (!json.getString("RCPAHead").equalsIgnoreCase("[]")) {
+            if (json.has("RCPAHead") && !json.getString("RCPAHead").equalsIgnoreCase("[]")) {
                 JSONArray jsonArrayRcpa = new JSONArray(json.getString("RCPAHead"));
                 Log.v("jsonExtractOnline", "----" + jsonArrayRcpa);
                 for (int i = 0; i < jsonArrayRcpa.length(); i++) {
@@ -1511,7 +1512,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
-            if (!json.getString("event_capture").equalsIgnoreCase("[]")) {
+            if (json.has("event_capture") && !json.getString("event_capture").equalsIgnoreCase("[]")) {
                 JSONArray jsonArrayEC = new JSONArray(json.getString("event_capture"));
                 for (int i = 0; i < jsonArrayEC.length(); i++) {
                     JSONObject jsonEC = jsonArrayEC.getJSONObject(i);
@@ -2026,6 +2027,10 @@ public class DCRCallActivity extends AppCompatActivity {
                         JSONObject js = jj.getJSONObject(t);
                         json_date.put("eTm", DetailedFragment.callDetailingLists.get(i).getDate() + " " + js.getString("eT"));
                         json_date.put("sTm", DetailedFragment.callDetailingLists.get(i).getDate() + " " + js.getString("sT"));
+                        if(isFromActivity.equalsIgnoreCase("edit_local")) {
+                            json_date.put("eTm", js.getString("eT"));
+                            json_date.put("sTm", js.getString("sT"));
+                        }
                         savejsonTime.put(json_date);
                     }
                     jsonSlide.put("Times", savejsonTime);

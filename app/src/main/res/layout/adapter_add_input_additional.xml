@@ -57,6 +57,7 @@
         android:fontFamily="@font/satoshi_bold"
         android:imeOptions="actionDone"
         android:inputType="number"
+        android:maxLength="4"
         android:paddingHorizontal="@dimen/_3sdp"
         android:paddingVertical="@dimen/_5sdp"
         android:textColor="@color/bg_txt_color"

@@ -138,4 +138,12 @@ public class SaveCallProductList {
     public void setRcpa_qty(String rcpa_qty) {
         this.rcpa_qty = rcpa_qty;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SaveCallProductList product = (SaveCallProductList) o;
+        return code.equals(product.code); // Products are equal if their codes match
+    }
 }

@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.call.adapter.detailing;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.arrayStore;
+import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -132,13 +133,15 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
                     if(storeImageTypeUrl.getBrdCode().equalsIgnoreCase(callDetailingLists.get(position).getBrandCode())) {
                         JSONArray jsonArray = new JSONArray(storeImageTypeUrl.getRemTime());
                         if(jsonArray.length() > 0) {
+                            String format = TimeUtils.FORMAT_32;
+                            if(isFromActivity.equalsIgnoreCase("edit_local")) format = TimeUtils.FORMAT_1;
                             for (int i = 0; i<jsonArray.length() - 1; i++) {
-                                String startTime = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_32, TimeUtils.FORMAT_33, jsonArray.getJSONObject(i).getString("sT")),
-                                        endTime = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_32, TimeUtils.FORMAT_33, jsonArray.getJSONObject(i).getString("eT"));
+                                String startTime = TimeUtils.GetConvertedDate(format, TimeUtils.FORMAT_33, jsonArray.getJSONObject(i).getString("sT")),
+                                        endTime = TimeUtils.GetConvertedDate(format, TimeUtils.FORMAT_33, jsonArray.getJSONObject(i).getString("eT"));
                                 timeline.put(jsonArray.getJSONObject(i).getString("sT"), String.format("%s~%s~%s", storeImageTypeUrl.getSlideNam(), startTime, endTime));
                             }
-                            String startTime = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_32, TimeUtils.FORMAT_33, jsonArray.getJSONObject(jsonArray.length() - 1).getString("sT")),
-                                    endTime = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_32, TimeUtils.FORMAT_33, jsonArray.getJSONObject(jsonArray.length() - 1).getString("eT"));
+                            String startTime = TimeUtils.GetConvertedDate(format, TimeUtils.FORMAT_33, jsonArray.getJSONObject(jsonArray.length() - 1).getString("sT")),
+                                    endTime = TimeUtils.GetConvertedDate(format, TimeUtils.FORMAT_33, jsonArray.getJSONObject(jsonArray.length() - 1).getString("eT"));
                             timeline.put(jsonArray.getJSONObject(jsonArray.length() - 1).getString("sT"), String.format("%s~%s~%s", storeImageTypeUrl.getSlideNam(), startTime, endTime));
                         }
                     }
