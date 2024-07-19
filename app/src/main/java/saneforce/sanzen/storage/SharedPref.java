@@ -629,8 +629,8 @@ public class SharedPref {
         editor.putString(MISC_EXPENSE_NEED, jsonObject.getString("misc_expense_need"));
         editor.putString(DOC_POB_NEED, jsonObject.getString("Doc_Pob_Need"));
         editor.putString(CHM_POB_NEED, jsonObject.getString("Chm_Pob_Need"));
-//        editor.putString(STK_POB_NEED, jsonObject.getString("Stk_Pob_Need"));
-//        editor.putString(UL_POB_NEED, jsonObject.getString("Ul_Pob_Need"));
+        editor.putString(STK_POB_NEED, jsonObject.getString("Stk_Pob_Need"));
+        editor.putString(UL_POB_NEED, jsonObject.getString("Ul_Pob_Need"));
         editor.putString(STK_POB_MANDATORY_NEED, jsonObject.getString("Stk_Pob_Mandatory_Need"));
         editor.putString(UL_POB_MANDATORY_NEED, jsonObject.getString("Ul_Pob_Mandatory_Need"));
         editor.putString(DOC_JOINTWORK_NEED, jsonObject.getString("Doc_jointwork_Need"));

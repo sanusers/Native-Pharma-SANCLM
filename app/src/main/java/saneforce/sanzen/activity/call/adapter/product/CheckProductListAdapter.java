@@ -112,6 +112,9 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
         } else if (holder.tv_category.getText().toString().equalsIgnoreCase("SL/SM")) {
             holder.tv_category.setTextColor(ContextCompat.getColor(context, R.color.txt_sale_sample));
             holder.tv_category.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_sale_sample));
+        } else {
+            holder.tv_category.setTextColor(ContextCompat.getColor(context, R.color.white));
+            holder.tv_category.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_white_without_border));
         }
 
 
@@ -175,7 +178,10 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
             isCheckedPrd = false;
             callCommonCheckedListArrayList.get(adapterPosition).setCheckedItem(true);
             checkAndSetNoProductCheckedOrUnchecked();
-            saveCallProductListArrayList.add(new SaveCallProductList(callCommonCheckedListArrayList.get(adapterPosition).getName(), callCommonCheckedListArrayList.get(adapterPosition).getCode(), callCommonCheckedListArrayList.get(adapterPosition).getCategoryExtra(), callCommonCheckedListArrayList.get(adapterPosition).getStock_balance(), callCommonCheckedListArrayList.get(adapterPosition).getStock_balance(), "", "", "", "1", true));
+            SaveCallProductList saveCallProductList = new SaveCallProductList(callCommonCheckedListArrayList.get(adapterPosition).getName(), callCommonCheckedListArrayList.get(adapterPosition).getCode(), callCommonCheckedListArrayList.get(adapterPosition).getCategoryExtra(), callCommonCheckedListArrayList.get(adapterPosition).getStock_balance(), callCommonCheckedListArrayList.get(adapterPosition).getStock_balance(), "", "", "", "1", true);
+            if(!saveCallProductListArrayList.contains(saveCallProductList)) {
+                saveCallProductListArrayList.add(saveCallProductList);
+            }
             AssignRecyclerView(activity, context, saveCallProductListArrayList, callCommonCheckedListArrayList);
         } else {
             new CountDownTimer(80, 80) {

@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.call.fragments.jwOthers;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.call.DCRCallActivity.TodayPlanSfCode;
 import static saneforce.sanzen.activity.call.DCRCallActivity.dcrCallBinding;
+import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment.callAddedJointList;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -74,25 +75,25 @@ public class JointWorkSelectionSide extends Fragment {
         selectJwSideBinding.btnOk.setOnClickListener(view -> {
             for (int j = 0; j < JwList.size(); j++) {
                 if (JwList.get(j).isCheckedItem()) {
-                    JWOthersFragment.callAddedJointList.add(new CallCommonCheckedList(JwList.get(j).getName(), JwList.get(j).getCode()));
+                    callAddedJointList.add(new CallCommonCheckedList(JwList.get(j).getName(), JwList.get(j).getCode()));
                 }
             }
 
-            int count = JWOthersFragment.callAddedJointList.size();
+            int count = callAddedJointList.size();
             for (int i = 0; i < count; i++) {
                 for (int j = i + 1; j < count; j++) {
-                    if (JWOthersFragment.callAddedJointList.get(i).getCode().equalsIgnoreCase(JWOthersFragment.callAddedJointList.get(j).getCode())) {
-                        JWOthersFragment.callAddedJointList.set(i, new CallCommonCheckedList(JWOthersFragment.callAddedJointList.get(i).getName(), JWOthersFragment.callAddedJointList.get(i).getCode()));
-                        JWOthersFragment.callAddedJointList.remove(j--);
+                    if (callAddedJointList.get(i).getCode().equalsIgnoreCase(callAddedJointList.get(j).getCode())) {
+                        callAddedJointList.set(i, new CallCommonCheckedList(callAddedJointList.get(i).getName(), callAddedJointList.get(i).getCode()));
+                        callAddedJointList.remove(j--);
                         count--;
                     } else {
-                        JWOthersFragment.callAddedJointList.set(i, new CallCommonCheckedList(JWOthersFragment.callAddedJointList.get(i).getName(), JWOthersFragment.callAddedJointList.get(i).getCode()));
+                        callAddedJointList.set(i, new CallCommonCheckedList(callAddedJointList.get(i).getName(), callAddedJointList.get(i).getCode()));
                     }
                 }
             }
             selectJwSideBinding.searchJw.setText("");
             dcrCallBinding.fragmentSelectJwSide.setVisibility(View.GONE);
-            AssignRecyclerView(getActivity(), context, JWOthersFragment.callAddedJointList, JwList);
+            AssignRecyclerView(getActivity(), context, callAddedJointList, JwList);
         });
 
         selectJwSideBinding.imgClose.setOnClickListener(view -> {
@@ -150,6 +151,16 @@ public class JointWorkSelectionSide extends Fragment {
                     jsonObject = jsonArray.getJSONObject(i);
                     JwList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false));
                 }
+            }
+            for (int i = 0; i < JwList.size(); i++) {
+                CallCommonCheckedList JwCallCommonCheckedList = JwList.get(i);
+                for (CallCommonCheckedList callCommonCheckedList : callAddedJointList) {
+                    if(callCommonCheckedList.getCode().equalsIgnoreCase(JwCallCommonCheckedList.getCode()) || callCommonCheckedList.getName().equalsIgnoreCase(JwCallCommonCheckedList.getName())) {
+                        JwCallCommonCheckedList.setCheckedItem(true);
+                        break;
+                    }
+                }
+                JwList.set(i, JwCallCommonCheckedList);
             }
 
         } catch (Exception ignored) {

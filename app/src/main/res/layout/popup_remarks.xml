@@ -93,7 +93,7 @@
 
         <RelativeLayout
             android:id="@+id/rl_btns"
-            android:layout_width="@dimen/_80sdp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_5sdp"
             android:layout_marginVertical="@dimen/_3sdp"
@@ -107,10 +107,10 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_clear"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/_40sdp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
+                android:layout_toStartOf="@id/btn_save"
                 android:layout_marginVertical="@dimen/_2sdp"
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:background="@drawable/bg_border_with_pink"
@@ -124,7 +124,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_save"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/_40sdp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"

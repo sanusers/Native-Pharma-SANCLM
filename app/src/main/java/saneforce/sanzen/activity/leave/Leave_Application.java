@@ -31,6 +31,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -115,8 +116,6 @@ public class Leave_Application extends AppCompatActivity {
         }
     }
 
-
-    @SuppressLint("WrongConstant")
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         leavebinding = ActivityLeaveApplicationBinding.inflate(getLayoutInflater());
@@ -161,7 +160,7 @@ public class Leave_Application extends AppCompatActivity {
         leavebinding.HeadLtype.setText(Html.fromHtml(colorText2));
 
         close_sideview.setOnClickListener(v -> {
-            leavebinding.leaveSide.closeDrawer(Gravity.END);
+            leavebinding.leaveSide.closeDrawer(GravityCompat.END);
             hideKeyboard(Leave_Application.this);
         });
         leave_applydates();

@@ -44,7 +44,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.tv_samQty.setText(getProductList.get(position).getSample_qty());
         holder.tv_rxQty.setText(getProductList.get(position).getRx_qty());
         holder.tv_rcpa.setText(getProductList.get(position).getRcpa_qty());
-        if(category.equalsIgnoreCase("chemist_") || category.equalsIgnoreCase("stockiest_")){
+        if(category.equalsIgnoreCase("chemist_") || category.equalsIgnoreCase("stockiest_") || category.equalsIgnoreCase("chemist") || category.equalsIgnoreCase("stockiest")){
             holder.img_promoted.setVisibility(View.INVISIBLE);
         }
         if(getProductList.get(position).getPromoted().equalsIgnoreCase("Yes")){
@@ -64,7 +64,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 }
                 break;
             default:
-                holder.tv_rcpa.setVisibility(View.VISIBLE);
+                holder.tv_rcpa.setVisibility(View.INVISIBLE);
                 break;
         }
     }

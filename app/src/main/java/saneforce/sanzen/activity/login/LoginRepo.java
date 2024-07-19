@@ -31,8 +31,8 @@ public class LoginRepo {
         call.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse (@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                Log.e("Response",""+response.body().toString());
                 if (response.isSuccessful() && response.body() != null){
+                    Log.e("Response", response.body().toString());
                     mutableLiveData.setValue(response.body());
                 }
             }

@@ -340,7 +340,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session)+(i + 1));
                             break;
                         } else if (modelClass1.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
-                            if (modelClass1.getHQ().getName().isEmpty()) {
+                            if (modelClass1.getHQ().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
                                 isEmpty = true;
                                 position = i;
                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
@@ -429,7 +429,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
                     break;
                 } else if (modelClass.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // TerrSlFlg is "Y" (yes) means head quarter and clusters are mandatory
-                    if (modelClass.getHQ().getName().isEmpty()) {
+                    if (modelClass.getHQ().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
                         isEmpty = true;
                         position = i;
                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));

@@ -128,11 +128,15 @@ public class DayReportFragment extends Fragment {
     }
 
     public void initialisation() {
-        localDate = LocalDate.now();
+        if(localDate == null) {
+            localDate = LocalDate.now();
+        }
         daysArrayList = daysInMonthArray(localDate);
 
-        ReportFragContainerActivity activity = (ReportFragContainerActivity) getActivity();
-        activity.title.setText("Day Report");
+        if(getActivity() instanceof ReportFragContainerActivity) {
+            ReportFragContainerActivity activity = (ReportFragContainerActivity) getActivity();
+            activity.title.setText("Day Report");
+        }
         Type type = new TypeToken<ArrayList<DayReportModel>>() {
         }.getType();
         arrayListOfReportData = new Gson().fromJson(dataViewModel.getSummaryData().getValue(), type);

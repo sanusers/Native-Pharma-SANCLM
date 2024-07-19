@@ -192,6 +192,22 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
             holder.ed_samplesQty.setFocusableInTouchMode(false);
             holder.ed_samplesQty.setFocusable(false);
             holder.ed_samplesQty.setText("0");
+        } else {
+            holder.ed_rxQty.setInputType(InputType.TYPE_CLASS_NUMBER);
+            holder.ed_rxQty.setShowSoftInputOnFocus(true);
+            holder.ed_rxQty.setShowSoftInputOnFocus(true);
+            holder.ed_rxQty.setCursorVisible(true);
+            holder.ed_rxQty.setFocusableInTouchMode(true);
+            holder.ed_rxQty.setFocusable(true);
+//            holder.ed_rxQty.setText("0");
+
+            holder.ed_samplesQty.setInputType(InputType.TYPE_CLASS_NUMBER);
+            holder.ed_samplesQty.setShowSoftInputOnFocus(true);
+            holder.ed_samplesQty.setShowSoftInputOnFocus(true);
+            holder.ed_samplesQty.setCursorVisible(true);
+            holder.ed_samplesQty.setFocusableInTouchMode(true);
+            holder.ed_samplesQty.setFocusable(true);
+//            holder.ed_samplesQty.setText("0");
         }
 
         if (SampleValidation.equalsIgnoreCase("1")) {

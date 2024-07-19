@@ -97,8 +97,8 @@ public class FeedbackSelectionSide extends Fragment {
     private void SetupAdapter() {
         list_code.clear();
         list_name.clear();
-        feedbackCode = "";
-        feedbackName = "";
+//        feedbackCode = "";
+//        feedbackName = "";
         try {
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.FEEDBACK).getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArray.length(); i++) {

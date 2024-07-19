@@ -285,6 +285,7 @@ public class ChemistFragment extends Fragment {
         });
 
         tvTerritory.setOnClickListener(view -> {
+            lv_cate.setVisibility(View.GONE);
             if (lv_terr.getVisibility() == View.VISIBLE) {
                 lv_terr.setVisibility(View.GONE);
 
@@ -316,6 +317,7 @@ public class ChemistFragment extends Fragment {
         });
 
         tvCate.setOnClickListener(view -> {
+            lv_terr.setVisibility(View.GONE);
             if (lv_cate.getVisibility() == View.VISIBLE) {
                 lv_cate.setVisibility(View.GONE);
                 constraintLayout.setVisibility(View.VISIBLE);

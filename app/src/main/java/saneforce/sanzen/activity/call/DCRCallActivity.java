@@ -1393,8 +1393,9 @@ public class DCRCallActivity extends AppCompatActivity {
             if (js.has("Worked_with_Name")) {
                 if (!js.getString("Worked_with_Name").isEmpty()) {
                     String[] separatedjoints = js.getString("Worked_with_Name").split(",");
-                    for (String s : separatedjoints) {
-                        JWOthersFragment.callAddedJointList.add(new CallCommonCheckedList(s, ""));
+                    String[] separatedjointscode = js.getString("Worked_with_Code").split("\\$\\$");
+                    for (int index = 0; index < separatedjoints.length; index++) {
+                        JWOthersFragment.callAddedJointList.add(new CallCommonCheckedList(separatedjoints[index], separatedjointscode[index]));
                     }
                 }
             }
@@ -1414,6 +1415,8 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
             //FeedBack
+            FeedbackSelectionSide.feedbackCode = "";
+            FeedbackSelectionSide.feedbackName = "";
             if (js.has("Drcallfeedbackcode") && js.has("Call_Fdback")) {
                 FeedbackSelectionSide.feedbackCode = js.getString("Drcallfeedbackcode");
                 FeedbackSelectionSide.feedbackName = js.getString("Call_Fdback");
@@ -1458,7 +1461,7 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
             //RCPA
-            if (!json.getString("RCPAHead").equalsIgnoreCase("[]")) {
+            if (json.has("RCPAHead") && !json.getString("RCPAHead").equalsIgnoreCase("[]")) {
                 JSONArray jsonArrayRcpa = new JSONArray(json.getString("RCPAHead"));
                 Log.v("jsonExtractOnline", "----" + jsonArrayRcpa);
                 for (int i = 0; i < jsonArrayRcpa.length(); i++) {
@@ -1511,7 +1514,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
-            if (!json.getString("event_capture").equalsIgnoreCase("[]")) {
+            if (json.has("event_capture") && !json.getString("event_capture").equalsIgnoreCase("[]")) {
                 JSONArray jsonArrayEC = new JSONArray(json.getString("event_capture"));
                 for (int i = 0; i < jsonArrayEC.length(); i++) {
                     JSONObject jsonEC = jsonArrayEC.getJSONObject(i);
@@ -2026,6 +2029,10 @@ public class DCRCallActivity extends AppCompatActivity {
                         JSONObject js = jj.getJSONObject(t);
                         json_date.put("eTm", DetailedFragment.callDetailingLists.get(i).getDate() + " " + js.getString("eT"));
                         json_date.put("sTm", DetailedFragment.callDetailingLists.get(i).getDate() + " " + js.getString("sT"));
+                        if(isFromActivity.equalsIgnoreCase("edit_local")) {
+                            json_date.put("eTm", js.getString("eT"));
+                            json_date.put("sTm", js.getString("sT"));
+                        }
                         savejsonTime.put(json_date);
                     }
                     jsonSlide.put("Times", savejsonTime);
@@ -2379,7 +2386,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     JwNeed = SharedPref.getChmJointworkNeed(this);
                     PrdSamNeed = SharedPref.getChmsamqtyNeed(this);
                     PrdRxNeed = SharedPref.getChmRxQty(this); //1
-                    PrdRcpaQtyNeed = SharedPref.getRcpaQtyNeed(this);
+                    PrdRcpaQtyNeed = "0"; //0
                     CusCheckInOutNeed = SharedPref.getChmSrtNd(this);
 
                     //Mandatory
@@ -2405,10 +2412,10 @@ public class DCRCallActivity extends AppCompatActivity {
                     OverallFeedbackNeed =SharedPref.getSfNeed(this);
                     EventCaptureNeed = SharedPref.getSeNeed(this);
                     JwNeed = SharedPref.getStkJointworkNeed(this);
-                    PrdSamNeed = "0";
+                    PrdSamNeed = "0"; //0
                     PrdRxNeed = SharedPref.getStkPobNeed(this);
-                    PrdRcpaQtyNeed = SharedPref.getRcpaQtyNeed(this);
-                    CusCheckInOutNeed = "1";
+                    PrdRcpaQtyNeed = "0"; //0
+                    CusCheckInOutNeed = "1"; //1
                     PobNeed = SharedPref.getStockistPobNeed(this);
 
                     //Mandatory
@@ -2432,10 +2439,10 @@ public class DCRCallActivity extends AppCompatActivity {
                     OverallFeedbackNeed = SharedPref.getNfNeed(this);
                     EventCaptureNeed = SharedPref.getNeNeed(this);
                     JwNeed =SharedPref.getUlJointworkNeed(this);
-                    PrdSamNeed = "0";
+                    PrdSamNeed = "0"; //0
                     PrdRxNeed =SharedPref.getUlPobNeed(this);
-                    PrdRcpaQtyNeed = SharedPref.getRcpaQtyNeed(this);
-                    CusCheckInOutNeed = "1";
+                    PrdRcpaQtyNeed = "0"; //0
+                    CusCheckInOutNeed = "1"; //1
                     PobNeed = SharedPref.getUnlistedDoctorPobNeed(this);
 
                     //Mandatory

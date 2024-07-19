@@ -186,6 +186,11 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     holder.jointWorkLayout.setVisibility(View.GONE);
                     holder.jointView.setVisibility(View.GONE);
                 }
+                if(SharedPref.getRcpaQtyNeed(context).equalsIgnoreCase("0")) {
+                    holder.textRCPAName.setVisibility(View.VISIBLE);
+                } else {
+                    holder.textRCPAName.setVisibility(View.INVISIBLE);
+                }
                 holder.SlidercpaLayoutitle.setVisibility(View.VISIBLE);
                 break;
             }
@@ -224,6 +229,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     holder.jointWorkLayout.setVisibility(View.GONE);
                     holder.jointView.setVisibility(View.GONE);
                 }
+                holder.textRCPAName.setVisibility(View.INVISIBLE);
                 break;
             }
             case Constants.STOCKIEST: {
@@ -256,6 +262,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     holder.jointWorkLayout.setVisibility(View.GONE);
                     holder.jointView.setVisibility(View.GONE);
                 }
+                holder.textRCPAName.setVisibility(View.INVISIBLE);
                 break;
             }
             case Constants.UNLISTED_DOCTOR: {
@@ -292,14 +299,17 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     holder.jointWorkLayout.setVisibility(View.GONE);
                     holder.jointView.setVisibility(View.GONE);
                 }
+                holder.textRCPAName.setVisibility(View.INVISIBLE);
                 break;
             }
             case Constants.CIP: {
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_cip_icon));
+                holder.textRCPAName.setVisibility(View.INVISIBLE);
                 break;
             }
             case Constants.HOSPITAL: {
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_hospital_icon));
+                holder.textRCPAName.setVisibility(View.INVISIBLE);
                 break;
             }
         }
@@ -463,7 +473,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 String[] item = s.split("[(]");
 
                 String Rcpa = "";
-                if(item.length > 2) {
+                if(item.length > 3) {
                     Rcpa = item[3];
                     if(item[3].contains("^")) {
                         String[] rcpa = item[3].replace("^", ",").split("[,]");
@@ -500,7 +510,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, visitTime, modifiedTime, cluster, pob, feedback, jointWork, nextVisit, checkInTime, checkInAddress, checkInMarker,textInputName;
-        TextView checkOutTime, checkOutAddress, checkOutMarker, overAllRemark, viewMoreTxt,textPromoted,textProduct,textSamples,textRxQty,textInput,textProductName,clusterText;
+        TextView checkOutTime, checkOutAddress, checkOutMarker, overAllRemark, viewMoreTxt,textPromoted,textProduct,textSamples,textRxQty,textInput,textProductName,clusterText, textRCPAName;
         ImageView nameIcon, viewMoreArrow,rcpa_arrow,slide_arrow;
         LinearLayout viewMore, checkInOutLayout,EventLayout,rcpaLayout,rcpaLayoutitle, slideDetailsLayout,SlidercpaLayoutitle,jointWorkLayout;
         RelativeLayout rlNextVisit,pobLayOut,feedBackLayout;
@@ -563,7 +573,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             textInputName = itemView.findViewById(R.id.tag_input_name_main);
             view5 = itemView.findViewById(R.id.view5);
             clusterText = itemView.findViewById(R.id.clusterTxt);
-
+            textRCPAName = itemView.findViewById(R.id.tag_rcpa_prd);
         }
     }
 

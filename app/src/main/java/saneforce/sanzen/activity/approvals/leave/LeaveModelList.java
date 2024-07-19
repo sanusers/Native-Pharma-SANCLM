@@ -20,8 +20,9 @@ public class LeaveModelList {
     String leave_type;
     String available_leave;
     String no_of_days;
+    String sf_emp_id;
 
-    public LeaveModelList(String leave_id,String sf_code,String name, String from_date, String to_date, String reason, String addr, String leave_type, String available_leave, String no_of_days) {
+    public LeaveModelList(String leave_id,String sf_code,String name, String from_date, String to_date, String reason, String addr, String leave_type, String available_leave, String no_of_days, String sf_emp_id) {
         this.leave_id = leave_id;
         this.sf_code = sf_code;
         this.name = name;
@@ -32,6 +33,7 @@ public class LeaveModelList {
         this.leave_type = leave_type;
         this.available_leave = available_leave;
         this.no_of_days = no_of_days;
+        this.sf_emp_id = sf_emp_id;
     }
 
     public String getLeave_id() {
@@ -104,5 +106,13 @@ public class LeaveModelList {
 
     public void setNo_of_days(String no_of_days) {
         this.no_of_days = no_of_days;
+    }
+
+    public String getSf_emp_id() {
+        return sf_emp_id;
+    }
+
+    public void setSf_emp_id(String sf_emp_id) {
+        this.sf_emp_id = sf_emp_id;
     }
 }

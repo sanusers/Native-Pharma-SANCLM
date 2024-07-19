@@ -1225,7 +1225,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.day_submitted_successfully));
                             progressDialog.dismiss();
                             HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
-                        } catch (Exception ignored) {
+                        } catch (Exception e) {
+                            Log.e("WP", "onResponse: " + e.getMessage());
+                            e.printStackTrace();
                             progressDialog.dismiss();
                         }
                     }else {
@@ -1767,14 +1769,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         String selectedDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_27, dateOnlyString);
                         HomeDashBoard.binding.textDate.setText(selectedDate);
                     }
-//                else {
+                else {
+                    if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                        SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
+                    }
 //                    HomeDashBoard.binding.textDate.setText(CommonUtilsMethods.getCurrentInstance("MMMM d, yyyy"));
 //                    SharedPref.saveHq(requireContext(), "", "");
 //                    SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
 //                    binding.txtWorktype1.setText("");
 //                    binding.txtCluster1.setText("");
 //                    binding.txtheadquaters1.setText("");
-//                }
+                }
 
                     binding.llPlan2.setBackground(null);
                     binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.backround_text));

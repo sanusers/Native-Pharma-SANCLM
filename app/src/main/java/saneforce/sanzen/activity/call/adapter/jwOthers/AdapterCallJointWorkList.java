@@ -71,9 +71,11 @@ public class AdapterCallJointWorkList extends RecyclerView.Adapter<AdapterCallJo
     }
 
     public void removeAt(int position) {
-        jwAddedList.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, jwAddedList.size());
+        if(jwAddedList.size() > position) {
+            jwAddedList.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, jwAddedList.size());
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -235,6 +235,9 @@ public class ListedDoctorFragment extends Fragment {
         });
 
         tvSpec.setOnClickListener(view -> {
+            lv_class.setVisibility(View.GONE);
+            lv_cate.setVisibility(View.GONE);
+            lv_terr.setVisibility(View.GONE);
             if (lv_spec.getVisibility() == View.VISIBLE) {
                 lv_spec.setVisibility(View.GONE);
                 constraintLayout.setVisibility(View.VISIBLE);
@@ -258,6 +261,9 @@ public class ListedDoctorFragment extends Fragment {
         });
 
         tvCate.setOnClickListener(view -> {
+            lv_class.setVisibility(View.GONE);
+            lv_spec.setVisibility(View.GONE);
+            lv_terr.setVisibility(View.GONE);
             if (lv_cate.getVisibility() == View.VISIBLE) {
                 lv_cate.setVisibility(View.GONE);
                 constraintLayout.setVisibility(View.VISIBLE);
@@ -280,6 +286,9 @@ public class ListedDoctorFragment extends Fragment {
         });
 
         tvTerritory.setOnClickListener(view -> {
+            lv_class.setVisibility(View.GONE);
+            lv_cate.setVisibility(View.GONE);
+            lv_spec.setVisibility(View.GONE);
             if (lv_terr.getVisibility() == View.VISIBLE) {
                 lv_terr.setVisibility(View.GONE);
                 constraintLayout.setVisibility(View.VISIBLE);
@@ -302,6 +311,9 @@ public class ListedDoctorFragment extends Fragment {
         });
 
         tvClass.setOnClickListener(view -> {
+            lv_spec.setVisibility(View.GONE);
+            lv_cate.setVisibility(View.GONE);
+            lv_terr.setVisibility(View.GONE);
             if (lv_class.getVisibility() == View.VISIBLE) {
                 lv_class.setVisibility(View.GONE);
                 constraintLayout.setVisibility(View.VISIBLE);

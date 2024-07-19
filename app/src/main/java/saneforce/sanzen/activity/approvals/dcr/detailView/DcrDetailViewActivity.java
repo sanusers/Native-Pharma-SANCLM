@@ -108,6 +108,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
         System.out.println("dcrSample--->"+ SharedPref.getDrSmpQCap(this));
         switch (Cus_type) {
             case "1":
+                dcrDetailViewBinding.productQty.setVisibility(View.VISIBLE);
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_dr_img));
                 if (SharedPref.getDocProductCaption(this).isEmpty() || SharedPref.getDocProductCaption(this).equalsIgnoreCase(null)){
                     dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
@@ -141,6 +142,13 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                 }else{
                     dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.INVISIBLE);
                 }
+                if(SharedPref.getRcpaNd(this).equalsIgnoreCase("0")) {
+                    dcrDetailViewBinding.constraintMainRcpa.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.viewDummyRcpa.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.constraintMainRcpa.setVisibility(View.GONE);
+                    dcrDetailViewBinding.viewDummyRcpa.setVisibility(View.GONE);
+                }
                 if (SharedPref.getDocPobNeed(this).equals("0")){
                     dcrDetailViewBinding.tagPob.setVisibility(View.VISIBLE);
                     dcrDetailViewBinding.tvPob.setVisibility(View.VISIBLE);
@@ -162,6 +170,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                 break;
             case "2":
                 detailingNeed = SharedPref.getCHMDetailingNeed(this);
+                dcrDetailViewBinding.productQty.setVisibility(View.INVISIBLE);
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_chemist_img));
                 if (SharedPref.getChmProductCaption(this).isEmpty() || SharedPref.getChmProductCaption(this).equalsIgnoreCase(null)){
                     dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
@@ -187,6 +196,13 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                     dcrDetailViewBinding.tagInput.setText(SharedPref.getChmInputCaption(this));
                     dcrDetailViewBinding.tagInputNameMain.setText(SharedPref.getChmInputCaption(this));
                 }
+                if(SharedPref.getChmRcpaNeed(this).equalsIgnoreCase("0")) {
+                    dcrDetailViewBinding.constraintMainRcpa.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.viewDummyRcpa.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.constraintMainRcpa.setVisibility(View.GONE);
+                    dcrDetailViewBinding.viewDummyRcpa.setVisibility(View.GONE);
+                }
                 if ( SharedPref.getChmPobNeed(this).equals("0")){
                     dcrDetailViewBinding.tagPob.setVisibility(View.VISIBLE);
                     dcrDetailViewBinding.tvPob.setVisibility(View.VISIBLE);
@@ -208,6 +224,9 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                 break;
             case "3":
                 detailingNeed = SharedPref.getSTKDetailingNeed(this);
+                dcrDetailViewBinding.productQty.setVisibility(View.INVISIBLE);
+                dcrDetailViewBinding.constraintMainRcpa.setVisibility(View.GONE);
+                dcrDetailViewBinding.viewDummyRcpa.setVisibility(View.GONE);
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_stockist_img));
                 if (SharedPref.getStkProductCaption(this).isEmpty() || SharedPref.getStkProductCaption(this).equalsIgnoreCase(null)){
                     dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
@@ -249,6 +268,9 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                 break;
             case "4":
                 detailingNeed = SharedPref.getUNDRDetailingNeed(this);
+                dcrDetailViewBinding.productQty.setVisibility(View.VISIBLE);
+                dcrDetailViewBinding.constraintMainRcpa.setVisibility(View.GONE);
+                dcrDetailViewBinding.viewDummyRcpa.setVisibility(View.GONE);
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_unlistdr_img));
                 if (SharedPref.getUlProductCaption(this).isEmpty() || SharedPref.getUlProductCaption(this).equalsIgnoreCase(null)){
                     dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
@@ -366,6 +388,14 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
         Log.v("Details_id",""+dcr_id+" "+Details_id);
         switch (dcrDetailModelList.getType()) {
             case "1":
+                dcrDetailViewBinding.productQty.setVisibility(View.VISIBLE);
+                if(SharedPref.getRcpaNd(this).equalsIgnoreCase("0")) {
+                    dcrDetailViewBinding.constraintMainRcpa.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.viewDummyRcpa.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.constraintMainRcpa.setVisibility(View.GONE);
+                    dcrDetailViewBinding.viewDummyRcpa.setVisibility(View.GONE);
+                }
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_dr_img));
                 if (SharedPref.getDocProductCaption(this).isEmpty() || SharedPref.getDocProductCaption(this).equalsIgnoreCase(null)){
                     dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
@@ -419,6 +449,14 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                 }
                 break;
             case "2":
+                dcrDetailViewBinding.productQty.setVisibility(View.INVISIBLE);
+                if(SharedPref.getChmRcpaNeed(this).equalsIgnoreCase("0")) {
+                    dcrDetailViewBinding.constraintMainRcpa.setVisibility(View.VISIBLE);
+                    dcrDetailViewBinding.viewDummyRcpa.setVisibility(View.VISIBLE);
+                }else {
+                    dcrDetailViewBinding.constraintMainRcpa.setVisibility(View.GONE);
+                    dcrDetailViewBinding.viewDummyRcpa.setVisibility(View.GONE);
+                }
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_chemist_img));
                 if (SharedPref.getChmProductCaption(this).isEmpty() || SharedPref.getChmProductCaption(this).equalsIgnoreCase(null)){
                     dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
@@ -468,6 +506,9 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                 dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.VISIBLE);
                 break;
             case "3":
+                dcrDetailViewBinding.productQty.setVisibility(View.INVISIBLE);
+                dcrDetailViewBinding.constraintMainRcpa.setVisibility(View.GONE);
+                dcrDetailViewBinding.viewDummyRcpa.setVisibility(View.GONE);
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_stockist_img));
                 if (SharedPref.getStkProductCaption(this).isEmpty() || SharedPref.getStkProductCaption(this).equalsIgnoreCase(null)){
                     dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
@@ -505,6 +546,9 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                 dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.VISIBLE);
                 break;
             case "4":
+                dcrDetailViewBinding.productQty.setVisibility(View.VISIBLE);
+                dcrDetailViewBinding.constraintMainRcpa.setVisibility(View.GONE);
+                dcrDetailViewBinding.viewDummyRcpa.setVisibility(View.GONE);
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_unlistdr_img));
                 if (SharedPref.getUlProductCaption(this).isEmpty() || SharedPref.getUlProductCaption(this).equalsIgnoreCase(null)){
                     dcrDetailViewBinding.tagSamplePrd.setText("Sample Products");
