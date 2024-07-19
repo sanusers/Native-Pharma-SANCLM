@@ -314,7 +314,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     holder.jointWorkLayout.setVisibility(View.GONE);
                     holder.jointView.setVisibility(View.GONE);
                 }
-                if(SharedPref.getUlStkNeed(context).equalsIgnoreCase("1")) {
+                if(SharedPref.getUlPobNeed(context).equalsIgnoreCase("1")) {
                     holder.textRxQty.setVisibility(View.INVISIBLE);
                 } else {
                     holder.textRxQty.setVisibility(View.VISIBLE);

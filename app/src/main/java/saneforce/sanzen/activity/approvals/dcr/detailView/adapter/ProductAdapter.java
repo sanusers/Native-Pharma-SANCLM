@@ -93,7 +93,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 break;
             case Constants.UNLISTED_DOCTOR:
             case "UNLISTED_DOCTOR":
-                if(SharedPref.getUlStkNeed(context).equalsIgnoreCase("1")) {
+                if(SharedPref.getUlPobNeed(context).equalsIgnoreCase("1")) {
                     holder.tv_rxQty.setVisibility(View.INVISIBLE);
                 } else {
                     holder.tv_rxQty.setVisibility(View.VISIBLE);
