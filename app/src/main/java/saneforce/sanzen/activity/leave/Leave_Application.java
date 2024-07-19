@@ -387,6 +387,14 @@ public class Leave_Application extends AppCompatActivity {
                                         leavebinding.etFromDate.setText("");
                                         leavebinding.etToDate.setText("");
                                         leavebinding.LeaveType.setText("");
+                                        List_LeaveDates = new ArrayList<>();
+
+                                        Leavedetails_adapter l_details = new Leavedetails_adapter(Leave_Application.this, List_LeaveDates);
+                                        LinearLayoutManager LayoutManagerpoc = new LinearLayoutManager(Leave_Application.this);
+                                        Leave_Application.leavebinding.leaveDetails.setLayoutManager(LayoutManagerpoc);
+                                        Leave_Application.leavebinding.leaveDetails.setItemAnimator(new DefaultItemAnimator());
+                                        Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
+                                        l_details.notifyDataSetChanged();
 
                                         Toast.makeText(Leave_Application.this, msg, Toast.LENGTH_SHORT).show();
 
@@ -396,7 +404,7 @@ public class Leave_Application extends AppCompatActivity {
                                 }
 
                             } catch (JSONException e) {
-                                throw new RuntimeException(e);
+                                e.printStackTrace();
                             }
                         }
 
@@ -422,7 +430,6 @@ public class Leave_Application extends AppCompatActivity {
                     }
 
                 });
-            } else {
             }
 
         } catch (Exception e) {
@@ -454,7 +461,10 @@ public class Leave_Application extends AppCompatActivity {
                 Log.d("rem", totalval + "---" + val);
                 int bal = totalval - val;
 
-                if (bal == 0 || bal == (-bal)) {
+                if(bal < 0) {
+                    commonUtilsMethods.showToastMessage(this, "Kindly Sync Leave Available!");
+                    leavebinding.submitLeave.setEnabled(false);
+                } else if (bal == 0) {
 
                 } else {
                     if (leavety.equals("LOP")) {
@@ -467,7 +477,7 @@ public class Leave_Application extends AppCompatActivity {
             }
 
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
 
@@ -517,6 +527,7 @@ public class Leave_Application extends AppCompatActivity {
     public void AvailableLeave() {
         try {
             Chart_list.clear();
+            leavebinding.submitLeave.setEnabled(true);
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
             JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray();
             String lstatus = (jsonArray.get(0).toString());
@@ -570,35 +581,11 @@ public class Leave_Application extends AppCompatActivity {
                 navigateFrom = getIntent().getExtras().getString("Origin");
             }
 
-
             String f_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, leavebinding.etFromDate.getText().toString()));
             String t_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, leavebinding.etToDate.getText().toString()));
 
-            @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
             l_address = leavebinding.edAddress.getText().toString();
             l_reason = leavebinding.edReason.getText().toString();
-
-
-//   {
-//
-//    "tableName":"saveleave",
-//    "sfcode":"MR0026",
-//    "FDate":"2023-7-6",
-//    "TDate":"2023-7-6",
-//    "LeaveType":"CL",
-//    "NOD":"1",
-//    "LvOnAdd":"",
-//    "LvRem":"test",
-//    "division_code":"8,",
-//    "Rsf":"MR0026",
-//    "sf_type":"1",
-//    "Designation":"TBM",
-//    "state_code":"28",
-//    "subdivision_code":"62,",
-//    "sf_emp_id":"give emp id here",
-//    "leave_typ_code":"give leavetype code here"
-//
-//}
 
             try {
                 JSONObject jsonobj = CommonUtilsMethods.CommonObjectParameter(this);
@@ -758,6 +745,15 @@ public class Leave_Application extends AppCompatActivity {
             leavebinding.etToDate.setText("");
             leavebinding.LeaveType.setText("");
             leavebinding.balanceDays.setText("");
+            leavebinding.lDays.setText("");
+            List_LeaveDates = new ArrayList<>();
+
+            Leavedetails_adapter l_details = new Leavedetails_adapter(Leave_Application.this, List_LeaveDates);
+            LinearLayoutManager LayoutManagerpoc = new LinearLayoutManager(Leave_Application.this);
+            Leave_Application.leavebinding.leaveDetails.setLayoutManager(LayoutManagerpoc);
+            Leave_Application.leavebinding.leaveDetails.setItemAnimator(new DefaultItemAnimator());
+            Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
+            l_details.notifyDataSetChanged();
             leavebinding.progressBar.setVisibility(View.VISIBLE);
             leaveViewModel.updateLeaveStatusMasterSync();
             Runnable runnable = new Runnable() {
