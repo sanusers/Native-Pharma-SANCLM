@@ -1,7 +1,9 @@
 package saneforce.sanzen.activity.activityModule;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import saneforce.sanzen.R;
 
@@ -45,9 +48,34 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rowindex = position;
-                notifyDataSetChanged();
-                activityView.ChooseActivity(DataList.get(position));
+
+                if (DynamicActivity.isEdited) {
+                    Dialog dialog = new Dialog(context);
+                    dialog.setContentView(R.layout.dcr_cancel_alert);
+                    dialog.setCancelable(false);
+                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.show();
+                    TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                    TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
+                    TextView btn_no = dialog.findViewById(R.id.btn_no);
+                    alertText.setText("Are sure Clear Details");
+                    btn_yes.setOnClickListener(view12 -> {
+                        dialog.dismiss();
+                        rowindex = position;
+                        notifyDataSetChanged();
+                        activityView.ChooseActivity(DataList.get(position));
+                    });
+
+                    btn_no.setOnClickListener(view12 -> {
+                        dialog.dismiss();
+                    });
+                }else {
+                    rowindex = position;
+                    notifyDataSetChanged();
+                    activityView.ChooseActivity(DataList.get(position));
+                }
+
+
             }
         });
 

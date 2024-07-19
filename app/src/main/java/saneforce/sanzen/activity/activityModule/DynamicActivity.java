@@ -11,8 +11,11 @@ import static android.view.Gravity.CENTER;
 import static android.view.Gravity.TOP;
 
 
+import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.storingSlide;
+
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -21,6 +24,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 
 
@@ -94,6 +98,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MultipartBody;
@@ -102,6 +107,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.DCRCallActivity;
+import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -138,6 +145,7 @@ public class DynamicActivity extends AppCompatActivity {
     public static TextView FilnameTet;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+   public static   boolean  isEdited=false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -161,6 +169,7 @@ public class DynamicActivity extends AppCompatActivity {
             binding.namechooseActivity.setText(classGroup.getActivityName());
             binding.llActivityDetailsView.removeAllViews();
             getActivityDetails(classGroup);
+
         });
         binding.skRecylerview.setLayoutManager(new LinearLayoutManager(this));
         binding.skRecylerview.setAdapter(adapter);
@@ -168,6 +177,31 @@ public class DynamicActivity extends AppCompatActivity {
         getActivity(SharedPref.getHqCode(DynamicActivity.this));
 
         binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
+
+        binding.backArrow.setOnClickListener(v -> {
+
+            if (DynamicActivity.isEdited) {
+                Dialog dialog = new Dialog(DynamicActivity.this);
+                dialog.setContentView(R.layout.dcr_cancel_alert);
+                dialog.setCancelable(false);
+                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+                TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
+                TextView btn_no = dialog.findViewById(R.id.btn_no);
+                alertText.setText("\"Are you sure, you want to exit ?");
+                btn_yes.setOnClickListener(view12 -> {
+                    dialog.dismiss();
+                  getOnBackPressedDispatcher().onBackPressed();
+                });
+
+                btn_no.setOnClickListener(view12 -> {
+                    dialog.dismiss();
+                });
+            }else {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
+        });
 
 
         if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
@@ -269,7 +303,9 @@ public class DynamicActivity extends AppCompatActivity {
 
 
     public void getActivityDetails(ActivityModelClass Data) {
+
         if (UtilityClass.isNetworkAvailable(this)) {
+            isEdited=false;
             binding.progrlessdetail.setVisibility(View.VISIBLE);
             try {
                 JSONObject object = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
@@ -493,6 +529,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt(textcharacter.getText().toString());
 
             }
@@ -572,6 +609,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt(textnumber.getText().toString());
 
             }
@@ -663,6 +701,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt(textarea.getText().toString());
 
             }
@@ -750,6 +789,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt(textviewdate1.getText().toString());
 
             }
@@ -853,6 +893,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt(textviewdate1.getText().toString());
 
             }
@@ -961,6 +1002,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt(textviewfromdate.getText().toString());
 
             }
@@ -1018,6 +1060,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt2(textviewtodate.getText().toString());
 
             }
@@ -1129,6 +1172,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt(textviewfromdate.getText().toString());
 
             }
@@ -1197,6 +1241,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt2(textviewtodate.getText().toString());
 
             }
@@ -1336,6 +1381,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt(textViewtime1.getText().toString());
 
             }
@@ -1445,6 +1491,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt(textviewfromtime.getText().toString());
 
             }
@@ -1505,6 +1552,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt2(textviewtotime.getText().toString());
 
             }
@@ -1605,6 +1653,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt(singlecomboedittext.getText().toString());
 
             }
@@ -1625,6 +1674,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setCodes(Idview.getText().toString());
             }
         });
@@ -1714,6 +1764,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt(multicomboeditext.getText().toString());
 
             }
@@ -1826,6 +1877,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt(textfileupload.getText().toString());
 
             }
@@ -1931,6 +1983,7 @@ public class DynamicActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isEdited=true;
                 ActivityViewItem.get(k).setAnswerTxt(textcurrency.getText().toString());
 
             }
@@ -2414,117 +2467,127 @@ public class DynamicActivity extends AppCompatActivity {
     }
 
     public void saveActivity() {
-        int conut = 0;
-        try {
-            JSONArray jsonArray = new JSONArray();
-            for (int i = 0; i < ActivityViewItem.size(); i++) {
-
-                JSONObject jsonObject = new JSONObject();
-                ActivityDetailsModelClass List = ActivityViewItem.get(i);
-                Date today = new Date();
-                String dateToStr = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_1, HomeDashBoard.binding.textDate.getText().toString());
-                SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-                String dateToStr1 = format1.format(today) + " 00:00:00";
-                jsonObject.put("sfcode", SharedPref.getSfCode(this));
-                jsonObject.put("division_code", SharedPref.getDivisionCode(this));
-                jsonObject.put("act_date", dateToStr);
-                jsonObject.put("dcr_date", dateToStr1);
-                jsonObject.put("update_time", dateToStr);
-                jsonObject.put("ModTime", "");
-                jsonObject.put("slno", List.getSlno());
-                jsonObject.put("ctrl_id", List.getControlId());
-                jsonObject.put("creat_id", List.getCreationId());
-                jsonObject.put("group_creat_id", List.getCreationId());
-                jsonObject.put("WT", "0");
-                jsonObject.put("Pl", "0");
-                jsonObject.put("cus_code", "0");
-                jsonObject.put("lat", gpsTrack.getLatitude());
-                jsonObject.put("lng", gpsTrack.getLongitude());
-                jsonObject.put("cusname", "Name");
-                jsonObject.put("DataSF", SharedPref.getSfCode(this));
-                jsonObject.put("type", "0");
-                jsonObject.put("WT_code", "");
-                jsonObject.put("WTName", "");
-                jsonObject.put("FWFlg", "");
-                jsonObject.put("town_code", "");
-                jsonObject.put("town_name", "");
-                jsonObject.put("Rsf", SharedPref.getHqCode(DynamicActivity.this));
-                jsonObject.put("sf_type", SharedPref.getSfType(this));
-                jsonObject.put("Designation", SharedPref.getDesig(this));
-                jsonObject.put("state_code", SharedPref.getStateCode(this));
-                jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
 
 
-                if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16") ) {
-                    if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The From " + List.getFieldName());
-                        break;
-                    } else if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The To" + List.getFieldName());
-                        break;
-                    } else {
-                        jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
-                        jsonObject.put("codes", List.getCodes());
-                        Log.v("codes", List.getCodes());
-                    }
-                } else if (List.getControlId().equalsIgnoreCase("17")) {
-                    if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Choose The " + List.getFieldName() + "");
-                        break;
-                    } else {
-                        jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
-                        jsonObject.put("codes", List.getCodes());
+        if(UtilityClass.isNetworkAvailable(DynamicActivity.this)) {
 
-                    }
 
-                } else {
-                    if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The " + List.getFieldName() + "");
-                        break;
-                    } else {
-                        jsonObject.put("values", List.getAnswerTxt());
-                        jsonObject.put("codes", List.getCodes());
-                        Log.v("codes", List.getCodes());
-                    }
-                }
-                jsonArray.put(jsonObject);
-                conut++;
-            }
+            int conut = 0;
+            try {
+                JSONArray jsonArray = new JSONArray();
+                for (int i = 0; i < ActivityViewItem.size(); i++) {
 
-            if (conut == ActivityViewItem.size()) {
-                binding.progresssumit.setVisibility(View.VISIBLE);
-                JSONObject MainObject = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
-                MainObject.put("tableName", "savedcract");
-                MainObject.put("val", jsonArray);
-                Log.v("JsonObject  :", "" + MainObject.toString());
-                Map<String, String> QryParam = new HashMap<>();
-                QryParam.put("axn", "save/activity");
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(DynamicActivity.this), QryParam, MainObject.toString());
-                call.enqueue(new Callback<JsonElement>() {
-                    @Override
-                    public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-                        if (response.code() == 200 || response.code() == 201) {
-                            commonUtilsMethods.showToastMessage(DynamicActivity.this, "Activity Submitted successfully");
-                            binding.progresssumit.setVisibility(View.GONE);
-                            TaggedImage();
-                            Intent intent = getIntent();
-                            overridePendingTransition(0, 0);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                            finish();
-                            overridePendingTransition(0, 0);
-                            startActivity(intent);
+                    JSONObject jsonObject = new JSONObject();
+                    ActivityDetailsModelClass List = ActivityViewItem.get(i);
+                    Date today = new Date();
+                    String dateToStr = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_1, HomeDashBoard.binding.textDate.getText().toString());
+                    SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+                    String dateToStr1 = format1.format(today) + " 00:00:00";
+                    jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                    jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                    jsonObject.put("act_date", dateToStr);
+                    jsonObject.put("dcr_date", dateToStr1);
+                    jsonObject.put("update_time", dateToStr);
+                    jsonObject.put("ModTime", "");
+                    jsonObject.put("slno", List.getSlno());
+                    jsonObject.put("ctrl_id", List.getControlId());
+                    jsonObject.put("creat_id", List.getCreationId());
+                    jsonObject.put("group_creat_id", List.getCreationId());
+                    jsonObject.put("WT", "0");
+                    jsonObject.put("Pl", "0");
+                    jsonObject.put("cus_code", "0");
+                    jsonObject.put("lat", gpsTrack.getLatitude());
+                    jsonObject.put("lng", gpsTrack.getLongitude());
+                    jsonObject.put("cusname", "Name");
+                    jsonObject.put("DataSF", SharedPref.getSfCode(this));
+                    jsonObject.put("type", "0");
+                    jsonObject.put("WT_code", "");
+                    jsonObject.put("WTName", "");
+                    jsonObject.put("FWFlg", "");
+                    jsonObject.put("town_code", "");
+                    jsonObject.put("town_name", "");
+                    jsonObject.put("Rsf", SharedPref.getHqCode(DynamicActivity.this));
+                    jsonObject.put("sf_type", SharedPref.getSfType(this));
+                    jsonObject.put("Designation", SharedPref.getDesig(this));
+                    jsonObject.put("state_code", SharedPref.getStateCode(this));
+                    jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+
+
+                    if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
+                        if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
+                            commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The From " + List.getFieldName());
+                            break;
+                        } else if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
+                            commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The To" + List.getFieldName());
+                            break;
+                        } else {
+                            jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
+                            jsonObject.put("codes", List.getCodes());
+                            Log.v("codes", List.getCodes());
+                        }
+                    } else if (List.getControlId().equalsIgnoreCase("17")) {
+                        if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
+                            commonUtilsMethods.showToastMessage(DynamicActivity.this, "Choose The " + List.getFieldName() + "");
+                            break;
+                        } else {
+                            jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
+                            jsonObject.put("codes", List.getCodes());
 
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<JsonElement> call, Throwable t) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, t.getMessage());
-                        binding.progresssumit.setVisibility(View.GONE);
+                    } else {
+                        if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
+                            commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The " + List.getFieldName() + "");
+                            break;
+                        } else {
+                            jsonObject.put("values", List.getAnswerTxt());
+                            jsonObject.put("codes", List.getCodes());
+                            Log.v("codes", List.getCodes());
+                        }
                     }
-                });
+                    jsonArray.put(jsonObject);
+                    conut++;
+                }
+
+                if (conut == ActivityViewItem.size()) {
+                    binding.progresssumit.setVisibility(View.VISIBLE);
+                    JSONObject MainObject = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
+                    MainObject.put("tableName", "savedcract");
+                    MainObject.put("val", jsonArray);
+                    Log.v("JsonObject  :", "" + MainObject.toString());
+                    Map<String, String> QryParam = new HashMap<>();
+                    QryParam.put("axn", "save/activity");
+                    Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(DynamicActivity.this), QryParam, MainObject.toString());
+                    call.enqueue(new Callback<JsonElement>() {
+                        @Override
+                        public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                            if (response.code() == 200 || response.code() == 201) {
+                                commonUtilsMethods.showToastMessage(DynamicActivity.this, "Activity Submitted successfully");
+                                binding.progresssumit.setVisibility(View.GONE);
+                                TaggedImage();
+                                Intent intent = getIntent();
+                                overridePendingTransition(0, 0);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                finish();
+                                overridePendingTransition(0, 0);
+                                startActivity(intent);
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<JsonElement> call, Throwable t) {
+                            commonUtilsMethods.showToastMessage(DynamicActivity.this, t.getMessage());
+                            binding.progresssumit.setVisibility(View.GONE);
+                        }
+                    });
+                }
+            } catch (Exception a) {
             }
-        } catch (Exception a) {
+
+        }else {
+            commonUtilsMethods.showToastMessage(DynamicActivity.this,getResources().getString(R.string.no_network) );
+
         }
     }
 
@@ -2914,6 +2977,25 @@ public class DynamicActivity extends AppCompatActivity {
         int CoarseLocation = ContextCompat.checkSelfPermission(DynamicActivity.this, ACCESS_COARSE_LOCATION);
         return FineLocation == PackageManager.PERMISSION_GRANTED && CoarseLocation == PackageManager.PERMISSION_GRANTED;
     }
+    private void handleCancel() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dcr_cancel_alert);
+        dialog.setCancelable(false);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+        TextView btn_yes=dialog.findViewById(R.id.btn_yes);
+        TextView alertText=dialog.findViewById(R.id.ed_alert_msg);
+        TextView btn_no=dialog.findViewById(R.id.btn_no);
+        alertText.setText("");
+        btn_yes.setOnClickListener(view12 -> {
+        });
+
+        btn_no.setOnClickListener(view12 -> {
+            dialog.dismiss();
+        });
+
+    }
+
 
 }
 
