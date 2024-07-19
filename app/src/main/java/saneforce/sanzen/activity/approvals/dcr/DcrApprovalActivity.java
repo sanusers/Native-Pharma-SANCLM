@@ -41,6 +41,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -196,32 +197,77 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
                             dcrDetailedList.add(new DcrDetailModelList(dcrCallApprovalBinding.tvName.getText().toString(), json.getString("Trans_Detail_Name"), json.getString("Trans_Detail_Info_Code"), json.getString("Type"), json.getString("Trans_Detail_Info_Type"), json.getString("SDP_Name"), json.getString("pob"), json.getString("remarks"), json.getString("jointwrk"), json.getString("Call_Feedback"), json.getString("visitTime"), json.getString("ModTime"), json.getString("Trans_SlNo"), json.getString("Trans_Detail_Slno")));
 
+//                            "products": "A AMOXY 2.5% SS ( 8682 ) ( 0 ) ( 0^8686 ),",
+//
+//
+//                            "products": "A AMOXY 2.5% SS ( 9 ) ( 0 ) ( 0^96 ), A BECOSIS 100ML SS & SAL ( 96 ) ( 0 ) ( 0^9 ),  )",
+
                             //Extract Product Values
-                            String PrdName, PrdSamQty, PrdRxQty;
+
+
+
+
                             if (!json.getString("products").isEmpty()) {
-                                String[] StrArray = json.getString("products").split(",");
-                                for (String value : StrArray) {
-                                    if (!value.equalsIgnoreCase("  )")) {
-                                        PrdName = value.substring(0, value.indexOf('(')).trim();
+                                String str = json.getString("products").replace(")", "");
+                                String[] separated = str.split(",");
 
-                                        PrdSamQty = value.substring(value.indexOf("(") + 1);
-                                        PrdSamQty = PrdSamQty.substring(0, PrdSamQty.indexOf(")"));
-
-                                        PrdRxQty = value.substring(value.indexOf(")") + 1).trim();
-                                        if (PrdRxQty.contains("(")) {
-                                            PrdRxQty = PrdRxQty.substring(PrdRxQty.indexOf("(") + 1);
-                                            PrdRxQty = PrdRxQty.substring(0, PrdRxQty.indexOf(")"));
-                                        } else {
-                                            PrdRxQty = "0";
-                                        }
-                                        if (productPromoted.toString().contains(PrdName)) {
-                                            SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), PrdName, PrdSamQty, PrdRxQty, "0", "Yes"));
-                                        } else {
-                                            SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), PrdName, PrdSamQty, PrdRxQty, "0", "No"));
-                                        }
+                                List<String> resultList = new ArrayList<>();
+                                for (String str1 : separated) {
+                                    str1 = str1.trim();
+                                    if (!str1.isEmpty()) {
+                                        resultList.add(str1);
                                     }
                                 }
+                                String[] newArray = resultList.toArray(new String[0]);
+                                for (String s : newArray) {
+                                    String[] item = s.split("[(]");
+
+                                    String Rcpa = "";
+                                    if(item.length > 3) {
+                                        Rcpa = item[3];
+                                        if(item[3].contains("^")) {
+                                            String[] rcpa = item[3].replace("^", ",").split("[,]");
+                                            Rcpa = rcpa[1];
+                                        }
+                                    }
+                                    Log.e("PromotedCode", productPromoted + " ???? " + item[0]);
+                                    if (productPromoted.toString().contains(item[0].trim())) {
+                                        Log.e("PromotedCode", "Yes");
+                                        SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), item[0], item[1], item[2], Rcpa, "Yes"));
+                                    } else {
+                                        Log.e("PromotedCode", "No");
+                                        SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), item[0], item[1], item[2], Rcpa, "No"));
+                                    }
+
+                                }
                             }
+
+
+//                            String PrdName, PrdSamQty, PrdRxQty;
+//                            if (!json.getString("products").isEmpty()) {
+//                                String[] StrArray = json.getString("products").split(",");
+//                                for (String value : StrArray) {
+//                                    if (!value.equalsIgnoreCase("  )")) {
+//                                        PrdName = value.substring(0, value.indexOf('(')).trim();
+//
+//                                        PrdSamQty = value.substring(value.indexOf("(") + 1);
+//                                        PrdSamQty = PrdSamQty.substring(0, PrdSamQty.indexOf(")"));
+//
+//                                        PrdRxQty = value.substring(value.indexOf(")") + 1).trim();
+//                                        if (PrdRxQty.contains("(")) {
+//                                            PrdRxQty = PrdRxQty.substring(PrdRxQty.indexOf("(") + 1);
+//                                            PrdRxQty = PrdRxQty.substring(0, PrdRxQty.indexOf(")"));
+//                                        } else {
+//                                            PrdRxQty = "0";
+//                                        }
+//                                        if (productPromoted.toString().contains(PrdName)) {
+//                                            SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), PrdName, PrdSamQty, PrdRxQty, "", "Yes"));
+//                                        } else {
+//                                            SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), PrdName, PrdSamQty, PrdRxQty, "0", "No"));
+//                                        }
+//                                    }
+//                                }
+//                            }
 
                             //Extract Input Values
                             String InpName, InpQty;
