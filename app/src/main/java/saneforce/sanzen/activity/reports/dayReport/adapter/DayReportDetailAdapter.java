@@ -186,6 +186,11 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     holder.jointWorkLayout.setVisibility(View.GONE);
                     holder.jointView.setVisibility(View.GONE);
                 }
+                if(SharedPref.getDrRxNd(context).equalsIgnoreCase("0")) {
+                    holder.textRxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    holder.textRxQty.setVisibility(View.VISIBLE);
+                }
                 if(SharedPref.getRcpaQtyNeed(context).equalsIgnoreCase("0")) {
                     holder.textRCPAName.setVisibility(View.VISIBLE);
                 } else {
@@ -229,6 +234,11 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     holder.jointWorkLayout.setVisibility(View.GONE);
                     holder.jointView.setVisibility(View.GONE);
                 }
+                if(SharedPref.getChmRxQty(context).equalsIgnoreCase("1")) {
+                    holder.textRxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    holder.textRxQty.setVisibility(View.VISIBLE);
+                }
                 holder.textRCPAName.setVisibility(View.INVISIBLE);
                 break;
             }
@@ -261,6 +271,11 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 }else {
                     holder.jointWorkLayout.setVisibility(View.GONE);
                     holder.jointView.setVisibility(View.GONE);
+                }
+                if(SharedPref.getStkPobNeed(context).equalsIgnoreCase("1")) {
+                    holder.textRxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    holder.textRxQty.setVisibility(View.VISIBLE);
                 }
                 holder.textRCPAName.setVisibility(View.INVISIBLE);
                 break;
@@ -298,6 +313,11 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 }else {
                     holder.jointWorkLayout.setVisibility(View.GONE);
                     holder.jointView.setVisibility(View.GONE);
+                }
+                if(SharedPref.getUlStkNeed(context).equalsIgnoreCase("1")) {
+                    holder.textRxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    holder.textRxQty.setVisibility(View.VISIBLE);
                 }
                 holder.textRCPAName.setVisibility(View.INVISIBLE);
                 break;

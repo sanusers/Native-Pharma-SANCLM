@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.storage.SharedPref;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
@@ -56,15 +57,54 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             commonUtilsMethods.displayPopupWindow(context, view, getProductList.get(position).getName());
        });
         switch (category){
+            case Constants.DOCTOR:
             case "DOCTOR":
                 if (SharedPref.getRcpaQtyNeed(context).equals("0")){
                     holder.tv_rcpa.setVisibility(View.VISIBLE);
                 }else{
                     holder.tv_rcpa.setVisibility(View.INVISIBLE);
                 }
+                if(SharedPref.getDrRxNd(context).equalsIgnoreCase("0")) {
+                    holder.tv_rxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    holder.tv_rxQty.setVisibility(View.VISIBLE);
+                }
+                holder.img_promoted.setVisibility(View.VISIBLE);
+                break;
+            case Constants.CHEMIST:
+            case "CHEMIST":
+                if(SharedPref.getChmRxQty(context).equalsIgnoreCase("1")) {
+                    holder.tv_rxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    holder.tv_rxQty.setVisibility(View.VISIBLE);
+                }
+                holder.tv_rcpa.setVisibility(View.INVISIBLE);
+                holder.img_promoted.setVisibility(View.INVISIBLE);
+                break;
+            case Constants.STOCKIEST:
+            case "STOCKIST":
+                if(SharedPref.getStkPobNeed(context).equalsIgnoreCase("1")) {
+                    holder.tv_rxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    holder.tv_rxQty.setVisibility(View.VISIBLE);
+                }
+                holder.tv_rcpa.setVisibility(View.INVISIBLE);
+                holder.img_promoted.setVisibility(View.INVISIBLE);
+                break;
+            case Constants.UNLISTED_DOCTOR:
+            case "UNLISTED_DOCTOR":
+                if(SharedPref.getUlStkNeed(context).equalsIgnoreCase("1")) {
+                    holder.tv_rxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    holder.tv_rxQty.setVisibility(View.VISIBLE);
+                }
+                holder.tv_rcpa.setVisibility(View.INVISIBLE);
+                holder.img_promoted.setVisibility(View.VISIBLE);
                 break;
             default:
                 holder.tv_rcpa.setVisibility(View.INVISIBLE);
+                holder.tv_rxQty.setVisibility(View.INVISIBLE);
+                holder.img_promoted.setVisibility(View.VISIBLE);
                 break;
         }
     }

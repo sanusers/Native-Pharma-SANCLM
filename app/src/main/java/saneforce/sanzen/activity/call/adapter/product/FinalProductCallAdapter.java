@@ -74,6 +74,8 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
         holder.switch_prompt.setChecked(productListArrayList.get(position).getPromoted().equalsIgnoreCase("0"));
         if(DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")||DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")){
             holder.switch_prompt.setVisibility(View.GONE);
+        }else {
+            holder.switch_prompt.setVisibility(View.VISIBLE);
         }
 
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
@@ -98,12 +100,12 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                     holder.ed_samplesQty.setBackground(null);
                     holder.ed_samplesQty.setHint("");
 
-                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1"))
+//                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1"))
 //                        holder.ed_samplesQty.setVisibility(View.GONE);
 
-                        if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
+//                        if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
 //                        holder.ed_rcpaQty.setVisibility(View.GONE);
-                            holder.switch_prompt.setVisibility(View.GONE);
+//                            holder.switch_prompt.setVisibility(View.GONE);
                     holder.ed_rxQty.setVisibility(View.VISIBLE);
                     if (DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
                         holder.ed_rcpaQty.setVisibility(View.VISIBLE);
@@ -146,7 +148,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
 
 
 
-                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
+//                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
 //                        holder.ed_samplesQty.setVisibility(View.GONE);
                         if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
                             holder.ed_rxQty.setVisibility(View.VISIBLE);
