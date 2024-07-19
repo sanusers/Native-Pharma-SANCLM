@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.ViewModel;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -32,13 +33,15 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
+@SuppressLint("StaticFieldLeak")
 public class LeaveViewModel extends ViewModel {
     Call<JsonElement> leaveStatus;
-    private Context context;
-    RoomDB roomDB = RoomDB.getDatabase(context);
-    MasterDataDao masterDataDao = roomDB.masterDataDao();
+    private final Context context;
+    MasterDataDao masterDataDao;
     public LeaveViewModel(Context context) {
         this.context = context;
+        RoomDB roomDB = RoomDB.getDatabase(context);
+        masterDataDao = roomDB.masterDataDao();
     }
 
     public void updateLeaveStatusMasterSync() {
@@ -83,14 +86,14 @@ public class LeaveViewModel extends ViewModel {
                             }
                         }
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
                     }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }

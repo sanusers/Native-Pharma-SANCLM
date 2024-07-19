@@ -149,6 +149,11 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                     dcrDetailViewBinding.constraintMainRcpa.setVisibility(View.GONE);
                     dcrDetailViewBinding.viewDummyRcpa.setVisibility(View.GONE);
                 }
+                if(SharedPref.getDrRxNd(this).equalsIgnoreCase("0")) {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.VISIBLE);
+                }
                 if (SharedPref.getDocPobNeed(this).equals("0")){
                     dcrDetailViewBinding.tagPob.setVisibility(View.VISIBLE);
                     dcrDetailViewBinding.tvPob.setVisibility(View.VISIBLE);
@@ -221,6 +226,12 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                     dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
                     dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
                 }
+                if(SharedPref.getChmRxQty(this).equalsIgnoreCase("1")) {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.VISIBLE);
+                }
+                dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.INVISIBLE);
                 break;
             case "3":
                 detailingNeed = SharedPref.getSTKDetailingNeed(this);
@@ -265,6 +276,12 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                     dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
                     dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
                 }
+                if(SharedPref.getStkPobNeed(this).equalsIgnoreCase("1")) {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.VISIBLE);
+                }
+                dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.INVISIBLE);
                 break;
             case "4":
                 detailingNeed = SharedPref.getUNDRDetailingNeed(this);
@@ -314,6 +331,12 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                     dcrDetailViewBinding.tagJw.setVisibility(View.VISIBLE);
                     dcrDetailViewBinding.tvJw.setVisibility(View.VISIBLE);
                 }
+                if(SharedPref.getUlPobNeed(this).equalsIgnoreCase("1")) {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.VISIBLE);
+                }
+                dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.INVISIBLE);
                 break;
         }
         if(detailingNeed.equalsIgnoreCase("0")){
@@ -426,6 +449,11 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                 }else{
                     dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.INVISIBLE);
                 }
+                if(SharedPref.getDrRxNd(this).equalsIgnoreCase("0")) {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.VISIBLE);
+                }
                 if (SharedPref.getDocPobNeed(this).equals("0")){
                     dcrDetailViewBinding.tagPob.setVisibility(View.VISIBLE);
                     dcrDetailViewBinding.tvPob.setVisibility(View.VISIBLE);
@@ -503,7 +531,12 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                     dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
                     dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
                 }
-                dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.VISIBLE);
+                if(SharedPref.getChmRxQty(this).equalsIgnoreCase("1")) {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.VISIBLE);
+                }
+                dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.INVISIBLE);
                 break;
             case "3":
                 dcrDetailViewBinding.productQty.setVisibility(View.INVISIBLE);
@@ -543,7 +576,12 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                     dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
                     dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
                 }
-                dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.VISIBLE);
+                if(SharedPref.getStkPobNeed(this).equalsIgnoreCase("1")) {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.VISIBLE);
+                }
+                dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.INVISIBLE);
                 break;
             case "4":
                 dcrDetailViewBinding.productQty.setVisibility(View.VISIBLE);
@@ -588,7 +626,12 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                     dcrDetailViewBinding.tagJw.setVisibility(View.INVISIBLE);
                     dcrDetailViewBinding.tvJw.setVisibility(View.INVISIBLE);
                 }
-                dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.VISIBLE);
+                if(SharedPref.getUlPobNeed(this).equalsIgnoreCase("1")) {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.INVISIBLE);
+                } else {
+                    dcrDetailViewBinding.tagRxQty.setVisibility(View.VISIBLE);
+                }
+                dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.INVISIBLE);
                 break;
         }
 
