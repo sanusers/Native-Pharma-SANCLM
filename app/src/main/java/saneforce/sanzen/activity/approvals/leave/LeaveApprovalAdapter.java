@@ -77,7 +77,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
         api_interface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
         holder.tv_name.setText(leaveModelLists.get(position).getName());
         holder.tv_reason.setText(leaveModelLists.get(position).getReason());
-        holder.tv_emp_code.setText(leaveModelLists.get(position).getSf_code());
+        holder.tv_emp_code.setText(leaveModelLists.get(position).getSf_emp_id());
         holder.tv_address.setText(leaveModelLists.get(position).getAddr());
         holder.tv_from_date.setText(leaveModelLists.get(position).getFrom_date());
         holder.tv_to_date.setText(leaveModelLists.get(position).getTo_date());

@@ -347,7 +347,7 @@ public class DayReportDetailFragment extends Fragment {
             case "3":
                 rcpaItem = "1";
                 eventCaptureItem = SharedPref.getSeNeed(requireContext());
-                pobItem = SharedPref.getStkPobNeed(requireContext());
+                pobItem = SharedPref.getStockistPobNeed(requireContext());
                 feedBackItem = SharedPref.getSfNeed(requireContext());
                 inputItem = SharedPref.getSiNeed(requireContext());
                 productItem = SharedPref.getSpNeed(requireContext());

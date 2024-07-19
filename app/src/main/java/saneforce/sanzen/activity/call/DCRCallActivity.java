@@ -1415,6 +1415,8 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
             //FeedBack
+            FeedbackSelectionSide.feedbackCode = "";
+            FeedbackSelectionSide.feedbackName = "";
             if (js.has("Drcallfeedbackcode") && js.has("Call_Fdback")) {
                 FeedbackSelectionSide.feedbackCode = js.getString("Drcallfeedbackcode");
                 FeedbackSelectionSide.feedbackName = js.getString("Call_Fdback");
@@ -2384,7 +2386,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     JwNeed = SharedPref.getChmJointworkNeed(this);
                     PrdSamNeed = SharedPref.getChmsamqtyNeed(this);
                     PrdRxNeed = SharedPref.getChmRxQty(this); //1
-                    PrdRcpaQtyNeed = SharedPref.getRcpaQtyNeed(this);
+                    PrdRcpaQtyNeed = "0"; //0
                     CusCheckInOutNeed = SharedPref.getChmSrtNd(this);
 
                     //Mandatory
@@ -2410,10 +2412,10 @@ public class DCRCallActivity extends AppCompatActivity {
                     OverallFeedbackNeed =SharedPref.getSfNeed(this);
                     EventCaptureNeed = SharedPref.getSeNeed(this);
                     JwNeed = SharedPref.getStkJointworkNeed(this);
-                    PrdSamNeed = "0";
+                    PrdSamNeed = "0"; //0
                     PrdRxNeed = SharedPref.getStkPobNeed(this);
-                    PrdRcpaQtyNeed = SharedPref.getRcpaQtyNeed(this);
-                    CusCheckInOutNeed = "1";
+                    PrdRcpaQtyNeed = "0"; //0
+                    CusCheckInOutNeed = "1"; //1
                     PobNeed = SharedPref.getStockistPobNeed(this);
 
                     //Mandatory
@@ -2437,10 +2439,10 @@ public class DCRCallActivity extends AppCompatActivity {
                     OverallFeedbackNeed = SharedPref.getNfNeed(this);
                     EventCaptureNeed = SharedPref.getNeNeed(this);
                     JwNeed =SharedPref.getUlJointworkNeed(this);
-                    PrdSamNeed = "0";
+                    PrdSamNeed = "0"; //0
                     PrdRxNeed =SharedPref.getUlPobNeed(this);
-                    PrdRcpaQtyNeed = SharedPref.getRcpaQtyNeed(this);
-                    CusCheckInOutNeed = "1";
+                    PrdRcpaQtyNeed = "0"; //0
+                    CusCheckInOutNeed = "1"; //1
                     PobNeed = SharedPref.getUnlistedDoctorPobNeed(this);
 
                     //Mandatory

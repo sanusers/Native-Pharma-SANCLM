@@ -298,7 +298,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.getUiSettings().setRotateGesturesEnabled(true);
                 mapsBinding.progressBar.setVisibility(View.GONE);
             });
-        } else if(from_tagging.equalsIgnoreCase("tagging")) {
+        } else if(from_tagging.equalsIgnoreCase("tagging") || from_tagging.equalsIgnoreCase("view_tagged")) {
             mapsBinding.imgRefreshMap.setVisibility(View.VISIBLE);
             mapsBinding.imgCurLoc.setVisibility(View.VISIBLE);
             getRequiredData();
