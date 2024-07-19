@@ -313,6 +313,7 @@ public class CallsFragment extends Fragment {
         });
 
         binding.TvAddActivty.setOnClickListener(view -> {
+            if(UtilityClass.isNetworkAvailable(requireContext())){
             if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
                 CommonAlertBox.ApprovalAlert(requireActivity());
             }else if(SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
@@ -351,6 +352,8 @@ public class CallsFragment extends Fragment {
                     e.printStackTrace();
 
                 }
+            }}else {
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
             }
         });
 
