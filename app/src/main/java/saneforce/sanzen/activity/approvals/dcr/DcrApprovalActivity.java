@@ -37,11 +37,17 @@ import com.google.gson.JsonElement;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -603,6 +609,21 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                             JSONObject json = jsonArray.getJSONObject(i);
                             dcrApprovalLists.add(new DCRApprovalList(json.getString("Trans_SlNo"), json.getString("Sf_Name"), json.getString("Activity_Date"), json.getString("Plan_Name"), json.getString("WorkType_Name"), json.getString("Sf_Code"), json.getString("FieldWork_Indicator"), json.getString("Submission_Date"), json.getString("Hlfday"), json.getString("Remarks"), json.getString("Additional_Temp_Details")));
                         }
+
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+                        Collections.sort(dcrApprovalLists, (o1, o2) -> {
+                            try {
+                                Date date1 = dateFormat.parse(o1.getActivity_date());
+                                Date date2 = dateFormat.parse(o2.getActivity_date());
+                                assert date1 != null;
+                                return date1.compareTo(date2); // Compare the Date objects
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                                return 0; // Orhandle it differently based on your requirements
+                            }
+                        });
+
                         adapterDcrApprovalList = new AdapterDcrApprovalList(DcrApprovalActivity.this, DcrApprovalActivity.this, dcrApprovalLists, DcrApprovalActivity.this);
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                         dcrCallApprovalBinding.rvDcrList.setLayoutManager(mLayoutManager);
