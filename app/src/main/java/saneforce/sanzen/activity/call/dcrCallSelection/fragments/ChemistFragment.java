@@ -52,6 +52,7 @@ import saneforce.sanzen.storage.SharedPref;
 public class ChemistFragment extends Fragment {
     RecyclerView rv_list;
     ArrayList<CustList> cusListArrayList = new ArrayList<>();
+    ArrayList<CustList> filteredNames = new ArrayList<>();
     AdapterDCRCallSelection adapterDCRCallSelection;
     EditText ed_search;
     Dialog dialogFilter;
@@ -229,7 +230,7 @@ public class ChemistFragment extends Fragment {
 
 
     private void filter(String text) {
-        ArrayList<CustList> filteredNames = new ArrayList<>();
+        filteredNames = new ArrayList<>();
         if(cusListArrayList != null) {
             for (CustList s : cusListArrayList) {
                 if(s.getName().toLowerCase().contains(text.toLowerCase()) || s.getTown_name().toLowerCase().contains(text.toLowerCase()) || s.getSpecialist().toLowerCase().contains(text.toLowerCase())) {
@@ -352,33 +353,37 @@ public class ChemistFragment extends Fragment {
     }
 
     public void Filtered() {
+        ArrayList<CustList> filterCusList = new ArrayList<>();
+        if(!filteredNames.isEmpty()) {
+            filterCusList.addAll(filteredNames);
+        }else {
+            filterCusList.addAll(cusListArrayList);
+        }
         FilltercustArraList.clear();
         if (TerritoryCode.equalsIgnoreCase("") && categoryCode.equalsIgnoreCase("")) {
-            FilltercustArraList.addAll(cusListArrayList);
+            FilltercustArraList.addAll(filterCusList);
             tv_filter_count.setText("0");
             Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
         } else if(!TerritoryCode.isEmpty() && !categoryCode.isEmpty()){
-            for (CustList mList : cusListArrayList) {
+            for (CustList mList : filterCusList) {
                 if (mList.getTown_code().equalsIgnoreCase(TerritoryCode) && mList.getCategoryCode().equalsIgnoreCase(categoryCode)) {
                     FilltercustArraList.add(mList);
                 }
             }
-            tv_filter_count.setText(String.valueOf(FilltercustArraList.size()));
         } else if(!TerritoryCode.isEmpty()){
-            for (CustList mList : cusListArrayList) {
+            for (CustList mList : filterCusList) {
                 if (mList.getTown_code().equalsIgnoreCase(TerritoryCode)) {
                     FilltercustArraList.add(mList);
                 }
             }
-            tv_filter_count.setText(String.valueOf(FilltercustArraList.size()));
         } else if(!categoryCode.isEmpty()){
-            for (CustList mList : cusListArrayList) {
+            for (CustList mList : filterCusList) {
                 if (mList.getCategoryCode().equalsIgnoreCase(categoryCode)) {
                     FilltercustArraList.add(mList);
                 }
             }
-            tv_filter_count.setText(String.valueOf(FilltercustArraList.size()));
         }
+        tv_filter_count.setText(String.valueOf(FilltercustArraList.size()));
 
         if(FilltercustArraList.isEmpty()){
             noChemist.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getChmCap(requireContext()), getString(R.string.found)));
@@ -387,7 +392,7 @@ public class ChemistFragment extends Fragment {
         }else {
             noChemist.setVisibility(View.GONE);
             rv_list.setVisibility(View.VISIBLE);
-            adapterDCRCallSelection.notifyDataSetChanged();
+            adapterDCRCallSelection.filterList(FilltercustArraList);
         }
         dialogFilter.dismiss();
     }

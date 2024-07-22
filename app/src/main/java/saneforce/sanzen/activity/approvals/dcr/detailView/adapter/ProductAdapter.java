@@ -92,7 +92,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 holder.img_promoted.setVisibility(View.INVISIBLE);
                 break;
             case Constants.UNLISTED_DOCTOR:
-            case "UNLISTED_DOCTOR":
+            case "ULDOCTOR":
                 if(SharedPref.getUlPobNeed(context).equalsIgnoreCase("1")) {
                     holder.tv_rxQty.setVisibility(View.INVISIBLE);
                 } else {

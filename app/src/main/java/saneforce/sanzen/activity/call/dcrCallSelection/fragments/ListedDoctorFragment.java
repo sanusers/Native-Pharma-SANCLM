@@ -58,6 +58,7 @@ public class ListedDoctorFragment extends Fragment {
     RecyclerView rv_list;
     ArrayList<CustList> custListArrayList = new ArrayList<>();
     ArrayList<CustList> FilltercustArraList = new ArrayList<>();
+    ArrayList<CustList> filteredNames = new ArrayList<>();
     AdapterDCRCallSelection adapterDCRCallSelection;
     EditText ed_search;
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
@@ -576,7 +577,7 @@ public class ListedDoctorFragment extends Fragment {
     }*/
 
     private void filter(String text) {
-        ArrayList<CustList> filteredNames = new ArrayList<>();
+        filteredNames = new ArrayList<>();
         for (CustList s : custListArrayList) {
             if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getTown_name().toLowerCase().contains(text.toLowerCase()) || s.getSpecialist().toLowerCase().contains(text.toLowerCase())) {
                 filteredNames.add(s);
@@ -586,13 +587,19 @@ public class ListedDoctorFragment extends Fragment {
     }
 
     public void Filtered() {
+        ArrayList<CustList> filterCusList = new ArrayList<>();
+        if(!filteredNames.isEmpty()) {
+            filterCusList.addAll(filteredNames);
+        }else {
+            filterCusList.addAll(custListArrayList);
+        }
         FilltercustArraList.clear();
         if(specialityCode.equalsIgnoreCase("") && categoryCode.equalsIgnoreCase("") && territoryCode.equalsIgnoreCase("") && classCode.equalsIgnoreCase("")) {
-            FilltercustArraList.addAll(custListArrayList);
+            FilltercustArraList.addAll(filterCusList);
             tv_filterCount.setText("0");
             Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
         }else {
-            for (CustList mList : custListArrayList) {
+            for (CustList mList : filterCusList) {
                 if(mList.getSpecialistCode().equalsIgnoreCase(specialityCode)
                         && mList.getTown_code().equalsIgnoreCase(territoryCode)
                         && mList.getCategoryCode().equalsIgnoreCase(categoryCode)
@@ -670,9 +677,9 @@ public class ListedDoctorFragment extends Fragment {
                             && categoryCode.isEmpty()) {
                         FilltercustArraList.add(mList);
                     }
-                    tv_filterCount.setText(String.valueOf(FilltercustArraList.size()));
                 }
             }
+            tv_filterCount.setText(String.valueOf(FilltercustArraList.size()));
         }
 
         if(FilltercustArraList.isEmpty()){
@@ -682,7 +689,7 @@ public class ListedDoctorFragment extends Fragment {
         }else {
             noDoctor.setVisibility(View.GONE);
             rv_list.setVisibility(View.VISIBLE);
-            adapterDCRCallSelection.notifyDataSetChanged();
+            adapterDCRCallSelection.filterList(FilltercustArraList);
         }
         dialogFilter.dismiss();
     }

@@ -181,7 +181,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
 //                    }
 //                }
 
-                if(SequentialEntry.equalsIgnoreCase("0")) {
+                if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date));
                 } else if(!SharedPref.getDayPlanStartedDate(context).isEmpty() && WorkPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.complete_day));

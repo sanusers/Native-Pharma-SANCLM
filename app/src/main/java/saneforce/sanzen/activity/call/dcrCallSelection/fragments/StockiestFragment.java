@@ -51,6 +51,7 @@ import saneforce.sanzen.storage.SharedPref;
 public class StockiestFragment extends Fragment {
     RecyclerView rv_list;
     ArrayList<CustList> custListArrayList = new ArrayList<>();
+    ArrayList<CustList> filteredNames = new ArrayList<>();
     AdapterDCRCallSelection adapterDCRCallSelection;
     EditText ed_search;
     Dialog dialogFilter;
@@ -206,7 +207,7 @@ public class StockiestFragment extends Fragment {
     }
 
     private void filter(String text) {
-        ArrayList<CustList> filteredNames = new ArrayList<>();
+        filteredNames = new ArrayList<>();
         for (CustList s : custListArrayList) {
             if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getTown_name().toLowerCase().contains(text.toLowerCase()) || s.getSpecialist().toLowerCase().contains(text.toLowerCase())) {
                 filteredNames.add(s);
@@ -280,14 +281,20 @@ public class StockiestFragment extends Fragment {
     }
 
     public void Filtered() {
+        ArrayList<CustList> filterCusList = new ArrayList<>();
+        if(!filteredNames.isEmpty()) {
+            filterCusList.addAll(filteredNames);
+        }else {
+            filterCusList.addAll(custListArrayList);
+        }
         FilltercustArraList.clear();
         if (territoryName.equalsIgnoreCase("")) {
-            FilltercustArraList.addAll(custListArrayList);
+            FilltercustArraList.addAll(filterCusList);
 
             tv_filter_count.setText("0");
             Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
         } else {
-            for (CustList mList : custListArrayList) {
+            for (CustList mList : filterCusList) {
                 if (mList.getTown_name().equalsIgnoreCase(territoryName)) {
                     FilltercustArraList.add(mList);
                 }
@@ -302,7 +309,7 @@ public class StockiestFragment extends Fragment {
         }else {
             noStockist.setVisibility(View.GONE);
             rv_list.setVisibility(View.VISIBLE);
-            adapterDCRCallSelection.notifyDataSetChanged();
+            adapterDCRCallSelection.filterList(FilltercustArraList);
         }
         dialogFilter.dismiss();
     }

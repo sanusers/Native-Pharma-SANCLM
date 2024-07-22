@@ -1220,7 +1220,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             SharedPref.setLastCallDate(requireContext(), "");
                             SharedPref.setSelectedDateCal(requireContext(), "");
                             JSONObject jsonObject = new JSONObject(response.body().toString());
-                            HomeDashBoard.canMoveNextDate = false;
+//                            HomeDashBoard.canMoveNextDate = false;
                             FinalSubmitStatus = jsonObject.getString("Msg");
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.day_submitted_successfully));
                             progressDialog.dismiss();
