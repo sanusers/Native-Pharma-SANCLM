@@ -31,6 +31,7 @@ import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentSelectProductSideBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -54,7 +55,10 @@ public class RCPASelectPrdSide extends Fragment {
         selectProductSideBinding.tvDummy.setOnClickListener(view -> {
         });
 
-        selectProductSideBinding.imgClose.setOnClickListener(view -> dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE));
+        selectProductSideBinding.imgClose.setOnClickListener(view -> {
+            dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
+            UtilityClass.hideKeyboard(requireActivity());
+        });
 
         selectProductSideBinding.searchList.addTextChangedListener(new TextWatcher() {
             @Override
@@ -144,7 +148,7 @@ public class RCPASelectPrdSide extends Fragment {
                             RCPAFragment.PrdCode = prdList.get(holder.getBindingAdapterPosition()).getCode();
                             RCPAFragment.rcpaBinding.tvSelectProduct.setText(prdList.get(holder.getBindingAdapterPosition()).getName());
                             RCPAFragment.rcpaBinding.tvRate.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
-                            RCPAFragment.rcpaBinding.edQty.setText("0");
+                            RCPAFragment.rcpaBinding.edQty.setText("");
                             RCPAFragment.rcpaBinding.tvValue.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
                             dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
                         } else {

@@ -247,6 +247,7 @@ public class TagCustSelectionList extends AppCompatActivity {
         });
 
         binding.ivBack.setOnClickListener(view -> {
+            hideKeyboard();
             Intent intent = new Intent(TagCustSelectionList.this, MapsActivity.class);
             intent.putExtra("from", "not_tagging");
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

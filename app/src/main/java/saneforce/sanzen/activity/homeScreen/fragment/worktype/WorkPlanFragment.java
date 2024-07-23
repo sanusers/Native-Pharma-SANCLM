@@ -264,6 +264,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
         HomeDashBoard.binding.llNav.wkListView.setOnItemClickListener((parent, view, position, id) -> {
             HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
+            UtilityClass.hideKeyboard(requireActivity());
             SelectedWorkType = WT_ListAdapter.getlisted().get(position);
             try {
                 mTxtWorktype.setText(SelectedWorkType.getString("Name"));
@@ -392,6 +393,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
         HomeDashBoard.binding.llNav.txtClDone.setOnClickListener(v -> {
             HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
+            UtilityClass.hideKeyboard(requireActivity());
             if (!listSelectedCluster.isEmpty()) {
                 String selectedUsers = "", selectedId = "";
                 strClusterName = "";
@@ -454,6 +456,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
         HomeDashBoard.binding.llNav.wkListView.setOnItemClickListener((parent, view, position, id) -> {
             SelectedHQ = HQ_ListAdapter.getlisted().get(position);
+            UtilityClass.hideKeyboard(requireActivity());
             HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
             try {
                 hqCode = SelectedHQ.getString("id");

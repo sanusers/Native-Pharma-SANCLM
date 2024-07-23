@@ -84,6 +84,7 @@
             android:hint="@string/search"
             android:singleLine="true"
             android:imeOptions="actionDone"
+            android:maxLines="1"
             android:paddingHorizontal="@dimen/_10sdp"
             android:textColor="@color/black"
             android:textColorHint="@color/light_grey"

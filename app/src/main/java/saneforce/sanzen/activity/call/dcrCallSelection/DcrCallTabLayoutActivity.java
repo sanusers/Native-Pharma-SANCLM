@@ -3,14 +3,21 @@ package saneforce.sanzen.activity.call.dcrCallSelection;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+
+import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -123,7 +130,87 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         //dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(viewPagerAdapter.getCount());
         dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(7);
 
+        if (SharedPref.getGeotagNeed(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+            dcrSelectionBinding.imgLocation.setVisibility(View.VISIBLE);
+        } else {
+            dcrSelectionBinding.imgLocation.setVisibility(View.GONE);
+        }
+
+        dcrSelectionBinding.tabLayoutCall.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Log.d("Call Selection Tab Layout", "onTabSelected: " + tab.getPosition());
+                switch (tab.getPosition()){
+                    case 0:
+                        if(SharedPref.getGeotagNeed(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                            dcrSelectionBinding.imgLocation.setVisibility(View.VISIBLE);
+                        }else {
+                            dcrSelectionBinding.imgLocation.setVisibility(View.GONE);
+                        }
+                        break;
+                    case 1:
+                        if(SharedPref.getGeotagNeedChe(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                            dcrSelectionBinding.imgLocation.setVisibility(View.VISIBLE);
+                        }else {
+                            dcrSelectionBinding.imgLocation.setVisibility(View.GONE);
+                        }
+                        break;
+                    case 2:
+                        if(SharedPref.getGeotagNeedStock(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                            dcrSelectionBinding.imgLocation.setVisibility(View.VISIBLE);
+                        }else {
+                            dcrSelectionBinding.imgLocation.setVisibility(View.GONE);
+                        }
+                        break;
+                    case 3:
+                        if(SharedPref.getGeotagNeedUnlst(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                            dcrSelectionBinding.imgLocation.setVisibility(View.VISIBLE);
+                        }else {
+                            dcrSelectionBinding.imgLocation.setVisibility(View.GONE);
+                        }
+                        break;
+                    case 4:
+                        if(SharedPref.getGeotagNeedCip(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                            dcrSelectionBinding.imgLocation.setVisibility(View.VISIBLE);
+                        }else {
+                            dcrSelectionBinding.imgLocation.setVisibility(View.GONE);
+                        }
+                        break;
+                    default:
+                        dcrSelectionBinding.imgLocation.setVisibility(View.GONE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
+        dcrSelectionBinding.imgLocation.setOnClickListener(new CommonUtilsMethods.DoubleClickListener() {
+            @Override
+            public void onDoubleClick(View v) {
+                setGpsTrack();
+            }
+        });
+
         dcrSelectionBinding.ivBack.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
+    }
+
+    private void setGpsTrack() {
+        gpsTrack = new GPSTrack(this);
+        double lat = gpsTrack.getLatitude();
+        double lng = gpsTrack.getLongitude();
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            CommonUtilsMethods.gettingAddress(this, Double.parseDouble(String.valueOf(lat)), Double.parseDouble(String.valueOf(lng)), true);
+        }else {
+            CommonUtilsMethods.RequestGPSPermission(this);
+        }
     }
 
     private void getRequiredData() {

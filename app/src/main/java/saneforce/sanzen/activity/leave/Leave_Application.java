@@ -332,6 +332,7 @@ public class Leave_Application extends AppCompatActivity {
                 } else {
                     commonUtilsMethods.showToastMessage(this, getString(R.string.please_check_your_internet_connection));
                 }
+                closeKeyboard();
             });
 
         } catch (Exception e) {

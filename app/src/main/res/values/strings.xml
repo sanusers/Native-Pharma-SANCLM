@@ -186,7 +186,7 @@
     <string name="description">Description</string>
     <string name="chemist_selection">Chemist Selection</string>
     <string name="product_selection">Product Selection</string>
-    <string name="ent_company_name">Enter Company Name</string>
+    <string name="ent_company_name">Enter Brand Name</string>
     <string name="comp_company">Competitor Company</string>
     <string name="input_selection">Input Selection</string>
     <string name="add_prd_inp"><![CDATA[Add Product & Input]]></string>
@@ -458,4 +458,5 @@
         It is recommended to Sync Outbox Calls</string>
     <string name="please_check_your_internet_connection">Please Check Your Internet Connection</string>
     <string name="clear_all">Clear All</string>
+    <string name="qty_must_be_greater_than_0">Qty must be greater than 0</string>
 </resources>

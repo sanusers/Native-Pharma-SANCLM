@@ -39,6 +39,7 @@ import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedProdList;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentAddRcpaSideBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
@@ -92,6 +93,7 @@ public class RCPASelectCompSide extends Fragment {
                 rcpaSideBinding.constraintPreviewCompList.setVisibility(View.VISIBLE);
                 rcpaSideBinding.constraintAddCompList.setVisibility(View.GONE);
             }
+            UtilityClass.hideKeyboard(requireActivity());
         });
 
         rcpaSideBinding.searchCompPrd.addTextChangedListener(new TextWatcher() {

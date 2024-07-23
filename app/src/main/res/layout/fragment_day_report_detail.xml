@@ -46,6 +46,7 @@
                 android:gravity="start|center"
                 android:padding="@dimen/_5sdp"
                 android:imeOptions="actionDone"
+                android:maxLines="1"
                 tools:ignore="SpUsage" />
 
             <LinearLayout

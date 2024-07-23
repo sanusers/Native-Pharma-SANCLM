@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,6 +41,7 @@ import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -48,6 +50,7 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class ListedDoctorFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
@@ -381,7 +384,7 @@ public class ListedDoctorFragment extends Fragment {
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 try {
-                    if (SharedPref.getGeotagNeed(context).equalsIgnoreCase("1")) {
+                    if (SharedPref.getGeotagNeed(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                         if (!jsonObject.getString("Lat").isEmpty() && !jsonObject.getString("Long").isEmpty()) {
                             if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
                                 Log.v("DrCall", "111");

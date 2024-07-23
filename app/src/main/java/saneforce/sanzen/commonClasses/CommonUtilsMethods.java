@@ -468,6 +468,7 @@ public class CommonUtilsMethods {
             context.finishAffinity();
         });
     }
+
     public boolean isTimeZoneAutomatic(Context c) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             return Settings.Global.getInt(c.getContentResolver(), Settings.Global.AUTO_TIME_ZONE, 0) == 1;
@@ -504,6 +505,7 @@ public class CommonUtilsMethods {
         }
         return jsonObject;
     }
+
     public static void accessDialogBox(Activity activity) {
         new android.app.AlertDialog.Builder(activity)
                 .setTitle(" Access Denied")
@@ -517,6 +519,7 @@ public class CommonUtilsMethods {
                 })
                 .show();
     }
+
     public static String convertDate(String originalDateString) {
         SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         SimpleDateFormat targetFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
@@ -528,4 +531,22 @@ public class CommonUtilsMethods {
         }
         return targetFormat.format(date);
     }
+
+    public static class DoubleClickListener implements View.OnClickListener {
+        private static final long DOUBLE_CLICK_TIME_DELTA = 300;
+        private long lastClickTime = 0;
+
+        @Override
+        public void onClick(View v) {
+            long clickTime = System.currentTimeMillis();
+            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
+                onDoubleClick(v);
+            }
+            lastClickTime = clickTime;
+        }
+
+        public void onDoubleClick(View v) {
+        }
     }
+
+}

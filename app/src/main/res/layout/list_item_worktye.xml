@@ -76,6 +76,8 @@
             android:gravity="left"
             android:hint="Search "
             android:inputType="text"
+            android:imeOptions="actionDone"
+            android:maxLines="1"
             android:padding="@dimen/_7sdp"
             android:textSize="@dimen/_6sdp" />
 

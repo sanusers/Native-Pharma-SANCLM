@@ -33,6 +33,7 @@ import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentSelectChemistSideBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -64,7 +65,10 @@ public class RCPASelectChemSide extends Fragment {
         selectChemistSideBinding.tvDummy.setOnClickListener(view -> {
         });
 
-        selectChemistSideBinding.imgClose.setOnClickListener(view -> dcrCallBinding.fragmentSelectChemistSide.setVisibility(View.GONE));
+        selectChemistSideBinding.imgClose.setOnClickListener(view -> {
+            dcrCallBinding.fragmentSelectChemistSide.setVisibility(View.GONE);
+            UtilityClass.hideKeyboard(requireActivity());
+        });
 
         selectChemistSideBinding.searchList.addTextChangedListener(new TextWatcher() {
             @Override
@@ -177,7 +181,7 @@ public class RCPASelectChemSide extends Fragment {
                 RCPAFragment.CheCode = ChemList.get(holder.getBindingAdapterPosition()).getCode();
                 RCPAFragment.rcpaBinding.tvSelectChemist.setText(ChemList.get(holder.getBindingAdapterPosition()).getName());
                 RCPAFragment.rcpaBinding.tvSelectProduct.setText(context.getResources().getString(R.string.select));
-                RCPAFragment.rcpaBinding.edQty.setText("0");
+                RCPAFragment.rcpaBinding.edQty.setText("");
                 RCPAFragment.rcpaBinding.tvRate.setText("");
                 RCPAFragment.rcpaBinding.tvValue.setText("");
                 dcrCallBinding.fragmentSelectChemistSide.setVisibility(View.GONE);

@@ -648,7 +648,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
     @Override
     public void onClick(DCRApprovalList dcrApprovalList, int pos) {
-
+        UtilityClass.hideKeyboard(this);
         dcrCallApprovalBinding.tvName.setText(dcrApprovalList.getSf_name());
         if (dcrApprovalList.getAdditional_Temp_Details().equalsIgnoreCase(""))
             dcrCallApprovalBinding.tvWorktype1.setText(dcrApprovalList.getWorkType_name());

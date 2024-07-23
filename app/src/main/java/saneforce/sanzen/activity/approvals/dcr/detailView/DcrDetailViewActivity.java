@@ -29,6 +29,7 @@ import saneforce.sanzen.activity.approvals.tp.pojo.TpModelList;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityDcrDetailViewBinding;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
@@ -402,6 +403,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onClickDcrDetail(DcrDetailModelList dcrDetailModelList) {
+        UtilityClass.hideKeyboard(this);
         dcrDetailViewBinding.constraintTpListContent.setVisibility(View.VISIBLE);
         dcrDetailViewBinding.tvName.setText(dcrDetailModelList.getName());
         SelectedCode = dcrDetailModelList.getCode();

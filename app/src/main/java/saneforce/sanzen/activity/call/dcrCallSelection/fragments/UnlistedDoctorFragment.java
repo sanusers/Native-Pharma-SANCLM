@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,6 +43,7 @@ import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -129,7 +131,7 @@ public class UnlistedDoctorFragment extends Fragment {
             Log.v("UNDRCALL", "-UnDr_full_length-" + jsonArray.length());
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if (SharedPref.getGeotagNeedUnlst(context).equalsIgnoreCase("1")) {
+                if (SharedPref.getGeotagNeedUnlst(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                     if (!jsonObject.getString("lat").isEmpty() && !jsonObject.getString("long").isEmpty()) {
                         if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
                             Log.v("UNDRCALL", "--11-");

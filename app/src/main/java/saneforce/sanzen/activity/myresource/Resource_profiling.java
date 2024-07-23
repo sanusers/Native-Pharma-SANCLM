@@ -166,7 +166,7 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
         Cip_geoneed = SharedPref.getGeotagNeedCip(this);
         Ult_geoneed = SharedPref.getGeotagNeedUnlst(this);
 
-        if (Doc_geoneed.equals("1") || Che_geoneed.equals("1") || Stk_geoneed.equals("") || Cip_geoneed.equals("1") || Ult_geoneed.equals("1")) {
+        if (Doc_geoneed.equals("1") || Che_geoneed.equals("1") || Stk_geoneed.equals("1") || Cip_geoneed.equals("1") || Ult_geoneed.equals("1")) {
             map_layout.setVisibility(View.VISIBLE);
         }
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()

@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,6 +38,7 @@ import java.util.Objects;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -123,7 +125,7 @@ public class CIPFragment extends Fragment {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
-                    if (SharedPref.getGeotagNeedCip(context).equalsIgnoreCase("1")) {
+                    if (SharedPref.getGeotagNeedCip(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                         if (!jsonObject.getString("Lat").isEmpty() && !jsonObject.getString("Long").isEmpty()) {
                             if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
                                 Log.v("Cip", "--11-");

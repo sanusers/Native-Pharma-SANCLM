@@ -60,6 +60,7 @@
         android:maxLength="4"
         android:hint="0"
         android:imeOptions="actionDone"
+        android:maxLines="1"
         tools:ignore="HardcodedText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/img_del_input"

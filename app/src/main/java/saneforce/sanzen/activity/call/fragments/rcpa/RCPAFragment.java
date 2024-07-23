@@ -75,8 +75,10 @@ public class RCPAFragment extends Fragment {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_chemist));
             } else if (rcpaBinding.tvSelectProduct.getText().toString().isEmpty() || rcpaBinding.tvSelectProduct.getText().toString().equalsIgnoreCase("Select")) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_prd));
-            } else if (Objects.requireNonNull(rcpaBinding.edQty.getText()).toString().equalsIgnoreCase("0") ||rcpaBinding.edQty.getText().toString().isEmpty()) {
+            } else if (rcpaBinding.edQty.getText() == null || (rcpaBinding.edQty.getText().toString().isEmpty())) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.enter_qty));
+            } else if(Integer.parseInt(rcpaBinding.edQty.getText().toString()) < 1) {
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.qty_must_be_greater_than_0));
             } else {
                 rcpaBinding.llNoRcpa.setVisibility(View.GONE);
                 rcpaBinding.rvRcpaChemistList.setVisibility(View.VISIBLE);
@@ -122,7 +124,7 @@ public class RCPAFragment extends Fragment {
                 }
 
                 rcpaBinding.tvSelectProduct.setText(getResources().getString(R.string.select));
-                rcpaBinding.edQty.setText("0");
+                rcpaBinding.edQty.setText("");
                 rcpaBinding.tvRate.setText("");
                 rcpaBinding.tvValue.setText("");
 

@@ -35,6 +35,7 @@ import saneforce.sanzen.activity.call.pojo.additionalCalls.AddSampleAdditionalCa
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentAcSelectProductSideBinding;
 
 public class AddCallSelectPrdSide extends Fragment {
@@ -74,7 +75,10 @@ public class AddCallSelectPrdSide extends Fragment {
             dcrCallBinding.fragmentAcSelectProductSide.setVisibility(View.GONE);
         });
 
-        selectProductSideBinding.imgClose.setOnClickListener(view -> dcrCallBinding.fragmentAcSelectProductSide.setVisibility(View.GONE));
+        selectProductSideBinding.imgClose.setOnClickListener(view -> {
+            dcrCallBinding.fragmentAcSelectProductSide.setVisibility(View.GONE);
+            UtilityClass.hideKeyboard(requireActivity());
+        });
 
         selectProductSideBinding.searchList.addTextChangedListener(new TextWatcher() {
             @Override

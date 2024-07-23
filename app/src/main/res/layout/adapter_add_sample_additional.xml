@@ -60,6 +60,7 @@
         android:background="@drawable/bg_light_grey_border"
         android:fontFamily="@font/satoshi_bold"
         android:imeOptions="actionDone"
+        android:maxLines="1"
         android:inputType="number"
         android:visibility="gone"
         android:maxLength="4"

@@ -126,7 +126,6 @@ public class MyResource_Activity extends AppCompatActivity {
             binding.drawerLayout.closeDrawer(GravityCompat.END);
             et_Custsearch.getText().clear();
             UtilityClass.hideKeyboard(this);
-            hideKeyboard(MyResource_Activity.this);
         });
 
         et_Custsearch.addTextChangedListener(new TextWatcher() {
@@ -459,6 +458,7 @@ public class MyResource_Activity extends AppCompatActivity {
                             binding.hqHead.setText(item.getDcr_name());
                             et_Custsearch.getText().clear();
                             Resource_list(item.getDcr_code());
+                            UtilityClass.hideKeyboard(MyResource_Activity.this);
                         }
                     });
                     appRecyclerView.setAdapter(appAdapter);

@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityRemaindercallsBinding;
 
 import saneforce.sanzen.network.ApiInterface;
@@ -86,6 +87,7 @@ public class RemaindercallsActivity extends AppCompatActivity {
 
         close_sideview.setOnClickListener(view -> {
             RemaindercallsActivity.remcallbinding.drawerLayout.closeDrawer(GravityCompat.END);
+            UtilityClass.hideKeyboard(this);
         });
 
         remcallbinding.townname.setText(SharedPref.getHqName(this));

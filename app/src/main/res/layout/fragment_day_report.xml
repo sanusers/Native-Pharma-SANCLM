@@ -49,6 +49,7 @@
         android:singleLine="true"
         android:background="@drawable/edittext_stroke"
         android:imeOptions="actionDone"
+        android:maxLines="1"
         android:layout_marginStart="20dp"
         android:paddingStart="36dp"
         android:paddingEnd="24dp"

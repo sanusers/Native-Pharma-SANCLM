@@ -35,6 +35,7 @@ import saneforce.sanzen.activity.call.pojo.additionalCalls.AddInputAdditionalCal
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentAcSelectInputSideBinding;
 
 public class AddCallSelectInpSide extends Fragment {
@@ -75,7 +76,10 @@ public class AddCallSelectInpSide extends Fragment {
         selectInputSideBinding.selectListView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         selectInputSideBinding.selectListView.setAdapter(selectACInputAdapter);
 
-        selectInputSideBinding.imgClose.setOnClickListener(view -> dcrCallBinding.fragmentAcSelectInputSide.setVisibility(View.GONE));
+        selectInputSideBinding.imgClose.setOnClickListener(view -> {
+            dcrCallBinding.fragmentAcSelectInputSide.setVisibility(View.GONE);
+            UtilityClass.hideKeyboard(requireActivity());
+        });
 
         selectInputSideBinding.searchList.addTextChangedListener(new TextWatcher() {
             @Override

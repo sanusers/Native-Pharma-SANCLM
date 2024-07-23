@@ -250,13 +250,13 @@ public class PreCallAnalysisFragment extends Fragment {
                     preCallAnalysisBinding.rxCaption.setVisibility(View.GONE);
                     preCallAnalysisBinding.rxCaptionLine.setVisibility(View.GONE);
                 }
-                if (PrdRCPANeed.equalsIgnoreCase("1")) {
-                    preCallAnalysisBinding.rcpaCaption.setVisibility(View.VISIBLE);
-                    preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.VISIBLE);
-                } else {
+//                if (PrdRCPANeed.equalsIgnoreCase("1")) {
+//                    preCallAnalysisBinding.rcpaCaption.setVisibility(View.VISIBLE);
+//                    preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.VISIBLE);
+//                } else {
                     preCallAnalysisBinding.rcpaCaption.setVisibility(View.GONE);
                     preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.GONE);
-                }
+//                }
                 if (CallFeedbackNeed.equalsIgnoreCase("0")) {
                     preCallAnalysisBinding.tvTagFeedback.setVisibility(View.VISIBLE);
                     preCallAnalysisBinding.tvFeedback.setVisibility(View.VISIBLE);
@@ -290,13 +290,13 @@ public class PreCallAnalysisFragment extends Fragment {
                     preCallAnalysisBinding.tvTagFeedback.setVisibility(View.GONE);
                     preCallAnalysisBinding.tvFeedback.setVisibility(View.GONE);
                 }
-                if (PrdRCPANeed.equalsIgnoreCase("1")) {
-                    preCallAnalysisBinding.rcpaCaption.setVisibility(View.VISIBLE);
-                    preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.VISIBLE);
-                } else {
+//                if (PrdRCPANeed.equalsIgnoreCase("1")) {
+//                    preCallAnalysisBinding.rcpaCaption.setVisibility(View.VISIBLE);
+//                    preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.VISIBLE);
+//                } else {
                     preCallAnalysisBinding.rcpaCaption.setVisibility(View.GONE);
                     preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.GONE);
-                }
+//                }
                 break;
         }
     }

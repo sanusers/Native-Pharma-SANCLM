@@ -81,13 +81,13 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
                     holder.view_rx.setVisibility(View.GONE);
                 }
 
-                if (PreCallAnalysisFragment.PrdRCPANeed.equalsIgnoreCase("1")) {
-                    holder.txt_rcpa.setVisibility(View.VISIBLE);
-                    holder.view_rcpa.setVisibility(View.VISIBLE);
-                } else {
+//                if (PreCallAnalysisFragment.PrdRCPANeed.equalsIgnoreCase("1")) {
+//                    holder.txt_rcpa.setVisibility(View.VISIBLE);
+//                    holder.view_rcpa.setVisibility(View.VISIBLE);
+//                } else {
                     holder.txt_rcpa.setVisibility(View.GONE);
                     holder.view_rcpa.setVisibility(View.GONE);
-                }
+//                }
              break;
             case "3":
             case "4":
@@ -108,13 +108,13 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
                     holder.view_rx.setVisibility(View.GONE);
                 }
 
-                if (PreCallAnalysisFragment.PrdRCPANeed.equalsIgnoreCase("1")) {
-                    holder.txt_rcpa.setVisibility(View.VISIBLE);
-                    holder.view_rcpa.setVisibility(View.VISIBLE);
-                } else {
+//                if (PreCallAnalysisFragment.PrdRCPANeed.equalsIgnoreCase("1")) {
+//                    holder.txt_rcpa.setVisibility(View.VISIBLE);
+//                    holder.view_rcpa.setVisibility(View.VISIBLE);
+//                } else {
                     holder.txt_rcpa.setVisibility(View.GONE);
                     holder.view_rcpa.setVisibility(View.GONE);
-                }
+//                }
                 break;
         }
 

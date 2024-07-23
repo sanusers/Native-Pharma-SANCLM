@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentSelectFbSideBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -64,6 +65,7 @@ public class FeedbackSelectionSide extends Fragment {
             imm.hideSoftInputFromWindow(selectFbSideBinding.imgClose.getWindowToken(), 0);
             selectFbSideBinding.searchList.setText("");
             dcrCallBinding.fragmentSelectFbSide.setVisibility(View.GONE);
+            UtilityClass.hideKeyboard(requireActivity());
         });
 
         selectFbSideBinding.searchList.addTextChangedListener(new TextWatcher() {

@@ -35,6 +35,7 @@ import saneforce.sanzen.activity.call.adapter.jwOthers.JwAdapter;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentSelectJwSideBinding;
 import saneforce.sanzen.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -93,6 +94,7 @@ public class JointWorkSelectionSide extends Fragment {
             }
             selectJwSideBinding.searchJw.setText("");
             dcrCallBinding.fragmentSelectJwSide.setVisibility(View.GONE);
+            UtilityClass.hideKeyboard(requireActivity());
             AssignRecyclerView(getActivity(), context, callAddedJointList, JwList);
         });
 
@@ -100,6 +102,7 @@ public class JointWorkSelectionSide extends Fragment {
             SetupAdapter();
             selectJwSideBinding.searchJw.setText("");
             dcrCallBinding.fragmentSelectJwSide.setVisibility(View.GONE);
+            UtilityClass.hideKeyboard(requireActivity());
         });
 
 

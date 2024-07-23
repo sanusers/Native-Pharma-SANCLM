@@ -49,6 +49,7 @@ import saneforce.sanzen.activity.approvals.tp.pojo.TpDetailedModel;
 import saneforce.sanzen.activity.approvals.tp.pojo.TpModelList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityTpApprovalBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -387,6 +388,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
     @Override
     public void onItemClick(TpModelList tpModelLists, int pos) {
+        UtilityClass.hideKeyboard(this);
         progressDialog = CommonUtilsMethods.createProgressDialog(TpApprovalActivity.this);
         tpApprovalBinding.tvName.setText(tpModelLists.getName());
         tpApprovalBinding.tvTpPlannedFor.setText(String.format("%s %s", tpModelLists.getMonth(), tpModelLists.getYear()));

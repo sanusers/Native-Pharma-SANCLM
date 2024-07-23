@@ -49,7 +49,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
     String split_val, hqcode;
     String cdate2 = "";
 
-    String Doc_geoneed, Che_geoneed, Stk_geoneed, Cip_geoneed, Ult_geoneed;
+//    String Doc_geoneed, Che_geoneed, Stk_geoneed, Cip_geoneed, Ult_geoneed;
 
     ArrayList<Resourcemodel_class> L_cLasses = new ArrayList<>();
 
@@ -98,11 +98,11 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         final Resourcemodel_class app_adapt = FillteredList.get(position);
         System.out.println("leaveWorkTypes--->" + app_adapt.getWorkType());
         System.out.println("eligibility--->" + app_adapt.getEligible());
-        Doc_geoneed = SharedPref.getGeotagNeed(context);
-        Che_geoneed = SharedPref.getGeotagNeedChe(context);
-        Stk_geoneed = SharedPref.getGeotagNeedStock(context);
-        Cip_geoneed = SharedPref.getGeotagNeedCip(context);
-        Ult_geoneed = SharedPref.getGeotagNeedUnlst(context);
+//        Doc_geoneed = SharedPref.getGeotagNeed(context);
+//        Che_geoneed = SharedPref.getGeotagNeedChe(context);
+//        Stk_geoneed = SharedPref.getGeotagNeedStock(context);
+//        Cip_geoneed = SharedPref.getGeotagNeedCip(context);
+//        Ult_geoneed = SharedPref.getGeotagNeedUnlst(context);
 
         if (SharedPref.getGeoChk(context).equalsIgnoreCase("0")&& ((!app_adapt.getLatitude().isEmpty() || !app_adapt.getLongtitude().isEmpty()) && (((!app_adapt.getLatitude().equalsIgnoreCase("0.0") || !app_adapt.getLongtitude().equalsIgnoreCase("0.0")) || (!app_adapt.getLatitude().equalsIgnoreCase("0") || !app_adapt.getLongtitude().equalsIgnoreCase("0")))))) {
             holder.Res_View.setVisibility(View.VISIBLE);

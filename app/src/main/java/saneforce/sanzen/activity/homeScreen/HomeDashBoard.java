@@ -1872,29 +1872,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
     private void onClickListener() {
-        binding.imgLocation.setOnClickListener(new DoubleClickListener() {
+        binding.imgLocation.setOnClickListener(new CommonUtilsMethods.DoubleClickListener() {
             @Override
             public void onDoubleClick(View v) {
                 setGpsTrack();
             }
         });
-    }
-
-    public class DoubleClickListener implements View.OnClickListener {
-        private static final long DOUBLE_CLICK_TIME_DELTA = 300;
-        private long lastClickTime = 0;
-
-        @Override
-        public void onClick(View v) {
-            long clickTime = System.currentTimeMillis();
-            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
-                onDoubleClick(v);
-            }
-            lastClickTime = clickTime;
-        }
-
-        public void onDoubleClick(View v) {
-        }
     }
 
     private void setGpsTrack() {

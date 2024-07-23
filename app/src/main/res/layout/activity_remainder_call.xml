@@ -93,6 +93,7 @@
         android:drawablePadding="@dimen/_5sdp"
         android:hint="@string/search"
         android:imeOptions="actionDone"
+        android:maxLines="1"
         android:paddingHorizontal="@dimen/_10sdp"
         android:textColor="@color/black"
         android:textColorHint="@color/light_grey"
