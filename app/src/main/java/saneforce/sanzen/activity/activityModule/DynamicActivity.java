@@ -190,7 +190,7 @@ public class DynamicActivity extends AppCompatActivity {
                 alertText.setText("Are you sure, you want to exit ?");
                 btn_yes.setOnClickListener(view12 -> {
                     dialog.dismiss();
-                  getOnBackPressedDispatcher().onBackPressed();
+                  finish();
                 });
 
                 btn_no.setOnClickListener(view12 -> {
@@ -249,7 +249,9 @@ public class DynamicActivity extends AppCompatActivity {
     }
 
     public void getActivity(String hqcode) {
+
         if (UtilityClass.isNetworkAvailable(this)) {
+            isEdited=false;
             binding.progressMain.setVisibility(View.VISIBLE);
             try {
                 JSONObject object = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
