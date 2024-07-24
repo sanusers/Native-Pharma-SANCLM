@@ -665,7 +665,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         dialogTagCust.setCancelable(false);
         Objects.requireNonNull(dialogTagCust.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogTagCust.show();
-         btn_confirm = dialogTagCust.findViewById(R.id.btn_confirm);
+        btn_confirm = dialogTagCust.findViewById(R.id.btn_confirm);
         Button btn_cancel = dialogTagCust.findViewById(R.id.btn_cancel);
         TextView tv_cust_name = dialogTagCust.findViewById(R.id.txt_cust_name);
         TextView tv_lat = dialogTagCust.findViewById(R.id.txt_lat);
@@ -969,16 +969,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         if (CustSelected.equalsIgnoreCase("D")) {
-            showCustomDialog("Doctor List is updating, please wait...",ContextCompat.getDrawable(context, R.drawable.baseline_cloud_sync_24),true);
+            showCustomDialog(SharedPref.getDrCap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_is_updating_please_wait), ContextCompat.getDrawable(context, R.drawable.baseline_cloud_sync_24), true);
             prepareMasterToSync(sfCode, "D",progressBar);
         } else if (CustSelected.equalsIgnoreCase("C")) {
-            showCustomDialog("Chemist List is updating, please wait...", ContextCompat.getDrawable(context, R.drawable.baseline_cloud_sync_24_1),true);
+            showCustomDialog(SharedPref.getChmCap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_is_updating_please_wait), ContextCompat.getDrawable(context, R.drawable.baseline_cloud_sync_24_1),true);
             prepareMasterToSync(sfCode, "C",progressBar);
         } else if (CustSelected.equalsIgnoreCase("S")) {
-            showCustomDialog("StockList List is updating, please wait...",ContextCompat.getDrawable(context, R.drawable.baseline_cloud_sync_24_2),true);
+            showCustomDialog(SharedPref.getStkCap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_is_updating_please_wait),ContextCompat.getDrawable(context, R.drawable.baseline_cloud_sync_24_2),true);
             prepareMasterToSync(sfCode, "S",progressBar);
         } else if (CustSelected.equalsIgnoreCase("U")) {
-            showCustomDialog("UnListDoctor List is updating, please wait...",ContextCompat.getDrawable(context, R.drawable.baseline_cloud_sync_24_3),true);
+            showCustomDialog(SharedPref.getUNLcap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_is_updating_please_wait),ContextCompat.getDrawable(context, R.drawable.baseline_cloud_sync_24_3),true);
             prepareMasterToSync(sfCode, "U",progressBar);
         }
     }
@@ -1395,24 +1395,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
   private void showToast(String selectedTap){
         if (selectedTap.equals("D")){
-            commonUtilsMethods.showToastMessage(this,"Doctors List updated successfully.");
+            commonUtilsMethods.showToastMessage(this,SharedPref.getDrCap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_updated_successfully));
         } else if (selectedTap.equals("C")) {
-            commonUtilsMethods.showToastMessage(this,"Chemist List updated successfully.");
+            commonUtilsMethods.showToastMessage(this,SharedPref.getChmCap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_updated_successfully));
         } else if (selectedTap.equals("S")) {
-            commonUtilsMethods.showToastMessage(this,"Stock List updated successfully.");
+            commonUtilsMethods.showToastMessage(this,SharedPref.getStkCap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_updated_successfully));
         } else if (selectedTap.equals("U")) {
-            commonUtilsMethods.showToastMessage(this,"UnListDoctors List updated successfully.");
+            commonUtilsMethods.showToastMessage(this,SharedPref.getUNLcap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_updated_successfully));
         }
   }
   private void updateDialogBoxText(String selectedTap){
       if (selectedTap.equals("D")){
-          showCustomDialog("Failed to update Doctors List. Please try again.",ContextCompat.getDrawable(context, R.drawable.baseline_do_disturb_24),false);
+          showCustomDialog(MapsActivity.this.getString(R.string.failed_to_update) + SharedPref.getDrCap(MapsActivity.this)  + MapsActivity.this.getString(R.string.list_please_try_again), ContextCompat.getDrawable(context, R.drawable.baseline_do_disturb_24), false);
       } else if (selectedTap.equals("C")) {
-          showCustomDialog("Failed to update Chemist List. Please try again.",    ContextCompat.getDrawable(context, R.drawable.baseline_do_disturb_24), false);
+          showCustomDialog(MapsActivity.this.getString(R.string.failed_to_update) + SharedPref.getChmCap(MapsActivity.this)  + MapsActivity.this.getString(R.string.list_please_try_again),    ContextCompat.getDrawable(context, R.drawable.baseline_do_disturb_24), false);
       } else if (selectedTap.equals("S")) {
-          showCustomDialog("Failed to update Stock List. Please try again.",    ContextCompat.getDrawable(context, R.drawable.baseline_do_disturb_24), false);
+          showCustomDialog(MapsActivity.this.getString(R.string.failed_to_update) + SharedPref.getStkCap(MapsActivity.this)  + MapsActivity.this.getString(R.string.list_please_try_again),    ContextCompat.getDrawable(context, R.drawable.baseline_do_disturb_24), false);
       } else if (selectedTap.equals("U")) {
-          showCustomDialog("Failed to update UnlistedDoctors List. Please try again.",    ContextCompat.getDrawable(context, R.drawable.baseline_do_disturb_24), false);
+          showCustomDialog(MapsActivity.this.getString(R.string.failed_to_update) + SharedPref.getUNLcap(MapsActivity.this)  + MapsActivity.this.getString(R.string.list_please_try_again),    ContextCompat.getDrawable(context, R.drawable.baseline_do_disturb_24), false);
       }
   }
   private void timeZoneVerification(){

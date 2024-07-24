@@ -71,6 +71,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.call.adapter.DCRCallTabLayoutAdapter;
 import saneforce.sanzen.activity.call.adapter.additionalCalls.AdditionalCusListAdapter;
 import saneforce.sanzen.activity.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
@@ -1902,7 +1903,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(DCRCallActivity.this, "Remaindercalls Add Successfully", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, DCRCallActivity.this.getString(R.string.remaindercalls_added_successfully));
                         finish();
                     }
                     progressDialog.dismiss();

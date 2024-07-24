@@ -110,6 +110,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.leave.Leave_Application;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -186,7 +187,7 @@ public class DynamicActivity extends AppCompatActivity {
                 TextView btn_yes = dialog.findViewById(R.id.btn_yes);
                 TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
                 TextView btn_no = dialog.findViewById(R.id.btn_no);
-                alertText.setText("\"Are you sure, you want to exit ?");
+                alertText.setText("Are you sure, you want to exit ?");
                 btn_yes.setOnClickListener(view12 -> {
                     dialog.dismiss();
                   getOnBackPressedDispatcher().onBackPressed();
@@ -209,7 +210,7 @@ public class DynamicActivity extends AppCompatActivity {
                 TextView btn_yes = dialog.findViewById(R.id.btn_yes);
                 TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
                 TextView btn_no = dialog.findViewById(R.id.btn_no);
-                alertText.setText("\"Are you sure, you want to exit ?");
+                alertText.setText("Are you sure, you want to exit ?");
                 btn_yes.setOnClickListener(view12 -> {
                     dialog.dismiss();
                   getOnBackPressedDispatcher().onBackPressed();
@@ -1092,7 +1093,7 @@ public class DynamicActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String fromdate = textviewfromdate.getText().toString();
                 if (fromdate.equals("")) {
-                    Toast.makeText(DynamicActivity.this, "Please Select From Date", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.select_from_date));
                 } else {
                     String datee[] = fromdate.split("-");
                     final Calendar c = Calendar.getInstance();
@@ -1275,7 +1276,7 @@ public class DynamicActivity extends AppCompatActivity {
                 String fromdate = textviewfromdate.getText().toString();
 
                 if (fromdate.equals("")) {
-                    Toast.makeText(DynamicActivity.this, "Please Select From Date", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.select_from_date));
                 } else {
 
                     String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30, TimeUtils.FORMAT_5, fromdate);
@@ -1307,7 +1308,7 @@ public class DynamicActivity extends AppCompatActivity {
                                 if (mHour < hourOfDay || mMinute < minute1) {
                                     textviewtodate.setText(dateFormat.format(c.getTime()));
                                 } else {
-                                    Toast.makeText(DynamicActivity.this, "Please Select as After From Time ", Toast.LENGTH_LONG).show();
+                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_as_after_from_time));
                                     textviewtodate.setText("");
                                 }
                             } else {
@@ -1584,7 +1585,7 @@ public class DynamicActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String data = textviewfromtime.getText().toString();
                 if (data.equalsIgnoreCase("")) {
-                    Toast.makeText(DynamicActivity.this, "Please Select From Time", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_from_time));
                 } else {
                     String[] datas = data.split(":");
                     final int mHour = Integer.parseInt(datas[0]);
@@ -1598,7 +1599,7 @@ public class DynamicActivity extends AppCompatActivity {
                             if (mHour < hour || mMinute < minute) {
                                 textviewtotime.setText(hour + ":" + minute);
                             } else {
-                                Toast.makeText(DynamicActivity.this, "Please Select as After From Time ", Toast.LENGTH_LONG).show();
+                                commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_as_after_from_time));
                                 textviewtotime.setText("");
                             }
                             commonFun();
@@ -2407,10 +2408,10 @@ public class DynamicActivity extends AppCompatActivity {
                     String filenmae = parts[parts.length - 1];
 
                     if (filenmae.endsWith(".zip")) {
-                        Toast.makeText(DynamicActivity.this, "ZIP not Supported", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.zip_not_supported));
                     }else {
                         FilnameTet.setText(String.valueOf(filenmae));
-                        Toast.makeText(DynamicActivity.this, "File Accepted", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.file_accepted));
                         File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
                         if (!dir1.exists()) {
                             dir1.mkdirs();
@@ -2420,11 +2421,11 @@ public class DynamicActivity extends AppCompatActivity {
 
                 } catch (Exception ex) {
                     Log.v("Error", ex.toString());
-                    Toast.makeText(DynamicActivity.this, "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_correct_path));
                     ex.printStackTrace();
                 }
             } else {
-                Toast.makeText(DynamicActivity.this, "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_correct_path));
             }
             commonFun();
         }

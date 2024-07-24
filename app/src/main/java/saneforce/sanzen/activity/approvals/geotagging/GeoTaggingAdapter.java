@@ -218,9 +218,9 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                             removeAt(Position);
                             ApprovalsActivity.GeoTagCount--;
                             if (Status.equalsIgnoreCase("0")) {
-                                Toast.makeText(context,"Approved Successfully",Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.approved_successfully));
                             } else {
-                                Toast.makeText(context,"Rejected Successfully",Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.rejected_successfully));
                             }
 
                         }
@@ -228,14 +228,14 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                     }
                 } else {
                     holder.progressBar.setVisibility(View.GONE);
-                    Toast.makeText(context,"Response Failed! Please Try Again",Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 holder.progressBar.setVisibility(View.GONE);
-                Toast.makeText(context,"Response Failed! Please Try Again",Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
             }
         });
     }

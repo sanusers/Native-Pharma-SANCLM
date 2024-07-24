@@ -238,6 +238,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, "[]", 0));
         if(toSync) {
             if(UtilityClass.isNetworkAvailable(requireContext())) {
+                binding.progressSumit.setVisibility(View.VISIBLE);
                 syncMyDayPlan();
                 SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
             }else {
@@ -2004,6 +2005,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+                            binding.progressSumit.setVisibility(View.GONE);
                             setUpMyDayplan();
                         }
                     }
@@ -2011,11 +2013,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                         Log.e("Mydayplan", "onFailure: ");
+                        binding.progressSumit.setVisibility(View.GONE);
+                        commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_sync_workplan));
                         t.printStackTrace();
                     }
                 });
 
             } catch (JSONException a) {
+                binding.progressSumit.setVisibility(View.GONE);
+                commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_sync_workplan));
                 a.printStackTrace();
             }
         }

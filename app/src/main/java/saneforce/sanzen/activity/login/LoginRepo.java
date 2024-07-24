@@ -8,6 +8,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import com.google.gson.JsonElement;
+
+import org.checkerframework.checker.units.qual.C;
+
 import java.util.HashMap;
 import java.util.Map;
 import retrofit2.Call;
@@ -15,6 +18,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
@@ -26,6 +30,7 @@ public class LoginRepo {
         final MutableLiveData<JsonElement> mutableLiveData = new MutableLiveData<>();
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "action/login_edet");
+        CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
         ApiInterface apiInterface = RetrofitClient.getRetrofit(context, baseUrl);
         Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context),mapString,object);
         call.enqueue(new Callback<JsonElement>() {
@@ -44,12 +49,12 @@ public class LoginRepo {
                     if(!SharedPref.getLoginId(context).equalsIgnoreCase("")) {
                         LoginActivity.binding.progressBar.setVisibility(View.GONE);
                         LoginActivity.binding.loginBtn.setEnabled(true);
-                        Toast.makeText(context, R.string.please_try_again, Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_try_again));
                         context.startActivity(new Intent(context, HomeDashBoard.class));
                     }else {
                         LoginActivity.binding.progressBar.setVisibility(View.GONE);
                         LoginActivity.binding.loginBtn.setEnabled(true);
-                        Toast.makeText(context, R.string.please_try_again, Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_try_again));
                     }
                 } catch (Exception e) {
                     Log.e("Login", "onFailure: " + e.getMessage());

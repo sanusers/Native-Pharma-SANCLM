@@ -908,7 +908,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             //    commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Logout Successfully")
-            Toast.makeText(HomeDashBoard.this,"Logout Successfully",Toast.LENGTH_SHORT).show();
+            commonUtilsMethods.showToastMessage(HomeDashBoard.this, HomeDashBoard.this.getString(R.string.logout_successfully));
             finish();
         });
 

@@ -15,12 +15,15 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -422,14 +425,14 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
             btn_cancel.setOnClickListener(view1 -> {
                 ed_reason.setText("");
-                dialogReject.dismiss();
                 UtilityClass.hideKeyboard(DcrApprovalActivity.this);
+                dialogReject.dismiss();
             });
 
             iv_close.setOnClickListener(view12 -> {
                 ed_reason.setText("");
+                UtilityClass.hideKeyboard(this);
                 dialogReject.dismiss();
-                UtilityClass.hideKeyboard(DcrApprovalActivity.this);
             });
 
             btn_reject.setOnClickListener(view14 -> {
@@ -442,7 +445,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                 } else {
                     commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
                 }
-
+                UtilityClass.hideKeyboard(DcrApprovalActivity.this);
             });
             dialogReject.show();
         });

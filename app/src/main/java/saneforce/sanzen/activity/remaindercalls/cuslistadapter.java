@@ -274,7 +274,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                                 }
                                 if (jsonElement.toString().equals("[]")) {
                                     RemaindercallsActivity.listeduser.clear();
-                                    Toast.makeText(context, "No Data", Toast.LENGTH_SHORT).show();
+                                    new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.no_data));
                                     progressDialog.dismiss();
                                 }
                                 RemaindercallsActivity.remaindercallsAdapter.notifyDataSetChanged();
@@ -299,7 +299,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(context, "No internet connectivity", Toast.LENGTH_SHORT).show();
+            new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.please_check_your_internet_connection));
         }
     }
 

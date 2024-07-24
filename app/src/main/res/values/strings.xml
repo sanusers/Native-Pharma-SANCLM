@@ -92,7 +92,7 @@
     <string name="loc_setting">Please enable the location</string>
     <string name="tagged_successfully"> Tagged Successfully</string>
     <string name="toast_no_img_found">No Image Found</string>
-    <string name="hq_sel">HeadQuater Selection</string>
+    <string name="hq_sel">HeadQuarter Selection</string>
     <string name="presentation">Presentation</string>
     <string name="presentation_saved_already">Presentation name already exists. Please change the name and try again </string>
     <string name="create_presentation">Create Presentation</string>
@@ -459,4 +459,24 @@
     <string name="please_check_your_internet_connection">Please Check Your Internet Connection</string>
     <string name="clear_all">Clear All</string>
     <string name="qty_must_be_greater_than_0">Qty must be greater than 0</string>
+    <string name="select_to_date">Select To Date</string>
+    <string name="select_leave_type">Select Leave Type</string>
+    <string name="enter_reason_for_leave">Enter reason for leave</string>
+    <string name="please_select_as_after_from_time">"Please Select as After From Time "</string>
+    <string name="please_select_from_time">Please Select From Time</string>
+    <string name="zip_not_supported">ZIP not Supported</string>
+    <string name="file_accepted">File Accepted</string>
+    <string name="please_select_correct_path">Sorry Please Select Correct path</string>
+    <string name="remaindercalls_added_successfully">Remaindercalls Added Successfully</string>
+    <string name="logout_successfully">Logout Successfully</string>
+    <string name="data_cleared_successfully">Data Cleared Successfully</string>
+    <string name="select_qualification">Select Qualification</string>
+    <string name="select_category">Select Category</string>
+    <string name="mail_not_valid">"mail not valid "</string>
+    <string name="no_data">No Data</string>
+    <string name="list_is_updating_please_wait">" List is updating, please wait…"</string>
+    <string name="failed_to_update">"Failed to update "</string>
+    <string name="list_please_try_again">" List. Please try again."</string>
+    <string name="list_updated_successfully">" List updated successfully."</string>
+    <string name="please_sync_workplan">Please Sync WorkPlan</string>
 </resources>

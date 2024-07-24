@@ -68,6 +68,7 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 
+import saneforce.sanzen.activity.login.LoginActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -113,7 +114,7 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
     ArrayList<Mapview_modelclass> listed_cust = new ArrayList<>();
     ArrayList<CustomModel> dataList = new ArrayList<>();
     String Doc_geoneed, Che_geoneed, Stk_geoneed, Cip_geoneed, Ult_geoneed;
-
+    private CommonUtilsMethods commonUtilsMethods;
 
     private RoomDB roomDB;
     private LoginDataDao loginDataDao;
@@ -154,6 +155,8 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
         gpsTrack = new GPSTrack(this);
         app_recycler_view.setVisibility(View.VISIBLE);
         Bundle extra = getIntent().getExtras();
+
+        commonUtilsMethods = new CommonUtilsMethods(this);
 
         roomDB = RoomDB.getDatabase(this);
         loginDataDao = roomDB.loginDataDao();
@@ -407,14 +410,14 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
             String email = email1.getText().toString().trim();
 
             if (Qualification.getText().toString().equals("")) {
-                Toast.makeText(this, "Select Qualification", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.showToastMessage(this, this.getString(R.string.select_qualification));
             } else if (Speciality.getText().toString().equals("")) {
-                Toast.makeText(this, "Select Speciality", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.showToastMessage(this, this.getString(R.string.select_speciality));
             } else if (Category.getText().toString().equals("")) {
-                Toast.makeText(this, "Select Category", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.showToastMessage(this, this.getString(R.string.select_category));
             } else if (!email.isEmpty()) {
                 if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    Toast.makeText(this, "mail not valid ", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.showToastMessage(this, this.getString(R.string.mail_not_valid));
                 } else {
                     submit_profiling();
                 }
@@ -536,7 +539,7 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
                         Intent intent12 = new Intent(Resource_profiling.this, HomeDashBoard.class);
                         startActivity(intent12);
 
-                        Toast.makeText(Resource_profiling.this, "Remaindercalls Add Successfully", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.remaindercalls_added_successfully));
                     }
 
                     progressDialog.dismiss();

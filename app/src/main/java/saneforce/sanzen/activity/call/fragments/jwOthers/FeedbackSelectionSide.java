@@ -55,6 +55,8 @@ public class FeedbackSelectionSide extends Fragment {
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         SetupAdapter();
+        feedbackName = "";
+        feedbackCode = "";
 
         selectFbSideBinding.tvDummy.setOnClickListener(view -> {
         });

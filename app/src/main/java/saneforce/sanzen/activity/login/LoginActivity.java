@@ -222,10 +222,8 @@ public class LoginActivity extends AppCompatActivity {
         SharedPref.saveLoginState(getApplicationContext(), false);
         SharedPref.saveSettingState(getApplicationContext(), false);
         startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
-        Toast.makeText(LoginActivity.this,"Data Cleared Successfully",Toast.LENGTH_SHORT).show();
-
-
-
+        commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.data_cleared_successfully));
+        
     }
 
     public void uiInitialisation() {

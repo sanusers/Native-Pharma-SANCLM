@@ -61,6 +61,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
+import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.reports.ReportsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -187,9 +188,9 @@ public class Leave_Application extends AppCompatActivity {
 
         leavebinding.LeaveType.setOnClickListener(v -> {
             if (leavebinding.etFromDate.getText().toString().equals("")) {
-                Toast.makeText(this, "Select From Date", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.showToastMessage(this, getString(R.string.select_from_date));
             } else if (leavebinding.etToDate.getText().toString().equals("")) {
-                Toast.makeText(this, "Select To Date", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.showToastMessage(this, getString(R.string.select_to_date));
             } else {
                 if (UtilityClass.isNetworkAvailable(this)) {
                     showalert_leavetype();
@@ -202,13 +203,13 @@ public class Leave_Application extends AppCompatActivity {
 
         leavebinding.submitLeave.setOnClickListener(v -> {
             if (leavebinding.etFromDate.getText().toString().equals("")) {
-                Toast.makeText(this, "Select From Date", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.showToastMessage(this, getString(R.string.select_from_date));
             } else if (leavebinding.etToDate.getText().toString().equals("")) {
-                Toast.makeText(this, "Select To Date", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.showToastMessage(this, getString(R.string.select_to_date));
             } else if (leavebinding.LeaveType.getText().toString().equals("")) {
-                Toast.makeText(this, "Select Leave Type", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.showToastMessage(this, getString(R.string.select_leave_type));
             } else if (leavebinding.edReason.getText().toString().isEmpty()||leavebinding.edReason.getText().toString().equalsIgnoreCase("")) {
-                Toast.makeText(this, "Enter  Reason for leave", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.showToastMessage(this, getString(R.string.enter_reason_for_leave));
             } else {
                 Submit();
 
@@ -397,11 +398,8 @@ public class Leave_Application extends AppCompatActivity {
                                         Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
                                         l_details.notifyDataSetChanged();
 
-                                        Toast.makeText(Leave_Application.this, msg, Toast.LENGTH_SHORT).show();
-
+                                        commonUtilsMethods.showToastMessage(Leave_Application.this, msg);
                                     }
-
-
                                 }
 
                             } catch (JSONException e) {
@@ -427,7 +425,7 @@ public class Leave_Application extends AppCompatActivity {
                         Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
                         l_details.notifyDataSetChanged();
 
-                        Toast.makeText(Leave_Application.this, "Poor Connection Please Check After Sometime", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.poor_connection));
                     }
 
                 });
@@ -624,7 +622,7 @@ public class Leave_Application extends AppCompatActivity {
 
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                            Toast.makeText(Leave_Application.this, "Poor Internet Connection Please Check After Sometime", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.poor_connection));
                         }
                     });
                 }
@@ -649,8 +647,7 @@ public class Leave_Application extends AppCompatActivity {
             Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
             l_details.notifyDataSetChanged();
 
-
-            Toast.makeText(this, "Please Check Internet Connection", Toast.LENGTH_SHORT).show();
+            commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.poor_connection));
         }
 
     }
