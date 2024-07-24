@@ -10,6 +10,33 @@ public class ActivityModelClass {
     private String activityAvailable;
 
 
+    private String Code;
+    private String Name;
+    private boolean ischeck;
+
+
+    public String getCode() {
+        return Code;
+    }
+
+    public void setCode(String code) {
+        Code = code;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        Name = name;
+    }
+
+    public ActivityModelClass(String code, String name,boolean ischeck) {
+        Code = code;
+        Name = name;
+       this.ischeck = ischeck;
+    }
+
     public ActivityModelClass(String slNo, String activityName, String activityFor, String activeFlag, String activityDesig, String activityAvailable) {
         this.slNo = slNo;
         this.activityName = activityName;
@@ -17,6 +44,14 @@ public class ActivityModelClass {
         this.activeFlag = activeFlag;
         this.activityDesig = activityDesig;
         this.activityAvailable = activityAvailable;
+    }
+
+    public boolean getIscheck() {
+        return ischeck;
+    }
+
+    public void setIscheck(boolean ischeck) {
+        this.ischeck = ischeck;
     }
 
     public String getSlNo() {

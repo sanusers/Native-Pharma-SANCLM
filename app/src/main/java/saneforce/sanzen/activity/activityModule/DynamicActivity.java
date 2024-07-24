@@ -278,8 +278,11 @@ public class DynamicActivity extends AppCompatActivity {
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         String[] Activity_Desig = jsonObject.getString("Activity_Desig").split(",\\s*");
+                                        String[] ActivityFor = jsonObject.getString("Activity_For").split(",");
+                                        List<String> ActivityForList = Arrays.asList(ActivityFor);
                                         List<String> DegList = Arrays.asList(Activity_Desig);
-                                        if (DegList.contains(SharedPref.getDsName(DynamicActivity.this))) {
+
+                                        if (DegList.contains(SharedPref.getDsName(DynamicActivity.this))&&ActivityForList.contains("0")) {
                                             binding.rlNoActivity.setVisibility(View.GONE);
                                             binding.llMainLayout.setVisibility(View.VISIBLE);
                                             binding.rlDetailsMain.setVisibility(View.VISIBLE);
@@ -1703,8 +1706,9 @@ public class DynamicActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                ArrayList<String> ListName = new ArrayList<>();
-                ArrayList<String> ListIds = new ArrayList<>();
+
+
+                ArrayList<ActivityModelClass> mlist = new ArrayList<>();
                 try {
                     JSONArray jsonArray = new JSONArray(List.getInput());
                     if (jsonArray.length() > 0) {
@@ -1713,10 +1717,10 @@ public class DynamicActivity extends AppCompatActivity {
                             String[] data = jsonObject.toString().replaceAll("[{}]", "").split(",");
                             String[] mCode = data[0].split(":");
                             String[] mName = data[1].split(":");
-                            ListName.add(mName[1].replaceAll("\"", ""));
-                            ListIds.add(mCode[1].replaceAll("\"", ""));
+
+                            mlist.add(new ActivityModelClass(mCode[1].replaceAll("\"", ""),mName[1].replaceAll("\"", ""),false));
                         }
-                        ShowListPopup(singlecomboedittext, Idview, ListName, ListIds, List.getFieldName(), false);
+                        ShowListPopup(singlecomboedittext, Idview, mlist,List.getFieldName(), false);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1812,8 +1816,10 @@ public class DynamicActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                ArrayList<String> ListName = new ArrayList<>();
-                ArrayList<String> ListIds = new ArrayList<>();
+                ArrayList<ActivityModelClass> mlist = new ArrayList<>();
+                String[] selectedIds=TextCode.getText().toString().split(",");
+                List<String> activityForList = Arrays.asList(selectedIds);
+
                 try {
                     JSONArray jsonArray = new JSONArray(List.getInput());
                     if (jsonArray.length() > 0) {
@@ -1822,10 +1828,16 @@ public class DynamicActivity extends AppCompatActivity {
                             String[] data = jsonObject.toString().replaceAll("[{}]", "").split(",");
                             String[] mCode = data[0].split(":");
                             String[] mName = data[1].split(":");
-                            ListName.add(mName[1].replaceAll("\"", ""));
-                            ListIds.add(mCode[1].replaceAll("\"", ""));
+                            Log.v("eeeswa",""+mCode[1].replaceAll("\"", ""));
+                            if(activityForList.contains(mCode[1].replaceAll("\"", ""))){
+                                mlist.add(new ActivityModelClass(mCode[1].replaceAll("\"", ""),mName[1].replaceAll("\"", ""),true));
+
+                            }else {
+                                mlist.add(new ActivityModelClass(mCode[1].replaceAll("\"", ""),mName[1].replaceAll("\"", ""),false));
+                            }
+
                         }
-                        ShowListPopup(multicomboeditext, TextCode, ListName, ListIds, List.getFieldName(), true);
+                        ShowListPopup(multicomboeditext, TextCode, mlist ,List.getFieldName(), true);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -2312,7 +2324,7 @@ public class DynamicActivity extends AppCompatActivity {
 
 
 
-    public void ShowListPopup(TextView NameView, TextView IdView, ArrayList<String> ListName, ArrayList<String> ListIds, String name, boolean isMultipleCheck) {
+    public void ShowListPopup(TextView NameView, TextView IdView, ArrayList<ActivityModelClass> List, String name, boolean isMultipleCheck) {
         if (isMultipleCheck) {
             binding.SlideScreen.viewDummy1.setVisibility(View.VISIBLE);
             binding.SlideScreen.txtClDone.setVisibility(View.VISIBLE);
@@ -2324,25 +2336,27 @@ public class DynamicActivity extends AppCompatActivity {
         List<String> mListName = new ArrayList<>();
         List<String> mListId = new ArrayList<>();
         binding.mainLayout.openDrawer(Gravity.RIGHT);
+        binding.SlideScreen.etSearch.setText("");
         binding.SlideScreen.tvSearchheader.setText("Select " + name);
         binding.SlideScreen.etSearch.setHint("Search " + name);
-        adapter1 = new ActvityList2Adapter(DynamicActivity.this, ListName, ListIds, isMultipleCheck, new CheckBoxInterface() {
+        adapter1 = new ActvityList2Adapter(DynamicActivity.this, List, IdView, isMultipleCheck,new CheckBoxInterface() {
             @Override
-            public void Checked(String checkname, String id) {
+            public void Checked(ActivityModelClass activityModelClass) {
                 if (isMultipleCheck) {
-                    mListName.add(checkname);
-                    mListId.add(id);
+                    mListName.add(activityModelClass.getName());
+                    mListId.add(activityModelClass.getCode());
+                    IdView.setText(activityModelClass.getCode());
                 } else {
                     binding.mainLayout.closeDrawer(Gravity.RIGHT);
-                    NameView.setText(checkname);
-                    IdView.setText(id);
+                    NameView.setText(activityModelClass.getName());
+                    IdView.setText(activityModelClass.getCode());
                 }
             }
 
             @Override
-            public void UnChecked(String checkname, String id) {
-                mListName.remove(checkname);
-                mListId.remove(id);
+            public void UnChecked(ActivityModelClass activityModelClass) {
+                mListName.remove(activityModelClass.getName());
+                mListId.remove(activityModelClass.getCode());
             }
         });
         binding.SlideScreen.acRecyelerView.setLayoutManager(new LinearLayoutManager(DynamicActivity.this));
@@ -2372,8 +2386,13 @@ public class DynamicActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (isMultipleCheck) {
+                    String lids="";
+                    for(int i=0;i<mListId.size();i++){
+                        lids=lids+","+mListId.get(i);
+                    }
+
                     NameView.setText(mListName.toString().replaceAll("[\\[\\]]", ""));
-                    IdView.setText(mListId.toString().replaceAll("[\\[\\]]", ""));
+                    IdView.setText(lids);
                     binding.mainLayout.closeDrawer(Gravity.RIGHT);
                 }
             }

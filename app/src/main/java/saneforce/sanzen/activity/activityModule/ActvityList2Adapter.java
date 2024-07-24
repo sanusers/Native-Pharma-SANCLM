@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import saneforce.sanzen.R;
@@ -18,20 +19,21 @@ import saneforce.sanzen.R;
 public class ActvityList2Adapter extends RecyclerView.Adapter<ActvityList2Adapter.Viewholder> {
 
     private Context context;
-    private List<String> ListName;
+    private List<ActivityModelClass> List;
     private List<String> ListCode;
-    private List<String> filteredList;
+    private List<ActivityModelClass> filteredList;
     private LayoutInflater inflater;
     boolean isMultiple;
+    TextView selcteids;
     CheckBoxInterface checkBoxInterface;
-    public ActvityList2Adapter(Context context, List<String> ListName,List<String> ListCode, boolean isMultiple, CheckBoxInterface checkBoxInterface) {
+    public ActvityList2Adapter(Context context, List<ActivityModelClass> List,TextView selcteids, boolean isMultiple, CheckBoxInterface checkBoxInterface) {
         this.context = context;
-        this.ListCode = ListCode;
-        this.ListName = ListName;
-        this.filteredList = ListName;
+        this.List = List;
+        this.filteredList = List;
         this.inflater = LayoutInflater.from(context);
         this.isMultiple=isMultiple;
         this.checkBoxInterface=checkBoxInterface;
+        this.selcteids=selcteids;
     }
 
     @NonNull
@@ -43,27 +45,31 @@ public class ActvityList2Adapter extends RecyclerView.Adapter<ActvityList2Adapte
 
     @Override
     public void onBindViewHolder(@NonNull ActvityList2Adapter.Viewholder holder, int position) {
-        holder.txtHq.setText(filteredList.get(position));
+        holder.txtHq.setText(filteredList.get(position).getName());
         if(isMultiple){
             holder.checkBox.setVisibility(View.VISIBLE);
+            holder.checkBox.setChecked(filteredList.get(position).getIscheck());
+            if(filteredList.get(position).getIscheck()){
+                checkBoxInterface.Checked(filteredList.get(position));
+            }
         }else {
             holder.checkBox.setVisibility(View. GONE);
 
         }
 
-        int mposition = ListName.indexOf(filteredList.get(position));
+
 
         if(!isMultiple){
             holder.txtHq.setOnClickListener(view -> {
-                checkBoxInterface.Checked(filteredList.get(position),ListCode.get(mposition));
+                checkBoxInterface.Checked(filteredList.get(position));
             });
         }
 
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                  checkBoxInterface.Checked(filteredList.get(position),ListCode.get(mposition));
+                  checkBoxInterface.Checked(filteredList.get(position));
             } else {
-                checkBoxInterface.UnChecked(filteredList.get(position),ListCode.get(mposition));
+                checkBoxInterface.UnChecked(filteredList.get(position));
             }
         });
     }
@@ -90,9 +96,9 @@ public class ActvityList2Adapter extends RecyclerView.Adapter<ActvityList2Adapte
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 String searchString = constraint.toString().toLowerCase();
-                List<String> filtered = new ArrayList<>();
-                for (String data : ListName) {
-                    if (data.toLowerCase().contains(searchString)) {
+                List<ActivityModelClass> filtered = new ArrayList<>();
+                for (ActivityModelClass data : List) {
+                    if (data.getName().contains(searchString)) {
                             filtered.add(data);
                     }
 
@@ -105,7 +111,7 @@ public class ActvityList2Adapter extends RecyclerView.Adapter<ActvityList2Adapte
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                filteredList = (List<String>) results.values;
+                filteredList = (List<ActivityModelClass>) results.values;
                 notifyDataSetChanged();
             }
         };
