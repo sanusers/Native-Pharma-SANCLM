@@ -1171,7 +1171,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="2"
                                 android:fontFamily="@font/satoshi_bold"
-                                android:text="Competitor Name"
+                                android:text="@string/comp_brand"
                                 android:textColor="@color/dark_purple"
                                 android:textSize="@dimen/_6sdp" />
 
@@ -1180,7 +1180,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="2"
                                 android:fontFamily="@font/satoshi_bold"
-                                android:text="Competitor Productname"
+                                android:text="@string/comp_prd"
                                 android:textColor="@color/dark_purple"
                                 android:textSize="@dimen/_6sdp" />
 

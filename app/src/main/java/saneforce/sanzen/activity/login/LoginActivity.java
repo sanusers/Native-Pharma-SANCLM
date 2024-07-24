@@ -223,7 +223,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPref.saveSettingState(getApplicationContext(), false);
         startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
         commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.data_cleared_successfully));
-        
+
     }
 
     public void uiInitialisation() {

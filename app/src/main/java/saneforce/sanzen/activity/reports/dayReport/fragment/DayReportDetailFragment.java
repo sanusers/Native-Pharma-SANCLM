@@ -328,7 +328,7 @@ public class DayReportDetailFragment extends Fragment {
         switch (type) {
             case "1":
                 callCheckInOutNeed = SharedPref.getCustSrtNd(requireContext());
-                rcpaItem = SharedPref.getSepRcpaNd(requireContext());
+                rcpaItem = SharedPref.getRcpaNd(requireContext());
                 eventCaptureItem = SharedPref.getDeNeed(requireContext());
                 pobItem = SharedPref.getDocPobNeed(requireContext());
                 feedBackItem = SharedPref.getDfNeed(requireContext());

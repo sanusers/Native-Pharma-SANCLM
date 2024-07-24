@@ -191,7 +191,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 } else {
                     holder.textRxQty.setVisibility(View.VISIBLE);
                 }
-                if(SharedPref.getRcpaQtyNeed(context).equalsIgnoreCase("0")) {
+                if(SharedPref.getRcpaQtyNeed(context).equalsIgnoreCase("1")) {
                     holder.textRCPAName.setVisibility(View.VISIBLE);
                 } else {
                     holder.textRCPAName.setVisibility(View.INVISIBLE);

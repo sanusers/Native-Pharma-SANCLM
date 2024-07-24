@@ -59,7 +59,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         switch (category){
             case Constants.DOCTOR:
             case "DOCTOR":
-                if (SharedPref.getRcpaQtyNeed(context).equals("0")){
+                if (SharedPref.getRcpaQtyNeed(context).equals("1")){
                     holder.tv_rcpa.setVisibility(View.VISIBLE);
                 }else{
                     holder.tv_rcpa.setVisibility(View.INVISIBLE);
