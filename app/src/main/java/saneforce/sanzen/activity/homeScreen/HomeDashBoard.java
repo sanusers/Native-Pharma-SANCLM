@@ -349,7 +349,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         masterDataDao=roomDB.masterDataDao();
         slidesDao=roomDB.slidesDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
-        leaveViewModel = new LeaveViewModel(this);
+//        leaveViewModel = new LeaveViewModel(this);
         callsUtil = new CallsUtil(this);
         inAppUpdate = new InAppUpdate(this);
 

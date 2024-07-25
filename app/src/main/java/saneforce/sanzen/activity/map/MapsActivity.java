@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
@@ -235,14 +236,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             SelectedHqName = SharedPref.getHqName(MapsActivity.this);
         }
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if(!CheckLocPermission()){
-                RequestLocationPermission();
-            }
-        } else {
-            CommonUtilsMethods.RequestGPSPermission(MapsActivity.this);
-        }
+        locationCheck();
 
         if (extra != null) {
             from_tagging = extra.getString("from");
@@ -631,6 +625,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void addCircle(GoogleMap mMap) {
+        gpsTrack = new GPSTrack(this);
         lat = gpsTrack.getLatitude();
         lng = gpsTrack.getLongitude();
         LatLng latLng = new LatLng(lat, lng);
@@ -638,6 +633,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         CircleOptions circle = new CircleOptions().center(latLng).radius(limitKm * 1000.0).strokeWidth(4).strokeColor(Color.RED).fillColor(transparent).clickable(true);
         mMap.addCircle(circle);
         mapsBinding.progressBar.setVisibility(View.GONE);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
     }
 
     public boolean CurrentLoc() {
@@ -1032,15 +1028,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onResume() {
         CommonAlertBox.CheckLocationStatus(MapsActivity.this);
+        locationCheck();
         timeZoneVerification();
+        if(mMap != null && SelectedTab != null) {
+            if (SfType.equalsIgnoreCase("1")) {
+                TabSelected(SelectedTab, SfCode);
+            } else {
+                TabSelected(SelectedTab, SelectedHqCode);
+            }
+        }
         super.onResume();
     }
 
-    @SuppressLint({"SetTextI18n", "PotentialBehaviorOverride"})
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-
-
+    private void locationCheck() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if(!CheckLocPermission()){
                 RequestLocationPermission();
@@ -1048,7 +1049,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             CommonUtilsMethods.RequestGPSPermission(MapsActivity.this);
         }
+    }
 
+    @SuppressLint({"SetTextI18n", "PotentialBehaviorOverride"})
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+
+        locationCheck();
 
         mMap = googleMap;
         gpsTrack = new GPSTrack(this);

@@ -632,13 +632,20 @@
 
     </RelativeLayout>
 
-    <ProgressBar
-        android:id="@+id/progress_sumit"
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_20sdp"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:backgroundTint="@color/black_45"
-        android:visibility="gone" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/progress"
+        android:visibility="gone"
+        android:background="@color/transparent">
+
+        <ProgressBar
+            android:id="@+id/progress_sumit"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/black_45"
+            android:visibility="visible" />
+    </FrameLayout>
 
 </RelativeLayout>

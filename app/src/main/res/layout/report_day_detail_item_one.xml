@@ -765,6 +765,7 @@
                         android:overScrollMode="never"
                         android:paddingHorizontal="@dimen/_4sdp"
                         android:paddingVertical="@dimen/_1sdp"
+                        tools:listitem="@layout/adapter_dcr_prod"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"

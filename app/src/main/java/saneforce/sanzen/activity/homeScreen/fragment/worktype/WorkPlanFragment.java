@@ -238,7 +238,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, "[]", 0));
         if(toSync) {
             if(UtilityClass.isNetworkAvailable(requireContext())) {
-                binding.progressSumit.setVisibility(View.VISIBLE);
+                binding.progress.setVisibility(View.VISIBLE);
                 syncMyDayPlan();
                 SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
             }else {
@@ -1320,7 +1320,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     public void MyDayPlanSubmit() {
         try {
-            binding.progressSumit.setVisibility(View.VISIBLE);
+            binding.progress.setVisibility(View.VISIBLE);
             Log.e("todayCallList:Object",jsonObject.toString());
 
             Map<String, String> mapString = new HashMap<>();
@@ -1332,7 +1332,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                     Log.d("todayCallList:Code", response.code() + " - " + response);
                     if (response.isSuccessful()) {
-                        binding.progressSumit.setVisibility(View.GONE);
+                        binding.progress.setVisibility(View.GONE);
                         try {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
                             if (json.getString("success").equalsIgnoreCase("true")) {
@@ -1455,13 +1455,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    binding.progressSumit.setVisibility(View.GONE);
+                    binding.progress.setVisibility(View.GONE);
                     setUpMyDayplan();
                     Log.e("VALUES", String.valueOf(t));
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_response_failed));
                 }
             });
         } catch (Exception ignored) {
+            binding.progress.setVisibility(View.GONE);
         }
     }
 
@@ -1976,6 +1977,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                         boolean success = false;
                         JSONArray jsonArray = new JSONArray();
+                        binding.progress.setVisibility(View.GONE);
 
                         if(response.isSuccessful()) {
                             Log.e("test mydayplan", "response : " + Objects.requireNonNull(response.body()));
@@ -2005,7 +2007,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            binding.progressSumit.setVisibility(View.GONE);
                             setUpMyDayplan();
                         }
                     }
@@ -2013,14 +2014,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                         Log.e("Mydayplan", "onFailure: ");
-                        binding.progressSumit.setVisibility(View.GONE);
+                        binding.progress.setVisibility(View.GONE);
                         commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_sync_workplan));
                         t.printStackTrace();
                     }
                 });
 
             } catch (JSONException a) {
-                binding.progressSumit.setVisibility(View.GONE);
+                binding.progress.setVisibility(View.GONE);
                 commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_sync_workplan));
                 a.printStackTrace();
             }

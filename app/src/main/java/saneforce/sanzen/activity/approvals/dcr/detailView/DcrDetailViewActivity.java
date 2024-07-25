@@ -446,7 +446,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                     dcrDetailViewBinding.tagInput.setText(SharedPref.getDocInputCaption(this));
                     dcrDetailViewBinding.tagInputNameMain.setText(SharedPref.getDocInputCaption(this));
                 }
-                if (SharedPref.getRcpaQtyNeed(this).equals("0")){
+                if (SharedPref.getRcpaQtyNeed(this).equals("1")){
                     dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.VISIBLE);
                 }else{
                     dcrDetailViewBinding.tagRcpaPrd.setVisibility(View.INVISIBLE);

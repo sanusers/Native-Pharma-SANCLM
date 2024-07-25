@@ -1,8 +1,12 @@
 package saneforce.sanzen.activity.ViewModel;
 
+import static saneforce.sanzen.activity.leave.Leave_Application.AvailableLeave;
+import static saneforce.sanzen.activity.leave.Leave_Application.leavebinding;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -59,6 +63,8 @@ public class LeaveViewModel extends ViewModel {
             System.out.println("leaveStatusObject--->" + leaveStatusObject);
         } catch (Exception exception) {
             exception.printStackTrace();
+            leavebinding.progressBar.setVisibility(View.GONE);
+            AvailableLeave(context);
         }
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "get/leave");
@@ -85,8 +91,13 @@ public class LeaveViewModel extends ViewModel {
                                 }
                             }
                         }
+
+                        leavebinding.progressBar.setVisibility(View.GONE);
+                        AvailableLeave(context);
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        leavebinding.progressBar.setVisibility(View.GONE);
+                        AvailableLeave(context);
                     }
                 }
             }
@@ -94,6 +105,8 @@ public class LeaveViewModel extends ViewModel {
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 t.printStackTrace();
+                leavebinding.progressBar.setVisibility(View.GONE);
+                AvailableLeave(context);
             }
         });
     }

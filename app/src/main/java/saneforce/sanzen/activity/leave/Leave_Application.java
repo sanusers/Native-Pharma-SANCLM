@@ -98,7 +98,7 @@ public class Leave_Application extends AppCompatActivity {
     CommonUtilsMethods commonUtilsMethods;
     boolean isLeaveEntitlementRequested;
     private RoomDB roomDB;
-    private MasterDataDao masterDataDao;
+    private static MasterDataDao masterDataDao;
     private String destinationFilePath;
     LeaveViewModel leaveViewModel;
 
@@ -217,7 +217,7 @@ public class Leave_Application extends AppCompatActivity {
 
         });
 
-        AvailableLeave();
+        AvailableLeave(this);
 
     }
 
@@ -523,7 +523,7 @@ public class Leave_Application extends AppCompatActivity {
         return dateList;
     }
 
-    public void AvailableLeave() {
+    public static void AvailableLeave(Context context) {
         try {
             Chart_list.clear();
             leavebinding.submitLeave.setEnabled(true);
@@ -550,8 +550,8 @@ public class Leave_Application extends AppCompatActivity {
 
 
 //                        Collections.reverse(Chart_list);
-                            Piechart_adapter chart_details = new Piechart_adapter(Leave_Application.this, Chart_list);
-                            leavebinding.RLPiechart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+                            Piechart_adapter chart_details = new Piechart_adapter(context, Chart_list);
+                            leavebinding.RLPiechart.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
                             leavebinding.RLPiechart.setItemAnimator(new DefaultItemAnimator());
                             leavebinding.RLPiechart.setAdapter(chart_details);
                             chart_details.notifyDataSetChanged();
@@ -754,16 +754,16 @@ public class Leave_Application extends AppCompatActivity {
             l_details.notifyDataSetChanged();
             leavebinding.progressBar.setVisibility(View.VISIBLE);
             leaveViewModel.updateLeaveStatusMasterSync();
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    leavebinding.progressBar.setVisibility(View.GONE);
-                    AvailableLeave();
-                }
-            };
+//            Runnable runnable = new Runnable() {
+//                @Override
+//                public void run() {
+//                    leavebinding.progressBar.setVisibility(View.GONE);
+//                    AvailableLeave();
+//                }
+//            };
 
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.postDelayed(runnable, 500);
+//            Handler handler = new Handler(Looper.getMainLooper());
+//            handler.postDelayed(runnable, 500);
         });
     }
 }

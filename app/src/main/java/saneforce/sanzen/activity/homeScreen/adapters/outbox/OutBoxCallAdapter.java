@@ -197,6 +197,19 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                     btn_yes.setOnClickListener(view -> {
                         dialog.dismiss();
                         UpdateInputSample(outBoxCallLists.get(position).getJsonData());
+                        if (callOfflineECDataDao.isAvailableEc(outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getCusCode())) {
+                            for (int i = 0; i < listDates.size(); i++) {
+                                if (listDates.get(i).getGroupName().equalsIgnoreCase(outBoxCallLists.get(position).getDates())) {
+                                    for (int j = 0; j < listDates.get(i).getChildItems().get(3).getEcModelClasses().size(); j++) {
+                                        EcModelClass ecModelClass = listDates.get(i).getChildItems().get(3).getEcModelClasses().get(j);
+                                        if (ecModelClass.getDates().equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && ecModelClass.getCusCode().equalsIgnoreCase(outBoxCallLists.get(position).getCusCode()) && ecModelClass.getCusName().equalsIgnoreCase(outBoxCallLists.get(position).getCusName())) {
+                                            listDates.get(i).getChildItems().get(3).getEcModelClasses().remove(j);
+                                            j--;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         callsUtil.deleteOfflineCalls(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
                         try {
                             if (!outBoxCallLists.get(position).getStatus().equalsIgnoreCase(Constants.DUPLICATE_CALL)) {
@@ -236,19 +249,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                         } catch (Exception e) {
                             Log.e("Outbox Delete call", "onBindViewHolder: " + e.getMessage());
                             e.printStackTrace();
-                        }
-                        if (callOfflineECDataDao.isAvailableEc(outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getCusCode())) {
-                            for (int i = 0; i < listDates.size(); i++) {
-                                if (listDates.get(i).getGroupName().equalsIgnoreCase(outBoxCallLists.get(position).getDates())) {
-                                    for (int j = 0; j < listDates.get(i).getChildItems().get(3).getEcModelClasses().size(); j++) {
-                                        EcModelClass ecModelClass = listDates.get(i).getChildItems().get(3).getEcModelClasses().get(j);
-                                        if (ecModelClass.getDates().equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && ecModelClass.getCusCode().equalsIgnoreCase(outBoxCallLists.get(position).getCusCode()) && ecModelClass.getCusName().equalsIgnoreCase(outBoxCallLists.get(position).getCusName())) {
-                                            listDates.get(i).getChildItems().get(3).getEcModelClasses().remove(j);
-                                            j--;
-                                        }
-                                    }
-                                }
-                            }
                         }
                         if(!callOfflineDataDao.isAvailableCallOnDate(outBoxCallLists.get(position).getDates())) {
                             SharedPref.setLastCallDate(context, "");
