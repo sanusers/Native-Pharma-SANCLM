@@ -488,6 +488,20 @@ public class OutboxFragment extends Fragment {
                                 outBoxCallList.setSyncCount(5);
                                 UpdateEcData(date, cusCode, cusName, Constants.DUPLICATE_CALL, 1);
                                 DeleteUpdateDcrTable(date, cusCode, cusType);
+                            } else if(jsonSaveRes.getString("success").equalsIgnoreCase("false")) {
+                                if(jsonSaveRes.has("msg")) {
+                                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("msg"), 1);
+                                    outBoxCallList.setStatus(jsonSaveRes.getString("msg"));
+                                    outBoxCallList.setSyncCount(5);
+                                    UpdateEcData(date, cusCode, cusName, jsonSaveRes.getString("msg"), 1);
+                                    DeleteUpdateDcrTable(date, cusCode, cusType);
+                                } else if(jsonSaveRes.has("Msg")) {
+                                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("Msg"), 1);
+                                    outBoxCallList.setStatus(jsonSaveRes.getString("Msg"));
+                                    outBoxCallList.setSyncCount(5);
+                                    UpdateEcData(date, cusCode, cusName, jsonSaveRes.getString("Msg"), 1);
+                                    DeleteUpdateDcrTable(date, cusCode, cusType);
+                                }
                             }
                             CallOfflineCalls(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getOutBoxCallLists(), modelClass);
                         } catch (Exception e) {
@@ -516,7 +530,7 @@ public class OutboxFragment extends Fragment {
             });
 
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -588,8 +602,8 @@ public class OutboxFragment extends Fragment {
 //                    callAnalysisBinding.txtHosCount.setText(String.format("%d / %d", hos_current_callcount, hos_list.length()));
 //                    break;
 //            }
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

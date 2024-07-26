@@ -189,7 +189,7 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             holder.status.setText("Draft");
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.text_dark_15)));
         } else if (status==0 && confirmStatus==1) {
-            holder.status.setText("Finished"); // blue
+            holder.status.setText("Draft / Finished"); // blue
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.bg_lite_blue)));
         } else if (status==0 && confirmStatus==2) {
             holder.status.setText("Rejected"); // red

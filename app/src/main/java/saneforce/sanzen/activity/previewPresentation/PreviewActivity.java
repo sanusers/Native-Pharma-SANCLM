@@ -238,9 +238,7 @@ public class PreviewActivity extends AppCompatActivity {
             intent1 .putExtra("remainder_save", "0");
             intent1.putExtra("hq_code", "" );
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            if (!UtilityClass.isNetworkAvailable(this)) {
-                callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
-            }
+            callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             startActivity(intent1);
         });
     }

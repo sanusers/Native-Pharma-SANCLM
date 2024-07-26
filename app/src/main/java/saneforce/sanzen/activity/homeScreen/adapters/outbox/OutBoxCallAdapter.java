@@ -147,6 +147,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
             holder.tvStatus.setText(context.getString(R.string.duplicate_call));
         } else if (status.equalsIgnoreCase(Constants.EXCEPTION_ERROR)) {
             holder.tvStatus.setText(context.getString(R.string.exception_error));
+        } else {
+            holder.tvStatus.setText(status);
         }
 
         holder.tvMenu.setOnClickListener(v -> {
@@ -348,6 +350,18 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                 outBoxCallList.setStatus(Constants.DUPLICATE_CALL);
                                 outBoxCallList.setSyncCount(5);
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_already_exist));
+                            } else if(jsonSaveRes.getString("success").equalsIgnoreCase("false")) {
+                                if(jsonSaveRes.has("msg")) {
+                                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("msg"), 1);
+                                    outBoxCallList.setStatus(jsonSaveRes.getString("msg"));
+                                    outBoxCallList.setSyncCount(5);
+                                    commonUtilsMethods.showToastMessage(context, jsonSaveRes.getString("msg"));
+                                } else if(jsonSaveRes.has("Msg")) {
+                                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("Msg"), 1);
+                                    outBoxCallList.setStatus(jsonSaveRes.getString("Msg"));
+                                    outBoxCallList.setSyncCount(5);
+                                    commonUtilsMethods.showToastMessage(context, jsonSaveRes.getString("Msg"));
+                                }
                             }
                             progressDialog.dismiss();
                         } catch (Exception e) {

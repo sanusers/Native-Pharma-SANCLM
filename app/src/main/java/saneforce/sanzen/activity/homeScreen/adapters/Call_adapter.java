@@ -63,6 +63,7 @@ import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 
 public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataViewholider> {
@@ -103,7 +104,9 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
         CallsModalClass callslist = list.get(position);
         holder.DocName.setText(callslist.getDocName());
-        holder.datetime.setText(callslist.getCallsDateTime());
+        String dateTime = callslist.getCallsDateTime();
+        dateTime = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_36, dateTime);
+        holder.datetime.setText(dateTime);
 
         String type = callslist.getDocNameID();
 

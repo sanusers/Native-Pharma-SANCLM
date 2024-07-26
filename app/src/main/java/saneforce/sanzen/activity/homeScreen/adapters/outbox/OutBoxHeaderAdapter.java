@@ -546,7 +546,54 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                 }else {
                                     masterDataDao.insert(mData);
                                 }
+                            } else if(jsonSaveRes.getString("success").equalsIgnoreCase("false")) {
+                                if(jsonSaveRes.has("msg")) {
+                                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("msg"), 1);
+                                    groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), jsonSaveRes.getString("msg"), 5));
+                                    JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
+                                            jsonArray.remove(i);
+                                            break;
+                                        }
+                                    }
+                                    UpdateEcData(date, cusCode, cusName, jsonSaveRes.getString("msg"), 1);
 
+                                    MasterDataTable mData =new MasterDataTable();
+                                    mData.setMasterKey(Constants.CALL_SYNC);
+                                    mData.setMasterValues(jsonArray.toString());
+                                    mData.setSyncStatus(0);
+                                    MasterDataTable Checked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                                    if(Checked !=null){
+                                        masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
+                                    }else {
+                                        masterDataDao.insert(mData);
+                                    }
+                                } else if(jsonSaveRes.has("Msg")) {
+                                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("Msg"), 1);
+                                    groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), jsonSaveRes.getString("msg"), 5));
+                                    JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
+                                            jsonArray.remove(i);
+                                            break;
+                                        }
+                                    }
+                                    UpdateEcData(date, cusCode, cusName, jsonSaveRes.getString("Msg"), 1);
+
+                                    MasterDataTable mData =new MasterDataTable();
+                                    mData.setMasterKey(Constants.CALL_SYNC);
+                                    mData.setMasterValues(jsonArray.toString());
+                                    mData.setSyncStatus(0);
+                                    MasterDataTable Checked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                                    if(Checked !=null){
+                                        masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
+                                    }else {
+                                        masterDataDao.insert(mData);
+                                    }
+                                }
                             }
                             CallAPIOfflineCalls(groupModelClass, childPos);
                             notifyDataSetChanged();
@@ -573,7 +620,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             });
 
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
