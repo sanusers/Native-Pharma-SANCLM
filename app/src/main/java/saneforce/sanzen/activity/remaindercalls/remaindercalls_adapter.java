@@ -25,6 +25,7 @@ import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.utility.TimeUtils;
@@ -64,6 +65,7 @@ public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UtilityClass.hideKeyboard((RemaindercallsActivity)context);
                 if (isFirstClick) {
                     // Perform action for the first click
                     isFirstClick = false; // Disable further clicks

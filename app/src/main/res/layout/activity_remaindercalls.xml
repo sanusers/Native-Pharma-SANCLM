@@ -131,7 +131,9 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:fontFamily="@font/satoshi_medium"
-
+                        android:imeOptions="actionDone"
+                        android:maxLines="1"
+                        android:singleLine="true"
                         android:hint="@string/search"
                         android:padding="@dimen/_5sdp"
                         android:textSize="@dimen/_7sdp" />
