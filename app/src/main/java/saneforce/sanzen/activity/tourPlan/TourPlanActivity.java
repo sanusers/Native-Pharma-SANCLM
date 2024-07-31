@@ -490,7 +490,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
             if (!isEmpty) {
                 binding.tpDrawer.closeDrawer(GravityCompat.END);
-                dataModel.setSubmittedTime(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+                dataModel.setSubmittedTime(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
                 if (monthInAdapterFlag == 0) {
                     for (int i = 0; i < dayWiseArrayCurrentMonth.size(); i++) {
                         if (dayWiseArrayCurrentMonth.get(i).getDate().equalsIgnoreCase(dataModel.getDate())) {
@@ -1660,7 +1660,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     jsonObject.put("Change_Status", "0");
                                     jsonObject.put("Rejection_Reason", "");
                                     jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, modelClass.getDate()) + " 00:00:00");
-                                    jsonObject.put("submitted_time", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+                                    jsonObject.put("submitted_time", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
                                     jsonObject.put("Entry_mode", "Android -Edetailing");
                                     jsonObject.put("Approve_mode", "");
                                     jsonObject.put("Approved_time", "");
