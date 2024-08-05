@@ -181,7 +181,7 @@ public class CallsFragment extends Fragment {
                                         }
                                     }else {
                                         if(isProgressNeed) progressDialog.dismiss();
-                                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                                     }
                                 }
 
@@ -189,7 +189,7 @@ public class CallsFragment extends Fragment {
                                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                     binding.rlSyncCall.setEnabled(true);
                                     if(isProgressNeed) progressDialog.dismiss();
-                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                                 }
                             });
                         } catch (Exception e) {

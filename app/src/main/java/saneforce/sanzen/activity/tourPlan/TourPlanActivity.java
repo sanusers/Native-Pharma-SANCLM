@@ -949,12 +949,13 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void changeApprovalBtnState(ArrayList<ModelClass> arrayList) { // To set send to approval btn enable/disable  based on syncStatus and  workType
-        boolean wholeMonthTpCompleted = false;
+        boolean wholeMonthTpCompleted = false, isDataAvailable = false;
         for (int i = 0; i < arrayList.size(); i++) { // to enable/disable the send to approval button
             if (!arrayList.get(i).getDayNo().isEmpty()) {
                 ModelClass.SessionList.WorkType workType = arrayList.get(i).getSessionList().get(0).getWorkType();
                 if (!workType.getName().isEmpty()) {
                     wholeMonthTpCompleted = true;
+                    isDataAvailable = true;
                 } else {
                     if(Integer.valueOf(arrayList.get(i).getDayNo())< TourPlanActivity.JoningDate &&Integer.valueOf(arrayList.get(i).getMonth())==TourPlanActivity.JoiningMonth  && Integer.valueOf(arrayList.get(i).getYear())==TourPlanActivity.JoinYear ) {
                         wholeMonthTpCompleted = true;
@@ -1029,6 +1030,12 @@ public class TourPlanActivity extends AppCompatActivity {
                 SetTpRangeStatus();
                 break;
             }
+        }
+
+        if(!isDataAvailable) {
+            binding.rejectionReasonLayout.setVisibility(View.GONE);
+            binding.rejectedReasonTxt.setText("");
+            binding.tpStatusTxt.setText(Constants.STATUS_EMPTY);
         }
 
     }
@@ -1508,7 +1515,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                             binding.tpStatusTxt.setText(Constants.STATUS_0);
                                             binding.rejectionReasonLayout.setVisibility(View.GONE);
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
-
                                             break;
                                         }
                                         case "1": {
@@ -1527,6 +1533,11 @@ public class TourPlanActivity extends AppCompatActivity {
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
                                             binding.rejectionReasonLayout.setVisibility(View.GONE);
                                             binding.tpStatusTxt.setText(Constants.STATUS_3);
+                                            break;
+                                        }
+                                        default: {
+                                            binding.rejectionReasonLayout.setVisibility(View.GONE);
+                                            binding.tpStatusTxt.setText(Constants.STATUS_EMPTY);
                                             break;
                                         }
                                     }
@@ -1897,7 +1908,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 if (statusOffline) {
                     binding.progressBar.setVisibility(View.GONE);
                 }
-                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
                 saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
             }
         });

@@ -817,10 +817,15 @@ public class DCRCallActivity extends AppCompatActivity {
                     if (RCPANeed.equalsIgnoreCase("0") && RcpaMandatory.equalsIgnoreCase("0")) {
                         if(!validateRCPA()) return false;
                     }
-
+                    if(RCPANeed.equalsIgnoreCase("0")) {
+                        if(!validateRCPACompQty()) return false;
+                    }
                 } else {
                     if (RCPANeed.equalsIgnoreCase("0") && MgrRcpaMandatory.equalsIgnoreCase("0")) {
                         if(!validateRCPA()) return false;
+                    }
+                    if(RCPANeed.equalsIgnoreCase("0")) {
+                        if(!validateRCPACompQty()) return false;
                     }
                 }
 
@@ -967,6 +972,17 @@ public class DCRCallActivity extends AppCompatActivity {
         return true;
     }
 
+    private boolean validateRCPACompQty() {
+        for (int i = 0; i < RCPASelectCompSide.rcpa_comp_list.size(); i++) {
+            if (RCPASelectCompSide.rcpa_comp_list.get(i).getQty().isEmpty() || Integer.parseInt(RCPASelectCompSide.rcpa_comp_list.get(i).getQty()) == 0) {
+                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.rcpa_need_qty));
+                moveToPage("RCPA");
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void moveToPage(String pageName) {
         int currentPageIndex = dcrCallBinding.viewPager.getCurrentItem();
         int requiredPageIndex = pages.indexOf(pageName);
@@ -1007,7 +1023,7 @@ public class DCRCallActivity extends AppCompatActivity {
             }
         }
         for (int i = 0; i < RCPASelectCompSide.rcpa_comp_list.size(); i++) {
-            if (RCPASelectCompSide.rcpa_comp_list.get(i).getQty().equalsIgnoreCase("0") || RCPASelectCompSide.rcpa_comp_list.get(i).getQty().isEmpty()) {
+            if (CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().isEmpty() || CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().equalsIgnoreCase("0")) {
                 commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.rcpa_need_qty));
                 moveToPage("RCPA");
                 return false;

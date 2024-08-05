@@ -141,14 +141,14 @@ public class LeaveApprovalActivity extends AppCompatActivity {
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(getApplicationContext(),getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(getApplicationContext(),getString(R.string.no_network));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(getApplicationContext(),getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(getApplicationContext(),getString(R.string.no_network));
             }
         });
     }

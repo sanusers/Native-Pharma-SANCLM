@@ -218,10 +218,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onResume() {
+        if(isDateSelectionClicked) {
+            setUpCalendar();
+        }
         timeZoneVerification();
         accessibility();
         super.onResume();
-
         AppIdentify();
         Log.d("ACTIVITY_STATUS", "OnResume");
         commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
@@ -601,7 +603,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
             }
         });
     }
@@ -908,7 +910,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             //    commonUtilsMethods.showToastMessage(HomeDashBoard.this,"Logout Successfully")
-            commonUtilsMethods.showToastMessage(HomeDashBoard.this, HomeDashBoard.this.getString(R.string.logout_successfully));
+//            commonUtilsMethods.showToastMessage(HomeDashBoard.this, HomeDashBoard.this.getString(R.string.logout_successfully));
+            Toast.makeText(HomeDashBoard.this, getString(R.string.logout_successfully), Toast.LENGTH_LONG).show();
             finish();
         });
 
@@ -1183,7 +1186,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
             }
         });
 
@@ -1531,7 +1534,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //        if(!MyDayPlanEntriesNeeded.datesNeeded.isEmpty() || !SharedPref.getSelectedDateCal(this).isEmpty()) {
             SetUpHolidayWeekEndData();
             if (isDateSelectionClicked) {
-                getCallsDataToCalender();
+//                getCallsDataToCalender();
                 if (selectedDate == null) {
                     selectedDate = LocalDate.now();
                 }
@@ -1611,7 +1614,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 //                progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
                     binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.GONE);
                 }
             });

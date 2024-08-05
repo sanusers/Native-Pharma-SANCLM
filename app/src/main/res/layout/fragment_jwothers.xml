@@ -81,7 +81,7 @@
                         android:imeOptions="actionDone"
                         android:inputType="number"
                         android:maxLines="1"
-                        android:maxLength="10"
+                        android:maxLength="9"
                         android:paddingHorizontal="@dimen/_6sdp"
                         android:paddingVertical="@dimen/_2sdp"
                         android:textColorHint="@color/bg_txt_color"

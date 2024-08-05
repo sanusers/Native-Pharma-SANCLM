@@ -205,7 +205,14 @@ public class OutboxFragment extends Fragment {
         ArrayList<OutBoxCallList> outBoxCallLists = callsUtil.getAllOutBoxCallsList();
         Set<String> dates = callsUtil.getOutboxDates();
         try {
-            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 0));
+            if (offlineWorkTypeDataDao.getAllCallOfflineWTDates().contains(HomeDashBoard.selectedDate.toString())) {
+                Log.e("outbox workplan", "clearCalls: date found" );
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 0));
+                SharedPref.setDayPlanStartedDate(requireContext(), "");
+                if(SharedPref.getDcrSequential(requireContext()).equals("1")) {
+                    SharedPref.setSelectedDateCal(requireContext(), "");
+                }
+            }
             if (!outBoxCallLists.isEmpty()) {
                 JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -230,7 +237,21 @@ public class OutboxFragment extends Fragment {
                 } else {
                     masterDataDao.insert(data);
                 }
-                CallDataRestClass.resetcallValues(context);
+                CallDataRestClass.resetcallValues(requireContext());
+
+                JSONArray jsonArrayCalls = new JSONArray(SharedPref.getTodayCallList(requireContext()));
+                boolean callsAvailable = false;
+                for (int i = 0; i < jsonArrayCalls.length(); i++) {
+                    JSONObject json = jsonArrayCalls.getJSONObject(i);
+                    if (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_4, json.getString("vstTime")).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+                        callsAvailable = true;
+                    }
+                }
+                if(!callsAvailable) {
+                    SharedPref.setLastCallDate(requireContext(), "");
+                }else {
+                    SharedPref.setLastCallDate(requireContext(), HomeDashBoard.selectedDate.toString());
+                }
             }
         } catch (Exception e) {
             Log.e("Outbox", "clearCalls: "+ e.getMessage());
@@ -243,8 +264,6 @@ public class OutboxFragment extends Fragment {
                 SharedPref.setCheckDateTodayPlan(requireContext(), "");
             }
         }
-        SharedPref.setSelectedDateCal(requireContext(), "");
-        SharedPref.setDayPlanStartedDate(requireContext(), "");
         callsUtil.deleteOfflineCalls();
         listDates.clear();
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(requireActivity(), requireContext(), listDates);

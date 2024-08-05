@@ -300,7 +300,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                 dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                                 dcrDetailViewBinding.rvEventListview.setVisibility(View.GONE);
                                 dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
-                                commonUtilsMethods.showToastMessage(context,context.getString(R.string.toast_response_failed));
+                                commonUtilsMethods.showToastMessage(context,context.getString(R.string.no_network));
                                 progressDialog.dismiss();
                             }
                         });
@@ -388,7 +388,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 layout.setVisibility(View.GONE);
                                 dcrDetailViewBinding.tagViewRcpa.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                                 progressDialog.dismiss();
                             }
                         });
@@ -464,7 +464,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                                 layout.setVisibility(View.GONE);
                                 dcrDetailViewBinding.tagViewSld.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                                 progressDialog.dismiss();

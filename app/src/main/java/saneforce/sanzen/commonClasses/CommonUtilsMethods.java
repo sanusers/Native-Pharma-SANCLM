@@ -18,6 +18,7 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.text.InputFilter;
@@ -27,6 +28,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -307,16 +309,16 @@ public class CommonUtilsMethods {
 
     public void showToastMessage(Activity activity, String message) {
 
-        LayoutInflater inflater = activity.getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_layout, activity.findViewById(R.id.toast_layout_root));
-
         //ImageView image = layout.findViewById(R.id.image);
         // image.setImageResource(R.drawable.san_clm_logo);
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_layout, activity.findViewById(R.id.toast_layout_root));
         TextView text = layout.findViewById(R.id.text);
         text.setText(message);
 
         Toast toast = new Toast(activity.getApplicationContext());
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+//        Toast toast = Toast.makeText(activity.getApplicationContext(), message, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
         toast.show();

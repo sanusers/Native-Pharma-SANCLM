@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">R.1.4.1</string>
+    <string name="app_version" translatable="false">R.1.4.2</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -292,7 +292,7 @@
     <string name="add_pob_values">Add Pob Values</string>
     <string name="event_capture_needed">Event Capture Needed</string>
     <string name="need_competitors_for_prd">Need Competitor for Products</string>
-    <string name="rcpa_need_qty">RCPA Competitor Need Qty</string>
+    <string name="rcpa_need_qty">RCPA Competitor Qty Needed</string>
     <string name="call_saved_successfully">Call Saved Successfully</string>
     <string name="call_already_exist">Call Already Exist</string>
     <string name="call_failed">Call Failed! Try Again</string>

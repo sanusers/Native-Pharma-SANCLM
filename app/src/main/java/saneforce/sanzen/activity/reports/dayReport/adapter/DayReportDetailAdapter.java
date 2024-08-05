@@ -683,7 +683,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                                 progressDialog.dismiss();
                             }
                         });
@@ -771,7 +771,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                                 progressDialog.dismiss();
                             }
                         });
@@ -844,7 +844,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                                 progressDialog.dismiss();
                             }
                         });

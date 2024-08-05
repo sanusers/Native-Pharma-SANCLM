@@ -37,7 +37,7 @@ public interface CallOfflineWorkTypeDataDao {
     List<String> getAllCallOfflineWTDates();
 
     @Query("SELECT * FROM `CALL_OFFLINE_WORK_TYPE_TABLE` WHERE `CALL_OFFLINE_WT_DATE` = :date")
-    CallOfflineWorkTypeDataTable getCallOfflineWorkTypeDataTable(String date);
+    List<CallOfflineWorkTypeDataTable> getCallOfflineWorkTypeDataTable(String date);
 
     @Query("UPDATE `CALL_OFFLINE_WORK_TYPE_TABLE` SET `CALL_OFFLINE_WT_SYNC_STATUS` = :syncStatus WHERE `ID` = :id")
     void updateWorkTypeStatus(int id, int syncStatus);
@@ -57,10 +57,14 @@ public interface CallOfflineWorkTypeDataDao {
 
     default WorkPlanModelClass getWorkPlanModelClass(String date) {
         WorkPlanModelClass workPlanModelClass = null;
-        CallOfflineWorkTypeDataTable callOfflineWorkTypeDataTable = getCallOfflineWorkTypeDataTable(date);
-        if(callOfflineWorkTypeDataTable != null) {
-            workPlanModelClass = new WorkPlanModelClass(callOfflineWorkTypeDataTable.getId(), callOfflineWorkTypeDataTable.getCallOfflineWTDate(), callOfflineWorkTypeDataTable.getCallOfflineWTName(), callOfflineWorkTypeDataTable.getCallOfflineWTCode(), callOfflineWorkTypeDataTable.getCallOfflineWTJson(), callOfflineWorkTypeDataTable.getCallOfflineWTStatus(), callOfflineWorkTypeDataTable.getCallOfflineWTSyncStatus());
+        List<CallOfflineWorkTypeDataTable> callOfflineWorkTypeDataTableList = getCallOfflineWorkTypeDataTable(date);
+        if(!callOfflineWorkTypeDataTableList.isEmpty()) {
+            CallOfflineWorkTypeDataTable callOfflineWorkTypeDataTable = callOfflineWorkTypeDataTableList.get(callOfflineWorkTypeDataTableList.size() - 1);
+            if(callOfflineWorkTypeDataTable != null) {
+                workPlanModelClass = new WorkPlanModelClass(callOfflineWorkTypeDataTable.getId(), callOfflineWorkTypeDataTable.getCallOfflineWTDate(), callOfflineWorkTypeDataTable.getCallOfflineWTName(), callOfflineWorkTypeDataTable.getCallOfflineWTCode(), callOfflineWorkTypeDataTable.getCallOfflineWTJson(), callOfflineWorkTypeDataTable.getCallOfflineWTStatus(), callOfflineWorkTypeDataTable.getCallOfflineWTSyncStatus());
+            }
         }
+//        workPlanModelClass = new WorkPlanModelClass();
         return workPlanModelClass;
     }
 

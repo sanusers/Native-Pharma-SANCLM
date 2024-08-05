@@ -185,7 +185,7 @@ public class ApprovalsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                commonUtilsMethods.showToastMessage(ApprovalsActivity.this, getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(ApprovalsActivity.this, getString(R.string.no_network));
                 progressDialog.dismiss();
             }
         });

@@ -82,23 +82,16 @@ public class Call_status_second_view extends Fragment {
                     if (jsonObject.getString("Mnth").equals(previousMonth)) {
                         if (!Dates_call.equals(jsonObject.getString("Dcr_dt"))) {
                             date_format = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, jsonObject.getString("Dcr_dt")));
-                            ;
-
                             chckflk = "1";
-
                             Dates_call = jsonObject.getString("Dcr_dt");
                             Dcr_dt = jsonObject.getString("Dcr_dt");
-
                             CustType = jsonObject.getString("CustType");
                             FW_Indicator = jsonObject.getString("FW_Indicator");
                             workType = jsonObject.getString("WorkType_Name");
                             Mnth = jsonObject.getString("Mnth");
                             CustName = jsonObject.getString("CustName");
                             town_name = jsonObject.getString("town_name");
-
-
                             CustCode = jsonObject.getString("CustCode");
-
                             month_name = jsonObject.getString("month_name");
                             town_code = jsonObject.getString("town_code");
                             Dcr_flag = jsonObject.getString("Dcr_flag");
@@ -106,9 +99,6 @@ public class Call_status_second_view extends Fragment {
                             Trans_SlNo = jsonObject.getString("Trans_SlNo");
                             AMSLNo = jsonObject.getString("AMSLNo");
                             //  time = jsonObject.getString("vtm");
-
-
-
                         } else {
                             CustType = jsonObject.getString("CustType");
                             FW_Indicator = jsonObject.getString("FW_Indicator");
@@ -119,10 +109,7 @@ public class Call_status_second_view extends Fragment {
                             Dcr_dt = "";
                             chckflk = "";
                             date_format = "";
-
-
                             CustCode = jsonObject.getString("CustCode");
-
                             month_name = jsonObject.getString("month_name");
                             town_code = jsonObject.getString("town_code");
                             Dcr_flag = jsonObject.getString("Dcr_flag");
@@ -130,7 +117,6 @@ public class Call_status_second_view extends Fragment {
                             Trans_SlNo = jsonObject.getString("Trans_SlNo");
                             AMSLNo = jsonObject.getString("AMSLNo");
                           //  time = jsonObject.getString("vtm");
-
                         }
                         if (CustType.equals("0")) {
                             medicalPersonnel = "";

@@ -302,7 +302,7 @@ public class DayReportDetailFragment extends Fragment {
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_response_failed));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
                                 progressDialog.dismiss();
                             }
                         });

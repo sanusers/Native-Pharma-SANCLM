@@ -36,6 +36,7 @@ import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCallSelection.ViewHolder> {
     Context context;
@@ -152,7 +153,9 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                         int count = 0;
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            if (jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())) {
+                            if (jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())
+                                    && TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, jsonObject.getString("Dcr_dt"))
+                                    .equals(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, HomeDashBoard.selectedDate.toString()))) {
                                 count++;
                             }
                         }

@@ -88,6 +88,7 @@ public class Constants {
     //-------------------------------------------------------------
 
     //Tour Plan
+    public static final String STATUS_EMPTY = "";
     public static final String STATUS_0 = "planning...";
     public static final String STATUS_1 = "Planning completed/Waiting for approval";
     public static final String STATUS_2 = "TP rejected";

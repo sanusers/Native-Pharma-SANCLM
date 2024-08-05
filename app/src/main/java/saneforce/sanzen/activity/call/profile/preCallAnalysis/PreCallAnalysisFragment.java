@@ -236,7 +236,7 @@ public class PreCallAnalysisFragment extends Fragment {
                 }
                 break;
             case "2":
-                if (PrdSamNeed.equalsIgnoreCase("1")) {
+                if (PrdSamNeed.equalsIgnoreCase("0")) {
                     preCallAnalysisBinding.sampleCaption.setVisibility(View.VISIBLE);
                     preCallAnalysisBinding.sampleCaptionLine.setVisibility(View.VISIBLE);
                 } else {

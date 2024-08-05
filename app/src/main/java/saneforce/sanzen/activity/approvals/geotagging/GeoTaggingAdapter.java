@@ -228,14 +228,14 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                     }
                 } else {
                     holder.progressBar.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 holder.progressBar.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
             }
         });
     }

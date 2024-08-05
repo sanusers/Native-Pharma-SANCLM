@@ -66,29 +66,6 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
                 }
              break;
             case "2":
-                if (PreCallAnalysisFragment.PrdSamNeed.equalsIgnoreCase("1")) {
-                    holder.txt_sample.setVisibility(View.VISIBLE);
-                    holder.view_sample.setVisibility(View.VISIBLE);
-                } else {
-                    holder.txt_sample.setVisibility(View.GONE);
-                    holder.view_sample.setVisibility(View.GONE);
-                }
-                if (PreCallAnalysisFragment.PrdRxNeed.equalsIgnoreCase("0")) {
-                    holder.txt_rx.setVisibility(View.VISIBLE);
-                    holder.view_rx.setVisibility(View.VISIBLE);
-                } else {
-                    holder.txt_rx.setVisibility(View.GONE);
-                    holder.view_rx.setVisibility(View.GONE);
-                }
-
-//                if (PreCallAnalysisFragment.PrdRCPANeed.equalsIgnoreCase("1")) {
-//                    holder.txt_rcpa.setVisibility(View.VISIBLE);
-//                    holder.view_rcpa.setVisibility(View.VISIBLE);
-//                } else {
-                    holder.txt_rcpa.setVisibility(View.GONE);
-                    holder.view_rcpa.setVisibility(View.GONE);
-//                }
-             break;
             case "3":
             case "4":
             case "5":
@@ -115,34 +92,8 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
                     holder.txt_rcpa.setVisibility(View.GONE);
                     holder.view_rcpa.setVisibility(View.GONE);
 //                }
-                break;
+             break;
         }
-
-
-    /*    if (PreCallAnalysisFragment.PrdSamNeed.equalsIgnoreCase("0")) {
-            holder.txt_sample.setVisibility(View.VISIBLE);
-            holder.view_sample.setVisibility(View.VISIBLE);
-        } else {
-            holder.txt_sample.setVisibility(View.GONE);
-            holder.view_sample.setVisibility(View.GONE);
-        }
-
-        if (PreCallAnalysisFragment.PrdRxNeed.equalsIgnoreCase("0")) {
-            holder.txt_rx.setVisibility(View.VISIBLE);
-            holder.view_rx.setVisibility(View.VISIBLE);
-        } else {
-            holder.txt_rx.setVisibility(View.GONE);
-            holder.view_rx.setVisibility(View.GONE);
-        }
-
-        if (PreCallAnalysisFragment.RCPANeed.equalsIgnoreCase("1")) {
-            holder.txt_rcpa.setVisibility(View.VISIBLE);
-            holder.view_rcpa.setVisibility(View.VISIBLE);
-        } else {
-            holder.txt_rx.setVisibility(View.GONE);
-            holder.view_rcpa.setVisibility(View.GONE);
-        }*/
-
 
         if (list.size() - 1 == position) {
             holder.view.setVisibility(View.VISIBLE);

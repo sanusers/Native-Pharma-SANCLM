@@ -113,7 +113,7 @@ public class WorkPlanEntriesNeeded {
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    Log.e("MyDayPlanEntry", "onFailure: " + context.getString(R.string.toast_response_failed));
+                    Log.e("MyDayPlanEntry", "onFailure: " + context.getString(R.string.no_network));
 //                    setupMyDayPlanEntriesNeeded(context);
 //                    syncTaskStatus.onFailed();
                 }

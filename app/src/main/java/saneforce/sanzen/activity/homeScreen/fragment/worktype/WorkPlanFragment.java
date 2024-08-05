@@ -304,7 +304,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             rlHQ.setVisibility(View.VISIBLE);
                         }
                     } else {
-                        NeedClusterFlag2 = true;
+                        NeedClusterFlag2 = false;
                         mTowncode2 = "";
                         mTownname2 = "";
                         mHQCode2 = "";
@@ -876,7 +876,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
             }
         } else {
-            if (NeedClusterFlag1) {
+            if (NeedClusterFlag2) {
                 if (binding.txtheadquaters2.getText().toString().equalsIgnoreCase("") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
                 } else if (binding.txtCluster2.getText().toString().equalsIgnoreCase("")) {
@@ -1199,7 +1199,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
                 progressDialog.dismiss();
             }
         });
@@ -1242,7 +1242,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
                     progressDialog.dismiss();
                 }
             });
@@ -1458,7 +1458,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.progress.setVisibility(View.GONE);
                     setUpMyDayplan();
                     Log.e("VALUES", String.valueOf(t));
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
                 }
             });
         } catch (Exception ignored) {

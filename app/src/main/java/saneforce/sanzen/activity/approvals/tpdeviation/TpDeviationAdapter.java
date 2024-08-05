@@ -105,14 +105,14 @@ CommonUtilsMethods commonUtilsMethods;
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
             }
         });
     }

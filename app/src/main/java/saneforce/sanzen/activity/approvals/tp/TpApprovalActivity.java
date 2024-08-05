@@ -174,14 +174,14 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
             }
         });
     }
@@ -256,14 +256,14 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                 } else {
                     progressDialog.dismiss();
                     dialogReject.dismiss();
-                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
                 dialogReject.dismiss();
             }
         });
@@ -336,7 +336,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                 } else {
                     tpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
                 }
             }
 
@@ -344,7 +344,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 tpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
             }
         });
     }
@@ -472,14 +472,14 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
             }
         });
     }

@@ -265,7 +265,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         Log.v("delCall", e.toString());
                     }
                 } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                 }
             }
 
@@ -331,14 +331,14 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                     }
                 } else {
                     progressBar.dismiss();
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressBar.dismiss();
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
             }
         });
     }

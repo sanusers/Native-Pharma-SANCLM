@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
         UtilityClass.setLanguage(LoginActivity.this);
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        commonUtilsMethods = new CommonUtilsMethods(getParent());
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
@@ -154,7 +154,8 @@ public class LoginActivity extends AppCompatActivity {
                 } else if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
                     SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
                     startActivity(new Intent(LoginActivity.this, HomeDashBoard.class));
-                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
+//                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
+                    Toast.makeText(LoginActivity.this, getString(R.string.login_successfully), Toast.LENGTH_LONG).show();
                 } else {
                     commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.mismatch));
                 }
@@ -409,7 +410,8 @@ public class LoginActivity extends AppCompatActivity {
                                 System.out.println("appAccess--->"+appAccess);
                                 if (appAccess.equals("1")) {
                                     process(responseObject);
-                                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
+                                    Toast.makeText(LoginActivity.this, getString(R.string.login_successfully), Toast.LENGTH_LONG).show();
+//                                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
                                 }else{
                                     CommonUtilsMethods.accessDialogBox(LoginActivity.this);
                                 }

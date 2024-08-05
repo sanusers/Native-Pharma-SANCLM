@@ -301,7 +301,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
                     SetupAdapter(DcrApprovalActivity.this);
                 }
             }
@@ -310,7 +310,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
                 SetupAdapter(context);
             }
         });
@@ -491,14 +491,14 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
             }
         });
     }
@@ -554,14 +554,14 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
             }
         });
     }
@@ -617,13 +617,22 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
                         Collections.sort(dcrApprovalLists, (o1, o2) -> {
                             try {
-                                Date date1 = dateFormat.parse(o1.getActivity_date());
-                                Date date2 = dateFormat.parse(o2.getActivity_date());
-                                assert date1 != null;
-                                return date1.compareTo(date2); // Compare the Date objects
+                                String name1 = o1.getSf_name();
+                                String name2 = o2.getSf_name();
+                                assert name1 != null;
+                                assert name2 != null;
+                                int comp = name1.compareTo(name2);
+                                if(comp != 0) {
+                                    return comp;
+                                } else {
+                                    Date date1 = dateFormat.parse(o1.getActivity_date());
+                                    Date date2 = dateFormat.parse(o2.getActivity_date());
+                                    assert date1 != null;
+                                    return date1.compareTo(date2);
+                                }
                             } catch (ParseException e) {
                                 e.printStackTrace();
-                                return 0; // Orhandle it differently based on your requirements
+                                return 0;
                             }
                         });
 
@@ -636,14 +645,14 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
+                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.no_network));
             }
         });
     }

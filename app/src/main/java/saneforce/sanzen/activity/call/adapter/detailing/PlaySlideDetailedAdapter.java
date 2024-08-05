@@ -281,7 +281,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                 dialog.dismiss();
             }
         });
