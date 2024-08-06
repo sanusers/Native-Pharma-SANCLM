@@ -147,234 +147,63 @@
                 </RelativeLayout>
 
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardPlan2"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_6sdp"
-                    android:layout_marginEnd="@dimen/_6sdp"
-                    android:layout_marginStart="@dimen/_6sdp"
-                    app:cardPreventCornerOverlap="true"
-                    app:cardUseCompatPadding="true"
-                    app:cardCornerRadius="@dimen/_3sdp"
-                    android:backgroundTint="@color/white"
-                    android:visibility="gone">
-                    <LinearLayout
-                        android:id="@+id/ll_plan2"
+                    android:layout_height="wrap_content">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardPlan2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <LinearLayout
-                            android:id="@+id/ll_delete"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:padding="@dimen/_5sdp"
-                            android:orientation="horizontal"
-                            android:visibility="visible">
-
-                            <ImageView
-                                android:id="@+id/delete_img"
-                                android:layout_width="@dimen/_10sdp"
-                                android:layout_height="@dimen/_10sdp"
-                                android:layout_marginEnd="@dimen/_2sdp"
-                                android:src="@drawable/iv_del" />
-
-                            <TextView
-
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:fontFamily="@font/satoshi_medium"
-                                android:text="Delete"
-                                android:textColor="@color/red_60"
-                                android:textSize="@dimen/_7sdp" />
-
-                        </LinearLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/rlworktype2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/_6sdp"
-                            android:layout_marginStart="@dimen/_6sdp"
-                            android:layout_marginTop="@dimen/_6sdp"
-                            android:layout_marginBottom="@dimen/_6sdp"                             android:background="@drawable/backround_text"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/txtWorktype2"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="@dimen/_2sdp"
-                                android:layout_marginTop="@dimen/_2sdp"
-                                android:layout_marginEnd="@dimen/_2sdp"
-                                android:layout_marginBottom="@dimen/_2sdp"
-                                android:fontFamily="@font/satoshi_medium"
-                                android:hint="Select Work Type"
-                                android:padding="@dimen/_4sdp"
-                                android:textColor="@color/text_dark"
-                                android:textColorHint="@color/text_dark"
-                                android:textSize="@dimen/_7sdp" />
-
-                            <ImageView
-                                android:layout_width="@dimen/_10sdp"
-                                android:layout_height="@dimen/_6sdp"
-                                android:layout_alignParentRight="true"
-                                android:layout_centerInParent="true"
-                                android:layout_marginRight="@dimen/_5sdp"
-                                android:src="@drawable/right_arrow" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/rlheadquates2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/_6sdp"
-                            android:layout_marginStart="@dimen/_6sdp"
-                            android:layout_marginBottom="@dimen/_6sdp"
-                            android:background="@drawable/backround_text"
-                            android:orientation="horizontal"
-                            android:visibility="visible">
-
-                            <ProgressBar
-                                android:id="@+id/progress_hq2"
-                                android:layout_width="@dimen/_10sdp"
-                                android:layout_height="@dimen/_10sdp"
-                                android:layout_centerInParent="true"
-                                android:layout_gravity="center"
-                                android:background="#26282A3C"
-                                android:backgroundTint="#26282A3C"
-                                android:visibility="gone" />
-
-                            <TextView
-                                android:id="@+id/txtheadquaters2"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_2sdp"
-                                android:layout_marginTop="@dimen/_2sdp"
-                                android:layout_marginEnd="@dimen/_2sdp"
-                                android:layout_marginBottom="@dimen/_2sdp"
-                                android:fontFamily="@font/satoshi_medium"
-                                android:hint="Select Head Quarters"
-                                android:padding="@dimen/_4sdp"
-                                android:textColor="@color/text_dark"
-                                android:textColorHint="@color/text_dark"
-                                android:textSize="@dimen/_7sdp" />
-
-                            <ImageView
-                                android:layout_width="@dimen/_10sdp"
-                                android:layout_height="@dimen/_6sdp"
-                                android:layout_alignParentRight="true"
-                                android:layout_centerInParent="true"
-                                android:layout_marginRight="@dimen/_5sdp"
-                                android:src="@drawable/right_arrow" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/rlcluster2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/_6sdp"
-                            android:layout_marginStart="@dimen/_6sdp"
-                            android:layout_marginBottom="@dimen/_6sdp"
-                            android:background="@drawable/backround_text"
-                            android:orientation="horizontal">
-                            <TextView
-                                android:id="@+id/txtCluster2"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_2sdp"
-                                android:layout_marginTop="@dimen/_2sdp"
-                                android:layout_marginEnd="@dimen/_2sdp"
-                                android:layout_marginBottom="@dimen/_2sdp"
-                                android:fontFamily="@font/satoshi_medium"
-                                android:hint="Select Cluster"
-                                android:padding="@dimen/_4sdp"
-                                android:text=""
-                                android:textColor="@color/text_dark"
-
-                                android:textColorHint="@color/text_dark"
-                                android:textSize="@dimen/_7sdp" />
-
-                            <ImageView
-                                android:layout_width="@dimen/_10sdp"
-                                android:layout_height="@dimen/_6sdp"
-                                android:layout_alignParentRight="true"
-                                android:layout_centerInParent="true"
-                                android:layout_marginRight="@dimen/_5sdp"
-                                android:src="@drawable/right_arrow" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:visibility="gone">
-
-                            <EditText
-                                android:id="@+id/txtdayremark2"
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/_50sdp"
-                                android:layout_marginStart="@dimen/_2sdp"
-                                android:layout_marginTop="@dimen/_2sdp"
-                                android:layout_marginEnd="@dimen/_2sdp"
-                                android:layout_marginBottom="@dimen/_2sdp"
-                                android:background="@drawable/backround_text"
-                                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.- "
-                                android:fontFamily="@font/satoshi_medium"
-                                android:gravity="top|left"
-                                android:hint="Enter Remark"
-                                android:inputType="text"
-                                android:lines="8"
-                                android:maxLines="10"
-                                android:minLines="6"
-                                android:padding="@dimen/_4sdp"
-                                android:scrollbars="vertical"
-                                android:textSize="@dimen/_7sdp" />
-
-
-                            <ProgressBar
-                                android:id="@+id/progress_sumit2"
-                                android:layout_width="@dimen/_30sdp"
-                                android:layout_height="@dimen/_30sdp"
-                                android:layout_centerInParent="true"
-                                android:layout_gravity="center"
-                                android:background="#26282A3C"
-                                android:backgroundTint="#26282A3C"
-                                android:visibility="gone" />
-                        </RelativeLayout>
-
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardPlan1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_2sdp"
-                    android:layout_marginEnd="@dimen/_6sdp"
-                    android:layout_marginStart="@dimen/_6sdp"
-                    app:cardPreventCornerOverlap="true"
-                    app:cardUseCompatPadding="true"
-                    android:backgroundTint="@color/white"
-                    app:cardCornerRadius="@dimen/_3sdp"
-                    android:elevation="@dimen/_2sdp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_marginStart="@dimen/_6sdp"
+                        android:layout_marginTop="@dimen/_6sdp"
+                        android:layout_marginEnd="@dimen/_6sdp"
+                        android:backgroundTint="@color/white"
+                        android:visibility="gone"
+                        app:cardCornerRadius="@dimen/_3sdp"
+                        app:cardPreventCornerOverlap="true"
+                        app:cardUseCompatPadding="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <LinearLayout
-                            android:id="@+id/ll_plan1"
+                            android:id="@+id/ll_plan2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
                             android:orientation="vertical">
 
+                            <LinearLayout
+                                android:id="@+id/ll_delete"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="end"
+                                android:orientation="horizontal"
+                                android:padding="@dimen/_5sdp"
+                                android:visibility="visible">
+
+                                <ImageView
+                                    android:id="@+id/delete_img"
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="@dimen/_10sdp"
+                                    android:layout_marginEnd="@dimen/_2sdp"
+                                    android:src="@drawable/iv_del" />
+
+                                <TextView
+
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:fontFamily="@font/satoshi_medium"
+                                    android:text="Delete"
+                                    android:textColor="@color/red_60"
+                                    android:textSize="@dimen/_7sdp" />
+
+                            </LinearLayout>
+
                             <RelativeLayout
-                                android:id="@+id/rlworktype1"
+                                android:id="@+id/rlworktype2"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/_6sdp"
@@ -385,7 +214,7 @@
                                 android:orientation="horizontal">
 
                                 <TextView
-                                    android:id="@+id/txtWorktype1"
+                                    android:id="@+id/txtWorktype2"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_centerInParent="true"
@@ -393,7 +222,6 @@
                                     android:layout_marginTop="@dimen/_2sdp"
                                     android:layout_marginEnd="@dimen/_2sdp"
                                     android:layout_marginBottom="@dimen/_2sdp"
-                                    android:layout_toStartOf="@id/img_arrow_1"
                                     android:fontFamily="@font/satoshi_medium"
                                     android:hint="Select Work Type"
                                     android:padding="@dimen/_4sdp"
@@ -402,7 +230,6 @@
                                     android:textSize="@dimen/_7sdp" />
 
                                 <ImageView
-                                    android:id="@+id/img_arrow_1"
                                     android:layout_width="@dimen/_10sdp"
                                     android:layout_height="@dimen/_6sdp"
                                     android:layout_alignParentRight="true"
@@ -412,7 +239,7 @@
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:id="@+id/rlheadquates1"
+                                android:id="@+id/rlheadquates2"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/_6sdp"
@@ -423,7 +250,7 @@
                                 android:visibility="visible">
 
                                 <ProgressBar
-                                    android:id="@+id/progress_hq1"
+                                    android:id="@+id/progress_hq2"
                                     android:layout_width="@dimen/_10sdp"
                                     android:layout_height="@dimen/_10sdp"
                                     android:layout_centerInParent="true"
@@ -433,14 +260,13 @@
                                     android:visibility="gone" />
 
                                 <TextView
-                                    android:id="@+id/txtheadquaters1"
+                                    android:id="@+id/txtheadquaters2"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_2sdp"
                                     android:layout_marginTop="@dimen/_2sdp"
                                     android:layout_marginEnd="@dimen/_2sdp"
                                     android:layout_marginBottom="@dimen/_2sdp"
-                                    android:layout_toStartOf="@id/img_arrow_2"
                                     android:fontFamily="@font/satoshi_medium"
                                     android:hint="Select Head Quarters"
                                     android:padding="@dimen/_4sdp"
@@ -449,7 +275,6 @@
                                     android:textSize="@dimen/_7sdp" />
 
                                 <ImageView
-                                    android:id="@+id/img_arrow_2"
                                     android:layout_width="@dimen/_10sdp"
                                     android:layout_height="@dimen/_6sdp"
                                     android:layout_alignParentRight="true"
@@ -459,7 +284,7 @@
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:id="@+id/rlcluster1"
+                                android:id="@+id/rlcluster2"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/_6sdp"
@@ -469,24 +294,23 @@
                                 android:orientation="horizontal">
 
                                 <TextView
-                                    android:id="@+id/txtCluster1"
+                                    android:id="@+id/txtCluster2"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_2sdp"
                                     android:layout_marginTop="@dimen/_2sdp"
                                     android:layout_marginEnd="@dimen/_2sdp"
                                     android:layout_marginBottom="@dimen/_2sdp"
-                                    android:layout_toStartOf="@id/img_arrow_3"
                                     android:fontFamily="@font/satoshi_medium"
                                     android:hint="Select Cluster"
                                     android:padding="@dimen/_4sdp"
                                     android:text=""
                                     android:textColor="@color/text_dark"
+
                                     android:textColorHint="@color/text_dark"
                                     android:textSize="@dimen/_7sdp" />
 
                                 <ImageView
-                                    android:id="@+id/img_arrow_3"
                                     android:layout_width="@dimen/_10sdp"
                                     android:layout_height="@dimen/_6sdp"
                                     android:layout_alignParentRight="true"
@@ -502,7 +326,7 @@
                                 android:visibility="gone">
 
                                 <EditText
-                                    android:id="@+id/txtdayremark1"
+                                    android:id="@+id/txtdayremark2"
                                     android:layout_width="match_parent"
                                     android:layout_height="@dimen/_50sdp"
                                     android:layout_marginStart="@dimen/_2sdp"
@@ -524,8 +348,7 @@
 
 
                                 <ProgressBar
-
-                                    android:id="@+id/progress_sumit1"
+                                    android:id="@+id/progress_sumit2"
                                     android:layout_width="@dimen/_30sdp"
                                     android:layout_height="@dimen/_30sdp"
                                     android:layout_centerInParent="true"
@@ -537,17 +360,240 @@
 
                         </LinearLayout>
 
-                        <ProgressBar
-                            android:id="@+id/progress_wt_1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:indeterminateTint="@color/dark_purple"
-                            android:visibility="gone" />
+                    </androidx.cardview.widget.CardView>
 
-                    </RelativeLayout>
-                </androidx.cardview.widget.CardView>
 
+                    <FrameLayout
+                        android:id="@+id/fl_session2"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:elevation="@dimen/_5sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@id/cardPlan2"
+                        app:layout_constraintEnd_toEndOf="@id/cardPlan2"
+                        app:layout_constraintStart_toStartOf="@id/cardPlan2"
+                        app:layout_constraintTop_toTopOf="@id/cardPlan2" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardPlan1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_6sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_marginEnd="@dimen/_6sdp"
+                        android:backgroundTint="@color/white"
+                        android:elevation="@dimen/_2sdp"
+                        app:cardCornerRadius="@dimen/_3sdp"
+                        app:cardPreventCornerOverlap="true"
+                        app:cardUseCompatPadding="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:id="@+id/ll_plan1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:orientation="vertical">
+
+                                <RelativeLayout
+                                    android:id="@+id/rlworktype1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_6sdp"
+                                    android:layout_marginTop="@dimen/_6sdp"
+                                    android:layout_marginEnd="@dimen/_6sdp"
+                                    android:layout_marginBottom="@dimen/_6sdp"
+                                    android:background="@drawable/backround_text"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/txtWorktype1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerInParent="true"
+                                        android:layout_marginStart="@dimen/_2sdp"
+                                        android:layout_marginTop="@dimen/_2sdp"
+                                        android:layout_marginEnd="@dimen/_2sdp"
+                                        android:layout_marginBottom="@dimen/_2sdp"
+                                        android:layout_toStartOf="@id/img_arrow_1"
+                                        android:fontFamily="@font/satoshi_medium"
+                                        android:hint="Select Work Type"
+                                        android:padding="@dimen/_4sdp"
+                                        android:textColor="@color/text_dark"
+                                        android:textColorHint="@color/text_dark"
+                                        android:textSize="@dimen/_7sdp" />
+
+                                    <ImageView
+                                        android:id="@+id/img_arrow_1"
+                                        android:layout_width="@dimen/_10sdp"
+                                        android:layout_height="@dimen/_6sdp"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_centerInParent="true"
+                                        android:layout_marginRight="@dimen/_5sdp"
+                                        android:src="@drawable/right_arrow" />
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:id="@+id/rlheadquates1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_6sdp"
+                                    android:layout_marginEnd="@dimen/_6sdp"
+                                    android:layout_marginBottom="@dimen/_6sdp"
+                                    android:background="@drawable/backround_text"
+                                    android:orientation="horizontal"
+                                    android:visibility="visible">
+
+                                    <ProgressBar
+                                        android:id="@+id/progress_hq1"
+                                        android:layout_width="@dimen/_10sdp"
+                                        android:layout_height="@dimen/_10sdp"
+                                        android:layout_centerInParent="true"
+                                        android:layout_gravity="center"
+                                        android:background="#26282A3C"
+                                        android:backgroundTint="#26282A3C"
+                                        android:visibility="gone" />
+
+                                    <TextView
+                                        android:id="@+id/txtheadquaters1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/_2sdp"
+                                        android:layout_marginTop="@dimen/_2sdp"
+                                        android:layout_marginEnd="@dimen/_2sdp"
+                                        android:layout_marginBottom="@dimen/_2sdp"
+                                        android:layout_toStartOf="@id/img_arrow_2"
+                                        android:fontFamily="@font/satoshi_medium"
+                                        android:hint="Select Head Quarters"
+                                        android:padding="@dimen/_4sdp"
+                                        android:textColor="@color/text_dark"
+                                        android:textColorHint="@color/text_dark"
+                                        android:textSize="@dimen/_7sdp" />
+
+                                    <ImageView
+                                        android:id="@+id/img_arrow_2"
+                                        android:layout_width="@dimen/_10sdp"
+                                        android:layout_height="@dimen/_6sdp"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_centerInParent="true"
+                                        android:layout_marginRight="@dimen/_5sdp"
+                                        android:src="@drawable/right_arrow" />
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:id="@+id/rlcluster1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_6sdp"
+                                    android:layout_marginEnd="@dimen/_6sdp"
+                                    android:layout_marginBottom="@dimen/_6sdp"
+                                    android:background="@drawable/backround_text"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/txtCluster1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/_2sdp"
+                                        android:layout_marginTop="@dimen/_2sdp"
+                                        android:layout_marginEnd="@dimen/_2sdp"
+                                        android:layout_marginBottom="@dimen/_2sdp"
+                                        android:layout_toStartOf="@id/img_arrow_3"
+                                        android:fontFamily="@font/satoshi_medium"
+                                        android:hint="Select Cluster"
+                                        android:padding="@dimen/_4sdp"
+                                        android:text=""
+                                        android:textColor="@color/text_dark"
+                                        android:textColorHint="@color/text_dark"
+                                        android:textSize="@dimen/_7sdp" />
+
+                                    <ImageView
+                                        android:id="@+id/img_arrow_3"
+                                        android:layout_width="@dimen/_10sdp"
+                                        android:layout_height="@dimen/_6sdp"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_centerInParent="true"
+                                        android:layout_marginRight="@dimen/_5sdp"
+                                        android:src="@drawable/right_arrow" />
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <EditText
+                                        android:id="@+id/txtdayremark1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/_50sdp"
+                                        android:layout_marginStart="@dimen/_2sdp"
+                                        android:layout_marginTop="@dimen/_2sdp"
+                                        android:layout_marginEnd="@dimen/_2sdp"
+                                        android:layout_marginBottom="@dimen/_2sdp"
+                                        android:background="@drawable/backround_text"
+                                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.- "
+                                        android:fontFamily="@font/satoshi_medium"
+                                        android:gravity="top|left"
+                                        android:hint="Enter Remark"
+                                        android:inputType="text"
+                                        android:lines="8"
+                                        android:maxLines="10"
+                                        android:minLines="6"
+                                        android:padding="@dimen/_4sdp"
+                                        android:scrollbars="vertical"
+                                        android:textSize="@dimen/_7sdp" />
+
+
+                                    <ProgressBar
+
+                                        android:id="@+id/progress_sumit1"
+                                        android:layout_width="@dimen/_30sdp"
+                                        android:layout_height="@dimen/_30sdp"
+                                        android:layout_centerInParent="true"
+                                        android:layout_gravity="center"
+                                        android:background="#26282A3C"
+                                        android:backgroundTint="#26282A3C"
+                                        android:visibility="gone" />
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <ProgressBar
+                                android:id="@+id/progress_wt_1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:indeterminateTint="@color/dark_purple"
+                                android:visibility="gone" />
+
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <FrameLayout
+                        android:id="@+id/fl_session1"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:elevation="@dimen/_5sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@id/cardPlan1"
+                        app:layout_constraintEnd_toEndOf="@id/cardPlan1"
+                        app:layout_constraintStart_toStartOf="@id/cardPlan1"
+                        app:layout_constraintTop_toTopOf="@id/cardPlan1" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
 

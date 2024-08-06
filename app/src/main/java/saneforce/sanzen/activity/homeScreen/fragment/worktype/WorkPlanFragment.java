@@ -44,7 +44,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -205,6 +204,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.rlheadquates2.setOnClickListener(this);
         binding.llDelete.setOnClickListener(this);
         binding.closeRejectedReason.setOnClickListener(this);
+        binding.flSession1.setOnClickListener(this);
+        binding.flSession2.setOnClickListener(this);
 
         boolean toSync = false;
         if(SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)){
@@ -669,7 +670,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     break;
 
                 case R.id.rlcluster2:
-
                     if(binding.txtheadquaters2.getText().toString().equalsIgnoreCase("") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
                     }else if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
@@ -700,21 +700,20 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                     break;
                 case R.id.txtSave:
-
-                    if(SharedPref.getApprovalManatoryStatus(requireContext())&& SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
+                    if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
                         CommonAlertBox.ApprovalAlert(requireActivity());
-                    }else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
+                    }else if(SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                         CommonAlertBox.TpAlert(requireActivity());
                     }else {
                         if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
                             if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
-                                saveMyDayPlan();
+                                saveOrUpdateWorkPlan();
                             }else {
                                 gpsTrack = new GPSTrack(requireContext());
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_try_again));
                             }
                         }else {
-                            saveMyDayPlan();
+                            saveOrUpdateWorkPlan();
                         }
                     }
                     break;
@@ -726,19 +725,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.txtSave.setTextColor(getResources().getColor(R.color.black));
                     binding.txtSave.setEnabled(true);
                     binding.cardPlan2.setVisibility(View.VISIBLE);
-                    if(SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)){
+                    if(SharedPref.getWrkAreaName(requireContext()).isEmpty() || SharedPref.getWrkAreaName(requireContext()).equalsIgnoreCase(null)) {
                         binding.txtCluster2.setHint("Select Cluster");
-                    } else{
-                        binding.txtCluster2.setHint("Select"+  SharedPref.getWrkAreaName(requireContext()));
+                    }else {
+                        binding.txtCluster2.setHint("Select" + SharedPref.getWrkAreaName(requireContext()));
 
                     }
                     getLocalData();
                     break;
 
                 case R.id.btnsumit:
-                    if(SharedPref.getApprovalManatoryStatus(requireContext())&& SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
+                    if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
                         CommonAlertBox.ApprovalAlert(requireActivity());
-                    }else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
+                    }else if(SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                         CommonAlertBox.TpAlert(requireActivity());
                     }else {
                         if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
@@ -780,12 +779,171 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         dialog.dismiss();
                     });
                     break;
+
+                case R.id.fl_session1:
+                    Log.d("Plan Edit", "onClick: Plan 1");
+                    dialogEditConfirmation("1");
+                    break;
+
+                case R.id.fl_session2:
+                    Log.d("Plan Edit", "onClick: Plan 2");
+                    dialogEditConfirmation("2");
+                    break;
+
             }
         }catch (Exception e){
             Log.e("WorkPlan Fragment", "onClick: " + e.getMessage());
             e.printStackTrace();
         }
 
+    }
+
+    private void updateWorkPlan() {
+        try {
+//            binding.progress.setVisibility(View.VISIBLE);
+            Log.e("todayCallList:Object",jsonObject.toString());
+
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "");
+            Call<JsonElement> saveMyDayPlan = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+
+//            saveMyDayPlan.enqueue(new Callback<JsonElement>() {
+//                @Override
+//                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+//                    Log.d("todayCallList:Code", response.code() + " - " + response);
+//                    if (response.isSuccessful()) {
+//                        binding.progress.setVisibility(View.GONE);
+//                        try {
+//                            JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
+//                            if (json.getString("success").equalsIgnoreCase("true")) {
+//                                SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
+//                                if (DayPlanCount.equalsIgnoreCase("1")) {
+//                                    if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg1.equalsIgnoreCase("A"))
+//                                        HomeDashBoard.binding.viewPager.setCurrentItem(1);
+//                                } else if (DayPlanCount.equalsIgnoreCase("2")) {
+//                                    if (mFwFlg2.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("A"))
+//                                        HomeDashBoard.binding.viewPager.setCurrentItem(1);
+//                                }
+//                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
+//                                if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+//                                    SharedPref.saveHq(requireContext(), mHQName, mHQCode);
+//                                } else {
+//                                    SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()),  SharedPref.getSfCode(requireContext()));
+//                                }
+//
+//                                SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode);
+//                                SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(), true, mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F"));
+//
+//                                JSONArray MydayPlanDataList = new JSONArray();
+//                                JSONObject FisrstSeasonObject = new JSONObject();
+//                                JSONObject SecondSeasonObject = new JSONObject();
+//
+//                                FisrstSeasonObject.put("SFCode",SharedPref.getSfCode(requireContext()));
+//                                JSONObject TPDtFisrstSeasonObject = new JSONObject();
+//                                TPDtFisrstSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
+//                                FisrstSeasonObject.put("TPDt", TPDtFisrstSeasonObject);
+//                                FisrstSeasonObject.put("WT", mWTCode1);
+//                                FisrstSeasonObject.put("WTNm", mWTName1);
+//                                FisrstSeasonObject.put("FWFlg", mFwFlg1);
+//                                FisrstSeasonObject.put("SFMem", mHQCode1);
+//                                FisrstSeasonObject.put("HQNm", mHQName1);
+//                                FisrstSeasonObject.put("Pl", mTowncode1);
+//                                FisrstSeasonObject.put("PlNm", mTownname1);
+//                                FisrstSeasonObject.put("Rem", "");
+//                                FisrstSeasonObject.put("TpVwFlg", "2");
+//                                FisrstSeasonObject.put("TP_Doctor", "");
+//                                FisrstSeasonObject.put("TP_cluster", "");
+//                                FisrstSeasonObject.put("TP_worktype", "");
+//                                MydayPlanDataList.put(FisrstSeasonObject);
+//                                if (DayPlanCount.equalsIgnoreCase("2")) {
+//                                    SecondSeasonObject.put("SFCode",SharedPref.getSfCode(requireContext()));
+//                                    JSONObject TPDtSecondSeasonObject = new JSONObject();
+//                                    TPDtSecondSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
+//                                    SecondSeasonObject.put("TPDt", TPDtSecondSeasonObject);
+//                                    SecondSeasonObject.put("WT", mWTCode2);
+//                                    SecondSeasonObject.put("WTNm", mWTName2);
+//                                    SecondSeasonObject.put("FWFlg", mFwFlg2);
+//                                    SecondSeasonObject.put("SFMem", mHQCode2);
+//                                    SecondSeasonObject.put("HQNm", mHQName2);
+//                                    SecondSeasonObject.put("Pl", mTowncode2);
+//                                    SecondSeasonObject.put("PlNm", mTownname2);
+//                                    SecondSeasonObject.put("Rem", "");
+//                                    SecondSeasonObject.put("TpVwFlg", "2");
+//                                    SecondSeasonObject.put("TP_Doctor", "");
+//                                    SecondSeasonObject.put("TP_cluster", "");
+//                                    SecondSeasonObject.put("TP_worktype", "");
+//                                    MydayPlanDataList.put(SecondSeasonObject);
+//                                }
+//                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, MydayPlanDataList.toString(), 2));
+//
+//                                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+//                                boolean isCallSyncAvailable = false;
+//                                for (int i = 0; i<jsonArray.length(); i++) {
+//                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                                    String custType = jsonObject.getString("CustType");
+//                                    String time = jsonObject.getString("Dcr_dt");
+//                                    if(custType.equalsIgnoreCase("0") && time.equalsIgnoreCase( HomeDashBoard.selectedDate.toString())){
+//                                        isCallSyncAvailable = true;
+//                                        break;
+//                                    }
+//                                }
+//                                if(!isCallSyncAvailable) {
+//
+//                                    String FW_Indicator ;
+//                                    String Workname;
+//
+//                                    if (mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F")) {
+//                                        FW_Indicator = "F";
+//                                        Workname="Field Work";
+//                                    } else {
+//                                        FW_Indicator = mFwFlg1;
+//                                        Workname=mWTName1;
+//                                    }
+//
+//                                    JSONObject jsonObject = new JSONObject();
+//                                    jsonObject.put("CustCode", "");
+//                                    jsonObject.put("CustType", "0");
+//                                    jsonObject.put("Dcr_dt", HomeDashBoard.selectedDate.toString());
+//                                    jsonObject.put("month_name", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_9,HomeDashBoard.selectedDate.toString()));
+//                                    jsonObject.put("Mnth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_31,HomeDashBoard.selectedDate.toString()));
+//                                    jsonObject.put("Yr", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_10,HomeDashBoard.selectedDate.toString()));
+//                                    jsonObject.put("vtm", CommonUtilsMethods.getCurrentInstance("hh:mm aa"));
+//                                    jsonObject.put("FW_Indicator", FW_Indicator);
+//                                    jsonObject.put("WorkType_Name", Workname);
+//                                    jsonObject.put("CustName", "");
+//                                    jsonObject.put("town_code", "");
+//                                    jsonObject.put("town_name", "");
+//                                    jsonObject.put("Dcr_flag", "");
+//                                    jsonObject.put("SF_Code", hqCode);
+//                                    jsonObject.put("Trans_SlNo", "");
+//                                    jsonObject.put("AMSLNo", "");
+//                                    jsonObject.put("day_status", "0");
+//                                    jsonArray.put(jsonObject);
+//                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
+//                                }
+//                                SharedPref.setDayPlanStartedDate(requireContext(), HomeDashBoard.selectedDate.toString());
+//
+//                            } else {
+//                                setUpMyDayplan();
+//                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
+//                            }
+//                        } catch (Exception e) {
+//                            Log.e("Workplan", "onResponse: " + e.getMessage());
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+//                    binding.progress.setVisibility(View.GONE);
+//                    setUpMyDayplan();
+//                    Log.e("VALUES", String.valueOf(t));
+//                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+//                }
+//            });
+        } catch (Exception ignored) {
+            binding.progress.setVisibility(View.GONE);
+        }
     }
 
     private void submitMyDayPlan() {
@@ -818,7 +976,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void saveMyDayPlan() {
+    private void saveOrUpdateWorkPlan() {
         if (DayPlanCount.equalsIgnoreCase("1")) {
             if (NeedClusterFlag1) {
                 if (binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
@@ -826,54 +984,16 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 } else if (binding.txtCluster1.getText().toString().equalsIgnoreCase("")) {
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_cluster));
                 } else {
-                    binding.llPlan1.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
-                    binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                    binding.rlheadquates1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                    if (mFwFlg1.equalsIgnoreCase("F")) {
-                        binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
-                    } else {
-                        binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                    }
-
-                    binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
-                    binding.rlworktype1.setEnabled(false);
-                    binding.rlcluster1.setEnabled(false);
-                    binding.rlheadquates1.setEnabled(false);
-                    binding.txtAddPlan.setEnabled(true);
-                    binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
-                    binding.txtSave.setEnabled(false);
+                    disableSession1();
                     CreateJson();
-                    if (UtilityClass.isNetworkAvailable(requireContext())) {
-                        MyDayPlanSubmit();
-                    } else {
-                        SaveWTLocal("1");
-                    }
+                    saveOrUpdateWP("1");
                 }
             } else if (binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
             } else {
-                binding.llPlan1.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
-                binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                binding.rlheadquates1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                if (mFwFlg1.equalsIgnoreCase("F")) {
-                    binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
-                } else {
-                    binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                }
-
-                binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
-                binding.rlworktype1.setEnabled(false);
-                binding.rlcluster1.setEnabled(false);
-                binding.rlheadquates1.setEnabled(false);
-                binding.txtAddPlan.setEnabled(true);
-                binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
-                binding.txtSave.setEnabled(false);
+                disableSession1();
                 CreateJson();
-                if (UtilityClass.isNetworkAvailable(requireContext())) {
-                    MyDayPlanSubmit();
-                } else {
-                    SaveWTLocal("1");
-                }
+                saveOrUpdateWP("1");
             }
         } else {
             if (NeedClusterFlag2) {
@@ -882,55 +1002,36 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 } else if (binding.txtCluster2.getText().toString().equalsIgnoreCase("")) {
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_cluster));
                 } else {
-                    binding.cardPlan2.setCardBackgroundColor(getResources().getColor(R.color.gray_45));
-                    binding.llPlan2.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
-                    binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                    binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                    if (mFwFlg2.equalsIgnoreCase("F")) {
-                        binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
-                    } else {
-                        binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                    }
-                    binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
-                    binding.txtAddPlan.setEnabled(false);
-                    binding.rlworktype2.setEnabled(false);
-                    binding.rlcluster2.setEnabled(false);
-                    binding.rlheadquates2.setEnabled(false);
-                    binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
-                    binding.txtSave.setEnabled(false);
-                    binding.llDelete.setVisibility(View.GONE);
+                    disableSession2();
                     CreateJson();
-                    if (UtilityClass.isNetworkAvailable(requireContext())) {
-                        MyDayPlanSubmit();
-                    } else {
-                        SaveWTLocal("2");
-                    }
+                    saveOrUpdateWP("2");
                 }
             } else if (binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
             } else {
-                binding.cardPlan2.setCardBackgroundColor(getResources().getColor(R.color.gray_45));
-                binding.llPlan2.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
-                binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                if (mFwFlg2.equalsIgnoreCase("F")) {
-                    binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
-                } else {
-                    binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                }
-                binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
-                binding.txtAddPlan.setEnabled(false);
-                binding.rlworktype2.setEnabled(false);
-                binding.rlcluster2.setEnabled(false);
-                binding.rlheadquates2.setEnabled(false);
-                binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
-                binding.txtSave.setEnabled(false);
-                binding.llDelete.setVisibility(View.GONE);
+                disableSession2();
                 CreateJson();
-                if (UtilityClass.isNetworkAvailable(requireContext())) {
-                    MyDayPlanSubmit();
-                } else {
-                    SaveWTLocal("2");
+                saveOrUpdateWP("2");
+            }
+        }
+    }
+
+    private void saveOrUpdateWP(String sessionType) {
+        if(binding.txtSave.getText().equals(getString(R.string.save))) {
+            if(UtilityClass.isNetworkAvailable(requireContext())) {
+                MyDayPlanSubmit();
+            }else {
+                SaveWTLocal(sessionType);
+            }
+        } else if(binding.txtSave.getText().equals(getString(R.string.update))) {
+            if(UtilityClass.isNetworkAvailable(requireContext())) {
+                updateWorkPlan();
+            } else {
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_update_wp));
+                if(sessionType.equals("1")) {
+                    enableEditSession1();
+                } else if(sessionType.equals("2")) {
+                    enableEditSession2();
                 }
             }
         }
@@ -1752,23 +1853,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode1);
 
                         }
-
-                        binding.llPlan1.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
-                        binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                        binding.rlheadquates1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                        if(mFwFlg1.equalsIgnoreCase("F")) {
-
-                            binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
-                        }else {
-                            binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                        }
-                        binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
-                        binding.rlworktype1.setEnabled(false);
-                        binding.rlcluster1.setEnabled(false);
-                        binding.rlheadquates1.setEnabled(false);
-                        binding.txtAddPlan.setEnabled(true);
-                        binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
-                        binding.txtSave.setEnabled(false);
+                        disableSession1();
 
                         String dateOnlyString = sdf.format(FirstPlanDate);
                         String selectedDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_27, dateOnlyString);
@@ -1863,21 +1948,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 binding.txtheadquaters2.setText(mHQName2);
                                 SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode2);
                             }
-                            binding.cardPlan2.setCardBackgroundColor(getResources().getColor(R.color.gray_45));
-                            binding.llPlan2.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
-                            binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                            binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                            if(mFwFlg2.equalsIgnoreCase("F")) {
-
-                                binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
-                            }else {
-                                binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                            }
-                            binding.rlworktype2.setEnabled(false);
-                            binding.rlcluster2.setEnabled(false);
-                            binding.rlheadquates2.setEnabled(false);
-                            binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
-                            binding.txtAddPlan.setEnabled(false);
+                            disableSession2();
                         }else {
                             binding.cardPlan2.setVisibility(View.GONE);
                         }
@@ -2160,5 +2231,124 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         btn_clear.setOnClickListener(view -> {
             dialogRemarks.dismiss();
         });
+    }
+
+    private void dialogEditConfirmation(String sessionType) {
+        Dialog dialogEditConfirmation = new Dialog(requireActivity());
+        dialogEditConfirmation.setContentView(R.layout.popup_remarks);
+        Objects.requireNonNull(dialogEditConfirmation.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogEditConfirmation.setCancelable(false);
+        ImageView iv_close = dialogEditConfirmation.findViewById(R.id.img_close);
+        EditText ed_remarks = dialogEditConfirmation.findViewById(R.id.ed_remark);
+        TextView heading = dialogEditConfirmation.findViewById(R.id.tv_head);
+        TextView content = dialogEditConfirmation.findViewById(R.id.content);
+        Button btn_clear = dialogEditConfirmation.findViewById(R.id.btn_clear);
+        Button btn_save = dialogEditConfirmation.findViewById(R.id.btn_save);
+        heading.setText(R.string.alert);
+        btn_save.setText(requireContext().getString(R.string.edit));
+        btn_clear.setText(requireContext().getString(R.string.delete));
+        content.setText(String.format("%s%s", getString(R.string.edit_session), sessionType));
+        content.setVisibility(View.VISIBLE);
+        ed_remarks.setVisibility(View.INVISIBLE);
+        btn_save.setOnClickListener(view -> {
+            if(sessionType.equals("1")) {
+                enableEditSession1();
+                dialogEditConfirmation.dismiss();
+            }else {
+                enableEditSession2();
+                dialogEditConfirmation.dismiss();
+            }
+        });
+        btn_clear.setOnClickListener(view -> {
+            deleteSession(sessionType);
+            dialogEditConfirmation.dismiss();
+        });
+        iv_close.setOnClickListener(view -> dialogEditConfirmation.dismiss());
+        dialogEditConfirmation.show();
+    }
+
+    private void deleteSession(String sessionType) {
+        if(UtilityClass.isNetworkAvailable(requireContext())) {
+            createDeleteJson(sessionType);
+        } else {
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_delete_workplan));
+        }
+    }
+
+    private void createDeleteJson(String sessionType) {
+        Log.d("Workplan delete", "createDeleteJson: " + sessionType);
+    }
+
+    private void enableEditSession1() {
+        binding.rlworktype1.setEnabled(true);
+        binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.backround_text));
+        binding.rlcluster1.setEnabled(true);
+        binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.backround_text));
+        binding.rlheadquates1.setEnabled(true);
+        binding.rlheadquates1.setBackground(getResources().getDrawable(R.drawable.backround_text));
+        binding.llPlan1.setBackground(getResources().getDrawable(R.drawable.backround_text));
+        binding.flSession1.setVisibility(View.GONE);
+        enableUpdate();
+        DayPlanCount = "1";
+    }
+
+    private void enableEditSession2() {
+        binding.rlworktype2.setEnabled(true);
+        binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+        binding.rlcluster2.setEnabled(true);
+        binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+        binding.rlheadquates2.setEnabled(true);
+        binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+        binding.llPlan2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+        binding.flSession2.setVisibility(View.GONE);
+        enableUpdate();
+        DayPlanCount = "2";
+    }
+
+    private void disableSession1() {
+        binding.llPlan1.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
+        binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+        binding.rlheadquates1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+        if(mFwFlg1.equalsIgnoreCase("F")) {
+
+            binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
+        }else {
+            binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+        }
+        binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
+        binding.rlworktype1.setEnabled(false);
+        binding.rlcluster1.setEnabled(false);
+        binding.rlheadquates1.setEnabled(false);
+        binding.txtAddPlan.setEnabled(true);
+        binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
+        binding.txtSave.setEnabled(false);
+        binding.flSession1.setVisibility(View.VISIBLE);
+    }
+
+    private void disableSession2() {
+        binding.cardPlan2.setCardBackgroundColor(getResources().getColor(R.color.gray_45));
+        binding.llPlan2.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
+        binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+        binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+        if (mFwFlg2.equalsIgnoreCase("F")) {
+            binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
+        } else {
+            binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+        }
+        binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
+        binding.txtAddPlan.setEnabled(false);
+        binding.rlworktype2.setEnabled(false);
+        binding.rlcluster2.setEnabled(false);
+        binding.rlheadquates2.setEnabled(false);
+        binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
+        binding.txtSave.setEnabled(false);
+        binding.llDelete.setVisibility(View.GONE);
+        binding.flSession2.setVisibility(View.VISIBLE);
+    }
+
+    private void enableUpdate() {
+        binding.txtSave.setTextColor(getResources().getColor(R.color.black));
+        binding.txtSave.setEnabled(true);
+        binding.txtSave.setText(getString(R.string.update));
     }
 }

@@ -479,4 +479,7 @@
     <string name="list_please_try_again">" List. Please try again."</string>
     <string name="list_updated_successfully">" List updated successfully."</string>
     <string name="please_sync_workplan">Please Sync WorkPlan</string>
+    <string name="edit_session">"Are you sure want to edit/delete Session "</string>
+    <string name="no_network_update_wp">\nInternet Connection needed to update WorkPlan</string>
+    <string name="no_network_delete_workplan">\nNeed internet connection to Delete WorkPlan</string>
 </resources>
