@@ -32,6 +32,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -134,6 +135,7 @@ public class WorkPlanEntriesNeeded {
         String planningDate = "";
         TreeSet<String> pastDates = new TreeSet<>();
         isPlanningDateFound = false;
+        HashMap<String, String> dayFlagMap = new HashMap<>();
 
         try {
             LocalDate dateBefore;
@@ -159,16 +161,19 @@ public class WorkPlanEntriesNeeded {
                     if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
                         pastDates.remove(date);
                     }
-                    if(cusType.equalsIgnoreCase("0") && date.equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)))
-                        isTodayPresent = true;
-                    if(cusType.equalsIgnoreCase("0") && !dayStatus.equalsIgnoreCase("1")) {
-                        dateBefore = LocalDate.parse(date);
-                        if(dateBefore != null && dateBefore.isBefore(currentDate) && dateBefore.isAfter(limitDate)) {
-                            dates.put(date, cusType+dayStatus);
-                            datesNeeded.add(date);
-                        }
+                    if(cusType.equalsIgnoreCase("0")) {
+                        dayFlagMap.put(date, dayStatus);
                         if(date.equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)))
-                            isTodayNotFinished = true;
+                            isTodayPresent = true;
+                        if(!dayStatus.equalsIgnoreCase("1")) {
+                            dateBefore = LocalDate.parse(date);
+                            if(dateBefore != null && dateBefore.isBefore(currentDate) && dateBefore.isAfter(limitDate)) {
+                                dates.put(date, cusType + dayStatus);
+                                datesNeeded.add(date);
+                            }
+                            if(date.equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)))
+                                isTodayNotFinished = true;
+                        }
                     }
                 }
                 Log.v("TAG 1", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
@@ -183,6 +188,7 @@ public class WorkPlanEntriesNeeded {
                     if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
                         pastDates.remove(date);
                     }
+                    dayFlagMap.put(date, flag);
                     if(tbName.equalsIgnoreCase("missed") ||
                             (tbName.equalsIgnoreCase("dcr") && (flag.equalsIgnoreCase("2") || (flag.equalsIgnoreCase("3")))) ||
                             flag.equalsIgnoreCase("0")) {
@@ -326,10 +332,12 @@ public class WorkPlanEntriesNeeded {
         if(isPlanningDateFound) {
             Log.d("Planning found", "setupMyDayPlanEntriesNeeded: Planning date found");
             SharedPref.setSelectedDateCal(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, planningDate));
+            WorkPlanFragment.dayStatus = dayFlagMap.get(planningDate);
             syncTaskStatus.datesFound();
         } else if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
             if(date != null && !date.isEmpty()) {
                 SharedPref.setSelectedDateCal(context, date);
+                WorkPlanFragment.dayStatus = dayFlagMap.get(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, date));
                 syncTaskStatus.datesFound();
             } else {
                 SharedPref.setSelectedDateCal(context, null);
@@ -337,6 +345,7 @@ public class WorkPlanEntriesNeeded {
             }
         } else {
             if(!SharedPref.getSelectedDateCal(context).isEmpty()) {
+                WorkPlanFragment.dayStatus = dayFlagMap.get(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)));
                 syncTaskStatus.datesFound();
             }else {
                 SharedPref.setSelectedDateCal(context, null);

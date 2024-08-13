@@ -23,7 +23,7 @@ import saneforce.sanzen.activity.call.adapter.detailing.DetailedFinalCallAdapter
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
 public class DetailedFragment extends Fragment {
-    public static ArrayList<CallDetailingList> callDetailingLists;
+    public static ArrayList<CallDetailingList> callDetailingLists = new ArrayList<>();
     RecyclerView rv_detailing_list;
     DetailedFinalCallAdapter detailedFinalCallAdapter;
     CommonUtilsMethods commonUtilsMethods;

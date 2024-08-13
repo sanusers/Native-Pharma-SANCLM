@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">R.1.4.2</string>
+    <string name="app_version" translatable="false">R.1.4.3</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -479,7 +479,10 @@
     <string name="list_please_try_again">" List. Please try again."</string>
     <string name="list_updated_successfully">" List updated successfully."</string>
     <string name="please_sync_workplan">Please Sync WorkPlan</string>
-    <string name="edit_session">"Are you sure want to edit/delete Session "</string>
+    <string name="edit_delete_session">"Are you sure want to"</string>
     <string name="no_network_update_wp">\nInternet Connection needed to update WorkPlan</string>
     <string name="no_network_delete_workplan">\nNeed internet connection to Delete WorkPlan</string>
+    <string name="add_plan">Add Plan</string>
+    <string name="rejection_re_entry_need">Should only be Rejection/Re-entry to edit or delete WorkPlan</string>
+    <string name="deleting_field_work_with_calls">Deleting Field work will also delete all calls</string>
 </resources>

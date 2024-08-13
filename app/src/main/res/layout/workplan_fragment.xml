@@ -619,7 +619,7 @@
                 android:enabled="false"
                 android:fontFamily="@font/satoshi_medium"
                 android:gravity="center"
-                android:text="Add Plan"
+                android:text="@string/add_plan"
                 android:textAllCaps="false"
                 android:textColor="@color/gray_45"
                 android:textSize="@dimen/_7sdp"

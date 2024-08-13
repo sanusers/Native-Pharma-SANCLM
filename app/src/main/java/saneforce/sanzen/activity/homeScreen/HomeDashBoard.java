@@ -779,7 +779,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             Log.v("Calender", "error-----" + e);
         }
 
-
         ArrayList<EventCalenderModelClass> daysInMonthArray = new ArrayList<>();
         ArrayList<String> ListID = new ArrayList<>();
 

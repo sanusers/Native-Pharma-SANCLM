@@ -1,8 +1,5 @@
 package saneforce.sanzen.activity.homeScreen.adapters;
 
-
-import static saneforce.sanzen.activity.homeScreen.HomeDashBoard.SequentialEntry;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -163,23 +160,15 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                 }
 
                 String selectedDate = String.format("%s-%s-%s", list.getYear(), monthConverted, dayConverted);
-                if (selectedDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"))) {
+                if(selectedDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"))) {
                     isApplicableDate = true;
                 }
-//                else {
-//                    if (HomeDashBoard.SequentialEntry.equalsIgnoreCase("0")) {
-//                        if (selectedDate.equalsIgnoreCase(dateStrings.first())) {
-//                            isApplicableDate = true;
-//                        }
-//                    } else {
-                        for (String date: dateStrings) {
-                            if (selectedDate.equalsIgnoreCase(date)) {
-                                isApplicableDate = true;
-                                break;
-                            }
-                        }
-//                    }
-//                }
+                for (String date : dateStrings) {
+                    if(selectedDate.equalsIgnoreCase(date)) {
+                        isApplicableDate = true;
+                        break;
+                    }
+                }
 
                 if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date));
@@ -195,9 +184,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                     HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
                     HomeDashBoard.binding.viewDummy.setVisibility(View.VISIBLE);
                     HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
-//                    if (HomeDashBoard.SequentialEntry.equalsIgnoreCase("0")) {
-                        HomeDashBoard.checkAndSetEntryDate(context, true);
-//                    }
+                    HomeDashBoard.checkAndSetEntryDate(context, true);
                 } else {
                     Log.e("call status", "onBindViewHolder: " );
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));

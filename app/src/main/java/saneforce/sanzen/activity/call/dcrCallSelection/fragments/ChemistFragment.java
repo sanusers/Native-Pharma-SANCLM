@@ -225,11 +225,9 @@ public class ChemistFragment extends Fragment {
             }
         } catch (Exception e) {
             Log.v("CheCall", "--1111---" + e.toString());
-
         }
         return cusListArrayList;
     }
-
 
     private void filter(String text) {
         filteredNames = new ArrayList<>();
@@ -240,14 +238,12 @@ public class ChemistFragment extends Fragment {
                 }
             }
         }
-        adapterDCRCallSelection.filterList(filteredNames);
+        if(adapterDCRCallSelection != null) {
+            adapterDCRCallSelection.filterList(filteredNames);
+        }
     }
 
-
-
     public  void CustomizeFiltered(){
-
-
         dialogFilter = new Dialog(requireContext());
         dialogFilter.setContentView(R.layout.popup_dcr_filter);
         Objects.requireNonNull(dialogFilter.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -348,10 +344,7 @@ public class ChemistFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
-
         });
-
-
     }
 
     public void Filtered() {

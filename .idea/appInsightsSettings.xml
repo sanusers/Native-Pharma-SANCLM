@@ -4,17 +4,23 @@
     <option name="selectedTabId" value="Firebase Crashlytics" />
     <option name="tabSettings">
       <map>
-        <entry key="Firebase Crashlytics">
+        <entry key="Android Vitals">
           <value>
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="saneforce.sanzen" />
-                  <option name="mobileSdkAppId" value="1:563573079267:android:4937bf394f0083eb6959d6" />
-                  <option name="projectId" value="san-zen" />
-                  <option name="projectNumber" value="563573079267" />
                 </ConnectionSetting>
               </option>
+              <option name="signal" value="SIGNAL_UNSPECIFIED" />
+              <option name="timeIntervalDays" value="TWENTY_EIGHT_DAYS" />
+              <option name="visibilityType" value="ALL" />
+            </InsightsFilterSettings>
+          </value>
+        </entry>
+        <entry key="Firebase Crashlytics">
+          <value>
+            <InsightsFilterSettings>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
               <option name="timeIntervalDays" value="THIRTY_DAYS" />
               <option name="visibilityType" value="ALL" />
