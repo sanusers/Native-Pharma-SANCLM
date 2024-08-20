@@ -151,5 +151,9 @@ dependencies {
     //GifImageView
     implementation "pl.droidsonroids.gif:android-gif-drawable:1.2.25"
 
+    //pdf-viewer
+//    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    implementation project(":libs:jetified-android-pdf-viewer-2.8.2")
+    
 }
 

@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONObject;
+
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
@@ -35,6 +38,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
     private LocalDate selectedDate, dateval, date1val, Afterdate, date;
     private LocalDate date1;
     CommonUtilsMethods commonUtilsMethods;
+    public static String JoiningDate, JoiningMonth, JoiningYear;
 
     @SuppressLint({"NewApi", "AppCompatMethod"})
     @Override
@@ -52,9 +56,25 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
         }
         frm_date = selectefromdDate;
         initWidgets();
+        getJoiningDate();
         selectedDate = LocalDate.now();
         setMonthView();
     }
+
+     private void getJoiningDate() {
+         try {
+             String SFDCR_Date_sp = SharedPref.getSfDCRDate(this);
+             JSONObject obj = new JSONObject(SFDCR_Date_sp);
+             String SFDCR_Date = obj.getString("date");
+             if(!SFDCR_Date.isEmpty()) {
+                 JoiningDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_7, SFDCR_Date);
+                 JoiningMonth = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_8, SFDCR_Date);
+                 JoiningYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_10, SFDCR_Date);
+             }
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
+     }
 
     private void initWidgets() {
         calendarRecyclerView = findViewById(R.id.calendarRecyclerView);
@@ -155,11 +175,19 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
             date1 = date1.minusMonths(1);
             setMonthView();
         }
+        String month = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, selectedDate.toString());
+        LocalDate currentMonth = LocalDate.now();
+        if(!JoiningMonth.isEmpty() && month.equalsIgnoreCase(JoiningMonth) || selectedDate.getMonthValue() == currentMonth.minusMonths(2).getMonthValue()) {
+            findViewById(R.id.bfr_month).setVisibility(View.INVISIBLE);
+        }else {
+            findViewById(R.id.bfr_month).setVisibility(View.VISIBLE);
+        }
 
     }
 
     @SuppressLint("NewApi")
     public void nextMonthAction(View view) {
+        findViewById(R.id.bfr_month).setVisibility(View.VISIBLE);
         if (frm_date.equals("1")) {
             selectedDate = selectedDate.plusMonths(1);
             setMonthView();

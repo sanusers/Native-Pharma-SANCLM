@@ -480,8 +480,10 @@
     <string name="list_updated_successfully">" List updated successfully."</string>
     <string name="please_sync_workplan">Please Sync WorkPlan</string>
     <string name="edit_delete_session">"Are you sure want to"</string>
-    <string name="no_network_update_wp">\nInternet Connection needed to update WorkPlan</string>
-    <string name="no_network_delete_workplan">\nNeed internet connection to Delete WorkPlan</string>
+    <string name="no_network_update_wp">\nInternet connection needed to Update WorkPlan</string>
+    <string name="no_network_delete_workplan">\nInternet connection needed to Delete WorkPlan</string>
+    <string name="no_network_edit_workplan">\nInternet connection needed to Edit WorkPlan</string>
+    <string name="no_network_edit_delete_workplan">\nInternet connection needed to Edit/Delete WorkPlan</string>
     <string name="add_plan">Add Plan</string>
     <string name="rejection_re_entry_need">Should only be Rejection/Re-entry to edit or delete WorkPlan</string>
     <string name="deleting_field_work_with_calls">Deleting Field work will also delete all calls</string>

@@ -209,7 +209,7 @@ public class OutboxFragment extends Fragment {
                 Log.e("outbox workplan", "clearCalls: date found" );
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 0));
                 SharedPref.setDayPlanStartedDate(requireContext(), "");
-                if(SharedPref.getDcrSequential(requireContext()).equals("1")) {
+                if(!SharedPref.getDcrSequential(requireContext()).equals("0")) {
                     SharedPref.setSelectedDateCal(requireContext(), "");
                 }
             }

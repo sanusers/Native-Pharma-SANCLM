@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
@@ -21,11 +23,10 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     private final ArrayList<String> daysOfMonth;
     private final LocalDate selectedDate;
     LocalDate fromdate,currentDate;
-    String current_month,fromdate_val;
+    String current_month,fromdate_val, month, year;
     ArrayList<String>ldates=new ArrayList<>();
     private final OnItemListener onItemListener;
     boolean isPastLeaveRequested;
-
     String setval;
     String val32;
     public CalendarAdapter(ArrayList<String> daysInMonth, OnItemListener onItemListener, LocalDate selectedDate,String month,String fromdate_val,String setval,String pastLeave) {
@@ -40,6 +41,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         ldates.addAll(Leave_Application.ltypecount);
 
         val32=  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_24, current_month);
+        this.month =  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_8, current_month);
+        this.year=  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, current_month);
     }
     @NonNull
     @Override
@@ -61,9 +64,20 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     }
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position) {
-        holder.dayOfMonth.setText(daysOfMonth.get(position));
+//        holder.dayOfMonth.setText(daysOfMonth.get(position));
         String dayText = daysOfMonth.get(position);
         holder.dayOfMonth.setText(dayText);
+
+        if(year.equalsIgnoreCase(CalendarActivity.JoiningYear)
+                && month.equalsIgnoreCase(CalendarActivity.JoiningMonth)
+                && !daysOfMonth.get(position).isEmpty()
+                && Integer.parseInt(daysOfMonth.get(position)) < Integer.parseInt(CalendarActivity.JoiningDate)) {
+            holder.day_bgd.setAlpha(0.5f);
+            holder.day_bgd.setEnabled(false);
+        }else {
+            holder.day_bgd.setAlpha(1f);
+            holder.day_bgd.setEnabled(true);
+        }
 
         if (fromdate_val.equals("") || fromdate_val.equals("null")) {
 
@@ -144,7 +158,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         public CalendarViewHolder(@NonNull View itemView, OnItemListener onItemListener,LocalDate currentDate,String month) {
             super(itemView);
             dayOfMonth = itemView.findViewById(R.id.cellDayText);
-            day_bgd = itemView.findViewById(R.id.day_bgd);
+            day_bgd = itemView.findViewById(R.id.day_bgd123);
             this.onItemListener = onItemListener;
             itemView.setOnClickListener(this);
             this.month = month;

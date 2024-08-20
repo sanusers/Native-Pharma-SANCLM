@@ -106,6 +106,7 @@ public class CallsFragment extends Fragment {
                                             assert response.body() != null;
                                             SharedPref.setTodayCallList(context, response.body().toString());
                                             JSONArray jsonArray = new JSONArray(response.body().toString());
+                                            SharedPref.setLastCallDate(context, "");
                                             JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
                                             JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
                                             ArrayList<CallsModalClass> TodayCallListOne = new ArrayList<>();

@@ -146,9 +146,9 @@ public class WorkPlanEntriesNeeded {
             JSONObject obj = new JSONObject(SFDCR_Date_sp);
             String SFDCR_Date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_4, obj.getString("date"));
 
-            if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+//            if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
                 pastDates = getAllDatesForPastThreeMonths();
-            }
+//            }
 
             JSONArray dcrdatas = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
             if(dcrdatas.length()>0) {
@@ -158,9 +158,9 @@ public class WorkPlanEntriesNeeded {
                     String cusType = jsonObject.optString("CustType");
                     String dayStatus = jsonObject.optString("day_status");
                     String date = jsonObject.optString("Dcr_dt");
-                    if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+//                    if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
                         pastDates.remove(date);
-                    }
+//                    }
                     if(cusType.equalsIgnoreCase("0")) {
                         dayFlagMap.put(date, dayStatus);
                         if(date.equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)))
@@ -185,9 +185,9 @@ public class WorkPlanEntriesNeeded {
                     String flag = jsonObject.optString("flg");
                     String tbName = jsonObject.optString("tbname");
                     String date = jsonObject.getJSONObject("dt").getString("date").substring(0, 10);
-                    if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+//                    if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
                         pastDates.remove(date);
-                    }
+//                    }
                     dayFlagMap.put(date, flag);
                     if(tbName.equalsIgnoreCase("missed") ||
                             (tbName.equalsIgnoreCase("dcr") && (flag.equalsIgnoreCase("2") || (flag.equalsIgnoreCase("3")))) ||
@@ -277,11 +277,11 @@ public class WorkPlanEntriesNeeded {
                 }
             }
 
-            if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+//            if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
                 pastDates.addAll(datesNeeded);
                 datesNeeded = pastDates;
                 Log.i("past dates", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(pastDates.toArray()));
-            }
+//            }
 
             datesNeededDup = new TreeSet<>(datesNeeded);
             for (String dt : datesNeededDup) {

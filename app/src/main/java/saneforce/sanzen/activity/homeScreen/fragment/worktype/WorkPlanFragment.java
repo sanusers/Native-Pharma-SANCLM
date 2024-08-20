@@ -817,9 +817,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 case R.id.fl_session1:
                     Log.d("Plan Edit", "onClick: Plan 1");
-//                    if(mFwFlg1.equalsIgnoreCase("F")) {
-//                        commonUtilsMethods.showToastMessage(requireContext(), "Only non-field work can be edited/deleted");
-//                    } else
+                    if(!UtilityClass.isNetworkAvailable(requireContext())) {
+                        if(DayPlanCount.equalsIgnoreCase("2")) {
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_edit_delete_workplan));
+                        }else if(DayPlanCount.equalsIgnoreCase("1")) {
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_edit_workplan));
+                        }
+                        break;
+                    }
                     if(DayPlanCount.equalsIgnoreCase("1") || (DayPlanCount.equalsIgnoreCase("2") && binding.flSession2.getVisibility() == View.VISIBLE)) {
                         if(dayStatus.equalsIgnoreCase("2") || dayStatus.equalsIgnoreCase("3")) {
                             dialogEditOrDelete("1");
@@ -833,9 +838,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 case R.id.fl_session2:
                     Log.d("Plan Edit", "onClick: Plan 2");
-//                    if(mFwFlg2.equalsIgnoreCase("F")) {
-//                        commonUtilsMethods.showToastMessage(requireContext(), "Only non-field work can be edited/deleted");
-//                    }else
+                    if(!UtilityClass.isNetworkAvailable(requireContext())) {
+                        if(DayPlanCount.equalsIgnoreCase("2")) {
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_edit_delete_workplan));
+                        }else if(DayPlanCount.equalsIgnoreCase("1")) {
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_edit_workplan));
+                        }
+                        break;
+                    }
                     if(binding.flSession1.getVisibility() == View.VISIBLE) {
                         if(dayStatus.equalsIgnoreCase("2") || dayStatus.equalsIgnoreCase("3")) {
                             dialogEditOrDelete("2");
@@ -853,57 +863,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
 
-    }
-
-    private void updateWorkPlan() {
-        try {
-            binding.progress.setVisibility(View.VISIBLE);
-            Log.e("update:Object", jsonObject.toString());
-
-            Map<String, String> mapString = new HashMap<>();
-            mapString.put("axn", "");
-            Call<JsonElement> saveMyDayPlan = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-
-            saveMyDayPlan.enqueue(new Callback<JsonElement>() {
-                @Override
-                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                    Log.d("update:Code", response.code() + " - " + response);
-                    binding.progress.setVisibility(View.GONE);
-                    if(response.isSuccessful()) {
-                        try {
-                            JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
-                            if(json.getString("success").equalsIgnoreCase("true")) {
-                                binding.txtSave.setText(getString(R.string.save));
-                                SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
-                                if(DayPlanCount.equalsIgnoreCase("1")) {
-                                    if(mFwFlg1.equalsIgnoreCase("F") || mFwFlg1.equalsIgnoreCase("A"))
-                                        HomeDashBoard.binding.viewPager.setCurrentItem(1);
-                                }else if(DayPlanCount.equalsIgnoreCase("2")) {
-                                    if(mFwFlg2.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("A"))
-                                        HomeDashBoard.binding.viewPager.setCurrentItem(1);
-                                }
-                                updateLocalWPData();
-
-                            }
-                            setUpWorkPlan();
-                            commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
-                        } catch (Exception e) {
-                            Log.e("Workplan", "onResponse: " + e.getMessage());
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    binding.progress.setVisibility(View.GONE);
-                    setUpWorkPlan();
-                    Log.e("VALUES", String.valueOf(t));
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
-                }
-            });
-        } catch (Exception ignored) {
-            binding.progress.setVisibility(View.GONE);
-        }
     }
 
     private void submitMyDayPlan() {
@@ -981,7 +940,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private void saveOrUpdateWP(String sessionType) {
         if(binding.txtSave.getText().equals(getString(R.string.save))) {
             if(UtilityClass.isNetworkAvailable(requireContext())) {
-                MyDayPlanSubmit();
+                workPlanSubmit("Save");
             }else {
                 SaveWTLocal(sessionType);
             }
@@ -992,8 +951,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                updateWorkPlan();
 //                deleteSession(sessionType, "Edit");
 //                createDeleteJson(sessionType);
-                MyDayPlanSubmit();
                 callDeleteWP(sessionType, "Edit");
+//                workPlanSubmit();
             }else {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_update_wp));
                 if(sessionType.equals("1")) {
@@ -1385,7 +1344,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    public void MyDayPlanSubmit() {
+    public void workPlanSubmit(String option) {
         try {
             binding.progress.setVisibility(View.VISIBLE);
             Log.e("todayCallList:Object", jsonObject.toString());
@@ -1414,7 +1373,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 }
                                 commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
                                 updateLocalWPData();
-
+                                if(option.equalsIgnoreCase("Edit")) {
+                                    syncMyDayPlan();
+                                }
                             }else {
                                 setUpWorkPlan();
                                 commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
@@ -2311,11 +2272,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         try {
             binding.progress.setVisibility(View.VISIBLE);
             Log.e("delete:Object", deleteJsonObject.toString());
-
             Map<String, String> mapString = new HashMap<>();
             mapString.put("axn", "delete/dayplan");
             Call<JsonElement> saveMyDayPlan = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, deleteJsonObject.toString());
-
             saveMyDayPlan.enqueue(new Callback<JsonElement>() {
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -2337,8 +2296,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             }
                             if(!option.equalsIgnoreCase("Edit")) {
                                 commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
+                                syncMyDayPlan();
+                            }else {
+                                workPlanSubmit(option);
                             }
-                            syncMyDayPlan();
                         } catch (Exception e) {
                             Log.e("Workplan", "onResponse: " + e.getMessage());
                         }

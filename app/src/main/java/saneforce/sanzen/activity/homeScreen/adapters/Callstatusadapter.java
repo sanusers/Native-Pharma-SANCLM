@@ -82,6 +82,10 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                 && list.getMonth().equalsIgnoreCase(String.valueOf(HomeDashBoard.JoiningMonth))
                 && !list.getDateID().isEmpty() && Integer.parseInt(list.getDateID())<HomeDashBoard.JoiningDate) {
             holder.linearLayout.setAlpha(0.5f);
+            holder.linearLayout.setEnabled(false);
+        } else {
+            holder.linearLayout.setAlpha(1f);
+            holder.linearLayout.setEnabled(true);
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM", Locale.ENGLISH);
