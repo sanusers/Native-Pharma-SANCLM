@@ -58,8 +58,18 @@ public class weekoff_fragment extends Fragment {
                 String weekoff = (jsonObject.getString("Holiday_Mode"));//Leave_Name
                 String colr=backcolr[i];
                 Log.d("weekoff", weekoff+"--"+colr+"--"+i);
-                fromsmodelclass list = new fromsmodelclass(weekoff,colr );
-                listvalue.add(list);
+                String[] weekLyOffList = weekoff.split(",");
+                if(weekLyOffList.length > 0) {
+                    for (String weekOffData: weekLyOffList) {
+                        if(!weekOffData.isEmpty()) {
+                            fromsmodelclass list = new fromsmodelclass(weekOffData,colr);
+                            listvalue.add(list);
+                        }
+                    }
+                } else {
+                    fromsmodelclass list = new fromsmodelclass(weekoff, colr);
+                    listvalue.add(list);
+                }
 
                 weekoffadapter = new weekoff_adapter(listvalue, getActivity());
                 weekofflist.setAdapter(weekoffadapter);

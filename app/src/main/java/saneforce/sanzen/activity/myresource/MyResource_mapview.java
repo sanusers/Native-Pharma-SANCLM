@@ -110,18 +110,22 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         double getDistance = getDistanceMeters(CurrentLat, CurrentLong, marker.getPosition().latitude, marker.getPosition().longitude);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude), 18.0f));
 
-        String[] snippetData = marker.getSnippet().split("@");
-        ImageName = snippetData[1];
-        binding.address.setText(snippetData[0]);
-        if (getDistance > 1000) {
-            getDistance = getDistance / 1000;
-            DecimalFormat decFor = new DecimalFormat("0.00");
-            getDistance = parseDouble(decFor.format(getDistance));
-            binding.distance.setText(String.valueOf(getDistance));
-            binding.disName.setText("Km");
-        } else {
-            binding.distance.setText(String.valueOf(getDistance));
-            binding.disName.setText("Meters");
+        if(marker.getSnippet() != null) {
+            String[] snippetData = marker.getSnippet().split("@");
+            if(snippetData.length>0) {
+                ImageName = snippetData[1];
+                binding.address.setText(snippetData[0]);
+                if(getDistance>1000) {
+                    getDistance = getDistance / 1000;
+                    DecimalFormat decFor = new DecimalFormat("0.00");
+                    getDistance = parseDouble(decFor.format(getDistance));
+                    binding.distance.setText(String.valueOf(getDistance));
+                    binding.disName.setText("Km");
+                }else {
+                    binding.distance.setText(String.valueOf(getDistance));
+                    binding.disName.setText("Meters");
+                }
+            }
         }
 
         return false;
