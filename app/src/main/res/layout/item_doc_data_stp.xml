@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/satoshi_regular"
+        android:padding="@dimen/_2sdp"
+        android:textAlignment="center"
+        android:textColor="@color/dark_purple"
+        android:textSize="@dimen/_6ssp"
+        tools:text="A" />
+
+    <TextView
+        android:id="@+id/tv_total_doctors"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/satoshi_regular"
+        android:padding="@dimen/_2sdp"
+        android:textAlignment="center"
+        android:textColor="@color/dark_purple"
+        android:textSize="@dimen/_6ssp"
+        tools:text="20" />
+
+    <TextView
+        android:id="@+id/tv_total_visits"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/satoshi_regular"
+        android:padding="@dimen/_2sdp"
+        android:textAlignment="center"
+        android:textColor="@color/dark_purple"
+        android:textSize="@dimen/_6ssp"
+        tools:text="12" />
+
+    <TextView
+        android:id="@+id/tv_planned_doctors"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/satoshi_regular"
+        android:padding="@dimen/_2sdp"
+        android:textAlignment="center"
+        android:textColor="@color/green_60"
+        android:textSize="@dimen/_6ssp"
+        tools:text="10" />
+
+    <TextView
+        android:id="@+id/tv_planned_visits"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/satoshi_regular"
+        android:padding="@dimen/_2sdp"
+        android:textAlignment="center"
+        android:textColor="@color/green_60"
+        android:textSize="@dimen/_6ssp"
+        tools:text="5" />
+
+</LinearLayout>

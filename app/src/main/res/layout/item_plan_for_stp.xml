@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:paddingVertical="@dimen/_2sdp">
+
+    <ImageView
+        android:id="@+id/img_plan_for"
+        android:layout_width="@dimen/_10sdp"
+        android:layout_height="@dimen/_10sdp"
+        android:layout_gravity="center"
+        android:src="@drawable/doctor_img" />
+
+    <TextView
+        android:id="@+id/caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/_2sdp"
+        android:layout_weight="1"
+        android:fontFamily="@font/satoshi_regular"
+        android:text="Listed Doctor"
+        android:textColor="@color/dark_purple"
+        android:textSize="@dimen/_6ssp" />
+
+    <TextView
+        android:id="@+id/total"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1.5"
+        android:fontFamily="@font/satoshi_regular"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/_10sdp"
+        android:text="20"
+        android:textAlignment="center"
+        android:textColor="@color/dark_purple"
+        android:textSize="@dimen/_6ssp" />
+
+    <TextView
+        android:id="@+id/selected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1.5"
+        android:fontFamily="@font/satoshi_regular"
+        android:text="5"
+        android:textAlignment="center"
+        android:textColor="@color/green_60"
+        android:textSize="@dimen/_6ssp" />
+</LinearLayout>

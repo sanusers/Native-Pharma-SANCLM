@@ -116,6 +116,7 @@ import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
 
 import saneforce.sanzen.activity.reports.ReportsActivity;
 import saneforce.sanzen.activity.reports.dayReport.MapViewActvity;
+import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -1213,14 +1214,18 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.tour_plan))) {
             Intent intent=new Intent(getApplicationContext(), TourPlanActivity.class);
             startActivity(intent);
+            return true;
+        }
 
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.standard_tour_plan))) {
+            Intent intent=new Intent(getApplicationContext(), StandardTourPlanActivity.class);
+            startActivity(intent);
             return true;
         }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.faq))) {
             Intent intent=new Intent(getApplicationContext(), FAQ.class);
             startActivity(intent);
-
             return true;
         }
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.quiz))) {

@@ -487,4 +487,9 @@
     <string name="add_plan">Add Plan</string>
     <string name="rejection_re_entry_need">Should only be Rejection/Re-entry to edit or delete WorkPlan</string>
     <string name="deleting_field_work_with_calls">Deleting Field work will also delete all calls</string>
+    <string name="triple_dot">...</string>
+    <string name="standard_tour_plan">Standard Tour Plan</string>
+    <string name="send_to_approval">Send to approval</string>
+    <string name="check_unplanned_visits">Check Unplanned Visits</string>
+    <string name="cip">CIP</string>
 </resources>
