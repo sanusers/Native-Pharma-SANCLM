@@ -492,4 +492,8 @@
     <string name="send_to_approval">Send to approval</string>
     <string name="check_unplanned_visits">Check Unplanned Visits</string>
     <string name="cip">CIP</string>
+    <string name="selected">Selected</string>
+    <string name="plan_for">Plan for</string>
+    <string name="visit_frequency">Visit Frequency</string>
+    <string name="doctor_category">Doctor Category</string>
 </resources>

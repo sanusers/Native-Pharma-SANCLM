@@ -28,8 +28,9 @@
             android:id="@+id/day_tag_add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_marginBottom="@dimen/_10sdp"
-            android:fontFamily="@font/satoshi_bold"
+            android:fontFamily="@font/satoshi_medium"
             android:textAlignment="center"
             android:textColor="@color/dark_purple"
             android:textSize="@dimen/_6ssp"
@@ -48,7 +49,7 @@
         android:background="@drawable/bg_green_border"
         android:orientation="vertical"
         android:padding="@dimen/_3sdp"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,7 +61,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="@font/satoshi_bold"
+                android:fontFamily="@font/satoshi_medium"
                 android:textAlignment="textStart"
                 android:textColor="@color/dark_purple"
                 android:textSize="@dimen/_6ssp"
