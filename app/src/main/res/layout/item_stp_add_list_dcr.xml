@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:buttonTint="@color/dark_purple"
+        android:id="@+id/cb_dcr"/>
+
+    <TextView
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Name"
+        android:id="@+id/tv_dcr_name"
+        android:background="@color/white"
+        android:ellipsize="end"
+        android:fontFamily="@font/satoshi_regular"
+        android:maxLines="1"
+        android:padding="@dimen/_3sdp"
+        android:textColor="@color/dark_purple"
+        android:textSize="@dimen/_6ssp"/>
+
+    <TextView
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Speciality"
+        android:id="@+id/tv_dcr_spec"
+        android:background="@color/white"
+        android:ellipsize="end"
+        android:fontFamily="@font/satoshi_regular"
+        android:maxLines="1"
+        android:padding="@dimen/_3sdp"
+        android:textColor="@color/dark_purple"
+        android:textSize="@dimen/_6ssp"/>
+
+    <TextView
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Category(Visit.Freq)"
+        android:id="@+id/tv_dcr_cat_x_visit"
+        android:background="@color/white"
+        android:ellipsize="end"
+        android:fontFamily="@font/satoshi_regular"
+        android:maxLines="1"
+        android:padding="@dimen/_3sdp"
+        android:textColor="@color/dark_purple"
+        android:textSize="@dimen/_6ssp"/>
+
+    <TextView
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Planned for"
+        android:id="@+id/tv_dcr_planned_for"
+        android:background="@color/white"
+        android:ellipsize="end"
+        android:fontFamily="@font/satoshi_regular"
+        android:maxLines="1"
+        android:padding="@dimen/_3sdp"
+        android:textColor="@color/dark_purple"
+        android:textSize="@dimen/_6ssp"/>
+
+</LinearLayout>

@@ -13,19 +13,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
+import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.SelectedDCRModel;
 
 public class CalendarDCRAdapter extends RecyclerView.Adapter<CalendarDCRAdapter.MyViewHolder> {
 
     private Context context;
-    private List<DCRModel> dcrModelList;
+    private List<SelectedDCRModel> selectedDcrModelList;
 
     public CalendarDCRAdapter() {
     }
 
-    public CalendarDCRAdapter(Context context, List<DCRModel> dcrModelList) {
+    public CalendarDCRAdapter(Context context, List<SelectedDCRModel> selectedDcrModelList) {
         this.context = context;
-        this.dcrModelList = dcrModelList;
+        this.selectedDcrModelList = selectedDcrModelList;
     }
 
     @NonNull
@@ -37,14 +37,14 @@ public class CalendarDCRAdapter extends RecyclerView.Adapter<CalendarDCRAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        DCRModel dcrModel = dcrModelList.get(position);
-        holder.dcrImg.setImageResource(dcrModel.getImgID());
-        holder.count.setText(String.valueOf(dcrModel.getCount()));
+        SelectedDCRModel selectedDcrModel = selectedDcrModelList.get(position);
+        holder.dcrImg.setImageResource(selectedDcrModel.getImgID());
+        holder.count.setText(String.valueOf(selectedDcrModel.getCount()));
     }
 
     @Override
     public int getItemCount() {
-        return dcrModelList.size();
+        return selectedDcrModelList.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {

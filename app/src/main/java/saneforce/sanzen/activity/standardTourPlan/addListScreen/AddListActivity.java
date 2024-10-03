@@ -8,21 +8,25 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.MultiClusterAdapter;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.OnClusterClicklistener;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
-import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DocCategoryModel;
+import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.DCRSelectionAdapter;
+import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
+import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -40,8 +44,10 @@ public class AddListActivity extends AppCompatActivity {
     private String hqCode, strClusterName, strClusterID, dayID, dayCaption, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, stpCap, selectedDCR;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
-    GPSTrack gpsTrack;
-    CommonUtilsMethods commonUtilsMethods;
+    private GPSTrack gpsTrack;
+    private CommonUtilsMethods commonUtilsMethods;
+    private List<Object> dataList;
+    private DCRSelectionAdapter dcrSelectionAdapter;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -54,6 +60,7 @@ public class AddListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         activityAddListBinding = ActivityAddListBinding.inflate(getLayoutInflater());
         setContentView(activityAddListBinding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         getRequiredData();
 
         activityAddListBinding.backArrow.setOnClickListener(v -> {
@@ -73,9 +80,162 @@ public class AddListActivity extends AppCompatActivity {
         });
 
         activityAddListBinding.tagTvDoctor.setOnClickListener(v -> {
-
+            if(selectedClusterList.isEmpty()) {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+            }else {
+                selectedDCR = Constants.DOCTOR;
+                updateDCRSelectionUI();
+                populateDcrData();
+            }
         });
 
+        activityAddListBinding.tagTvChemist.setOnClickListener(v -> {
+            if(selectedClusterList.isEmpty()) {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+            }else {
+                selectedDCR = Constants.CHEMIST;
+                updateDCRSelectionUI();
+                populateDcrData();
+            }
+        });
+
+        activityAddListBinding.tagTvStockist.setOnClickListener(v -> {
+            if(selectedClusterList.isEmpty()) {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+            }else {
+                selectedDCR = Constants.STOCKIEST;
+                updateDCRSelectionUI();
+                populateDcrData();
+            }
+        });
+
+        activityAddListBinding.tagTvUndr.setOnClickListener(v -> {
+            if(selectedClusterList.isEmpty()) {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+            }else {
+                selectedDCR = Constants.UNLISTED_DOCTOR;
+                updateDCRSelectionUI();
+                populateDcrData();
+            }
+        });
+
+        activityAddListBinding.tagTvCip.setOnClickListener(v -> {
+            if(selectedClusterList.isEmpty()) {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+            }else {
+                selectedDCR = Constants.CIP;
+                updateDCRSelectionUI();
+                populateDcrData();
+            }
+        });
+
+        activityAddListBinding.tagTvHospital.setOnClickListener(v -> {
+            if(selectedClusterList.isEmpty()) {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+            }else {
+                selectedDCR = Constants.HOSPITAL;
+                updateDCRSelectionUI();
+                populateDcrData();
+            }
+        });
+
+        populateDcrData();
+    }
+
+    private void populateDcrData() {
+        List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
+        HashMap<String, List<DCRModel>> clusterXDcrMap = new HashMap<>();
+        HashMap<String, String> clusterMap = new HashMap<>();
+        dataList = new ArrayList<>();
+
+        if(dcrModelList != null) {
+            for (DCRModel dcrModel : dcrModelList) {
+                if(strClusterID.toLowerCase().contains(dcrModel.getTownCode().toLowerCase())) {
+                    if(!clusterXDcrMap.containsKey(dcrModel.getTownCode())) {
+                        clusterXDcrMap.put(dcrModel.getTownCode(), new ArrayList<>());
+                        clusterMap.put(dcrModel.getTownCode(), dcrModel.getTownName());
+                    }
+                    List<DCRModel> dcrModels = clusterXDcrMap.get(dcrModel.getTownCode());
+                    if(dcrModels == null) {
+                        dcrModels = new ArrayList<>();
+                    }
+                    dcrModels.add(dcrModel);
+                    clusterXDcrMap.put(dcrModel.getTownCode(), dcrModels);
+                }
+            }
+        }
+
+        for (String clusterCode : clusterXDcrMap.keySet()) {
+            dataList.add(new ClusterModel(clusterCode, clusterMap.get(clusterCode)));
+            dataList.addAll(clusterXDcrMap.get(clusterCode));
+        }
+
+        if(dataList.isEmpty()) {
+            activityAddListBinding.noData.setVisibility(View.VISIBLE);
+            activityAddListBinding.llDcrSelection.setVisibility(View.GONE);
+        }else {
+            activityAddListBinding.noData.setVisibility(View.GONE);
+            activityAddListBinding.llDcrSelection.setVisibility(View.VISIBLE);
+            dcrSelectionAdapter = new DCRSelectionAdapter(this, dataList, checkBoxClickListener);
+            RecyclerView.LayoutManager dcrSelectionLayoutManager = new LinearLayoutManager(this);
+            activityAddListBinding.rvDcrSelection.setLayoutManager(dcrSelectionLayoutManager);
+            activityAddListBinding.rvDcrSelection.setAdapter(dcrSelectionAdapter);
+        }
+    }
+
+    private DCRSelectionAdapter.CheckBoxClickListener checkBoxClickListener = new DCRSelectionAdapter.CheckBoxClickListener() {
+        @Override
+        public void onSelected(DCRModel dcrModel, int position) {
+//            dataList.get(position);
+        }
+
+        @Override
+        public void onDeSelected(DCRModel dcrModel, int position) {
+
+        }
+    };
+
+    private void updateDCRSelectionUI() {
+        activityAddListBinding.tagTvDoctor.setBackground(null);
+        activityAddListBinding.tagTvChemist.setBackground(null);
+        activityAddListBinding.tagTvStockist.setBackground(null);
+        activityAddListBinding.tagTvUndr.setBackground(null);
+        activityAddListBinding.tagTvCip.setBackground(null);
+        activityAddListBinding.tagTvHospital.setBackground(null);
+
+        activityAddListBinding.tagTvDoctor.setTextColor(getColor(R.color.dark_purple));
+        activityAddListBinding.tagTvChemist.setTextColor(getColor(R.color.dark_purple));
+        activityAddListBinding.tagTvStockist.setTextColor(getColor(R.color.dark_purple));
+        activityAddListBinding.tagTvUndr.setTextColor(getColor(R.color.dark_purple));
+        activityAddListBinding.tagTvCip.setTextColor(getColor(R.color.dark_purple));
+        activityAddListBinding.tagTvHospital.setTextColor(getColor(R.color.dark_purple));
+
+        switch (selectedDCR){
+            case Constants.DOCTOR:
+                activityAddListBinding.tagTvDoctor.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
+                activityAddListBinding.tagTvDoctor.setTextColor(getColor(R.color.white));
+                break;
+            case Constants.CHEMIST:
+                activityAddListBinding.tagTvChemist.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
+                activityAddListBinding.tagTvChemist.setTextColor(getColor(R.color.white));
+                break;
+            case Constants.STOCKIEST:
+                activityAddListBinding.tagTvStockist.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
+                activityAddListBinding.tagTvStockist.setTextColor(getColor(R.color.white));
+                break;
+            case Constants.UNLISTED_DOCTOR:
+                activityAddListBinding.tagTvUndr.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
+                activityAddListBinding.tagTvUndr.setTextColor(getColor(R.color.white));
+                break;
+            case Constants.CIP:
+                activityAddListBinding.tagTvCip.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
+                activityAddListBinding.tagTvCip.setTextColor(getColor(R.color.white));
+                break;
+            case Constants.HOSPITAL:
+                activityAddListBinding.tagTvHospital.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
+                activityAddListBinding.tagTvHospital.setTextColor(getColor(R.color.white));
+                break;
+        }
     }
 
     private void getRequiredData() {
@@ -95,10 +255,10 @@ public class AddListActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(this);
         strClusterID = "";
         strClusterName = "";
-        if(SharedPref.getWrkAreaName(this).isEmpty()) {
+        if(clusterCap.isEmpty()) {
             activityAddListBinding.selectedClusters.setText("Select Cluster");
         }else {
-            activityAddListBinding.selectedClusters.setText("Select " + SharedPref.getWrkAreaName(this));
+            activityAddListBinding.selectedClusters.setText("Select " + clusterCap);
         }
 
         Bundle bundle = getIntent().getExtras();
@@ -189,6 +349,7 @@ public class AddListActivity extends AppCompatActivity {
                 strClusterID = "";
             }
             activityAddListBinding.selectedClusters.setText(strClusterName);
+            populateDcrData();
         });
 
         activityAddListBinding.stpAddListNavigation.cancelImg.setOnClickListener(view -> {
@@ -213,65 +374,5 @@ public class AddListActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
-
-//    private void getDcrData() {
-//        totalDocCodeList = new HashSet<>();
-//        totalChmCodeList = new HashSet<>();
-//        totalStkCodeList = new HashSet<>();
-//        totalUnDrCodeList = new HashSet<>();
-//        totalCipCodeList = new HashSet<>();
-//        totalHosCodeList = new HashSet<>();
-//
-//        try {
-//            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(selectedDCR + hqCode).getMasterSyncDataJsonArray();
-//            if(jsonArray.length()>0) {
-//                for (int i = 0; i<jsonArray.length(); i++) {
-//                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-//                    try {
-//                        String dcrCode = jsonObject.optString("Code");
-//                        String category = jsonObject.optString("Category");
-//                        String categoryCode = jsonObject.optString("CategoryCode");
-//                        String visitCount = jsonObject.optString("Tlvst");
-//                        if(!dcrCode.isEmpty()) {
-//                            switch (selectedDCR){
-//                                case Constants.DOCTOR:
-//                                    if(!totalDocCodeList.contains(dcrCode)) {
-//                                        totalDocCodeList.add(dcrCode);
-//                                        if(docCategoryModelMap.containsKey(categoryCode)) {
-//                                            DocCategoryModel docCategoryModel = docCategoryModelMap.get(categoryCode);
-//                                            if(docCategoryModel != null) {
-//                                                docCategoryModel.incrementDocCount();
-//                                                docCategoryModelMap.put(categoryCode, docCategoryModel);
-//                                            }
-//                                        }
-//                                    }
-//                                    break;
-//                                case Constants.CHEMIST:
-//                                    totalChmCodeList.add(dcrCode);
-//                                    break;
-//                                case Constants.STOCKIEST:
-//                                    totalStkCodeList.add(dcrCode);
-//                                    break;
-//                                case Constants.UNLISTED_DOCTOR:
-//                                    totalUnDrCodeList.add(dcrCode);
-//                                    break;
-//                                case Constants.CIP:
-//                                    totalCipCodeList.add(dcrCode);
-//                                    break;
-//                                case Constants.HOSPITAL:
-//                                    totalHosCodeList.add(dcrCode);
-//                                    break;
-//                            }
-//                        }
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
 }

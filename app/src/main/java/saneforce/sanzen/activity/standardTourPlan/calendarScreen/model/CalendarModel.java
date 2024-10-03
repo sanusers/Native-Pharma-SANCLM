@@ -6,13 +6,13 @@ public class CalendarModel {
     private final String caption;
     private final String id;
     private final boolean isVisible;
-    private List<DCRModel> dcrModelList;
+    private List<SelectedDCRModel> selectedDcrModelList;
 
-    public CalendarModel(String caption, String id, boolean isVisible, List<DCRModel> dcrModelList) {
+    public CalendarModel(String caption, String id, boolean isVisible, List<SelectedDCRModel> selectedDcrModelList) {
         this.caption = caption;
         this.id = id;
         this.isVisible = isVisible;
-        this.dcrModelList = dcrModelList;
+        this.selectedDcrModelList = selectedDcrModelList;
     }
 
     public String getCaption() {
@@ -27,11 +27,11 @@ public class CalendarModel {
         return isVisible;
     }
 
-    public void setDcrModelList(List<DCRModel> dcrModelList) {
-        this.dcrModelList = dcrModelList;
+    public void setDcrModelList(List<SelectedDCRModel> selectedDcrModelList) {
+        this.selectedDcrModelList = selectedDcrModelList;
     }
 
-    public List<DCRModel> getDcrModelList() {
-        return dcrModelList;
+    public List<SelectedDCRModel> getDcrModelList() {
+        return selectedDcrModelList;
     }
 }
