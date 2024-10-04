@@ -18,6 +18,8 @@ import java.util.List;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.ClusterModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 
 public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -26,21 +28,25 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int VIEW_TYPE_CLUSTER = 0;
     private static final int VIEW_TYPE_DCR = 1;
     private CheckBoxClickListener checkBoxClickListener;
+    private String selectedDCR;
+    private CommonUtilsMethods commonUtilsMethods;
 
     public interface CheckBoxClickListener {
 
-        void onSelected(DCRModel dcrModel, int position);
+        void onSelected(DCRModel dcrModel, int position, String selectedDCR);
 
-        void onDeSelected(DCRModel dcrModel, int position);
+        void onDeSelected(DCRModel dcrModel, int position, String selectedDCR);
     }
 
     public DCRSelectionAdapter() {
     }
 
-    public DCRSelectionAdapter(Context context, List<Object> dcrModelList, CheckBoxClickListener checkBoxClickListener) {
+    public DCRSelectionAdapter(Context context, List<Object> dcrModelList, CheckBoxClickListener checkBoxClickListener, String selectedDCR) {
         this.context = context;
         this.dcrModelList = dcrModelList;
         this.checkBoxClickListener = checkBoxClickListener;
+        this.selectedDCR = selectedDCR;
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @NonNull
@@ -64,20 +70,51 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }else if(holder instanceof DCRViewHolder) {
             DCRViewHolder dcrViewHolder = (DCRViewHolder) holder;
             DCRModel dcrModel = (DCRModel) dcrModelList.get(position);
+
+            switch (selectedDCR){
+                case Constants.DOCTOR:
+                    dcrViewHolder.speciality.setVisibility(View.VISIBLE);
+                    dcrViewHolder.categoryXVisitFreq.setVisibility(View.VISIBLE);
+                    break;
+                case Constants.CHEMIST:
+                    dcrViewHolder.speciality.setVisibility(View.GONE);
+                    dcrViewHolder.categoryXVisitFreq.setVisibility(View.GONE);
+                    break;
+
+            }
+
             dcrViewHolder.name.setText(dcrModel.getName());
             dcrViewHolder.speciality.setText(dcrModel.getSpeciality());
             dcrViewHolder.categoryXVisitFreq.setText(dcrModel.getCategory() + " (" + dcrModel.getVisitFrequency() + ")");
             dcrViewHolder.plannedFor.setText(dcrModel.getPlannedForName());
-            dcrViewHolder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+            dcrViewHolder.checkBox.setChecked(dcrModel.isSelected());
+            dcrViewHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.green_2 : R.color.dark_purple)));
+
+            dcrViewHolder.name.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+            dcrViewHolder.speciality.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+            dcrViewHolder.categoryXVisitFreq.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+            dcrViewHolder.plannedFor.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+
+            dcrViewHolder.checkBox.setOnClickListener(buttonView -> {
                 Log.d("Adapter", "onBindViewHolder: position -> " + position + " binding position -> " + dcrViewHolder.getBindingAdapterPosition() + " absolute position -> " + dcrViewHolder.getAbsoluteAdapterPosition());
-                if(isChecked) {
-                    checkBoxClickListener.onSelected(dcrModel, dcrViewHolder.getBindingAdapterPosition());
-                    dcrViewHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
+                dcrModel.setSelected(!dcrModel.isSelected());
+                dcrViewHolder.checkBox.setChecked(dcrModel.isSelected());
+                dcrViewHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.green_2 : R.color.dark_purple)));
+                dcrViewHolder.name.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+                dcrViewHolder.speciality.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+                dcrViewHolder.categoryXVisitFreq.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+                dcrViewHolder.plannedFor.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+                notifyItemChanged(position);
+                if(dcrModel.isSelected()) {
+                    checkBoxClickListener.onSelected(dcrModel, holder.getBindingAdapterPosition(), selectedDCR);
                 }else {
-                    checkBoxClickListener.onDeSelected(dcrModel, dcrViewHolder.getBindingAdapterPosition());
-                    dcrViewHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.dark_purple)));
+                    checkBoxClickListener.onDeSelected(dcrModel, holder.getBindingAdapterPosition(), selectedDCR);
                 }
             });
+
+            dcrViewHolder.name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, dcrModel.getName()));
+            dcrViewHolder.plannedFor.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, dcrModel.getPlannedForName()));
         }
     }
 
@@ -96,6 +133,11 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Log.e("DCR Adapter STP", "getItemViewType: invalid view type");
             return super.getItemViewType(position);
         }
+    }
+
+    public void updateList(List<Object> dataList) {
+        dcrModelList = dataList;
+        notifyDataSetChanged();
     }
 
     public static class DCRViewHolder extends RecyclerView.ViewHolder {

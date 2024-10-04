@@ -78,7 +78,7 @@
             android:layout_marginHorizontal="@dimen/_5sdp"
             android:background="@drawable/bg_white_border_purple"
             android:orientation="horizontal"
-            android:padding="@dimen/_1sdp">
+            android:padding="@dimen/_2sdp">
 
             <TextView
                 android:id="@+id/selected_clusters"
@@ -89,7 +89,7 @@
                 android:fontFamily="@font/satoshi_regular"
                 android:hint="@string/select_cluster"
                 android:maxLines="1"
-                android:padding="@dimen/_3sdp"
+                android:padding="@dimen/_4sdp"
                 android:text="Select Cluster"
                 android:textColor="@color/dark_purple"
                 android:textColorHint="@color/dark_purple"
@@ -129,7 +129,7 @@
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="center"
                     android:paddingHorizontal="@dimen/_6sdp"
-                    android:paddingVertical="@dimen/_2sdp"
+                    android:paddingVertical="@dimen/_4sdp"
                     android:text="@string/txt_doctor"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_6ssp"
@@ -148,7 +148,7 @@
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="center"
                     android:paddingHorizontal="@dimen/_6sdp"
-                    android:paddingVertical="@dimen/_2sdp"
+                    android:paddingVertical="@dimen/_4sdp"
                     android:text="@string/txt_chemist"
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_6ssp"
@@ -167,7 +167,7 @@
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="center"
                     android:paddingHorizontal="@dimen/_6sdp"
-                    android:paddingVertical="@dimen/_2sdp"
+                    android:paddingVertical="@dimen/_4sdp"
                     android:text="@string/txt_stockist"
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_6ssp"
@@ -186,7 +186,7 @@
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="center"
                     android:paddingHorizontal="@dimen/_6sdp"
-                    android:paddingVertical="@dimen/_2sdp"
+                    android:paddingVertical="@dimen/_4sdp"
                     android:text="@string/txt_undr"
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_6ssp"
@@ -205,7 +205,7 @@
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="center"
                     android:paddingHorizontal="@dimen/_6sdp"
-                    android:paddingVertical="@dimen/_2sdp"
+                    android:paddingVertical="@dimen/_4sdp"
                     android:text="@string/cip"
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_6ssp"
@@ -224,7 +224,7 @@
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="center"
                     android:paddingHorizontal="@dimen/_6sdp"
-                    android:paddingVertical="@dimen/_2sdp"
+                    android:paddingVertical="@dimen/_4sdp"
                     android:text="@string/txt_hospital"
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_6ssp"
@@ -299,92 +299,92 @@
                         android:layout_height="match_parent">
 
                         <LinearLayout
+                            android:id="@+id/ll_dcr_selection"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
-                            android:visibility="visible"
-                            android:id="@+id/ll_dcr_selection">
+                            android:visibility="visible">
 
                             <LinearLayout
-                                android:orientation="horizontal"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
 
                                 <CheckBox
+                                    android:id="@+id/cb_dcr"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="0.2"
-                                    android:buttonTint="@color/dark_purple"
-                                    android:id="@+id/cb_dcr"/>
+                                    android:buttonTint="@color/dark_purple" />
 
                                 <TextView
+                                    android:id="@+id/tv_dcr_name"
                                     android:layout_width="@dimen/_80sdp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="Name"
-                                    android:id="@+id/tv_dcr_name"
                                     android:background="@color/white"
                                     android:ellipsize="end"
                                     android:fontFamily="@font/satoshi_bold"
                                     android:maxLines="1"
                                     android:padding="@dimen/_3sdp"
+                                    android:text="Name"
                                     android:textColor="@color/dark_purple"
-                                    android:textSize="@dimen/_6ssp"/>
+                                    android:textSize="@dimen/_6ssp" />
 
                                 <TextView
+                                    android:id="@+id/tv_dcr_spec"
                                     android:layout_width="@dimen/_20sdp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="Speciality"
-                                    android:id="@+id/tv_dcr_spec"
                                     android:background="@color/white"
                                     android:ellipsize="end"
                                     android:fontFamily="@font/satoshi_bold"
                                     android:maxLines="1"
                                     android:padding="@dimen/_3sdp"
+                                    android:text="Speciality"
                                     android:textColor="@color/dark_purple"
-                                    android:textSize="@dimen/_6ssp"/>
+                                    android:textSize="@dimen/_6ssp" />
 
                                 <TextView
+                                    android:id="@+id/tv_dcr_cat_x_visit"
                                     android:layout_width="@dimen/_50sdp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="Category(Visit.Freq)"
-                                    android:id="@+id/tv_dcr_cat_x_visit"
                                     android:background="@color/white"
                                     android:ellipsize="end"
                                     android:fontFamily="@font/satoshi_bold"
                                     android:maxLines="1"
                                     android:padding="@dimen/_3sdp"
+                                    android:text="Category(Visit.Freq)"
                                     android:textColor="@color/dark_purple"
-                                    android:textSize="@dimen/_6ssp"/>
+                                    android:textSize="@dimen/_6ssp" />
 
                                 <TextView
+                                    android:id="@+id/tv_dcr_planned_for"
                                     android:layout_width="@dimen/_80sdp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="Planned for"
-                                    android:id="@+id/tv_dcr_planned_for"
                                     android:background="@color/white"
                                     android:ellipsize="end"
                                     android:fontFamily="@font/satoshi_bold"
                                     android:maxLines="1"
                                     android:padding="@dimen/_3sdp"
+                                    android:text="Planned for"
                                     android:textColor="@color/dark_purple"
-                                    android:textSize="@dimen/_6ssp"/>
+                                    android:textSize="@dimen/_6ssp" />
 
                             </LinearLayout>
 
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"
-                                android:background="@color/dark_purple"/>
+                                android:background="@color/dark_purple" />
 
                             <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rv_dcr_selection"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/rv_dcr_selection"
-                                tools:listitem="@layout/item_stp_add_list_dcr"/>
+                                tools:listitem="@layout/item_stp_add_list_dcr" />
 
                         </LinearLayout>
 
@@ -430,12 +430,13 @@
                     android:padding="@dimen/_3sdp">
 
                     <LinearLayout
-                        android:id="@+id/selected_title"
+                        android:id="@+id/ll_selected_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tv_selected_dcr"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/satoshi_bold"
@@ -444,6 +445,7 @@
                             android:textSize="@dimen/_6ssp" />
 
                         <TextView
+                            android:id="@+id/tv_selected_dcr_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/satoshi_bold"
@@ -459,8 +461,8 @@
                         android:id="@+id/rv_selected_dcr_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:listitem="@layout/item_stp_add_list_selected_dcr"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_stp_add_list_selected_dcr" />
 
                 </LinearLayout>
 
