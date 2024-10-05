@@ -51,9 +51,8 @@ public class AddListActivity extends AppCompatActivity {
     private CommonUtilsMethods commonUtilsMethods;
     private List<Object> dataList;
     private DCRSelectionAdapter dcrSelectionAdapter;
-    private List<DCRModel> selectedDCRList;
+    private HashMap<String, List<DCRModel>> selectedDCRMap;
     private List<Object> selectedDataList;
-    private HashMap<String, String> selectedDCRClusterCodeMap;
     private SelectedDCRAdapter selectedDCRAdapter;
 
     @SuppressLint("MissingSuperCall")
@@ -79,7 +78,7 @@ public class AddListActivity extends AppCompatActivity {
         });
 
         activityAddListBinding.btnSave.setOnClickListener(v -> {
-
+            saveSelectedDCR();
         });
 
         activityAddListBinding.selectedClusters.setOnClickListener(v -> {
@@ -146,140 +145,78 @@ public class AddListActivity extends AppCompatActivity {
             }
         });
 
+        activityAddListBinding.btnClear.setOnClickListener(v -> {
+            List<DCRModel> dcrModels = selectedDCRMap.get(selectedDCR);
+            if(dcrModels != null && !dcrModels.isEmpty()) {
+                clearSelection();
+            }else {
+                commonUtilsMethods.showToastMessage(this, "Nothing selected to clear");
+            }
+        });
+
+        activityAddListBinding.etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String searchString = s.toString().trim();
+                if(searchString.isEmpty()) UtilityClass.hideKeyboard(AddListActivity.this);
+                dcrSelectionAdapter.getFilter().filter(searchString);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         populateDcrData();
     }
 
-    private void populateDcrData() {
-        List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
-        HashMap<String, List<DCRModel>> clusterXDcrMap = new HashMap<>();
-        HashMap<String, String> clusterMap = new HashMap<>();
-        dataList = new ArrayList<>();
-
-        if(dcrModelList != null) {
-            for (DCRModel dcrModel : dcrModelList) {
-                if(strClusterID.toLowerCase().contains(dcrModel.getTownCode().toLowerCase())) {
-                    if(!clusterXDcrMap.containsKey(dcrModel.getTownCode())) {
-                        clusterXDcrMap.put(dcrModel.getTownCode(), new ArrayList<>());
-                        clusterMap.put(dcrModel.getTownCode(), dcrModel.getTownName());
-                    }
-                    List<DCRModel> dcrModels = clusterXDcrMap.get(dcrModel.getTownCode());
-                    if(dcrModels == null) {
-                        dcrModels = new ArrayList<>();
-                    }
-                    dcrModels.add(dcrModel);
-                    clusterXDcrMap.put(dcrModel.getTownCode(), dcrModels);
-                }
-            }
-        }
-
-        List<Map.Entry<String, String>> clusterEntries = new ArrayList<>(clusterMap.entrySet());
-        Collections.sort(clusterEntries, Map.Entry.comparingByValue());
-
-        for (Map.Entry<String, String> entry : clusterEntries) {
-            String clusterCode = entry.getKey();
-            dataList.add(new ClusterModel(clusterCode, clusterMap.get(clusterCode)));
-            List<DCRModel> dcrModels = clusterXDcrMap.get(clusterCode);
-            if(dcrModels != null && !dcrModels.isEmpty()) {
-                dcrModels.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
-            }
-            dataList.addAll(dcrModels);
-        }
-
-        if(dataList.isEmpty()) {
-            activityAddListBinding.noData.setVisibility(View.VISIBLE);
-            activityAddListBinding.llDcrSelection.setVisibility(View.GONE);
+    private void getRequiredData() {
+        hqCode = SharedPref.getHqCode(this);
+        drCap = SharedPref.getDrCap(this);
+        chmCap = SharedPref.getChmCap(this);
+        stkCap = SharedPref.getStkCap(this);
+        unDrCap = SharedPref.getUNLcap(this);
+        cipCap = SharedPref.getCipCaption(this);
+        hosCap = SharedPref.getHospCaption(this);
+        clusterCap = SharedPref.getClusterCap(this);
+//        stpCap = SharedPref.getSTPCap(this);
+        roomDB = RoomDB.getDatabase(this);
+        masterDataDao = roomDB.masterDataDao();
+        gpsTrack = new GPSTrack(this);
+        commonUtilsMethods = new CommonUtilsMethods(this);
+        commonUtilsMethods.setUpLanguage(this);
+        strClusterID = "";
+        strClusterName = "";
+        if(clusterCap.isEmpty()) {
+            activityAddListBinding.selectedClusters.setText("Select Cluster");
         }else {
-            activityAddListBinding.noData.setVisibility(View.GONE);
-            activityAddListBinding.llDcrSelection.setVisibility(View.VISIBLE);
-            dcrSelectionAdapter = new DCRSelectionAdapter(this, dataList, checkBoxClickListener, selectedDCR);
-            RecyclerView.LayoutManager dcrSelectionLayoutManager = new LinearLayoutManager(this);
-            activityAddListBinding.rvDcrSelection.setLayoutManager(dcrSelectionLayoutManager);
-            activityAddListBinding.rvDcrSelection.setAdapter(dcrSelectionAdapter);
-
-            switch (selectedDCR){
-                case Constants.DOCTOR:
-                    activityAddListBinding.tvDcrSpec.setVisibility(View.VISIBLE);
-                    activityAddListBinding.tvDcrCatXVisit.setVisibility(View.VISIBLE);
-                    break;
-                case Constants.CHEMIST:
-                    activityAddListBinding.tvDcrSpec.setVisibility(View.GONE);
-                    activityAddListBinding.tvDcrCatXVisit.setVisibility(View.GONE);
-                    break;
-            }
-
-            populateSelectedDcr();
+            activityAddListBinding.selectedClusters.setText("Select " + clusterCap);
         }
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            dayID = bundle.getString("DAY_ID", "");
+            dayCaption = bundle.getString("DAY_CAPTION", "");
+
+            activityAddListBinding.title.setText(getString(R.string.standard_tour_plan) + " (" + dayCaption + ")");
+        }
+
+        activityAddListBinding.tagTvDoctor.setText(drCap);
+        activityAddListBinding.tagTvChemist.setText(chmCap);
+        activityAddListBinding.tagTvStockist.setText(stkCap);
+        activityAddListBinding.tagTvUndr.setText(unDrCap);
+        activityAddListBinding.tagTvCip.setText(cipCap);
+        activityAddListBinding.tagTvHospital.setText(hosCap);
+
+        selectedDCR = Constants.DOCTOR;
+        selectedDCRMap = new HashMap<>();
     }
-
-    private final DCRSelectionAdapter.CheckBoxClickListener checkBoxClickListener = new DCRSelectionAdapter.CheckBoxClickListener() {
-        @Override
-        public void onSelected(DCRModel dcrModel, int position, String selectedDCR) {
-            selectedDCRList.add(dcrModel);
-            selectedDataList.add(dcrModel);
-            if(!selectedDCRClusterCodeMap.containsKey(dcrModel.getTownCode())){
-                selectedDCRClusterCodeMap.put(dcrModel.getTownCode(), dcrModel.getTownName());
-            }
-
-            updateSelectedDCRList();
-        }
-
-        @Override
-        public void onDeSelected(DCRModel dcrModel, int position, String selectedDCR) {
-            selectedDCRList.remove(dcrModel);
-            selectedDataList.add(dcrModel);
-            updateSelectedDCRList();
-        }
-    };
-
-    private void updateSelectedDCRList() {
-        activityAddListBinding.tvSelectedDcrCount.setText(String.valueOf(selectedDCRList.size()));
-        selectedDCRAdapter.updateList(selectedDataList);
-    }
-
-    private void populateSelectedDcr() {
-        selectedDCRList = new ArrayList<>();
-        selectedDataList = new ArrayList<>();
-        selectedDCRClusterCodeMap = new HashMap<>();
-        /*
-                for (Object object: selectedDCRList) {
-                    if(object instanceof DCRModel) {
-                        DCRModel dcrModel = (DCRModel) object;
-
-                    }
-                }
-         */
-        switch (selectedDCR){
-            case Constants.DOCTOR:
-                activityAddListBinding.tvSelectedDcr.setText("Selected " + drCap);
-                break;
-            case Constants.CHEMIST:
-                activityAddListBinding.tvSelectedDcr.setText("Selected " + chmCap);
-                break;
-            case Constants.STOCKIEST:
-                activityAddListBinding.tvSelectedDcr.setText("Selected " + stkCap);
-                break;
-            case Constants.UNLISTED_DOCTOR:
-                activityAddListBinding.tvSelectedDcr.setText("Selected " + unDrCap);
-                break;
-            case Constants.CIP:
-                activityAddListBinding.tvSelectedDcr.setText("Selected " + cipCap);
-                break;
-            case Constants.HOSPITAL:
-                activityAddListBinding.tvSelectedDcr.setText("Selected " + hosCap);
-                break;
-
-        }
-        activityAddListBinding.tvSelectedDcrCount.setText("(0)");
-
-        selectedDCRAdapter = new SelectedDCRAdapter(this, selectedDataList, selectedDCR, deleteClickListener);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        activityAddListBinding.rvSelectedDcrList.setAdapter(selectedDCRAdapter);
-        activityAddListBinding.rvSelectedDcrList.setLayoutManager(layoutManager);
-    }
-
-    private final SelectedDCRAdapter.DeleteClickListener deleteClickListener = (dcrModel, position, selectedDCR) -> {
-
-    };
 
     private void updateDCRSelectionUI() {
         activityAddListBinding.tagTvDoctor.setBackground(null);
@@ -324,48 +261,228 @@ public class AddListActivity extends AppCompatActivity {
         }
     }
 
-    private void getRequiredData() {
-        hqCode = SharedPref.getHqCode(this);
-        drCap = SharedPref.getDrCap(this);
-        chmCap = SharedPref.getChmCap(this);
-        stkCap = SharedPref.getStkCap(this);
-        unDrCap = SharedPref.getUNLcap(this);
-        cipCap = SharedPref.getCipCaption(this);
-        hosCap = SharedPref.getHospCaption(this);
-        clusterCap = SharedPref.getClusterCap(this);
-//        stpCap = SharedPref.getSTPCap(this);
-        roomDB = RoomDB.getDatabase(this);
-        masterDataDao = roomDB.masterDataDao();
-        gpsTrack = new GPSTrack(this);
-        commonUtilsMethods = new CommonUtilsMethods(this);
-        commonUtilsMethods.setUpLanguage(this);
-        strClusterID = "";
-        strClusterName = "";
-        if(clusterCap.isEmpty()) {
-            activityAddListBinding.selectedClusters.setText("Select Cluster");
+    private void populateDcrData() {
+        List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
+        HashMap<String, List<DCRModel>> clusterXDcrMap = new HashMap<>();
+        HashMap<String, String> clusterMap = new HashMap<>();
+        dataList = new ArrayList<>();
+
+        if(dcrModelList != null) {
+            for (DCRModel dcrModel : dcrModelList) {
+                if(strClusterID.toLowerCase().contains(dcrModel.getTownCode().toLowerCase())) {
+                    if(!clusterXDcrMap.containsKey(dcrModel.getTownCode())) {
+                        clusterXDcrMap.put(dcrModel.getTownCode(), new ArrayList<>());
+                        clusterMap.put(dcrModel.getTownCode(), dcrModel.getTownName());
+                    }
+                    List<DCRModel> dcrModels = clusterXDcrMap.get(dcrModel.getTownCode());
+                    if(dcrModels == null) {
+                        dcrModels = new ArrayList<>();
+                    }
+                    dcrModels.add(dcrModel);
+                    clusterXDcrMap.put(dcrModel.getTownCode(), dcrModels);
+                }
+            }
+        }
+
+        List<Map.Entry<String, String>> clusterEntries = new ArrayList<>(clusterMap.entrySet());
+        Collections.sort(clusterEntries, Map.Entry.comparingByValue());
+
+        for (Map.Entry<String, String> entry : clusterEntries) {
+            String clusterCode = entry.getKey();
+            dataList.add(new ClusterModel(clusterCode, clusterMap.get(clusterCode)));
+            List<DCRModel> dcrModels = clusterXDcrMap.get(clusterCode);
+            if(dcrModels != null && !dcrModels.isEmpty()) {
+                dcrModels.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+            }
+            dataList.addAll(dcrModels);
+        }
+
+        if(dataList.isEmpty()) {
+            if(activityAddListBinding.selectedClusters.getText().toString().isEmpty() || activityAddListBinding.selectedClusters.getText().toString().trim().equalsIgnoreCase("Select Cluster")) {
+                activityAddListBinding.tvNoData.setText("Select Cluster to view list");
+            }else {
+                activityAddListBinding.tvNoData.setText("No Data To View");
+            }
+            activityAddListBinding.noData.setVisibility(View.VISIBLE);
+            activityAddListBinding.llDcrSelection.setVisibility(View.GONE);
+            activityAddListBinding.cvRightPane.setVisibility(View.GONE);
         }else {
-            activityAddListBinding.selectedClusters.setText("Select " + clusterCap);
+            activityAddListBinding.noData.setVisibility(View.GONE);
+            activityAddListBinding.llDcrSelection.setVisibility(View.VISIBLE);
+            activityAddListBinding.cvRightPane.setVisibility(View.VISIBLE);
+            dcrSelectionAdapter = new DCRSelectionAdapter(this, dataList, checkBoxClickListener, selectedDCR);
+            RecyclerView.LayoutManager dcrSelectionLayoutManager = new LinearLayoutManager(this);
+            activityAddListBinding.rvDcrSelection.setLayoutManager(dcrSelectionLayoutManager);
+            activityAddListBinding.rvDcrSelection.setAdapter(dcrSelectionAdapter);
+
+            switch (selectedDCR){
+                case Constants.DOCTOR:
+                    activityAddListBinding.tvDcrSpec.setVisibility(View.VISIBLE);
+                    activityAddListBinding.tvDcrCatXVisit.setVisibility(View.VISIBLE);
+                    break;
+                case Constants.CHEMIST:
+                    activityAddListBinding.tvDcrSpec.setVisibility(View.GONE);
+                    activityAddListBinding.tvDcrCatXVisit.setVisibility(View.GONE);
+                    break;
+            }
+
+            populateSelectedDcr();
         }
-
-        Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
-            dayID = bundle.getString("DAY_ID", "");
-            dayCaption = bundle.getString("DAY_CAPTION", "");
-
-            activityAddListBinding.title.setText(getString(R.string.standard_tour_plan) + " (" + dayCaption + ")");
-        }
-
-        activityAddListBinding.tagTvDoctor.setText(drCap);
-        activityAddListBinding.tagTvChemist.setText(chmCap);
-        activityAddListBinding.tagTvStockist.setText(stkCap);
-        activityAddListBinding.tagTvUndr.setText(unDrCap);
-        activityAddListBinding.tagTvCip.setText(cipCap);
-        activityAddListBinding.tagTvHospital.setText(hosCap);
-
-        selectedDCR = Constants.DOCTOR;
     }
 
-    public void showMultiClusterAlter() {
+    private final DCRSelectionAdapter.CheckBoxClickListener checkBoxClickListener = new DCRSelectionAdapter.CheckBoxClickListener() {
+        @Override
+        public void onSelected(DCRModel dcrModel, String selectedDCR) {
+            if(!selectedDCRMap.containsKey(selectedDCR)) {
+                selectedDCRMap.put(selectedDCR, new ArrayList<>());
+            }
+            List<DCRModel> selectedDCRModels = selectedDCRMap.get(selectedDCR);
+            if(selectedDCRModels == null) {
+                selectedDCRModels = new ArrayList<>();
+            }
+            selectedDCRModels.add(dcrModel);
+            selectedDCRMap.put(selectedDCR, selectedDCRModels);
+            updateSelectedDCRList();
+        }
+
+        @Override
+        public void onDeSelected(DCRModel dcrModel, String selectedDCR) {
+            if(selectedDCRMap.containsKey(selectedDCR)) {
+                List<DCRModel> selectedDCRModels = selectedDCRMap.get(selectedDCR);
+                if(selectedDCRModels != null) {
+                    selectedDCRModels.remove(dcrModel);
+                    selectedDCRMap.put(selectedDCR, selectedDCRModels);
+                    updateSelectedDCRList();
+                }
+            }
+        }
+    };
+
+    private void populateSelectedDcr() {
+        selectedDataList = new ArrayList<>();
+
+        switch (selectedDCR){
+            case Constants.DOCTOR:
+                activityAddListBinding.tvSelectedDcr.setText("Selected " + drCap);
+                break;
+            case Constants.CHEMIST:
+                activityAddListBinding.tvSelectedDcr.setText("Selected " + chmCap);
+                break;
+            case Constants.STOCKIEST:
+                activityAddListBinding.tvSelectedDcr.setText("Selected " + stkCap);
+                break;
+            case Constants.UNLISTED_DOCTOR:
+                activityAddListBinding.tvSelectedDcr.setText("Selected " + unDrCap);
+                break;
+            case Constants.CIP:
+                activityAddListBinding.tvSelectedDcr.setText("Selected " + cipCap);
+                break;
+            case Constants.HOSPITAL:
+                activityAddListBinding.tvSelectedDcr.setText("Selected " + hosCap);
+                break;
+
+        }
+        activityAddListBinding.tvSelectedDcrCount.setText("(0)");
+
+        selectedDCRAdapter = new SelectedDCRAdapter(this, selectedDataList, selectedDCR, deleteClickListener);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        activityAddListBinding.rvSelectedDcrList.setAdapter(selectedDCRAdapter);
+        activityAddListBinding.rvSelectedDcrList.setLayoutManager(layoutManager);
+
+        updateSelectedDCRList();
+    }
+
+    private void updateSelectedDCRList() {
+        HashMap<String, List<DCRModel>> selectedClusterXDcrMap = new HashMap<>();
+        HashMap<String, String> selectedDCRClusterMap = new HashMap<>();
+        selectedDataList = new ArrayList<>();
+        List<DCRModel> selectedDCRModels = selectedDCRMap.get(selectedDCR);
+        if(selectedDCRModels != null) {
+            if(!selectedDCRModels.isEmpty()) {
+                activityAddListBinding.btnClear.setVisibility(View.VISIBLE);
+                for (DCRModel dcrModel : selectedDCRModels) {
+                    if(!selectedDCRClusterMap.containsKey(dcrModel.getTownCode())) {
+                        selectedDCRClusterMap.put(dcrModel.getTownCode(), dcrModel.getTownName());
+                        selectedClusterXDcrMap.put(dcrModel.getTownCode(), new ArrayList<>());
+                    }
+                    List<DCRModel> dcrModels = selectedClusterXDcrMap.get(dcrModel.getTownCode());
+                    if(dcrModels == null) {
+                        dcrModels = new ArrayList<>();
+                    }
+                    dcrModels.add(dcrModel);
+                    selectedClusterXDcrMap.put(dcrModel.getTownCode(), dcrModels);
+                }
+            }else {
+                activityAddListBinding.btnClear.setVisibility(View.GONE);
+            }
+        }
+
+        List<Map.Entry<String, String>> clusterEntries = new ArrayList<>(selectedDCRClusterMap.entrySet());
+        Collections.sort(clusterEntries, Map.Entry.comparingByValue());
+
+        for (Map.Entry<String, String> entry : clusterEntries) {
+            String clusterCode = entry.getKey();
+            selectedDataList.add(new ClusterModel(clusterCode, selectedDCRClusterMap.get(clusterCode)));
+            List<DCRModel> dcrModels = selectedClusterXDcrMap.get(clusterCode);
+            if(dcrModels != null && !dcrModels.isEmpty()) {
+                dcrModels.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+            }
+            selectedDataList.addAll(dcrModels);
+        }
+
+        activityAddListBinding.tvSelectedDcrCount.setText("(" + (selectedDataList.size() - selectedDCRClusterMap.size()) + ")");
+        selectedDCRAdapter.updateList(selectedDataList);
+    }
+
+    private final SelectedDCRAdapter.DeleteClickListener deleteClickListener = (dcrModel, selectedDCR) -> {
+
+        List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
+        if(dcrModelList != null && !dcrModelList.isEmpty()) {
+            for (int index = 0; index<dcrModelList.size(); index++) {
+                DCRModel oldDcrModel = dcrModelList.get(index);
+                if(oldDcrModel.getCode().equals(dcrModel.getCode())) {
+                    oldDcrModel.setSelected(false);
+                    dcrModelList.set(index, oldDcrModel);
+                    break;
+                }
+            }
+            populateDcrData();
+        }
+
+        if(selectedDCRMap.containsKey(selectedDCR)) {
+            List<DCRModel> selectedDCRModels = selectedDCRMap.get(selectedDCR);
+            if(selectedDCRModels != null) {
+                selectedDCRModels.remove(dcrModel);
+                selectedDCRMap.put(selectedDCR, selectedDCRModels);
+                updateSelectedDCRList();
+            }
+        }
+
+        if(activityAddListBinding.etSearch.getText() != null && !activityAddListBinding.etSearch.getText().toString().trim().isEmpty()) {
+            activityAddListBinding.etSearch.setText("");
+        }
+
+    };
+
+    private void clearSelection() {
+        List<DCRModel> dcrModels = selectedDCRMap.get(selectedDCR);
+        List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
+        if(dcrModelList != null && !dcrModelList.isEmpty() && dcrModels != null && !dcrModels.isEmpty()) {
+            for (DCRModel dcrModel : dcrModelList) {
+                for (DCRModel selectedDCRModel : dcrModels) {
+                    if(selectedDCRModel.getCode().equals(dcrModel.getCode())) {
+                        dcrModel.setSelected(false);
+                        dcrModels.remove(selectedDCRModel);
+                        break;
+                    }
+                }
+            }
+            selectedDCRMap.put(selectedDCR, new ArrayList<>());
+            populateDcrData();
+        }
+    }
+
+    private void showMultiClusterAlter() {
         selectedClusterList.clear();
         activityAddListBinding.stpAddListNavigation.etSearch.setText("");
         activityAddListBinding.stpAddListNavigation.txtClDone.setVisibility(View.VISIBLE);
@@ -459,6 +576,30 @@ public class AddListActivity extends AppCompatActivity {
             Log.e("Work plan", "updateClusterList: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void saveSelectedDCR() {
+        if(selectedDCRMap != null && !selectedDCRMap.isEmpty()) {
+            for (String selectedDCR: selectedDCRMap.keySet()) {
+                List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
+                List<DCRModel> selectedDCRModels = selectedDCRMap.get(selectedDCR);
+                if(dcrModelList != null && !dcrModelList.isEmpty() && selectedDCRModels != null && !selectedDCRModels.isEmpty()) {
+                    for (int index = 0; index<dcrModelList.size(); index++) {
+                        DCRModel dcrModel = dcrModelList.get(index);
+                        for (DCRModel selectedDcrModel : selectedDCRModels) {
+                            if(dcrModel.getCode().equals(selectedDcrModel.getCode()) && selectedDcrModel.isSelected()) {
+                                dcrModel.setSelected(false);
+                                if(dcrModel.getPlannedForName().equals("-")) dcrModel.setPlannedForName("");
+                                dcrModel.setPlannedForName(dcrModel.getPlannedForName() + dayCaption + ",");
+                                dcrModel.setPlannedForCode(dcrModel.getPlannedForCode() + dayID + ",");
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        finish();
     }
 
 }

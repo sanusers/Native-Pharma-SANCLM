@@ -391,7 +391,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     private void populateCalendarAdapter() {
         String dayIDValues = "MO1/MO2/MO3/MO4/TU1/TU2/TU3/TU4/WE1/WE2/WE4/TH1/TH2/TH3/TH4/FR1/FR2/FR3/FR4/SA1/SA2/SA3/SA4/";
         String[] dayIDs = dayIDValues.split("/");
-        String[] dayCaptions = "Monday 1/Monday 2/Monday 3/Monday 4/Tuesday 1/Tuesday 2/Tuesday 3/Tuesday 4/Wednesday 1/Wednesday 2/Wednesday 4/Thursday 1/Thursday 2/Thursday 3/Thursday 4/Friday 1/Friday 2/Friday 3/Friday 4/Saturday 1/Saturday 2/Saturday 3/Saturday 4/".split("/");
+        String[] dayCaptions = "Plan 1/Monday 2/Monday 3/Monday 4/Tuesday 1/Tuesday 2/Tuesday 3/Tuesday 4/Wednesday 1/Wednesday 2/Wednesday 4/Thursday 1/Thursday 2/Thursday 3/Thursday 4/Friday 1/Friday 2/Friday 3/Friday 4/Saturday 1/Saturday 2/Saturday 3/Saturday 4/".split("/");
         calendarMap = new LinkedHashMap<>();
 
         for (int index = 0; index<dayIDs.length; index++) {

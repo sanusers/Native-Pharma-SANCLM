@@ -7,13 +7,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Filter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.ClusterModel;
@@ -24,6 +29,7 @@ import saneforce.sanzen.commonClasses.Constants;
 public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
+    private List<Object> filtereddcrModelList;
     private List<Object> dcrModelList;
     private static final int VIEW_TYPE_CLUSTER = 0;
     private static final int VIEW_TYPE_DCR = 1;
@@ -33,17 +39,18 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public interface CheckBoxClickListener {
 
-        void onSelected(DCRModel dcrModel, int position, String selectedDCR);
+        void onSelected(DCRModel dcrModel, String selectedDCR);
 
-        void onDeSelected(DCRModel dcrModel, int position, String selectedDCR);
+        void onDeSelected(DCRModel dcrModel, String selectedDCR);
     }
 
     public DCRSelectionAdapter() {
     }
 
-    public DCRSelectionAdapter(Context context, List<Object> dcrModelList, CheckBoxClickListener checkBoxClickListener, String selectedDCR) {
+    public DCRSelectionAdapter(Context context, List<Object> filtereddcrModelList, CheckBoxClickListener checkBoxClickListener, String selectedDCR) {
         this.context = context;
-        this.dcrModelList = dcrModelList;
+        this.filtereddcrModelList = filtereddcrModelList;
+        this.dcrModelList = filtereddcrModelList;
         this.checkBoxClickListener = checkBoxClickListener;
         this.selectedDCR = selectedDCR;
         commonUtilsMethods = new CommonUtilsMethods(context);
@@ -65,11 +72,11 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if(holder instanceof ClusterViewHolder) {
             ClusterViewHolder clusterViewHolder = (ClusterViewHolder) holder;
-            ClusterModel clusterModel = (ClusterModel) dcrModelList.get(position);
+            ClusterModel clusterModel = (ClusterModel) filtereddcrModelList.get(position);
             clusterViewHolder.name.setText(clusterModel.getClusterName());
         }else if(holder instanceof DCRViewHolder) {
             DCRViewHolder dcrViewHolder = (DCRViewHolder) holder;
-            DCRModel dcrModel = (DCRModel) dcrModelList.get(position);
+            DCRModel dcrModel = (DCRModel) filtereddcrModelList.get(position);
 
             switch (selectedDCR){
                 case Constants.DOCTOR:
@@ -107,9 +114,9 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 dcrViewHolder.plannedFor.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
                 notifyItemChanged(position);
                 if(dcrModel.isSelected()) {
-                    checkBoxClickListener.onSelected(dcrModel, holder.getBindingAdapterPosition(), selectedDCR);
+                    checkBoxClickListener.onSelected(dcrModel, selectedDCR);
                 }else {
-                    checkBoxClickListener.onDeSelected(dcrModel, holder.getBindingAdapterPosition(), selectedDCR);
+                    checkBoxClickListener.onDeSelected(dcrModel, selectedDCR);
                 }
             });
 
@@ -120,14 +127,14 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        return dcrModelList.size();
+        return filtereddcrModelList.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(dcrModelList.get(position) instanceof ClusterModel) {
+        if(filtereddcrModelList.get(position) instanceof ClusterModel) {
             return VIEW_TYPE_CLUSTER;
-        }else if(dcrModelList.get(position) instanceof DCRModel) {
+        }else if(filtereddcrModelList.get(position) instanceof DCRModel) {
             return VIEW_TYPE_DCR;
         }else {
             Log.e("DCR Adapter STP", "getItemViewType: invalid view type");
@@ -136,8 +143,69 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void updateList(List<Object> dataList) {
-        dcrModelList = dataList;
+        filtereddcrModelList = dataList;
         notifyDataSetChanged();
+    }
+
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String searchString = constraint.toString().toLowerCase();
+                List<DCRModel> filtered = new ArrayList<>();
+                for (Object data : dcrModelList) {
+                    if(data instanceof DCRModel) {
+                        if(((DCRModel) data).getName().toLowerCase().contains(searchString)
+                                || ((DCRModel) data).getPlannedForName().toLowerCase().contains(searchString)
+                                || ((DCRModel) data).getSpeciality().toLowerCase().contains(searchString)
+                                || ((DCRModel) data).getCategory().toLowerCase().contains(searchString)) {
+                            filtered.add((DCRModel) data);
+                        }
+                    }
+                }
+
+                HashMap<String, List<DCRModel>> clusterXDcrMap = new HashMap<>();
+                HashMap<String, String> clusterMap = new HashMap<>();
+                List<Object> dataList = new ArrayList<>();
+
+                for (DCRModel dcrModel : filtered) {
+                    if(!clusterXDcrMap.containsKey(dcrModel.getTownCode())) {
+                        clusterXDcrMap.put(dcrModel.getTownCode(), new ArrayList<>());
+                        clusterMap.put(dcrModel.getTownCode(), dcrModel.getTownName());
+                    }
+                    List<DCRModel> dcrModels = clusterXDcrMap.get(dcrModel.getTownCode());
+                    if(dcrModels == null) {
+                        dcrModels = new ArrayList<>();
+                    }
+                    dcrModels.add(dcrModel);
+                    clusterXDcrMap.put(dcrModel.getTownCode(), dcrModels);
+                }
+
+                List<Map.Entry<String, String>> clusterEntries = new ArrayList<>(clusterMap.entrySet());
+                Collections.sort(clusterEntries, Map.Entry.comparingByValue());
+
+                for (Map.Entry<String, String> entry : clusterEntries) {
+                    String clusterCode = entry.getKey();
+                    dataList.add(new ClusterModel(clusterCode, clusterMap.get(clusterCode)));
+                    List<DCRModel> dcrModels = clusterXDcrMap.get(clusterCode);
+                    if(dcrModels != null && !dcrModels.isEmpty()) {
+                        dcrModels.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+                    }
+                    dataList.addAll(dcrModels);
+                }
+
+                filtereddcrModelList = dataList;
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filtereddcrModelList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filtereddcrModelList = (List<Object>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
     public static class DCRViewHolder extends RecyclerView.ViewHolder {

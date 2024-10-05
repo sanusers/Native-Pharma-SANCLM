@@ -29,7 +29,7 @@ public class SelectedDCRAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private DeleteClickListener deleteClickListener;
 
     public interface DeleteClickListener {
-        void onDeleted(DCRModel dcrModel, int position, String selectedDCR);
+        void onDeleted(DCRModel dcrModel, String selectedDCR);
     }
 
     public SelectedDCRAdapter() {
@@ -66,7 +66,7 @@ public class SelectedDCRAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             DCRModel dcrModel = (DCRModel) dcrModelList.get(position);
             dcrViewHolder.name.setText(dcrModel.getName());
             dcrViewHolder.delete.setOnClickListener(view -> {
-                deleteClickListener.onDeleted(dcrModel, position, selectedDCR);
+                deleteClickListener.onDeleted(dcrModel, selectedDCR);
             });
             dcrViewHolder.name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, dcrModel.getName()));
         }

@@ -11,11 +11,13 @@
         android:fontFamily="@font/satoshi_bold"
         android:text="Name"
         android:layout_gravity="bottom"
-        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginStart="@dimen/_3sdp"
         android:layout_marginEnd="@dimen/_1sdp"
         android:id="@+id/tv_cluster_name"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textColor="@color/gray_med"
-        android:textSize="@dimen/_7ssp"/>
+        android:textSize="@dimen/_6ssp"/>
 
     <View
         android:layout_width="match_parent"

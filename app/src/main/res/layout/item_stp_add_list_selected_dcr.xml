@@ -13,6 +13,10 @@
         android:layout_toStartOf="@id/img_delete"
         android:fontFamily="@font/satoshi_bold"
         android:text="Name"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:paddingStart="@dimen/_3sdp"
+        android:paddingEnd="0dp"
         android:paddingVertical="@dimen/_3sdp"
         android:textColor="@color/dark_purple"
         android:textSize="@dimen/_6ssp" />

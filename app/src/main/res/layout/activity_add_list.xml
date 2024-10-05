@@ -76,6 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/cluster_title"
             android:layout_marginHorizontal="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_3sdp"
             android:background="@drawable/bg_white_border_purple"
             android:orientation="horizontal"
             android:padding="@dimen/_2sdp">
@@ -90,7 +91,7 @@
                 android:hint="@string/select_cluster"
                 android:maxLines="1"
                 android:padding="@dimen/_4sdp"
-                android:text="Select Cluster"
+                tools:text="Select Cluster"
                 android:textColor="@color/dark_purple"
                 android:textColorHint="@color/dark_purple"
                 android:textSize="@dimen/_6ssp" />
@@ -315,6 +316,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="0.2"
+                                    android:visibility="invisible"
                                     android:buttonTint="@color/dark_purple" />
 
                                 <TextView
@@ -402,6 +404,7 @@
                                 android:src="@drawable/no_data_folder" />
 
                             <TextView
+                                android:id="@+id/tv_no_data"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/img_no_data"
@@ -442,7 +445,7 @@
                             android:fontFamily="@font/satoshi_bold"
                             android:text="Selected Doctor"
                             android:textColor="@color/dark_purple"
-                            android:textSize="@dimen/_6ssp" />
+                            android:textSize="@dimen/_7ssp" />
 
                         <TextView
                             android:id="@+id/tv_selected_dcr_count"
@@ -457,6 +460,12 @@
 
                     </LinearLayout>
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="@dimen/_3sdp"
+                        android:background="@color/dark_purple"/>
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_selected_dcr_list"
                         android:layout_width="match_parent"
@@ -469,6 +478,23 @@
             </androidx.cardview.widget.CardView>
 
         </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            android:layout_marginVertical="@dimen/_5sdp"
+            android:background="@drawable/bg_border_with_pink"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingHorizontal="@dimen/_15sdp"
+            android:text="@string/clear_all"
+            android:textAllCaps="false"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_6ssp"
+            android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_cancel"
