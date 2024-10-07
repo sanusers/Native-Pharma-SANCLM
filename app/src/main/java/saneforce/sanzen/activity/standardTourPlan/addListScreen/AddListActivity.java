@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.standardTourPlan.addListScreen;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
@@ -7,11 +9,14 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,7 +27,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.MultiClusterAdapter;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.OnClusterClicklistener;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
@@ -30,21 +39,26 @@ import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.DCRSelec
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.SelectedDCRAdapter;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
+import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityAddListBinding;
+import saneforce.sanzen.network.ApiInterface;
+import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class AddListActivity extends AppCompatActivity {
 
     private ActivityAddListBinding activityAddListBinding;
-    private ArrayList<Multicheckclass_clust> selectedClusterList = new ArrayList<>();
-    private ArrayList<Multicheckclass_clust> multiple_cluster_list = new ArrayList<>();
-    private String hqCode, strClusterName, strClusterID, dayID, dayCaption, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, stpCap, selectedDCR;
+    private final ArrayList<Multicheckclass_clust> selectedClusterList = new ArrayList<>();
+    private final ArrayList<Multicheckclass_clust> multiple_cluster_list = new ArrayList<>();
+    private String hqCode, strClusterName, strClusterID, dayID, dayCaption, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, stpCap, selectedDCR,  drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed;
+    private ApiInterface apiInterface;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private GPSTrack gpsTrack;
@@ -54,6 +68,7 @@ public class AddListActivity extends AppCompatActivity {
     private HashMap<String, List<DCRModel>> selectedDCRMap;
     private List<Object> selectedDataList;
     private SelectedDCRAdapter selectedDCRAdapter;
+    private JSONObject jsonObject;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -69,21 +84,22 @@ public class AddListActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         getRequiredData();
 
-        activityAddListBinding.backArrow.setOnClickListener(v -> {
-            super.onBackPressed();
-        });
+        activityAddListBinding.backArrow.setOnClickListener(v -> super.onBackPressed());
 
         activityAddListBinding.btnCancel.setOnClickListener(v -> {
+            clearSelection();
             super.onBackPressed();
         });
 
         activityAddListBinding.btnSave.setOnClickListener(v -> {
-            saveSelectedDCR();
+            if (UtilityClass.isNetworkAvailable(this)) {
+                saveSelectedDCR();
+            } else {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+            }
         });
 
-        activityAddListBinding.selectedClusters.setOnClickListener(v -> {
-            showMultiClusterAlter();
-        });
+        activityAddListBinding.selectedClusters.setOnClickListener(v -> showMultiClusterAlter());
 
         activityAddListBinding.tagTvDoctor.setOnClickListener(v -> {
             if(selectedClusterList.isEmpty()) {
@@ -185,6 +201,12 @@ public class AddListActivity extends AppCompatActivity {
         cipCap = SharedPref.getCipCaption(this);
         hosCap = SharedPref.getHospCaption(this);
         clusterCap = SharedPref.getClusterCap(this);
+        drNeed = SharedPref.getDrNeed(this);
+        chmNeed = SharedPref.getChmNeed(this);
+        stkNeed = SharedPref.getStkNeed(this);
+        unDrNeed = SharedPref.getUnlNeed(this);
+        cipNeed = SharedPref.getCipNeed(this);
+        hosNeed = SharedPref.getHospNeed(this);
 //        stpCap = SharedPref.getSTPCap(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
@@ -193,6 +215,7 @@ public class AddListActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(this);
         strClusterID = "";
         strClusterName = "";
+        jsonObject = new JSONObject();
         if(clusterCap.isEmpty()) {
             activityAddListBinding.selectedClusters.setText("Select Cluster");
         }else {
@@ -216,6 +239,37 @@ public class AddListActivity extends AppCompatActivity {
 
         selectedDCR = Constants.DOCTOR;
         selectedDCRMap = new HashMap<>();
+
+        if(drNeed.equalsIgnoreCase("0")) {
+            activityAddListBinding.tagTvDoctor.setVisibility(View.VISIBLE);
+        }else {
+            activityAddListBinding.tagTvDoctor.setVisibility(View.GONE);
+        }
+        if(chmNeed.equalsIgnoreCase("0")) {
+            activityAddListBinding.tagTvChemist.setVisibility(View.VISIBLE);
+        }else {
+            activityAddListBinding.tagTvChemist.setVisibility(View.GONE);
+        }
+//        if(stkNeed.equalsIgnoreCase("0")) {
+//            activityAddListBinding.tagTvStockist.setVisibility(View.VISIBLE);
+//        }else {
+            activityAddListBinding.tagTvStockist.setVisibility(View.GONE);
+//        }
+//        if(unDrNeed.equalsIgnoreCase("0")) {
+//            activityAddListBinding.tagTvUndr.setVisibility(View.VISIBLE);
+//        }else {
+            activityAddListBinding.tagTvUndr.setVisibility(View.GONE);
+//        }
+//        if(cipNeed.equalsIgnoreCase("0")) {
+//            activityAddListBinding.tagTvCip.setVisibility(View.VISIBLE);
+//        }else {
+            activityAddListBinding.tagTvCip.setVisibility(View.GONE);
+//        }
+//        if(hosNeed.equalsIgnoreCase("0")) {
+//            activityAddListBinding.tagTvHospital.setVisibility(View.VISIBLE);
+//        }else {
+            activityAddListBinding.tagTvHospital.setVisibility(View.GONE);
+//        }
     }
 
     private void updateDCRSelectionUI() {
@@ -580,7 +634,13 @@ public class AddListActivity extends AppCompatActivity {
 
     private void saveSelectedDCR() {
         if(selectedDCRMap != null && !selectedDCRMap.isEmpty()) {
-            for (String selectedDCR: selectedDCRMap.keySet()) {
+            StringBuilder selectedClusterName = new StringBuilder();
+            StringBuilder selectedClusterCode = new StringBuilder();
+            StringBuilder selectedDoctorName = new StringBuilder();
+            StringBuilder selectedDoctorCode = new StringBuilder();
+            StringBuilder selectedChemistName = new StringBuilder();
+            StringBuilder selectedChemistCode = new StringBuilder();
+            for (String selectedDCR : selectedDCRMap.keySet()) {
                 List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
                 List<DCRModel> selectedDCRModels = selectedDCRMap.get(selectedDCR);
                 if(dcrModelList != null && !dcrModelList.isEmpty() && selectedDCRModels != null && !selectedDCRModels.isEmpty()) {
@@ -588,8 +648,23 @@ public class AddListActivity extends AppCompatActivity {
                         DCRModel dcrModel = dcrModelList.get(index);
                         for (DCRModel selectedDcrModel : selectedDCRModels) {
                             if(dcrModel.getCode().equals(selectedDcrModel.getCode()) && selectedDcrModel.isSelected()) {
+                                if(!selectedClusterCode.toString().contains(selectedDcrModel.getTownCode())) {
+                                    selectedClusterCode.append(selectedDcrModel.getTownCode()).append(",");
+                                    selectedClusterName.append(selectedDcrModel.getTownName()).append(",");
+                                }
+                                switch (selectedDCR){
+                                    case Constants.DOCTOR:
+                                        selectedDoctorCode.append(selectedDcrModel.getCode()).append(",");
+                                        selectedDoctorName.append(selectedDcrModel.getName()).append(",");
+                                        break;
+                                    case Constants.CHEMIST:
+                                        selectedChemistCode.append(selectedDcrModel.getCode()).append(",");
+                                        selectedChemistName.append(selectedDcrModel.getName()).append(",");
+                                        break;
+                                }
                                 dcrModel.setSelected(false);
-                                if(dcrModel.getPlannedForName().equals("-")) dcrModel.setPlannedForName("");
+                                if(dcrModel.getPlannedForName().equals("-"))
+                                    dcrModel.setPlannedForName("");
                                 dcrModel.setPlannedForName(dcrModel.getPlannedForName() + dayCaption + ",");
                                 dcrModel.setPlannedForCode(dcrModel.getPlannedForCode() + dayID + ",");
                                 break;
@@ -598,8 +673,60 @@ public class AddListActivity extends AppCompatActivity {
                     }
                 }
             }
+            try {
+                jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("DivCode", SharedPref.getDivisionCode(this));
+                jsonObject.put("Rsf", SharedPref.getHqCode(this));
+                jsonObject.put("town_code", selectedClusterCode.toString());
+                jsonObject.put("town_name", selectedClusterName.toString());
+                jsonObject.put("Doctor_Id", selectedDoctorCode.toString());
+                jsonObject.put("Doctor_Name", selectedDoctorName.toString());
+                jsonObject.put("Chemist_Id", selectedChemistCode.toString());
+                jsonObject.put("Chemist_Name", selectedChemistName.toString());
+                jsonObject.put("Plan_Name", dayCaption);
+                jsonObject.put("Plan_SName", dayID);
+                jsonObject.put("Plan_Code", "1");
+                jsonObject.put("StpFlag", "3");
+                jsonObject.put("tableName", "save_stp");
+                jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
+                Log.v("json_save_stp", jsonObject.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            APICallSaveSTP();
         }
         finish();
+    }
+
+    private void APICallSaveSTP() {
+        if(UtilityClass.isNetworkAvailable(this)) {
+            apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "save/stp");
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    Log.v("stp save", "--res--" + response.body());
+                    try {
+                        if(response.isSuccessful() && response.body() != null) {
+                            JSONObject jsonObject1 = new JSONObject(response.body().toString());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    t.printStackTrace();
+                    commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.no_network));
+                }
+            });
+        } else{
+            Log.e("Api call save", "APICallSaveSTP: offline" );
+        }
     }
 
 }

@@ -110,5 +110,8 @@ public class Constants {
     public static final String DCR_FROM_ACTIVITY = "dcr_from_activity";
     public static final String DETAILING_REQUIRED = "isDetailingRequired";
 
+    //TP
+    public static final String STANDARD_TOUR_PLAN = "Standard Tour Plan";
+    public static final String STP_SETUP = "Standard Tour Plan Setup";
 
 }

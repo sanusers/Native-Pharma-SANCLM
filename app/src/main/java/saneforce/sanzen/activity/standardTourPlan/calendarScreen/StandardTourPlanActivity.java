@@ -52,23 +52,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     private LinkedHashMap<String, List<CalendarModel>> calendarMap;
     private CalendarAdapter calendarAdapter;
     private HashMap<String, DocCategoryModel> docCategoryModelMap;
-    private Set<String> totalCategoryCodeList;
-    private Set<String> totalClusterCodeList;
-    private Set<String> totalDocCodeList;
-    private Set<String> totalChmCodeList;
-    private Set<String> totalStkCodeList;
-    private Set<String> totalUnDrCodeList;
-    private Set<String> totalCipCodeList;
-    private Set<String> totalHosCodeList;
-    private Set<String> selectedCategoryCodeList;
-    private Set<String> selectedClusterCodeList;
-    private Set<String> selectedDocCodeList;
-    private Set<String> selectedChmCodeList;
-    private Set<String> selectedStkCodeList;
-    private Set<String> selectedUnDrCodeList;
-    private Set<String> selectedCipCodeList;
-    private Set<String> selectedHosCodeList;
-    private String hqCode, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, stpCap;
+    private Set<String> totalCategoryCodeList, totalClusterCodeList, totalDocCodeList, totalChmCodeList, totalStkCodeList, totalUnDrCodeList, totalCipCodeList, totalHosCodeList;
+    private Set<String> selectedCategoryCodeList, selectedClusterCodeList, selectedDocCodeList, selectedChmCodeList, selectedStkCodeList, selectedUnDrCodeList, selectedCipCodeList, selectedHosCodeList;
+    private String hqCode, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, stpCap, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed, dayCaptions, dayIDs;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private GPSTrack gpsTrack;
@@ -105,6 +91,12 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         cipCap = SharedPref.getCipCaption(this);
         hosCap = SharedPref.getHospCaption(this);
         clusterCap = SharedPref.getClusterCap(this);
+        drNeed = SharedPref.getDrNeed(this);
+        chmNeed = SharedPref.getChmNeed(this);
+        stkNeed = SharedPref.getStkNeed(this);
+        unDrNeed = SharedPref.getUnlNeed(this);
+        cipNeed = SharedPref.getCipNeed(this);
+        hosNeed = SharedPref.getHospNeed(this);
 //        stpCap = SharedPref.getSTPCap(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
@@ -124,6 +116,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         getClusterData();
         getCategoryData();
         getDcrData();
+        getSTPSetup();
     }
 
     private void populateAdapters() {
@@ -137,7 +130,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         docCategoryModelMap = new HashMap<>();
         totalCategoryCodeList = new HashSet<>();
         try {
-            JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CATEGORY));
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray();
             if(jsonArray.length()>0) {
                 for (int i = 0; i<jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -185,12 +178,24 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
         try {
             List<String> dcrNameList = new ArrayList<>();
-            dcrNameList.add(Constants.DOCTOR);
-            dcrNameList.add(Constants.CHEMIST);
-            dcrNameList.add(Constants.STOCKIEST);
-            dcrNameList.add(Constants.UNLISTED_DOCTOR);
+            if(drNeed.equalsIgnoreCase("0")) {
+                dcrNameList.add(Constants.DOCTOR);
+            }
+            if(chmNeed.equalsIgnoreCase("0")) {
+                dcrNameList.add(Constants.CHEMIST);
+            }
+            if(stkNeed.equalsIgnoreCase("0")) {
+//                dcrNameList.add(Constants.STOCKIEST);
+            }
+            if(unDrNeed.equalsIgnoreCase("0")) {
+//                dcrNameList.add(Constants.UNLISTED_DOCTOR);
+            }
+            if(cipNeed.equalsIgnoreCase("0")) {
 //            dcrNameList.add(Constants.CIP);
+            }
+            if(hosNeed.equalsIgnoreCase("0")) {
 //            dcrNameList.add(Constants.HOSPITAL);
+            }
 
             HashMap<String, String> chmCatMap = new HashMap<>();
             JSONArray jsonChmCatArray = masterDataDao.getMasterDataTableOrNew("ChemistCategory").getMasterSyncDataJsonArray();
@@ -338,13 +343,26 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         }
     }
 
+    private void getSTPSetup() {
+        try {
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
+            if(jsonArray != null && jsonArray.length()>0) {
+                JSONObject jsonObject = jsonArray.optJSONObject(0);
+                dayCaptions = jsonObject.optString("Plan_Name");
+                dayIDs = jsonObject.optString("Plan_SName");
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void populatePlanForAdapter() {
         planForModelList = new ArrayList<>();
         planForModelList.add(new PlanForModel(clusterCap, R.drawable.tp_cluster_location_ic, totalClusterCodeList.size(), selectedClusterCodeList.size()));
         planForModelList.add(new PlanForModel(drCap, R.drawable.doctor_img, totalDocCodeList.size(), selectedDocCodeList.size()));
         planForModelList.add(new PlanForModel(chmCap, R.drawable.chemist_img, totalChmCodeList.size(), selectedChmCodeList.size()));
-        planForModelList.add(new PlanForModel(stkCap, R.drawable.map_stockist_img, totalStkCodeList.size(), selectedStkCodeList.size()));
-        planForModelList.add(new PlanForModel(unDrCap, R.drawable.map_unlistdr_img, totalUnDrCodeList.size(), selectedUnDrCodeList.size()));
+//        planForModelList.add(new PlanForModel(stkCap, R.drawable.map_stockist_img, totalStkCodeList.size(), selectedStkCodeList.size()));
+//        planForModelList.add(new PlanForModel(unDrCap, R.drawable.map_unlistdr_img, totalUnDrCodeList.size(), selectedUnDrCodeList.size()));
 //        planForModelList.add(new PlanForModel(cipCap, R.drawable.cip_img, totalCipCodeList.size(), selectedCipCodeList.size()));
 //        planForModelList.add(new PlanForModel(hosCap, R.drawable.tp_hospital_icon, totalHosCodeList.size(), selectedHosCodeList.size()));
 
@@ -389,61 +407,60 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void populateCalendarAdapter() {
-        String dayIDValues = "MO1/MO2/MO3/MO4/TU1/TU2/TU3/TU4/WE1/WE2/WE4/TH1/TH2/TH3/TH4/FR1/FR2/FR3/FR4/SA1/SA2/SA3/SA4/";
-        String[] dayIDs = dayIDValues.split("/");
-        String[] dayCaptions = "Plan 1/Monday 2/Monday 3/Monday 4/Tuesday 1/Tuesday 2/Tuesday 3/Tuesday 4/Wednesday 1/Wednesday 2/Wednesday 4/Thursday 1/Thursday 2/Thursday 3/Thursday 4/Friday 1/Friday 2/Friday 3/Friday 4/Saturday 1/Saturday 2/Saturday 3/Saturday 4/".split("/");
+        String[] dayIDValues = dayIDs.split("/");
+        String[] dayCaptionValues = dayCaptions.split("/");
         calendarMap = new LinkedHashMap<>();
 
-        for (int index = 0; index<dayIDs.length; index++) {
-            String dayID = dayIDs[index];
+        for (int index = 0; index<dayIDValues.length; index++) {
+            String dayID = dayIDValues[index];
             if(dayID.toLowerCase().contains("mo")) {
                 List<CalendarModel> calendarModelList = calendarMap.get("monday");
                 if(calendarModelList == null) {
                     calendarModelList = new ArrayList<>();
                 }
-                calendarModelList.add(new CalendarModel(dayCaptions[index], dayID, true, null));
+                calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                 calendarMap.put("monday", calendarModelList);
             }else if(dayID.toLowerCase().contains("tu")) {
                 List<CalendarModel> calendarModelList = calendarMap.get("tuesday");
                 if(calendarModelList == null) {
                     calendarModelList = new ArrayList<>();
                 }
-                calendarModelList.add(new CalendarModel(dayCaptions[index], dayID, true, null));
+                calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                 calendarMap.put("tuesday", calendarModelList);
             }else if(dayID.toLowerCase().contains("we")) {
                 List<CalendarModel> calendarModelList = calendarMap.get("wednesday");
                 if(calendarModelList == null) {
                     calendarModelList = new ArrayList<>();
                 }
-                calendarModelList.add(new CalendarModel(dayCaptions[index], dayID, true, null));
+                calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                 calendarMap.put("wednesday", calendarModelList);
             }else if(dayID.toLowerCase().contains("th")) {
                 List<CalendarModel> calendarModelList = calendarMap.get("thursday");
                 if(calendarModelList == null) {
                     calendarModelList = new ArrayList<>();
                 }
-                calendarModelList.add(new CalendarModel(dayCaptions[index], dayID, true, null));
+                calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                 calendarMap.put("thursday", calendarModelList);
             }else if(dayID.toLowerCase().contains("fr")) {
                 List<CalendarModel> calendarModelList = calendarMap.get("friday");
                 if(calendarModelList == null) {
                     calendarModelList = new ArrayList<>();
                 }
-                calendarModelList.add(new CalendarModel(dayCaptions[index], dayID, true, null));
+                calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                 calendarMap.put("friday", calendarModelList);
             }else if(dayID.toLowerCase().contains("sa")) {
                 List<CalendarModel> calendarModelList = calendarMap.get("saturday");
                 if(calendarModelList == null) {
                     calendarModelList = new ArrayList<>();
                 }
-                calendarModelList.add(new CalendarModel(dayCaptions[index], dayID, true, null));
+                calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                 calendarMap.put("saturday", calendarModelList);
             }else if(dayID.toLowerCase().contains("su")) {
                 List<CalendarModel> calendarModelList = calendarMap.get("sunday");
                 if(calendarModelList == null) {
                     calendarModelList = new ArrayList<>();
                 }
-                calendarModelList.add(new CalendarModel(dayCaptions[index], dayID, true, null));
+                calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                 calendarMap.put("sunday", calendarModelList);
             }
         }
