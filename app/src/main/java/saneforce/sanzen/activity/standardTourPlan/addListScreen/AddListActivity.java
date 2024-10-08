@@ -31,7 +31,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.MultiClusterAdapter;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.OnClusterClicklistener;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
@@ -39,7 +38,6 @@ import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.DCRSelec
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.SelectedDCRAdapter;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
-import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -49,6 +47,8 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
+import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
@@ -57,10 +57,11 @@ public class AddListActivity extends AppCompatActivity {
     private ActivityAddListBinding activityAddListBinding;
     private final ArrayList<Multicheckclass_clust> selectedClusterList = new ArrayList<>();
     private final ArrayList<Multicheckclass_clust> multiple_cluster_list = new ArrayList<>();
-    private String hqCode, strClusterName, strClusterID, dayID, dayCaption, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, stpCap, selectedDCR,  drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed;
+    private String hqCode, strClusterName, strClusterID, dayID, dayCaption, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, stpCap, selectedDCR, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed;
     private ApiInterface apiInterface;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+    private STPOfflineDataDao stpOfflineDataDao;
     private GPSTrack gpsTrack;
     private CommonUtilsMethods commonUtilsMethods;
     private List<Object> dataList;
@@ -68,6 +69,7 @@ public class AddListActivity extends AppCompatActivity {
     private HashMap<String, List<DCRModel>> selectedDCRMap;
     private List<Object> selectedDataList;
     private SelectedDCRAdapter selectedDCRAdapter;
+    private StringBuilder selectedClusterName ,selectedClusterCode, selectedDoctorName, selectedDoctorCode, selectedChemistName, selectedChemistCode;
     private JSONObject jsonObject;
 
     @SuppressLint("MissingSuperCall")
@@ -92,11 +94,7 @@ public class AddListActivity extends AppCompatActivity {
         });
 
         activityAddListBinding.btnSave.setOnClickListener(v -> {
-            if (UtilityClass.isNetworkAvailable(this)) {
-                saveSelectedDCR();
-            } else {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
-            }
+            saveSelectedDCR();
         });
 
         activityAddListBinding.selectedClusters.setOnClickListener(v -> showMultiClusterAlter());
@@ -210,6 +208,7 @@ public class AddListActivity extends AppCompatActivity {
 //        stpCap = SharedPref.getSTPCap(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
+        stpOfflineDataDao = roomDB.stpOfflineDataDao();
         gpsTrack = new GPSTrack(this);
         commonUtilsMethods = new CommonUtilsMethods(this);
         commonUtilsMethods.setUpLanguage(this);
@@ -253,23 +252,30 @@ public class AddListActivity extends AppCompatActivity {
 //        if(stkNeed.equalsIgnoreCase("0")) {
 //            activityAddListBinding.tagTvStockist.setVisibility(View.VISIBLE);
 //        }else {
-            activityAddListBinding.tagTvStockist.setVisibility(View.GONE);
+        activityAddListBinding.tagTvStockist.setVisibility(View.GONE);
 //        }
 //        if(unDrNeed.equalsIgnoreCase("0")) {
 //            activityAddListBinding.tagTvUndr.setVisibility(View.VISIBLE);
 //        }else {
-            activityAddListBinding.tagTvUndr.setVisibility(View.GONE);
+        activityAddListBinding.tagTvUndr.setVisibility(View.GONE);
 //        }
 //        if(cipNeed.equalsIgnoreCase("0")) {
 //            activityAddListBinding.tagTvCip.setVisibility(View.VISIBLE);
 //        }else {
-            activityAddListBinding.tagTvCip.setVisibility(View.GONE);
+        activityAddListBinding.tagTvCip.setVisibility(View.GONE);
 //        }
 //        if(hosNeed.equalsIgnoreCase("0")) {
 //            activityAddListBinding.tagTvHospital.setVisibility(View.VISIBLE);
 //        }else {
-            activityAddListBinding.tagTvHospital.setVisibility(View.GONE);
+        activityAddListBinding.tagTvHospital.setVisibility(View.GONE);
 //        }
+        
+        selectedClusterName = new StringBuilder();
+        selectedClusterCode = new StringBuilder();
+        selectedDoctorName = new StringBuilder();
+        selectedDoctorCode = new StringBuilder();
+        selectedChemistName = new StringBuilder();
+        selectedChemistCode = new StringBuilder();
     }
 
     private void updateDCRSelectionUI() {
@@ -634,12 +640,12 @@ public class AddListActivity extends AppCompatActivity {
 
     private void saveSelectedDCR() {
         if(selectedDCRMap != null && !selectedDCRMap.isEmpty()) {
-            StringBuilder selectedClusterName = new StringBuilder();
-            StringBuilder selectedClusterCode = new StringBuilder();
-            StringBuilder selectedDoctorName = new StringBuilder();
-            StringBuilder selectedDoctorCode = new StringBuilder();
-            StringBuilder selectedChemistName = new StringBuilder();
-            StringBuilder selectedChemistCode = new StringBuilder();
+            selectedClusterName = new StringBuilder();
+            selectedClusterCode = new StringBuilder();
+            selectedDoctorName = new StringBuilder();
+            selectedDoctorCode = new StringBuilder();
+            selectedChemistName = new StringBuilder();
+            selectedChemistCode = new StringBuilder();
             for (String selectedDCR : selectedDCRMap.keySet()) {
                 List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
                 List<DCRModel> selectedDCRModels = selectedDCRMap.get(selectedDCR);
@@ -694,7 +700,14 @@ public class AddListActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            APICallSaveSTP();
+
+            stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, selectedClusterCode.toString(), selectedClusterName.toString(), selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "1"));
+
+            if(UtilityClass.isNetworkAvailable(this)) {
+                APICallSaveSTP();
+            }else {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.stp_saved_locally));
+            }
         }
         finish();
     }
@@ -712,9 +725,15 @@ public class AddListActivity extends AppCompatActivity {
                     try {
                         if(response.isSuccessful() && response.body() != null) {
                             JSONObject jsonObject1 = new JSONObject(response.body().toString());
+                            if(jsonObject1.optString("success").equals("true")) {
+                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, selectedClusterCode.toString(), selectedClusterName.toString(), selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "0"));
+                            }else {
+                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, selectedClusterCode.toString(), selectedClusterName.toString(), selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "1"));
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, selectedClusterCode.toString(), selectedClusterName.toString(), selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "1"));
                     }
                 }
 
@@ -722,10 +741,11 @@ public class AddListActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                     t.printStackTrace();
                     commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.no_network));
+                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, selectedClusterCode.toString(), selectedClusterName.toString(), selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "1"));
                 }
             });
-        } else{
-            Log.e("Api call save", "APICallSaveSTP: offline" );
+        }else {
+            commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
         }
     }
 
