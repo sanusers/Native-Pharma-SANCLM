@@ -16,6 +16,7 @@ import java.util.List;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.CalendarModel;
+import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.SelectedDCRModel;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
 
@@ -51,14 +52,15 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         if(calendarModelList != null && !calendarModelList.isEmpty()) {
             for (int index = 0; index<calendarModelList.size(); index++) {
                 CalendarModel calendarModel = calendarModelList.get(index);
+                List<SelectedDCRModel> dcrModelList = calendarModel.getDcrModelList();
                 switch (index){
                     case 0:
-                        if(calendarModel.getDcrModelList() != null) {
+                        if(dcrModelList != null && !dcrModelList.isEmpty()) {
                             holder.cl_add1.setVisibility(View.INVISIBLE);
                             holder.ll_dcr_data1.setVisibility(View.VISIBLE);
                             holder.cl_add1.setEnabled(false);
                             holder.dayTag1.setText(calendarModel.getCaption());
-                            CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, calendarModel.getDcrModelList());
+                            CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, dcrModelList);
                             holder.rv_dcr_data1.setAdapter(calendarDCRAdapter);
                         }else {
                             holder.cl_add1.setVisibility(View.VISIBLE);
@@ -78,12 +80,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                         break;
 
                     case 1:
-                        if(calendarModel.getDcrModelList() != null) {
+                        if(dcrModelList != null && !dcrModelList.isEmpty()) {
                             holder.cl_add2.setVisibility(View.INVISIBLE);
                             holder.ll_dcr_data2.setVisibility(View.VISIBLE);
                             holder.cl_add2.setEnabled(false);
                             holder.dayTag2.setText(calendarModel.getCaption());
-                            CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, calendarModel.getDcrModelList());
+                            CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, dcrModelList);
                             holder.rv_dcr_data2.setAdapter(calendarDCRAdapter);
                         }else {
                             holder.cl_add2.setVisibility(View.VISIBLE);
@@ -103,12 +105,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                         break;
 
                     case 2:
-                        if(calendarModel.getDcrModelList() != null) {
+                        if(dcrModelList != null && !dcrModelList.isEmpty()) {
                             holder.cl_add3.setVisibility(View.INVISIBLE);
                             holder.ll_dcr_data3.setVisibility(View.VISIBLE);
                             holder.cl_add3.setEnabled(false);
                             holder.dayTag3.setText(calendarModel.getCaption());
-                            CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, calendarModel.getDcrModelList());
+                            CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, dcrModelList);
                             holder.rv_dcr_data3.setAdapter(calendarDCRAdapter);
                         }else {
                             holder.cl_add3.setVisibility(View.VISIBLE);
@@ -128,12 +130,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                         break;
 
                     case 3:
-                        if(calendarModel.getDcrModelList() != null) {
+                        if(dcrModelList != null && !dcrModelList.isEmpty()) {
                             holder.cl_add4.setVisibility(View.INVISIBLE);
                             holder.ll_dcr_data4.setVisibility(View.VISIBLE);
                             holder.cl_add4.setEnabled(false);
                             holder.dayTag4.setText(calendarModel.getCaption());
-                            CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, calendarModel.getDcrModelList());
+                            CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, dcrModelList);
                             holder.rv_dcr_data4.setAdapter(calendarDCRAdapter);
                         }else {
                             holder.cl_add4.setVisibility(View.VISIBLE);

@@ -36,6 +36,9 @@ public interface STPOfflineDataDao {
     @Query("SELECT * FROM `STP_OFFLINE_TABLE`")
     List<STPOfflineDataTable> getAllSTPData();
 
+    @Query("SELECT COUNT(1) > 0 FROM `STP_OFFLINE_TABLE` WHERE `DAY_ID` = :dayID")
+    boolean isDayAvailable(String dayID);
+
     default STPOfflineDataTable getSTPDataOfDayOrNew(String dayID) {
         STPOfflineDataTable stpOfflineDataTable = getSTPDataOfDay(dayID);
         if(stpOfflineDataTable == null) stpOfflineDataTable = new STPOfflineDataTable();

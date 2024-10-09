@@ -1,11 +1,16 @@
 package saneforce.sanzen.activity.standardTourPlan.calendarScreen;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -68,7 +73,6 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     private GPSTrack gpsTrack;
     private CommonUtilsMethods commonUtilsMethods;
     public static HashMap<String, List<DCRModel>> selectedDcrMap;
-    public boolean isCreatedNow = false;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -77,21 +81,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if(!isCreatedNow) {
-            getRequiredData();
-            populateAdapters();
-        }
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityStandardTourPlanBinding = ActivityStandardTourPlanBinding.inflate(getLayoutInflater());
         setContentView(activityStandardTourPlanBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        isCreatedNow = true;
         getRequiredData();
         populateAdapters();
         activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
@@ -197,7 +191,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
     private void saveSTPDataToLocal() {
         try {
-            JSONArray jsonArray= masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
             if(jsonArray.length()>0) {
                 for (int i = 0; i<jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -231,7 +225,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     jsonSave.put("StpFlag", activeFlag);
                     jsonSave.put("tableName", "save_stp");
                     Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
-                    jsonSave.put("ReqDt", dateTime);stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), "0"));
+                    jsonSave.put("ReqDt", dateTime);
+                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), "0"));
 
                 }
             }
@@ -242,7 +237,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
     private void getLocalSTPData() {
         List<STPOfflineDataTable> stpOfflineDataTableList = stpOfflineDataDao.getAllSTPData();
-        for (STPOfflineDataTable stpOfflineDataTable: stpOfflineDataTableList) {
+        for (STPOfflineDataTable stpOfflineDataTable : stpOfflineDataTableList) {
             String clusterCode = stpOfflineDataTable.getClusterCode();
             String doctorCode = stpOfflineDataTable.getDoctorCode();
             String chemistCode = stpOfflineDataTable.getChemistCode();
@@ -451,7 +446,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 dayCaptions = jsonObject.optString("Plan_Name");
                 dayIDs = jsonObject.optString("Plan_SName");
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -499,7 +494,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 List<String> allDocCodes = allSelectedDocXCatMap.get(key);
                 if(allDocCodes == null) allDocCodes = new ArrayList<>();
                 Set<String> uniqueDocCodes = new HashSet<>(allDocCodes);
-                docDataModelList.add(new DocDataModel(docCategoryModel.getCategoryName(), docCategoryModel.getDocCount(), (docCategoryModel.getDocCount() * docCategoryModel.getVisitCount()), allDocCodes.size(), uniqueDocCodes.size()));
+                docDataModelList.add(new DocDataModel(docCategoryModel.getCategoryName(), docCategoryModel.getDocCount(), (docCategoryModel.getDocCount() * docCategoryModel.getVisitCount()), uniqueDocCodes.size(), allDocCodes.size()));
             }
         }
 
@@ -588,12 +583,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         }
                         if(!isDayFound) {
                             calendarModelList.add(index - 1, new CalendarModel((caption + index), dayID, false, null));
-                        }
-                        if(index == 1) {
+                        }else {
                             List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                            selectedDcrModelList.add(new SelectedDCRModel(R.drawable.doctor_img, 1, 10));
-                            selectedDcrModelList.add(new SelectedDCRModel(R.drawable.chemist_img, 2, 8));
-                            calendarModelList.get(0).setDcrModelList(selectedDcrModelList);
+                            selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                            calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
                         }
                     }
                     calendarMap.put("monday", calendarModelList);
@@ -617,6 +610,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         }
                         if(!isDayFound) {
                             calendarModelList.add(index - 1, new CalendarModel((caption + index), dayID, false, null));
+                        }else {
+                            List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                            selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                            calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
                         }
                     }
                     calendarMap.put("tuesday", calendarModelList);
@@ -640,6 +637,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         }
                         if(!isDayFound) {
                             calendarModelList.add(index - 1, new CalendarModel((caption + index), dayID, false, null));
+                        }else {
+                            List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                            selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                            calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
                         }
                     }
                     calendarMap.put("wednesday", calendarModelList);
@@ -663,13 +664,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         }
                         if(!isDayFound) {
                             calendarModelList.add(index - 1, new CalendarModel((caption + index), dayID, false, null));
-                        }
-                        if(index == 2) {
+                        }else {
                             List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                            selectedDcrModelList.add(new SelectedDCRModel(R.drawable.doctor_img, 1, 15));
-                            selectedDcrModelList.add(new SelectedDCRModel(R.drawable.chemist_img, 2, 12));
-                            selectedDcrModelList.add(new SelectedDCRModel(R.drawable.map_stockist_img, 3, 3));
-                            calendarModelList.get(1).setDcrModelList(selectedDcrModelList);
+                            selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                            calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
                         }
                     }
                     calendarMap.put("thursday", calendarModelList);
@@ -693,6 +691,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         }
                         if(!isDayFound) {
                             calendarModelList.add(index - 1, new CalendarModel((caption + index), dayID, false, null));
+                        }else {
+                            List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                            selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                            calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
                         }
                     }
                     calendarMap.put("friday", calendarModelList);
@@ -716,6 +718,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         }
                         if(!isDayFound) {
                             calendarModelList.add(index - 1, new CalendarModel((caption + index), dayID, false, null));
+                        }else {
+                            List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                            selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                            calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
                         }
                     }
                     calendarMap.put("saturday", calendarModelList);
@@ -739,6 +745,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         }
                         if(!isDayFound) {
                             calendarModelList.add(index - 1, new CalendarModel((caption + index), dayID, false, null));
+                        }else {
+                            List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                            selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                            calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
                         }
                     }
                     calendarMap.put("sunday", calendarModelList);
@@ -752,12 +762,70 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         activityStandardTourPlanBinding.rvCalendar.setAdapter(calendarAdapter);
     }
 
+    private List<SelectedDCRModel> getSelectedDCRDataList(String dayID, String caption) {
+        List<SelectedDCRModel> selectedDCRModels = new ArrayList<>();
+        boolean isDayAvailable = stpOfflineDataDao.isDayAvailable(dayID);
+        if(isDayAvailable) {
+            STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(dayID);
+            String[] docList = CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(",");
+            String[] chmList = CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(",");
+            docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
+            chmList = Arrays.stream(chmList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
+            selectedDCRModels.add(new SelectedDCRModel(R.drawable.doctor_img, 1, Arrays.toString(docList), docList.length));
+            selectedDCRModels.add(new SelectedDCRModel(R.drawable.chemist_img, 2, Arrays.toString(chmList), chmList.length));
+            List<DCRModel> selectedDocList = selectedDcrMap.get(Constants.DOCTOR);
+            if(selectedDocList != null && !selectedDocList.isEmpty()) {
+                for (int index = 0; index<selectedDocList.size(); index++) {
+                    DCRModel dcrModel = selectedDocList.get(index);
+                    if(stpOfflineDataTable.getDoctorCode().contains(dcrModel.getCode())) {
+                        String plannedForName = dcrModel.getPlannedForName().replace("-", "") + caption + ",";
+                        String plannedForCode = dcrModel.getPlannedForCode().replace("-", "") + dayID + ",";
+                        dcrModel.setPlannedForName(plannedForName);
+                        dcrModel.setPlannedForCode(plannedForCode);
+                        selectedDocList.set(index, dcrModel);
+                    }
+                }
+            }
+            selectedDcrMap.put(Constants.DOCTOR, selectedDocList);
+            List<DCRModel> selectedChmList = selectedDcrMap.get(Constants.CHEMIST);
+            if(selectedChmList != null && !selectedChmList.isEmpty()) {
+                for (int index = 0; index<selectedChmList.size(); index++) {
+                    DCRModel dcrModel = selectedChmList.get(index);
+                    if(stpOfflineDataTable.getChemistCode().contains(dcrModel.getCode())) {
+                        String plannedForName = dcrModel.getPlannedForName().replace("-", "") + caption + ",";
+                        String plannedForCode = dcrModel.getPlannedForCode().replace("-", "") + dayID + ",";
+                        dcrModel.setPlannedForName(plannedForName);
+                        dcrModel.setPlannedForCode(plannedForCode);
+                        selectedChmList.set(index, dcrModel);
+                    }
+                }
+            }
+            selectedDcrMap.put(Constants.CHEMIST, selectedChmList);
+        }
+        return selectedDCRModels;
+    }
+
+    ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult activityResult) {
+            try {
+                if(activityResult.getResultCode() == Activity.RESULT_OK) {
+                    getRequiredData();
+                    populateAdapters();
+                }else {
+                    Log.d("STP", "onActivityResult: nothing changed");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    });
+
     private final CalendarAdapter.CalendarDayClickListener calendarDayClickListener = calendarModel -> {
         Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
         intent.putExtra("DAY_ID", calendarModel.getId());
         intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
-//            intent.putExtra("", calendarModel.getDcrModelList());
-        startActivity(intent);
+        activityResultLauncher.launch(intent);
     };
 
 }

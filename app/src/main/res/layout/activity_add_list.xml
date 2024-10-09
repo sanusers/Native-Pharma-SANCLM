@@ -492,6 +492,7 @@
             android:paddingHorizontal="@dimen/_15sdp"
             android:text="@string/clear_all"
             android:textAllCaps="false"
+            android:visibility="gone"
             android:textColor="@color/dark_purple"
             android:textSize="@dimen/_6ssp"
             android:textStyle="bold" />

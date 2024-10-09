@@ -138,6 +138,12 @@
                                     android:textSize="@dimen/_6ssp" />
                             </LinearLayout>
 
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginVertical="@dimen/_3sdp"
+                                android:background="@color/dark_purple"/>
+
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rv_plan_for"
                                 android:layout_width="match_parent"
@@ -189,6 +195,12 @@
                                     android:textColor="@color/dark_purple"
                                     android:textSize="@dimen/_6ssp" />
                             </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginVertical="@dimen/_3sdp"
+                                android:background="@color/dark_purple"/>
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rv_doc_cat_x_visit"
@@ -277,6 +289,12 @@
                                     android:textSize="@dimen/_6ssp" />
 
                             </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginVertical="@dimen/_3sdp"
+                                android:background="@color/dark_purple"/>
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rv_doc_data"

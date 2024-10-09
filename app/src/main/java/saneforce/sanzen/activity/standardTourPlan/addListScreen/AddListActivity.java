@@ -69,7 +69,7 @@ public class AddListActivity extends AppCompatActivity {
     private HashMap<String, List<DCRModel>> selectedDCRMap;
     private List<Object> selectedDataList;
     private SelectedDCRAdapter selectedDCRAdapter;
-    private StringBuilder selectedClusterName ,selectedClusterCode, selectedDoctorName, selectedDoctorCode, selectedChemistName, selectedChemistCode;
+    private StringBuilder selectedClusterName, selectedClusterCode, selectedDoctorName, selectedDoctorCode, selectedChemistName, selectedChemistCode;
     private JSONObject jsonObject;
 
     @SuppressLint("MissingSuperCall")
@@ -89,7 +89,7 @@ public class AddListActivity extends AppCompatActivity {
         activityAddListBinding.backArrow.setOnClickListener(v -> super.onBackPressed());
 
         activityAddListBinding.btnCancel.setOnClickListener(v -> {
-            clearSelection();
+            clusterChangeClearDCRSelection();
             super.onBackPressed();
         });
 
@@ -162,7 +162,7 @@ public class AddListActivity extends AppCompatActivity {
         activityAddListBinding.btnClear.setOnClickListener(v -> {
             List<DCRModel> dcrModels = selectedDCRMap.get(selectedDCR);
             if(dcrModels != null && !dcrModels.isEmpty()) {
-                clearSelection();
+                clearSelection(selectedDCR);
             }else {
                 commonUtilsMethods.showToastMessage(this, "Nothing selected to clear");
             }
@@ -269,7 +269,7 @@ public class AddListActivity extends AppCompatActivity {
 //        }else {
         activityAddListBinding.tagTvHospital.setVisibility(View.GONE);
 //        }
-        
+
         selectedClusterName = new StringBuilder();
         selectedClusterCode = new StringBuilder();
         selectedDoctorName = new StringBuilder();
@@ -524,22 +524,38 @@ public class AddListActivity extends AppCompatActivity {
 
     };
 
-    private void clearSelection() {
-        List<DCRModel> dcrModels = selectedDCRMap.get(selectedDCR);
-        List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
+    private void clusterChangeClearDCRSelection() {
+        List<String> dcrTAGList = new ArrayList<>();
+        dcrTAGList.add(Constants.DOCTOR);
+        dcrTAGList.add(Constants.CHEMIST);
+//        dcrTAGList.add(Constants.STOCKIEST);
+//        dcrTAGList.add(Constants.UNLISTED_DOCTOR);
+//        dcrTAGList.add(Constants.CIP);
+//        dcrTAGList.add(Constants.HOSPITAL);
+        for (String dcr : dcrTAGList) {
+            clearSelection(dcr);
+        }
+    }
+
+    private void clearSelection(String dcr) {
+        List<DCRModel> dcrModels = selectedDCRMap.get(dcr);
+        List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(dcr);
         if(dcrModelList != null && !dcrModelList.isEmpty() && dcrModels != null && !dcrModels.isEmpty()) {
             for (DCRModel dcrModel : dcrModelList) {
                 for (DCRModel selectedDCRModel : dcrModels) {
                     if(selectedDCRModel.getCode().equals(dcrModel.getCode())) {
-                        dcrModel.setSelected(false);
-                        dcrModels.remove(selectedDCRModel);
+                        if(!strClusterID.isEmpty() && !strClusterID.contains(dcrModel.getTownCode())) {
+                            dcrModel.setSelected(false);
+                            dcrModels.remove(selectedDCRModel);
+                        }
                         break;
                     }
                 }
             }
-            selectedDCRMap.put(selectedDCR, new ArrayList<>());
-            populateDcrData();
+            selectedDCRMap.put(dcr, new ArrayList<>());
         }
+        populateDcrData();
+        populateSelectedDcr();
     }
 
     private void showMultiClusterAlter() {
@@ -612,7 +628,7 @@ public class AddListActivity extends AppCompatActivity {
                 strClusterID = "";
             }
             activityAddListBinding.selectedClusters.setText(strClusterName);
-            populateDcrData();
+            clusterChangeClearDCRSelection();
         });
 
         activityAddListBinding.stpAddListNavigation.cancelImg.setOnClickListener(view -> {
@@ -692,7 +708,7 @@ public class AddListActivity extends AppCompatActivity {
                 jsonObject.put("Chemist_Name", selectedChemistName.toString());
                 jsonObject.put("Plan_Name", dayCaption);
                 jsonObject.put("Plan_SName", dayID);
-                jsonObject.put("Plan_Code", "1");
+                jsonObject.put("Plan_Code", "" + dayID.charAt(dayID.length() - 1));
                 jsonObject.put("StpFlag", "3");
                 jsonObject.put("tableName", "save_stp");
                 jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
@@ -709,6 +725,7 @@ public class AddListActivity extends AppCompatActivity {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.stp_saved_locally));
             }
         }
+        setResult(RESULT_OK);
         finish();
     }
 

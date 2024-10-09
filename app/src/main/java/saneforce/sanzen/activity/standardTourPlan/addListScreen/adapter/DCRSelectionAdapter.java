@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -93,7 +94,7 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             dcrViewHolder.name.setText(dcrModel.getName());
             dcrViewHolder.speciality.setText(dcrModel.getSpeciality());
             dcrViewHolder.categoryXVisitFreq.setText(dcrModel.getCategory() + " (" + dcrModel.getVisitFrequency() + ")");
-            dcrViewHolder.plannedFor.setText(dcrModel.getPlannedForName());
+            dcrViewHolder.plannedFor.setText(CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForName()));
 
             dcrViewHolder.checkBox.setChecked(dcrModel.isSelected());
             dcrViewHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.green_2 : R.color.dark_purple)));
@@ -105,18 +106,24 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             dcrViewHolder.checkBox.setOnClickListener(buttonView -> {
                 Log.d("Adapter", "onBindViewHolder: position -> " + position + " binding position -> " + dcrViewHolder.getBindingAdapterPosition() + " absolute position -> " + dcrViewHolder.getAbsoluteAdapterPosition());
-                dcrModel.setSelected(!dcrModel.isSelected());
-                dcrViewHolder.checkBox.setChecked(dcrModel.isSelected());
-                dcrViewHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.green_2 : R.color.dark_purple)));
-                dcrViewHolder.name.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
-                dcrViewHolder.speciality.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
-                dcrViewHolder.categoryXVisitFreq.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
-                dcrViewHolder.plannedFor.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
-                notifyItemChanged(position);
-                if(dcrModel.isSelected()) {
-                    checkBoxClickListener.onSelected(dcrModel, selectedDCR);
-                }else {
-                    checkBoxClickListener.onDeSelected(dcrModel, selectedDCR);
+                String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
+                docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
+                if(docList.length < dcrModel.getVisitFrequency()) {
+                    dcrModel.setSelected(!dcrModel.isSelected());
+                    dcrViewHolder.checkBox.setChecked(dcrModel.isSelected());
+                    dcrViewHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.green_2 : R.color.dark_purple)));
+                    dcrViewHolder.name.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+                    dcrViewHolder.speciality.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+                    dcrViewHolder.categoryXVisitFreq.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+                    dcrViewHolder.plannedFor.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+                    notifyItemChanged(position);
+                    if(dcrModel.isSelected()) {
+                        checkBoxClickListener.onSelected(dcrModel, selectedDCR);
+                    }else {
+                        checkBoxClickListener.onDeSelected(dcrModel, selectedDCR);
+                    }
+                } else {
+                    commonUtilsMethods.showToastMessage(context, "Visit Frequency already met");
                 }
             });
 
