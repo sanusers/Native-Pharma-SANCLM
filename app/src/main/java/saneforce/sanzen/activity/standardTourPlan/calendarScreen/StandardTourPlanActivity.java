@@ -40,6 +40,7 @@ import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DocDataMo
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DoctorCategoryXVisitFrequencyModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.PlanForModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.SelectedDCRModel;
+import saneforce.sanzen.activity.standardTourPlan.unplannedVisitScreen.UnplannedVisitActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -92,6 +93,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         activityStandardTourPlanBinding.backArrow.setOnClickListener(v -> {
             super.onBackPressed();
         });
+
+        activityStandardTourPlanBinding.checkUnplannedVisits.setOnClickListener( view -> startActivity(new Intent(StandardTourPlanActivity.this, UnplannedVisitActivity.class)));
+
     }
 
     private void getRequiredData() {

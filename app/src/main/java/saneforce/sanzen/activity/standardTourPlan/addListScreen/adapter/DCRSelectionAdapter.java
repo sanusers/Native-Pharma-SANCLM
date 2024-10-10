@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.ClusterModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -88,13 +89,35 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     dcrViewHolder.speciality.setVisibility(View.GONE);
                     dcrViewHolder.categoryXVisitFreq.setVisibility(View.GONE);
                     break;
-
             }
 
             dcrViewHolder.name.setText(dcrModel.getName());
             dcrViewHolder.speciality.setText(dcrModel.getSpeciality());
             dcrViewHolder.categoryXVisitFreq.setText(dcrModel.getCategory() + " (" + dcrModel.getVisitFrequency() + ")");
-            dcrViewHolder.plannedFor.setText(CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForName()));
+
+            try {
+                if(context instanceof AddListActivity) {
+                    dcrViewHolder.checkBox.setVisibility(View.VISIBLE);
+                    dcrViewHolder.plannedFor.setText(CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForName()));
+                    dcrViewHolder.plannedFor.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForName())));
+                }else {
+                    dcrViewHolder.checkBox.setVisibility(View.GONE);
+
+                    ViewGroup.MarginLayoutParams dcrNameParams = (ViewGroup.MarginLayoutParams) dcrViewHolder.name.getLayoutParams();
+                    dcrNameParams.leftMargin = 20;
+                    dcrViewHolder.name.setLayoutParams(dcrNameParams);
+
+                    String[] codeList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
+                    codeList = Arrays.stream(codeList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
+                    if(dcrModel.getVisitFrequency() > 0) {
+                        dcrViewHolder.plannedFor.setText(String.valueOf(dcrModel.getVisitFrequency() - codeList.length));
+                    } else {
+                        dcrViewHolder.plannedFor.setText("0");
+                    }
+                }
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
 
             dcrViewHolder.checkBox.setChecked(dcrModel.isSelected());
             dcrViewHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.green_2 : R.color.dark_purple)));
@@ -108,7 +131,7 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 Log.d("Adapter", "onBindViewHolder: position -> " + position + " binding position -> " + dcrViewHolder.getBindingAdapterPosition() + " absolute position -> " + dcrViewHolder.getAbsoluteAdapterPosition());
                 String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
                 docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
-                if(docList.length < dcrModel.getVisitFrequency()) {
+                if(docList.length<dcrModel.getVisitFrequency()) {
                     dcrModel.setSelected(!dcrModel.isSelected());
                     dcrViewHolder.checkBox.setChecked(dcrModel.isSelected());
                     dcrViewHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.green_2 : R.color.dark_purple)));
@@ -122,13 +145,13 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }else {
                         checkBoxClickListener.onDeSelected(dcrModel, selectedDCR);
                     }
-                } else {
+                }else {
                     commonUtilsMethods.showToastMessage(context, "Visit Frequency already met");
+                    dcrViewHolder.checkBox.setChecked(false);
                 }
             });
 
             dcrViewHolder.name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, dcrModel.getName()));
-            dcrViewHolder.plannedFor.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, dcrModel.getPlannedForName()));
         }
     }
 

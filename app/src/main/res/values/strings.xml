@@ -498,4 +498,5 @@
     <string name="doctor_category">Doctor Category</string>
     <string name="please_select_cluster">Please Select Cluster!</string>
     <string name="stp_saved_locally">No Internet. Plan Saved Locally</string>
+    <string name="unplanned_visits">Unplanned Visits</string>
 </resources>
