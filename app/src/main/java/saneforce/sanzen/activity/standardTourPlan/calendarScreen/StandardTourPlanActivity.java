@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.activity.result.ActivityResult;
@@ -79,6 +80,16 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(selectedDcrMap != null && checkAllDocsSelected()) {
+            activityStandardTourPlanBinding.sendToApproval.setEnabled(true);
+        } else{
+            activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+        }
     }
 
     @Override
@@ -760,7 +771,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             }
         }
 
-        calendarAdapter = new CalendarAdapter(this, calendarMap, new ArrayList<>(calendarMap.keySet()), calendarDayClickListener);
+        calendarAdapter = new CalendarAdapter(this, calendarMap, new ArrayList<>(calendarMap.keySet()), calendarDayClickListener, calendarDayMenuClickListener);
         RecyclerView.LayoutManager calendarLayoutManager = new LinearLayoutManager(this);
         activityStandardTourPlanBinding.rvCalendar.setLayoutManager(calendarLayoutManager);
         activityStandardTourPlanBinding.rvCalendar.setAdapter(calendarAdapter);
@@ -825,11 +836,40 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         }
     });
 
-    private final CalendarAdapter.CalendarDayClickListener calendarDayClickListener = calendarModel -> {
+    private final CalendarAdapter.CalendarDayClickListener calendarDayClickListener = (calendarModel, mode) -> {
         Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
+        intent.putExtra("MODE", mode);
         intent.putExtra("DAY_ID", calendarModel.getId());
         intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
         activityResultLauncher.launch(intent);
     };
 
+    private final CalendarAdapter.CalendarDayMenuClickListener calendarDayMenuClickListener = (calendarModel, menuItem) -> {
+        if(menuItem.getItemId() == R.id.menuEdit) {
+            Log.d("STP Item", "Edit");
+            Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
+            intent.putExtra("MODE", "EDIT");
+            intent.putExtra("DAY_ID", calendarModel.getId());
+            intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
+            activityResultLauncher.launch(intent);
+        }else if(menuItem.getItemId() == R.id.menuDelete) {
+            Log.d("STP Item", "Delete");
+        }else if(menuItem.getItemId() == R.id.menuSwap) {
+            Log.d("STP Item", "Swap");
+        }
+    };
+
+    private boolean checkAllDocsSelected() {
+        List<DCRModel> selectedDocList = selectedDcrMap.get(Constants.DOCTOR);
+        if(selectedDocList != null && !selectedDocList.isEmpty()) {
+            for (DCRModel dcrModel : selectedDocList) {
+                String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
+                docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
+                if(docList.length<dcrModel.getVisitFrequency()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

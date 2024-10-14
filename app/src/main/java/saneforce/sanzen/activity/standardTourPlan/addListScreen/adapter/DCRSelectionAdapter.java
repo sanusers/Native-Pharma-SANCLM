@@ -109,13 +109,13 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                     String[] codeList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
                     codeList = Arrays.stream(codeList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
-                    if(dcrModel.getVisitFrequency() > 0) {
+                    if(dcrModel.getVisitFrequency()>0) {
                         dcrViewHolder.plannedFor.setText(String.valueOf(dcrModel.getVisitFrequency() - codeList.length));
-                    } else {
+                    }else {
                         dcrViewHolder.plannedFor.setText("0");
                     }
                 }
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -131,27 +131,33 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 Log.d("Adapter", "onBindViewHolder: position -> " + position + " binding position -> " + dcrViewHolder.getBindingAdapterPosition() + " absolute position -> " + dcrViewHolder.getAbsoluteAdapterPosition());
                 String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
                 docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
-                if(docList.length<dcrModel.getVisitFrequency()) {
-                    dcrModel.setSelected(!dcrModel.isSelected());
-                    dcrViewHolder.checkBox.setChecked(dcrModel.isSelected());
-                    dcrViewHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.green_2 : R.color.dark_purple)));
-                    dcrViewHolder.name.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
-                    dcrViewHolder.speciality.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
-                    dcrViewHolder.categoryXVisitFreq.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
-                    dcrViewHolder.plannedFor.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
-                    notifyItemChanged(position);
-                    if(dcrModel.isSelected()) {
-                        checkBoxClickListener.onSelected(dcrModel, selectedDCR);
-                    }else {
-                        checkBoxClickListener.onDeSelected(dcrModel, selectedDCR);
-                    }
-                }else {
+                if(docList.length<dcrModel.getVisitFrequency() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
+                    updateDcrModelAndViews(dcrModel, dcrViewHolder, position);
+                }else if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
                     commonUtilsMethods.showToastMessage(context, "Visit Frequency already met");
                     dcrViewHolder.checkBox.setChecked(false);
+                }else {
+                    updateDcrModelAndViews(dcrModel, dcrViewHolder, position);
                 }
             });
 
             dcrViewHolder.name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, dcrModel.getName()));
+        }
+    }
+
+    private void updateDcrModelAndViews(DCRModel dcrModel, DCRViewHolder dcrViewHolder, int position) {
+        dcrModel.setSelected(!dcrModel.isSelected());
+        dcrViewHolder.checkBox.setChecked(dcrModel.isSelected());
+        dcrViewHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.green_2 : R.color.dark_purple)));
+        dcrViewHolder.name.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+        dcrViewHolder.speciality.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+        dcrViewHolder.categoryXVisitFreq.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+        dcrViewHolder.plannedFor.setTextColor(ContextCompat.getColor(context, dcrModel.isSelected() ? R.color.dark_purple : R.color.bg_txt_color));
+        notifyItemChanged(position);
+        if(dcrModel.isSelected()) {
+            checkBoxClickListener.onSelected(dcrModel, selectedDCR);
+        }else {
+            checkBoxClickListener.onDeSelected(dcrModel, selectedDCR);
         }
     }
 

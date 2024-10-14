@@ -1,10 +1,14 @@
 package saneforce.sanzen.activity.standardTourPlan.calendarScreen.adapter;
 
 import android.content.Context;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,19 +28,30 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     private HashMap<String, List<CalendarModel>> calendarMap;
     private List<String> keySet;
     private CalendarDayClickListener calendarDayClickListener;
+    private CalendarDayMenuClickListener calendarDayMenuClickListener;
+
+    public enum Mode{
+        EDIT,
+        NEW
+    }
 
     public interface CalendarDayClickListener {
-        void onClick(CalendarModel calendarModel);
+        void onClick(CalendarModel calendarModel, Mode mode);
+    }
+
+    public interface CalendarDayMenuClickListener {
+        void onClick(CalendarModel calendarModel, MenuItem menuItem);
     }
 
     public CalendarAdapter() {
     }
 
-    public CalendarAdapter(Context context, HashMap<String, List<CalendarModel>> calendarMap, List<String> keySet, CalendarDayClickListener calendarDayClickListener) {
+    public CalendarAdapter(Context context, HashMap<String, List<CalendarModel>> calendarMap, List<String> keySet, CalendarDayClickListener calendarDayClickListener, CalendarDayMenuClickListener calendarDayMenuClickListener) {
         this.context = context;
         this.calendarMap = calendarMap;
         this.keySet = keySet;
         this.calendarDayClickListener = calendarDayClickListener;
+        this.calendarDayMenuClickListener = calendarDayMenuClickListener;
     }
 
     @NonNull
@@ -62,11 +77,24 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                             holder.dayTag1.setText(calendarModel.getCaption());
                             CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, dcrModelList);
                             holder.rv_dcr_data1.setAdapter(calendarDCRAdapter);
+                            holder.options1.setOnClickListener(v -> {
+                                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                                PopupMenu popupMenu = new PopupMenu(wrapper, v, Gravity.END);
+                                popupMenu.getMenuInflater().inflate(R.menu.stp_calendar_menu, popupMenu.getMenu());
+                                popupMenu.show();
+                                popupMenu.setOnMenuItemClickListener(menuItem -> {
+                                    calendarDayMenuClickListener.onClick(calendarModel, menuItem);
+                                    return true;
+                                });
+                            });
+//                            holder.ll_dcr_data1.setOnClickListener( v-> {
+//                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
+//                            });
                         }else {
                             holder.cl_add1.setVisibility(View.VISIBLE);
                             holder.ll_dcr_data1.setVisibility(View.INVISIBLE);
                             holder.cl_add1.setOnClickListener(v -> {
-                                calendarDayClickListener.onClick(calendarModel);
+                                calendarDayClickListener.onClick(calendarModel, Mode.NEW);
                             });
                             holder.dayCaption1.setText(calendarModel.getCaption());
                             if(calendarModel.isVisible()) {
@@ -87,11 +115,24 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                             holder.dayTag2.setText(calendarModel.getCaption());
                             CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, dcrModelList);
                             holder.rv_dcr_data2.setAdapter(calendarDCRAdapter);
+                            holder.options2.setOnClickListener(v -> {
+                                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                                PopupMenu popupMenu = new PopupMenu(wrapper, v, Gravity.END);
+                                popupMenu.getMenuInflater().inflate(R.menu.stp_calendar_menu, popupMenu.getMenu());
+                                popupMenu.show();
+                                popupMenu.setOnMenuItemClickListener(menuItem -> {
+                                    calendarDayMenuClickListener.onClick(calendarModel, menuItem);
+                                    return true;
+                                });
+                            });
+//                            holder.ll_dcr_data2.setOnClickListener( v-> {
+//                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
+//                            });
                         }else {
                             holder.cl_add2.setVisibility(View.VISIBLE);
                             holder.ll_dcr_data2.setVisibility(View.INVISIBLE);
                             holder.cl_add2.setOnClickListener(v -> {
-                                calendarDayClickListener.onClick(calendarModel);
+                                calendarDayClickListener.onClick(calendarModel, Mode.NEW);
                             });
                             holder.dayCaption2.setText(calendarModel.getCaption());
                             if(calendarModel.isVisible()) {
@@ -112,11 +153,24 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                             holder.dayTag3.setText(calendarModel.getCaption());
                             CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, dcrModelList);
                             holder.rv_dcr_data3.setAdapter(calendarDCRAdapter);
+                            holder.options3.setOnClickListener(v -> {
+                                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                                PopupMenu popupMenu = new PopupMenu(wrapper, v, Gravity.END);
+                                popupMenu.getMenuInflater().inflate(R.menu.stp_calendar_menu, popupMenu.getMenu());
+                                popupMenu.show();
+                                popupMenu.setOnMenuItemClickListener(menuItem -> {
+                                    calendarDayMenuClickListener.onClick(calendarModel, menuItem);
+                                    return true;
+                                });
+                            });
+//                            holder.ll_dcr_data3.setOnClickListener( v-> {
+//                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
+//                            });
                         }else {
                             holder.cl_add3.setVisibility(View.VISIBLE);
                             holder.ll_dcr_data3.setVisibility(View.INVISIBLE);
                             holder.cl_add3.setOnClickListener(v -> {
-                                calendarDayClickListener.onClick(calendarModel);
+                                calendarDayClickListener.onClick(calendarModel, Mode.NEW);
                             });
                             holder.dayCaption3.setText(calendarModel.getCaption());
                             if(calendarModel.isVisible()) {
@@ -137,11 +191,24 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                             holder.dayTag4.setText(calendarModel.getCaption());
                             CalendarDCRAdapter calendarDCRAdapter = new CalendarDCRAdapter(context, dcrModelList);
                             holder.rv_dcr_data4.setAdapter(calendarDCRAdapter);
+                            holder.options4.setOnClickListener(v -> {
+                                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                                PopupMenu popupMenu = new PopupMenu(wrapper, v, Gravity.END);
+                                popupMenu.getMenuInflater().inflate(R.menu.stp_calendar_menu, popupMenu.getMenu());
+                                popupMenu.show();
+                                popupMenu.setOnMenuItemClickListener(menuItem -> {
+                                    calendarDayMenuClickListener.onClick(calendarModel, menuItem);
+                                    return true;
+                                });
+                            });
+//                            holder.ll_dcr_data4.setOnClickListener( v-> {
+//                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
+//                            });
                         }else {
                             holder.cl_add4.setVisibility(View.VISIBLE);
                             holder.ll_dcr_data4.setVisibility(View.INVISIBLE);
                             holder.cl_add4.setOnClickListener(v -> {
-                                calendarDayClickListener.onClick(calendarModel);
+                                calendarDayClickListener.onClick(calendarModel, Mode.NEW);
                             });
                             holder.dayCaption4.setText(calendarModel.getCaption());
                             if(calendarModel.isVisible()) {
@@ -168,6 +235,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
 
         TextView dayCaption1, dayCaption2, dayCaption3, dayCaption4;
         TextView dayTag1, dayTag2, dayTag3, dayTag4;
+        TextView options1, options2, options3, options4;
         View cell1, cell2, cell3, cell4;
         ConstraintLayout cl_add1, cl_add2, cl_add3, cl_add4;
         LinearLayout ll_dcr_data1, ll_dcr_data2, ll_dcr_data3, ll_dcr_data4;
@@ -199,6 +267,10 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
             dayTag2 = cell2.findViewById(R.id.day_tag);
             dayTag3 = cell3.findViewById(R.id.day_tag);
             dayTag4 = cell4.findViewById(R.id.day_tag);
+            options1 = cell1.findViewById(R.id.options);
+            options2 = cell2.findViewById(R.id.options);
+            options3 = cell3.findViewById(R.id.options);
+            options4 = cell4.findViewById(R.id.options);
         }
     }
 }

@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,6 @@ import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.DCRSelec
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.SelectedDCRAdapter;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
-import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -59,7 +59,7 @@ public class AddListActivity extends AppCompatActivity {
     private ActivityAddListBinding activityAddListBinding;
     private final ArrayList<Multicheckclass_clust> selectedClusterList = new ArrayList<>();
     private final ArrayList<Multicheckclass_clust> multiple_cluster_list = new ArrayList<>();
-    private String hqCode, strClusterName, strClusterID, dayID, dayCaption, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, stpCap, selectedDCR, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed;
+    private String hqCode, strClusterName, strClusterID, mode, dayID, dayCaption, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, stpCap, selectedDCR, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed;
     private ApiInterface apiInterface;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
@@ -73,6 +73,7 @@ public class AddListActivity extends AppCompatActivity {
     private SelectedDCRAdapter selectedDCRAdapter;
     private StringBuilder selectedClusterName, selectedClusterCode, selectedDoctorName, selectedDoctorCode, selectedChemistName, selectedChemistCode;
     private JSONObject jsonObject;
+    private List<String> localDocCodeList, localChmCodeList;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -88,24 +89,36 @@ public class AddListActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         getRequiredData();
 
-        activityAddListBinding.backArrow.setOnClickListener(v -> super.onBackPressed());
+        activityAddListBinding.backArrow.setOnClickListener(v -> {
+            strClusterID = "";
+            strClusterName = "";
+            clusterChangeClearDCRSelection();
+            super.onBackPressed();
+        });
 
         activityAddListBinding.btnCancel.setOnClickListener(v -> {
+            strClusterID = "";
+            strClusterName = "";
             clusterChangeClearDCRSelection();
             super.onBackPressed();
         });
 
         activityAddListBinding.btnSave.setOnClickListener(v -> {
-            saveSelectedDCR();
+            if(selectedClusterList.isEmpty()) {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+            }else {
+                saveSelectedDCR();
+            }
         });
 
-        activityAddListBinding.selectedClusters.setOnClickListener(v -> showMultiClusterAlter());
+        activityAddListBinding.selectedClusters.setOnClickListener(v -> showMultiCluster());
 
         activityAddListBinding.tagTvDoctor.setOnClickListener(v -> {
             if(selectedClusterList.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
             }else {
                 selectedDCR = Constants.DOCTOR;
+                activityAddListBinding.etSearch.setText("");
                 updateDCRSelectionUI();
                 populateDcrData();
             }
@@ -116,6 +129,7 @@ public class AddListActivity extends AppCompatActivity {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
             }else {
                 selectedDCR = Constants.CHEMIST;
+                activityAddListBinding.etSearch.setText("");
                 updateDCRSelectionUI();
                 populateDcrData();
             }
@@ -126,6 +140,7 @@ public class AddListActivity extends AppCompatActivity {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
             }else {
                 selectedDCR = Constants.STOCKIEST;
+                activityAddListBinding.etSearch.setText("");
                 updateDCRSelectionUI();
                 populateDcrData();
             }
@@ -136,6 +151,7 @@ public class AddListActivity extends AppCompatActivity {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
             }else {
                 selectedDCR = Constants.UNLISTED_DOCTOR;
+                activityAddListBinding.etSearch.setText("");
                 updateDCRSelectionUI();
                 populateDcrData();
             }
@@ -146,6 +162,7 @@ public class AddListActivity extends AppCompatActivity {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
             }else {
                 selectedDCR = Constants.CIP;
+                activityAddListBinding.etSearch.setText("");
                 updateDCRSelectionUI();
                 populateDcrData();
             }
@@ -156,6 +173,7 @@ public class AddListActivity extends AppCompatActivity {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
             }else {
                 selectedDCR = Constants.HOSPITAL;
+                activityAddListBinding.etSearch.setText("");
                 updateDCRSelectionUI();
                 populateDcrData();
             }
@@ -237,13 +255,21 @@ public class AddListActivity extends AppCompatActivity {
         }else {
             activityAddListBinding.selectedClusters.setText("Select " + clusterCap);
         }
+        localDocCodeList = new ArrayList<>();
+        localChmCodeList = new ArrayList<>();
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null) {
+            mode = bundle.getString("MODE", "");
             dayID = bundle.getString("DAY_ID", "");
             dayCaption = bundle.getString("DAY_CAPTION", "");
 
-            activityAddListBinding.title.setText(getString(R.string.standard_tour_plan) + " (" + dayCaption + ")");
+            if(mode.equalsIgnoreCase("NEW")) {
+                activityAddListBinding.title.setText(getString(R.string.standard_tour_plan) + " (" + dayCaption + ")");
+            } else {
+                activityAddListBinding.title.setText( "Edit" + getString(R.string.standard_tour_plan) + " (" + dayCaption + ")");
+                getLocalData();
+            }
         }
 
         activityAddListBinding.tagTvDoctor.setText(drCap);
@@ -295,6 +321,22 @@ public class AddListActivity extends AppCompatActivity {
         selectedChemistCode = new StringBuilder();
     }
 
+    private void getLocalData() {
+        STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(dayID);
+        strClusterID = stpOfflineDataTable.getClusterCode();
+        strClusterName = stpOfflineDataTable.getClusterName();
+
+        activityAddListBinding.selectedClusters.setText(strClusterName);
+        updateClusterList();
+
+        String[] docList = CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(",");
+        docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
+        localDocCodeList.addAll(Arrays.asList(docList));
+        String[] chmList = CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(",");
+        chmList = Arrays.stream(chmList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
+        localChmCodeList.addAll(Arrays.asList(chmList));
+    }
+
     private void updateDCRSelectionUI() {
         activityAddListBinding.tagTvDoctor.setBackground(null);
         activityAddListBinding.tagTvChemist.setBackground(null);
@@ -342,6 +384,7 @@ public class AddListActivity extends AppCompatActivity {
         List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
         HashMap<String, List<DCRModel>> clusterXDcrMap = new HashMap<>();
         HashMap<String, String> clusterMap = new HashMap<>();
+        selectedDCRMap = new HashMap<>();
         dataList = new ArrayList<>();
 
         if(dcrModelList != null) {
@@ -356,6 +399,16 @@ public class AddListActivity extends AppCompatActivity {
                         dcrModels = new ArrayList<>();
                     }
                     dcrModels.add(dcrModel);
+                    if(mode.equalsIgnoreCase("EDIT")) {
+                        if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && localDocCodeList != null && localDocCodeList.contains(dcrModel.getCode())) {
+                            dcrModel.setSelected(true);
+                        } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && localChmCodeList != null && localChmCodeList.contains(dcrModel.getCode())) {
+                            dcrModel.setSelected(true);
+                        }
+                    }
+                    if(dcrModel.isSelected()) {
+                        checkBoxClickListener.onSelected(dcrModel, selectedDCR);
+                    }
                     clusterXDcrMap.put(dcrModel.getTownCode(), dcrModels);
                 }
             }
@@ -470,45 +523,47 @@ public class AddListActivity extends AppCompatActivity {
     }
 
     private void updateSelectedDCRList() {
-        HashMap<String, List<DCRModel>> selectedClusterXDcrMap = new HashMap<>();
-        HashMap<String, String> selectedDCRClusterMap = new HashMap<>();
-        selectedDataList = new ArrayList<>();
-        List<DCRModel> selectedDCRModels = selectedDCRMap.get(selectedDCR);
-        if(selectedDCRModels != null) {
-            if(!selectedDCRModels.isEmpty()) {
-                activityAddListBinding.btnClear.setVisibility(View.VISIBLE);
-                for (DCRModel dcrModel : selectedDCRModels) {
-                    if(!selectedDCRClusterMap.containsKey(dcrModel.getTownCode())) {
-                        selectedDCRClusterMap.put(dcrModel.getTownCode(), dcrModel.getTownName());
-                        selectedClusterXDcrMap.put(dcrModel.getTownCode(), new ArrayList<>());
+        if(selectedDCRAdapter != null) {
+            HashMap<String, List<DCRModel>> selectedClusterXDcrMap = new HashMap<>();
+            HashMap<String, String> selectedDCRClusterMap = new HashMap<>();
+            selectedDataList = new ArrayList<>();
+            List<DCRModel> selectedDCRModels = selectedDCRMap.get(selectedDCR);
+            if(selectedDCRModels != null) {
+                if(!selectedDCRModels.isEmpty()) {
+                    activityAddListBinding.btnClear.setVisibility(View.VISIBLE);
+                    for (DCRModel dcrModel : selectedDCRModels) {
+                        if(!selectedDCRClusterMap.containsKey(dcrModel.getTownCode())) {
+                            selectedDCRClusterMap.put(dcrModel.getTownCode(), dcrModel.getTownName());
+                            selectedClusterXDcrMap.put(dcrModel.getTownCode(), new ArrayList<>());
+                        }
+                        List<DCRModel> dcrModels = selectedClusterXDcrMap.get(dcrModel.getTownCode());
+                        if(dcrModels == null) {
+                            dcrModels = new ArrayList<>();
+                        }
+                        dcrModels.add(dcrModel);
+                        selectedClusterXDcrMap.put(dcrModel.getTownCode(), dcrModels);
                     }
-                    List<DCRModel> dcrModels = selectedClusterXDcrMap.get(dcrModel.getTownCode());
-                    if(dcrModels == null) {
-                        dcrModels = new ArrayList<>();
-                    }
-                    dcrModels.add(dcrModel);
-                    selectedClusterXDcrMap.put(dcrModel.getTownCode(), dcrModels);
+                }else {
+                    activityAddListBinding.btnClear.setVisibility(View.GONE);
                 }
-            }else {
-                activityAddListBinding.btnClear.setVisibility(View.GONE);
             }
-        }
 
-        List<Map.Entry<String, String>> clusterEntries = new ArrayList<>(selectedDCRClusterMap.entrySet());
-        Collections.sort(clusterEntries, Map.Entry.comparingByValue());
+            List<Map.Entry<String, String>> clusterEntries = new ArrayList<>(selectedDCRClusterMap.entrySet());
+            Collections.sort(clusterEntries, Map.Entry.comparingByValue());
 
-        for (Map.Entry<String, String> entry : clusterEntries) {
-            String clusterCode = entry.getKey();
-            selectedDataList.add(new ClusterModel(clusterCode, selectedDCRClusterMap.get(clusterCode)));
-            List<DCRModel> dcrModels = selectedClusterXDcrMap.get(clusterCode);
-            if(dcrModels != null && !dcrModels.isEmpty()) {
-                dcrModels.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+            for (Map.Entry<String, String> entry : clusterEntries) {
+                String clusterCode = entry.getKey();
+                selectedDataList.add(new ClusterModel(clusterCode, selectedDCRClusterMap.get(clusterCode)));
+                List<DCRModel> dcrModels = selectedClusterXDcrMap.get(clusterCode);
+                if(dcrModels != null && !dcrModels.isEmpty()) {
+                    dcrModels.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+                }
+                selectedDataList.addAll(dcrModels);
             }
-            selectedDataList.addAll(dcrModels);
-        }
 
-        activityAddListBinding.tvSelectedDcrCount.setText("(" + (selectedDataList.size() - selectedDCRClusterMap.size()) + ")");
-        selectedDCRAdapter.updateList(selectedDataList);
+            activityAddListBinding.tvSelectedDcrCount.setText("(" + (selectedDataList.size() - selectedDCRClusterMap.size()) + ")");
+            selectedDCRAdapter.updateList(selectedDataList);
+        }
     }
 
     private final SelectedDCRAdapter.DeleteClickListener deleteClickListener = (dcrModel, selectedDCR) -> {
@@ -561,7 +616,7 @@ public class AddListActivity extends AppCompatActivity {
             for (DCRModel dcrModel : dcrModelList) {
                 for (DCRModel selectedDCRModel : dcrModels) {
                     if(selectedDCRModel.getCode().equals(dcrModel.getCode())) {
-                        if(!strClusterID.isEmpty() && !strClusterID.contains(dcrModel.getTownCode())) {
+                        if(!strClusterID.contains(dcrModel.getTownCode())) {
                             dcrModel.setSelected(false);
                             dcrModels.remove(selectedDCRModel);
                         }
@@ -572,10 +627,9 @@ public class AddListActivity extends AppCompatActivity {
             selectedDCRMap.put(dcr, new ArrayList<>());
         }
         populateDcrData();
-        populateSelectedDcr();
     }
 
-    private void showMultiClusterAlter() {
+    private void showMultiCluster() {
         selectedClusterList.clear();
         activityAddListBinding.stpAddListNavigation.etSearch.setText("");
         activityAddListBinding.stpAddListNavigation.txtClDone.setVisibility(View.VISIBLE);
@@ -644,6 +698,7 @@ public class AddListActivity extends AppCompatActivity {
                 strClusterName = "";
                 strClusterID = "";
             }
+            selectedDCRMap = new HashMap<>();
             activityAddListBinding.selectedClusters.setText(strClusterName);
             clusterChangeClearDCRSelection();
         });
@@ -760,21 +815,24 @@ public class AddListActivity extends AppCompatActivity {
                         if(response.isSuccessful() && response.body() != null) {
                             JSONObject jsonObject1 = new JSONObject(response.body().toString());
                             if(jsonObject1.optString("success").equals("true")) {
+                                commonUtilsMethods.showToastMessage(AddListActivity.this, dayCaption + " " +getString(R.string.saved_successfully));
                                 stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, selectedClusterCode.toString(), selectedClusterName.toString(), selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "0"));
                             }else {
                                 stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, selectedClusterCode.toString(), selectedClusterName.toString(), selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "1"));
+                                commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.stp_saved_locally));
                             }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                         stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, selectedClusterCode.toString(), selectedClusterName.toString(), selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "1"));
+                        commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.stp_saved_locally));
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                     t.printStackTrace();
-                    commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.stp_saved_locally));
                     stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, selectedClusterCode.toString(), selectedClusterName.toString(), selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "1"));
                 }
             });
