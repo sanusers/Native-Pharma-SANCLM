@@ -267,7 +267,7 @@ public class AddListActivity extends AppCompatActivity {
             if(mode.equalsIgnoreCase("NEW")) {
                 activityAddListBinding.title.setText(getString(R.string.standard_tour_plan) + " (" + dayCaption + ")");
             } else {
-                activityAddListBinding.title.setText( "Edit" + getString(R.string.standard_tour_plan) + " (" + dayCaption + ")");
+                activityAddListBinding.title.setText( "Edit " + getString(R.string.standard_tour_plan) + " (" + dayCaption + ")");
                 getLocalData();
             }
         }
