@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.standardTourPlan.addListScreen.ClusterModel;
+import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.ClusterModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 

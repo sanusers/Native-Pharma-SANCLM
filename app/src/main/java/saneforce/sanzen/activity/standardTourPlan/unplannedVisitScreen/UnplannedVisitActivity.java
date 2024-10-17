@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.standardTourPlan.addListScreen.ClusterModel;
+import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.ClusterModel;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.DCRSelectionAdapter;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;

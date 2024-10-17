@@ -1,12 +1,15 @@
 package saneforce.sanzen.activity.standardTourPlan.calendarScreen.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -87,13 +90,17 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                                     return true;
                                 });
                             });
-//                            holder.ll_dcr_data1.setOnClickListener( v-> {
-//                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
-//                            });
+                            holder.ll_dcr_data1.setOnClickListener(v -> {
+                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
+                            });
+                            holder.fl_rv.setOnClickListener(v -> {
+                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
+                            });
                         }else {
                             holder.cl_add1.setVisibility(View.VISIBLE);
                             holder.ll_dcr_data1.setVisibility(View.INVISIBLE);
                             holder.cl_add1.setOnClickListener(v -> {
+                                Log.e("Calendar adapter", "onBindViewHolder: " + Mode.NEW );
                                 calendarDayClickListener.onClick(calendarModel, Mode.NEW);
                             });
                             holder.dayCaption1.setText(calendarModel.getCaption());
@@ -125,9 +132,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                                     return true;
                                 });
                             });
-//                            holder.ll_dcr_data2.setOnClickListener( v-> {
-//                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
-//                            });
+                            holder.ll_dcr_data2.setOnClickListener( v-> {
+                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
+                            });
+                            holder.rv_dcr_data2.setOnClickListener( v-> {
+                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
+                            });
                         }else {
                             holder.cl_add2.setVisibility(View.VISIBLE);
                             holder.ll_dcr_data2.setVisibility(View.INVISIBLE);
@@ -163,9 +173,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                                     return true;
                                 });
                             });
-//                            holder.ll_dcr_data3.setOnClickListener( v-> {
-//                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
-//                            });
+                            holder.ll_dcr_data3.setOnClickListener( v-> {
+                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
+                            });
+                            holder.rv_dcr_data3.setOnClickListener( v-> {
+                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
+                            });
                         }else {
                             holder.cl_add3.setVisibility(View.VISIBLE);
                             holder.ll_dcr_data3.setVisibility(View.INVISIBLE);
@@ -201,9 +214,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                                     return true;
                                 });
                             });
-//                            holder.ll_dcr_data4.setOnClickListener( v-> {
-//                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
-//                            });
+                            holder.ll_dcr_data4.setOnClickListener( v-> {
+                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
+                            });
+                            holder.rv_dcr_data4.setOnClickListener( v-> {
+                                calendarDayClickListener.onClick(calendarModel, Mode.EDIT);
+                            });
                         }else {
                             holder.cl_add4.setVisibility(View.VISIBLE);
                             holder.ll_dcr_data4.setVisibility(View.INVISIBLE);
@@ -240,6 +256,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         ConstraintLayout cl_add1, cl_add2, cl_add3, cl_add4;
         LinearLayout ll_dcr_data1, ll_dcr_data2, ll_dcr_data3, ll_dcr_data4;
         RecyclerView rv_dcr_data1, rv_dcr_data2, rv_dcr_data3, rv_dcr_data4;
+        FrameLayout fl_rv;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -271,6 +288,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
             options2 = cell2.findViewById(R.id.options);
             options3 = cell3.findViewById(R.id.options);
             options4 = cell4.findViewById(R.id.options);
+            fl_rv = cell1.findViewById(R.id.fl_rv);
         }
     }
 }

@@ -242,7 +242,6 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
                     jsonSave.put("ReqDt", dateTime);
                     stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), "0"));
-
                 }
             }
         } catch (Exception e) {
@@ -838,7 +837,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
     private final CalendarAdapter.CalendarDayClickListener calendarDayClickListener = (calendarModel, mode) -> {
         Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
-        intent.putExtra("MODE", mode);
+        intent.putExtra("MODE", String.valueOf(mode));
         intent.putExtra("DAY_ID", calendarModel.getId());
         intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
         activityResultLauncher.launch(intent);
@@ -848,7 +847,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         if(menuItem.getItemId() == R.id.menuEdit) {
             Log.d("STP Item", "Edit");
             Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
-            intent.putExtra("MODE", "EDIT");
+            intent.putExtra("MODE", String.valueOf(CalendarAdapter.Mode.EDIT));
             intent.putExtra("DAY_ID", calendarModel.getId());
             intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
             activityResultLauncher.launch(intent);

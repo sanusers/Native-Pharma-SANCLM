@@ -23,7 +23,8 @@ import java.util.Map;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
-import saneforce.sanzen.activity.standardTourPlan.addListScreen.ClusterModel;
+import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.ClusterModel;
+import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.NoDataModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -35,6 +36,7 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private List<Object> dcrModelList;
     private static final int VIEW_TYPE_CLUSTER = 0;
     private static final int VIEW_TYPE_DCR = 1;
+    private static final int VIEW_TYPE_NO_DATA = 2;
     private CheckBoxClickListener checkBoxClickListener;
     private String selectedDCR;
     private CommonUtilsMethods commonUtilsMethods;
@@ -67,12 +69,19 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }else if(viewType == VIEW_TYPE_DCR) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_stp_add_list_dcr, parent, false);
             return new DCRViewHolder(view);
+        }else if(viewType == VIEW_TYPE_NO_DATA) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_no_data, parent, false);
+            return new NoDataViewHolder(view);
         }else return null;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof ClusterViewHolder) {
+        if(holder instanceof NoDataViewHolder) {
+            NoDataViewHolder noDataViewHolder = (NoDataViewHolder) holder;
+            NoDataModel noDataModel = (NoDataModel) filtereddcrModelList.get(position);
+            noDataViewHolder.noData.setText("No " + noDataModel.getCaption() + " found");
+        }else if(holder instanceof ClusterViewHolder) {
             ClusterViewHolder clusterViewHolder = (ClusterViewHolder) holder;
             ClusterModel clusterModel = (ClusterModel) filtereddcrModelList.get(position);
             clusterViewHolder.name.setText(clusterModel.getClusterName());
@@ -172,6 +181,8 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return VIEW_TYPE_CLUSTER;
         }else if(filtereddcrModelList.get(position) instanceof DCRModel) {
             return VIEW_TYPE_DCR;
+        }else if(filtereddcrModelList.get(position) instanceof NoDataModel) {
+            return VIEW_TYPE_NO_DATA;
         }else {
             Log.e("DCR Adapter STP", "getItemViewType: invalid view type");
             return super.getItemViewType(position);
@@ -266,6 +277,16 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public ClusterViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.tv_cluster_name);
+        }
+    }
+
+    public static class NoDataViewHolder extends RecyclerView.ViewHolder {
+
+        TextView noData;
+
+        public NoDataViewHolder(@NonNull View itemView) {
+            super(itemView);
+            noData = itemView.findViewById(R.id.tv_no_data);
         }
     }
 

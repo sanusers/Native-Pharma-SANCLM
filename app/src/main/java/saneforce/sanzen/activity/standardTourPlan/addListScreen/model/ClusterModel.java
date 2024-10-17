@@ -1,4 +1,4 @@
-package saneforce.sanzen.activity.standardTourPlan.addListScreen;
+package saneforce.sanzen.activity.standardTourPlan.addListScreen.model;
 
 import androidx.annotation.NonNull;
 
