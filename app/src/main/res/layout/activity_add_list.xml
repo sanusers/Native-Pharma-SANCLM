@@ -487,13 +487,14 @@
             android:layout_alignParentStart="true"
             android:layout_marginHorizontal="@dimen/_5sdp"
             android:layout_marginVertical="@dimen/_5sdp"
-            android:background="@drawable/bg_border_with_pink"
+            android:background="@drawable/bg_button_pink"
+            android:foregroundTint="@color/pink"
             android:fontFamily="@font/satoshi_bold"
             android:paddingHorizontal="@dimen/_15sdp"
             android:text="@string/clear_all"
             android:textAllCaps="false"
             android:visibility="gone"
-            android:textColor="@color/dark_purple"
+            android:textColor="@color/white"
             android:textSize="@dimen/_6ssp"
             android:textStyle="bold" />
 
