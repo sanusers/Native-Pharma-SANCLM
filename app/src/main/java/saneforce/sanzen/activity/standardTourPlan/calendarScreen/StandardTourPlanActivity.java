@@ -68,8 +68,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     private List<String> allSelectedDocList;
     private Set<String> totalCategoryCodeList, totalClusterCodeList, totalDocCodeList, totalChmCodeList, totalStkCodeList, totalUnDrCodeList, totalCipCodeList, totalHosCodeList;
     private Set<String> selectedCategoryCodeList, selectedClusterCodeList, selectedDocCodeList, selectedChmCodeList, selectedStkCodeList, selectedUnDrCodeList, selectedCipCodeList, selectedHosCodeList;
-    private String hqCode, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, stpCap, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed, dayCaptions, dayIDs;
+    private String hqCode, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed, dayCaptions, dayIDs;
     private RoomDB roomDB;
+    public static String stpCap;
     private MasterDataDao masterDataDao;
     private STPOfflineDataDao stpOfflineDataDao;
     private GPSTrack gpsTrack;
@@ -459,6 +460,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 JSONObject jsonObject = jsonArray.optJSONObject(0);
                 dayCaptions = jsonObject.optString("Plan_Name");
                 dayIDs = jsonObject.optString("Plan_SName");
+                stpCap = jsonObject.optString("STP_Name");
+                if(!stpCap.isEmpty()) {
+                    activityStandardTourPlanBinding.title.setText(stpCap);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

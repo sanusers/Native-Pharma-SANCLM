@@ -251,7 +251,12 @@ public class AddListActivity extends AppCompatActivity {
         unDrNeed = SharedPref.getUnlNeed(this);
         cipNeed = SharedPref.getCipNeed(this);
         hosNeed = SharedPref.getHospNeed(this);
-//        stpCap = SharedPref.getSTPCap(this);
+        stpCap = StandardTourPlanActivity.stpCap;
+
+        if(stpCap == null || stpCap.isEmpty()) {
+            stpCap = getString(R.string.standard_tour_plan);
+        }
+
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         stpOfflineDataDao = roomDB.stpOfflineDataDao();
@@ -277,9 +282,11 @@ public class AddListActivity extends AppCompatActivity {
             dayCaption = bundle.getString("DAY_CAPTION", "");
 
             if(mode.equalsIgnoreCase(String.valueOf(CalendarAdapter.Mode.NEW))) {
-                activityAddListBinding.title.setText(getString(R.string.standard_tour_plan) + " (" + dayCaption + ")");
+                activityAddListBinding.title.setText(stpCap + " (" + dayCaption + ")");
+                activityAddListBinding.btnSave.setText(getString(R.string.save));
             }else {
-                activityAddListBinding.title.setText("Edit " + getString(R.string.standard_tour_plan) + " (" + dayCaption + ")");
+                activityAddListBinding.title.setText("Edit " + stpCap + " (" + dayCaption + ")");
+                activityAddListBinding.btnSave.setText(getString(R.string.update));
                 getLocalData();
             }
         }
@@ -809,8 +816,8 @@ public class AddListActivity extends AppCompatActivity {
                 jsonObject.put("sfcode", SharedPref.getSfCode(this));
                 jsonObject.put("DivCode", SharedPref.getDivisionCode(this));
                 jsonObject.put("Rsf", SharedPref.getHqCode(this));
-                jsonObject.put("town_code", selectedClusterCode.toString());
-                jsonObject.put("town_name", selectedClusterName.toString());
+                jsonObject.put("town_code", strClusterID);
+                jsonObject.put("town_name", strClusterName);
                 jsonObject.put("Doctor_Id", selectedDoctorCode.toString());
                 jsonObject.put("Doctor_Name", selectedDoctorName.toString());
                 jsonObject.put("Chemist_Id", selectedChemistCode.toString());
