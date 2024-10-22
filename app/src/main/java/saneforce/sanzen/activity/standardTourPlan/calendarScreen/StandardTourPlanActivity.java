@@ -1,20 +1,24 @@
 package saneforce.sanzen.activity.standardTourPlan.calendarScreen;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,8 +30,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.adapter.CalendarAdapter;
@@ -45,12 +53,16 @@ import saneforce.sanzen.activity.standardTourPlan.unplannedVisitScreen.Unplanned
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityStandardTourPlanBinding;
+import saneforce.sanzen.network.ApiInterface;
+import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class StandardTourPlanActivity extends AppCompatActivity {
 
@@ -76,6 +88,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     private GPSTrack gpsTrack;
     private CommonUtilsMethods commonUtilsMethods;
     public static HashMap<String, List<DCRModel>> selectedDcrMap;
+    private ApiInterface apiInterface;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -86,11 +99,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(selectedDcrMap != null && checkAllDocsSelected()) {
-            activityStandardTourPlanBinding.sendToApproval.setEnabled(true);
-        } else{
-            activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
-        }
+        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected());
     }
 
     @Override
@@ -106,8 +115,20 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             super.onBackPressed();
         });
 
-        activityStandardTourPlanBinding.checkUnplannedVisits.setOnClickListener( view -> startActivity(new Intent(StandardTourPlanActivity.this, UnplannedVisitActivity.class)));
+        activityStandardTourPlanBinding.checkUnplannedVisits.setOnClickListener(view -> startActivity(new Intent(StandardTourPlanActivity.this, UnplannedVisitActivity.class)));
 
+        activityStandardTourPlanBinding.sendToApproval.setOnClickListener(v -> {
+            if(UtilityClass.isNetworkAvailable(this)) {
+                if(!stpOfflineDataDao.isNonSyncAvailable()) {
+                    sendToApproval();
+                }else {
+                    activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                    saveAllSTPData();
+                }
+            }else {
+                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
+            }
+        });
     }
 
     private void getRequiredData() {
@@ -875,5 +896,116 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             }
         }
         return true;
+    }
+
+    private void saveAllSTPData() {
+        if(UtilityClass.isNetworkAvailable(this)) {
+            try {
+                List<STPOfflineDataTable> stpOfflineDataTableList = stpOfflineDataDao.getAllNonSyncSTPData();
+                if(stpOfflineDataTableList != null && !stpOfflineDataTableList.isEmpty()) {
+                    activityStandardTourPlanBinding.flProgress.setVisibility(View.VISIBLE);
+                    final int[] apiCount = {0};
+                    for (STPOfflineDataTable stpOfflineDataTable : stpOfflineDataTableList) {
+                        String dayID = stpOfflineDataTable.getDayID(), dayCaption = stpOfflineDataTable.getDayCaption(), strClusterID = stpOfflineDataTable.getClusterCode(), strClusterName = stpOfflineDataTable.getClusterName(), docCodes = stpOfflineDataTable.getDoctorCode(), docNames = stpOfflineDataTable.getDoctorName(), chmCodes = stpOfflineDataTable.getChemistCode(), chmNames = stpOfflineDataTable.getChemistName(), jsonObject = stpOfflineDataTable.getStpData();
+                        apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
+                        Map<String, String> mapString = new HashMap<>();
+                        mapString.put("axn", "save/stp");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject);
+                        call.enqueue(new Callback<JsonElement>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                Log.v("stp save", "--res--" + response.body());
+                                apiCount[0]++;
+                                try {
+                                    if(response.isSuccessful() && response.body() != null) {
+                                        JSONObject jsonObject1 = new JSONObject(response.body().toString());
+                                        if(jsonObject1.optString("success").equals("true")) {
+                                            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, dayCaption + " " + getString(R.string.saved_successfully));
+                                            stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, jsonObject, "0"));
+                                        }else {
+                                            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally));
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally));
+                                }
+                                if(apiCount[0] == stpOfflineDataTableList.size()) {
+                                    activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
+                                    activityStandardTourPlanBinding.sendToApproval.setEnabled(true);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                t.printStackTrace();
+                                apiCount[0]++;
+                                if(apiCount[0] == stpOfflineDataTableList.size()) {
+                                    activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
+                                    activityStandardTourPlanBinding.sendToApproval.setEnabled(true);
+                                }
+                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally));
+                            }
+                        });
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void sendToApproval() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+            jsonObject.put("sfcode", SharedPref.getSfCode(this));
+            jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+            jsonObject.put("Rsf", SharedPref.getHqCode(this));
+            jsonObject.put("StpFlag", "2");
+            jsonObject.put("tableName", "submit_stp");
+            jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
+            Log.v("json_save_stp", jsonObject.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            if(UtilityClass.isNetworkAvailable(this)) {
+                apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
+                Map<String, String> mapString = new HashMap<>();
+                mapString.put("axn", "save/stp");
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        Log.v("stp save", "--res--" + response.body());
+                        try {
+                            if(response.isSuccessful() && response.body() != null) {
+                                JSONObject jsonObject1 = new JSONObject(response.body().toString());
+                                if(jsonObject1.optString("success", "false").equals("true")) {
+                                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.send_approved_successfully));
+                                }else {
+                                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        t.printStackTrace();
+                        commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
+                    }
+                });
+            }else {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
+        }
     }
 }

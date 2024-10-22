@@ -833,7 +833,7 @@ public class AddListActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, selectedClusterCode.toString(), selectedClusterName.toString(), selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "1"));
+            stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "1"));
 
             if(UtilityClass.isNetworkAvailable(this)) {
                 APICallSaveSTP();
@@ -860,15 +860,13 @@ public class AddListActivity extends AppCompatActivity {
                             JSONObject jsonObject1 = new JSONObject(response.body().toString());
                             if(jsonObject1.optString("success").equals("true")) {
                                 commonUtilsMethods.showToastMessage(AddListActivity.this, dayCaption + " " + getString(R.string.saved_successfully));
-                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, selectedClusterCode.toString(), selectedClusterName.toString(), selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "0"));
+                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "0"));
                             }else {
-                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, selectedClusterCode.toString(), selectedClusterName.toString(), selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "1"));
                                 commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.stp_saved_locally));
                             }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, selectedClusterCode.toString(), selectedClusterName.toString(), selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "1"));
                         commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.stp_saved_locally));
                     }
                 }
@@ -877,7 +875,6 @@ public class AddListActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                     t.printStackTrace();
                     commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.stp_saved_locally));
-                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, selectedClusterCode.toString(), selectedClusterName.toString(), selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "1"));
                 }
             });
         }else {
