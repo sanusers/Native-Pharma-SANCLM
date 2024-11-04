@@ -42,6 +42,9 @@ public interface STPOfflineDataDao {
     @Query("SELECT COUNT(1) > 0 FROM `STP_OFFLINE_TABLE` WHERE `DAY_ID` = :dayID")
     boolean isDayAvailable(String dayID);
 
+    @Query("SELECT COUNT(*) FROM `STP_OFFLINE_TABLE`")
+    int getTotalFilledCount();
+
     @Query("SELECT COUNT(1) > 0 FROM `STP_OFFLINE_TABLE` WHERE `SYNC_STATUS` = '1'")
     boolean isNonSyncAvailable();
 

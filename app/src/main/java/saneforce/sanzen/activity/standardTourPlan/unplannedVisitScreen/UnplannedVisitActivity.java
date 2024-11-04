@@ -2,6 +2,8 @@ package saneforce.sanzen.activity.standardTourPlan.unplannedVisitScreen;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.ClusterModel;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.DCRSelectionAdapter;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
@@ -23,6 +26,7 @@ import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityUnplannedVisitBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -32,11 +36,10 @@ import saneforce.sanzen.storage.SharedPref;
 public class UnplannedVisitActivity extends AppCompatActivity {
 
     private ActivityUnplannedVisitBinding activityUnplannedVisitBinding;
-    private String hqCode, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, stpCap, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed, selectedDCR;
+    private String hqCode, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed, selectedDCR;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private STPOfflineDataDao stpOfflineDataDao;
-    private GPSTrack gpsTrack;
     private CommonUtilsMethods commonUtilsMethods;
     private List<Object> dataList;
     private DCRSelectionAdapter dcrSelectionAdapter;
@@ -93,6 +96,25 @@ public class UnplannedVisitActivity extends AppCompatActivity {
             populateDcrData();
         });
 
+        activityUnplannedVisitBinding.etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String searchString = s.toString().trim();
+                if(searchString.isEmpty()) UtilityClass.hideKeyboard(UnplannedVisitActivity.this);
+                dcrSelectionAdapter.getFilter().filter(searchString);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         populateDcrData();
 
     }
@@ -105,18 +127,15 @@ public class UnplannedVisitActivity extends AppCompatActivity {
         unDrCap = SharedPref.getUNLcap(this);
         cipCap = SharedPref.getCipCaption(this);
         hosCap = SharedPref.getHospCaption(this);
-        clusterCap = SharedPref.getClusterCap(this);
         drNeed = SharedPref.getDrNeed(this);
         chmNeed = SharedPref.getChmNeed(this);
         stkNeed = SharedPref.getStkNeed(this);
         unDrNeed = SharedPref.getUnlNeed(this);
         cipNeed = SharedPref.getCipNeed(this);
         hosNeed = SharedPref.getHospNeed(this);
-//        stpCap = SharedPref.getSTPCap(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         stpOfflineDataDao = roomDB.stpOfflineDataDao();
-        gpsTrack = new GPSTrack(this);
         commonUtilsMethods = new CommonUtilsMethods(this);
         commonUtilsMethods.setUpLanguage(this);
 
@@ -245,7 +264,7 @@ public class UnplannedVisitActivity extends AppCompatActivity {
         }else {
             activityUnplannedVisitBinding.noData.setVisibility(View.GONE);
             activityUnplannedVisitBinding.llDcrSelection.setVisibility(View.VISIBLE);
-            dcrSelectionAdapter = new DCRSelectionAdapter(this, dataList, null, selectedDCR);
+            dcrSelectionAdapter = new DCRSelectionAdapter(this, dataList, selectedDCR);
             RecyclerView.LayoutManager dcrSelectionLayoutManager = new LinearLayoutManager(this);
             activityUnplannedVisitBinding.rvDcrSelection.setLayoutManager(dcrSelectionLayoutManager);
             activityUnplannedVisitBinding.rvDcrSelection.setAdapter(dcrSelectionAdapter);

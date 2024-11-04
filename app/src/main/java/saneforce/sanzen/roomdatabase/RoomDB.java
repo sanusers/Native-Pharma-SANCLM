@@ -2,9 +2,12 @@ package saneforce.sanzen.roomdatabase;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataTable;
@@ -43,12 +46,19 @@ public abstract class RoomDB extends RoomDatabase {
         if (database == null) {
             database = Room.databaseBuilder(context.getApplicationContext(), RoomDB.class, DATABASE_NAME)
                     .allowMainThreadQueries()
+                    .addMigrations(MIGRATION_1_2)
                     .fallbackToDestructiveMigration()
                     .build();
         }
         return database;
     }
 
+    public static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS `stp_offline_table` (`day_id` TEXT NOT NULL, `day_caption` TEXT, `cluste_code` TEXT, `cluster_name` TEXT, `doctor_code` TEXT, `doctor_name` TEXT, `chemist_code` TEXT, `chemist_name` TEXT, `stp_data` TEXT, `sync_status` TEXT, PRIMARY KEY(`day_id`))");
+        }
+    };
 
     public abstract SlidesDao slidesDao();
 

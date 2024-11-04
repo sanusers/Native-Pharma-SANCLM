@@ -110,7 +110,7 @@ public class AddListActivity extends AppCompatActivity {
         });
 
         activityAddListBinding.btnSave.setOnClickListener(v -> {
-            if(selectedClusterList.isEmpty()) {
+            if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
             }else {
                 saveSelectedDCR();
@@ -120,7 +120,7 @@ public class AddListActivity extends AppCompatActivity {
         activityAddListBinding.selectedClusters.setOnClickListener(v -> showMultiCluster());
 
         activityAddListBinding.tagTvDoctor.setOnClickListener(v -> {
-            if(selectedClusterList.isEmpty()) {
+            if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
             }else {
                 selectedDCR = Constants.DOCTOR;
@@ -132,7 +132,7 @@ public class AddListActivity extends AppCompatActivity {
         });
 
         activityAddListBinding.tagTvChemist.setOnClickListener(v -> {
-            if(selectedClusterList.isEmpty()) {
+            if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
             }else {
                 selectedDCR = Constants.CHEMIST;
@@ -144,7 +144,7 @@ public class AddListActivity extends AppCompatActivity {
         });
 
         activityAddListBinding.tagTvStockist.setOnClickListener(v -> {
-            if(selectedClusterList.isEmpty()) {
+            if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
             }else {
                 selectedDCR = Constants.STOCKIEST;
@@ -156,7 +156,7 @@ public class AddListActivity extends AppCompatActivity {
         });
 
         activityAddListBinding.tagTvUndr.setOnClickListener(v -> {
-            if(selectedClusterList.isEmpty()) {
+            if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
             }else {
                 selectedDCR = Constants.UNLISTED_DOCTOR;
@@ -168,7 +168,7 @@ public class AddListActivity extends AppCompatActivity {
         });
 
         activityAddListBinding.tagTvCip.setOnClickListener(v -> {
-            if(selectedClusterList.isEmpty()) {
+            if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
             }else {
                 selectedDCR = cipCap;
@@ -179,7 +179,7 @@ public class AddListActivity extends AppCompatActivity {
         });
 
         activityAddListBinding.tagTvHospital.setOnClickListener(v -> {
-            if(selectedClusterList.isEmpty()) {
+            if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
             }else {
                 selectedDCR = Constants.HOSPITAL;
@@ -404,7 +404,7 @@ public class AddListActivity extends AppCompatActivity {
         List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
         HashMap<String, List<DCRModel>> clusterXDcrMap = new HashMap<>();
         HashMap<String, String> clusterMap = new HashMap<>();
-        selectedDCRMap = new HashMap<>();
+        selectedDCRMap.put(selectedDCR, new ArrayList<>());
         dataList = new ArrayList<>();
 
         String[] clusterCodes = CommonUtilsMethods.removeLastComma(strClusterID).split(",");
@@ -479,7 +479,7 @@ public class AddListActivity extends AppCompatActivity {
             activityAddListBinding.noData.setVisibility(View.GONE);
             activityAddListBinding.llDcrSelection.setVisibility(View.VISIBLE);
             activityAddListBinding.cvRightPane.setVisibility(View.VISIBLE);
-            dcrSelectionAdapter = new DCRSelectionAdapter(this, dataList, checkBoxClickListener, selectedDCR);
+            dcrSelectionAdapter = new DCRSelectionAdapter(this, dataList, checkBoxClickListener, selectedDCR, mode, dayCaption);
             RecyclerView.LayoutManager dcrSelectionLayoutManager = new LinearLayoutManager(this);
             activityAddListBinding.rvDcrSelection.setLayoutManager(dcrSelectionLayoutManager);
             activityAddListBinding.rvDcrSelection.setAdapter(dcrSelectionAdapter);
@@ -658,6 +658,8 @@ public class AddListActivity extends AppCompatActivity {
                     if(selectedDCRModel.getCode().equals(dcrModel.getCode())) {
                         if(!clusterChange || !strClusterID.contains(dcrModel.getTownCode())) {
                             dcrModel.setSelected(false);
+                            String plannedForName = dcrModel.getPlannedForName().replaceAll(dayCaption + ",", "");
+//                            dcrModel.setPlannedForName(plannedForName.isEmpty()? "-" : plannedForName);
                             dcrModels.remove(selectedDCRModel);
                         }
                         break;
@@ -785,7 +787,7 @@ public class AddListActivity extends AppCompatActivity {
                     for (int index = 0; index<dcrModelList.size(); index++) {
                         DCRModel dcrModel = dcrModelList.get(index);
                         for (DCRModel selectedDcrModel : selectedDCRModels) {
-                            if(dcrModel.getCode().equals(selectedDcrModel.getCode()) && selectedDcrModel.isSelected()) {
+                            if(dcrModel.getCode().equals(selectedDcrModel.getCode()) && selectedDcrModel.isSelected() && !dcrModel.getPlannedForCode().contains(dayID)) {
                                 if(!selectedClusterCode.toString().contains(selectedDcrModel.getTownCode())) {
                                     selectedClusterCode.append(selectedDcrModel.getTownCode()).append(",");
                                     selectedClusterName.append(selectedDcrModel.getTownName()).append(",");
@@ -806,6 +808,8 @@ public class AddListActivity extends AppCompatActivity {
                                 dcrModel.setPlannedForName(dcrModel.getPlannedForName() + dayCaption + ",");
                                 dcrModel.setPlannedForCode(dcrModel.getPlannedForCode() + dayID + ",");
                                 break;
+                            }else {
+                                Log.d("data", "saveSelectedDCR: " + selectedDcrModel.getPlannedForName());
                             }
                         }
                     }

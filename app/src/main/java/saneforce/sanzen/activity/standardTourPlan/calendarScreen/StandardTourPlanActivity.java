@@ -32,6 +32,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -80,7 +82,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     private List<String> allSelectedDocList;
     private Set<String> totalCategoryCodeList, totalClusterCodeList, totalDocCodeList, totalChmCodeList, totalStkCodeList, totalUnDrCodeList, totalCipCodeList, totalHosCodeList;
     private Set<String> selectedCategoryCodeList, selectedClusterCodeList, selectedDocCodeList, selectedChmCodeList, selectedStkCodeList, selectedUnDrCodeList, selectedCipCodeList, selectedHosCodeList;
-    private String hqCode, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed, dayCaptions, dayIDs;
+    private String hqCode, drCap, chmCap, stkCap, unDrCap, cipCap, hosCap, clusterCap, drNeed, chmNeed, stkNeed, unDrNeed, cipNeed, hosNeed, dayCaptions, dayIDs, stpFlag, rejectReason;
     private RoomDB roomDB;
     public static String stpCap;
     private MasterDataDao masterDataDao;
@@ -89,6 +91,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     private CommonUtilsMethods commonUtilsMethods;
     public static HashMap<String, List<DCRModel>> selectedDcrMap;
     private ApiInterface apiInterface;
+    private int totalDaysCount = 0;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -99,7 +102,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected());
+        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() == totalDaysCount));
     }
 
     @Override
@@ -169,12 +172,12 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void getData() {
+        getSTPSetup();
         saveSTPDataToLocal();
         getLocalSTPData();
         getClusterData();
         getCategoryData();
         getDcrData();
-        getSTPSetup();
     }
 
     private void populateAdapters() {
@@ -192,12 +195,12 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             if(jsonArray.length()>0) {
                 for (int i = 0; i<jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String code = jsonObject.getString("Code");
+                    String code = jsonObject.optString("Code");
                     if(!code.isEmpty() && !totalCategoryCodeList.contains(code)) {
                         totalCategoryCodeList.add(code);
-                        String name = (jsonObject.getString("Name"));
-                        String docCatName = (jsonObject.getString("Doc_Cat_Name"));
-                        String visitFrequency = (jsonObject.getString("No_of_visit"));
+                        String name = (jsonObject.optString("Name"));
+                        String docCatName = (jsonObject.optString("Doc_Cat_Name"));
+                        String visitFrequency = (jsonObject.optString("No_of_visit"));
                         docCategoryModelMap.put(code, new DocCategoryModel(Integer.parseInt(code), name, docCatName, Integer.parseInt(visitFrequency), 0));
                     }
                 }
@@ -214,10 +217,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             if(jsonculst.length()>0) {
                 for (int i = 0; i<jsonculst.length(); i++) {
                     JSONObject jsonObject = jsonculst.getJSONObject(i);
-                    String clusterCode = jsonObject.getString("Code");
+                    String clusterCode = jsonObject.optString("Code");
                     if(!clusterCode.isEmpty() && !totalClusterCodeList.contains(clusterCode)) {
                         totalClusterCodeList.add(clusterCode);
-                        String custom_name = (jsonObject.getString("Name"));
+                        String custom_name = (jsonObject.optString("Name"));
                     }
                 }
             }
@@ -232,18 +235,29 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             if(jsonArray.length()>0) {
                 for (int i = 0; i<jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String dayID = jsonObject.getString("Day_Plan_ShortName");
-                    String dayCaption = jsonObject.getString("Day_Plan_Name");
-                    String dayPlanCode = jsonObject.getString("Day_Plan_Code");
-                    String clusterCode = jsonObject.getString("Patch_Code");
-                    String clusterName = jsonObject.getString("Patch_Name");
-                    String doctorCode = jsonObject.getString("Dr_Code");
-                    String doctorName = jsonObject.getString("Dr_Name");
-                    String chemistCode = jsonObject.getString("Chem_Code");
-                    String chemistName = jsonObject.getString("Chem_Name");
-                    String dateTime = jsonObject.getString("Created_Date");
-                    String activeFlag = jsonObject.getString("Active_Flag");
+                    String dayID = jsonObject.optString("Day_Plan_ShortName");
+                    String dayCaption = jsonObject.optString("Day_Plan_Name");
+                    String dayPlanCode = jsonObject.optString("Day_Plan_Code");
+                    String clusterCode = jsonObject.optString("Patch_Code");
+                    String clusterName = jsonObject.optString("Patch_Name");
+                    String doctorCode = jsonObject.optString("Dr_Code");
+                    String doctorName = jsonObject.optString("Dr_Name");
+                    String chemistCode = jsonObject.optString("Chem_Code");
+                    String chemistName = jsonObject.optString("Chem_Name");
+                    String dateTime = jsonObject.optString("Created_Date");
+                    String activeFlag = jsonObject.optString("Active_Flag");
                     Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+
+                    if(stpFlag == null || !stpFlag.isEmpty()) {
+                        stpFlag = jsonObject.optString("Active_Flag", "3");
+                        rejectReason = jsonObject.optString("Stp_Reject_Reason");
+                        if(stpFlag.equalsIgnoreCase("1")) {
+                            activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
+                            activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
+                        }else {
+                            activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
+                        }
+                    }
 
                     JSONObject jsonSave = new JSONObject();
                     jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
@@ -261,8 +275,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     jsonSave.put("Plan_Code", dayPlanCode);
                     jsonSave.put("StpFlag", activeFlag);
                     jsonSave.put("tableName", "save_stp");
-                    Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
                     jsonSave.put("ReqDt", dateTime);
+                    Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
                     stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), "0"));
                 }
             }
@@ -327,6 +341,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 //            }
 
             for (String dcrName : dcrNameList) {
+                ArrayList<String> codes = new ArrayList<>();
                 JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(dcrName + hqCode).getMasterSyncDataJsonArray();
                 if(jsonArray.length()>0) {
                     for (int i = 0; i<jsonArray.length(); i++) {
@@ -336,131 +351,135 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                             int visitCount = 0;
 
                             code = jsonObject.optString("Code");
-                            name = jsonObject.optString("Name");
-                            townName = jsonObject.optString("Town_Name");
-                            townCode = jsonObject.optString("Town_Code");
-                            if(dcrName.equalsIgnoreCase(Constants.DOCTOR)
+                            if(!codes.contains(code)) {
+                                codes.add(code);
+                                name = jsonObject.optString("Name");
+                                townName = jsonObject.optString("Town_Name");
+                                townCode = jsonObject.optString("Town_Code");
+
+                                if(dcrName.equalsIgnoreCase(Constants.DOCTOR)
 //                                    || dcrName.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)
-                            ) {
-                                category = jsonObject.optString("Category");
-                                categoryCode = jsonObject.optString("CategoryCode");
-                                speciality = jsonObject.optString("Specialty");
-                                if(dcrName.equalsIgnoreCase(Constants.DOCTOR)) {
-                                    String vstCount = jsonObject.optString("Tlvst");
-                                    if(!vstCount.equalsIgnoreCase("null") && !vstCount.isEmpty()) {
-                                        visitCount = Integer.parseInt(vstCount);
+                                ) {
+                                    category = jsonObject.optString("Category");
+                                    categoryCode = jsonObject.optString("CategoryCode");
+                                    speciality = jsonObject.optString("Specialty");
+                                    if(dcrName.equalsIgnoreCase(Constants.DOCTOR)) {
+                                        String vstCount = jsonObject.optString("Tlvst");
+                                        if(!vstCount.equalsIgnoreCase("null") && !vstCount.isEmpty()) {
+                                            visitCount = Integer.parseInt(vstCount);
+                                        }
+                                    }
+                                    if(allSelectedDocList.contains(code)) {
+                                        if(!allSelectedDocXCatMap.containsKey(categoryCode)) {
+                                            allSelectedDocXCatMap.put(categoryCode, new ArrayList<>());
+                                        }
+                                        List<String> docCodes = allSelectedDocXCatMap.get(categoryCode);
+                                        if(docCodes == null) {
+                                            docCodes = new ArrayList<>();
+                                        }
+                                        int docSelectedFreq = Collections.frequency(allSelectedDocList, code);
+                                        docCodes.addAll(Collections.nCopies(docSelectedFreq, code));
+                                        allSelectedDocXCatMap.put(categoryCode, docCodes);
                                     }
                                 }
-                                if(allSelectedDocList.contains(code)) {
-                                    if(!allSelectedDocXCatMap.containsKey(categoryCode)) {
-                                        allSelectedDocXCatMap.put(categoryCode, new ArrayList<>());
-                                    }
-                                    List<String> docCodes = allSelectedDocXCatMap.get(categoryCode);
-                                    if(docCodes == null) {
-                                        docCodes = new ArrayList<>();
-                                    }
-                                    int docSelectedFreq = Collections.frequency(allSelectedDocList, code);
-                                    docCodes.addAll(Collections.nCopies(docSelectedFreq, code));
-                                    allSelectedDocXCatMap.put(categoryCode, docCodes);
-                                }
-                            }
 //                            else if(dcrName.equalsIgnoreCase(Constants.CHEMIST)) {
 //                                categoryCode = jsonObject.optString("Chm_cat");
 //                                category = chmCatMap.getOrDefault(categoryCode, "");
 //                            }
-                            if(!code.isEmpty()) {
-                                switch (dcrName){
-                                    case Constants.DOCTOR:
-                                        if(!totalDocCodeList.contains(code)) {
-                                            totalDocCodeList.add(code);
-                                            if(docCategoryModelMap.containsKey(categoryCode)) {
-                                                DocCategoryModel docCategoryModel = docCategoryModelMap.get(categoryCode);
-                                                if(docCategoryModel != null) {
-                                                    docCategoryModel.incrementDocCount();
-                                                    docCategoryModelMap.put(categoryCode, docCategoryModel);
+                                if(!code.isEmpty()) {
+                                    switch (dcrName){
+                                        case Constants.DOCTOR:
+                                            if(!totalDocCodeList.contains(code)) {
+                                                totalDocCodeList.add(code);
+                                                if(docCategoryModelMap.containsKey(categoryCode)) {
+                                                    DocCategoryModel docCategoryModel = docCategoryModelMap.get(categoryCode);
+                                                    if(docCategoryModel != null) {
+                                                        docCategoryModel.incrementDocCount();
+                                                        docCategoryModelMap.put(categoryCode, docCategoryModel);
+                                                    }
                                                 }
+                                                if(!selectedDcrMap.containsKey(Constants.DOCTOR)) {
+                                                    selectedDcrMap.put(Constants.DOCTOR, new ArrayList<>());
+                                                }
+                                                List<DCRModel> docModelList = selectedDcrMap.get(Constants.DOCTOR);
+                                                if(docModelList == null) {
+                                                    docModelList = new ArrayList<>();
+                                                }
+                                                docModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
+                                                selectedDcrMap.put(Constants.DOCTOR, docModelList);
                                             }
-                                            if(!selectedDcrMap.containsKey(Constants.DOCTOR)) {
-                                                selectedDcrMap.put(Constants.DOCTOR, new ArrayList<>());
+                                            break;
+                                        case Constants.CHEMIST:
+                                            if(!totalChmCodeList.contains(code)) {
+                                                totalChmCodeList.add(code);
+                                                if(!selectedDcrMap.containsKey(Constants.CHEMIST)) {
+                                                    selectedDcrMap.put(Constants.CHEMIST, new ArrayList<>());
+                                                }
+                                                List<DCRModel> chmModelList = selectedDcrMap.get(Constants.CHEMIST);
+                                                if(chmModelList == null) {
+                                                    chmModelList = new ArrayList<>();
+                                                }
+                                                chmModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
+                                                selectedDcrMap.put(Constants.CHEMIST, chmModelList);
                                             }
-                                            List<DCRModel> docModelList = selectedDcrMap.get(Constants.DOCTOR);
-                                            if(docModelList == null) {
-                                                docModelList = new ArrayList<>();
+                                            break;
+                                        case Constants.STOCKIEST:
+                                            if(!totalStkCodeList.contains(code)) {
+                                                totalStkCodeList.add(code);
+                                                if(!selectedDcrMap.containsKey(Constants.STOCKIEST)) {
+                                                    selectedDcrMap.put(Constants.STOCKIEST, new ArrayList<>());
+                                                }
+                                                List<DCRModel> stkModelList = selectedDcrMap.get(Constants.STOCKIEST);
+                                                if(stkModelList == null) {
+                                                    stkModelList = new ArrayList<>();
+                                                }
+                                                stkModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
+                                                selectedDcrMap.put(Constants.STOCKIEST, stkModelList);
                                             }
-                                            docModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
-                                            selectedDcrMap.put(Constants.DOCTOR, docModelList);
-                                        }
-                                        break;
-                                    case Constants.CHEMIST:
-                                        if(!totalChmCodeList.contains(code)) {
-                                            totalChmCodeList.add(code);
-                                            if(!selectedDcrMap.containsKey(Constants.CHEMIST)) {
-                                                selectedDcrMap.put(Constants.CHEMIST, new ArrayList<>());
+                                            break;
+                                        case Constants.UNLISTED_DOCTOR:
+                                            if(!totalUnDrCodeList.contains(code)) {
+                                                totalUnDrCodeList.add(code);
+                                                if(!selectedDcrMap.containsKey(Constants.UNLISTED_DOCTOR)) {
+                                                    selectedDcrMap.put(Constants.UNLISTED_DOCTOR, new ArrayList<>());
+                                                }
+                                                List<DCRModel> unDrModelList = selectedDcrMap.get(Constants.UNLISTED_DOCTOR);
+                                                if(unDrModelList == null) {
+                                                    unDrModelList = new ArrayList<>();
+                                                }
+                                                unDrModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
+                                                selectedDcrMap.put(Constants.UNLISTED_DOCTOR, unDrModelList);
                                             }
-                                            List<DCRModel> chmModelList = selectedDcrMap.get(Constants.CHEMIST);
-                                            if(chmModelList == null) {
-                                                chmModelList = new ArrayList<>();
+                                            break;
+                                        case Constants.CIP:
+                                            if(!totalCipCodeList.contains(code)) {
+                                                totalCipCodeList.add(code);
+                                                if(!selectedDcrMap.containsKey(Constants.CIP)) {
+                                                    selectedDcrMap.put(Constants.CIP, new ArrayList<>());
+                                                }
+                                                List<DCRModel> cipModelList = selectedDcrMap.get(Constants.CIP);
+                                                if(cipModelList == null) {
+                                                    cipModelList = new ArrayList<>();
+                                                }
+                                                cipModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
+                                                selectedDcrMap.put(Constants.CIP, cipModelList);
                                             }
-                                            chmModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
-                                            selectedDcrMap.put(Constants.CHEMIST, chmModelList);
-                                        }
-                                        break;
-                                    case Constants.STOCKIEST:
-                                        if(!totalStkCodeList.contains(code)) {
-                                            totalStkCodeList.add(code);
-                                            if(!selectedDcrMap.containsKey(Constants.STOCKIEST)) {
-                                                selectedDcrMap.put(Constants.STOCKIEST, new ArrayList<>());
+                                            break;
+                                        case Constants.HOSPITAL:
+                                            if(!totalHosCodeList.contains(code)) {
+                                                totalHosCodeList.add(code);
+                                                if(!selectedDcrMap.containsKey(Constants.HOSPITAL)) {
+                                                    selectedDcrMap.put(Constants.HOSPITAL, new ArrayList<>());
+                                                }
+                                                List<DCRModel> hosModelList = selectedDcrMap.get(Constants.HOSPITAL);
+                                                if(hosModelList == null) {
+                                                    hosModelList = new ArrayList<>();
+                                                }
+                                                hosModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
+                                                selectedDcrMap.put(Constants.HOSPITAL, hosModelList);
                                             }
-                                            List<DCRModel> stkModelList = selectedDcrMap.get(Constants.STOCKIEST);
-                                            if(stkModelList == null) {
-                                                stkModelList = new ArrayList<>();
-                                            }
-                                            stkModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
-                                            selectedDcrMap.put(Constants.STOCKIEST, stkModelList);
-                                        }
-                                        break;
-                                    case Constants.UNLISTED_DOCTOR:
-                                        if(!totalUnDrCodeList.contains(code)) {
-                                            totalUnDrCodeList.add(code);
-                                            if(!selectedDcrMap.containsKey(Constants.UNLISTED_DOCTOR)) {
-                                                selectedDcrMap.put(Constants.UNLISTED_DOCTOR, new ArrayList<>());
-                                            }
-                                            List<DCRModel> unDrModelList = selectedDcrMap.get(Constants.UNLISTED_DOCTOR);
-                                            if(unDrModelList == null) {
-                                                unDrModelList = new ArrayList<>();
-                                            }
-                                            unDrModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
-                                            selectedDcrMap.put(Constants.UNLISTED_DOCTOR, unDrModelList);
-                                        }
-                                        break;
-                                    case Constants.CIP:
-                                        if(!totalCipCodeList.contains(code)) {
-                                            totalCipCodeList.add(code);
-                                            if(!selectedDcrMap.containsKey(Constants.CIP)) {
-                                                selectedDcrMap.put(Constants.CIP, new ArrayList<>());
-                                            }
-                                            List<DCRModel> cipModelList = selectedDcrMap.get(Constants.CIP);
-                                            if(cipModelList == null) {
-                                                cipModelList = new ArrayList<>();
-                                            }
-                                            cipModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
-                                            selectedDcrMap.put(Constants.CIP, cipModelList);
-                                        }
-                                        break;
-                                    case Constants.HOSPITAL:
-                                        if(!totalHosCodeList.contains(code)) {
-                                            totalHosCodeList.add(code);
-                                            if(!selectedDcrMap.containsKey(Constants.HOSPITAL)) {
-                                                selectedDcrMap.put(Constants.HOSPITAL, new ArrayList<>());
-                                            }
-                                            List<DCRModel> hosModelList = selectedDcrMap.get(Constants.HOSPITAL);
-                                            if(hosModelList == null) {
-                                                hosModelList = new ArrayList<>();
-                                            }
-                                            hosModelList.add(new DCRModel(name, code, category, speciality, townName, townCode, visitCount, "-", "", false));
-                                            selectedDcrMap.put(Constants.HOSPITAL, hosModelList);
-                                        }
-                                        break;
+                                            break;
+                                    }
                                 }
                             }
                         } catch (Exception e) {
@@ -482,6 +501,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 dayCaptions = jsonObject.optString("Plan_Name");
                 dayIDs = jsonObject.optString("Plan_SName");
                 stpCap = jsonObject.optString("STP_Name");
+                totalDaysCount++;
                 if(!stpCap.isEmpty()) {
                     activityStandardTourPlanBinding.title.setText(stpCap);
                 }
