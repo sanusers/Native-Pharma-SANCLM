@@ -92,18 +92,19 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
             if (count > 0) {
                 ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
                 if (from_where.equalsIgnoreCase("call")) {
-                    for (int i = 0; i < arrayList.size(); i++) {
-                        for (int j = 0; j < arrayList.get(i).getProducts().size(); j++) {
-                            productsList.add(new BrandModelClass.Product(arrayList.get(i).getPresentationName(), arrayList.get(i).getProducts().get(j).getBrandName(), arrayList.get(i).getProducts().get(j).getBrandCode(), arrayList.get(i).getProducts().get(j).getSlideId()
-                                    , arrayList.get(i).getProducts().get(j).getSlideName(), arrayList.get(i).getProducts().get(j).getPriority(), arrayList.get(i).getProducts().get(j).isImageSelected()));
-                        }
-                    }
-                    for (int i = 0; i < productsList.size(); i++) {
-                        if (productsList.get(i).getPresentationName().equalsIgnoreCase(arrayList.get(position).getPresentationName())) {
-                            SelectedPos = i;
-                            break;
-                        }
-                    }
+//                    for (int i = 0; i < arrayList.size(); i++) {
+//                        for (int j = 0; j < arrayList.get(i).getProducts().size(); j++) {
+//                            productsList.add(new BrandModelClass.Product(arrayList.get(i).getPresentationName(), arrayList.get(i).getProducts().get(j).getBrandName(), arrayList.get(i).getProducts().get(j).getBrandCode(), arrayList.get(i).getProducts().get(j).getSlideId()
+//                                    , arrayList.get(i).getProducts().get(j).getSlideName(), arrayList.get(i).getProducts().get(j).getPriority(), arrayList.get(i).getProducts().get(j).isImageSelected()));
+//                        }
+//                    }
+//                    for (int i = 0; i < productsList.size(); i++) {
+//                        if (productsList.get(i).getPresentationName().equalsIgnoreCase(arrayList.get(position).getPresentationName())) {
+//                            SelectedPos = i;
+//                            break;
+//                        }
+//                    }
+                    productsList = arrayList.get(position).getProducts();
                     intent = new Intent(context, PlaySlideDetailing.class);
                 } else {
                     productsList = arrayList.get(position).getProducts();
