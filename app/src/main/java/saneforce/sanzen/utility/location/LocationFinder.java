@@ -122,27 +122,68 @@ public class LocationFinder {
                 .addOnFailureListener(mContext, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        int statusCode = (( ApiException ) e).getStatusCode();
-                        switch (statusCode) {
-                            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                                try {
-                                    // Show the dialog by calling startResolutionForResult(), and check the
-                                    // result in onActivityResult().
-                                    Log.i(TAG, "PendingIntent INSAP.");
-
-                                    Log.v("LOACTION_SUCCESS", "ONFAILURE");
-                                    ResolvableApiException rae = ( ResolvableApiException ) e;
-                                    rae.startResolutionForResult(mContext, 1000);
-                                } catch (IntentSender.SendIntentException sie) {
-                                    Log.i(TAG, "PendingIntent unable to execute request.");
+                        if (e instanceof ResolvableApiException) {
+                            try {
+                                Log.i(TAG, "PendingIntent INSAP.");
+                                Log.v("LOACTION_SUCCESS", "ONFAILURE");
+                                ResolvableApiException resolvable = (ResolvableApiException) e;
+                                resolvable.startResolutionForResult(mContext, 1000);
+                            } catch (IntentSender.SendIntentException sendEx) {
+                                Log.e(TAG, "PendingIntent unable to execute request.", sendEx);
+                            }
+                        } else {
+                            if (e instanceof ApiException) {
+                                int statusCode = ((ApiException) e).getStatusCode();
+                                switch (statusCode) {
+                                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                                        String errorMessage = "Location settings are inadequate, and cannot be " +
+                                                "fixed here. Fix in Settings.";
+                                        Toast.makeText(mContext, errorMessage, Toast.LENGTH_LONG).show();
+                                        Log.e(TAG, errorMessage, e);
+                                        break;
+                                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                                        try {
+                                            Log.i(TAG, "PendingIntent INSAP.");
+                                            Log.v("LOACTION_SUCCESS", "ONFAILURE");
+                                            ResolvableApiException rae = (ResolvableApiException) e;
+                                            rae.startResolutionForResult(mContext, 1000);
+                                        } catch (IntentSender.SendIntentException sie) {
+                                            Log.i(TAG, "PendingIntent unable to execute request.");
+                                        }
+                                        break;
+                                    default:
+                                        Log.e(TAG, "Location settings failure: " + e.getMessage(), e);
+                                        break;
                                 }
-                                break;
-                            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                                String errorMessage = "Location settings are inadequate, and cannot be " +
-                                        "fixed here. Fix in Settings.";
-                                //Log.e(TAG, errorMessage);
-                                Toast.makeText(mContext, errorMessage, Toast.LENGTH_LONG).show();
+                            } else {
+                                Log.e(TAG, "Unexpected location settings failure: " + e.getMessage(), e);
+                            }
                         }
+//                        int statusCode = (( ApiException ) e).getStatusCode();
+//                        switch (statusCode) {
+//                            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+//                                if(e instanceof ResolvableApiException) {
+//                                    try {
+//                                        // Show the dialog by calling startResolutionForResult(), and check the
+//                                        // result in onActivityResult().
+//                                        Log.i(TAG, "PendingIntent INSAP.");
+//
+//                                        Log.v("LOACTION_SUCCESS", "ONFAILURE");
+//                                        ResolvableApiException rae = (ResolvableApiException) e;
+//                                        rae.startResolutionForResult(mContext, 1000);
+//                                    } catch (IntentSender.SendIntentException sie) {
+//                                        Log.i(TAG, "PendingIntent unable to execute request.");
+//                                    }
+//                                } else {
+//
+//                                }
+//                                break;
+//                            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+//                                String errorMessage = "Location settings are inadequate, and cannot be " +
+//                                        "fixed here. Fix in Settings.";
+//                                //Log.e(TAG, errorMessage);
+//                                Toast.makeText(mContext, errorMessage, Toast.LENGTH_LONG).show();
+//                        }
                     }
                 });
     }
