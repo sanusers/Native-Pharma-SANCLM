@@ -215,7 +215,9 @@ public class StockiestFragment extends Fragment {
                 filteredNames.add(s);
             }
         }
-        adapterDCRCallSelection.filterList(filteredNames);
+        if(adapterDCRCallSelection != null) {
+            adapterDCRCallSelection.filterList(filteredNames);
+        }
     }
 
 
