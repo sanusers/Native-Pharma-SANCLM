@@ -262,14 +262,18 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                             activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
                             activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
                             SharedPref.setStpStatus(StandardTourPlanActivity.this, "Rejected");
+                            activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
                         }else {
                             activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
                             if(stpFlag.equalsIgnoreCase("0")) {
                                 SharedPref.setStpStatus(StandardTourPlanActivity.this, "Approved");
+                                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
                             }else if(stpFlag.equalsIgnoreCase("2")) {
                                 SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
+                                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
                             }else if(stpFlag.equalsIgnoreCase("3")) {
                                 SharedPref.setStpStatus(StandardTourPlanActivity.this, "Planning...");
+                                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
                             }
                         }
                     }

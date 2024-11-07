@@ -91,7 +91,7 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if(holder instanceof NoDataViewHolder) {
             NoDataViewHolder noDataViewHolder = (NoDataViewHolder) holder;
             NoDataModel noDataModel = (NoDataModel) filtereddcrModelList.get(position);
-            noDataViewHolder.noData.setText("No " + noDataModel.getCaption() + " found");
+            noDataViewHolder.noData.setText(noDataModel.getCaption());
         }else if(holder instanceof ClusterViewHolder) {
             ClusterViewHolder clusterViewHolder = (ClusterViewHolder) holder;
             ClusterModel clusterModel = (ClusterModel) filtereddcrModelList.get(position);

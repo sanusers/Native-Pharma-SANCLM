@@ -489,7 +489,7 @@ public class AddListActivity extends AppCompatActivity {
                 dcrModels.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
                 dataList.addAll(dcrModels);
             }else {
-                dataList.add(new NoDataModel(selectedDCRCap));
+                dataList.add(new NoDataModel("No " + selectedDCRCap + " found"));
             }
         }
 

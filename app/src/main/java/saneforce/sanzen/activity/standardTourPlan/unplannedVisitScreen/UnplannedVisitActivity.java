@@ -20,6 +20,7 @@ import java.util.Map;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.DCRSelectionAdapter;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.ClusterModel;
+import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.NoDataModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -237,9 +238,9 @@ public class UnplannedVisitActivity extends AppCompatActivity {
                 if(dcrModels == null) {
                     dcrModels = new ArrayList<>();
                 }
-                if(!(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && dcrModel.getVisitFrequency() == CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",").length)) {
+                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && dcrModel.getVisitFrequency() != CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",").length) {
                     dcrModels.add(dcrModel);
-                } else if(!(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && dcrModel.getPlannedForCode().split(",").length > 0)){
+                } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && (dcrModel.getPlannedForCode().equalsIgnoreCase("") || dcrModel.getPlannedForCode().equalsIgnoreCase("-"))){
                     dcrModels.add(dcrModel);
                 }
                 clusterXDcrMap.put(dcrModel.getTownCode(), dcrModels);
@@ -255,8 +256,14 @@ public class UnplannedVisitActivity extends AppCompatActivity {
             List<DCRModel> dcrModels = clusterXDcrMap.get(clusterCode);
             if(dcrModels != null && !dcrModels.isEmpty()) {
                 dcrModels.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+                dataList.addAll(dcrModels);
+            }else {
+                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
+                    dataList.add(new NoDataModel("All " + drCap + " are selected"));
+                } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST)) {
+                    dataList.add(new NoDataModel("All " + chmCap + " are selected"));
+                }
             }
-            dataList.addAll(dcrModels);
         }
 
         if(dataList.isEmpty()) {
