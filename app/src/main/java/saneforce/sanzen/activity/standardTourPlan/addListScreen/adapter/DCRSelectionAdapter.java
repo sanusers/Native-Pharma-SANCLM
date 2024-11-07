@@ -119,18 +119,31 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 if(context instanceof AddListActivity) {
                     dcrViewHolder.checkBox.setVisibility(View.VISIBLE);
                     dcrViewHolder.plannedFor.setText(CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForName()));
-                    if(dcrModel.isSelected() && !dcrModel.getPlannedForName().toLowerCase().contains(dayCaption.toLowerCase())){
-                        dcrViewHolder.plannedFor.setText(String.format("%s%s,", dcrModel.getPlannedForName().replace("-", ""), dayCaption));
-                    } else if(!dcrModel.isSelected()) {
+                    if(dcrModel.isSelected() && !dcrModel.getPlannedForName().toLowerCase().contains(dayCaption.toLowerCase())) {
+                        dcrViewHolder.plannedFor.setText(CommonUtilsMethods.removeLastComma(String.format("%s%s,", dcrModel.getPlannedForName().replace("-", ""), dayCaption)));
+                    }else if(!dcrModel.isSelected()) {
                         String plannedForName = dcrModel.getPlannedForName().replaceAll(dayCaption, "");
-                        if(dcrModel.getPlannedForName().toLowerCase().contains((dayCaption + ",").toLowerCase())){
+                        if(dcrModel.getPlannedForName().toLowerCase().contains((dayCaption + ",").toLowerCase())) {
                             plannedForName = dcrModel.getPlannedForName().replaceAll(dayCaption + ",", "");
                         }
-                        dcrViewHolder.plannedFor.setText(plannedForName.isEmpty()? "-" : plannedForName);
+                        dcrViewHolder.plannedFor.setText(CommonUtilsMethods.removeLastComma(plannedForName.isEmpty() ? "-" : plannedForName));
                     }
-                    dcrViewHolder.plannedFor.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForName())));
+                    dcrViewHolder.plannedFor.setOnClickListener(view -> {
+                        if(!dcrModel.isSelected()) {
+                            commonUtilsMethods.displayPopupWindow(context, view, CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForName()));
+                        }else{
+                            String plannedForName = dcrModel.getPlannedForName().replaceAll(dayCaption, "");
+                            if(dcrModel.getPlannedForName().toLowerCase().contains((dayCaption + ",").toLowerCase())) {
+                                plannedForName = dcrModel.getPlannedForName().replaceAll(dayCaption + ",", "");
+                            }
+                            commonUtilsMethods.displayPopupWindow(context, view, CommonUtilsMethods.removeLastComma(plannedForName.isEmpty() ? "-" : plannedForName));
+                        }
+                    });
                 }else {
                     dcrViewHolder.checkBox.setVisibility(View.GONE);
+                    if(!selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
+                        dcrViewHolder.plannedFor.setVisibility(View.GONE);
+                    }
 
                     ViewGroup.MarginLayoutParams dcrNameParams = (ViewGroup.MarginLayoutParams) dcrViewHolder.name.getLayoutParams();
                     dcrNameParams.leftMargin = 20;

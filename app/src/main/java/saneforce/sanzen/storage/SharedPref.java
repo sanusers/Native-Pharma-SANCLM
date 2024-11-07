@@ -425,6 +425,8 @@ public class SharedPref {
     public static final String JOININGYEAR = "JOINING_YEAR";
     public static final String SANZEN_EDET = "sanzen_edet";
 
+    public static final String STP_STATUS = "STP_STATUS";
+
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -2517,6 +2519,16 @@ public class SharedPref {
     }
     public static int getJoiningYear(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(JOININGYEAR, 0);
+    }
+
+    public static void setStpStatus(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(STP_STATUS, status).apply();
+    }
+
+    public static String getStpStatus(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_STATUS, "");
     }
 
 }

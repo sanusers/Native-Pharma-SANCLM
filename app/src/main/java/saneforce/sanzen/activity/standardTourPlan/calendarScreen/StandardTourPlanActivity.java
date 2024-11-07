@@ -32,13 +32,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.adapter.CalendarAdapter;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.adapter.DocCategoryXVisitAdapter;
@@ -132,6 +131,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
             }
         });
+
+        String stpStatus = SharedPref.getStpStatus(StandardTourPlanActivity.this);
+        activityStandardTourPlanBinding.tvStpStatus.setText(stpStatus.isEmpty() ? "Planning..." : stpStatus);
+
     }
 
     private void getRequiredData() {
@@ -169,6 +172,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         allSelectedDocList = new ArrayList<>();
 
         getData();
+
+        String stpStatus = SharedPref.getStpStatus(StandardTourPlanActivity.this);
+        activityStandardTourPlanBinding.tvStpStatus.setText(stpStatus.isEmpty() ? "Planning..." : stpStatus);
+
     }
 
     private void getData() {
@@ -254,8 +261,16 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         if(stpFlag.equalsIgnoreCase("1")) {
                             activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
                             activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
+                            SharedPref.setStpStatus(StandardTourPlanActivity.this, "Rejected");
                         }else {
                             activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
+                            if(stpFlag.equalsIgnoreCase("0")) {
+                                SharedPref.setStpStatus(StandardTourPlanActivity.this, "Approved");
+                            }else if(stpFlag.equalsIgnoreCase("2")) {
+                                SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
+                            }else if(stpFlag.equalsIgnoreCase("3")) {
+                                SharedPref.setStpStatus(StandardTourPlanActivity.this, "Planning...");
+                            }
                         }
                     }
 
@@ -498,13 +513,17 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
             if(jsonArray != null && jsonArray.length()>0) {
                 JSONObject jsonObject = jsonArray.optJSONObject(0);
-                dayCaptions = jsonObject.optString("Plan_Name");
-                dayIDs = jsonObject.optString("Plan_SName");
-                stpCap = jsonObject.optString("STP_Name");
-                totalDaysCount++;
+                dayCaptions = jsonObject.optString("Plan_Name", "");
+                dayIDs = jsonObject.optString("Plan_SName", "");
+                stpCap = jsonObject.optString("STP_Name", StandardTourPlanActivity.this.getString(R.string.standard_tour_plan));
                 if(!stpCap.isEmpty()) {
                     activityStandardTourPlanBinding.title.setText(stpCap);
                 }
+            }
+            if(dayIDs == null || dayIDs.isEmpty()) {
+                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Kindly sync Standard Tour Plan Setup!");
+                startActivity(new Intent(StandardTourPlanActivity.this, MasterSyncActivity.class));
+                finish();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -571,6 +590,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
         for (int index = 0; index<dayIDValues.length; index++) {
             String dayID = dayIDValues[index];
+            if(!dayID.isEmpty()) {
+                totalDaysCount++;
+            }
             if(dayID.toLowerCase().contains("mo")) {
                 List<CalendarModel> calendarModelList = calendarMap.get("monday");
                 if(calendarModelList == null) {
@@ -636,13 +658,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                 isDayFound = true;
                                 if(caption.isEmpty()) {
                                     caption = calendarModel.getCaption();
-                                    caption = caption.substring(0, caption.length() - 1);
                                 }
                                 break;
                             }
                         }
                         if(!isDayFound) {
-                            calendarModelList.add(index - 1, new CalendarModel((caption + index), dayID, false, null));
+                            String newCaption = changeCaptionNumber(caption, index);
+                            calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
                         }else {
                             List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
                             selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
@@ -663,13 +685,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                 isDayFound = true;
                                 if(caption.isEmpty()) {
                                     caption = calendarModel.getCaption();
-                                    caption = caption.substring(0, caption.length() - 1);
                                 }
                                 break;
                             }
                         }
                         if(!isDayFound) {
-                            calendarModelList.add(index - 1, new CalendarModel((caption + index), dayID, false, null));
+                            String newCaption = changeCaptionNumber(caption, index);
+                            calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
                         }else {
                             List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
                             selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
@@ -690,13 +712,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                 isDayFound = true;
                                 if(caption.isEmpty()) {
                                     caption = calendarModel.getCaption();
-                                    caption = caption.substring(0, caption.length() - 1);
                                 }
                                 break;
                             }
                         }
                         if(!isDayFound) {
-                            calendarModelList.add(index - 1, new CalendarModel((caption + index), dayID, false, null));
+                            String newCaption = changeCaptionNumber(caption, index);
+                            calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
                         }else {
                             List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
                             selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
@@ -717,13 +739,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                 isDayFound = true;
                                 if(caption.isEmpty()) {
                                     caption = calendarModel.getCaption();
-                                    caption = caption.substring(0, caption.length() - 1);
                                 }
                                 break;
                             }
                         }
                         if(!isDayFound) {
-                            calendarModelList.add(index - 1, new CalendarModel((caption + index), dayID, false, null));
+                            String newCaption = changeCaptionNumber(caption, index);
+                            calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
                         }else {
                             List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
                             selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
@@ -744,13 +766,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                 isDayFound = true;
                                 if(caption.isEmpty()) {
                                     caption = calendarModel.getCaption();
-                                    caption = caption.substring(0, caption.length() - 1);
                                 }
                                 break;
                             }
                         }
                         if(!isDayFound) {
-                            calendarModelList.add(index - 1, new CalendarModel((caption + index), dayID, false, null));
+                            String newCaption = changeCaptionNumber(caption, index);
+                            calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
                         }else {
                             List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
                             selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
@@ -771,13 +793,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                 isDayFound = true;
                                 if(caption.isEmpty()) {
                                     caption = calendarModel.getCaption();
-                                    caption = caption.substring(0, caption.length() - 1);
                                 }
                                 break;
                             }
                         }
                         if(!isDayFound) {
-                            calendarModelList.add(index - 1, new CalendarModel((caption + index), dayID, false, null));
+                            String newCaption = changeCaptionNumber(caption, index);
+                            calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
                         }else {
                             List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
                             selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
@@ -798,13 +820,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                 isDayFound = true;
                                 if(caption.isEmpty()) {
                                     caption = calendarModel.getCaption();
-                                    caption = caption.substring(0, caption.length() - 1);
                                 }
                                 break;
                             }
                         }
                         if(!isDayFound) {
-                            calendarModelList.add(index - 1, new CalendarModel((caption + index), dayID, false, null));
+                            String newCaption = changeCaptionNumber(caption, index);
+                            calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
                         }else {
                             List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
                             selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
@@ -820,6 +842,27 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         RecyclerView.LayoutManager calendarLayoutManager = new LinearLayoutManager(this);
         activityStandardTourPlanBinding.rvCalendar.setLayoutManager(calendarLayoutManager);
         activityStandardTourPlanBinding.rvCalendar.setAdapter(calendarAdapter);
+    }
+
+    private String changeCaptionNumber(String str, int value) {
+        try {
+            int index = -1;
+            for (int i = 0; i<str.length(); i++) {
+                if(Character.isDigit(str.charAt(i))) {
+                    index = i;
+                    break;
+                }
+            }
+            if(index != -1) {
+                return str.substring(0, index) + value + str.substring(index + 1);
+            }else {
+                return str;
+            }
+        } catch (Exception e) {
+            Log.e("STP", "findNumberIndex: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return str;
     }
 
     private List<SelectedDCRModel> getSelectedDCRDataList(String dayID, String caption) {

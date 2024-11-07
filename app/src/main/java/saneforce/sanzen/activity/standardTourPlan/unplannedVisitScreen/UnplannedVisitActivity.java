@@ -18,14 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
-import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.ClusterModel;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.DCRSelectionAdapter;
+import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.ClusterModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityUnplannedVisitBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -239,7 +237,11 @@ public class UnplannedVisitActivity extends AppCompatActivity {
                 if(dcrModels == null) {
                     dcrModels = new ArrayList<>();
                 }
-                dcrModels.add(dcrModel);
+                if(!(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && dcrModel.getVisitFrequency() == CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",").length)) {
+                    dcrModels.add(dcrModel);
+                } else if(!(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && dcrModel.getPlannedForCode().split(",").length > 0)){
+                    dcrModels.add(dcrModel);
+                }
                 clusterXDcrMap.put(dcrModel.getTownCode(), dcrModels);
             }
         }
@@ -273,10 +275,12 @@ public class UnplannedVisitActivity extends AppCompatActivity {
                 case Constants.DOCTOR:
                     activityUnplannedVisitBinding.tvDcrSpec.setVisibility(View.VISIBLE);
                     activityUnplannedVisitBinding.tvDcrCatXVisit.setVisibility(View.VISIBLE);
+                    activityUnplannedVisitBinding.tvDcrPlannedFor.setVisibility(View.VISIBLE);
                     break;
                 case Constants.CHEMIST:
                     activityUnplannedVisitBinding.tvDcrSpec.setVisibility(View.GONE);
                     activityUnplannedVisitBinding.tvDcrCatXVisit.setVisibility(View.GONE);
+                    activityUnplannedVisitBinding.tvDcrPlannedFor.setVisibility(View.GONE);
                     break;
             }
         }

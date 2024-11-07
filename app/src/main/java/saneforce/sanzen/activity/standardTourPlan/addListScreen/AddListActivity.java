@@ -112,6 +112,8 @@ public class AddListActivity extends AppCompatActivity {
         activityAddListBinding.btnSave.setOnClickListener(v -> {
             if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+            }else if(selectedDataList.isEmpty()) {
+                commonUtilsMethods.showToastMessage(this, "Please select any " + drCap + " or" + chmCap);
             }else {
                 saveSelectedDCR();
             }
@@ -275,6 +277,10 @@ public class AddListActivity extends AppCompatActivity {
         localChmCodeList = new ArrayList<>();
         populatedDCRList = new HashSet<>();
 
+        selectedDCR = Constants.DOCTOR;
+        selectedDCRCap = drCap;
+        selectedDCRMap = new HashMap<>();
+
         Bundle bundle = getIntent().getExtras();
         if(bundle != null) {
             mode = bundle.getString("MODE", "");
@@ -297,10 +303,6 @@ public class AddListActivity extends AppCompatActivity {
         activityAddListBinding.tagTvUndr.setText(unDrCap);
         activityAddListBinding.tagTvCip.setText(cipCap);
         activityAddListBinding.tagTvHospital.setText(hosCap);
-
-        selectedDCR = Constants.DOCTOR;
-        selectedDCRCap = drCap;
-        selectedDCRMap = new HashMap<>();
 
         if(drNeed.equalsIgnoreCase("0")) {
             activityAddListBinding.tagTvDoctor.setVisibility(View.VISIBLE);
@@ -355,6 +357,8 @@ public class AddListActivity extends AppCompatActivity {
         String[] chmList = CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(",");
         chmList = Arrays.stream(chmList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
         localChmCodeList.addAll(Arrays.asList(chmList));
+
+        setDCRSelectedForEdit();
     }
 
     private void updateDCRSelectionUI() {
@@ -397,6 +401,29 @@ public class AddListActivity extends AppCompatActivity {
                 activityAddListBinding.tagTvHospital.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
                 activityAddListBinding.tagTvHospital.setTextColor(getColor(R.color.white));
                 break;
+        }
+    }
+
+    private void setDCRSelectedForEdit() {
+        List<String> dcrTAGList = new ArrayList<>();
+        dcrTAGList.add(Constants.DOCTOR);
+        dcrTAGList.add(Constants.CHEMIST);
+        for (String selectedDCR : dcrTAGList) {
+            List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
+            if(dcrModelList != null) {
+                for (DCRModel dcrModel : dcrModelList) {
+                    if(mode.equalsIgnoreCase(String.valueOf(CalendarAdapter.Mode.EDIT))) {
+                        if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && localDocCodeList != null && localDocCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.DOCTOR)) {
+                            dcrModel.setSelected(true);
+                        }else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && localChmCodeList != null && localChmCodeList.contains(dcrModel.getCode()) && populatedDCRList != null && !populatedDCRList.contains(Constants.CHEMIST)) {
+                            dcrModel.setSelected(true);
+                        }
+                    }
+                    if(dcrModel.isSelected()) {
+                        checkBoxClickListener.onSelected(dcrModel, selectedDCR);
+                    }
+                }
+            }
         }
     }
 
@@ -787,7 +814,7 @@ public class AddListActivity extends AppCompatActivity {
                     for (int index = 0; index<dcrModelList.size(); index++) {
                         DCRModel dcrModel = dcrModelList.get(index);
                         for (DCRModel selectedDcrModel : selectedDCRModels) {
-                            if(dcrModel.getCode().equals(selectedDcrModel.getCode()) && selectedDcrModel.isSelected() && !dcrModel.getPlannedForCode().contains(dayID)) {
+                            if(dcrModel.getCode().equals(selectedDcrModel.getCode()) && selectedDcrModel.isSelected()) {
                                 if(!selectedClusterCode.toString().contains(selectedDcrModel.getTownCode())) {
                                     selectedClusterCode.append(selectedDcrModel.getTownCode()).append(",");
                                     selectedClusterName.append(selectedDcrModel.getTownName()).append(",");
@@ -805,8 +832,15 @@ public class AddListActivity extends AppCompatActivity {
                                 dcrModel.setSelected(false);
                                 if(dcrModel.getPlannedForName().equals("-"))
                                     dcrModel.setPlannedForName("");
-                                dcrModel.setPlannedForName(dcrModel.getPlannedForName() + dayCaption + ",");
-                                dcrModel.setPlannedForCode(dcrModel.getPlannedForCode() + dayID + ",");
+                                if(!dcrModel.getPlannedForCode().contains(dayID)) {
+                                    dcrModel.setPlannedForName(dcrModel.getPlannedForName() + dayCaption + ",");
+                                    dcrModel.setPlannedForCode(dcrModel.getPlannedForCode() + dayID + ",");
+                                }else{
+                                    if(!dcrModel.isSelected()) {
+                                        dcrModel.setPlannedForName(dcrModel.getPlannedForName().replaceAll(dayCaption + ",", ""));
+                                        dcrModel.setPlannedForCode(dcrModel.getPlannedForCode().replaceAll(dayID + ",", ""));
+                                    }
+                                }
                                 break;
                             }else {
                                 Log.d("data", "saveSelectedDCR: " + selectedDcrModel.getPlannedForName());
