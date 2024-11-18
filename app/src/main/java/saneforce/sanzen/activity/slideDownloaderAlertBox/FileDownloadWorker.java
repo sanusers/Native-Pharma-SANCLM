@@ -166,25 +166,46 @@ public class FileDownloadWorker extends Worker {
 
             ZipEntry ze;
             int count;
-            byte[] buffer = new byte[8192];
+            byte[] buffer = new byte[10240];
             while ((ze = zis.getNextEntry()) != null) {
 
                 String name = ze.getName();
-                File file = new File(targetDirectory, name);
+                try {
+                    File file = new File(targetDirectory, name);
 
-                if (ze.isDirectory()) {
-                    file.mkdirs();
-                } else {
-                    FileOutputStream fout = new FileOutputStream(file);
-                    try {
-                        while ((count = zis.read(buffer)) != -1) {
-                            fout.write(buffer, 0, count);
+                    if(ze.isDirectory()) {
+                        file.mkdirs();
+                    }else {
+                        try{
+                            String dirName = name.substring(0, name.lastIndexOf('/')+1);
+                            File dirFile = new File(targetDirectory, dirName);
+                            Log.i("File Dir", "unzip: " + dirFile.getAbsolutePath());
+                            if(!dirFile.exists()) {
+                                dirFile.mkdirs();
+                            }
+                        }catch(Exception e) {
+                            e.printStackTrace();
                         }
-                    } finally {
-                        fout.close();
+                        try (FileOutputStream fout = new FileOutputStream(file)) {
+                            try {
+                                while ((count = zis.read(buffer)) != -1) {
+                                    fout.write(buffer, 0, count);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
+                                fout.close();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
+                } catch(Exception e) {
+                    e.printStackTrace();
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             zis.close();
         }
