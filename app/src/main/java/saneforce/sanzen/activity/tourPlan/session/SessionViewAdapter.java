@@ -59,12 +59,23 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
            holder.remarksLayout.setVisibility(View.GONE);
        }
 
-       if (holder.data.getHQ().getName().equals("")){
+       if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+           holder.workDayLayout.setVisibility(View.VISIBLE);
            holder.hqLayout.setVisibility(View.GONE);
-       }else if(SharedPref.getSfType(context).equalsIgnoreCase("1")){
-           holder.hqLayout.setVisibility(View.GONE);
-       } else{
-           holder.hqTV.setText(holder.data.getHQ().getName());
+           if(inputDataModel.getSTPCode().isEmpty()) {
+               holder.workDayTV.setText("Select");
+           } else {
+               holder.workDayTV.setText(inputDataModel.getSTPName());
+           }
+       }else {
+           holder.workDayLayout.setVisibility(View.GONE);
+           if (holder.data.getHQ().getName().equals("")){
+               holder.hqLayout.setVisibility(View.GONE);
+           }else if(SharedPref.getSfType(context).equalsIgnoreCase("1")){
+               holder.hqLayout.setVisibility(View.GONE);
+           } else{
+               holder.hqTV.setText(holder.data.getHQ().getName());
+           }
        }
 
        //Cluster
@@ -215,8 +226,8 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView sessionNoTxt;
-        public TextView workTypeTV,hqTV,clusterTV,jcTV,drTV,chemistTV,stockiestTV,unListedDrTV,cipTV,hospTV,remarksTV;
-        public LinearLayout sessionDelete,workTypeLayout,hqLayout,clusterLayout,jcLayout,drLayout,chemistLayout,stockiestLayout,unListedDrLayout,cipLayout,hospLayout,remarksLayout;
+        public TextView workTypeTV,hqTV,clusterTV,jcTV,drTV,chemistTV,stockiestTV,unListedDrTV,cipTV,hospTV,remarksTV, workDayTV;
+        public LinearLayout sessionDelete,workTypeLayout,hqLayout,clusterLayout,jcLayout,drLayout,chemistLayout,stockiestLayout,unListedDrLayout,cipLayout,hospLayout,remarksLayout, workDayLayout;
 
         //Input data
         ArrayList<ModelClass.SessionList.SubClass> clusterModelArray ;
@@ -247,6 +258,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             cipLayout = itemView.findViewById(R.id.cipLayout);
             hospLayout = itemView.findViewById(R.id.hospLayout);
             remarksLayout = itemView.findViewById(R.id.remarksLayout);
+            workDayLayout = itemView.findViewById(R.id.workDayLayout);
 
             workTypeTV = itemView.findViewById(R.id.workTypeField);
             hqTV = itemView.findViewById(R.id.hqField);
@@ -259,6 +271,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             cipTV = itemView.findViewById(R.id.cipField);
             hospTV = itemView.findViewById(R.id.hospField);
             remarksTV = itemView.findViewById(R.id.remarksField);
+            workDayTV = itemView.findViewById(R.id.workDayField);
 
         }
 

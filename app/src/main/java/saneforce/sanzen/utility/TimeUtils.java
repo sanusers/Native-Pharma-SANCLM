@@ -40,7 +40,6 @@ public class TimeUtils {
     public static final String FORMAT_22 = "yyyy-MM-dd HH:mm:ss.SSSS";
     public static final String FORMAT_23 = "MMMM yyyy";
     public static final String FORMAT_24 = "yyyy-MM";
-
     public static final String FORMAT_25 = "MMMM";
     public static final String FORMAT_26 = "yyyy";
     public static final String FORMAT_27 = "MMMM d, yyyy";
@@ -54,6 +53,7 @@ public class TimeUtils {
     public static final String FORMAT_35 = "d-MMM";
     public static final String FORMAT_36 = "yyyy-MM-dd hh:mm a";
     public static final String FORMAT_37 = "yyyy-MM-dd HH:mm:ss.SSS";
+    public static final String FORMAT_38 = "d MMMM yyyy";
 
 
     public static String getCurrentDateTime(String format) {

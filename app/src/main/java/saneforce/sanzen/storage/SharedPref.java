@@ -426,6 +426,10 @@ public class SharedPref {
     public static final String SANZEN_EDET = "sanzen_edet";
 
     public static final String STP_STATUS = "STP_STATUS";
+    public static final String STP_NEED = "STP_NEED";
+    public static final String STP_APPR_NEED = "STP_APPR_NEED";
+    public static final String STP_BASED_MTP = "STP_BASED_MTP";
+    public static final String STP_BASED_DCR = "STP_BASED_DCR";
 
     public static SharedPreferences.Editor editor;
 
@@ -748,6 +752,10 @@ public class SharedPref {
         editor.putString(EDIT_CALL_DEL_NEED, jsonObject.getString("EditCallDelNeed"));
         editor.putString(SANZEN_EDET, jsonObject.getString("sanzen_edet"));
         editor.putString(ACTIVITY_CAP, jsonObject.getString("ActivityCap"));
+        editor.putString(STP_NEED, jsonObject.getString("STP_Need"));
+        editor.putString(STP_APPR_NEED, jsonObject.getString("STP_Appr_Need"));
+        editor.putString(STP_BASED_MTP, jsonObject.getString("STP_Based_MTP"));
+        editor.putString(STP_BASED_DCR, jsonObject.getString("STP_Based_DCR"));
         editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\",""));
         editor.apply();
 
@@ -1929,6 +1937,22 @@ public class SharedPref {
 
     public static String getDrAddCallNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DR_ADD_CALL_NEED, "");
+    }
+
+    public static String getStpNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_NEED, "");
+    }
+
+    public static String getStpApprNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_APPR_NEED, "");
+    }
+
+    public static String getStpBasedMtp(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_BASED_MTP, "");
+    }
+
+    public static String getStpBasedDcr(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_BASED_DCR, "");
     }
 
     public static void setDrAddCallNeed(Context context, String drAddCallNeed) {

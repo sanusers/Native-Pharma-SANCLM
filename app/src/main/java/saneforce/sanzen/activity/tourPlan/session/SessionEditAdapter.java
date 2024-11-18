@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -58,7 +57,6 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
-
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -74,7 +72,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     SessionInterface sessionInterface;
     SessionItemAdapter sessionItemAdapter = new SessionItemAdapter();
     String sfCode = "", division_code = "", sfType = "", designation = "", state_code = "", subdivision_code = "";
-    int synccount =0;
+    int synccount = 0;
     String jwNeed = "", drNeed = "", chemistNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", FW_meetup_mandatory = "";
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
     CommonUtilsMethods commonUtilsMethods;
@@ -91,7 +89,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         this.sessionInterface = sessionInterface;
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
-        sfType=SharedPref.getSfType(context);
+        sfType = SharedPref.getSfType(context);
 
 //        hq_code = SharedPref.getHqCode(context); // Selected HQ code in master sync ,it will be changed if any other HQ selected in Add Plan
 
@@ -99,7 +97,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         try {
             JSONArray jsonArray = new JSONArray();
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.TP_SETUP).getMasterSyncDataJsonArray();
-            for (int i = 0; i < jsonArray.length(); i++) {
+            for (int i = 0; i<jsonArray.length(); i++) {
                 drNeed = jsonArray.getJSONObject(i).getString("DrNeed");
                 chemistNeed = jsonArray.getJSONObject(i).getString("ChmNeed");
                 jwNeed = jsonArray.getJSONObject(i).getString("JWNeed");
@@ -117,36 +115,36 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public static void setSelectedCount(MyViewHolder holder, ArrayList<EditModelClass> arrayList, boolean selectState, TextView selectedNameTxtView, TextView countTxt) {
 
-        if (!selectState) { // if its false we should show the text as "Selected" with count or just "Select" .if its true we need to show the selected item name in TextView.
+        if(!selectState) { // if its false we should show the text as "Selected" with count or just "Select" .if its true we need to show the selected item name in TextView.
             int count = 0;
-            for (int i = 0; i < arrayList.size(); i++) {
-                if (arrayList.get(i).isChecked())
+            for (int i = 0; i<arrayList.size(); i++) {
+                if(arrayList.get(i).isChecked())
                     count++;
             }
 
-            if (count > 0) {
+            if(count>0) {
                 selectedNameTxtView.setText("Selected");
                 countTxt.setVisibility(View.VISIBLE);
                 countTxt.setText(String.valueOf(count));
-            } else {
+            }else {
                 selectedNameTxtView.setText("Select");
                 countTxt.setVisibility(View.GONE);
             }
             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
             holder.fieldSelected = true;
-        } else {
+        }else {
             StringBuilder text = new StringBuilder();
-            for (int i = 0; i < arrayList.size(); i++) {
-                if (arrayList.get(i).isChecked()) {
-                    if (text.length() == 0)
+            for (int i = 0; i<arrayList.size(); i++) {
+                if(arrayList.get(i).isChecked()) {
+                    if(text.length() == 0)
                         text = new StringBuilder(arrayList.get(i).getName());
                     else
                         text.append(",").append(arrayList.get(i).getName());
                 }
             }
-            if (text.length() == 0) {
+            if(text.length() == 0) {
                 selectedNameTxtView.setText("Select");
-            } else {
+            }else {
                 selectedNameTxtView.setText(text);
             }
             countTxt.setVisibility(View.GONE);
@@ -154,36 +152,36 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.fieldSelected = false;
 
             List<ModelClass.SessionList.SubClass> subClassList = new ArrayList<>();
-            for (int i = 0; i < arrayList.size(); i++) {
-                if (arrayList.get(i).isChecked()) {
+            for (int i = 0; i<arrayList.size(); i++) {
+                if(arrayList.get(i).isChecked()) {
                     ModelClass.SessionList.SubClass subClass = new ModelClass.SessionList.SubClass(arrayList.get(i).getName(), arrayList.get(i).getCode());
                     subClassList.add(subClass);
                 }
             }
 
             //replace the new/modified data to the input data of this adapter class
-            if (holder.clusterLayout.getVisibility() == View.VISIBLE) {
+            if(holder.clusterLayout.getVisibility() == View.VISIBLE) {
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCluster().clear();
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCluster(subClassList);
-            } else if (holder.jcLayout.getVisibility() == View.VISIBLE) {
+            }else if(holder.jcLayout.getVisibility() == View.VISIBLE) {
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getJC().clear();
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setJC(subClassList);
-            } else if (holder.drLayout.getVisibility() == View.VISIBLE) {
+            }else if(holder.drLayout.getVisibility() == View.VISIBLE) {
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassList);
-            } else if (holder.chemistLayout.getVisibility() == View.VISIBLE) {
+            }else if(holder.chemistLayout.getVisibility() == View.VISIBLE) {
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassList);
-            } else if (holder.stockiestLayout.getVisibility() == View.VISIBLE) {
+            }else if(holder.stockiestLayout.getVisibility() == View.VISIBLE) {
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getStockiest().clear();
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setStockiest(subClassList);
-            } else if (holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
+            }else if(holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnListedDr().clear();
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnListedDr(subClassList);
-            } else if (holder.cipLayout.getVisibility() == View.VISIBLE) {
+            }else if(holder.cipLayout.getVisibility() == View.VISIBLE) {
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassList);
-            } else if (holder.hospLayout.getVisibility() == View.VISIBLE) {
+            }else if(holder.hospLayout.getVisibility() == View.VISIBLE) {
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassList);
             }
@@ -212,34 +210,46 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.cipModelArray = new ArrayList<>(holder.sessionData.getCip());
         holder.hospitalModelArray = new ArrayList<>(holder.sessionData.getHospital());
         designation = SharedPref.getDesig(context);
-        if (holder.sessionData.getVisible()) {
+        if(holder.sessionData.getVisible()) {
             holder.itemView.setVisibility(View.VISIBLE);
             holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        } else {
+        }else {
             holder.itemView.setVisibility(View.GONE);
             holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
         }
 
         holder.sessionNoTxt.setText("Session " + (position + 1));
-        if (holder.getAbsoluteAdapterPosition() == 0) { //No need to show delete icon if there is only one session
-            if (inputDataArray.getSessionList().size() > 1)
+        if(holder.getAbsoluteAdapterPosition() == 0) { //No need to show delete icon if there is only one session
+            if(inputDataArray.getSessionList().size()>1)
                 holder.sessionDelete.setVisibility(View.VISIBLE);
             else
                 holder.sessionDelete.setVisibility(View.GONE);
 
         }
 
+        //Work Day
+        if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+            holder.workDayLayout.setVisibility(View.VISIBLE);
+            if(inputDataArray.getSTPCode().isEmpty()) {
+                holder.workDayField.setText("Select");
+            }else {
+                holder.workDayField.setText(inputDataArray.getSTPName());
+            }
+        }else {
+            holder.workDayLayout.setVisibility(View.GONE);
+        }
+
         //work Type
-        if (holder.sessionData.getWorkType().getName().equals("")) {
+        if(holder.sessionData.getWorkType().getName().equals("")) {
             holder.workTypeField.setText("Select");
-        } else {
+        }else {
             holder.workTypeField.setText(holder.sessionData.getWorkType().getName());
         }
 
-        if (holder.sessionData.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // Y - yes
+        if(holder.sessionData.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // Y - yes
             holder.hqNeed = "0"; // 0 - Yes
             holder.clusterNeed = "0";
-        } else if (holder.sessionData.getWorkType().getTerrSlFlg().equalsIgnoreCase("N")) {
+        }else if(holder.sessionData.getWorkType().getTerrSlFlg().equalsIgnoreCase("N")) {
             holder.hqNeed = "1"; // 1 - No
             holder.clusterNeed = "1";
         }
@@ -254,141 +264,149 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 holder.hqField.setText(holder.sessionData.getHQ().getName());
                 holder.selectedHq = holder.sessionData.getHQ().getCode();
                 break;
-            case "MGR" :
-                if (holder.sessionData.getHQ().getName().equals("")) {
+            case "MGR":
+                if(holder.sessionData.getHQ().getName().equals("")) {
                     holder.hqField.setText("Select");
-                } else {
+                }else {
 
                     holder.hqField.setText(holder.sessionData.getHQ().getName());
                     holder.selectedHq = holder.sessionData.getHQ().getCode();
                 }
+                if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+                    holder.hqLayout.setVisibility(View.GONE);
+                }
 
         }
-        if (SharedPref.getWrkAreaName(context).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)){
+        if(SharedPref.getWrkAreaName(context).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)) {
             holder.textCluster.setText("Cluster");
-        }else{
+        }else {
             holder.textCluster.setText(SharedPref.getWrkAreaName(context));
         }
 
-        if (!holder.selectedHq.equals("")) {
+        if(!holder.selectedHq.equals("")) {
             getDataFromLocal(holder, holder.selectedHq);
         }
 
         //Cluster
         StringBuilder clusterName = new StringBuilder();
-        for (int i = 0; i < holder.clusterModelArray.size(); i++) {
-            if (clusterName.length() == 0) {
+        for (int i = 0; i<holder.clusterModelArray.size(); i++) {
+            if(clusterName.length() == 0) {
                 clusterName = new StringBuilder(holder.clusterModelArray.get(i).getName());
-            } else {
+            }else {
                 clusterName.append(", ").append(holder.clusterModelArray.get(i).getName());
             }
         }
-        if (clusterName.length() > 0) {
+        if(clusterName.length()>0) {
             holder.clusterField.setText(clusterName);
         }
         prepareInputData(holder.clusterModelArray, holder.clusterArray);
 
         holder.selectedClusterCode.clear();
-        for (int i = 0; i < holder.clusterModelArray.size(); i++) {
+        for (int i = 0; i<holder.clusterModelArray.size(); i++) {
             holder.selectedClusterCode.add(holder.clusterModelArray.get(i).getCode());
         }
 
         //Joint Work
         StringBuilder jcName = new StringBuilder();
-        for (int i = 0; i < holder.jcModelArray.size(); i++) {
-            if (jcName.length() == 0) {
-                jcName = new StringBuilder(holder.jcModelArray.get(i).getName());
-            } else {
-                jcName.append(", ").append(holder.jcModelArray.get(i).getName());
+        if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+            holder.jcLayout.setVisibility(View.GONE);
+        }else {
+            holder.jcLayout.setVisibility(View.VISIBLE);
+            for (int i = 0; i<holder.jcModelArray.size(); i++) {
+                if(jcName.length() == 0) {
+                    jcName = new StringBuilder(holder.jcModelArray.get(i).getName());
+                }else {
+                    jcName.append(", ").append(holder.jcModelArray.get(i).getName());
+                }
             }
+            if(jcName.length()>0) {
+                holder.jcField.setText(jcName);
+            }
+            prepareInputData(holder.jcModelArray, holder.jointCallArray);
         }
-        if (jcName.length() > 0) {
-            holder.jcField.setText(jcName);
-        }
-        prepareInputData(holder.jcModelArray, holder.jointCallArray);
 
         //Dr
         StringBuilder drName = new StringBuilder();
-        for (int i = 0; i < holder.listedDrModelArray.size(); i++) {
-            if (drName.length() == 0) {
+        for (int i = 0; i<holder.listedDrModelArray.size(); i++) {
+            if(drName.length() == 0) {
                 drName = new StringBuilder(holder.listedDrModelArray.get(i).getName());
-            } else {
+            }else {
                 drName.append(", ").append(holder.listedDrModelArray.get(i).getName());
             }
         }
-        if (drName.length() > 0) {
+        if(drName.length()>0) {
             holder.drField.setText(drName);
         }
         prepareInputData(holder.listedDrModelArray, holder.listedDrArray);
 
         //Chemist
         StringBuilder chemistName = new StringBuilder();
-        for (int i = 0; i < holder.chemistModelArray.size(); i++) {
-            if (chemistName.length() == 0) {
+        for (int i = 0; i<holder.chemistModelArray.size(); i++) {
+            if(chemistName.length() == 0) {
                 chemistName = new StringBuilder(holder.chemistModelArray.get(i).getName());
-            } else {
+            }else {
                 chemistName.append(", ").append(holder.chemistModelArray.get(i).getName());
             }
         }
-        if (chemistName.length() > 0) {
+        if(chemistName.length()>0) {
             holder.chemistField.setText(chemistName);
         }
         prepareInputData(holder.chemistModelArray, holder.chemistArray);
 
         //Stockiest
         StringBuilder stockiestName = new StringBuilder();
-        for (int i = 0; i < holder.stockiestModelArray.size(); i++) {
-            if (stockiestName.length() == 0) {
+        for (int i = 0; i<holder.stockiestModelArray.size(); i++) {
+            if(stockiestName.length() == 0) {
                 stockiestName = new StringBuilder(holder.stockiestModelArray.get(i).getName());
-            } else {
+            }else {
                 stockiestName.append(", ").append(holder.stockiestModelArray.get(i).getName());
             }
         }
-        if (stockiestName.length() > 0) {
+        if(stockiestName.length()>0) {
             holder.stockiestField.setText(stockiestName);
         }
         prepareInputData(holder.stockiestModelArray, holder.stockiestArray);
 
         //UnListed Doctor
         StringBuilder unListedDrName = new StringBuilder();
-        for (int i = 0; i < holder.unListedDrModelArray.size(); i++) {
-            if (unListedDrName.length() == 0) {
+        for (int i = 0; i<holder.unListedDrModelArray.size(); i++) {
+            if(unListedDrName.length() == 0) {
                 unListedDrName = new StringBuilder(holder.unListedDrModelArray.get(i).getName());
-            } else {
+            }else {
                 unListedDrName.append(", ").append(holder.unListedDrModelArray.get(i).getName());
             }
 
         }
-        if (unListedDrName.length() > 0) {
+        if(unListedDrName.length()>0) {
             holder.unListedDrField.setText(unListedDrName);
         }
         prepareInputData(holder.unListedDrModelArray, holder.unListedDrArray);
 
         //Cip
         StringBuilder cipName = new StringBuilder();
-        for (int i = 0; i < holder.cipModelArray.size(); i++) {
-            if (cipName.length() == 0) {
+        for (int i = 0; i<holder.cipModelArray.size(); i++) {
+            if(cipName.length() == 0) {
                 cipName = new StringBuilder(holder.cipModelArray.get(i).getName());
-            } else {
+            }else {
                 cipName.append(",").append(holder.cipModelArray.get(i).getName());
             }
 
         }
-        if (cipName.length() > 0) {
+        if(cipName.length()>0) {
             holder.cipField.setText(cipName);
         }
         prepareInputData(holder.cipModelArray, holder.cipArray);
 
         //Hospital
         StringBuilder hospName = new StringBuilder();
-        for (int i = 0; i < holder.hospitalModelArray.size(); i++) {
-            if (hospName.length() == 0) {
+        for (int i = 0; i<holder.hospitalModelArray.size(); i++) {
+            if(hospName.length() == 0) {
                 hospName = new StringBuilder(holder.hospitalModelArray.get(i).getName());
-            } else {
+            }else {
                 jcName.append(", ").append(holder.hospitalModelArray.get(i).getName());
             }
         }
-        if (hospName.length() > 0) {
+        if(hospName.length()>0) {
             holder.hospField.setText(hospName);
         }
         prepareInputData(holder.hospitalModelArray, holder.hospArray);
@@ -402,9 +420,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() > 0) {
+                if(charSequence.length()>0) {
                     holder.searchClearIcon.setVisibility(View.VISIBLE);
-                } else {
+                }else {
                     holder.searchClearIcon.setVisibility(View.GONE);
                 }
                 sessionItemAdapter.getFilter().filter(charSequence);
@@ -419,7 +437,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.searchET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE) {
+                if(id == EditorInfo.IME_ACTION_DONE) {
                     UtilityClass.hideKeyboard((Activity) context);
                     return true;
                 }
@@ -439,13 +457,13 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             public void onClick(View view) {
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
-                if (!holder.fieldSelected) {
-                    if (holder.workTypeArray.size() == 0) {
+                if(!holder.fieldSelected) {
+                    if(holder.workTypeArray.size() == 0) {
                         holder.workTypeArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray());
                     }
                     ArrayList<EditModelClass> filteredArray = new ArrayList<>();
-                    for (int i = 0; i < holder.workTypeArray.size(); i++) {
-                        if (holder.workTypeArray.get(i).getTP_DCR().contains("T")) {
+                    for (int i = 0; i<holder.workTypeArray.size(); i++) {
+                        if(holder.workTypeArray.get(i).getTP_DCR().contains("T")) {
                             filteredArray.add(holder.workTypeArray.get(i));
                         }
                     }
@@ -453,7 +471,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     populateSessionItemAdapter(holder, false);
                     holder.fieldSelected = true;
                     onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_TYPE);
-                } else {
+                }else {
                     changeUIState(holder, holder.workTypeLayout, holder.workTypeArrow, true);
                     holder.fieldSelected = false;
                     onEdit(holder.getAbsoluteAdapterPosition(), true, "");
@@ -462,24 +480,64 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             }
         });
 
+        if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+            holder.workDayLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+                    if(!holder.fieldSelected) {
+                        ArrayList<EditModelClass> workDayArray = new ArrayList<>();
+                        if(holder.workDayArray.isEmpty()) {
+                            try {
+                                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
+                                if(jsonArray != null && jsonArray.length()>0) {
+                                    JSONObject jsonObject = jsonArray.optJSONObject(0);
+                                    String[] dayIDs = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_SName")).split("/");
+                                    String[] dayCaptions = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_Name")).split("/");
+                                    for (int index = 0; index<dayIDs.length; index++) {
+                                        if(!dayIDs[index].isEmpty()) {
+                                            workDayArray.add(new EditModelClass(dayIDs[index], dayCaptions[index], false));
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            holder.workDayArray = workDayArray;
+                        }
+                        holder.sessionItemAdapterArray = holder.workDayArray;
+                        populateSessionItemAdapter(holder, false);
+                        holder.fieldSelected = true;
+                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_DAY);
+                    }else {
+                        changeUIState(holder, holder.workDayLayout, holder.workDayArrow, true);
+                        holder.fieldSelected = false;
+                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                    }
+                    TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
+                }
+            });
+        }
+
         holder.hqLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder. searchET.setText("");
+                holder.searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
-                if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                } else {
-                    if (!holder.fieldSelected) {
-                        if (holder.hqArray.size() == 0) {
+                }else {
+                    if(!holder.fieldSelected) {
+                        if(holder.hqArray.size() == 0) {
                             holder.hqArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray());
                         }
                         holder.sessionItemAdapterArray = holder.hqArray;
                         populateSessionItemAdapter(holder, false);
                         holder.fieldSelected = true;
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.SUBORDINATE);
-                    } else {
+                    }else {
                         changeUIState(holder, holder.hqLayout, holder.hqArrow, true);
                         holder.fieldSelected = false;
                         onEdit(holder.getAbsoluteAdapterPosition(), true, "");
@@ -489,66 +547,68 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             }
         });
 
-        holder.clusterLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               holder. searchET.setText("");
-                itemPosition = holder.getLayoutPosition();
-                holder.relativeLayout.setSelected(false);
-                if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                } else {
-                    if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                    } else {
-                        if (!holder.fieldSelected) {
-                            if (holder.clusterArray.size() == 0) {
-                                holder.clusterArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + holder.selectedHq).getMasterSyncDataJsonArray());
-                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                            } else {
-                                setSelectedCount(holder, holder.clusterArray, false, holder.clusterField, holder.clusterCount);
+        if(!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0"))) {
+            holder.clusterLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+                    if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    }else {
+                        if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                        }else {
+                            if(!holder.fieldSelected) {
+                                if(holder.clusterArray.size() == 0) {
+                                    holder.clusterArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + holder.selectedHq).getMasterSyncDataJsonArray());
+                                    TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                                }else {
+                                    setSelectedCount(holder, holder.clusterArray, false, holder.clusterField, holder.clusterCount);
+                                }
+                                holder.fieldSelected = true;
+                                holder.sessionItemAdapterArray = holder.clusterArray;
+                                populateSessionItemAdapter(holder, true);
+                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CLUSTER);
+                            }else {
+                                holder.fieldSelected = false;
+                                setSelectedCount(holder, holder.clusterArray, true, holder.clusterField, holder.clusterCount);
+                                changeUIState(holder, holder.clusterLayout, holder.clusterArrow, true);
+                                onEdit(holder.getAbsoluteAdapterPosition(), true, "");
                             }
-                            holder.fieldSelected = true;
-                            holder.sessionItemAdapterArray = holder.clusterArray;
-                            populateSessionItemAdapter(holder, true);
-                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CLUSTER);
-                        } else {
-                            holder.fieldSelected = false;
-                            setSelectedCount(holder, holder.clusterArray, true, holder.clusterField, holder.clusterCount);
-                            changeUIState(holder, holder.clusterLayout, holder.clusterArrow, true);
-                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
                         }
                     }
                 }
-            }
-        });
+            });
+        }
 
         holder.jcLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder. searchET.setText("");
+                holder.searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
 
-                if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                } else {
-                    if (!holder.fieldSelected) {
-                        if (holder.jointCallArray.size() == 0) {
+                }else {
+                    if(!holder.fieldSelected) {
+                        if(holder.jointCallArray.size() == 0) {
                             holder.jointCallArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + holder.selectedHq).getMasterSyncDataJsonArray());
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        } else {
+                        }else {
                             setSelectedCount(holder, holder.jointCallArray, false, holder.jcField, holder.jcCount);
                         }
                         holder.fieldSelected = true;
                         holder.sessionItemAdapterArray = holder.jointCallArray;
                         populateSessionItemAdapter(holder, true);
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.JOINT_WORK);
-                    } else {
+                    }else {
                         holder.fieldSelected = false;
                         setSelectedCount(holder, holder.jointCallArray, true, holder.jcField, holder.jcCount);
                         changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
@@ -562,29 +622,29 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.drLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder. searchET.setText("");
+                holder.searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
 
-                if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                } else {
-                    if (!holder.fieldSelected) {
-                        if (holder.listedDrArray.size() == 0) {
+                }else {
+                    if(!holder.fieldSelected) {
+                        if(holder.listedDrArray.size() == 0) {
                             holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        } else {
+                        }else {
                             setSelectedCount(holder, holder.listedDrArray, false, holder.drField, holder.drCount);
                         }
                         holder.fieldSelected = true;
                         holder.sessionItemAdapterArray = filterJsonArray(holder, holder.listedDrArray);
                         populateSessionItemAdapter(holder, true);
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR);
-                    } else {
+                    }else {
                         holder.fieldSelected = false;
                         setSelectedCount(holder, holder.listedDrArray, true, holder.drField, holder.drCount);
                         changeUIState(holder, holder.drLayout, holder.drArrow, true);
@@ -597,23 +657,23 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.chemistLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder. searchET.setText("");
+                holder.searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
 
-                if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                } else {
+                }else {
 
-                    if (!holder.fieldSelected) {
-                        if (holder.chemistArray.size() == 0) {
+                    if(!holder.fieldSelected) {
+                        if(holder.chemistArray.size() == 0) {
                             holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + holder.selectedHq).getMasterSyncDataJsonArray());
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        } else {
+                        }else {
                             setSelectedCount(holder, holder.chemistArray, false, holder.chemistField, holder.chemistCount);
                         }
 
@@ -621,7 +681,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         holder.sessionItemAdapterArray = filterJsonArray(holder, holder.chemistArray);
                         populateSessionItemAdapter(holder, true);
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST);
-                    } else {
+                    }else {
                         holder.fieldSelected = false;
                         setSelectedCount(holder, holder.chemistArray, true, holder.chemistField, holder.chemistCount);
                         changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
@@ -636,26 +696,26 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             public void onClick(View view) {
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
-                holder. searchET.setText("");
-                if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                holder.searchET.setText("");
+                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                } else {
-                    if (!holder.fieldSelected) {
-                        if (holder.stockiestArray.size() == 0) {
+                }else {
+                    if(!holder.fieldSelected) {
+                        if(holder.stockiestArray.size() == 0) {
                             holder.stockiestArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + holder.selectedHq).getMasterSyncDataJsonArray());
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        } else {
+                        }else {
                             setSelectedCount(holder, holder.stockiestArray, false, holder.stockiestField, holder.stockiestCount);
                         }
                         holder.fieldSelected = true;
                         holder.sessionItemAdapterArray = holder.stockiestArray;
                         populateSessionItemAdapter(holder, true);
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST);
-                    } else {
+                    }else {
                         holder.fieldSelected = false;
                         setSelectedCount(holder, holder.stockiestArray, true, holder.stockiestField, holder.stockiestCount);
                         changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, true);
@@ -669,29 +729,29 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.unListedDrLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder. searchET.setText("");
+                holder.searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
 
-                if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                } else {
-                    if (!holder.fieldSelected) {
-                        if (holder.unListedDrArray.size() == 0) {
+                }else {
+                    if(!holder.fieldSelected) {
+                        if(holder.unListedDrArray.size() == 0) {
                             holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        } else {
+                        }else {
                             setSelectedCount(holder, holder.unListedDrArray, false, holder.unListedDrField, holder.unListedDrCount);
                         }
                         holder.fieldSelected = true;
                         holder.sessionItemAdapterArray = filterJsonArray(holder, holder.unListedDrArray);
                         populateSessionItemAdapter(holder, true);
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.UNLISTED_DOCTOR);
-                    } else {
+                    }else {
                         holder.fieldSelected = false;
                         setSelectedCount(holder, holder.unListedDrArray, true, holder.unListedDrField, holder.unListedDrCount);
                         changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, true);
@@ -705,29 +765,29 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.cipLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder. searchET.setText("");
+                holder.searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
 
-                if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                } else {
-                    if (!holder.fieldSelected) {
-                        if (holder.cipArray.size() == 0) {
+                }else {
+                    if(!holder.fieldSelected) {
+                        if(holder.cipArray.size() == 0) {
                             holder.cipArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CIP + holder.selectedHq).getMasterSyncDataJsonArray());
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        } else {
+                        }else {
                             setSelectedCount(holder, holder.cipArray, false, holder.cipField, holder.cipCount);
                         }
                         holder.fieldSelected = true;
                         holder.sessionItemAdapterArray = filterJsonArray(holder, holder.cipArray);
                         populateSessionItemAdapter(holder, true);
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CIP);
-                    } else {
+                    }else {
                         holder.fieldSelected = false;
                         setSelectedCount(holder, holder.cipArray, true, holder.cipField, holder.cipCount);
                         changeUIState(holder, holder.cipLayout, holder.cipArrow, true);
@@ -740,29 +800,29 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.hospLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder. searchET.setText("");
+                holder.searchET.setText("");
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
 
-                if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                } else {
-                    if (!holder.fieldSelected) {
-                        if (holder.hospArray.size() == 0) {
+                }else {
+                    if(!holder.fieldSelected) {
+                        if(holder.hospArray.size() == 0) {
                             holder.hospArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + holder.selectedHq).getMasterSyncDataJsonArray());
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        } else {
+                        }else {
                             setSelectedCount(holder, holder.hospArray, false, holder.hospField, holder.hospCount);
                         }
                         holder.fieldSelected = true;
                         holder.sessionItemAdapterArray = filterJsonArray(holder, holder.hospArray);
                         populateSessionItemAdapter(holder, true);
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.HOSPITAL);
-                    } else {
+                    }else {
                         holder.fieldSelected = false;
                         setSelectedCount(holder, holder.hospArray, true, holder.hospField, holder.hospCount);
                         changeUIState(holder, holder.hospLayout, holder.hospArrow, true);
@@ -774,9 +834,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
         holder.remarks.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                if (holder.remarks.hasFocus()) {
+                if(holder.remarks.hasFocus()) {
                     v.getParent().requestDisallowInterceptTouchEvent(true);
-                    if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_SCROLL) {
+                    if((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_SCROLL) {
                         v.getParent().requestDisallowInterceptTouchEvent(false);
                         return true;
                     }
@@ -788,7 +848,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.remarks.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if(actionId == EditorInfo.IME_ACTION_DONE) {
                     holder.sessionData.setRemarks(holder.remarks.getText().toString());
                 }
                 return false;
@@ -798,7 +858,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.remarks.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if (!b) {
+                if(!b) {
                     holder.sessionData.setRemarks(holder.remarks.getText().toString());
                 }
             }
@@ -821,34 +881,34 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     public void workTypeBasedUI(MyViewHolder holder, ModelClass.SessionList session, boolean bool) {
 
         String workType = session.getWorkType().getFWFlg();
-        switch (workType) {
-            case "F": {
-                if (holder.hqNeed.equalsIgnoreCase("0"))
+        switch (workType){
+            case "F":{
+                if(holder.hqNeed.equalsIgnoreCase("0"))
                     holder.hqLayout.setVisibility(View.VISIBLE);
-                else if (holder.hqNeed.equalsIgnoreCase("1"))
+                else if(holder.hqNeed.equalsIgnoreCase("1"))
                     holder.hqLayout.setVisibility(View.GONE);
 
-                if (holder.clusterNeed.equalsIgnoreCase("0"))
+                if(holder.clusterNeed.equalsIgnoreCase("0"))
                     holder.clusterLayout.setVisibility(View.VISIBLE);
-                else if (holder.clusterNeed.equalsIgnoreCase("1"))
+                else if(holder.clusterNeed.equalsIgnoreCase("1"))
                     holder.clusterLayout.setVisibility(View.GONE);
 
-                if (jwNeed.equalsIgnoreCase("0"))
+                if(jwNeed.equalsIgnoreCase("0"))
                     holder.jcLayout.setVisibility(View.VISIBLE);
                 else
                     holder.jcLayout.setVisibility(View.GONE);
 
-                if (drNeed.equalsIgnoreCase("0"))
+                if(drNeed.equalsIgnoreCase("0"))
                     holder.drLayout.setVisibility(View.VISIBLE);
                 else
                     holder.drLayout.setVisibility(View.GONE);
 
-                if (chemistNeed.equalsIgnoreCase("0"))
+                if(chemistNeed.equalsIgnoreCase("0"))
                     holder.chemistLayout.setVisibility(View.VISIBLE);
                 else
                     holder.chemistLayout.setVisibility(View.GONE);
 
-                if (stockiestNeed.equalsIgnoreCase("0"))
+                if(stockiestNeed.equalsIgnoreCase("0"))
                     holder.stockiestLayout.setVisibility(View.VISIBLE);
                 else
                     holder.stockiestLayout.setVisibility(View.GONE);
@@ -858,21 +918,26 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //                else
 //                    holder.unListedDrLayout.setVisibility(View.GONE);
 
-                if (cipNeed.equalsIgnoreCase("0"))
+                if(cipNeed.equalsIgnoreCase("0"))
                     holder.cipLayout.setVisibility(View.VISIBLE);
                 else
                     holder.cipLayout.setVisibility(View.GONE);
 
-                if (hospNeed.equalsIgnoreCase("0"))
+                if(hospNeed.equalsIgnoreCase("0"))
                     holder.hospLayout.setVisibility(View.VISIBLE);
                 else
                     holder.hospLayout.setVisibility(View.GONE);
 
+                if(SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0")) {
+                    holder.workDayLayout.setVisibility(View.VISIBLE);
+                } else {
+                    holder.workDayLayout.setVisibility(View.GONE);
+                }
                 break;
             }
             case "W":
             case "H":
-            case "L": {
+            case "L":{
                 holder.hqLayout.setVisibility(View.GONE);
                 holder.clusterLayout.setVisibility(View.GONE);
                 holder.jcLayout.setVisibility(View.GONE);
@@ -882,25 +947,26 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 holder.unListedDrLayout.setVisibility(View.GONE);
                 holder.cipLayout.setVisibility(View.GONE);
                 holder.hospLayout.setVisibility(View.GONE);
+                holder.workDayLayout.setVisibility(View.GONE);
                 break;
             }
-            case "N": {
-                if (session.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
-                    if (holder.hqNeed.equalsIgnoreCase("0"))
+            case "N":{
+                if(session.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
+                    if(holder.hqNeed.equalsIgnoreCase("0"))
                         holder.hqLayout.setVisibility(View.VISIBLE);
-                    else if (holder.hqNeed.equalsIgnoreCase("1"))
+                    else if(holder.hqNeed.equalsIgnoreCase("1"))
                         holder.hqLayout.setVisibility(View.GONE);
 
-                    if (holder.clusterNeed.equalsIgnoreCase("0"))
+                    if(holder.clusterNeed.equalsIgnoreCase("0"))
                         holder.clusterLayout.setVisibility(View.VISIBLE);
-                    else if (holder.clusterNeed.equalsIgnoreCase("1"))
+                    else if(holder.clusterNeed.equalsIgnoreCase("1"))
                         holder.clusterLayout.setVisibility(View.GONE);
 
-                    if (jwNeed.equalsIgnoreCase("0"))
+                    if(jwNeed.equalsIgnoreCase("0"))
                         holder.jcLayout.setVisibility(View.VISIBLE);
-                    else if (jwNeed.equalsIgnoreCase("1"))
+                    else if(jwNeed.equalsIgnoreCase("1"))
                         holder.jcLayout.setVisibility(View.GONE);
-                } else {
+                }else {
                     holder.hqLayout.setVisibility(View.GONE);
                     holder.clusterLayout.setVisibility(View.GONE);
                     holder.jcLayout.setVisibility(View.GONE);
@@ -912,35 +978,36 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 holder.unListedDrLayout.setVisibility(View.GONE);
                 holder.cipLayout.setVisibility(View.GONE);
                 holder.hospLayout.setVisibility(View.GONE);
+                holder.workDayLayout.setVisibility(View.GONE);
                 break;
             }
-            default: {
-                if (holder.hqNeed.equalsIgnoreCase("0"))
+            default:{
+                if(holder.hqNeed.equalsIgnoreCase("0"))
                     holder.hqLayout.setVisibility(View.VISIBLE);
-                else if (holder.hqNeed.equalsIgnoreCase("1"))
+                else if(holder.hqNeed.equalsIgnoreCase("1"))
                     holder.hqLayout.setVisibility(View.GONE);
 
-                if (holder.clusterNeed.equalsIgnoreCase("0"))
+                if(holder.clusterNeed.equalsIgnoreCase("0"))
                     holder.clusterLayout.setVisibility(View.VISIBLE);
-                else if (holder.clusterNeed.equalsIgnoreCase("1"))
+                else if(holder.clusterNeed.equalsIgnoreCase("1"))
                     holder.clusterLayout.setVisibility(View.GONE);
 
-                if (jwNeed.equalsIgnoreCase("0"))
+                if(jwNeed.equalsIgnoreCase("0"))
                     holder.jcLayout.setVisibility(View.VISIBLE);
                 else
                     holder.jcLayout.setVisibility(View.GONE);
 
-                if (drNeed.equalsIgnoreCase("0"))
+                if(drNeed.equalsIgnoreCase("0"))
                     holder.drLayout.setVisibility(View.VISIBLE);
                 else
                     holder.drLayout.setVisibility(View.GONE);
 
-                if (chemistNeed.equalsIgnoreCase("0"))
+                if(chemistNeed.equalsIgnoreCase("0"))
                     holder.chemistLayout.setVisibility(View.VISIBLE);
                 else
                     holder.chemistLayout.setVisibility(View.GONE);
 
-                if (stockiestNeed.equalsIgnoreCase("0"))
+                if(stockiestNeed.equalsIgnoreCase("0"))
                     holder.stockiestLayout.setVisibility(View.VISIBLE);
                 else
                     holder.stockiestLayout.setVisibility(View.GONE);
@@ -950,58 +1017,68 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //                else
 //                    holder.unListedDrLayout.setVisibility(View.GONE);
 
-                if (cipNeed.equalsIgnoreCase("0"))
+                if(cipNeed.equalsIgnoreCase("0"))
                     holder.cipLayout.setVisibility(View.VISIBLE);
                 else
                     holder.cipLayout.setVisibility(View.GONE);
 
-                if (hospNeed.equalsIgnoreCase("0"))
+                if(hospNeed.equalsIgnoreCase("0"))
                     holder.hospLayout.setVisibility(View.VISIBLE);
                 else
                     holder.hospLayout.setVisibility(View.GONE);
+
+                if(SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0")) {
+                    holder.workDayLayout.setVisibility(View.VISIBLE);
+                } else {
+                    holder.workDayLayout.setVisibility(View.GONE);
+                }
             }
         }
 
-        if (bool) {
-            switch (session.getLayoutVisible()) {
-                case Constants.WORK_TYPE: {
+        if(bool) {
+            switch (session.getLayoutVisible()){
+                case Constants.WORK_TYPE:{
                     changeUIState(holder, holder.workTypeLayout, holder.workTypeArrow, false);
                     break;
                 }
-                case Constants.SUBORDINATE: {
+                case Constants.SUBORDINATE:{
                     changeUIState(holder, holder.hqLayout, holder.hqArrow, false);
                     break;
                 }
-                case Constants.CLUSTER: {
+                case Constants.CLUSTER:{
                     changeUIState(holder, holder.clusterLayout, holder.clusterArrow, false);
                     break;
                 }
-                case Constants.JOINT_WORK: {
+                case Constants.JOINT_WORK:{
                     changeUIState(holder, holder.jcLayout, holder.jcArrow, false);
                     break;
                 }
-                case Constants.DOCTOR: {
+                case Constants.DOCTOR:{
                     changeUIState(holder, holder.drLayout, holder.drArrow, false);
                     break;
                 }
-                case Constants.CHEMIST: {
+                case Constants.CHEMIST:{
                     changeUIState(holder, holder.chemistLayout, holder.chemistArrow, false);
                     break;
                 }
-                case Constants.STOCKIEST: {
+                case Constants.STOCKIEST:{
                     changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, false);
                     break;
                 }
-                case Constants.UNLISTED_DOCTOR: {
+                case Constants.UNLISTED_DOCTOR:{
                     changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, false);
                     break;
                 }
-                case Constants.CIP: {
+                case Constants.CIP:{
                     changeUIState(holder, holder.cipLayout, holder.cipArrow, false);
                     break;
                 }
-                case Constants.HOSPITAL: {
+                case Constants.HOSPITAL:{
                     changeUIState(holder, holder.hospLayout, holder.hospArrow, false);
+                    break;
+                }
+                case Constants.WORK_DAY:{
+                    changeUIState(holder, holder.workDayLayout, holder.workDayArrow, false);
                     break;
                 }
             }
@@ -1011,8 +1088,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public void getDataFromLocal(MyViewHolder holder, String hqCode) {
 
-        if (!masterDataDao.getMasterSyncDataOfHQ(Constants.CLUSTER + hqCode)) {
-            prepareMasterToSync(holder,hqCode);
+        if(!masterDataDao.getMasterSyncDataOfHQ(Constants.CLUSTER + hqCode)) {
+            prepareMasterToSync(holder, hqCode);
         }
 
         holder.clusterArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + hqCode).getMasterSyncDataJsonArray());
@@ -1028,24 +1105,25 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     }
 
     public ArrayList<EditModelClass> convertJSONToModel(JSONArray jsonArray) {
-        ArrayList<String> IDs=new ArrayList<>();
-        ArrayList<EditModelClass> MainList=new ArrayList<>();
+        ArrayList<String> IDs = new ArrayList<>();
+        ArrayList<EditModelClass> MainList = new ArrayList<>();
         Type type = new TypeToken<ArrayList<EditModelClass>>() {
         }.getType();
-        ArrayList<EditModelClass>  Lister=new Gson().fromJson(String.valueOf(jsonArray), type);
+        ArrayList<EditModelClass> Lister = new Gson().fromJson(String.valueOf(jsonArray), type);
 
-        for (EditModelClass list: Lister){
-            if(!IDs.contains(list.getCode())){
+        for (EditModelClass list : Lister) {
+            if(!IDs.contains(list.getCode())) {
                 IDs.add(list.getCode());
                 MainList.add(list);
-            }}
+            }
+        }
 
         return MainList;
     }
 
-    public void prepareMasterToSync(MyViewHolder holder ,String hqCode) {
+    public void prepareMasterToSync(MyViewHolder holder, String hqCode) {
         holder.progress_hq.setVisibility(View.VISIBLE);
-        synccount=0;
+        synccount = 0;
         masterSyncArray.clear();
         MasterSyncItemModel doctorModel = new MasterSyncItemModel(Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode);
         MasterSyncItemModel cheModel = new MasterSyncItemModel(Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode);
@@ -1064,21 +1142,21 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //        masterSyncArray.add(ciModel);
         masterSyncArray.add(cluster);
         masterSyncArray.add(jWorkModel);
-        for (int i = 0; i < masterSyncArray.size(); i++) {
-            sync(masterSyncArray.get(i), hqCode,holder);
+        for (int i = 0; i<masterSyncArray.size(); i++) {
+            sync(masterSyncArray.get(i), hqCode, holder);
         }
     }
 
-    public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode,MyViewHolder holder) {
+    public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode, MyViewHolder holder) {
 
-        if (UtilityClass.isNetworkAvailable(context)) {
+        if(UtilityClass.isNetworkAvailable(context)) {
             try {
                 String baseUrl = SharedPref.getBaseWebUrl(context);
                 String pathUrl = SharedPref.getPhpPathUrl(context);
                 String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
                 apiInterface = RetrofitClient.getRetrofit(context, baseUrl + replacedUrl);
 
-                JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(context);
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
                 jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
                 jsonObject.put("sfcode", SharedPref.getSfCode(context));
                 jsonObject.put("division_code", SharedPref.getDivisionCode(context));
@@ -1088,45 +1166,45 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //                Log.e("test","master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;
                 Map<String, String> mapString = new HashMap<>();
-                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.DOCTOR)) {
+                if(masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.DOCTOR)) {
                     mapString.put("axn", "table/dcrmasterdata");
                     call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-                } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.SUBORDINATE)) {
+                }else if(masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.SUBORDINATE)) {
                     mapString.put("axn", "table/subordinates");
-                    call  = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context),mapString,jsonObject.toString());
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
                 }
 
-                if (call != null) {
+                if(call != null) {
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
 
                             boolean success = false;
-                            if (response.isSuccessful()) {
+                            if(response.isSuccessful()) {
 //                                Log.e("test","response : " + masterSyncItemModel.getRemoteTableName() +" : " + response.body().toString());
                                 try {
                                     JsonElement jsonElement = response.body();
                                     JSONArray jsonArray = new JSONArray();
-                                    if (!jsonElement.isJsonNull()) {
-                                        if (jsonElement.isJsonArray()) {
+                                    if(!jsonElement.isJsonNull()) {
+                                        if(jsonElement.isJsonArray()) {
                                             JsonArray jsonArray1 = jsonElement.getAsJsonArray();
                                             jsonArray = new JSONArray(jsonArray1.toString());
                                             success = true;
-                                        } else if (jsonElement.isJsonObject()) {
+                                        }else if(jsonElement.isJsonObject()) {
                                             JsonObject jsonObject = jsonElement.getAsJsonObject();
                                             JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
-                                            if (!jsonObject1.has("success")) { // json object with "success" : "fail" will be received only when api call is failed ,"success will not be received when api call is success
+                                            if(!jsonObject1.has("success")) { // json object with "success" : "fail" will be received only when api call is failed ,"success will not be received when api call is success
                                                 jsonArray.put(jsonObject1);
                                                 success = true;
-                                            } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
+                                            }else if(jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
                                                 masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                             }
                                         }
 
-                                        if (success) {
+                                        if(success) {
                                             masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 2));
                                         }
-                                    } else {
+                                    }else {
                                         masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                     }
                                 } catch (JSONException e) {
@@ -1134,7 +1212,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 }
                             }
                             synccount++;
-                            if(synccount==6){
+                            if(synccount == 6) {
                                 holder.progress_hq.setVisibility(View.GONE);
                             }
                         }
@@ -1144,7 +1222,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             Log.e("test", "failed : " + t);
                             masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                             synccount++;
-                            if(synccount==6){
+                            if(synccount == 6) {
                                 holder.progress_hq.setVisibility(View.GONE);
                             }
                         }
@@ -1153,17 +1231,17 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else {
+        }else {
             commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
         }
     }
 
     public void prepareInputData(ArrayList<ModelClass.SessionList.SubClass> modelClass, ArrayList<EditModelClass> arrayList) {
 
-        if (modelClass.size() > 0) {
-            for (int i = 0; i < modelClass.size(); i++) {
-                for (int j = 0; j < arrayList.size(); j++) {
-                    if (modelClass.get(i).getCode().equalsIgnoreCase(arrayList.get(j).getCode())) {
+        if(modelClass.size()>0) {
+            for (int i = 0; i<modelClass.size(); i++) {
+                for (int j = 0; j<arrayList.size(); j++) {
+                    if(modelClass.get(i).getCode().equalsIgnoreCase(arrayList.get(j).getCode())) {
                         arrayList.get(j).setChecked(true);
                     }
                 }
@@ -1183,28 +1261,28 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, checkBoxNeed, new SessionItemInterface() {
             @Override
             public void itemClicked(ArrayList<EditModelClass> jsonArray, EditModelClass jsonObject) {
-                if (holder.workTypeLayout.getVisibility() == View.VISIBLE) {
+                if(holder.workTypeLayout.getVisibility() == View.VISIBLE) {
                     boolean workTypeRepeated = false;
-                    if (inputDataArray.getSessionList().size() > 1) {
-                        for (int i = 0; i < inputDataArray.getSessionList().size(); i++) {
-                            if (i != holder.getAbsoluteAdapterPosition()) {
-                                if (inputDataArray.getSessionList().get(i).getWorkType().getCode().equalsIgnoreCase(jsonObject.getCode())) {
-                                    switch (jsonObject.getFWFlg().toUpperCase()) {
+                    if(inputDataArray.getSessionList().size()>1) {
+                        for (int i = 0; i<inputDataArray.getSessionList().size(); i++) {
+                            if(i != holder.getAbsoluteAdapterPosition()) {
+                                if(inputDataArray.getSessionList().get(i).getWorkType().getCode().equalsIgnoreCase(jsonObject.getCode())) {
+                                    switch (jsonObject.getFWFlg().toUpperCase()){
                                         case "W":
-                                        case "H": {
+                                        case "H":{
                                             workTypeRepeated = true;
                                             commonUtilsMethods.showToastMessage(context, context.getString(R.string.wt_already_selected) + (i + 1));
                                             break;
                                         }
-                                        case "N": {
-                                            if (inputDataArray.getSessionList().get(i).getWorkType().getCode().equalsIgnoreCase(jsonObject.getCode())) {
+                                        case "N":{
+                                            if(inputDataArray.getSessionList().get(i).getWorkType().getCode().equalsIgnoreCase(jsonObject.getCode())) {
                                                 workTypeRepeated = true;
                                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.wt_already_selected) + (i + 1));
                                                 break;
                                             }
                                         }
-                                        case "F": {
-                                            if (!sfType.equalsIgnoreCase("2")) {
+                                        case "F":{
+                                            if(!sfType.equalsIgnoreCase("2")) {
                                                 workTypeRepeated = true;
                                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.wt_already_selected) + (i + 1));
                                                 break;
@@ -1216,7 +1294,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                     }
 
-                    if (!workTypeRepeated) {
+                    if(!workTypeRepeated) {
                         holder.workTypeField.setText(jsonObject.getName());
                         holder.sessionData.getWorkType().setName(jsonObject.getName());
                         holder.sessionData.getWorkType().setCode(jsonObject.getCode());
@@ -1225,15 +1303,15 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
                         sessionInterface.fieldWorkSelected(inputDataArray, holder.getAbsoluteAdapterPosition());
                     }
-                } else if (holder.hqLayout.getVisibility() == View.VISIBLE) {
+                }else if(holder.hqLayout.getVisibility() == View.VISIBLE) {
 
                     boolean hqRepeated = false;
-                    if (inputDataArray.getSessionList().size() > 1) {
-                        for (int i = 0; i < inputDataArray.getSessionList().size(); i++) {
+                    if(inputDataArray.getSessionList().size()>1) {
+                        for (int i = 0; i<inputDataArray.getSessionList().size(); i++) {
                             ModelClass.SessionList modelClass = inputDataArray.getSessionList().get(i);
-                            if (i != holder.getAbsoluteAdapterPosition()) {
-                                if (modelClass.getWorkType().getFWFlg().equalsIgnoreCase(inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getWorkType().getFWFlg())) {
-                                    if (modelClass.getHQ().getCode().equalsIgnoreCase(jsonObject.getCode())) {
+                            if(i != holder.getAbsoluteAdapterPosition()) {
+                                if(modelClass.getWorkType().getFWFlg().equalsIgnoreCase(inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getWorkType().getFWFlg())) {
+                                    if(modelClass.getHQ().getCode().equalsIgnoreCase(jsonObject.getCode())) {
                                         hqRepeated = true;
                                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.hq_already_selected) + (i + 1));
                                         break;
@@ -1243,140 +1321,145 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                     }
 
-                    if (!hqRepeated) {
+                    if(!hqRepeated) {
                         holder.sessionData.getHQ().setName(jsonObject.getName());
                         holder.sessionData.getHQ().setCode(jsonObject.getCode());
 
                         holder.hq_code = jsonObject.getCode();
-                        if (!holder.selectedHq.equalsIgnoreCase(holder.hq_code)) {
+                        if(!holder.selectedHq.equalsIgnoreCase(holder.hq_code)) {
                             holder.selectedHq = holder.hq_code;
                             sessionInterface.hqChanged(inputDataArray, itemPosition, true);
-                        } else {
+                        }else {
                             sessionInterface.hqChanged(inputDataArray, itemPosition, false);
                         }
                     }
-                } else if (holder.clusterLayout.getVisibility() == View.VISIBLE) {
+                }else if(holder.clusterLayout.getVisibility() == View.VISIBLE) {
                     int count = 0;
-                    for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
-                        if (holder.sessionItemAdapterArray.get(i).isChecked()) {
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
                             count++;
                         }
                     }
 
-                    if (count > 0) {
+                    if(count>0) {
                         holder.clusterField.setText("Selected");
                         holder.clusterCount.setVisibility(View.VISIBLE);
                         holder.clusterCount.setText(String.valueOf(count));
-                    } else {
+                    }else {
                         holder.clusterField.setText("Select");
                         holder.clusterCount.setVisibility(View.GONE);
                     }
-                } else if (holder.jcLayout.getVisibility() == View.VISIBLE) {
+                }else if(holder.jcLayout.getVisibility() == View.VISIBLE) {
                     int count = 0;
-                    for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
-                        if (holder.sessionItemAdapterArray.get(i).isChecked()) {
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
                             count++;
                         }
                     }
 
-                    if (count > 0) {
+                    if(count>0) {
                         holder.jcField.setText("Selected");
                         holder.jcCount.setVisibility(View.VISIBLE);
                         holder.jcCount.setText(String.valueOf(count));
-                    } else {
+                    }else {
                         holder.jcField.setText("Select");
                         holder.jcCount.setVisibility(View.GONE);
                     }
-                } else if (holder.drLayout.getVisibility() == View.VISIBLE) {
+                }else if(holder.drLayout.getVisibility() == View.VISIBLE) {
                     int count = 0;
-                    for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
-                        if (holder.sessionItemAdapterArray.get(i).isChecked()) {
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
                             count++;
                         }
                     }
-                    if (count > 0) {
+                    if(count>0) {
                         holder.drField.setText("Selected");
                         holder.drCount.setVisibility(View.VISIBLE);
                         holder.drCount.setText(String.valueOf(count));
-                    } else {
+                    }else {
                         holder.drField.setText("Select");
                         holder.drCount.setVisibility(View.GONE);
                     }
-                } else if (holder.chemistLayout.getVisibility() == View.VISIBLE) {
+                }else if(holder.chemistLayout.getVisibility() == View.VISIBLE) {
                     int count = 0;
-                    for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
-                        if (holder.sessionItemAdapterArray.get(i).isChecked()) {
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
                             count++;
                         }
                     }
-                    if (count > 0) {
+                    if(count>0) {
                         holder.chemistField.setText("Selected");
                         holder.chemistCount.setVisibility(View.VISIBLE);
                         holder.chemistCount.setText(String.valueOf(count));
-                    } else {
+                    }else {
                         holder.chemistField.setText("Select");
                         holder.chemistCount.setVisibility(View.GONE);
                     }
-                } else if (holder.stockiestLayout.getVisibility() == View.VISIBLE) {
+                }else if(holder.stockiestLayout.getVisibility() == View.VISIBLE) {
                     int count = 0;
-                    for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
-                        if (holder.sessionItemAdapterArray.get(i).isChecked()) {
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
                             count++;
                         }
                     }
-                    if (count > 0) {
+                    if(count>0) {
                         holder.stockiestField.setText("Selected");
                         holder.stockiestCount.setVisibility(View.VISIBLE);
                         holder.stockiestCount.setText(String.valueOf(count));
-                    } else {
+                    }else {
                         holder.stockiestField.setText("Select");
                         holder.stockiestCount.setVisibility(View.GONE);
                     }
-                } else if (holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
+                }else if(holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
                     int count = 0;
-                    for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
-                        if (holder.sessionItemAdapterArray.get(i).isChecked()) {
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
                             count++;
                         }
                     }
-                    if (count > 0) {
+                    if(count>0) {
                         holder.unListedDrField.setText("Selected");
                         holder.unListedDrCount.setVisibility(View.VISIBLE);
                         holder.unListedDrCount.setText(String.valueOf(count));
-                    } else {
+                    }else {
                         holder.unListedDrField.setText("Select");
                         holder.unListedDrCount.setVisibility(View.GONE);
                     }
-                } else if (holder.cipLayout.getVisibility() == View.VISIBLE) {
+                }else if(holder.cipLayout.getVisibility() == View.VISIBLE) {
                     int count = 0;
-                    for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
-                        if (holder.sessionItemAdapterArray.get(i).isChecked()) {
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
                             count++;
                         }
                     }
-                    if (count > 0) {
+                    if(count>0) {
                         holder.cipField.setText("Selected");
                         holder.cipCount.setVisibility(View.VISIBLE);
                         holder.cipCount.setText(String.valueOf(count));
-                    } else {
+                    }else {
                         holder.cipField.setText("Select");
                         holder.cipCount.setVisibility(View.GONE);
                     }
-                } else if (holder.hospLayout.getVisibility() == View.VISIBLE) {
+                }else if(holder.hospLayout.getVisibility() == View.VISIBLE) {
                     int count = 0;
-                    for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
-                        if (holder.sessionItemAdapterArray.get(i).isChecked()) {
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
                             count++;
                         }
                     }
-                    if (count > 0) {
+                    if(count>0) {
                         holder.hospField.setText("Selected");
                         holder.hospCount.setVisibility(View.VISIBLE);
                         holder.hospCount.setText(String.valueOf(count));
-                    } else {
+                    }else {
                         holder.hospField.setText("Select");
                         holder.hospCount.setVisibility(View.GONE);
                     }
+                }else if(holder.workDayLayout.getVisibility() == View.VISIBLE) {
+                    holder.workDayField.setText(jsonObject.getName());
+                    inputDataArray.setSTPName(jsonObject.getName());
+                    inputDataArray.setSTPCode(jsonObject.getCode());
+                    sessionInterface.workDayChanged(inputDataArray, itemPosition);
                 }
 
             }
@@ -1390,7 +1473,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public void changeUIState(MyViewHolder holder, LinearLayout linearLayout, ImageView imageView, boolean allLayoutVisible) {
 
-        if (allLayoutVisible) {
+        if(allLayoutVisible) {
             holder.workTypeLayout.setVisibility(View.VISIBLE);
             holder.remarksLayout.setVisibility(View.VISIBLE);
             imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.down_arrow));
@@ -1399,7 +1482,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
 
             workTypeBasedUI(holder, holder.sessionData, false);
-        } else {
+        }else {
             holder.workTypeLayout.setVisibility(View.GONE);
             holder.hqLayout.setVisibility(View.GONE);
             holder.clusterLayout.setVisibility(View.GONE);
@@ -1411,6 +1494,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.cipLayout.setVisibility(View.GONE);
             holder.hospLayout.setVisibility(View.GONE);
             holder.remarksLayout.setVisibility(View.GONE);
+            holder.workDayLayout.setVisibility(View.GONE);
             holder.listCardView.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.VISIBLE);
             imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.up_arrow));
@@ -1423,9 +1507,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public ArrayList<EditModelClass> filterJsonArray(MyViewHolder holder, ArrayList<EditModelClass> arrayList1) { // Filters based on selected cluster
         ArrayList<EditModelClass> arrayList = new ArrayList<>();
-        for (int i = 0; i < holder.selectedClusterCode.size(); i++) {
-            for (int j = 0; j < arrayList1.size(); j++) {
-                if (holder.selectedClusterCode.get(i).equalsIgnoreCase(arrayList1.get(j).getTown_Code())) { // filtering based on selected Cluster code
+        for (int i = 0; i<holder.selectedClusterCode.size(); i++) {
+            for (int j = 0; j<arrayList1.size(); j++) {
+                if(holder.selectedClusterCode.get(i).equalsIgnoreCase(arrayList1.get(j).getTown_Code())) { // filtering based on selected Cluster code
                     arrayList.add(arrayList1.get(j));
                 }
             }
@@ -1437,8 +1521,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     public void onEdit(int position, boolean visibility, String layoutVisible) {
         // to hide other sessions and also other fields of same session while select corresponding field at a time of edit
 
-        for (int i = 0; i < inputDataArray.getSessionList().size(); i++) {
-            if (i != position)
+        for (int i = 0; i<inputDataArray.getSessionList().size(); i++) {
+            if(i != position)
                 inputDataArray.getSessionList().get(i).setVisible(visibility); // set all other sessions visibility either true or false
             else
                 inputDataArray.getSessionList().get(i).setLayoutVisible(layoutVisible); // to set which one need to be visible at a time while edit of a same session.ex: when user click on session1 cluster then session1 cluster will only be visible
@@ -1450,28 +1534,28 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public void clearCheckBox(MyViewHolder holder) {
 
-        if (holder.clusterLayout.getVisibility() == View.VISIBLE) {
+        if(holder.clusterLayout.getVisibility() == View.VISIBLE) {
             clearSelectedItem(holder, holder.clusterField, holder.clusterCount);
-        } else if (holder.jcLayout.getVisibility() == View.VISIBLE) {
+        }else if(holder.jcLayout.getVisibility() == View.VISIBLE) {
             clearSelectedItem(holder, holder.jcField, holder.jcCount);
-        } else if (holder.drLayout.getVisibility() == View.VISIBLE) {
+        }else if(holder.drLayout.getVisibility() == View.VISIBLE) {
             clearSelectedItem(holder, holder.drField, holder.drCount);
-        } else if (holder.chemistLayout.getVisibility() == View.VISIBLE) {
+        }else if(holder.chemistLayout.getVisibility() == View.VISIBLE) {
             clearSelectedItem(holder, holder.chemistField, holder.chemistCount);
-        } else if (holder.stockiestLayout.getVisibility() == View.VISIBLE) {
+        }else if(holder.stockiestLayout.getVisibility() == View.VISIBLE) {
             clearSelectedItem(holder, holder.stockiestField, holder.stockiestCount);
-        } else if (holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
+        }else if(holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
             clearSelectedItem(holder, holder.unListedDrField, holder.unListedDrCount);
-        } else if (holder.cipLayout.getVisibility() == View.VISIBLE) {
+        }else if(holder.cipLayout.getVisibility() == View.VISIBLE) {
             clearSelectedItem(holder, holder.cipField, holder.cipCount);
-        } else if (holder.hospLayout.getVisibility() == View.VISIBLE) {
+        }else if(holder.hospLayout.getVisibility() == View.VISIBLE) {
             clearSelectedItem(holder, holder.hospField, holder.hospCount);
         }
     }
 
     public void clearSelectedItem(MyViewHolder holder, TextView labelTxt, TextView countTxt) {
         // un check the all check boxes
-        for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
+        for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
             holder.sessionItemAdapterArray.get(i).setChecked(false);
         }
         labelTxt.setText("Select");
@@ -1483,10 +1567,10 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public void saveCheckedItem(MyViewHolder holder) {
 
-        if (holder.clusterLayout.getVisibility() == View.VISIBLE) {
+        if(holder.clusterLayout.getVisibility() == View.VISIBLE) {
             holder.selectedClusterCode.clear();
-            for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
-                if (holder.sessionItemAdapterArray.get(i).isChecked()) {
+            for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                if(holder.sessionItemAdapterArray.get(i).isChecked()) {
                     holder.selectedClusterCode.add(holder.sessionItemAdapterArray.get(i).getCode());
                 }
             }
@@ -1501,25 +1585,25 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.clusterField, holder.clusterCount);
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setLayoutVisible("");
             sessionInterface.clusterChanged(inputDataArray, holder.getLayoutPosition());
-        } else if (holder.jcLayout.getVisibility() == View.VISIBLE) {
+        }else if(holder.jcLayout.getVisibility() == View.VISIBLE) {
             setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.jcField, holder.jcCount);
             changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
-        } else if (holder.drLayout.getVisibility() == View.VISIBLE) {
+        }else if(holder.drLayout.getVisibility() == View.VISIBLE) {
             setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.drField, holder.drCount);
             changeUIState(holder, holder.drLayout, holder.drArrow, true);
-        } else if (holder.chemistLayout.getVisibility() == View.VISIBLE) {
+        }else if(holder.chemistLayout.getVisibility() == View.VISIBLE) {
             setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.chemistField, holder.chemistCount);
             changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
-        } else if (holder.stockiestLayout.getVisibility() == View.VISIBLE) {
+        }else if(holder.stockiestLayout.getVisibility() == View.VISIBLE) {
             setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.stockiestField, holder.stockiestCount);
             changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, true);
-        } else if (holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
+        }else if(holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
             setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.unListedDrField, holder.unListedDrCount);
             changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, true);
-        } else if (holder.cipLayout.getVisibility() == View.VISIBLE) {
+        }else if(holder.cipLayout.getVisibility() == View.VISIBLE) {
             setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.cipField, holder.cipCount);
             changeUIState(holder, holder.cipLayout, holder.cipArrow, true);
-        } else if (holder.hospLayout.getVisibility() == View.VISIBLE) {
+        }else if(holder.hospLayout.getVisibility() == View.VISIBLE) {
             setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.hospField, holder.hospCount);
             changeUIState(holder, holder.hospLayout, holder.hospArrow, true);
         }
@@ -1529,56 +1613,56 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public void clusterChanged(ArrayList<String> clusterCodes, ArrayList<EditModelClass> arrayList, TextView label, String master, MyViewHolder holder) {
 
-        for (int i = 0; i < arrayList.size(); i++) {
-            if (arrayList.get(i).isChecked()) {
+        for (int i = 0; i<arrayList.size(); i++) {
+            if(arrayList.get(i).isChecked()) {
                 boolean matched = false;
-                for (int j = 0; j < clusterCodes.size(); j++) {
-                    if (clusterCodes.get(j).equalsIgnoreCase(arrayList.get(i).getTown_Code())) {
+                for (int j = 0; j<clusterCodes.size(); j++) {
+                    if(clusterCodes.get(j).equalsIgnoreCase(arrayList.get(i).getTown_Code())) {
                         matched = true;
                     }
                 }
-                if (!matched) {
+                if(!matched) {
                     arrayList.get(i).setChecked(false);
                 }
             }
         }
 
         StringBuilder text = new StringBuilder();
-        for (int i = 0; i < arrayList.size(); i++) {
-            if (arrayList.get(i).isChecked()) {
-                if (text.length() == 0) {
+        for (int i = 0; i<arrayList.size(); i++) {
+            if(arrayList.get(i).isChecked()) {
+                if(text.length() == 0) {
                     text = new StringBuilder(arrayList.get(i).getName());
-                } else {
+                }else {
                     text.append(",").append(arrayList.get(i).getName());
                 }
             }
         }
-        if (text.length() == 0) {
+        if(text.length() == 0) {
             label.setText("Select");
-        } else {
+        }else {
             label.setText(text);
         }
 
         List<ModelClass.SessionList.SubClass> subClassList = new ArrayList<>();
-        for (int i = 0; i < arrayList.size(); i++) {
-            if (arrayList.get(i).isChecked()) {
+        for (int i = 0; i<arrayList.size(); i++) {
+            if(arrayList.get(i).isChecked()) {
                 ModelClass.SessionList.SubClass subClass = new ModelClass.SessionList.SubClass(arrayList.get(i).getName(), arrayList.get(i).getCode());
                 subClassList.add(subClass);
             }
         }
-        if (master.equalsIgnoreCase(Constants.DOCTOR)) {
+        if(master.equalsIgnoreCase(Constants.DOCTOR)) {
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassList);
-        } else if (master.equalsIgnoreCase(Constants.CHEMIST)) {
+        }else if(master.equalsIgnoreCase(Constants.CHEMIST)) {
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassList);
-        } else if (master.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)) {
+        }else if(master.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)) {
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnListedDr().clear();
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnListedDr(subClassList);
-        } else if (master.equalsIgnoreCase(Constants.CIP)) {
+        }else if(master.equalsIgnoreCase(Constants.CIP)) {
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassList);
-        } else if (master.equalsIgnoreCase(Constants.HOSPITAL)) {
+        }else if(master.equalsIgnoreCase(Constants.HOSPITAL)) {
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassList);
         }
@@ -1587,11 +1671,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         public LinearLayout searchClearIcon;
-        public TextView workTypeField, hqField, clusterField, jcField, drField, chemistField, stockiestField, unListedDrField, cipField, hospField;
+        public TextView workTypeField, hqField, clusterField, jcField, drField, chemistField, stockiestField, unListedDrField, cipField, hospField, workDayField;
         public TextView listedDrCapTV, cheCapTV, stockCapTV, unListedDrCapTV, hospCapTV, cipCapTV;
-        public TextView clusterCount, jcCount, drCount, chemistCount, stockiestCount, unListedDrCount, cipCount, hospCount,textCluster;
-        public LinearLayout sessionDelete, workTypeLayout, hqLayout, clusterLayout, jcLayout, drLayout, chemistLayout, stockiestLayout, unListedDrLayout, cipLayout, hospLayout, remarksLayout;
-        public ImageView workTypeArrow, hqArrow, clusterArrow, jcArrow, drArrow, chemistArrow, stockiestArrow, unListedDrArrow, cipArrow, hospArrow;
+        public TextView clusterCount, jcCount, drCount, chemistCount, stockiestCount, unListedDrCount, cipCount, hospCount, textCluster;
+        public LinearLayout sessionDelete, workTypeLayout, hqLayout, clusterLayout, jcLayout, drLayout, chemistLayout, stockiestLayout, unListedDrLayout, cipLayout, hospLayout, remarksLayout, workDayLayout;
+        public ImageView workTypeArrow, hqArrow, clusterArrow, jcArrow, drArrow, chemistArrow, stockiestArrow, unListedDrArrow, cipArrow, hospArrow, workDayArrow;
         public ModelClass.SessionList sessionData = new ModelClass.SessionList();
         public ArrayList<EditModelClass> workTypeArray = new ArrayList<>();
         public ArrayList<EditModelClass> hqArray = new ArrayList<>();
@@ -1604,6 +1688,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         public ArrayList<EditModelClass> cipArray = new ArrayList<>();
         public ArrayList<EditModelClass> hospArray = new ArrayList<>();
         public ArrayList<EditModelClass> sessionItemAdapterArray = new ArrayList<>();
+        public ArrayList<EditModelClass> workDayArray = new ArrayList<>();
         TextView sessionNoTxt;
         EditText searchET, remarks;
         RelativeLayout relativeLayout;
@@ -1645,7 +1730,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             remarksLayout = itemView.findViewById(R.id.remarkLayout);
             remarks = itemView.findViewById(R.id.remarkET);
             progress_hq = itemView.findViewById(R.id.progress_hq);
-
+            workDayLayout = itemView.findViewById(R.id.work_day_layout);
 
             workTypeArrow = itemView.findViewById(R.id.workTypeArrow);
             hqArrow = itemView.findViewById(R.id.hqArrow);
@@ -1657,6 +1742,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             unListedDrArrow = itemView.findViewById(R.id.unListedDrArrow);
             cipArrow = itemView.findViewById(R.id.cipArrow);
             hospArrow = itemView.findViewById(R.id.hospArrow);
+            workDayArrow = itemView.findViewById(R.id.work_day_arrow);
 
             workTypeField = itemView.findViewById(R.id.workTypeField);
             hqField = itemView.findViewById(R.id.hqField);
@@ -1668,6 +1754,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             unListedDrField = itemView.findViewById(R.id.unListedDrField);
             cipField = itemView.findViewById(R.id.cipField);
             hospField = itemView.findViewById(R.id.hospField);
+            workDayField = itemView.findViewById(R.id.work_day_field);
 
             listedDrCapTV = itemView.findViewById(R.id.listedDrCap);
             cheCapTV = itemView.findViewById(R.id.chemistCap);

@@ -21,6 +21,9 @@ public interface TourPlanOfflineDataDao {
     @Query("DELETE FROM `TOUR_PLAN_OFFLINE_TABLE`")
     void deleteAllData();
 
+    @Query("DELETE FROM `TOUR_PLAN_OFFLINE_TABLE` WHERE `TP_MONTH` = :month")
+    void deleteByMonth(String month);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void saveTpData(TourPlanOfflineDataTable tourPlanOfflineDataTable);
 

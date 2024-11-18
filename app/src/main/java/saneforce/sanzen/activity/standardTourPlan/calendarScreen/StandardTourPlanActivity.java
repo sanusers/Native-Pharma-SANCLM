@@ -102,6 +102,29 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() == totalDaysCount));
+
+        if(stpFlag != null && !stpFlag.isEmpty()) {
+            if(stpFlag.equalsIgnoreCase("1")) {
+                activityStandardTourPlanBinding.llRejection.setVisibility(View.VISIBLE);
+                activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
+                SharedPref.setStpStatus(StandardTourPlanActivity.this, "Rejected");
+                activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
+            }else {
+                activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
+                if(stpFlag.equalsIgnoreCase("0")) {
+                    SharedPref.setStpStatus(StandardTourPlanActivity.this, "Approved");
+                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
+                    activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                }else if(stpFlag.equalsIgnoreCase("2")) {
+                    SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
+                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
+                    activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                }else if(stpFlag.equalsIgnoreCase("3")) {
+                    SharedPref.setStpStatus(StandardTourPlanActivity.this, "Planning...");
+                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
+                }
+            }
+        }
     }
 
     @Override
@@ -268,9 +291,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                             if(stpFlag.equalsIgnoreCase("0")) {
                                 SharedPref.setStpStatus(StandardTourPlanActivity.this, "Approved");
                                 activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
+                                activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
                             }else if(stpFlag.equalsIgnoreCase("2")) {
                                 SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
                                 activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
+                                activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
                             }else if(stpFlag.equalsIgnoreCase("3")) {
                                 SharedPref.setStpStatus(StandardTourPlanActivity.this, "Planning...");
                                 activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
@@ -1027,7 +1052,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         try {
             jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
             jsonObject.put("sfcode", SharedPref.getSfCode(this));
-            jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+            jsonObject.put("division_code", CommonUtilsMethods.removeLastComma(SharedPref.getDivisionCode(this)));
             jsonObject.put("Rsf", SharedPref.getHqCode(this));
             jsonObject.put("StpFlag", "2");
             jsonObject.put("tableName", "submit_stp");
@@ -1051,6 +1076,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                 JSONObject jsonObject1 = new JSONObject(response.body().toString());
                                 if(jsonObject1.optString("success", "false").equals("true")) {
                                     commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.send_approved_successfully));
+                                    activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
+                                    SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
+                                    activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
                                 }else {
                                     commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
                                 }
