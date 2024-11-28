@@ -35,12 +35,12 @@
         android:layout_marginEnd="@dimen/_6sdp"
         android:scaleX="0.8"
         android:scaleY="0.8"
-        android:thumb="@drawable/custom_thumb"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_stock"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_prd_name"
         app:layout_constraintTop_toTopOf="parent"
+        android:thumb="@drawable/custom_thumb"
         app:track="@drawable/custom_switch_bg"
         tools:ignore="UseSwitchCompatOrMaterialXml"
         tools:layout_editor_absoluteY="@dimen/_1sdp" />

@@ -175,7 +175,7 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
                 if(docList.length<dcrModel.getVisitFrequency() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
                     updateDcrModelAndViews(dcrModel, dcrViewHolder, position);
-                }else if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && mode.equalsIgnoreCase(String.valueOf(CalendarAdapter.Mode.NEW))) {
+                }else if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && docList.length>=dcrModel.getVisitFrequency()) {
                     commonUtilsMethods.showToastMessage(context, "Visit Frequency already met");
                     dcrViewHolder.checkBox.setChecked(false);
                 }else {

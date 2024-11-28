@@ -500,4 +500,8 @@
     <string name="stp_saved_locally">No Internet. Plan Saved Locally</string>
     <string name="unplanned_visits">Unplanned Visits</string>
     <string name="saved_successfully">Saved Successfully</string>
+    <string name="swap">Swap</string>
+    <string name="waiting_for_approval">Waiting for approval</string>
+    <string name="planning">Planning...</string>
+    <string name="already_approved">Already Approved</string>
 </resources>

@@ -230,10 +230,10 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         //Work Day
         if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
             holder.workDayLayout.setVisibility(View.VISIBLE);
-            if(inputDataArray.getSTPCode().isEmpty()) {
+            if(inputDataArray.getSTP_Code().isEmpty()) {
                 holder.workDayField.setText("Select");
             }else {
-                holder.workDayField.setText(inputDataArray.getSTPName());
+                holder.workDayField.setText(inputDataArray.getSTP_Name());
             }
         }else {
             holder.workDayLayout.setVisibility(View.GONE);
@@ -1457,8 +1457,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     }
                 }else if(holder.workDayLayout.getVisibility() == View.VISIBLE) {
                     holder.workDayField.setText(jsonObject.getName());
-                    inputDataArray.setSTPName(jsonObject.getName());
-                    inputDataArray.setSTPCode(jsonObject.getCode());
+                    inputDataArray.setSTP_Name(jsonObject.getName());
+                    inputDataArray.setSTP_Code(jsonObject.getCode());
                     sessionInterface.workDayChanged(inputDataArray, itemPosition);
                 }
 

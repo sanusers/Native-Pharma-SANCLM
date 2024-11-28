@@ -55,6 +55,7 @@ import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideServices;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.SlidesViewModel;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.Slide_adapter;
+import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -68,6 +69,8 @@ import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
+import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesDao;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesTableDeatils;
 import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
@@ -127,6 +130,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     private MasterDataDao masterDataDao;
     private TourPlanOfflineDataDao tourPlanOfflineDataDao;
     private TourPlanOnlineDataDao tourPlanOnlineDataDao;
+    private STPOfflineDataDao stpOfflineDataDao;
     private SlidesDao SlidesDao;
     public static boolean isSingleSlideDowloaingStaus;
     private boolean isCallSynced = false, isDateSynced = false;
@@ -160,6 +164,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         masterDataDao=db.masterDataDao();
         tourPlanOfflineDataDao = db.tourPlanOfflineDataDao();
         tourPlanOnlineDataDao = db.tourPlanOnlineDataDao();
+        stpOfflineDataDao = db.stpOfflineDataDao();
         SlidesDao = db.slidesDao();
 
         try {
@@ -1202,6 +1207,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                    startActivity(intent);
                                                }
                                             }
+                                        } else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
+                                            stpOfflineDataDao.deleteAllData();
+                                            saveSTPDataToLocal();
                                         }
                                         JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
                                         for (int bean = 0; bean < input.length(); bean++) {
@@ -1301,6 +1309,51 @@ public class MasterSyncActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    private void saveSTPDataToLocal() {
+        try {
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
+            if(jsonArray.length()>0) {
+                for (int i = 0; i<jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String dayID = jsonObject.optString("Day_Plan_ShortName");
+                    String dayCaption = jsonObject.optString("Day_Plan_Name");
+                    String dayPlanCode = jsonObject.optString("Day_Plan_Code");
+                    String clusterCode = jsonObject.optString("Patch_Code");
+                    String clusterName = jsonObject.optString("Patch_Name");
+                    String doctorCode = jsonObject.optString("Dr_Code");
+                    String doctorName = jsonObject.optString("Dr_Name");
+                    String chemistCode = jsonObject.optString("Chem_Code");
+                    String chemistName = jsonObject.optString("Chem_Name");
+                    String dateTime = jsonObject.optString("Created_Date");
+                    String activeFlag = jsonObject.optString("Active_Flag");
+                    Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+
+                    JSONObject jsonSave = new JSONObject();
+                    jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
+                    jsonSave.put("sfcode", SharedPref.getSfCode(this));
+                    jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
+                    jsonSave.put("Rsf", SharedPref.getHqCode(this));
+                    jsonSave.put("town_code", clusterCode);
+                    jsonSave.put("town_name", clusterName);
+                    jsonSave.put("Doctor_Id", doctorCode);
+                    jsonSave.put("Doctor_Name", doctorName);
+                    jsonSave.put("Chemist_Id", chemistCode);
+                    jsonSave.put("Chemist_Name", chemistName);
+                    jsonSave.put("Plan_Name", dayCaption);
+                    jsonSave.put("Plan_SName", dayID);
+                    jsonSave.put("Plan_Code", dayPlanCode);
+                    jsonSave.put("StpFlag", activeFlag);
+                    jsonSave.put("tableName", "save_stp");
+                    jsonSave.put("ReqDt", dateTime);
+                    Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
+                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), "0"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void InitializeTpNeededData() {
@@ -1830,7 +1883,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         sessionLists.add(sessionList);
         if (session2) sessionLists.add(sessionList2);
         if (session3) sessionLists.add(sessionList3);
-        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
+        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists, receiveModel.getSTP_Code(), receiveModel.getSTP_Name());
         modelClass.setSubmittedTime(submittedTime);
         modelClasses.add(modelClass);
         saveTpLocal(modelClasses, day, monthName, "0");

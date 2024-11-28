@@ -2,6 +2,8 @@ package saneforce.sanzen.activity.call.dcrCallSelection.fragments;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.tpDataObj;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -27,13 +29,19 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
@@ -44,6 +52,7 @@ import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
+import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.network.ApiInterface;
@@ -85,6 +94,7 @@ public class ListedDoctorFragment extends Fragment {
     int count = 0;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+    private String STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPBasedDCR, TPDCRDeviation;
 
 
     @Override
@@ -110,6 +120,7 @@ public class ListedDoctorFragment extends Fragment {
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
+        getRequiredData();
 
         custListArrayList.clear();
         SetupAdapter();
@@ -136,6 +147,16 @@ public class ListedDoctorFragment extends Fragment {
 
         return v;
     }
+
+    private void getRequiredData() {
+        STPNeed = SharedPref.getStpNeed(requireContext());
+        STPBasedMTP = SharedPref.getStpBasedMtp(requireContext());
+        STPBasedDCR = SharedPref.getStpBasedDcr(requireContext());
+        TPNeed = SharedPref.getTpNeed(requireContext());
+        TPBasedDCR = SharedPref.getTpbasedDcr(requireContext());
+        TPDCRDeviation = SharedPref.getTpdcrDeviation(requireContext());
+    }
+
     public  void CustomizeFiltered(){
 
         dialogFilter = new Dialog(requireContext());
@@ -485,7 +506,26 @@ public class ListedDoctorFragment extends Fragment {
 
         try {
             String brands = getBrands(jsonObject.getString("MappProds"));
-            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+            if(((TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
+                    || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")))) {
+                List<String> drList = new ArrayList<>();
+                if(tpDataObj != null) {
+                    Type type = new TypeToken<ModelClass>() {
+                    }.getType();
+                    ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
+                    for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(0).getListedDr()) {
+                        drList.add(subClass.getCode());
+                    }
+                    Log.i("TP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
+                }
+                if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+                    if (jsonObject.has("Product_Code")) {
+                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("HosAddr"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), jsonObject.getString("Product_Code"), brands, jsonObject.getString("MProd"), jsonObject.getString("Tlvst"),jsonObject.getString("Doc_Class_ShortName") ,jsonObject.getString("Doc_ClsCode"),false));
+                    } else {
+                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("HosAddr"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), "", brands, jsonObject.getString("MProd"), jsonObject.getString("Tlvst") ,jsonObject.getString("Doc_Class_ShortName"),jsonObject.getString("Doc_ClsCode"),false));
+                    }
+                }
+            } else if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
                 if (jsonObject.has("Product_Code")) {
                     custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("HosAddr"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), jsonObject.getString("Product_Code"), brands, jsonObject.getString("MProd"), jsonObject.getString("Tlvst"),jsonObject.getString("Doc_Class_ShortName") ,jsonObject.getString("Doc_ClsCode"),false));
                 } else {

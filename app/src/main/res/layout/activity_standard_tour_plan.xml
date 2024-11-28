@@ -66,7 +66,7 @@
         android:layout_toEndOf="@id/ll_stp_status"
         android:background="@color/pink_10"
         android:orientation="horizontal"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -434,6 +434,8 @@
         android:layout_gravity="center"
         android:layout_marginHorizontal="@dimen/_7sdp"
         android:layout_marginVertical="@dimen/_5sdp"
+        android:layout_marginEnd="17dp"
+        android:layout_marginBottom="15dp"
         android:background="@drawable/tp_btn_select_state"
         android:fontFamily="@font/satoshi_variable"
         android:paddingHorizontal="@dimen/_5sdp"

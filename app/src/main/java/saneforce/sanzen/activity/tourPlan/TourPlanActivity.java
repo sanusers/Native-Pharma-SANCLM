@@ -1058,7 +1058,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
             @Override
             public void workDayChanged(ModelClass modelClass, int position) {
-                ModelClass modelClass1 = prepareAndSaveSTPModelClass(modelClass.getDayNo(), modelClass.getDate(), modelClass.getDay(), modelClass.getSTPCode(), localDate);
+                ModelClass modelClass1 = prepareAndSaveSTPModelClass(modelClass.getDayNo(), modelClass.getDate(), modelClass.getDay(), modelClass.getSTP_Code(), localDate);
                 arrayList.getSessionList().remove(position);
                 arrayList.getSessionList().add(position, modelClass1.getSessionList().get(0));
 
@@ -1641,7 +1641,7 @@ public class TourPlanActivity extends AppCompatActivity {
         sessionLists.add(sessionList);
         if(session2) sessionLists.add(sessionList2);
         if(session3) sessionLists.add(sessionList3);
-        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
+        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists, receiveModel.getSTP_Code(), receiveModel.getSTP_Name());
         modelClass.setSubmittedTime(submittedTime);
         modelClasses.add(modelClass);
         dayWiseSaveTp = modelClasses;
@@ -1873,8 +1873,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                     jsonObject.put("app_version", BuildConfig.VERSION_NAME);
                                     jsonObject.put("Mode", "Android-Edet");
                                     if(isSTPBasedTP) {
-                                        jsonObject.put("STP_Code", modelClass.getSTPCode() != null? modelClass.getSTPCode() : "");
-                                        jsonObject.put("STP_Name", modelClass.getSTPName() != null? modelClass.getSTPName() : "");
+                                        jsonObject.put("STP_Code", modelClass.getSTP_Code() != null? modelClass.getSTP_Code() : "");
+                                        jsonObject.put("STP_Name", modelClass.getSTP_Name() != null? modelClass.getSTP_Name() : "");
                                     }
 
                                     String WTCode = "", WTName = "", FWFlg = "", HQCodes = "", HQNames = "", clusterCodes = "", clusterNames = "", JWCodes = "", JWNames = "", Dr_Code = "", Dr_Name = "", Chem_Code = "", Chem_Name = "", Stockist_Code = "", Stockist_Name = "", cip_code = "", cip_name = "", hosp_code = "", hosp_Name = "", DayRemarks = "";

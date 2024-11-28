@@ -4,10 +4,18 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -15,12 +23,16 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -31,12 +43,15 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
+import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.adapter.CalendarAdapter;
@@ -59,6 +74,7 @@ import saneforce.sanzen.databinding.ActivityStandardTourPlanBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
@@ -91,6 +107,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     public static HashMap<String, List<DCRModel>> selectedDcrMap;
     private ApiInterface apiInterface;
     private int totalDaysCount = 0;
+    private JSONObject deleteJsonObject;
+    private ArrayList<DCRFillteredModelClass> stpDataModels = new ArrayList<>();
+    private String swapCode, swapName;
+    private JSONArray swapJsonArray;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -109,18 +129,22 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 activityStandardTourPlanBinding.tvRejectReason.setText(rejectReason);
                 SharedPref.setStpStatus(StandardTourPlanActivity.this, "Rejected");
                 activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.red_60));
+                activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.rejected));
             }else {
                 activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
                 if(stpFlag.equalsIgnoreCase("0")) {
                     SharedPref.setStpStatus(StandardTourPlanActivity.this, "Approved");
                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.green_60));
+                    activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.approved));
                     activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
                 }else if(stpFlag.equalsIgnoreCase("2")) {
                     SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
+                    activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.waiting_for_approval));
                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
                     activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
                 }else if(stpFlag.equalsIgnoreCase("3")) {
                     SharedPref.setStpStatus(StandardTourPlanActivity.this, "Planning...");
+                    activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.planning));
                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
                 }
             }
@@ -203,7 +227,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
     private void getData() {
         getSTPSetup();
-        saveSTPDataToLocal();
+//        saveSTPDataToLocal(update);
         getLocalSTPData();
         getClusterData();
         getCategoryData();
@@ -330,15 +354,20 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void getLocalSTPData() {
-        List<STPOfflineDataTable> stpOfflineDataTableList = stpOfflineDataDao.getAllSTPData();
-        for (STPOfflineDataTable stpOfflineDataTable : stpOfflineDataTableList) {
-            String clusterCode = stpOfflineDataTable.getClusterCode();
-            String doctorCode = stpOfflineDataTable.getDoctorCode();
-            String chemistCode = stpOfflineDataTable.getChemistCode();
-            selectedClusterCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(clusterCode)).split(",")));
-            selectedDocCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
-            allSelectedDocList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
-            selectedChmCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(chemistCode)).split(",")));
+        try {
+            List<STPOfflineDataTable> stpOfflineDataTableList = stpOfflineDataDao.getAllSTPData();
+            for (STPOfflineDataTable stpOfflineDataTable : stpOfflineDataTableList) {
+                String clusterCode = stpOfflineDataTable.getClusterCode();
+                String doctorCode = stpOfflineDataTable.getDoctorCode();
+                String chemistCode = stpOfflineDataTable.getChemistCode();
+                stpFlag = new JSONObject(stpOfflineDataTable.getStpData()).optString("Active_Flag", "");
+                selectedClusterCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(clusterCode)).split(",")));
+                selectedDocCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
+                allSelectedDocList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
+                selectedChmCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(chemistCode)).split(",")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -962,19 +991,373 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     };
 
     private final CalendarAdapter.CalendarDayMenuClickListener calendarDayMenuClickListener = (calendarModel, menuItem) -> {
-        if(menuItem.getItemId() == R.id.menuEdit) {
-            Log.d("STP Item", "Edit");
-            Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
-            intent.putExtra("MODE", String.valueOf(CalendarAdapter.Mode.EDIT));
-            intent.putExtra("DAY_ID", calendarModel.getId());
-            intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
-            activityResultLauncher.launch(intent);
-        }else if(menuItem.getItemId() == R.id.menuDelete) {
-            Log.d("STP Item", "Delete");
-        }else if(menuItem.getItemId() == R.id.menuSwap) {
-            Log.d("STP Item", "Swap");
+        if(!stpFlag.equalsIgnoreCase("0") && !stpFlag.equalsIgnoreCase("2")) {
+            if(menuItem.getItemId() == R.id.menuEdit) {
+                Log.d("STP Item", "Edit");
+                Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
+                intent.putExtra("MODE", String.valueOf(CalendarAdapter.Mode.EDIT));
+                intent.putExtra("DAY_ID", calendarModel.getId());
+                intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
+                activityResultLauncher.launch(intent);
+            }else if(menuItem.getItemId() == R.id.menuDelete) {
+                Log.d("STP Item", "Delete");
+                showDeleteDialog(calendarModel.getId(), calendarModel.getCaption());
+            }else if(menuItem.getItemId() == R.id.menuSwap) {
+                Log.d("STP Item", "Swap");
+                showSwapDialog(calendarModel.getId(), calendarModel.getCaption());
+            }
+        } else {
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
         }
     };
+
+    private void showSwapDialog(String id, String caption) {
+        try {
+            Dialog dialogFilter;
+            ImageView img_close;
+            Button btn_proceed, btn_cancel;
+            ListView lv_to;
+            TextView tvTo, tvFrom;
+
+            dialogFilter = new Dialog(this);
+            dialogFilter.setContentView(R.layout.popup_stp_swap);
+            Objects.requireNonNull(dialogFilter.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialogFilter.setCancelable(false);
+            dialogFilter.show();
+            img_close = dialogFilter.findViewById(R.id.img_close);
+            btn_proceed = dialogFilter.findViewById(R.id.btn_proceed);
+            btn_cancel = dialogFilter.findViewById(R.id.btn_cancel);
+            tvTo = dialogFilter.findViewById(R.id.constraint_to);
+            tvFrom = dialogFilter.findViewById(R.id.constraint_from);
+            lv_to = dialogFilter.findViewById(R.id.lv_to);
+
+            tvFrom.setText(caption);
+
+            ConstraintLayout constraintLayout = dialogFilter.findViewById(R.id.constraint_btns);
+            img_close.setOnClickListener(view12 -> dialogFilter.dismiss());
+            btn_cancel.setOnClickListener(view12 -> dialogFilter.dismiss());
+
+            tvTo.setOnClickListener(v -> {
+                if(lv_to.getVisibility() == View.VISIBLE) {
+                    lv_to.setVisibility(View.GONE);
+                    constraintLayout.setVisibility(View.VISIBLE);
+                }else {
+                    getSTPData();
+                    FillteredAdapter arrayAdapter = new FillteredAdapter(this, stpDataModels, clickedItem -> {
+                        swapCode = clickedItem.getCode();
+                        swapName = clickedItem.getName();
+                        tvTo.setText(clickedItem.getName());
+                        lv_to.setVisibility(View.GONE);
+                        constraintLayout.setVisibility(View.VISIBLE);
+                    });
+                    lv_to.setAdapter(arrayAdapter);
+                    lv_to.setVisibility(View.VISIBLE);
+                    constraintLayout.setVisibility(View.INVISIBLE);
+                }
+            });
+
+            btn_proceed.setOnClickListener(v -> {
+                showSwapConfirmDialog(id, caption, swapCode, swapName);
+                dialogFilter.dismiss();
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showSwapConfirmDialog(String fromID, String fromName, String toID, String toName) {
+        Dialog dialogOptionSelection = new Dialog(this);
+        dialogOptionSelection.setContentView(R.layout.popup_remarks);
+        Objects.requireNonNull(dialogOptionSelection.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogOptionSelection.setCancelable(false);
+        ImageView iv_close = dialogOptionSelection.findViewById(R.id.img_close);
+        EditText ed_remarks = dialogOptionSelection.findViewById(R.id.ed_remark);
+        TextView heading = dialogOptionSelection.findViewById(R.id.tv_head);
+        TextView content = dialogOptionSelection.findViewById(R.id.content);
+        Button btn_clear = dialogOptionSelection.findViewById(R.id.btn_clear);
+        Button btn_save = dialogOptionSelection.findViewById(R.id.btn_save);
+        heading.setText(R.string.alert);
+        btn_save.setText(getString(R.string.swap));
+        btn_clear.setText(getString(R.string.cancel));
+        content.setText(getString(R.string.are_you_sure) + "Want to swap");
+        content.setVisibility(View.VISIBLE);
+        ed_remarks.setVisibility(View.INVISIBLE);
+        btn_save.setOnClickListener(view -> {
+            dialogOptionSelection.dismiss();
+            if(UtilityClass.isNetworkAvailable(this)) {
+                createSwapJson(fromID, fromName, toID, toName);
+                callSwapAPI(fromID, fromName, toID, toName);
+            }else {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+            }
+        });
+        btn_clear.setOnClickListener(view -> {
+            dialogOptionSelection.dismiss();
+        });
+        iv_close.setOnClickListener(view -> dialogOptionSelection.dismiss());
+        dialogOptionSelection.show();
+    }
+
+    private void callSwapAPI(String fromID, String fromName, String toID, String toName) {
+        try {
+//            binding.progress.setVisibility(View.VISIBLE);
+            Log.e("swap:Object", swapJsonArray.toString());
+            apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "swap/stp");
+            Call<JsonElement> saveMyDayPlan = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, swapJsonArray.toString());
+            saveMyDayPlan.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    Log.d("swap:Code", response.code() + " - " + response);
+//                    binding.progress.setVisibility(View.GONE);
+                    if(response.isSuccessful()) {
+                        try {
+                            JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
+                            if(json.getString("success").equalsIgnoreCase("true")) {
+                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Swap between " + fromName + " And " + toName + " was successful");
+                                syncSTP();
+                            }
+                        } catch (Exception e) {
+                            Log.e("STP SWAP", "onResponse: " + e.getMessage());
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+//                    binding.progress.setVisibility(View.GONE);
+                    Log.e("VALUES", Arrays.toString(t.getStackTrace()));
+                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+//            binding.progress.setVisibility(View.GONE);
+        }
+    }
+
+    private void syncSTP() {
+        try {
+            apiInterface = RetrofitClient.getRetrofit(StandardTourPlanActivity.this, SharedPref.getCallApiUrl(StandardTourPlanActivity.this));
+
+            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+            jsonObject.put("tableName", "getstp_details");
+            jsonObject.put("sfcode", SharedPref.getSfCode(this));
+            jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+            jsonObject.put("Rsf", SharedPref.getHqCode(this));
+            jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+
+            Log.v("STP", "--json-- " + jsonObject);
+
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn",  "get/stp");
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+
+                    boolean success = false;
+                    JSONArray jsonArray = new JSONArray();
+//                    binding.progress.setVisibility(View.GONE);
+
+                    if(response.isSuccessful()) {
+                        Log.e("test mydayplan", "response : " + Objects.requireNonNull(response.body()));
+                        try {
+                            JsonElement jsonElement = response.body();
+                            if(!jsonElement.isJsonNull()) {
+                                if(jsonElement.isJsonArray()) {
+                                    JsonArray jsonArray1 = jsonElement.getAsJsonArray();
+                                    jsonArray = new JSONArray(jsonArray1.toString());
+                                    success = true;
+                                }else if(jsonElement.isJsonObject()) {
+                                    JsonObject jsonObject1 = jsonElement.getAsJsonObject();
+                                    JSONObject jsonObject2 = new JSONObject(jsonObject1.toString());
+                                    if(!jsonObject2.has("success")) {
+                                        jsonArray.put(jsonObject2);
+                                        success = true;
+                                    }else if(jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                        masterDataDao.saveMasterSyncStatus(Constants.STANDARD_TOUR_PLAN, 1);
+                                    }
+                                }
+
+                                if(success) {
+                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STANDARD_TOUR_PLAN, jsonArray.toString(), 2));
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        stpOfflineDataDao.deleteAllData();
+                        saveSTPDataToLocal();
+                        getRequiredData();
+                        populateAdapters();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    Log.e("STP", "onFailure: ");
+//                    binding.progress.setVisibility(View.GONE);
+//                    commonUtilsMethods.showToastMessage(this, this.getString(R.string.please_sync_workplan));
+                    t.printStackTrace();
+                }
+            });
+
+        } catch (JSONException a) {
+//            binding.progress.setVisibility(View.GONE);
+//            commonUtilsMethods.showToastMessage(this, this.getString(R.string.please_sync_workplan));
+            a.printStackTrace();
+        }
+    }
+
+    private void createSwapJson(String fromID, String fromName, String toID, String toName) {
+        try {
+            STPOfflineDataTable fromStpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(fromID);
+            STPOfflineDataTable toStpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(toID);
+
+            String dateTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1);
+            swapJsonArray = new JSONArray();
+            JSONObject fromObj = CommonUtilsMethods.CommonObjectParameter(this);
+            fromObj.put("tableName", "stp_swap");
+            fromObj.put("sfcode", SharedPref.getSfCode(this));
+            fromObj.put("division_code", SharedPref.getDivisionCode(this));
+            fromObj.put("Rsf", SharedPref.getSfCode(this));
+            fromObj.put("town_code", fromStpOfflineDataTable.getClusterCode());
+            fromObj.put("town_name", fromStpOfflineDataTable.getClusterName());
+            fromObj.put("Doctor_Id", fromStpOfflineDataTable.getDoctorCode());
+            fromObj.put("Doctor_Name", fromStpOfflineDataTable.getDoctorName());
+            fromObj.put("Chemist_Id", fromStpOfflineDataTable.getChemistCode());
+            fromObj.put("Chemist_Name", fromStpOfflineDataTable.getChemistName());
+            fromObj.put("Plan_Code", "" + toStpOfflineDataTable.getDayID().charAt(toStpOfflineDataTable.getDayID().length() - 1));
+            fromObj.put("Plan_Name", toStpOfflineDataTable.getDayCaption());
+            fromObj.put("Plan_SName", toStpOfflineDataTable.getDayID());
+            fromObj.put("Creation_time", dateTime);
+            fromObj.put("StpFlag", "3");
+            JSONObject toObj = CommonUtilsMethods.CommonObjectParameter(this);
+            toObj.put("tableName", "stp_swap");
+            toObj.put("sfcode", SharedPref.getSfCode(this));
+            toObj.put("division_code", SharedPref.getDivisionCode(this));
+            toObj.put("Rsf", SharedPref.getSfCode(this));
+            toObj.put("town_code", toStpOfflineDataTable.getClusterCode());
+            toObj.put("town_name", toStpOfflineDataTable.getClusterName());
+            toObj.put("Doctor_Id", toStpOfflineDataTable.getDoctorCode());
+            toObj.put("Doctor_Name", toStpOfflineDataTable.getDoctorName());
+            toObj.put("Chemist_Id", toStpOfflineDataTable.getChemistCode());
+            toObj.put("Chemist_Name", toStpOfflineDataTable.getChemistName());
+            toObj.put("Plan_Code", "" + fromStpOfflineDataTable.getDayID().charAt(fromStpOfflineDataTable.getDayID().length() - 1));
+            toObj.put("Plan_Name", fromStpOfflineDataTable.getDayCaption());
+            toObj.put("Plan_SName", fromStpOfflineDataTable.getDayID());
+            toObj.put("Creation_time", dateTime);
+            toObj.put("StpFlag", "3");
+
+            swapJsonArray.put(fromObj);
+            swapJsonArray.put(toObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getSTPData() {
+        try {
+            List<STPOfflineDataTable> stpData = stpOfflineDataDao.getAllSTPData();
+            stpDataModels.clear();
+            for (STPOfflineDataTable stpOfflineDataTable : stpData) {
+                stpDataModels.add(new DCRFillteredModelClass(stpOfflineDataTable.getDayCaption(), stpOfflineDataTable.getDayID()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showDeleteDialog(String dayID, String caption) {
+        Dialog dialogOptionSelection = new Dialog(this);
+        dialogOptionSelection.setContentView(R.layout.popup_remarks);
+        Objects.requireNonNull(dialogOptionSelection.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogOptionSelection.setCancelable(false);
+        ImageView iv_close = dialogOptionSelection.findViewById(R.id.img_close);
+        EditText ed_remarks = dialogOptionSelection.findViewById(R.id.ed_remark);
+        TextView heading = dialogOptionSelection.findViewById(R.id.tv_head);
+        TextView content = dialogOptionSelection.findViewById(R.id.content);
+        Button btn_clear = dialogOptionSelection.findViewById(R.id.btn_clear);
+        Button btn_save = dialogOptionSelection.findViewById(R.id.btn_save);
+        heading.setText(R.string.alert);
+        btn_save.setText(getString(R.string.delete));
+        btn_clear.setText(getString(R.string.cancel));
+        content.setText(R.string.are_you_sure_to_delete);
+        content.setVisibility(View.VISIBLE);
+        ed_remarks.setVisibility(View.INVISIBLE);
+        btn_save.setOnClickListener(view -> {
+            if(UtilityClass.isNetworkAvailable(this)) {
+                createDeleteJson(dayID);
+                callDeleteAPI(dayID, caption);
+            }else {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+            }
+            dialogOptionSelection.dismiss();
+        });
+        btn_clear.setOnClickListener(view -> {
+            dialogOptionSelection.dismiss();
+        });
+        iv_close.setOnClickListener(view -> dialogOptionSelection.dismiss());
+        dialogOptionSelection.show();
+    }
+
+    private void callDeleteAPI(String dayID, String caption) {
+
+        try {
+//            binding.progress.setVisibility(View.VISIBLE);
+            Log.e("delete:Object", deleteJsonObject.toString());
+            apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "delete/stp");
+            Call<JsonElement> saveMyDayPlan = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, deleteJsonObject.toString());
+            saveMyDayPlan.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    Log.d("delete:Code", response.code() + " - " + response);
+//                    binding.progress.setVisibility(View.GONE);
+                    if(response.isSuccessful()) {
+                        try {
+                            JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
+                            if(json.getString("success").equalsIgnoreCase("true")) {
+                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, caption + "Deleted Successfully");
+                            }
+                        } catch (Exception e) {
+                            Log.e("STP Delete", "onResponse: " + e.getMessage());
+                        }
+                        syncSTP();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+//                    binding.progress.setVisibility(View.GONE);
+//                    setUpWorkPlan();
+                    Log.e("VALUES", Arrays.toString(t.getStackTrace()));
+                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+//            binding.progress.setVisibility(View.GONE);
+        }
+    }
+
+    private void createDeleteJson(String dayID) {
+        try {
+            deleteJsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+            deleteJsonObject.put("tableName", "stp_delete");
+            deleteJsonObject.put("Plan_Code", dayID);
+            deleteJsonObject.put("sfcode", SharedPref.getSfCode(this));
+            deleteJsonObject.put("division_code", SharedPref.getDivisionCode(this));
+            deleteJsonObject.put("Rsf", SharedPref.getSfCode(this));
+            deleteJsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private boolean checkAllDocsSelected() {
         List<DCRModel> selectedDocList = selectedDcrMap.get(Constants.DOCTOR);

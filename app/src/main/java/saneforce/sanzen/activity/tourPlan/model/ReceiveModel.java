@@ -153,6 +153,10 @@ public class ReceiveModel implements Serializable {
 
   private String Day = "";
 
+  private String STP_Code = "";
+
+  private String STP_Name = "";
+
   public String getJWNames() {
     return this.JWNames;
   }
@@ -743,6 +747,22 @@ public class ReceiveModel implements Serializable {
 
   public void setDay(String Day) {
     this.Day = Day;
+  }
+
+  public String getSTP_Code() {
+    return STP_Code;
+  }
+
+  public void setSTP_Code(String STP_Code) {
+    this.STP_Code = STP_Code;
+  }
+
+  public String getSTP_Name() {
+    return STP_Name;
+  }
+
+  public void setSTP_Name(String STP_Name) {
+    this.STP_Name = STP_Name;
   }
 
   public static class TPDt implements Serializable {

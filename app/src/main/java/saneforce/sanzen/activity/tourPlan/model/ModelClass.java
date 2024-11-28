@@ -14,8 +14,8 @@ public class ModelClass implements Serializable {
   private Boolean onEdit = false;
   private String submittedTime = "";
   private String syncStatus = ""; // 0 - Success(Data successfully sent to Remote data base), 1 - Failed(failed to send Remote data base for any reason like no internet or api called failed)
-  private String STPCode = "";
-  private String STPName = "";
+  private String STP_Code = "";
+  private String STP_Name = "";
   private ArrayList<SessionList> sessionList;
 
   public ModelClass () {
@@ -32,7 +32,7 @@ public class ModelClass implements Serializable {
   }
 
 
-  public ModelClass (String dayNo,String date,String day,String month,String year, Boolean onEdit, ArrayList<ModelClass.SessionList> sessionList, String STPCode, String STPName) {
+  public ModelClass (String dayNo, String date, String day, String month, String year, Boolean onEdit, ArrayList<ModelClass.SessionList> sessionList, String STP_Code, String STP_Name) {
     this.dayNo = dayNo;
     this.date = date;
     this.day = day;
@@ -40,8 +40,8 @@ public class ModelClass implements Serializable {
     this.year = year;
     this.onEdit = onEdit;
     this.sessionList = sessionList;
-    this.STPCode = STPCode;
-    this.STPName = STPName;
+    this.STP_Code = STP_Code;
+    this.STP_Name = STP_Name;
   }
 
 
@@ -53,8 +53,8 @@ public class ModelClass implements Serializable {
     this.month = modelClass.getMonth();
     this.year = modelClass.getYear();
     this.onEdit = modelClass.getOnEdit();
-    this.STPName = modelClass.getSTPName();
-    this.STPCode = modelClass.getSTPCode();
+    this.STP_Name = modelClass.getSTP_Name();
+    this.STP_Code = modelClass.getSTP_Code();
 
     this.sessionList = new ArrayList<ModelClass.SessionList>();
     for (ModelClass.SessionList session : modelClass.sessionList) {
@@ -137,20 +137,20 @@ public class ModelClass implements Serializable {
     this.sessionList = sessionList;
   }
 
-  public String getSTPCode() {
-    return STPCode;
+  public String getSTP_Code() {
+    return STP_Code;
   }
 
-  public String getSTPName() {
-    return STPName;
+  public String getSTP_Name() {
+    return STP_Name;
   }
 
-  public void setSTPCode(String STPCode) {
-    this.STPCode = STPCode;
+  public void setSTP_Code(String STP_Code) {
+    this.STP_Code = STP_Code;
   }
 
-  public void setSTPName(String STPName) {
-    this.STPName = STPName;
+  public void setSTP_Name(String STP_Name) {
+    this.STP_Name = STP_Name;
   }
 
   public static class SessionList implements Serializable {

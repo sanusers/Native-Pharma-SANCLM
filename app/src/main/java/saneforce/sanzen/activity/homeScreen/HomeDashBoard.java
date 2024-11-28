@@ -246,8 +246,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         Menu menu = binding.navView.getMenu();
         if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
             menu.findItem(R.id.approval).setVisible(SharedPref.getApproveNeed(this).equalsIgnoreCase("0"));
+            menu.findItem(R.id.stp).setVisible(false);
         } else {
             menu.findItem(R.id.approval).setVisible(false);
+            menu.findItem(R.id.stp).setVisible(SharedPref.getStpNeed(this).equalsIgnoreCase("0"));
         }
 
         if(SharedPref.getTpdcrMgrappr(this).equalsIgnoreCase("0")) {
@@ -1737,12 +1739,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             menu.findItem(R.id.tp).setVisible(false);
         }
 
-        if(SharedPref.getStpNeed(this).equalsIgnoreCase("0")) {
-            menu.findItem(R.id.stp).setVisible(true);
-        } else {
-            menu.findItem(R.id.stp).setVisible(false);
-        }
-
         if (SharedPref.getFaq(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.faq).setVisible(true);
         } else {
@@ -1760,8 +1756,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
             menu.findItem(R.id.approval).setVisible(SharedPref.getApproveNeed(this).equalsIgnoreCase("0"));
+            menu.findItem(R.id.stp).setVisible(false);
         } else {
             menu.findItem(R.id.approval).setVisible(false);
+            menu.findItem(R.id.stp).setVisible(SharedPref.getStpNeed(this).equalsIgnoreCase("0"));
         }
 
         if (SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
