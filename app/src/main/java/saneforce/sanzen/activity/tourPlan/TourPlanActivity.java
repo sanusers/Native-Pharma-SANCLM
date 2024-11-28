@@ -861,7 +861,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                             if(isSTPBasedTP && !dayOfWeek.isEmpty() && stpOfflineDataDao.isDayAvailable(dayOfWeek)) {
                                 modelClasses.add(prepareAndSaveSTPModelClass(day, date, dayName, dayOfWeek, localDate1));
-                                LocalWeelyHolidayFlag = false;
+                                LocalWeelyHolidayFlag = true;
                             }else {
                                 if(holidayDateArray.contains(day)) {
                                     sessionList.setWorkType(holidayWorkTypeModel);  // add holiday work type model object when current date is declared as holiday

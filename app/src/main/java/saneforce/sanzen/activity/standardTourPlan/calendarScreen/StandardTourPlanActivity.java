@@ -360,7 +360,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 String clusterCode = stpOfflineDataTable.getClusterCode();
                 String doctorCode = stpOfflineDataTable.getDoctorCode();
                 String chemistCode = stpOfflineDataTable.getChemistCode();
-                stpFlag = new JSONObject(stpOfflineDataTable.getStpData()).optString("Active_Flag", "");
+                JSONObject jsonObject = new JSONObject(stpOfflineDataTable.getStpData());
+                stpFlag = jsonObject.optString("Active_Flag", "");
+                rejectReason = jsonObject.optString("Stp_Reject_Reason", "");
                 selectedClusterCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(clusterCode)).split(",")));
                 selectedDocCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
                 allSelectedDocList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
@@ -1462,6 +1464,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                     activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
                                     SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
                                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
+                                    activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.waiting_for_approval));
                                 }else {
                                     commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
                                 }
