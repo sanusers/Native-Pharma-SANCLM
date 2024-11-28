@@ -187,7 +187,7 @@ public class CIPFragment extends Fragment {
     private void filter(String text) {
         ArrayList<CustList> filteredNames = new ArrayList<>();
         for (CustList s : custListArrayList) {
-            if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getTown_name().toLowerCase().contains(text.toLowerCase()) || s.getSpecialist().toLowerCase().contains(text.toLowerCase())) {
+            if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getTown_name().toLowerCase().contains(text.toLowerCase()) || s.getCategory().toLowerCase().contains(text.toLowerCase()) || s.getSpecialist().toLowerCase().contains(text.toLowerCase())) {
                 filteredNames.add(s);
             }
         }

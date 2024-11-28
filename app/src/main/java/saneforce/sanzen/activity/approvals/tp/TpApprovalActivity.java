@@ -138,7 +138,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
     }
 
     private void tpApproval() {
-        progressDialog = CommonUtilsMethods.createProgressDialog(getApplicationContext());
+        progressDialog = CommonUtilsMethods.createProgressDialog(TpApprovalActivity.this);
         try {
             jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
             jsonTp.put("tableName", "savetpapproval");

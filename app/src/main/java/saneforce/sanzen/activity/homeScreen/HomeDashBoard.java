@@ -1375,14 +1375,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
                 if (SequentialEntry != null && SequentialEntry.equalsIgnoreCase("0")) {
                     String dateRequired = SharedPref.getSelectedDateCal(context);
-                    String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, dateRequired);
+                    String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_27, dateRequired);
                     selectedDate = LocalDate.parse(dateRequired, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
                     binding.textDate.setText(monthDateYear);
                     SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, dateRequired));
                     Log.e("TAG 0", "checkAndSetEntryDate: " + selectedDate);
                 } else if (canMoveNextDate) {
                     String dateRequired = SharedPref.getSelectedDateCal(context);
-                    String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, dateRequired);
+                    String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_27, dateRequired);
                     selectedDate = LocalDate.parse(dateRequired, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
                     binding.textDate.setText(monthDateYear);
                     SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, dateRequired));

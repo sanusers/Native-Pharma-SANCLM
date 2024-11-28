@@ -296,14 +296,13 @@ public class CommonUtilsMethods {
         ProgressDialog dialog = new ProgressDialog(context);
         try {
             dialog.show();
+            dialog.setCancelable(false);
+            dialog.setIndeterminate(true);
+            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.setContentView(R.layout.loading_progress);
         } catch (WindowManager.BadTokenException ignored) {
             Log.e("DialogboxStatus", "" + ignored);
         }
-
-        dialog.setCancelable(false);
-        dialog.setIndeterminate(true);
-        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setContentView(R.layout.loading_progress);
         return dialog;
     }
 

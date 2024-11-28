@@ -142,13 +142,15 @@ public class LocationFinder {
                                         Log.e(TAG, errorMessage, e);
                                         break;
                                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                                        try {
-                                            Log.i(TAG, "PendingIntent INSAP.");
-                                            Log.v("LOACTION_SUCCESS", "ONFAILURE");
-                                            ResolvableApiException rae = (ResolvableApiException) e;
-                                            rae.startResolutionForResult(mContext, 1000);
-                                        } catch (IntentSender.SendIntentException sie) {
-                                            Log.i(TAG, "PendingIntent unable to execute request.");
+                                        if (e instanceof ResolvableApiException) {
+                                            try {
+                                                Log.i(TAG, "PendingIntent INSAP.");
+                                                Log.v("LOACTION_SUCCESS", "ONFAILURE");
+                                                ResolvableApiException rae = (ResolvableApiException) e;
+                                                rae.startResolutionForResult(mContext, 1000);
+                                            } catch (IntentSender.SendIntentException sie) {
+                                                Log.i(TAG, "PendingIntent unable to execute request.");
+                                            }
                                         }
                                         break;
                                     default:
