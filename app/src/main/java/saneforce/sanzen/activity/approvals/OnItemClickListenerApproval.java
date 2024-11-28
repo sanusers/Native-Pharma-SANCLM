@@ -2,6 +2,7 @@ package saneforce.sanzen.activity.approvals;
 
 import saneforce.sanzen.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DcrDetailModelList;
+import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
 import saneforce.sanzen.activity.approvals.tp.pojo.TpModelList;
 
 public interface OnItemClickListenerApproval {
@@ -10,4 +11,6 @@ public interface OnItemClickListenerApproval {
     void onClickDcrDetail(DcrDetailModelList dcrDetailModelList);
 
     void onItemClick(TpModelList tpModelLists,int pos);
+
+    void onSTPItemClick(STPModelList stpModelList, int position);
 }

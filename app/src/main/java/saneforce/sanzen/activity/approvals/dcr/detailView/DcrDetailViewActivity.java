@@ -25,6 +25,7 @@ import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanzen.activity.approvals.dcr.detailView.adapter.AdapterCusSingleList;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DcrDetailModelList;
+import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
 import saneforce.sanzen.activity.approvals.tp.pojo.TpModelList;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
@@ -671,7 +672,10 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
 
     }
 
+    @Override
+    public void onSTPItemClick(STPModelList stpModelList, int position) {
 
+    }
 
 
 }
