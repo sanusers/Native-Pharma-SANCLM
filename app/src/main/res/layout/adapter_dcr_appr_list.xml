@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/constraint_main"
-    android:layout_marginVertical="@dimen/_2sdp"
+    android:layout_margin="@dimen/_2sdp"
     android:background="@drawable/selector_box"
     android:paddingHorizontal="@dimen/_2sdp"
     android:paddingVertical="@dimen/_4sdp">

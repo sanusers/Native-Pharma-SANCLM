@@ -182,6 +182,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         String stpStatus = SharedPref.getStpStatus(StandardTourPlanActivity.this);
         activityStandardTourPlanBinding.tvStpStatus.setText(stpStatus.isEmpty() ? "Planning..." : stpStatus);
 
+        activityStandardTourPlanBinding.tvSync.setOnClickListener( v -> {
+            syncSTP();
+        });
     }
 
     private void getRequiredData() {
@@ -1103,7 +1106,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
     private void callSwapAPI(String fromID, String fromName, String toID, String toName) {
         try {
-//            binding.progress.setVisibility(View.VISIBLE);
+            activityStandardTourPlanBinding.flProgress.setVisibility(View.VISIBLE);
+            activityStandardTourPlanBinding.tvProgressTitle.setText("Swapping...");
             Log.e("swap:Object", swapJsonArray.toString());
             apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
             Map<String, String> mapString = new HashMap<>();
@@ -1113,37 +1117,39 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                     Log.d("swap:Code", response.code() + " - " + response);
-//                    binding.progress.setVisibility(View.GONE);
+                    activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
                     if(response.isSuccessful()) {
                         try {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
                             if(json.getString("success").equalsIgnoreCase("true")) {
                                 commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Swap between " + fromName + " And " + toName + " was successful");
-                                syncSTP();
                             }
                         } catch (Exception e) {
                             Log.e("STP SWAP", "onResponse: " + e.getMessage());
                         }
+                        syncSTP();
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-//                    binding.progress.setVisibility(View.GONE);
+                    activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
                     Log.e("VALUES", Arrays.toString(t.getStackTrace()));
                     commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-//            binding.progress.setVisibility(View.GONE);
+            activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
         }
     }
 
     private void syncSTP() {
         try {
+            activityStandardTourPlanBinding.flProgress.setVisibility(View.VISIBLE);
+            activityStandardTourPlanBinding.tvProgressTitle.setText("Syncing...");
             apiInterface = RetrofitClient.getRetrofit(StandardTourPlanActivity.this, SharedPref.getCallApiUrl(StandardTourPlanActivity.this));
-
             JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
             jsonObject.put("tableName", "getstp_details");
             jsonObject.put("sfcode", SharedPref.getSfCode(this));
@@ -1162,7 +1168,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
                     boolean success = false;
                     JSONArray jsonArray = new JSONArray();
-//                    binding.progress.setVisibility(View.GONE);
+                    activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
 
                     if(response.isSuccessful()) {
                         Log.e("test mydayplan", "response : " + Objects.requireNonNull(response.body()));
@@ -1195,21 +1201,22 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         saveSTPDataToLocal();
                         getRequiredData();
                         populateAdapters();
+                        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() == totalDaysCount));
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                     Log.e("STP", "onFailure: ");
-//                    binding.progress.setVisibility(View.GONE);
-//                    commonUtilsMethods.showToastMessage(this, this.getString(R.string.please_sync_workplan));
+                    activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
+                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
                     t.printStackTrace();
                 }
             });
 
         } catch (JSONException a) {
-//            binding.progress.setVisibility(View.GONE);
-//            commonUtilsMethods.showToastMessage(this, this.getString(R.string.please_sync_workplan));
+            activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
             a.printStackTrace();
         }
     }
@@ -1307,9 +1314,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void callDeleteAPI(String dayID, String caption) {
-
         try {
-//            binding.progress.setVisibility(View.VISIBLE);
+            activityStandardTourPlanBinding.flProgress.setVisibility(View.VISIBLE);
+            activityStandardTourPlanBinding.tvProgressTitle.setText("Deleting...");
             Log.e("delete:Object", deleteJsonObject.toString());
             apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
             Map<String, String> mapString = new HashMap<>();
@@ -1319,7 +1326,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                     Log.d("delete:Code", response.code() + " - " + response);
-//                    binding.progress.setVisibility(View.GONE);
+                    activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
                     if(response.isSuccessful()) {
                         try {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
@@ -1335,15 +1342,15 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-//                    binding.progress.setVisibility(View.GONE);
-//                    setUpWorkPlan();
                     Log.e("VALUES", Arrays.toString(t.getStackTrace()));
+                    activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
                     commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-//            binding.progress.setVisibility(View.GONE);
+            activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
         }
     }
 
@@ -1381,6 +1388,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 List<STPOfflineDataTable> stpOfflineDataTableList = stpOfflineDataDao.getAllNonSyncSTPData();
                 if(stpOfflineDataTableList != null && !stpOfflineDataTableList.isEmpty()) {
                     activityStandardTourPlanBinding.flProgress.setVisibility(View.VISIBLE);
+                    activityStandardTourPlanBinding.tvProgressTitle.setText("Syncing Offline Data...");
                     final int[] apiCount = {0};
                     for (STPOfflineDataTable stpOfflineDataTable : stpOfflineDataTableList) {
                         String dayID = stpOfflineDataTable.getDayID(), dayCaption = stpOfflineDataTable.getDayCaption(), strClusterID = stpOfflineDataTable.getClusterCode(), strClusterName = stpOfflineDataTable.getClusterName(), docCodes = stpOfflineDataTable.getDoctorCode(), docNames = stpOfflineDataTable.getDoctorName(), chmCodes = stpOfflineDataTable.getChemistCode(), chmNames = stpOfflineDataTable.getChemistName(), jsonObject = stpOfflineDataTable.getStpData();
@@ -1428,6 +1436,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
+                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
             }
         }
     }

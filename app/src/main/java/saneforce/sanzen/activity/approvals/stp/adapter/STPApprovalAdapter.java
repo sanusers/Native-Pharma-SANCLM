@@ -23,12 +23,17 @@ public class STPApprovalAdapter extends RecyclerView.Adapter<STPApprovalAdapter.
     private final Context context;
     private ArrayList<STPModelList> stpModelLists;
     private final OnItemClickListenerApproval mListener;
-    private String selectedSFCode;
+    private String selectedSFCode = "";
 
     public STPApprovalAdapter(Context context, ArrayList<STPModelList> stpModelLists, OnItemClickListenerApproval mListener) {
         this.context = context;
         this.stpModelLists = stpModelLists;
         this.mListener = mListener;
+    }
+
+    public void setSelectedSFCode(String selectedSFCode, int position) {
+        this.selectedSFCode = selectedSFCode;
+        notifyItemChanged(position);
     }
 
     @NonNull
@@ -44,20 +49,21 @@ public class STPApprovalAdapter extends RecyclerView.Adapter<STPApprovalAdapter.
         holder.tv_name.setText(stpModelLists.get(position).getName());
         holder.tv_date.setVisibility(View.GONE);
 
-        if (stpModelLists.get(position).getCode().equalsIgnoreCase(selectedSFCode)) {
+        if(stpModelLists.get(position).getCode().equalsIgnoreCase(selectedSFCode)) {
             holder.constraint_main.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_purple));
-            holder.tv_name.setTextColor(ContextCompat.getColor(context,R.color.white));
-            holder.tv_date.setBackground(ContextCompat.getDrawable(context,R.drawable.selector_box));
-            holder.list_arrow.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.greater_than_white));
-        } else {
-            holder.constraint_main.setBackground(ContextCompat.getDrawable(context,R.drawable.selector_box));
-            holder.tv_name.setTextColor(ContextCompat.getColor(context,R.color.dark_purple));
-            holder.tv_date.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_light_grey_1));
-            holder.list_arrow.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.greater_than_purple));
+            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.white));
+            holder.tv_date.setBackground(ContextCompat.getDrawable(context, R.drawable.selector_box));
+            holder.list_arrow.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.greater_than_white));
+        }else {
+            holder.constraint_main.setBackground(ContextCompat.getDrawable(context, R.drawable.selector_box));
+            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.dark_purple));
+            holder.tv_date.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_light_grey_1));
+            holder.list_arrow.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.greater_than_purple));
         }
 
         holder.constraint_main.setOnClickListener(view -> {
-            mListener.onSTPItemClick(new STPModelList(stpModelLists.get(position).getCode(),stpModelLists.get(position).getName(),stpModelLists.get(position).getDivCode()),holder.getBindingAdapterPosition());
+            setSelectedSFCode(stpModelLists.get(position).getCode(), position);
+            mListener.onSTPItemClick(new STPModelList(stpModelLists.get(position).getName(), stpModelLists.get(position).getCode(), stpModelLists.get(position).getDivCode()), holder.getBindingAdapterPosition());
             notifyDataSetChanged();
         });
     }

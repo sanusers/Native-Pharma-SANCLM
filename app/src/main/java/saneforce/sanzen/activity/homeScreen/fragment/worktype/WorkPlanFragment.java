@@ -98,7 +98,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     String CheckInOutStatus, FinalSubmitStatus, hqCode = "", rejectedReason = "";
     JSONObject jsonObject = new JSONObject();
     JSONObject deleteJsonObject = new JSONObject();
-    public static JSONObject tpDataObj = new JSONObject();
+    public static JSONObject tpDataObj = null;
     ArrayList<JSONObject> workType_list1 = new ArrayList<>();
     public ArrayList<Multicheckclass_clust> multiple_cluster_list = new ArrayList<>();
     ArrayList<JSONObject> HQList = new ArrayList<>();
@@ -129,6 +129,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private ProgressDialog syncProgressDialog;
     private int syncCount = 0;
     private String STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPBasedDCR, TPDCRDeviation;
+    private boolean isFromTP = false;
 
     @Override
     public void onResume() {
@@ -1768,6 +1769,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        tpDataObj = null;
                     }
                 }
             }
@@ -1902,11 +1904,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         disableSession1();
                         if(TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")
                                 || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0"))) {
-                            enableSave();
                             tpWorkType = FirstSeasonDayPlanObject.optString("TP_worktype");
                             tpCluster = FirstSeasonDayPlanObject.optString("TP_cluster");
                             tpDoctor = FirstSeasonDayPlanObject.optString("TP_Doctor");
                             deviation = FirstSeasonDayPlanObject.optString("TpVwFlg");
+                            if(isFromTP) {
+                                enableSave();
+                            }
                             if(TPDCRDeviation.equalsIgnoreCase("0")) {
                                 binding.llDeviation.setVisibility(View.VISIBLE);
                                 binding.switchButton.setChecked(deviation.equalsIgnoreCase("1"));
@@ -2103,6 +2107,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         obj2.put("TP_worktype", modelClass.getSessionList().get(1).getWorkType().getCode());
                         jsonArray.put(obj2);
                     }
+                    isFromTP = true;
                     masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, jsonArray.toString(), 2));
                     setUpWorkPlan();
                 }
@@ -2149,6 +2154,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.backround_text));
                 binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.backround_text));
                 binding.cardPlan2.setVisibility(View.GONE);
+                binding.llDeviation.setVisibility(View.GONE);
             }
 
         } catch (Exception a) {
@@ -2272,6 +2278,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         if(UtilityClass.isNetworkAvailable(requireContext())) {
             progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
             CallFinalSubmitAPI();
+            tpDataObj = null;
             if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
                 if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
                     CallCheckOutAPI();

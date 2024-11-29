@@ -1214,8 +1214,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.tour_plan))) {
-            Intent intent=new Intent(getApplicationContext(), TourPlanActivity.class);
-            startActivity(intent);
+            if(SharedPref.getStpNeed(this).equalsIgnoreCase("0")
+                    && SharedPref.getStpBasedMtp(this).equalsIgnoreCase("0")
+                    && !SharedPref.getSfType(this).equalsIgnoreCase("2")
+                    && !SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")){
+                commonUtilsMethods.showToastMessage(this, "Standard Tour Plan must be approved to enter Tour Plan");
+            } else {
+                Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
+                startActivity(intent);
+            }
             return true;
         }
 

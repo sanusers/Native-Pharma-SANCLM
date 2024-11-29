@@ -614,13 +614,13 @@ public class MasterSyncActivity extends AppCompatActivity {
         stockBalanceStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
         calenderEventStaus=masterDataDao.getMasterSyncStatusByKey(Constants.CALENDER_EVENT_STATUS);
 
-
-
         workTypeStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_TYPE);
         holidayStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOLIDAY);
         weeklyOfStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WEEKLY_OFF);
         tpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TP_SETUP);
         tourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TOUR_PLAN);
+        stpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STP_SETUP);
+        standardTourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STANDARD_TOUR_PLAN);
         productStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT);
         proCatStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
         brandStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND);
@@ -767,16 +767,22 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Tour Plan
         tpModelArray.clear();
-        if (SharedPref.getTpNeed(this).equalsIgnoreCase("0")) {
+        boolean tpNeed = SharedPref.getTpNeed(this).equalsIgnoreCase("0"), stpNeed = SharedPref.getStpNeed(this).equalsIgnoreCase("0") && !SharedPref.getSfType(this).equalsIgnoreCase("2");
+        if (tpNeed) {
             MasterSyncItemModel tpSetup = new MasterSyncItemModel(Constants.TP_SETUP, Constants.SETUP, "gettpsetup", Constants.TP_SETUP, tpSetupStatus, false);
             MasterSyncItemModel tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN,  Constants.TOUR_PLAN, "getall_tp", Constants.TOUR_PLAN, tourPLanStatus, false);
-            MasterSyncItemModel STPSetup = new MasterSyncItemModel(Constants.STP_SETUP, Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP, stpSetupStatus, false);
-            MasterSyncItemModel STPPlan = new MasterSyncItemModel(Constants.STANDARD_TOUR_PLAN,  Constants.STANDARD_TOUR_PLAN, "getstp_details", Constants.STANDARD_TOUR_PLAN, standardTourPLanStatus, false);
             tpModelArray.add(tpSetup);
             tpModelArray.add(tPlan);
+        }
+        if(stpNeed) {
+            MasterSyncItemModel STPSetup = new MasterSyncItemModel(Constants.STP_SETUP, Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP, stpSetupStatus, false);
+            MasterSyncItemModel STPPlan = new MasterSyncItemModel(Constants.STANDARD_TOUR_PLAN,  Constants.STANDARD_TOUR_PLAN, "getstp_details", Constants.STANDARD_TOUR_PLAN, standardTourPLanStatus, false);
             tpModelArray.add(STPSetup);
             tpModelArray.add(STPPlan);
-        } else binding.tourPlan.setVisibility(View.GONE);
+        }
+        if(!tpNeed && !stpNeed) {
+            binding.tourPlan.setVisibility(View.GONE);
+        }
 
         //Slide
         slideModelArray.clear();

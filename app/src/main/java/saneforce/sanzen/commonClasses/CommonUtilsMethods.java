@@ -280,15 +280,20 @@ public class CommonUtilsMethods {
 
     @SuppressLint("SimpleDateFormat")
     public static String setConvertDate(String currentFormat, String requiredFormat, String date) {
-        SimpleDateFormat spf = new SimpleDateFormat(currentFormat);
-        Date newDate = null;
         try {
-            newDate = spf.parse(date);
-        } catch (ParseException ignored) {
+            SimpleDateFormat spf = new SimpleDateFormat(currentFormat);
+            Date newDate = null;
+            try {
+                newDate = spf.parse(date);
+            } catch (ParseException ignored) {
+            }
+            spf = new SimpleDateFormat(requiredFormat);
+            assert newDate != null;
+            return spf.format(newDate);
+        }catch (Exception e) {
+            e.printStackTrace();
         }
-        spf = new SimpleDateFormat(requiredFormat);
-        assert newDate != null;
-        return spf.format(newDate);
+        return "";
     }
 
 

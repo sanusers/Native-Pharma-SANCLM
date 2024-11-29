@@ -51,6 +51,24 @@
                 android:textSize="@dimen/_7sdp"
                 tools:ignore="SpUsage" />
 
+            <TextView
+                android:id="@+id/tv_sync"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_6sdp"
+                android:background="@drawable/bg_light_pink_2"
+                android:drawablePadding="@dimen/_1sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="start|center"
+                android:paddingHorizontal="@dimen/_3sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                android:text="@string/sync"
+                android:layout_gravity="end|center_vertical"
+                android:textAllCaps="false"
+                android:textColor="@color/pink"
+                android:textSize="@dimen/_6ssp"
+                app:drawableStartCompat="@drawable/baseline_sync_24" />
+
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>

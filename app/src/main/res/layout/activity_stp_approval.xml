@@ -151,9 +151,9 @@
                 android:id="@+id/constraint_selected_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:visibility="visible"
-                android:weightSum="3"
                 app:layout_constraintBottom_toTopOf="@id/tv_tp_planned_for"
                 app:layout_constraintEnd_toStartOf="@id/tag_week_off_days"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -161,106 +161,27 @@
                 app:layout_constraintTop_toBottomOf="@id/view_dummy"
                 tools:ignore="NotSibling">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/tag_total_planned_days"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:text="@string/total_planed_days"
+                    android:textColor="@color/light_grey_2"
+                    android:textSize="@dimen/_6ssp" />
 
-                    <TextView
-                        android:id="@+id/tag_total_planned_days"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_2sdp"
-                        android:layout_toRightOf="@+id/tag_planned_for"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:paddingVertical="@dimen/_2sdp"
-                        android:text="@string/total_planed_days"
-                        android:textColor="@color/light_grey_2"
-                        android:textSize="@dimen/_6ssp" />
-
-                    <TextView
-                        android:id="@+id/tv_total_planned_days"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tag_total_planned_days"
-                        android:layout_toRightOf="@+id/tag_planned_for"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:paddingVertical="@dimen/_2sdp"
-                        android:text=""
-                        android:textColor="@color/cheked_txt_color"
-                        android:textSize="@dimen/_6ssp" />
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/tv_total_planned_days"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:fontFamily="@font/satoshi_bold"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:textColor="@color/cheked_txt_color"
+                    android:textSize="@dimen/_6ssp"
+                    tools:text="20" />
 
-                    <TextView
-                        android:id="@+id/tag_week_off_days"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_2sdp"
-                        android:layout_toRightOf="@+id/tag_total_planned_days"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:paddingVertical="@dimen/_2sdp"
-                        android:text="@string/week_off_days_holidays"
-                        android:textColor="@color/light_grey_2"
-                        android:textSize="@dimen/_6ssp" />
-
-                    <TextView
-                        android:id="@+id/tv_week_off_days"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tag_week_off_days"
-                        android:layout_toRightOf="@+id/tag_total_planned_days"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:paddingVertical="@dimen/_2sdp"
-                        android:text=""
-                        android:textColor="@color/cheked_txt_color"
-                        android:textSize="@dimen/_6ssp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_joningdate"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:visibility="invisible"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tag_joiningdate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_2sdp"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:paddingVertical="@dimen/_2sdp"
-                        android:text="Joining Date"
-                        android:textColor="@color/light_grey_2"
-                        android:textSize="@dimen/_6ssp" />
-
-
-                    <TextView
-                        android:id="@+id/tv_joiningdate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tag_joiningdate"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:paddingVertical="@dimen/_2sdp"
-                        android:text=""
-                        android:textColor="@color/cheked_txt_color"
-                        android:textSize="@dimen/_6ssp" />
-
-                </LinearLayout>
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -273,7 +194,8 @@
                 app:layout_constraintBottom_toTopOf="@id/constraint_buttons"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/constraint_selected_details" />
+                app:layout_constraintTop_toBottomOf="@id/constraint_selected_details"
+                tools:listitem="@layout/adapter_tp_detailed_list" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_buttons"

@@ -31,7 +31,7 @@
 
             <TextView
                 android:id="@+id/tv_dayNo"
-                android:layout_width="@dimen/_17sdp"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/_17sdp"
                 android:layout_marginStart="@dimen/_4sdp"
                 android:layout_marginEnd="@dimen/_2sdp"
