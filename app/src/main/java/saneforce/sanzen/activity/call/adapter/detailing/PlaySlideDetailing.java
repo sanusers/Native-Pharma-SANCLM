@@ -12,6 +12,7 @@ import static saneforce.sanzen.activity.previewPresentation.fragment.MyPresentat
 import static saneforce.sanzen.activity.previewPresentation.fragment.HomeBrands.SlideHomeBrandList;
 import static saneforce.sanzen.activity.previewPresentation.fragment.Speciality.SlideSpecialityList;
 import static saneforce.sanzen.activity.previewPresentation.fragment.Therapist.SlideTherapistList;
+import static saneforce.sanzen.activity.previewPresentation.fragment.WelcomePresentation.SlideWelcomeList;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -62,6 +63,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
+import saneforce.sanzen.activity.previewPresentation.fragment.WelcomePresentation;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -564,18 +566,21 @@ public class PlaySlideDetailing extends AppCompatActivity {
 
             switch (arrayListHead.get(holder.getAbsoluteAdapterPosition())) {
                 case "A":
-                    holder.tv_brandName.setText(context.getResources().getText(R.string.all));
+                    holder.tv_brandName.setText(context.getString(R.string.home));
                     break;
                 case "B":
-                    holder.tv_brandName.setText(context.getResources().getText(R.string.brand_matrix));
+                    holder.tv_brandName.setText(context.getResources().getText(R.string.all_brands));
                     break;
                 case "C":
-                    holder.tv_brandName.setText(context.getResources().getText(R.string.speciality));
+                    holder.tv_brandName.setText(context.getResources().getText(R.string.brand_matrix));
                     break;
                 case "D":
-                    holder.tv_brandName.setText(context.getResources().getText(R.string.therapist));
+                    holder.tv_brandName.setText(context.getResources().getText(R.string.speciality));
                     break;
                 case "E":
+                    holder.tv_brandName.setText(context.getResources().getText(R.string.therapist));
+                    break;
+                case "F":
                     holder.tv_brandName.setText(context.getResources().getText(R.string.my_presentation));
                     break;
             }
@@ -585,18 +590,21 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 SelectedPosPlay = holder.getAbsoluteAdapterPosition();
                 switch (arrayListHead.get(holder.getAbsoluteAdapterPosition())) {
                     case "A":
-                        populateListData(SlideHomeBrandList);
+                        populateListData(SlideWelcomeList);
                         break;
                     case "B":
-                        populateListData(SlideBrandMatrixList);
+                        populateListData(SlideHomeBrandList);
                         break;
                     case "C":
-                        populateListData(SlideSpecialityList);
+                        populateListData(SlideBrandMatrixList);
                         break;
                     case "D":
-                        populateListData(SlideTherapistList);
+                        populateListData(SlideSpecialityList);
                         break;
                     case "E":
+                        populateListData(SlideTherapistList);
+                        break;
+                    case "F":
                         populateLocalSavedData(SlideCustomizedList);
                         break;
                 }

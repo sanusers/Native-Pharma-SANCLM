@@ -1,5 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
+    ext {
+        agp_version = '8.7.2'
+    }
     repositories {
         google()
         mavenCentral()
@@ -7,7 +10,7 @@ buildscript {
         maven { url "https://maven.google.com" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath "com.android.tools.build:gradle:$agp_version"
         classpath 'com.google.gms:google-services:4.4.0'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'
     }

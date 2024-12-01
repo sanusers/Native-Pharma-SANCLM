@@ -36,6 +36,7 @@ import saneforce.sanzen.activity.previewPresentation.fragment.MyPresentation;
 import saneforce.sanzen.activity.previewPresentation.fragment.HomeBrands;
 import saneforce.sanzen.activity.previewPresentation.fragment.Speciality;
 import saneforce.sanzen.activity.previewPresentation.fragment.Therapist;
+import saneforce.sanzen.activity.previewPresentation.fragment.WelcomePresentation;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -109,32 +110,36 @@ public class PreviewActivity extends AppCompatActivity {
             if (from_where.equalsIgnoreCase("call")) {
                 headingData.clear();
                 if (CusType.equalsIgnoreCase("1")) {
-                    viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
+                    viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.home));
                     headingData.add("A");
-                    viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
+                    viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
                     headingData.add("B");
-                    viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+                    viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
                     headingData.add("C");
+                    viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+                    headingData.add("D");
                     if(therapticNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
-                        headingData.add("D");
+                        headingData.add("E");
                     }
                     if (presentationNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
-                        headingData.add("E");
+                        headingData.add("F");
                     }
                 } else {
-                    viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
+                    viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.home));
                     headingData.add("A");
+                    viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
+                    headingData.add("B");
                     viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-                    headingData.add("C");
+                    headingData.add("D");
                     if(therapticNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
-                        headingData.add("D");
+                        headingData.add("E");
                     }
                     if (presentationNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
-                        headingData.add("E");
+                        headingData.add("F");
                     }
                 }
             } else {

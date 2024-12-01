@@ -29,6 +29,7 @@ public class SharedPref {
     public static final String PHP_PATH_URL = "php_path_url";
     public static final String REPORTS_URL = "reports_url";
     public static final String SLIDES_PATH = "SLIDES_PATH";
+    public static final String WELCOME_SLIDES_PATH = "WELCOME_SLIDES_PATH";
     public static final String LOGO_URL = "logo_url";
     public static final String CALL_API_URL = "call_api_url";
     public static final String LOGI_SITE = "log_site";
@@ -411,6 +412,7 @@ public class SharedPref {
     public static final String ADDITIONAL_CALL_NEED = "Additional_Call";
 
     public static final String SLIDE_DOWNLOADING_STATUS = "Slide_downloding_status";
+    public static final String WELCOME_SLIDE_DOWNLOADING_STATUS = "Welcome_slide_downloding_status";
     public static final String LAST_CALL_DATE = "Last_Call_Date";
     public static final String LAST_OUTBOX_ALERT_DATE = "Last_Outbox_Alert_Date";
 
@@ -757,6 +759,7 @@ public class SharedPref {
         editor.putString(STP_BASED_MTP, jsonObject.getString("STP_Based_MTP"));
         editor.putString(STP_BASED_DCR, jsonObject.getString("STP_Based_DCR"));
         editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\",""));
+        editor.putString(WELCOME_SLIDES_PATH, "Welcomepage_upload/");
         editor.apply();
 
     }catch (Exception ignore){
@@ -2026,6 +2029,10 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDES_PATH, "");
     }
 
+    public static String getWelcomeSlideUrl(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(WELCOME_SLIDES_PATH, "");
+    }
+
     public static String getLogoUrl(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGO_URL, "");
     }
@@ -2323,6 +2330,12 @@ public class SharedPref {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putBoolean(SLIDE_DOWNLOADING_STATUS, status).apply();
+    }
+
+    public static void putWelcomeSlideStatus(Context context, boolean status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(WELCOME_SLIDE_DOWNLOADING_STATUS, status).apply();
     }
 
     public static boolean getSlideDowloadingStatus(Context context) {

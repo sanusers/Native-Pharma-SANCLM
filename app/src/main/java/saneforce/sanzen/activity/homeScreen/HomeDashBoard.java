@@ -1265,6 +1265,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     roomDB.slidesDao().deleteAllData();
+                    roomDB.welcomeSlidesDao().deleteAllData();
 
                     File slidesFolder=null;
                     if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {

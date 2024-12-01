@@ -55,6 +55,9 @@ import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideServices;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.SlidesViewModel;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.Slide_adapter;
+import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideAdapter;
+import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideService;
+import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlidesViewModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
@@ -73,6 +76,8 @@ import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesDao;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesTableDeatils;
+import saneforce.sanzen.roomdatabase.SlideTable.WelcomeSlidesDao;
+import saneforce.sanzen.roomdatabase.SlideTable.WelcomeSlidesDataTable;
 import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
 import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataTable;
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
@@ -91,7 +96,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     boolean retrystatus=false;
     //  Api call status  ======> 2 - sucesss, 1- failure ,  0- Notsync yet
-    int doctorStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, setupStatus = 0;
+    int doctorStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, setupStatus = 0;
     int apiSuccessCount = 0, itemCount = 0;
     String navigateFrom = "";
     boolean mgrInitialSync = false;
@@ -116,6 +121,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
     public  List<String> HQCODE_SYN = new ArrayList<>();
     public static ArrayList<String> SlideIds = new ArrayList<>();
+    public static ArrayList<String> welcomeSlideNames = new ArrayList<>();
     SharedPreferences sharedpreferences;
     LocalDate localDate;
     ArrayList<String> weeklyOffDays = new ArrayList<>();
@@ -132,7 +138,8 @@ public class MasterSyncActivity extends AppCompatActivity {
     private TourPlanOnlineDataDao tourPlanOnlineDataDao;
     private STPOfflineDataDao stpOfflineDataDao;
     private SlidesDao SlidesDao;
-    public static boolean isSingleSlideDowloaingStaus;
+    private WelcomeSlidesDao welcomeSlidesDao;
+    public static boolean isSingleSlideDowloaingStaus, isSingleWelcomeSlideDownloadingStatus ;
     private boolean isCallSynced = false, isDateSynced = false;
     private int dayPlanDelayCount = 0;
     public    String SFTP_Date_sp="",SFTP_Date="";
@@ -166,6 +173,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         tourPlanOnlineDataDao = db.tourPlanOnlineDataDao();
         stpOfflineDataDao = db.stpOfflineDataDao();
         SlidesDao = db.slidesDao();
+        welcomeSlidesDao = db.welcomeSlidesDao();
 
         try {
             SFTP_Date_sp = SharedPref.getSftpDate(MasterSyncActivity.this);
@@ -233,6 +241,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SlideAlertbox(false);
+                welcomeSlideAlertBox(false);
             }
         });
 
@@ -631,6 +640,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         proSpeSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPL_SLIDE);
         brandSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND_SLIDE);
         therapticStatus = masterDataDao.getMasterSyncStatusByKey(Constants.THERAPTIC_SLIDE);
+        welcomeStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WELCOME_SLIDE);
         subordinateStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SUBORDINATE);
         subMgrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SUBORDINATE_MGR);
         jWorkStatus = masterDataDao.getMasterSyncStatusByKey(Constants.JOINT_WORK + rsf);
@@ -733,8 +743,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             leaveModelArray.add(leaveStatusModel);
         }
 
-
-
         //DCR
         dcrModelArray.clear();
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC,  "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
@@ -790,6 +798,8 @@ public class MasterSyncActivity extends AppCompatActivity {
         MasterSyncItemModel splSlideModel = new MasterSyncItemModel(Constants.SPL_SLIDE, "Slide", "getslidespeciality", Constants.SPL_SLIDE, proSpeSlideStatus, false);
         MasterSyncItemModel brandSlideModel = new MasterSyncItemModel(Constants.BRAND_SLIDE,"Slide", "getslidebrand", Constants.BRAND_SLIDE, brandSlideStatus, false);
         MasterSyncItemModel therapticSlideModel = new MasterSyncItemModel(Constants.THERAPTIC_SLIDE,  "Slide", "gettheraptic", Constants.THERAPTIC_SLIDE, therapticStatus, false);
+        MasterSyncItemModel welcomeSlideModel = new MasterSyncItemModel(Constants.WELCOME_SLIDE,  "Slide", "getwelcomepage", Constants.WELCOME_SLIDE, welcomeStatus, false);
+        slideModelArray.add(welcomeSlideModel);
         slideModelArray.add(proSlideModel);
         slideModelArray.add(splSlideModel);
         slideModelArray.add(brandSlideModel);
@@ -1199,7 +1209,15 @@ public class MasterSyncActivity extends AppCompatActivity {
                                             if (jsonArray.length() > 0){
                                                 insertSlide(jsonArray);
                                                 if (!navigateFrom.equalsIgnoreCase("Login")) {
-                                                    SlideAlertbox(true);}
+                                                    SlideAlertbox(true);
+                                                }
+                                            }
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.WELCOME_SLIDE)) {
+                                            if (jsonArray.length() > 0){
+                                                insertWelcomeSlide(jsonArray);
+                                                if (!navigateFrom.equalsIgnoreCase("Login")) {
+                                                    welcomeSlideAlertBox(true);
+                                                }
                                             }
                                         } else  if(!navigateFrom.equalsIgnoreCase("Login") && masterOf.equalsIgnoreCase(Constants.SETUP) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
                                             if (jsonArray.length() > 0){
@@ -1259,6 +1277,12 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
                                 SlideAlertbox(true);
+                            } else if (masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
+//                                SharedPref.putAutomassync(getApplicationContext(), true);
+                            //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                                binding.backArrow.setVisibility(View.VISIBLE);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+                                welcomeSlideAlertBox(true);
                             } else {
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
                                 binding.backArrow.setVisibility(View.VISIBLE);
@@ -1296,6 +1320,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
                                 SlideAlertbox(true);
+                            } else if (masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
+                                binding.backArrow.setVisibility(View.VISIBLE);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+                                welcomeSlideAlertBox(true);
                             } else {
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
@@ -1963,8 +1991,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
     }
 
-
-
     public  void insertSlide(JSONArray jsonArray){
         try {
             List<String> mList=new ArrayList<>();
@@ -2056,13 +2082,116 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
 
                 if(navigateFrom.equalsIgnoreCase("Login")) {
+                    if (welcomeSlidesDao.getTotalSlideCount() > 0) {
+                        welcomeSlideAlertBox(true);
+                    } else {
+                        Intent intent = new Intent(context, HomeDashBoard.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+            }else {
+                SharedPref.putSlidestatus(MasterSyncActivity.this, false);
+            }
+        });
+    }
+
+    public void insertWelcomeSlide(JSONArray jsonArray){
+        try {
+            List<String> mList = new ArrayList<>();
+            List<String> nList = welcomeSlidesDao.getAllSlideNames();
+            if(jsonArray.length() > 0){
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String FilePath = jsonObject.optString("Name");
+                    String name = jsonObject.optString("Name");
+                    mList.add(name);
+                    if(welcomeSlidesDao.getSlideName(name) != null && welcomeSlidesDao.getSlideName(name).equalsIgnoreCase(FilePath)) {
+                        welcomeSlidesDao.insert(new WelcomeSlidesDataTable(FilePath, "", "1", "0", "1", String.valueOf(i)));
+                    }else {
+                        welcomeSlidesDao.saveWelcomeSlideData(new WelcomeSlidesDataTable(FilePath, "", "1", "0", "1", String.valueOf(i)));
+                    }
+                }
+                if(!nList.isEmpty()) {
+                    for (int j = 0; j<nList.size(); j++) {
+                        if(!mList.contains(nList.get(j))) {
+                            welcomeSlidesDao.deleteSlideByName(nList.get(j));
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            Log.e("MasterSync Slides", "insertSlide: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
+    public void welcomeSlideAlertBox(boolean servesFlag) {
+        welcomeSlidesDao.setChangeStatus("1", "0");
+        MasterSyncActivity.welcomeSlideNames.clear();
+        if(servesFlag) {
+            SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, false);
+            Intent intent = new Intent(MasterSyncActivity.this, WelcomeSlideService.class);
+            stopService(intent);
+
+            Intent startIntent = new Intent(getApplicationContext(), WelcomeSlideService.class);
+            startService(startIntent);
+        }
+        isSingleWelcomeSlideDownloadingStatus = false;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.slide_downloader_alert_box, null);
+        RecyclerView recyclerView = dialogView.findViewById(R.id.recyelerview123);
+        TextView txt_downloadCount = dialogView.findViewById(R.id.txt_downloadcount);
+        TextView txt_total = dialogView.findViewById(R.id.txt_totaldownloadcount);
+        ImageView cancel_img = dialogView.findViewById(R.id.cancel_img);
+        WelcomeSlideAdapter adapter = new WelcomeSlideAdapter(this);
+        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(adapter);
+        builder.setView(dialogView);
+        Dialog dialog = builder.create();
+        dialog.setCancelable(false);
+        if(!isFinishing()) {
+            dialog.show();
+        }
+
+        cancel_img.setOnClickListener(view -> {
+            dialog.dismiss();
+            navigateFrom = "Slide";
+        });
+
+        WelcomeSlidesViewModel slidesViewModel = new ViewModelProvider(this).get(WelcomeSlidesViewModel.class);
+        slidesViewModel.getAllSlides().observe(this, slides -> {
+            Collections.sort(slides, Comparator.comparingInt(s -> Integer.parseInt(s.getListSlidePosition())));
+            adapter.setSlides(slides);
+        });
+
+        slidesViewModel.getDownloadingCount().observe(this, integer -> txt_downloadCount.setText(integer + " / "));
+
+        txt_total.setText(String.valueOf(welcomeSlidesDao.getTotalSlideCount()));
+
+        slidesViewModel.getCountOfDownloadingProcessDone().observe(this, integer -> {
+            if(integer == welcomeSlidesDao.getTotalSlideCount()) {
+                SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, true);
+                if(isSingleWelcomeSlideDownloadingStatus) {
+                    isSingleWelcomeSlideDownloadingStatus = false;
+                    commonUtilsMethods.showToastMessage(this, "Slide Updated ");
+                }else {
+                    commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
+                }
+
+                if(navigateFrom.equalsIgnoreCase("Login")) {
                     Intent intent = new Intent(context, HomeDashBoard.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
                 }
             }else {
-                SharedPref.putSlidestatus(MasterSyncActivity.this, false);
+                SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, false);
             }
         });
     }

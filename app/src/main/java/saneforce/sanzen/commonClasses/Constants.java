@@ -77,6 +77,7 @@ public class Constants {
     public static final String SPL_SLIDE = "Speciality Slide";
     public static final String BRAND_SLIDE = "Brand Slide";
     public static final String THERAPTIC_SLIDE = "Theraptic Slide";
+    public static final String WELCOME_SLIDE = "Welcome Slide";
 
     //Setup
     public static final String SETUP = "Setup";
@@ -94,7 +95,6 @@ public class Constants {
     public static final String STATUS_2 = "TP rejected";
     public static final String STATUS_3 = "TP approved";
     public static final String STATUS_4 = "TP planned/Submission pending";
-
 
     //NetWork
     public static final String CONNECT_TO_WIFI = "WIFI";

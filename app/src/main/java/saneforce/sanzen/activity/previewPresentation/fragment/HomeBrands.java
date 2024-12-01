@@ -34,8 +34,6 @@ import saneforce.sanzen.databinding.FragmentHomePreviewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
-
-
 public class HomeBrands extends Fragment {
     FragmentHomePreviewBinding homePreviewBinding;
     public static ArrayList<BrandModelClass> SlideHomeBrandList = new ArrayList<>();

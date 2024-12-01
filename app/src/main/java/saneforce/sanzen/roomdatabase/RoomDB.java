@@ -33,12 +33,14 @@ import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesDao;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesTableDeatils;
+import saneforce.sanzen.roomdatabase.SlideTable.WelcomeSlidesDao;
+import saneforce.sanzen.roomdatabase.SlideTable.WelcomeSlidesDataTable;
 import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
 import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataTable;
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataTable;
 
-@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class, SlidesTableDeatils.class, STPOfflineDataTable.class}, version = 2, exportSchema = false)
+@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class, SlidesTableDeatils.class, STPOfflineDataTable.class, WelcomeSlidesDataTable.class}, version = 2, exportSchema = false)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
     private static final String DATABASE_NAME = "sanclmroom.dp";
@@ -57,6 +59,7 @@ public abstract class RoomDB extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("CREATE TABLE IF NOT EXISTS `stp_offline_table` (`day_id` TEXT NOT NULL, `day_caption` TEXT, `cluste_code` TEXT, `cluster_name` TEXT, `doctor_code` TEXT, `doctor_name` TEXT, `chemist_code` TEXT, `chemist_name` TEXT, `stp_data` TEXT, `sync_status` TEXT, PRIMARY KEY(`day_id`))");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `welcome_slides_table` (`name` TEXT NOT NULL, `slide_size` TEXT, `downloading_status` TEXT, `progress` TEXT, `background_task` TEXT, `file_position` TEXT, PRIMARY KEY(`name`))");
         }
     };
 
@@ -87,5 +90,7 @@ public abstract class RoomDB extends RoomDatabase {
     public abstract OfflineDaySubmitDao offlineDaySubmitDao();
 
     public abstract STPOfflineDataDao stpOfflineDataDao();
+
+    public abstract WelcomeSlidesDao welcomeSlidesDao();
 
 }
