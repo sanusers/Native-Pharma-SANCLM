@@ -1864,7 +1864,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 int mCurrentDate = Integer.parseInt(mCurrDate);
 
 
-             if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
+             if (tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate) != null && !tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan....");
                     TourplanFlog="0";
                     SharedPref.setTpStatus(HomeDashBoard.this, true);
@@ -1872,7 +1872,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     startActivity(intent);
 
 
-                } else if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")&&((mCurrentDate >= Start_Date))) {
+                } else if (tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate) != null && !tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")&&((mCurrentDate >= Start_Date))) {
                       commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan...");
                         if (End_Date < mCurrentDate) {
                             SharedPref.setTpStatus(HomeDashBoard.this, true);
