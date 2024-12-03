@@ -42,7 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.homeScreen.fragment.CallsFragment;
+import saneforce.sanzen.activity.homeScreen.modelClass.ActivityModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.CheckInOutModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.ChildListModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.DaySubmitModelClass;
@@ -73,6 +73,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     OutBoxCheckInOutAdapter outBoxCheckInOutAdapter;
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     OutBoxECAdapter outBoxECAdapter;
+    OutBoxActivityAdapter outBoxActivityAdapter;
     ProgressDialog progressDialog;
     boolean isCallAvailable;
     CommonUtilsMethods commonUtilsMethods;
@@ -132,7 +133,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             case 0:
                 holder.tvCount.setText(String.valueOf(contentList.getCheckInOutModelClasses().size()));
                 if (contentList.isExpanded() && !contentList.getCheckInOutModelClasses().isEmpty()) {
-                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses());
+                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses());
                 } else {
                     holder.constraintRv.setVisibility(View.GONE);
                     holder.img_expand_child.setImageResource(R.drawable.down_arrow);
@@ -148,7 +149,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             case 2:
                 holder.tvCount.setText(String.valueOf(contentList.getOutBoxCallLists().size()));
                 if (contentList.isExpanded() && !contentList.getOutBoxCallLists().isEmpty()) {
-                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses());
+                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses());
                 } else {
                     holder.constraintRv.setVisibility(View.GONE);
                     holder.img_expand_child.setImageResource(R.drawable.down_arrow);
@@ -157,7 +158,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             case 3:
                 holder.tvCount.setText(String.valueOf(contentList.getEcModelClasses().size()));
                 if (contentList.isExpanded() && !contentList.getEcModelClasses().isEmpty()) {
-                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses());
+                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses());
                 } else {
                     holder.constraintRv.setVisibility(View.GONE);
                     holder.img_expand_child.setImageResource(R.drawable.down_arrow);
@@ -170,6 +171,14 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                     holder.expandContentView.setVisibility(View.VISIBLE);
                 }
                 break;
+            case 5:
+                holder.tvCount.setText(String.valueOf(contentList.getActivityModelClasses().size()));
+                if(contentList.isExpanded() && !contentList.getActivityModelClasses().isEmpty()) {
+                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses());
+                } else {
+                    holder.constraintRv.setVisibility(View.GONE);
+                    holder.img_expand_child.setImageResource(R.drawable.down_arrow);
+                }
             default:
                 break;
         }
@@ -211,7 +220,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         });
     }
 
-    private void SetupVisibleData(ConstraintLayout constraintRv, int childId, RecyclerView rvOutboxList, ImageView imgExpandChild, ArrayList<OutBoxCallList> outBoxCallLists, ArrayList<CheckInOutModelClass> checkInOutModelClasses, ArrayList<EcModelClass> ecModelClasses) {
+    private void SetupVisibleData(ConstraintLayout constraintRv, int childId, RecyclerView rvOutboxList, ImageView imgExpandChild, ArrayList<OutBoxCallList> outBoxCallLists, ArrayList<CheckInOutModelClass> checkInOutModelClasses, ArrayList<EcModelClass> ecModelClasses, ArrayList<ActivityModelClass> activityModelClasses) {
         constraintRv.setVisibility(View.VISIBLE);
         RecyclerView.LayoutManager mLayoutManager;
         switch (childId) {
@@ -233,6 +242,11 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 rvOutboxList.setLayoutManager(mLayoutManager);
                 rvOutboxList.setAdapter(outBoxECAdapter);
                 break;
+            case 5:
+                outBoxActivityAdapter = new OutBoxActivityAdapter(activity, context, activityModelClasses, apiInterface);
+                mLayoutManager = new LinearLayoutManager(context);
+                rvOutboxList.setLayoutManager(mLayoutManager);
+                rvOutboxList.setAdapter(outBoxActivityAdapter);
         }
         imgExpandChild.setImageResource(R.drawable.top_vector);
     }

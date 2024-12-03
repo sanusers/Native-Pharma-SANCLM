@@ -39,7 +39,6 @@ import saneforce.sanzen.activity.previewPresentation.fragment.Therapist;
 import saneforce.sanzen.activity.previewPresentation.fragment.WelcomePresentation;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -110,7 +109,7 @@ public class PreviewActivity extends AppCompatActivity {
             if (from_where.equalsIgnoreCase("call")) {
                 headingData.clear();
                 if (CusType.equalsIgnoreCase("1")) {
-                    viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.home));
+                    viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
                     headingData.add("A");
                     viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
                     headingData.add("B");
@@ -127,7 +126,7 @@ public class PreviewActivity extends AppCompatActivity {
                         headingData.add("F");
                     }
                 } else {
-                    viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.home));
+                    viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
                     headingData.add("A");
                     viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
                     headingData.add("B");

@@ -8,6 +8,8 @@ public class ChildListModelClass {
     private int childId;
     private ArrayList<OutBoxCallList> outBoxCallLists;
     private ArrayList<EcModelClass> ecModelClasses;
+    private ArrayList<ActivityModelClass> activityModelClasses;
+    private ArrayList<ActivityUploadModelClass> activityUploadModelClasses;
     private ArrayList<CheckInOutModelClass> checkInOutModelClasses;
     private WorkPlanModelClass workPlanModelClass;
     private DaySubmitModelClass daySubmitModelClass;
@@ -30,6 +32,22 @@ public class ChildListModelClass {
         this.isExpanded = isExpanded;
         this.isAvailableList = isAvailableList;
         this.ecModelClasses = ecModelClasses;
+    }
+
+    public ChildListModelClass(String childName, int childId, boolean isExpanded, boolean isAvailableList, ArrayList<ActivityModelClass> activityModelClasses, ActivityModelClass activityModelClass) {
+        this.childName = childName;
+        this.childId = childId;
+        this.isExpanded = isExpanded;
+        this.isAvailableList = isAvailableList;
+        this.activityModelClasses = activityModelClasses;
+    }
+
+    public ChildListModelClass(String childName, int childId, boolean isExpanded, boolean isAvailableList, ArrayList<ActivityUploadModelClass> activityUploadModelClasses, ActivityUploadModelClass activityUploadModelClass) {
+        this.childName = childName;
+        this.childId = childId;
+        this.isExpanded = isExpanded;
+        this.isAvailableList = isAvailableList;
+        this.activityUploadModelClasses = activityUploadModelClasses;
     }
 
     public ChildListModelClass(String childName, int childId, boolean isExpanded,boolean isAvailableList, ArrayList<CheckInOutModelClass> checkInOutModelClasses,String dummy,String dummmy2) {
@@ -153,5 +171,21 @@ public class ChildListModelClass {
 
     public void setDaySubmitModelClass(DaySubmitModelClass daySubmitModelClass) {
         this.daySubmitModelClass = daySubmitModelClass;
+    }
+
+    public ArrayList<ActivityModelClass> getActivityModelClasses() {
+        return activityModelClasses;
+    }
+
+    public void setActivityModelClasses(ArrayList<ActivityModelClass> activityModelClasses) {
+        this.activityModelClasses = activityModelClasses;
+    }
+
+    public ArrayList<ActivityUploadModelClass> getActivityUploadModelClasses() {
+        return activityUploadModelClasses;
+    }
+
+    public void setActivityUploadModelClasses(ArrayList<ActivityUploadModelClass> activityUploadModelClasses) {
+        this.activityUploadModelClasses = activityUploadModelClasses;
     }
 }

@@ -508,5 +508,5 @@
     <string name="standard_tour_plan_approvals">Standard Tour Plan Approvals</string>
     <string name="standard_tour_planned_for">Standard Tour Planned for</string>
     <string name="no_welcome_presentation_found">No Welcome presentation was found</string>
-    <string name="home">Home</string>
+    <string name="welcome">Welcome</string>
 </resources>

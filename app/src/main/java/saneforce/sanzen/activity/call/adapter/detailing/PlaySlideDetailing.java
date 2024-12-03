@@ -63,7 +63,6 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
-import saneforce.sanzen.activity.previewPresentation.fragment.WelcomePresentation;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -566,7 +565,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
 
             switch (arrayListHead.get(holder.getAbsoluteAdapterPosition())) {
                 case "A":
-                    holder.tv_brandName.setText(context.getString(R.string.home));
+                    holder.tv_brandName.setText(context.getString(R.string.welcome));
                     break;
                 case "B":
                     holder.tv_brandName.setText(context.getResources().getText(R.string.all_brands));

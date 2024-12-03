@@ -12,6 +12,8 @@ import saneforce.sanzen.activity.homeScreen.modelClass.ChildListModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.roomdatabase.ActivityOfflineTableDetails.ActivityOfflineDataDao;
+import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataTable;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
@@ -26,6 +28,8 @@ public class CallsUtil {
     private final CallOfflineWorkTypeDataDao callOfflineWorkTypeDataDao;
     private final OfflineCheckInOutDataDao offlineCheckInOutDataDao;
     private final OfflineDaySubmitDao offlineDaySubmitDao;
+    private final ActivityOfflineDataDao activityOfflineDataDao;
+    private final ActivityUploadDataDao activityUploadDataDao;
 
     public CallsUtil(Context context) {
         RoomDB roomDB = RoomDB.getDatabase(context);
@@ -34,6 +38,8 @@ public class CallsUtil {
         callOfflineWorkTypeDataDao = roomDB.callOfflineWorkTypeDataDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
         offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
+        activityOfflineDataDao = roomDB.activityOfflineDataDao();
+        activityUploadDataDao = roomDB.activityUploadDataDao();
     }
 
     public void deleteOfflineCalls() {
@@ -42,6 +48,8 @@ public class CallsUtil {
         callOfflineWorkTypeDataDao.deleteAllData();
         offlineCheckInOutDataDao.deleteAllData();
         offlineDaySubmitDao.deleteAllData();
+        activityOfflineDataDao.deleteAllData();
+        activityUploadDataDao.deleteAllData();
     }
 
     public void deleteOfflineCalls(String cusCode, String cusName, String date) {
@@ -65,7 +73,7 @@ public class CallsUtil {
     }
 
     public boolean isOutBoxDataAvailable() {
-        return callOfflineDataDao.isAvailableCall(Constants.DUPLICATE_CALL) || callOfflineECDataDao.isAvailableEc() || offlineCheckInOutDataDao.isAvailableCheckInOut() || offlineDaySubmitDao.isAvailableDaySubmit() || callOfflineDataDao.isAvailableCall() || callOfflineWorkTypeDataDao.isAvailableWT();
+        return callOfflineDataDao.isAvailableCall(Constants.DUPLICATE_CALL) || callOfflineECDataDao.isAvailableEc() || offlineCheckInOutDataDao.isAvailableCheckInOut() || offlineDaySubmitDao.isAvailableDaySubmit() || callOfflineDataDao.isAvailableCall() || callOfflineWorkTypeDataDao.isAvailableWT() || activityOfflineDataDao.isActivityAvailable() || activityUploadDataDao.isActivityUploadAvailable();
     }
 
     public Set<String> getOutboxDates() {
@@ -75,6 +83,8 @@ public class CallsUtil {
         dates.addAll(callOfflineWorkTypeDataDao.getAllCallOfflineWTDates());
         dates.addAll(offlineCheckInOutDataDao.getAllOfflineCheckInOutDates());
         dates.addAll(offlineDaySubmitDao.getAllOfflineDaySubmitDates());
+        dates.addAll(activityOfflineDataDao.getAllActivityOfflineDates());
+        dates.addAll(activityUploadDataDao.getAllActivityUploadDates());
         return dates;
     }
 
@@ -90,6 +100,8 @@ public class CallsUtil {
                 groupNamesList.add(new ChildListModelClass("Calls", 2, false, true, getOutBoxCallsList(date), ""));
                 groupNamesList.add(new ChildListModelClass("Event Captured", 3, false, true, callOfflineECDataDao.getEcList(date)));
                 groupNamesList.add(new ChildListModelClass("Day Submit", 4, false, offlineDaySubmitDao.getDaySubmitModelClass(date)));
+                groupNamesList.add(new ChildListModelClass("Activity", 5, false, true, activityOfflineDataDao.getActivityList(date), null));
+                groupNamesList.add(new ChildListModelClass("Activity Upload", 6, false, true, activityUploadDataDao.getActivityUploadList(date), null));
                 listData.add(new GroupModelClass(date, groupNamesList, false, 0));
             }
         }

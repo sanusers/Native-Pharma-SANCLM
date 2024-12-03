@@ -365,6 +365,23 @@
                         tools:ignore="SpUsage" />
 
                     <TextView
+                        android:id="@+id/activity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/leave"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:background="@drawable/master_sync_selector_stroke"
+                        android:drawableEnd="@drawable/arrow_down"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_7sdp"
+                        android:text="Activity"
+                        android:textColor="@drawable/master_sync_selector_stroke"
+                        android:textSize="@dimen/_6sdp"
+                        android:textStyle="bold"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
                         android:id="@+id/tourPlan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
