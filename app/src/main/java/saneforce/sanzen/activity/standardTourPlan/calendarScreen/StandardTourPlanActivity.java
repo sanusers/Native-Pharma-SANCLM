@@ -121,7 +121,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() == totalDaysCount));
+        checkApprovalButtonStatus();
 
         if(stpFlag != null && !stpFlag.isEmpty()) {
             if(stpFlag.equalsIgnoreCase("1")) {
@@ -148,7 +148,18 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
                 }
             }
+        } else {
+            SharedPref.setStpStatus(StandardTourPlanActivity.this, "Planning...");
+            activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.planning));
+            activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
         }
+
+        String stpStatus = SharedPref.getStpStatus(StandardTourPlanActivity.this);
+        activityStandardTourPlanBinding.tvStpStatus.setText(stpStatus.isEmpty() ? "Planning..." : stpStatus);
+    }
+
+    private void checkApprovalButtonStatus() {
+        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() == totalDaysCount) && (stpFlag.equalsIgnoreCase("1") || stpFlag.equalsIgnoreCase("3")));
     }
 
     @Override
@@ -182,7 +193,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         String stpStatus = SharedPref.getStpStatus(StandardTourPlanActivity.this);
         activityStandardTourPlanBinding.tvStpStatus.setText(stpStatus.isEmpty() ? "Planning..." : stpStatus);
 
-        activityStandardTourPlanBinding.tvSync.setOnClickListener( v -> {
+        activityStandardTourPlanBinding.tvSync.setOnClickListener(v -> {
             syncSTP();
         });
     }
@@ -370,6 +381,14 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 selectedDocCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
                 allSelectedDocList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
                 selectedChmCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(chemistCode)).split(",")));
+                selectedClusterCodeList.remove("");
+                selectedDocCodeList.remove("");
+                allSelectedDocList.remove("");
+                selectedChmCodeList.remove("");
+                selectedClusterCodeList.remove(null);
+                selectedDocCodeList.remove(null);
+                allSelectedDocList.remove(null);
+                selectedChmCodeList.remove(null);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -647,264 +666,271 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void populateCalendarAdapter() {
-        String[] dayIDValues = dayIDs.split("/");
-        String[] dayCaptionValues = dayCaptions.split("/");
-        calendarMap = new LinkedHashMap<>();
+        if(dayIDs != null && !dayIDs.isEmpty()) {
+            totalDaysCount = 0;
+            String[] dayIDValues = dayIDs.split("/");
+            String[] dayCaptionValues = dayCaptions.split("/");
+//            String[] dayIDValues = (dayIDs + "FR1/FR2/FR3/FR4/").split("/");
+//            String[] dayCaptionValues = (dayCaptions + "Friday 1/Friday 2/Friday 3/Friday 4/").split("/");
+            calendarMap = new LinkedHashMap<>();
 
-        for (int index = 0; index<dayIDValues.length; index++) {
-            String dayID = dayIDValues[index];
-            if(!dayID.isEmpty()) {
-                totalDaysCount++;
-            }
-            if(dayID.toLowerCase().contains("mo")) {
-                List<CalendarModel> calendarModelList = calendarMap.get("monday");
-                if(calendarModelList == null) {
-                    calendarModelList = new ArrayList<>();
+            for (int index = 0; index<dayIDValues.length; index++) {
+                String dayID = dayIDValues[index];
+                if(!dayID.isEmpty()) {
+                    totalDaysCount++;
                 }
-                calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                calendarMap.put("monday", calendarModelList);
-            }else if(dayID.toLowerCase().contains("tu")) {
-                List<CalendarModel> calendarModelList = calendarMap.get("tuesday");
-                if(calendarModelList == null) {
-                    calendarModelList = new ArrayList<>();
-                }
-                calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                calendarMap.put("tuesday", calendarModelList);
-            }else if(dayID.toLowerCase().contains("we")) {
-                List<CalendarModel> calendarModelList = calendarMap.get("wednesday");
-                if(calendarModelList == null) {
-                    calendarModelList = new ArrayList<>();
-                }
-                calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                calendarMap.put("wednesday", calendarModelList);
-            }else if(dayID.toLowerCase().contains("th")) {
-                List<CalendarModel> calendarModelList = calendarMap.get("thursday");
-                if(calendarModelList == null) {
-                    calendarModelList = new ArrayList<>();
-                }
-                calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                calendarMap.put("thursday", calendarModelList);
-            }else if(dayID.toLowerCase().contains("fr")) {
-                List<CalendarModel> calendarModelList = calendarMap.get("friday");
-                if(calendarModelList == null) {
-                    calendarModelList = new ArrayList<>();
-                }
-                calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                calendarMap.put("friday", calendarModelList);
-            }else if(dayID.toLowerCase().contains("sa")) {
-                List<CalendarModel> calendarModelList = calendarMap.get("saturday");
-                if(calendarModelList == null) {
-                    calendarModelList = new ArrayList<>();
-                }
-                calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                calendarMap.put("saturday", calendarModelList);
-            }else if(dayID.toLowerCase().contains("su")) {
-                List<CalendarModel> calendarModelList = calendarMap.get("sunday");
-                if(calendarModelList == null) {
-                    calendarModelList = new ArrayList<>();
-                }
-                calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
-                calendarMap.put("sunday", calendarModelList);
-            }
-        }
-
-        for (String key : calendarMap.keySet()) {
-            if(key.equalsIgnoreCase("monday")) {
-                List<CalendarModel> calendarModelList = calendarMap.get("monday");
-                if(calendarModelList != null && !calendarModelList.isEmpty()) {
-                    String caption = "";
-                    for (int index = 1; index<5; index++) {
-                        String dayID = "MO" + index;
-                        boolean isDayFound = false;
-                        for (CalendarModel calendarModel : calendarModelList) {
-                            if(dayID.equalsIgnoreCase(calendarModel.getId())) {
-                                isDayFound = true;
-                                if(caption.isEmpty()) {
-                                    caption = calendarModel.getCaption();
-                                }
-                                break;
-                            }
-                        }
-                        if(!isDayFound) {
-                            String newCaption = changeCaptionNumber(caption, index);
-                            calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                        }else {
-                            List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                            selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
-                            calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
-                        }
+                if(dayID.toLowerCase().contains("mo")) {
+                    List<CalendarModel> calendarModelList = calendarMap.get("monday");
+                    if(calendarModelList == null) {
+                        calendarModelList = new ArrayList<>();
                     }
+                    calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                     calendarMap.put("monday", calendarModelList);
-                }
-            }else if(key.equalsIgnoreCase("tuesday")) {
-                List<CalendarModel> calendarModelList = calendarMap.get("tuesday");
-                if(calendarModelList != null && !calendarModelList.isEmpty()) {
-                    String caption = "";
-                    for (int index = 1; index<5; index++) {
-                        String dayID = "TU" + index;
-                        boolean isDayFound = false;
-                        for (CalendarModel calendarModel : calendarModelList) {
-                            if(dayID.equalsIgnoreCase(calendarModel.getId())) {
-                                isDayFound = true;
-                                if(caption.isEmpty()) {
-                                    caption = calendarModel.getCaption();
-                                }
-                                break;
-                            }
-                        }
-                        if(!isDayFound) {
-                            String newCaption = changeCaptionNumber(caption, index);
-                            calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                        }else {
-                            List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                            selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
-                            calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
-                        }
+                }else if(dayID.toLowerCase().contains("tu")) {
+                    List<CalendarModel> calendarModelList = calendarMap.get("tuesday");
+                    if(calendarModelList == null) {
+                        calendarModelList = new ArrayList<>();
                     }
+                    calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                     calendarMap.put("tuesday", calendarModelList);
-                }
-            }else if(key.equalsIgnoreCase("wednesday")) {
-                List<CalendarModel> calendarModelList = calendarMap.get("wednesday");
-                if(calendarModelList != null && !calendarModelList.isEmpty()) {
-                    String caption = "";
-                    for (int index = 1; index<5; index++) {
-                        String dayID = "WE" + index;
-                        boolean isDayFound = false;
-                        for (CalendarModel calendarModel : calendarModelList) {
-                            if(dayID.equalsIgnoreCase(calendarModel.getId())) {
-                                isDayFound = true;
-                                if(caption.isEmpty()) {
-                                    caption = calendarModel.getCaption();
-                                }
-                                break;
-                            }
-                        }
-                        if(!isDayFound) {
-                            String newCaption = changeCaptionNumber(caption, index);
-                            calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                        }else {
-                            List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                            selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
-                            calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
-                        }
+                }else if(dayID.toLowerCase().contains("we")) {
+                    List<CalendarModel> calendarModelList = calendarMap.get("wednesday");
+                    if(calendarModelList == null) {
+                        calendarModelList = new ArrayList<>();
                     }
+                    calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                     calendarMap.put("wednesday", calendarModelList);
-                }
-            }else if(key.equalsIgnoreCase("thursday")) {
-                List<CalendarModel> calendarModelList = calendarMap.get("thursday");
-                if(calendarModelList != null && !calendarModelList.isEmpty()) {
-                    String caption = "";
-                    for (int index = 1; index<5; index++) {
-                        String dayID = "TH" + index;
-                        boolean isDayFound = false;
-                        for (CalendarModel calendarModel : calendarModelList) {
-                            if(dayID.equalsIgnoreCase(calendarModel.getId())) {
-                                isDayFound = true;
-                                if(caption.isEmpty()) {
-                                    caption = calendarModel.getCaption();
-                                }
-                                break;
-                            }
-                        }
-                        if(!isDayFound) {
-                            String newCaption = changeCaptionNumber(caption, index);
-                            calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                        }else {
-                            List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                            selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
-                            calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
-                        }
+                }else if(dayID.toLowerCase().contains("th")) {
+                    List<CalendarModel> calendarModelList = calendarMap.get("thursday");
+                    if(calendarModelList == null) {
+                        calendarModelList = new ArrayList<>();
                     }
+                    calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                     calendarMap.put("thursday", calendarModelList);
-                }
-            }else if(key.equalsIgnoreCase("friday")) {
-                List<CalendarModel> calendarModelList = calendarMap.get("friday");
-                if(calendarModelList != null && !calendarModelList.isEmpty()) {
-                    String caption = "";
-                    for (int index = 1; index<5; index++) {
-                        String dayID = "FR" + index;
-                        boolean isDayFound = false;
-                        for (CalendarModel calendarModel : calendarModelList) {
-                            if(dayID.equalsIgnoreCase(calendarModel.getId())) {
-                                isDayFound = true;
-                                if(caption.isEmpty()) {
-                                    caption = calendarModel.getCaption();
-                                }
-                                break;
-                            }
-                        }
-                        if(!isDayFound) {
-                            String newCaption = changeCaptionNumber(caption, index);
-                            calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                        }else {
-                            List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                            selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
-                            calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
-                        }
+                }else if(dayID.toLowerCase().contains("fr")) {
+                    List<CalendarModel> calendarModelList = calendarMap.get("friday");
+                    if(calendarModelList == null) {
+                        calendarModelList = new ArrayList<>();
                     }
+                    calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                     calendarMap.put("friday", calendarModelList);
-                }
-            }else if(key.equalsIgnoreCase("saturday")) {
-                List<CalendarModel> calendarModelList = calendarMap.get("saturday");
-                if(calendarModelList != null && !calendarModelList.isEmpty()) {
-                    String caption = "";
-                    for (int index = 1; index<5; index++) {
-                        String dayID = "SA" + index;
-                        boolean isDayFound = false;
-                        for (CalendarModel calendarModel : calendarModelList) {
-                            if(dayID.equalsIgnoreCase(calendarModel.getId())) {
-                                isDayFound = true;
-                                if(caption.isEmpty()) {
-                                    caption = calendarModel.getCaption();
-                                }
-                                break;
-                            }
-                        }
-                        if(!isDayFound) {
-                            String newCaption = changeCaptionNumber(caption, index);
-                            calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                        }else {
-                            List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                            selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
-                            calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
-                        }
+                }else if(dayID.toLowerCase().contains("sa")) {
+                    List<CalendarModel> calendarModelList = calendarMap.get("saturday");
+                    if(calendarModelList == null) {
+                        calendarModelList = new ArrayList<>();
                     }
+                    calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                     calendarMap.put("saturday", calendarModelList);
-                }
-            }else if(key.equalsIgnoreCase("sunday")) {
-                List<CalendarModel> calendarModelList = calendarMap.get("sunday");
-                if(calendarModelList != null && !calendarModelList.isEmpty()) {
-                    String caption = "";
-                    for (int index = 1; index<5; index++) {
-                        String dayID = "SU" + index;
-                        boolean isDayFound = false;
-                        for (CalendarModel calendarModel : calendarModelList) {
-                            if(dayID.equalsIgnoreCase(calendarModel.getId())) {
-                                isDayFound = true;
-                                if(caption.isEmpty()) {
-                                    caption = calendarModel.getCaption();
-                                }
-                                break;
-                            }
-                        }
-                        if(!isDayFound) {
-                            String newCaption = changeCaptionNumber(caption, index);
-                            calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
-                        }else {
-                            List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
-                            selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
-                            calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
-                        }
+                }else if(dayID.toLowerCase().contains("su")) {
+                    List<CalendarModel> calendarModelList = calendarMap.get("sunday");
+                    if(calendarModelList == null) {
+                        calendarModelList = new ArrayList<>();
                     }
+                    calendarModelList.add(new CalendarModel(dayCaptionValues[index], dayID, true, null));
                     calendarMap.put("sunday", calendarModelList);
                 }
             }
-        }
 
-        calendarAdapter = new CalendarAdapter(this, calendarMap, new ArrayList<>(calendarMap.keySet()), calendarDayClickListener, calendarDayMenuClickListener);
-        RecyclerView.LayoutManager calendarLayoutManager = new LinearLayoutManager(this);
-        activityStandardTourPlanBinding.rvCalendar.setLayoutManager(calendarLayoutManager);
-        activityStandardTourPlanBinding.rvCalendar.setAdapter(calendarAdapter);
+            for (String key : calendarMap.keySet()) {
+                if(key.equalsIgnoreCase("monday")) {
+                    List<CalendarModel> calendarModelList = calendarMap.get("monday");
+                    if(calendarModelList != null && !calendarModelList.isEmpty()) {
+                        String caption = "";
+                        for (int index = 1; index<5; index++) {
+                            String dayID = "MO" + index;
+                            boolean isDayFound = false;
+                            for (CalendarModel calendarModel : calendarModelList) {
+                                if(dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                    isDayFound = true;
+                                    if(caption.isEmpty()) {
+                                        caption = calendarModel.getCaption();
+                                    }
+                                    break;
+                                }
+                            }
+                            if(!isDayFound) {
+                                String newCaption = changeCaptionNumber(caption, index);
+                                calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
+                            }else {
+                                List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                                selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                                calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
+                            }
+                        }
+                        calendarMap.put("monday", calendarModelList);
+                    }
+                }else if(key.equalsIgnoreCase("tuesday")) {
+                    List<CalendarModel> calendarModelList = calendarMap.get("tuesday");
+                    if(calendarModelList != null && !calendarModelList.isEmpty()) {
+                        String caption = "";
+                        for (int index = 1; index<5; index++) {
+                            String dayID = "TU" + index;
+                            boolean isDayFound = false;
+                            for (CalendarModel calendarModel : calendarModelList) {
+                                if(dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                    isDayFound = true;
+                                    if(caption.isEmpty()) {
+                                        caption = calendarModel.getCaption();
+                                    }
+                                    break;
+                                }
+                            }
+                            if(!isDayFound) {
+                                String newCaption = changeCaptionNumber(caption, index);
+                                calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
+                            }else {
+                                List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                                selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                                calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
+                            }
+                        }
+                        calendarMap.put("tuesday", calendarModelList);
+                    }
+                }else if(key.equalsIgnoreCase("wednesday")) {
+                    List<CalendarModel> calendarModelList = calendarMap.get("wednesday");
+                    if(calendarModelList != null && !calendarModelList.isEmpty()) {
+                        String caption = "";
+                        for (int index = 1; index<5; index++) {
+                            String dayID = "WE" + index;
+                            boolean isDayFound = false;
+                            for (CalendarModel calendarModel : calendarModelList) {
+                                if(dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                    isDayFound = true;
+                                    if(caption.isEmpty()) {
+                                        caption = calendarModel.getCaption();
+                                    }
+                                    break;
+                                }
+                            }
+                            if(!isDayFound) {
+                                String newCaption = changeCaptionNumber(caption, index);
+                                calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
+                            }else {
+                                List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                                selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                                calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
+                            }
+                        }
+                        calendarMap.put("wednesday", calendarModelList);
+                    }
+                }else if(key.equalsIgnoreCase("thursday")) {
+                    List<CalendarModel> calendarModelList = calendarMap.get("thursday");
+                    if(calendarModelList != null && !calendarModelList.isEmpty()) {
+                        String caption = "";
+                        for (int index = 1; index<5; index++) {
+                            String dayID = "TH" + index;
+                            boolean isDayFound = false;
+                            for (CalendarModel calendarModel : calendarModelList) {
+                                if(dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                    isDayFound = true;
+                                    if(caption.isEmpty()) {
+                                        caption = calendarModel.getCaption();
+                                    }
+                                    break;
+                                }
+                            }
+                            if(!isDayFound) {
+                                String newCaption = changeCaptionNumber(caption, index);
+                                calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
+                            }else {
+                                List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                                selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                                calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
+                            }
+                        }
+                        calendarMap.put("thursday", calendarModelList);
+                    }
+                }else if(key.equalsIgnoreCase("friday")) {
+                    List<CalendarModel> calendarModelList = calendarMap.get("friday");
+                    if(calendarModelList != null && !calendarModelList.isEmpty()) {
+                        String caption = "";
+                        for (int index = 1; index<5; index++) {
+                            String dayID = "FR" + index;
+                            boolean isDayFound = false;
+                            for (CalendarModel calendarModel : calendarModelList) {
+                                if(dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                    isDayFound = true;
+                                    if(caption.isEmpty()) {
+                                        caption = calendarModel.getCaption();
+                                    }
+                                    break;
+                                }
+                            }
+                            if(!isDayFound) {
+                                String newCaption = changeCaptionNumber(caption, index);
+                                calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
+                            }else {
+                                List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                                selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                                calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
+                            }
+                        }
+                        calendarMap.put("friday", calendarModelList);
+                    }
+                }else if(key.equalsIgnoreCase("saturday")) {
+                    List<CalendarModel> calendarModelList = calendarMap.get("saturday");
+                    if(calendarModelList != null && !calendarModelList.isEmpty()) {
+                        String caption = "";
+                        for (int index = 1; index<5; index++) {
+                            String dayID = "SA" + index;
+                            boolean isDayFound = false;
+                            for (CalendarModel calendarModel : calendarModelList) {
+                                if(dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                    isDayFound = true;
+                                    if(caption.isEmpty()) {
+                                        caption = calendarModel.getCaption();
+                                    }
+                                    break;
+                                }
+                            }
+                            if(!isDayFound) {
+                                String newCaption = changeCaptionNumber(caption, index);
+                                calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
+                            }else {
+                                List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                                selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                                calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
+                            }
+                        }
+                        calendarMap.put("saturday", calendarModelList);
+                    }
+                }else if(key.equalsIgnoreCase("sunday")) {
+                    List<CalendarModel> calendarModelList = calendarMap.get("sunday");
+                    if(calendarModelList != null && !calendarModelList.isEmpty()) {
+                        String caption = "";
+                        for (int index = 1; index<5; index++) {
+                            String dayID = "SU" + index;
+                            boolean isDayFound = false;
+                            for (CalendarModel calendarModel : calendarModelList) {
+                                if(dayID.equalsIgnoreCase(calendarModel.getId())) {
+                                    isDayFound = true;
+                                    if(caption.isEmpty()) {
+                                        caption = calendarModel.getCaption();
+                                    }
+                                    break;
+                                }
+                            }
+                            if(!isDayFound) {
+                                String newCaption = changeCaptionNumber(caption, index);
+                                calendarModelList.add(index - 1, new CalendarModel(newCaption, dayID, false, null));
+                            }else {
+                                List<SelectedDCRModel> selectedDcrModelList = new ArrayList<>();
+                                selectedDcrModelList = getSelectedDCRDataList(dayID, calendarModelList.get(index - 1).getCaption());
+                                calendarModelList.get(index - 1).setDcrModelList(selectedDcrModelList);
+                            }
+                        }
+                        calendarMap.put("sunday", calendarModelList);
+                    }
+                }
+            }
+
+            calendarAdapter = new CalendarAdapter(this, calendarMap, new ArrayList<>(calendarMap.keySet()), calendarDayClickListener, calendarDayMenuClickListener);
+            RecyclerView.LayoutManager calendarLayoutManager = new LinearLayoutManager(this);
+            activityStandardTourPlanBinding.rvCalendar.setLayoutManager(calendarLayoutManager);
+            activityStandardTourPlanBinding.rvCalendar.setAdapter(calendarAdapter);
+        }else {
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Sync " + getString(R.string.standard_tour_plan) + " from Master Sync");
+        }
     }
 
     private String changeCaptionNumber(String str, int value) {
@@ -984,15 +1010,20 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            checkApprovalButtonStatus();
         }
     });
 
     private final CalendarAdapter.CalendarDayClickListener calendarDayClickListener = (calendarModel, mode) -> {
-        Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
-        intent.putExtra("MODE", String.valueOf(mode));
-        intent.putExtra("DAY_ID", calendarModel.getId());
-        intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
-        activityResultLauncher.launch(intent);
+        if(!stpFlag.equalsIgnoreCase("0") && !stpFlag.equalsIgnoreCase("2")) {
+            Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
+            intent.putExtra("MODE", String.valueOf(mode));
+            intent.putExtra("DAY_ID", calendarModel.getId());
+            intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
+            activityResultLauncher.launch(intent);
+        }else {
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
+        }
     };
 
     private final CalendarAdapter.CalendarDayMenuClickListener calendarDayMenuClickListener = (calendarModel, menuItem) -> {
@@ -1011,7 +1042,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 Log.d("STP Item", "Swap");
                 showSwapDialog(calendarModel.getId(), calendarModel.getCaption());
             }
-        } else {
+        }else {
             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
         }
     };
@@ -1047,7 +1078,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     lv_to.setVisibility(View.GONE);
                     constraintLayout.setVisibility(View.VISIBLE);
                 }else {
-                    getSTPData();
+                    getSTPData(id);
                     FillteredAdapter arrayAdapter = new FillteredAdapter(this, stpDataModels, clickedItem -> {
                         swapCode = clickedItem.getCode();
                         swapName = clickedItem.getName();
@@ -1160,7 +1191,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             Log.v("STP", "--json-- " + jsonObject);
 
             Map<String, String> mapString = new HashMap<>();
-            mapString.put("axn",  "get/stp");
+            mapString.put("axn", "get/stp");
             Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
             call.enqueue(new Callback<JsonElement>() {
                 @Override
@@ -1197,11 +1228,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        stpOfflineDataDao.deleteAllData();
+                        stpOfflineDataDao.deleteAllData("0");
                         saveSTPDataToLocal();
                         getRequiredData();
                         populateAdapters();
-                        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() == totalDaysCount));
+                        checkApprovalButtonStatus();
                     }
                 }
 
@@ -1268,12 +1299,14 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         }
     }
 
-    private void getSTPData() {
+    private void getSTPData(String id) {
         try {
             List<STPOfflineDataTable> stpData = stpOfflineDataDao.getAllSTPData();
             stpDataModels.clear();
             for (STPOfflineDataTable stpOfflineDataTable : stpData) {
-                stpDataModels.add(new DCRFillteredModelClass(stpOfflineDataTable.getDayCaption(), stpOfflineDataTable.getDayID()));
+                if(!stpOfflineDataTable.getDayID().equals(id)) {
+                    stpDataModels.add(new DCRFillteredModelClass(stpOfflineDataTable.getDayCaption(), stpOfflineDataTable.getDayID()));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1331,7 +1364,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         try {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
                             if(json.getString("success").equalsIgnoreCase("true")) {
-                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, caption + "Deleted Successfully");
+                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, caption + " Deleted Successfully");
                             }
                         } catch (Exception e) {
                             Log.e("STP Delete", "onResponse: " + e.getMessage());
@@ -1475,6 +1508,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                     SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
                                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
                                     activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.waiting_for_approval));
+                                    activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
+                                    stpFlag = "2";
+                                    syncSTP();
                                 }else {
                                     commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
                                 }

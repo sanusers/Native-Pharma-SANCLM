@@ -1204,7 +1204,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
 
-        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.refresh))) {
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.refresh_location))) {
             setGpsTrack();
         }
 
@@ -1355,6 +1355,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             if (!WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F") && !WorkPlanFragment.mFwFlg2.equalsIgnoreCase("F")) {
 //            if (SharedPref.getHqCode(HomeDashBoard.this).equalsIgnoreCase("null") || SharedPref.getHqCode(HomeDashBoard.this).isEmpty()) {
                 commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.kindly_submit_field_work));
+            } else if(WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(HomeDashBoard.this).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(HomeDashBoard.this).equalsIgnoreCase("3")) {
+                commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Get Deviation Approval");
             } else {
                 Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
                 intent.putExtra("from", "not_tagging");
@@ -1841,11 +1843,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
-
-  public void CheckedTpRange() {
-
-        if (!SharedPref.getskipDate(HomeDashBoard.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
-            if (SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") &&
+    public void CheckedTpRange() {
+        if(!SharedPref.getskipDate(HomeDashBoard.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
+            if(SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") &&
                     !SharedPref.getTpStartDate(context).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("-1") &&
                     !SharedPref.getTpEndDate(context).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(context).equalsIgnoreCase("-1")) {
                 Calendar calendar = Calendar.getInstance();
@@ -1862,25 +1862,22 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 int End_Date = Integer.parseInt(tp_end);
                 int mCurrentDate = Integer.parseInt(mCurrDate);
 
-
-             if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
+                if(!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan....");
-                    TourplanFlog="0";
+                    TourplanFlog = "0";
                     SharedPref.setTpStatus(HomeDashBoard.this, true);
                     Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
                     startActivity(intent);
-
-
-                } else if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")&&((mCurrentDate >= Start_Date))) {
-                      commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan...");
-                        if (End_Date < mCurrentDate) {
-                            SharedPref.setTpStatus(HomeDashBoard.this, true);
-                        } else {
-                            SharedPref.setTpStatus(HomeDashBoard.this, false);
-                        }
-                        Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
-                        TourplanFlog="1";
-                        startActivity(intent);
+                }else if(!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3") && ((mCurrentDate>=Start_Date))) {
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan...");
+                    if(End_Date<mCurrentDate) {
+                        SharedPref.setTpStatus(HomeDashBoard.this, true);
+                    }else {
+                        SharedPref.setTpStatus(HomeDashBoard.this, false);
+                    }
+                    Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
+                    TourplanFlog = "1";
+                    startActivity(intent);
                 }else {
                     SharedPref.setTpStatus(HomeDashBoard.this, false);
                 }
@@ -1902,15 +1899,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         double lat = gpsTrack.getLatitude();
         double lng = gpsTrack.getLongitude();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             CommonUtilsMethods.gettingAddress(HomeDashBoard.this, Double.parseDouble(String.valueOf(lat)), Double.parseDouble(String.valueOf(lng)), true);
             binding.myDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
+        }else {
             CommonUtilsMethods.RequestGPSPermission(HomeDashBoard.this);
         }
-        if (CommonUtilsMethods.isLocationFounded) {
+        if(CommonUtilsMethods.isLocationFounded) {
             binding.imgLocation.setImageResource(R.drawable.location_img);
-        } else {
+        }else {
             binding.imgLocation.setImageResource(R.drawable.locationget_img);
         }
     }
@@ -1918,18 +1915,19 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        slidesDao.Changestatus("0","1");
+        slidesDao.Changestatus("0", "1");
 
     }
 
     private void deleteRecursive(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory()) {
+        if(fileOrDirectory.isDirectory()) {
             for (File child : fileOrDirectory.listFiles()) {
                 deleteRecursive(child);
             }
         }
         fileOrDirectory.delete();
     }
+
     private void timeZoneVerification() {
         runnable = new Runnable() {
             public void run() {
@@ -1940,13 +1938,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                if (isAutoTimeZoneEnabled) {
-                                    if (customDialog!=null){
+                                if(isAutoTimeZoneEnabled) {
+                                    if(customDialog != null) {
                                         customDialog.dismiss();
                                         customDialog.cancel();
                                     }
                                     handler1.removeCallbacks(runnable);
-                                } else {
+                                }else {
                                     timeZoneVerificationDialog();
                                     handler1.removeCallbacks(runnable);
                                 }
@@ -1958,6 +1956,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         };
         handler1.postDelayed(runnable, delay);
     }
+
     private void timeZoneVerificationDialog() {
         DialogTimezoneBinding timezoneBinding = DialogTimezoneBinding.inflate(LayoutInflater.from(context));
         AlertDialog.Builder builder = new AlertDialog.Builder(HomeDashBoard.this, 0);
@@ -1974,76 +1973,76 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
 
+    public void CheckingManatoryApprovals() {
+        if(UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
+            try {
+                JSONObject jsonGetCount = CommonUtilsMethods.CommonObjectParameter(HomeDashBoard.this);
+                jsonGetCount.put("tableName", "getapprovalcheck");
+                jsonGetCount.put("sfcode", SharedPref.getSfCode(this));
+                jsonGetCount.put("division_code", SharedPref.getDivisionCode(this));
+                jsonGetCount.put("Rsf", SharedPref.getHqCode(this));
+                jsonGetCount.put("Tp_need", SharedPref.getTpNeed(this));
+                jsonGetCount.put("geotag_need", SharedPref.getGeotagNeed(this));
+                jsonGetCount.put("TPdev_need", SharedPref.getTpdcrMgrappr(this));
+                jsonGetCount.put("STP_Need", SharedPref.getStpNeed(this));
 
-  public  void CheckingManatoryApprovals(){
-        if(UtilityClass.isNetworkAvailable(HomeDashBoard.this)){
-        try {
-              JSONObject jsonGetCount=CommonUtilsMethods.CommonObjectParameter(HomeDashBoard.this);
-              jsonGetCount.put("tableName", "getapprovalcheck");
-              jsonGetCount.put("sfcode", SharedPref.getSfCode(this));
-              jsonGetCount.put("division_code", SharedPref.getDivisionCode(this));
-              jsonGetCount.put("Rsf", SharedPref.getHqCode(this));
-              jsonGetCount.put("Tp_need", SharedPref.getTpNeed(this));
-              jsonGetCount.put("geotag_need", SharedPref.getGeotagNeed(this));
-              jsonGetCount.put("TPdev_need", SharedPref.getTpdcrMgrappr(this));
+                Map<String, String> mapString = new HashMap<>();
+                mapString.put("axn", "get/approvals");
+                Call<JsonElement> callGetCountApprovals = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonGetCount.toString());
+                callGetCountApprovals.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        assert response.body() != null;
+                        Log.v("counts", "-0-" + response.body());
+                        if(response.isSuccessful()) {
+                            try {
+                                int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0, GeoTagCount = 0, STPCount = 0;
+                                JSONObject jsonObject1 = new JSONObject(response.body().toString());
+                                JSONArray jsonArray = jsonObject1.getJSONArray("apprCount");
 
+                                for (int i = 0; i<jsonArray.length(); i++) {
+                                    JSONObject jsonCounts = jsonArray.getJSONObject(i);
+                                    if(jsonCounts.has("dcrappr_count"))
+                                        DcrCount = jsonCounts.getInt("dcrappr_count");
+                                    if(jsonCounts.has("tpappr_count"))
+                                        TpCount = jsonCounts.getInt("tpappr_count");
+                                    if(jsonCounts.has("leaveappr_count"))
+                                        LeaveCount = jsonCounts.getInt("leaveappr_count");
+                                    if(jsonCounts.has("devappr_count"))
+                                        DeviationCount = jsonCounts.getInt("devappr_count");
+                                    if(jsonCounts.has("geotag_count"))
+                                        GeoTagCount = jsonCounts.getInt("geotag_count");
+                                    if(jsonCounts.has("stp_count"))
+                                        STPCount = jsonCounts.getInt("stp_count");
+                                }
 
+                                if(DcrCount>0 || TpCount>0 || LeaveCount>0 || DeviationCount>0 || GeoTagCount>0 || STPCount>0) {
+                                    SharedPref.setApprvalManatoryStatus(HomeDashBoard.this, true);
+                                    if(!SharedPref.getApprovalskipDate(HomeDashBoard.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
+                                        SharedPref.setApprovalsCounts(HomeDashBoard.this, "false");
+                                        Intent intent = new Intent(HomeDashBoard.this, ApprovalsActivity.class);
+                                        startActivity(intent);
+                                    }
+                                }else {
+                                    SharedPref.setApprvalManatoryStatus(HomeDashBoard.this, false);
+                                }
 
-          Map<String, String> mapString = new HashMap<>();
-          mapString.put("axn", "get/approvals");
-          Call<JsonElement> callGetCountApprovals = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonGetCount.toString());
-          callGetCountApprovals.enqueue(new Callback<JsonElement>() {
-              @Override
-              public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                  assert response.body() != null;
-                  Log.v("counts", "-0-" + response.body());
-                  if (response.isSuccessful()) {
-                      try {
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
 
-                          int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0, GeoTagCount = 0;
-                          JSONObject jsonObject1 = new JSONObject(response.body().toString());
-                          JSONArray jsonArray = jsonObject1.getJSONArray("apprCount");
-
-                          for (int i = 0; i < jsonArray.length(); i++) {
-                              JSONObject jsonCounts = jsonArray.getJSONObject(i);
-                              if (jsonCounts.has("dcrappr_count"))
-                                  DcrCount = jsonCounts.getInt("dcrappr_count");
-                              if (jsonCounts.has("tpappr_count"))
-                                  TpCount = jsonCounts.getInt("tpappr_count");
-                              if (jsonCounts.has("leaveappr_count"))
-                                  LeaveCount = jsonCounts.getInt("leaveappr_count");
-                              if (jsonCounts.has("devappr_count"))
-                                  DeviationCount = jsonCounts.getInt("devappr_count");
-                              if (jsonCounts.has("geotag_count"))
-                                  GeoTagCount = jsonCounts.getInt("geotag_count");
-                          }
-
-                          if(DcrCount>0 ||TpCount>0  ||LeaveCount>0  ||DeviationCount>0 ||GeoTagCount>0 ){
-                              SharedPref.setApprvalManatoryStatus(HomeDashBoard.this,true);
-                              if(!SharedPref.getApprovalskipDate(HomeDashBoard.this).equalsIgnoreCase( TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))){
-                                  SharedPref.setApprovalsCounts(HomeDashBoard.this, "false");
-                                  Intent intent=new Intent(HomeDashBoard. this,ApprovalsActivity.class);
-                                  startActivity(intent);
-                              }
-                          }else {
-                              SharedPref.setApprvalManatoryStatus(HomeDashBoard.this,false);
-                          }
-
-                      } catch (Exception e) {
-
-                      }
-                  }
-              }
-
-              @Override
-              public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-
-              }
-          });} catch (Exception ignored) {
-
+                    @Override
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-      }}
-
+    }
 
     public boolean CheckLocPermission() {
         int FineLocation = ContextCompat.checkSelfPermission(HomeDashBoard.this, ACCESS_FINE_LOCATION);
@@ -2051,18 +2050,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         return FineLocation == PackageManager.PERMISSION_GRANTED && CoarseLocation == PackageManager.PERMISSION_GRANTED;
     }
 
-
     private void RequestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(HomeDashBoard.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(HomeDashBoard.this, ACCESS_FINE_LOCATION)) {
+        if(ContextCompat.checkSelfPermission(HomeDashBoard.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if(ActivityCompat.shouldShowRequestPermissionRationale(HomeDashBoard.this, ACCESS_FINE_LOCATION)) {
                 ActivityCompat.requestPermissions(HomeDashBoard.this, new String[]{ACCESS_FINE_LOCATION}, 1);
-            } else {
+            }else {
                 ActivityCompat.requestPermissions(HomeDashBoard.this, new String[]{ACCESS_FINE_LOCATION}, 1);
             }
         }
     }
-
-
 
     public boolean CheckCameraPermission() {
         int Camera = ContextCompat.checkSelfPermission(HomeDashBoard.this, CAMERA);
@@ -2070,34 +2066,32 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
     private void RequestCameraPermission() {
-        if (ContextCompat.checkSelfPermission(HomeDashBoard.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(HomeDashBoard.this, Manifest.permission.CAMERA)) {
+        if(ContextCompat.checkSelfPermission(HomeDashBoard.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if(ActivityCompat.shouldShowRequestPermissionRationale(HomeDashBoard.this, Manifest.permission.CAMERA)) {
                 ActivityCompat.requestPermissions(HomeDashBoard.this, new String[]{Manifest.permission.CAMERA}, 102);
-            } else {
+            }else {
                 ActivityCompat.requestPermissions(HomeDashBoard.this, new String[]{Manifest.permission.CAMERA}, 102);
             }
         }
     }
 
-
-private void accessibility(){
-    JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
-    for (int bean = 0; bean < input.length(); bean++) {
-        try {
-            JSONObject setUpObject = input.getJSONObject(bean);
-            String appAccess = setUpObject.getString("sanzen_edet");
-             if (!appAccess.equals("1")){
-                 CommonUtilsMethods.accessDialogBox(this);
-             }
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+    private void accessibility() {
+        JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
+        for (int bean = 0; bean<input.length(); bean++) {
+            try {
+                JSONObject setUpObject = input.getJSONObject(bean);
+                String appAccess = setUpObject.getString("sanzen_edet");
+                if(!appAccess.equals("1")) {
+                    CommonUtilsMethods.accessDialogBox(this);
+                }
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if(!SharedPref.getAppAccess(this).equals("1")) {
+            CommonUtilsMethods.accessDialogBox(this);
         }
     }
-    if (!SharedPref.getAppAccess(this).equals("1")){
-        CommonUtilsMethods.accessDialogBox(this);
-    }
-}
-
 
 }
 

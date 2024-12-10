@@ -37,6 +37,7 @@ import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.adapters.Call_adapter;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -371,6 +372,10 @@ public class CallsFragment extends Fragment {
                     if(SharedPref.getSkipCheckIn(requireContext())) {
                         if(SharedPref.getHqCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getHqCode(requireContext()).isEmpty()) {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                        }else if(WorkPlanFragment.isFromTP) {
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                        }else if(WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(requireContext()).equalsIgnoreCase("3")) {
+                            commonUtilsMethods.showToastMessage(requireContext(), "Get Deviation Approval");
                         }else {
                             startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
                         }
@@ -387,7 +392,11 @@ public class CallsFragment extends Fragment {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
                     try {
-                        if(workTypeArray.length()>0) {
+                        if(WorkPlanFragment.isFromTP) {
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                        }else if(WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(requireContext()).equalsIgnoreCase("3")) {
+                            commonUtilsMethods.showToastMessage(requireContext(), "Get Deviation Approval");
+                        }else if(workTypeArray.length()>0) {
                             JSONObject FirstSeasonDayPlanObject = workTypeArray.getJSONObject(0);
                             String DayPlanDate1 = FirstSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
                             String FWFlg1 = FirstSeasonDayPlanObject.getString("FWFlg");

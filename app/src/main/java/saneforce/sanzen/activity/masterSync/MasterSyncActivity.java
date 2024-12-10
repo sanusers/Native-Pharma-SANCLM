@@ -56,6 +56,7 @@ import saneforce.sanzen.activity.slideDownloaderAlertBox.SlidesViewModel;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.Slide_adapter;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
+import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -1214,7 +1215,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                }
                                             }
                                         } else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
-                                            stpOfflineDataDao.deleteAllData();
+                                            stpOfflineDataDao.deleteAllData("0");
                                             saveSTPDataToLocal();
                                         }
                                         JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
@@ -1335,6 +1336,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                     String dateTime = jsonObject.optString("Created_Date");
                     String activeFlag = jsonObject.optString("Active_Flag");
                     Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+
+                    if(activeFlag.equalsIgnoreCase("0")) {
+                        SharedPref.setStpStatus(MasterSyncActivity.this, "Approved");
+                    }
 
                     JSONObject jsonSave = new JSONObject();
                     jsonSave = CommonUtilsMethods.CommonObjectParameter(this);

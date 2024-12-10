@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/rl_work_plan_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
 
         <ScrollView
             android:layout_width="match_parent"
@@ -34,14 +33,14 @@
                         android:id="@+id/switchButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:thumb="@drawable/custom_thumb"
-                        app:track="@drawable/custom_switch_bg"
                         android:layout_marginHorizontal="@dimen/_5sdp"
                         android:checked="false"
                         android:scaleX="0.8"
                         android:scaleY="0.8"
-                        app:trackTint="@color/dark_purple"
-                        app:thumbTint="@color/white"/>
+                        android:thumb="@drawable/custom_thumb"
+                        app:thumbTint="@color/white"
+                        app:track="@drawable/custom_switch_bg"
+                        app:trackTint="@color/dark_purple" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -58,8 +57,8 @@
                     android:id="@+id/rl_rej_reason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_7sdp"
                     android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginTop="@dimen/_7sdp"
                     android:layout_marginEnd="@dimen/_7sdp"
                     android:background="@drawable/backround_text"
                     android:backgroundTint="@color/bg_pink10"
@@ -80,35 +79,35 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
                         android:layout_toRightOf="@+id/card11"
                         android:fontFamily="@font/satoshi_medium"
-                        android:layout_marginTop="@dimen/_2sdp"
                         android:text="Rejection Reason"
                         android:textColor="@color/dark_pink"
                         android:textSize="@dimen/_7sdp"
                         tools:ignore="SpUsage" />
 
                     <TextView
+                        android:id="@+id/rejected_reason"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/rejected_reason"
                         android:layout_below="@id/txt_rejection"
                         android:layout_marginStart="@dimen/_4sdp"
-                        android:layout_toRightOf="@+id/card11"
-                        android:fontFamily="@font/satoshi_medium"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:layout_marginBottom="@dimen/_2sdp"
+                        android:layout_toRightOf="@+id/card11"
+                        android:fontFamily="@font/satoshi_medium"
                         android:textColor="@color/black_45"
                         android:textSize="@dimen/_7sdp"
-                        tools:text="Update Sample Given"
-                        tools:ignore="SpUsage" />
+                        tools:ignore="SpUsage"
+                        tools:text="Update Sample Given" />
 
                     <ImageView
+                        android:id="@+id/close_rejected_reason"
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
-                        android:padding="@dimen/_4sdp"
-                        android:id="@+id/close_rejected_reason"
                         android:layout_alignParentRight="true"
+                        android:padding="@dimen/_4sdp"
                         android:src="@drawable/pink_cross">
 
                     </ImageView>
@@ -119,8 +118,8 @@
                     android:id="@+id/rl_dev_pending"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_7sdp"
                     android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginTop="@dimen/_7sdp"
                     android:layout_marginEnd="@dimen/_7sdp"
                     android:background="@drawable/backround_text"
                     android:backgroundTint="@color/bg_pink10"
@@ -136,15 +135,15 @@
                         app:cardCornerRadius="@dimen/_2sdp" />
 
                     <TextView
-                        android:padding="@dimen/_4sdp"
                         android:id="@+id/txt_deviation_pending"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
                         android:layout_alignParentTop="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginStart="@dimen/_4sdp"
                         android:layout_toRightOf="@+id/card_dev_pending"
                         android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_4sdp"
                         android:text="Deviation Approval pending"
                         android:textColor="@color/dark_pink"
                         android:textSize="@dimen/_7sdp"
@@ -285,6 +284,53 @@
                                     android:layout_alignParentRight="true"
                                     android:layout_centerInParent="true"
                                     android:layout_marginRight="@dimen/_5sdp"
+                                    android:src="@drawable/right_arrow" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:id="@+id/rlworkday2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_6sdp"
+                                android:layout_marginEnd="@dimen/_6sdp"
+                                android:layout_marginBottom="@dimen/_6sdp"
+                                android:background="@drawable/backround_text"
+                                android:orientation="horizontal"
+                                android:visibility="gone">
+
+                                <ProgressBar
+                                    android:id="@+id/progress_workday2"
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="@dimen/_10sdp"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="center"
+                                    android:background="#26282A3C"
+                                    android:backgroundTint="#26282A3C"
+                                    android:visibility="gone" />
+
+                                <TextView
+                                    android:id="@+id/txtworkday2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_2sdp"
+                                    android:layout_marginTop="@dimen/_2sdp"
+                                    android:layout_marginEnd="@dimen/_2sdp"
+                                    android:layout_marginBottom="@dimen/_2sdp"
+                                    android:layout_toStartOf="@id/img_arrow_wd_2"
+                                    android:fontFamily="@font/satoshi_medium"
+                                    android:hint="Select Work Day"
+                                    android:padding="@dimen/_4sdp"
+                                    android:textColor="@color/text_dark"
+                                    android:textColorHint="@color/text_dark"
+                                    android:textSize="@dimen/_7sdp" />
+
+                                <ImageView
+                                    android:id="@+id/img_arrow_wd_2"
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="@dimen/_6sdp"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerInParent="true"
+                                    android:layout_marginEnd="@dimen/_5sdp"
                                     android:src="@drawable/right_arrow" />
                             </RelativeLayout>
 
@@ -498,6 +544,53 @@
                                 </RelativeLayout>
 
                                 <RelativeLayout
+                                    android:id="@+id/rlworkday1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_6sdp"
+                                    android:layout_marginEnd="@dimen/_6sdp"
+                                    android:layout_marginBottom="@dimen/_6sdp"
+                                    android:background="@drawable/backround_text"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <ProgressBar
+                                        android:id="@+id/progress_workday1"
+                                        android:layout_width="@dimen/_10sdp"
+                                        android:layout_height="@dimen/_10sdp"
+                                        android:layout_centerInParent="true"
+                                        android:layout_gravity="center"
+                                        android:background="#26282A3C"
+                                        android:backgroundTint="#26282A3C"
+                                        android:visibility="gone" />
+
+                                    <TextView
+                                        android:id="@+id/txtworkday1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/_2sdp"
+                                        android:layout_marginTop="@dimen/_2sdp"
+                                        android:layout_marginEnd="@dimen/_2sdp"
+                                        android:layout_marginBottom="@dimen/_2sdp"
+                                        android:layout_toStartOf="@id/img_arrow_wd_1"
+                                        android:fontFamily="@font/satoshi_medium"
+                                        android:hint="Select Work Day"
+                                        android:padding="@dimen/_4sdp"
+                                        android:textColor="@color/text_dark"
+                                        android:textColorHint="@color/text_dark"
+                                        android:textSize="@dimen/_7sdp" />
+
+                                    <ImageView
+                                        android:id="@+id/img_arrow_wd_1"
+                                        android:layout_width="@dimen/_10sdp"
+                                        android:layout_height="@dimen/_6sdp"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_centerInParent="true"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:src="@drawable/right_arrow" />
+                                </RelativeLayout>
+
+                                <RelativeLayout
                                     android:id="@+id/rlcluster1"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -684,11 +777,11 @@
     </RelativeLayout>
 
     <FrameLayout
+        android:id="@+id/progress"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/progress"
-        android:visibility="gone"
-        android:background="@color/transparent">
+        android:background="@color/transparent"
+        android:visibility="gone">
 
         <ProgressBar
             android:id="@+id/progress_sumit"
@@ -698,5 +791,124 @@
             android:indeterminateTint="@color/black_45"
             android:visibility="visible" />
     </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/deviation_lock"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/red_10"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_above="@id/deviation_appr_txt"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/round_warning_amber_24"
+            app:tint="@color/red_60" />
+
+        <TextView
+            android:id="@+id/deviation_appr_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Waiting For Deviation Approval"
+            android:textAlignment="center"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_6ssp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_deviation_rejected_reason"
+            android:layout_above="@id/txt_refresh"
+            android:visibility="gone"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:padding="@dimen/_5sdp">
+
+            <TextView
+                android:id="@+id/deviation_rejected_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reject_reason"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/deviation_rejected_reason_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/reject_reason"
+                android:textAlignment="textStart"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/_5sdp"
+            android:background="@drawable/background_button_border_black"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="center"
+            android:paddingVertical="@dimen/_5sdp"
+            android:text="@string/refresh"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_7sdp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/ll_deviation_appr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/_10sdp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/txt_refresh1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/background_button_border_black"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="center"
+                android:paddingVertical="@dimen/_5sdp"
+                android:text="@string/refresh"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_7sdp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="@dimen/_5sdp"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/txt_logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/background_button_border_black"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="center"
+                android:paddingVertical="@dimen/_5sdp"
+                android:text="@string/logout"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_7sdp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

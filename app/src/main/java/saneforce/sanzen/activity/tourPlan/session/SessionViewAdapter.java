@@ -60,7 +60,11 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
        }
 
        if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
-           holder.workDayLayout.setVisibility(View.VISIBLE);
+           if(holder.data.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+               holder.workDayLayout.setVisibility(View.VISIBLE);
+           }else {
+               holder.workDayLayout.setVisibility(View.GONE);
+           }
            holder.hqLayout.setVisibility(View.GONE);
            if(inputDataModel.getSTP_Code().isEmpty()) {
                holder.workDayTV.setText("Select");

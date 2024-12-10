@@ -211,7 +211,12 @@ public class AddListActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String searchString = s.toString().trim();
                 if(searchString.isEmpty()) UtilityClass.hideKeyboard(AddListActivity.this);
-                dcrSelectionAdapter.getFilter().filter(searchString);
+                if(dcrSelectionAdapter != null) {
+                    dcrSelectionAdapter.getFilter().filter(searchString);
+                } else if(strClusterID.isEmpty()) {
+                    UtilityClass.hideKeyboard(AddListActivity.this);
+                    commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.please_select_cluster));
+                }
             }
 
             @Override
@@ -701,6 +706,7 @@ public class AddListActivity extends AppCompatActivity {
 
     private void showMultiCluster() {
         selectedClusterList.clear();
+        activityAddListBinding.etSearch.setText("");
         activityAddListBinding.stpAddListNavigation.etSearch.setText("");
         activityAddListBinding.stpAddListNavigation.txtClDone.setVisibility(View.VISIBLE);
         activityAddListBinding.stpAddListNavigation.wkRecyelerView.setVisibility(View.VISIBLE);

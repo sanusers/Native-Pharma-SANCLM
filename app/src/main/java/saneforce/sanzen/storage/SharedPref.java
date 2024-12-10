@@ -2555,4 +2555,12 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_STATUS, "");
     }
 
+
+    public static void setTpdcrDeviationApprStatus(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TPDCR_DEVIATION_APPR_STATUS, status).apply();
+    }
+
+
 }

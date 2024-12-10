@@ -5,6 +5,7 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.tourPlan.session.SessionEditAdapter.inputDataArray;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -51,6 +52,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.calendar.CalendarAdapter;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
@@ -65,6 +67,7 @@ import saneforce.sanzen.databinding.ActivityTourPlanBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
@@ -142,6 +145,14 @@ public class TourPlanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityTourPlanBinding.inflate(getLayoutInflater());
+
+        if(SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0") && (SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Planning...") || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Rejected"))) {
+            commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Prepare Standard Tour Plan and get Approved to prepare Tour Plan");
+            Intent intent = new Intent(getApplicationContext(), StandardTourPlanActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         roomDB = RoomDB.getDatabase(getApplicationContext());
@@ -860,7 +871,19 @@ public class TourPlanActivity extends AppCompatActivity {
                             }
 
                             if(isSTPBasedTP && !dayOfWeek.isEmpty() && stpOfflineDataDao.isDayAvailable(dayOfWeek)) {
-                                modelClasses.add(prepareAndSaveSTPModelClass(day, date, dayName, dayOfWeek, localDate1));
+                                ModelClass modelClass = prepareAndSaveSTPModelClass(day, date, dayName, dayOfWeek, localDate1);
+                                if(holidayDateArray.contains(day)) {
+                                    sessionList.setWorkType(holidayWorkTypeModel);  // add holiday work type model object when current date is declared as holiday
+                                    ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                                    sessionLists.add(sessionList);
+                                    modelClass = new ModelClass(day, date, dayName, month, year, false, sessionLists);
+                                }else if(weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
+                                    sessionList.setWorkType(weeklyOffWorkTypeModel);
+                                    ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                                    sessionLists.add(sessionList);
+                                    modelClass = new ModelClass(day, date, dayName, month, year, false, sessionLists);
+                                }
+                                modelClasses.add(modelClass);
                                 LocalWeelyHolidayFlag = true;
                             }else {
                                 if(holidayDateArray.contains(day)) {
@@ -1257,6 +1280,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     JSONObject jsonObject1;
                                     if(response.body().isJsonObject()) {
                                         jsonObject1 = new JSONObject(response.body().getAsJsonObject().toString());
+                                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TOUR_PLAN, (new JSONArray().put(jsonObject1)).toString(), 2));
                                         SaveTourPlanWholeMonth(jsonObject1, isClickedName);
                                     }
                                     binding.progressBar.setVisibility(View.GONE);
@@ -1291,6 +1315,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 binding.progressBar.setVisibility(View.GONE);
                                 binding.tvSync.setEnabled(true);
                                 Log.v("tpGetPlan", "--error--2--" + e);
+                                e.printStackTrace();
                             }
                         }
 
@@ -1458,7 +1483,6 @@ public class TourPlanActivity extends AppCompatActivity {
 
 //                sqLite.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
                 tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
-
             }else {  //If tour plan table has no data
 
                 boolean LocalWeelyHolidayFlag;
@@ -1510,8 +1534,8 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 }
             }
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
