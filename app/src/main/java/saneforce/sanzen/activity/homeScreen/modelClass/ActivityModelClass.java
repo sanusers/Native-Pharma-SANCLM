@@ -1,31 +1,31 @@
 package saneforce.sanzen.activity.homeScreen.modelClass;
 
 public class ActivityModelClass {
-    private String id;
+    private int id;
     private String activityDate;
     private String activityTime;
     private String slNo;
     private String name;
     private String jsonData;
-    private String status;
-    private int syncStatus;
+    private int syncCount;
+    private String syncStatus;
 
-    public ActivityModelClass(String id, String activityDate, String activityTime, String slNo, String name, String jsonData, String status, int syncStatus) {
+    public ActivityModelClass(int id, String activityDate, String activityTime, String slNo, String name, String jsonData, int syncCount, String syncStatus) {
         this.id = id;
         this.activityDate = activityDate;
         this.activityTime = activityTime;
         this.slNo = slNo;
         this.name = name;
         this.jsonData = jsonData;
-        this.status = status;
+        this.syncCount = syncCount;
         this.syncStatus = syncStatus;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -69,20 +69,19 @@ public class ActivityModelClass {
         this.jsonData = jsonData;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public int getSyncStatus() {
+    public String getSyncStatus() {
         return syncStatus;
     }
 
-    public void setSyncStatus(int syncStatus) {
+    public void setSyncStatus(String syncStatus) {
         this.syncStatus = syncStatus;
     }
 
+    public int getSyncCount() {
+        return syncCount;
+    }
+
+    public void setSyncCount(int syncCount) {
+        this.syncCount = syncCount;
+    }
 }

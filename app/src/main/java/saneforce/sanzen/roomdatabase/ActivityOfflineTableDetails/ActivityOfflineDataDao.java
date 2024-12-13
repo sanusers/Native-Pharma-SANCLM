@@ -18,7 +18,7 @@ import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECData
 public interface ActivityOfflineDataDao {
 
     @Insert
-    void insert(ActivityOfflineDataTable activityOfflineDataTable);
+    Long insert(ActivityOfflineDataTable activityOfflineDataTable);
 
     @Update
     void update(ActivityOfflineDataTable activityOfflineDataTable);
@@ -30,7 +30,7 @@ public interface ActivityOfflineDataDao {
     void deleteAllData();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void saveActivityOfflineData(ActivityOfflineDataTable activityOfflineDataTable);
+    Long saveActivityOfflineData(ActivityOfflineDataTable activityOfflineDataTable);
 
     @Query("SELECT COUNT(1) > 0 FROM ACTIVITY_OFFLINE_TABLE")
     boolean isActivityAvailable();
@@ -38,17 +38,17 @@ public interface ActivityOfflineDataDao {
     @Query("SELECT COUNT(1) > 0 FROM ACTIVITY_OFFLINE_TABLE WHERE `ACTIVITY_DATE` = :date")
     boolean isAvailableActivityOnDate(String date);
 
-    @Query("SELECT EXISTS(SELECT 1 FROM `ACTIVITY_OFFLINE_TABLE` WHERE `STATUS` = :status)")
+    @Query("SELECT EXISTS(SELECT 1 FROM `ACTIVITY_OFFLINE_TABLE` WHERE `SYNC_STATUS` = :status)")
     boolean isActivityAvailableByStatus(String status);
 
-    @Query("SELECT * FROM `ACTIVITY_OFFLINE_TABLE` WHERE `NAME` = :name AND `ACTIVITY_DATE` = :date AND `ACTIVITY_DATE` = :id")
-    ActivityOfflineDataTable getActivityOfflineData(String id, String name, String date);
+    @Query("SELECT * FROM `ACTIVITY_OFFLINE_TABLE` WHERE `ACTIVITY_DATE` = :id")
+    ActivityOfflineDataTable getActivityOfflineData(int id);
 
     @Query("SELECT `JSON_DATA` FROM `ACTIVITY_OFFLINE_TABLE` WHERE `ACTIVITY_DATE` = :date AND `NAME` = :name AND `ACTIVITY_DATE` = :id")
-    String getActivityJson(String id, String name, String date);
+    String getActivityJson(int id, String name, String date);
 
-    @Query("DELETE FROM `ACTIVITY_OFFLINE_TABLE` WHERE `NAME` = :name AND `ACTIVITY_DATE` = :date AND `ACTIVITY_DATE` = :id")
-    void deleteOfflineActivity(String id, String name, String date);
+    @Query("DELETE FROM `ACTIVITY_OFFLINE_TABLE` WHERE `ID` = :id")
+    void deleteOfflineActivity(int id);
 
     @Query("SELECT * FROM `ACTIVITY_OFFLINE_TABLE` WHERE `ACTIVITY_DATE` = :date")
     List<ActivityOfflineDataTable> getOutBoxActivityList(String date);
@@ -63,7 +63,7 @@ public interface ActivityOfflineDataDao {
         ArrayList<ActivityModelClass> activityModelClassList = new ArrayList<>();
         List<ActivityOfflineDataTable> list = getOutBoxActivityList(date);
         for(ActivityOfflineDataTable activityOfflineDataTable : list) {
-            activityModelClassList.add(new ActivityModelClass(activityOfflineDataTable.getId(), activityOfflineDataTable.getActivityDate(), activityOfflineDataTable.getActivityTime(), activityOfflineDataTable.getSlNo(), activityOfflineDataTable.getName(), activityOfflineDataTable.getJsonData(), activityOfflineDataTable.getStatus(), activityOfflineDataTable.getSyncStatus()));
+            activityModelClassList.add(new ActivityModelClass(activityOfflineDataTable.getId(), activityOfflineDataTable.getActivityDate(), activityOfflineDataTable.getActivityTime(), activityOfflineDataTable.getSlNo(), activityOfflineDataTable.getName(), activityOfflineDataTable.getJsonData(), activityOfflineDataTable.getSyncCount(), activityOfflineDataTable.getSyncStatus()));
         }
         return activityModelClassList;
     }

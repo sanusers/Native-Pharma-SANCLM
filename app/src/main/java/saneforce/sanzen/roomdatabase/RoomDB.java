@@ -35,6 +35,8 @@ import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDataTable;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataTable;
+import saneforce.sanzen.roomdatabase.QuizOfflineTableDetails.QuizOfflineDataDao;
+import saneforce.sanzen.roomdatabase.QuizOfflineTableDetails.QuizOfflineDataTable;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesDao;
@@ -46,16 +48,20 @@ import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOffline
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataTable;
 
-@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class, SlidesTableDeatils.class, STPOfflineDataTable.class, WelcomeSlidesDataTable.class, ActivityDetailsDataTable.class, ActivityOfflineDataTable.class, ActivityUploadDataTable.class}, version = 3, exportSchema = false)
+@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class, SlidesTableDeatils.class, STPOfflineDataTable.class, WelcomeSlidesDataTable.class, ActivityDetailsDataTable.class, ActivityOfflineDataTable.class, ActivityUploadDataTable.class, QuizOfflineDataTable.class}, version = 4, exportSchema = false)
 public abstract class RoomDB extends RoomDatabase {
-    private static RoomDB database;
     private static final String DATABASE_NAME = "sanclmroom.dp";
+    private static RoomDB database;
     public synchronized static RoomDB getDatabase(Context context) {
         if (database == null) {
             database = Room.databaseBuilder(context.getApplicationContext(), RoomDB.class, DATABASE_NAME)
                     .allowMainThreadQueries()
+                    .addMigrations(MIGRATION_1_4)
+                    .addMigrations(MIGRATION_1_3)
                     .addMigrations(MIGRATION_1_2)
                     .addMigrations(MIGRATION_2_3)
+                    .addMigrations(MIGRATION_2_4)
+                    .addMigrations(MIGRATION_3_4)
                     .fallbackToDestructiveMigration()
                     .build();
         }
@@ -65,17 +71,50 @@ public abstract class RoomDB extends RoomDatabase {
     public static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("CREATE TABLE IF NOT EXISTS `stp_offline_table` (`day_id` TEXT NOT NULL, `day_caption` TEXT, `cluste_code` TEXT, `cluster_name` TEXT, `doctor_code` TEXT, `doctor_name` TEXT, `chemist_code` TEXT, `chemist_name` TEXT, `stp_data` TEXT, `sync_status` TEXT, PRIMARY KEY(`day_id`))");
-            database.execSQL("CREATE TABLE IF NOT EXISTS `welcome_slides_table` (`name` TEXT NOT NULL, `slide_size` TEXT, `downloading_status` TEXT, `progress` TEXT, `background_task` TEXT, `file_position` TEXT, PRIMARY KEY(`name`))");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `stp_offline_table` (`day_id` TEXT NOT NULL PRIMARY KEY, `day_caption` TEXT, `cluste_code` TEXT, `cluster_name` TEXT, `doctor_code` TEXT, `doctor_name` TEXT, `chemist_code` TEXT, `chemist_name` TEXT, `stp_data` TEXT, `sync_status` TEXT)");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `welcome_slides_table` (`name` TEXT NOT NULL PRIMARY KEY, `slide_size` TEXT, `downloading_status` TEXT, `progress` TEXT, `background_task` TEXT, `file_position` TEXT)");
         }
     };
 
     public static final Migration MIGRATION_2_3 = new Migration(2, 3) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("CREATE TABLE IF NOT EXISTS `activity_details_table` (`id` TEXT NOT NULL, `json_data` TEXT, `status` TEXT, PRIMARY KEY(`id`))");
-            database.execSQL("CREATE TABLE IF NOT EXISTS `activity_offline_table` (`id` TEXT NOT NULL, `activity_date` TEXT, `activity_time` TEXT, `sl_no` TEXT,  `name` TEXT, `json_data` TEXT, `status` TEXT, `sync_status` INTEGER, PRIMARY KEY(`id`))");
-            database.execSQL("CREATE TABLE IF NOT EXISTS `activity_offline_table` (`id` TEXT NOT NULL, `activity_date` TEXT, `activity_time` TEXT, `sl_no` TEXT,  `name` TEXT, `image_name` TEXT,  `file_path` TEXT, `json_data` TEXT, `status` TEXT, `sync_status` INTEGER, PRIMARY KEY(`id`))");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `activity_details_table` (`id` TEXT NOT NULL PRIMARY KEY, `json_data` TEXT, `status` TEXT)");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `activity_offline_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `activity_date` TEXT, `activity_time` TEXT, `sl_no` TEXT, `name` TEXT, `dr_code` TEXT, `json_data` TEXT, `sync_count` INTEGER NOT NULL, `sync_status` TEXT)");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `activity_upload_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `activity_id` INTEGER NOT NULL, `activity_date` TEXT, `activity_time` TEXT, `sl_no` TEXT,  `name` TEXT, `image_name` TEXT,  `file_path` TEXT, `json_data` TEXT, `sync_count` INTEGER NOT NULL, `sync_status` TEXT, FOREIGN KEY(`activity_id`) REFERENCES `activity_offline_table`(`id`) ON DELETE CASCADE)");
+            database.execSQL("CREATE INDEX IF NOT EXISTS `index_activity_upload_table_activity_id` ON `activity_upload_table` (`activity_id`)");
+        }
+    };
+
+    public static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS `quiz_offline_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `quiz_date` TEXT, `quiz_time` TEXT, `json_data` TEXT, `sync_count` INTEGER NOT NULL, `sync_status` TEXT)");
+        }
+    };
+
+    public static final Migration MIGRATION_1_3 = new Migration(1, 3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_1_2.migrate(database);
+            MIGRATION_2_3.migrate(database);
+        }
+    };
+
+    public static final Migration MIGRATION_1_4 = new Migration(1, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_1_2.migrate(database);
+            MIGRATION_2_3.migrate(database);
+            MIGRATION_3_4.migrate(database);
+        }
+    };
+
+    public static final Migration MIGRATION_2_4 = new Migration(2, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_2_3.migrate(database);
+            MIGRATION_3_4.migrate(database);
         }
     };
 
@@ -114,5 +153,7 @@ public abstract class RoomDB extends RoomDatabase {
     public abstract ActivityOfflineDataDao activityOfflineDataDao();
 
     public abstract ActivityUploadDataDao activityUploadDataDao();
+
+    public abstract QuizOfflineDataDao quizOfflineDataDao();
 
 }

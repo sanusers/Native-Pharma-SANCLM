@@ -3,19 +3,27 @@ package saneforce.sanzen.roomdatabase.ActivityUploadTableDetails;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
-@Entity(tableName = "activity_upload_table")
+import saneforce.sanzen.roomdatabase.ActivityOfflineTableDetails.ActivityOfflineDataTable;
+
+@Entity(tableName = "activity_upload_table", foreignKeys = {
+        @ForeignKey(entity = ActivityOfflineDataTable.class, parentColumns = "id", childColumns = "activity_id", onDelete = ForeignKey.CASCADE)
+}, indices = {@Index(value = {"activity_id"})})
 public class ActivityUploadDataTable {
 
-    @PrimaryKey
-    @NonNull
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private String id = "";
+    int id;
+
+    @ColumnInfo(name = "activity_id")
+    private int activityID;
 
     @ColumnInfo(name = "activity_date")
     private String activityDate = "";
@@ -38,34 +46,34 @@ public class ActivityUploadDataTable {
     @ColumnInfo(name = "json_data")
     private String jsonData = "";
 
-    @ColumnInfo(name = "status")
-    private String status = "";
+    @ColumnInfo(name = "sync_count")
+    private int syncCount = 0;
 
     @ColumnInfo(name = "sync_status")
-    private int syncStatus = 0;
+    private String syncStatus = "";
 
     @Ignore
     public ActivityUploadDataTable() {
     }
 
-    public ActivityUploadDataTable(String slNo, String name, String activityDate, String activityTime, String imageName, String filePath, String jsonData, String status, int syncStatus) {
-        this.name = name;
+    public ActivityUploadDataTable(int activityID, String slNo, String name, String activityDate, String activityTime, String imageName, String filePath, String jsonData, int syncCount, String syncStatus) {
+        this.activityID = activityID;
         this.slNo = slNo;
+        this.name = name;
         this.activityDate = activityDate;
         this.activityTime = activityTime;
         this.imageName = imageName;
         this.filePath = filePath;
         this.jsonData = jsonData;
-        this.status = status;
+        this.syncCount = syncCount;
         this.syncStatus = syncStatus;
     }
 
-    @NonNull
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(@NonNull String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -75,14 +83,6 @@ public class ActivityUploadDataTable {
 
     public void setJsonData(String jsonData) {
         this.jsonData = jsonData;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public JSONArray getActivityDataJSONArray() {
@@ -127,11 +127,11 @@ public class ActivityUploadDataTable {
         this.slNo = slNo;
     }
 
-    public int getSyncStatus() {
+    public String getSyncStatus() {
         return syncStatus;
     }
 
-    public void setSyncStatus(int syncStatus) {
+    public void setSyncStatus(String syncStatus) {
         this.syncStatus = syncStatus;
     }
 
@@ -149,5 +149,21 @@ public class ActivityUploadDataTable {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public int getSyncCount() {
+        return syncCount;
+    }
+
+    public void setSyncCount(int syncCount) {
+        this.syncCount = syncCount;
+    }
+
+    public int getActivityID() {
+        return activityID;
+    }
+
+    public void setActivityID(int activityID) {
+        this.activityID = activityID;
     }
 }

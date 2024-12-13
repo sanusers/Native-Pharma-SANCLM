@@ -43,6 +43,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityModelClass;
+import saneforce.sanzen.activity.homeScreen.modelClass.ActivityUploadModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.CheckInOutModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.ChildListModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.DaySubmitModelClass;
@@ -54,6 +55,8 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
+import saneforce.sanzen.roomdatabase.ActivityOfflineTableDetails.ActivityOfflineDataDao;
+import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDataDao;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
@@ -74,8 +77,9 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     OutBoxECAdapter outBoxECAdapter;
     OutBoxActivityAdapter outBoxActivityAdapter;
+    OutBoxActivityUploadAdapter outBoxActivityUploadAdapter;
     ProgressDialog progressDialog;
-    boolean isCallAvailable;
+    boolean isAvailable;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
     RoomDB roomDB;
@@ -85,6 +89,8 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     private final CallOfflineECDataDao callOfflineECDataDao;
     private final OfflineDaySubmitDao offlineDaySubmitDao;
     private final CallOfflineWorkTypeDataDao callOfflineWorkTypeDataDao;
+    private final ActivityOfflineDataDao activityOfflineDataDao;
+    private final ActivityUploadDataDao activityUploadDataDao;
     private final CallsUtil callsUtil;
 
     public OutBoxContentAdapter(Activity activity, Context context, ArrayList<ChildListModelClass> groupModelClasses) {
@@ -100,6 +106,8 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
         callOfflineWorkTypeDataDao = roomDB.callOfflineWorkTypeDataDao();
         offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
+        activityOfflineDataDao = roomDB.activityOfflineDataDao();
+        activityUploadDataDao = roomDB.activityUploadDataDao();
         callsUtil = new CallsUtil(context);
     }
 
@@ -133,7 +141,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             case 0:
                 holder.tvCount.setText(String.valueOf(contentList.getCheckInOutModelClasses().size()));
                 if (contentList.isExpanded() && !contentList.getCheckInOutModelClasses().isEmpty()) {
-                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses());
+                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses(), contentList.getActivityUploadModelClasses());
                 } else {
                     holder.constraintRv.setVisibility(View.GONE);
                     holder.img_expand_child.setImageResource(R.drawable.down_arrow);
@@ -149,7 +157,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             case 2:
                 holder.tvCount.setText(String.valueOf(contentList.getOutBoxCallLists().size()));
                 if (contentList.isExpanded() && !contentList.getOutBoxCallLists().isEmpty()) {
-                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses());
+                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses(), contentList.getActivityUploadModelClasses());
                 } else {
                     holder.constraintRv.setVisibility(View.GONE);
                     holder.img_expand_child.setImageResource(R.drawable.down_arrow);
@@ -158,27 +166,37 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             case 3:
                 holder.tvCount.setText(String.valueOf(contentList.getEcModelClasses().size()));
                 if (contentList.isExpanded() && !contentList.getEcModelClasses().isEmpty()) {
-                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses());
+                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses(), contentList.getActivityUploadModelClasses());
                 } else {
                     holder.constraintRv.setVisibility(View.GONE);
                     holder.img_expand_child.setImageResource(R.drawable.down_arrow);
                 }
                 break;
             case 4:
+                holder.tvCount.setText(String.valueOf(contentList.getActivityModelClasses().size()));
+                if(contentList.isExpanded() && !contentList.getActivityModelClasses().isEmpty()) {
+                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses(), contentList.getActivityUploadModelClasses());
+                } else {
+                    holder.constraintRv.setVisibility(View.GONE);
+                    holder.img_expand_child.setImageResource(R.drawable.down_arrow);
+                }
+                break;
+            case 5:
+                holder.tvCount.setText(String.valueOf(contentList.getActivityUploadModelClasses().size()));
+                if(contentList.isExpanded() && !contentList.getActivityUploadModelClasses().isEmpty()) {
+                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses(), contentList.getActivityUploadModelClasses());
+                } else {
+                    holder.constraintRv.setVisibility(View.GONE);
+                    holder.img_expand_child.setImageResource(R.drawable.down_arrow);
+                }
+                break;
+            case 6:
                 if (contentList.getDaySubmitModelClass() == null) {
                     holder.expandContentView.setVisibility(View.GONE);
                 } else {
                     holder.expandContentView.setVisibility(View.VISIBLE);
                 }
                 break;
-            case 5:
-                holder.tvCount.setText(String.valueOf(contentList.getActivityModelClasses().size()));
-                if(contentList.isExpanded() && !contentList.getActivityModelClasses().isEmpty()) {
-                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses());
-                } else {
-                    holder.constraintRv.setVisibility(View.GONE);
-                    holder.img_expand_child.setImageResource(R.drawable.down_arrow);
-                }
             default:
                 break;
         }
@@ -206,6 +224,12 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                         CallAPIListImage(position);
                         break;
                     case 4:
+                        CallAPIActivity(position);
+                        break;
+                    case 5:
+                        CallAPIActivityUpload(position);
+                        break;
+                    case 6:
                         CallAPIDaySubmit(position);
                         break;
                 }
@@ -220,7 +244,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         });
     }
 
-    private void SetupVisibleData(ConstraintLayout constraintRv, int childId, RecyclerView rvOutboxList, ImageView imgExpandChild, ArrayList<OutBoxCallList> outBoxCallLists, ArrayList<CheckInOutModelClass> checkInOutModelClasses, ArrayList<EcModelClass> ecModelClasses, ArrayList<ActivityModelClass> activityModelClasses) {
+    private void SetupVisibleData(ConstraintLayout constraintRv, int childId, RecyclerView rvOutboxList, ImageView imgExpandChild, ArrayList<OutBoxCallList> outBoxCallLists, ArrayList<CheckInOutModelClass> checkInOutModelClasses, ArrayList<EcModelClass> ecModelClasses, ArrayList<ActivityModelClass> activityModelClasses, ArrayList<ActivityUploadModelClass> activityUploadModelClasses) {
         constraintRv.setVisibility(View.VISIBLE);
         RecyclerView.LayoutManager mLayoutManager;
         switch (childId) {
@@ -242,23 +266,30 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 rvOutboxList.setLayoutManager(mLayoutManager);
                 rvOutboxList.setAdapter(outBoxECAdapter);
                 break;
-            case 5:
+            case 4:
                 outBoxActivityAdapter = new OutBoxActivityAdapter(activity, context, activityModelClasses, apiInterface);
                 mLayoutManager = new LinearLayoutManager(context);
                 rvOutboxList.setLayoutManager(mLayoutManager);
                 rvOutboxList.setAdapter(outBoxActivityAdapter);
+                break;
+            case 5:
+                outBoxActivityUploadAdapter = new OutBoxActivityUploadAdapter(activity, context, activityUploadModelClasses, apiInterface);
+                mLayoutManager = new LinearLayoutManager(context);
+                rvOutboxList.setLayoutManager(mLayoutManager);
+                rvOutboxList.setAdapter(outBoxActivityUploadAdapter);
+                break;
         }
         imgExpandChild.setImageResource(R.drawable.top_vector);
     }
 
     private void CallAPICheckInOut(int position) {
         if (!childListModelClasses.get(position).getCheckInOutModelClasses().isEmpty()) {
-            isCallAvailable = false;
+            isAvailable = false;
             for (int i = 0; i < childListModelClasses.get(position).getCheckInOutModelClasses().size(); i++) {
                 CheckInOutModelClass checkInOutModelClass = childListModelClasses.get(position).getCheckInOutModelClasses().get(i);
                 Log.v("SendOutboxCall", "--checkInOut--" + checkInOutModelClass.getDates() + "---" + checkInOutModelClass.getCheckInTime() + "----" + checkInOutModelClass.getCheckOutTime());
                 if (checkInOutModelClass.getCheckStatus() == 0) {
-                    isCallAvailable = true;
+                    isAvailable = true;
                     if (checkInOutModelClass.getJsonOutValues().isEmpty()) {
                         CallSendAPICheckInOut(position, i, checkInOutModelClass, checkInOutModelClass.getJsonInValues());
                     } else {
@@ -268,10 +299,10 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 break;
             }
         } else {
-            isCallAvailable = false;
+            isAvailable = false;
         }
 
-        if (!isCallAvailable) {
+        if (!isAvailable) {
             progressDialog.dismiss();
             RefreshAdapter();
         }
@@ -337,20 +368,20 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
 
     private void CallAPIWorkPlan(int childPos) {
         if(childListModelClasses.get(childPos).getWorkPlanModelClass() != null) {
-            isCallAvailable = false;
+            isAvailable = false;
             WorkPlanModelClass workPlanModelClass = childListModelClasses.get(childPos).getWorkPlanModelClass();
             if(workPlanModelClass.getSyncStatus() == 0) {
-                isCallAvailable = true;
+                isAvailable = true;
                 Log.v("SendOutboxCall", "--WorkPlan--" + workPlanModelClass.getDate() + "---" + workPlanModelClass.getWtName() + "---" + workPlanModelClass.getWtCode());
                 if(!workPlanModelClass.getJsonValues().isEmpty()) {
                     CallSendWorkPlan(workPlanModelClass, childPos, workPlanModelClass.getJsonValues());
                 }
             }
         }else {
-            isCallAvailable = false;
+            isAvailable = false;
         }
 
-        if(!isCallAvailable) {
+        if(!isAvailable) {
             progressDialog.dismiss();
         }
     }
@@ -400,19 +431,19 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
 
     private void CallAPIDaySubmit(int childPos) {
         if(childListModelClasses.get(childPos).getDaySubmitModelClass() != null) {
-            isCallAvailable = false;
+            isAvailable = false;
             DaySubmitModelClass daySubmitModelClass = childListModelClasses.get(childPos).getDaySubmitModelClass();
             if(daySubmitModelClass.getSyncStatus() == 0) {
-                isCallAvailable = true;
+                isAvailable = true;
                 Log.v("SendOutboxCall", "--Day Submit--" + daySubmitModelClass.getDate() + "---" + daySubmitModelClass.getJsonValues());
                 if(!daySubmitModelClass.getJsonValues().isEmpty()) {
                     CallSendDaySubmit(daySubmitModelClass, childPos, daySubmitModelClass.getJsonValues());
                 }
             }
         }else {
-            isCallAvailable = false;
+            isAvailable = false;
         }
-        if (!isCallAvailable) {
+        if (!isAvailable) {
             progressDialog.dismiss();
         }
     }
@@ -464,7 +495,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     @SuppressLint("NotifyDataSetChanged")
     private void CallAPIListImage(int position) {
         if (!childListModelClasses.get(position).getEcModelClasses().isEmpty()) {
-            isCallAvailable = false;
+            isAvailable = false;
             for (int i = 0; i < childListModelClasses.get(position).getEcModelClasses().size(); i++) {
                 EcModelClass ecModelClass = childListModelClasses.get(position).getEcModelClasses().get(i);
                 if (ecModelClass.getSynced() == 0) {
@@ -475,9 +506,9 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 break;
             }
         } else {
-            isCallAvailable = false;
+            isAvailable = false;
         }
-        if (!isCallAvailable) {
+        if (!isAvailable) {
             progressDialog.dismiss();
             RefreshAdapter();
         }
@@ -583,15 +614,20 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         return yy;
     }
 
+    @Override
+    public int getItemCount() {
+        return childListModelClasses.size();
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     private void CallAPIList(int position) {
         if (!childListModelClasses.get(position).getOutBoxCallLists().isEmpty()) {
-            isCallAvailable = false;
+            isAvailable = false;
             for (int i = 0; i < childListModelClasses.get(position).getOutBoxCallLists().size(); i++) {
                 OutBoxCallList outBoxCallList = childListModelClasses.get(position).getOutBoxCallLists().get(i);
                 if (outBoxCallList.getStatus().equalsIgnoreCase(Constants.WAITING_FOR_SYNC) || outBoxCallList.getStatus().equalsIgnoreCase(Constants.CALL_FAILED)) {
                     if (outBoxCallList.getSyncCount() <= 4) {
-                        isCallAvailable = true;
+                        isAvailable = true;
                         Log.v("SendOfflineCall", "---" + outBoxCallList.getCusName());
                         CallSendAPI(outBoxCallList, position, i, outBoxCallList.getDates(), outBoxCallList.getCusName(), outBoxCallList.getCusCode(), outBoxCallList.getJsonData(), outBoxCallList.getCusType(), outBoxCallList.getSyncCount());
                         break;
@@ -599,19 +635,14 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 }
             }
         } else {
-            isCallAvailable = false;
+            isAvailable = false;
         }
 
-        if (!isCallAvailable) {
+        if (!isAvailable) {
        //     CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
             progressDialog.dismiss();
             notifyDataSetChanged();
         }
-    }
-
-    @Override
-    public int getItemCount() {
-        return childListModelClasses.size();
     }
 
     private void CallSendAPI(OutBoxCallList outBoxCallList, int position, int outBoxList, String date, String cusName, String cusCode, String jsonData, String cusType, int SyncCount) {
@@ -663,6 +694,160 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
 
         } catch (JSONException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void CallAPIActivity(int position) {
+        if (!childListModelClasses.get(position).getActivityModelClasses().isEmpty()) {
+            isAvailable = false;
+            for (int i = 0; i < childListModelClasses.get(position).getActivityModelClasses().size(); i++) {
+                ActivityModelClass activityModelClass = childListModelClasses.get(position).getActivityModelClasses().get(i);
+                if (activityModelClass.getSyncStatus().equalsIgnoreCase(Constants.WAITING_FOR_SYNC) || activityModelClass.getSyncStatus().equalsIgnoreCase(Constants.FAILED)) {
+                    if (activityModelClass.getSyncCount() <= 4) {
+                        isAvailable = true;
+                        Log.v("SendOfflineCall", "---" + activityModelClass.getName() + " -> " + activityModelClass.getActivityDate() + " - " + activityModelClass.getActivityTime());
+                        CallSendActivityAPI(activityModelClass, position, i);
+                        break;
+                    }
+                }
+            }
+        } else {
+            isAvailable = false;
+        }
+
+        if (!isAvailable) {
+            progressDialog.dismiss();
+            notifyDataSetChanged();
+        }
+    }
+
+    private void CallSendActivityAPI(ActivityModelClass activityModelClass, int position, int outBoxListIndex) {
+        JSONObject jsonSaveActivity;
+        try {
+            jsonSaveActivity = new JSONObject(activityModelClass.getJsonData());
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "save/activity");
+            Call<JsonElement> activitySaveDcr = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonSaveActivity.toString());
+            activitySaveDcr.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
+                            if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
+                                activityOfflineDataDao.deleteOfflineActivity(activityModelClass.getId());
+                                childListModelClasses.get(position).getActivityModelClasses().remove(outBoxListIndex);
+                            } else {
+                                callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
+                                activityModelClass.setSyncStatus(Constants.FAILED);
+                                activityModelClass.setSyncCount(5);
+                                childListModelClasses.get(position).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
+                            }
+                            CallAPIActivity(position);
+                            notifyDataSetChanged();
+                        } catch (Exception e) {
+                            callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
+                            activityModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
+                            activityModelClass.setSyncCount(5);
+                            childListModelClasses.get(position).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
+                            Log.v("SendOutboxCall", "---" + e);
+                            e.printStackTrace();
+                            CallAPIActivity(position);
+                            notifyDataSetChanged();
+                        }
+                    }
+                }
+
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    callsUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
+                    activityModelClass.setSyncStatus(Constants.FAILED);
+                    activityModelClass.setSyncCount(activityModelClass.getSyncCount() + 1);
+                    childListModelClasses.get(position).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
+                    CallAPIActivity(position);
+                    notifyDataSetChanged();
+                }
+            });
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void CallAPIActivityUpload(int position) {
+        if (!childListModelClasses.get(position).getActivityUploadModelClasses().isEmpty()) {
+            isAvailable = false;
+            for (int i = 0; i < childListModelClasses.get(position).getActivityUploadModelClasses().size(); i++) {
+                ActivityUploadModelClass activityUploadModelClass = childListModelClasses.get(position).getActivityUploadModelClasses().get(i);
+                if (activityUploadModelClass.getSyncStatus().equalsIgnoreCase(Constants.WAITING_FOR_SYNC) || activityUploadModelClass.getSyncStatus().equalsIgnoreCase(Constants.FAILED)) {
+                    if (activityUploadModelClass.getSyncCount() <= 4) {
+                        isAvailable = true;
+                        Log.v("SendOfflineCall", "---" + activityUploadModelClass.getName() + " -> " + activityUploadModelClass.getActivityDate() + " - " + activityUploadModelClass.getActivityTime());
+                        CallSendActivityUploadAPI(activityUploadModelClass, position, i);
+                        break;
+                    }
+                }
+            }
+        } else {
+            isAvailable = false;
+        }
+
+        if (!isAvailable) {
+            progressDialog.dismiss();
+            notifyDataSetChanged();
+        }
+    }
+
+    private void CallSendActivityUploadAPI(ActivityUploadModelClass activityUploadModelClass, int position, int outBoxListIndex) {
+        try {
+            File file = new File(activityUploadModelClass.getFilePath());
+            MultipartBody.Part img = convertImg("ActivityFile", String.valueOf(file));
+            HashMap<String, RequestBody> values = field(activityUploadModelClass.getJsonData());
+            Call<JsonObject> saveAttachment = apiInterface.SaveImg(values, img);
+            saveAttachment.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                    if(response.isSuccessful()) {
+                        try {
+                            JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
+                            if(jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
+                                activityUploadDataDao.deleteUploadActivity(activityUploadModelClass.getId(), activityUploadModelClass.getActivityID());
+                                childListModelClasses.get(position).getActivityUploadModelClasses().remove(outBoxListIndex);
+                            }else {
+                                callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
+                                activityUploadModelClass.setSyncStatus(Constants.FAILED);
+                                activityUploadModelClass.setSyncCount(5);
+                                childListModelClasses.get(position).getActivityUploadModelClasses().set(outBoxListIndex, activityUploadModelClass);
+                            }
+                            CallAPIActivityUpload(position);
+                            notifyDataSetChanged();
+                        } catch (Exception e) {
+                            callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
+                            activityUploadModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
+                            activityUploadModelClass.setSyncCount(5);
+                            Log.v("SendOutboxCall", "---" + e);
+                            e.printStackTrace();
+                            CallAPIActivityUpload(position);
+                            notifyDataSetChanged();
+                        }
+                    }
+                }
+
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable throwable) {
+                    callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
+                    activityUploadModelClass.setSyncStatus(Constants.FAILED);
+                    activityUploadModelClass.setSyncCount(activityUploadModelClass.getSyncCount() + 1);
+                    childListModelClasses.get(position).getActivityUploadModelClasses().set(outBoxListIndex, activityUploadModelClass);
+                    CallAPIActivityUpload(position);
+                    notifyDataSetChanged();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

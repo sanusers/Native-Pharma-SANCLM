@@ -78,6 +78,7 @@ import saneforce.sanzen.activity.call.adapter.additionalCalls.finalSavedAdapter.
 import saneforce.sanzen.activity.call.adapter.input.CheckInputListAdapter;
 import saneforce.sanzen.activity.call.adapter.product.CheckProductListAdapter;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.call.fragments.activity.ActivityFragment;
 import saneforce.sanzen.activity.call.fragments.additionalCall.AddCallSelectInpSide;
 import saneforce.sanzen.activity.call.fragments.additionalCall.AddCallSelectPrdSide;
 import saneforce.sanzen.activity.call.fragments.additionalCall.AdditionalCallDetailedSide;
@@ -542,6 +543,10 @@ public class DCRCallActivity extends AppCompatActivity {
 
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
+            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+                viewPagerAdapter.add(new ActivityFragment(), "Activity");
+                pages.add("Activity");
+            }
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -559,6 +564,11 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
+            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+                viewPagerAdapter.add(new ActivityFragment(), "Activity");
+                pages.add("Activity");
+            }
+
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -570,6 +580,11 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
+            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+                viewPagerAdapter.add(new ActivityFragment(), "Activity");
+                pages.add("Activity");
+            }
+
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -581,6 +596,11 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
+            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+                viewPagerAdapter.add(new ActivityFragment(), "Activity");
+                pages.add("Activity");
+            }
+
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("5")) {
             viewPagerAdapter.add(new ProductFragment(), "Product");
             pages.add("Product");
@@ -588,6 +608,11 @@ public class DCRCallActivity extends AppCompatActivity {
             pages.add("Input");
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
+            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+                viewPagerAdapter.add(new ActivityFragment(), "Activity");
+                pages.add("Activity");
+            }
+
         }
 
         dcrCallBinding.viewPager.setAdapter(viewPagerAdapter);
@@ -2201,6 +2226,15 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             jsonSaveDcr.put("RCPAEntry", jsonArray);
 
+            //Activity
+            if(SharedPref.getActivityNd(DCRCallActivity.this).equalsIgnoreCase("0")) {
+                jsonArray = new JSONArray();
+                for (int i = 0; i<ActivityFragment.activityData.size(); i++) {
+                    jsonArray.put(ActivityFragment.activityData.get(i));
+                }
+                jsonSaveDcr.put("ActivityDCR", jsonArray);
+            }
+
             //Customer Details
             jsonSaveDcr.put("CateCode", CallActivityCustDetails.get(0).getCategoryCode());
             jsonSaveDcr.put("CusType", CallActivityCustDetails.get(0).getType());
@@ -2885,12 +2919,3 @@ public class DCRCallActivity extends AppCompatActivity {
         }
     }
 }
-   /* Backend Pending:
-        1) Add CustStatus for Setup; --> GeoTagApprovalNeed
-        2) Add Cust_status for all Doctor,Chemist,Cip,Stockist,UnDr --> cust_status
-        3) Add Cust_status for json_object to send the mapped tagged Customer
-        4) Add Promoted & RCPA Products for json_object to send the dcr call Customer
-        5) Add Sample and Input Data for Additional_Call_Screen*/
-
-
-

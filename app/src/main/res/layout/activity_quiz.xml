@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -53,9 +53,12 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_quiz_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/backround_graey">
+        android:layout_below="@id/appBar"
+        android:background="@color/backround_graey"
+        android:visibility="gone">
 
 
         <LinearLayout
@@ -108,13 +111,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@id/view_dummy"
-                    android:visibility="gone"
-                    android:layout_below="@id/txt_queston_name">
+                    android:layout_below="@id/txt_queston_name"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:orientation="horizontal"
                         android:visibility="visible">
 
@@ -122,7 +124,7 @@
                             android:id="@+id/radio_group"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginStart="@dimen/_5sdp"
                             android:layout_weight="1"
                             android:gravity="left">
 
@@ -216,9 +218,10 @@
                     android:id="@+id/recyelerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
                     android:layout_below="@id/txt_queston_name"
-                    android:layout_marginTop="@dimen/_1sdp">
+                    android:layout_marginTop="@dimen/_1sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:visibility="visible">
 
                 </androidx.recyclerview.widget.RecyclerView>
 
@@ -286,17 +289,29 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:padding="@dimen/_3sdp">
 
                     <ImageView
-                        android:layout_gravity="start|center_vertical"
                         android:layout_width="@dimen/_9sdp"
-                        android:src="@drawable/clock"
-                        android:layout_height="@dimen/_9sdp">
+                        android:layout_height="@dimen/_9sdp"
+                        android:layout_gravity="start|center_vertical"
+                        android:src="@drawable/clock">
 
                     </ImageView>
+
+                    <TextView
+                        android:id="@+id/txt_remainigtime_cap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_2sdp"
+                        android:text="RemainingTime: "
+                        android:textColor="@color/black_45"
+                        android:textSize="@dimen/_8sdp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/txt_remainigtime"
@@ -305,7 +320,7 @@
                         android:layout_marginLeft="@dimen/_2sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_2sdp"
-                        android:text="RemainingTime:  24:05:24"
+                        android:text="24:05:24"
                         android:textColor="@color/black_45"
                         android:textSize="@dimen/_8sdp"
                         android:textStyle="bold" />
@@ -314,20 +329,20 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:background="@drawable/custom_backround_layout"
+                    android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
-                    android:backgroundTint="#e1f2fd"
-                    android:layout_height="match_parent">
+                    android:background="@drawable/custom_backround_layout"
+                    android:backgroundTint="#e1f2fd">
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/sk_recylerview"
                         android:layout_width="match_parent"
-                        android:background="#e1f2fd"
-                        android:orientation="vertical"
+                        android:layout_height="wrap_content"
                         android:layout_margin="@dimen/_5sdp"
-                        android:layout_height="wrap_content"/>
+                        android:background="#e1f2fd"
+                        android:orientation="vertical" />
 
                 </LinearLayout>
-
 
 
             </LinearLayout>
@@ -376,5 +391,215 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/rl_start_quiz"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appBar"
+        android:visibility="visible"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
 
-</LinearLayout>
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:id="@+id/ll_quiz_center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="@dimen/_10sdp">
+
+                <ImageView
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/bulb" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="@dimen/_5sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="@string/welcome_to_quiz_session"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_10ssp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/download_asserts_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="@dimen/_5sdp"
+                    android:background="@drawable/bg_green_border"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_5sdp"
+                    android:text="Download Asserts"
+                    android:textColor="@color/green_60"
+                    android:textSize="@dimen/_6ssp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/outline_cloud_download_24"
+                    app:drawableTint="@color/green_60" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="@dimen/_5sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="@string/general_instructions"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_instructions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="1.  Download and Read asserts given before starting the session.\n2. Should Attend all questions without fail"
+                    android:textColor="@color/text_grey"
+                    android:textSize="@dimen/_6ssp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/start_quiz_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/backround_button"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:paddingHorizontal="@dimen/_20sdp"
+                    android:paddingVertical="@dimen/_5sdp"
+                    android:text="@string/start_quiz"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_grey"
+            android:padding="@dimen/_10sdp"
+            android:layout_margin="@dimen/_5sdp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_medium"
+                android:padding="@dimen/_2sdp"
+                android:text="@string/no_of_questions"
+                android:textColor="@color/black_45"
+                android:textSize="@dimen/_7ssp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_medium"
+                android:padding="@dimen/_2sdp"
+                android:text="0"
+                android:id="@+id/no_of_questions"
+                android:textColor="@color/black_45"
+                android:textSize="@dimen/_7ssp"
+                android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_medium"
+                android:padding="@dimen/_2sdp"
+                android:text="@string/no_of_attempts_allowed"
+                android:textColor="@color/black_45"
+                android:textSize="@dimen/_7ssp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_medium"
+                android:padding="@dimen/_2sdp"
+                android:text="0"
+                android:id="@+id/no_of_attempts_allowed"
+                android:textColor="@color/black_45"
+                android:textSize="@dimen/_7ssp"
+                android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:src="@drawable/clock"
+                    android:layout_gravity="center"
+                    android:id="@+id/clock"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_medium"
+                android:padding="@dimen/_2sdp"
+                android:text="@string/total_time"
+                android:textColor="@color/text_grey"
+                android:textSize="@dimen/_7ssp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_medium"
+                android:padding="@dimen/_2sdp"
+                android:text="00:00:00"
+                android:id="@+id/total_time"
+                android:textColor="@color/text_grey"
+                android:textSize="@dimen/_7ssp"
+                android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

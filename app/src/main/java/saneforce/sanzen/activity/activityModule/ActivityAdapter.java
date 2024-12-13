@@ -49,31 +49,31 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             @Override
             public void onClick(View view) {
 
-                if (DynamicActivity.isEdited) {
-                    Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.dcr_cancel_alert);
-                    dialog.setCancelable(false);
-                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
-                    TextView btn_yes = dialog.findViewById(R.id.btn_yes);
-                    TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
-                    TextView btn_no = dialog.findViewById(R.id.btn_no);
-                    alertText.setText("Are sure Clear Details");
-                    btn_yes.setOnClickListener(view12 -> {
-                        dialog.dismiss();
-                        rowindex = position;
-                        notifyDataSetChanged();
-                        activityView.ChooseActivity(DataList.get(position));
-                    });
-
-                    btn_no.setOnClickListener(view12 -> {
-                        dialog.dismiss();
-                    });
-                }else {
+//                if (DynamicActivity.isEdited) {
+//                    Dialog dialog = new Dialog(context);
+//                    dialog.setContentView(R.layout.dcr_cancel_alert);
+//                    dialog.setCancelable(false);
+//                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                    dialog.show();
+//                    TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+//                    TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
+//                    TextView btn_no = dialog.findViewById(R.id.btn_no);
+//                    alertText.setText("Are sure Clear Details");
+//                    btn_yes.setOnClickListener(view12 -> {
+//                        dialog.dismiss();
+//                        rowindex = position;
+//                        notifyDataSetChanged();
+//                        activityView.ChooseActivity(DataList.get(position));
+//                    });
+//
+//                    btn_no.setOnClickListener(view12 -> {
+//                        dialog.dismiss();
+//                    });
+//                }else {
                     rowindex = position;
                     notifyDataSetChanged();
-                    activityView.ChooseActivity(DataList.get(position));
-                }
+                    activityView.ChooseActivity(DataList.get(position), holder);
+//                }
 
 
             }
@@ -88,6 +88,12 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             holder.layout.setBackgroundColor(Color.WHITE);
             holder.imageView.setImageResource(R.drawable.right_arrow);
         }
+    }
+
+    public void changeSelected(Viewholder holder) {
+        holder.activityName.setTextColor(context.getResources().getColor(R.color.text_dark));
+        holder.layout.setBackgroundColor(Color.WHITE);
+        holder.imageView.setImageResource(R.drawable.right_arrow);
     }
 
     @Override

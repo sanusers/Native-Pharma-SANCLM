@@ -46,6 +46,8 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.adapters.outbox.OutBoxHeaderAdapter;
+import saneforce.sanzen.activity.homeScreen.modelClass.ActivityModelClass;
+import saneforce.sanzen.activity.homeScreen.modelClass.ActivityUploadModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.CheckInOutModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.DaySubmitModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
@@ -57,6 +59,8 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.OutboxFragmentBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
+import saneforce.sanzen.roomdatabase.ActivityOfflineTableDetails.ActivityOfflineDataDao;
+import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDataDao;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
@@ -91,6 +95,8 @@ public class OutboxFragment extends Fragment {
     private CallOfflineECDataDao callOfflineECDataDao;
     private CallOfflineWorkTypeDataDao offlineWorkTypeDataDao;
     private OfflineDaySubmitDao offlineDaySubmitDao;
+    private ActivityOfflineDataDao activityOfflineDataDao;
+    private ActivityUploadDataDao activityUploadDataDao;
     private static CallsUtil callsUtil;
 
     public static void NetworkConnectCallHomeDashBoard(String log) {
@@ -133,6 +139,8 @@ public class OutboxFragment extends Fragment {
         callOfflineECDataDao = db.callOfflineECDataDao();
         offlineWorkTypeDataDao = db.callOfflineWorkTypeDataDao();
         offlineDaySubmitDao = db.offlineDaySubmitDao();
+        activityOfflineDataDao = db.activityOfflineDataDao();
+        activityUploadDataDao = db.activityUploadDataDao();
         callsUtil = new CallsUtil(requireContext());
         SetupOutBoxAdapter(requireActivity(), requireContext());
 
@@ -304,7 +312,7 @@ public class OutboxFragment extends Fragment {
 
     private void CallCheckInOut(int ParentPos, int ChildPos, ArrayList<CheckInOutModelClass> checkInOutModelClasses, GroupModelClass modelClass) {
         if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
-            if (checkInOutModelClasses.size() > 0) {
+            if (checkInOutModelClasses != null && checkInOutModelClasses.size() > 0) {
                 isCallAvailable = false;
                 for (int m = 0; m < checkInOutModelClasses.size(); m++) {
                     CheckInOutModelClass checkInOutModelClass = checkInOutModelClasses.get(m);
@@ -351,7 +359,7 @@ public class OutboxFragment extends Fragment {
     }
 
     private void CallOfflineCalls(int ParentPos, int ChildPos, ArrayList<OutBoxCallList> outBoxCallLists, GroupModelClass modelClass) {
-        if (outBoxCallLists.size() > 0) {
+        if (outBoxCallLists != null && outBoxCallLists.size() > 0) {
             isCallAvailable = false;
             for (int m = 0; m < outBoxCallLists.size(); m++) {
                 OutBoxCallList outBoxCallList = outBoxCallLists.get(m);
@@ -378,7 +386,7 @@ public class OutboxFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     private void CallOfflineImage(int ParentPos, int ChildPos, ArrayList<EcModelClass> ecModelClasses, GroupModelClass modelClass) {
-        if (ecModelClasses.size() > 0) {
+        if (ecModelClasses != null && ecModelClasses.size() > 0) {
             isCallAvailable = false;
             for (int i = 0; i < ecModelClasses.size(); i++) {
                 EcModelClass ecModelClass = ecModelClasses.get(i);
@@ -393,7 +401,53 @@ public class OutboxFragment extends Fragment {
             isCallAvailable = false;
         }
         if (!isCallAvailable) {
-            CallAPIDaySubmit(ParentPos, 4, listDates.get(ParentPos).getChildItems().get(4).getDaySubmitModelClass(), modelClass);
+            CallAPIOfflineActivity(ParentPos, 4, listDates.get(ParentPos).getChildItems().get(4).getActivityModelClasses(), modelClass);
+        }
+    }
+
+    private void CallAPIOfflineActivity(int ParentPos, int ChildPos, ArrayList<ActivityModelClass> activityModelClasses, GroupModelClass modelClass) {
+        if (activityModelClasses != null && !activityModelClasses.isEmpty()) {
+            isCallAvailable = false;
+            for (int m = 0; m < activityModelClasses.size(); m++) {
+                ActivityModelClass activityModelClass = activityModelClasses.get(m);
+                if (activityModelClass.getSyncStatus().equalsIgnoreCase(Constants.WAITING_FOR_SYNC) || activityModelClass.getSyncStatus().equalsIgnoreCase(Constants.FAILED)) {
+                    if (activityModelClass.getSyncCount() <= 4) {
+                        isCallAvailable = true;
+                        Log.v("SendOutboxCall", "---" + activityModelClass.getName() + " -> " + activityModelClass.getActivityDate() + " - " + activityModelClass.getActivityTime());
+                        CallSendActivityAPI(ParentPos, ChildPos, modelClass, activityModelClass, m);
+                        break;
+                    }
+                }
+            }
+        } else {
+            isCallAvailable = false;
+        }
+        if (!isCallAvailable) {
+            CallAPIActivityUpload(ParentPos, 5, listDates.get(ParentPos).getChildItems().get(4).getActivityUploadModelClasses(), modelClass);
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void CallAPIActivityUpload(int ParentPos, int ChildPos, ArrayList<ActivityUploadModelClass> activityUploadModelClasses, GroupModelClass modelClass) {
+        if (activityUploadModelClasses != null && !activityUploadModelClasses.isEmpty()) {
+            isCallAvailable = false;
+            for (int m = 0; m < activityUploadModelClasses.size(); m++) {
+                ActivityUploadModelClass activityUploadModelClass = activityUploadModelClasses.get(m);
+                if (activityUploadModelClass.getSyncStatus().equalsIgnoreCase(Constants.WAITING_FOR_SYNC) || activityUploadModelClass.getSyncStatus().equalsIgnoreCase(Constants.FAILED)) {
+                    if (activityUploadModelClass.getSyncCount() == 0) {
+                        isCallAvailable = true;
+                        Log.v("SendOutboxCall", "--image--" + activityUploadModelClass.getActivityDate() + "---" + activityUploadModelClass.getImageName() + activityUploadModelClass.getActivityID());
+                        Log.v("SendOutboxCall_______", "--image--" + activityUploadModelClass.getJsonData());
+                        CallSendActivityUploadAPI(ParentPos, ChildPos, modelClass, activityUploadModelClass, m);
+                        break;
+                    }
+                }
+            }
+        } else {
+            isCallAvailable = false;
+        }
+        if (!isCallAvailable) {
+            CallAPIDaySubmit(ParentPos, 6, listDates.get(ParentPos).getChildItems().get(4).getDaySubmitModelClass(), modelClass);
         }
     }
 
@@ -621,6 +675,112 @@ public class OutboxFragment extends Fragment {
 //                    callAnalysisBinding.txtHosCount.setText(String.format("%d / %d", hos_current_callcount, hos_list.length()));
 //                    break;
 //            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void CallSendActivityAPI(int parentPos, int childPos, GroupModelClass groupModelClass, ActivityModelClass activityModelClass, int outBoxListIndex) {
+        JSONObject jsonSaveActivity;
+        try {
+            jsonSaveActivity = new JSONObject(activityModelClass.getJsonData());
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "save/activity");
+            Call<JsonElement> activitySaveDcr = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonSaveActivity.toString());
+            activitySaveDcr.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
+                            if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
+                                activityOfflineDataDao.deleteOfflineActivity(activityModelClass.getId());
+                                listDates.get(parentPos).getChildItems().get(childPos).getActivityModelClasses().remove(activityModelClass);
+                            } else {
+                                callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
+                                activityModelClass.setSyncStatus(Constants.FAILED);
+                                activityModelClass.setSyncCount(5);
+                                listDates.get(parentPos).getChildItems().get(childPos).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
+                            }
+                            CallAPIOfflineActivity(parentPos, childPos, listDates.get(parentPos).getChildItems().get(4).getActivityModelClasses(), groupModelClass);
+                        } catch (Exception e) {
+                            callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
+                            activityModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
+                            activityModelClass.setSyncCount(5);
+                            listDates.get(parentPos).getChildItems().get(childPos).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
+                            Log.v("SendOutboxCall", "---" + e);
+                            e.printStackTrace();
+                            CallAPIOfflineActivity(parentPos, childPos, listDates.get(parentPos).getChildItems().get(4).getActivityModelClasses(), groupModelClass);
+                        }
+                    }
+                    notifyedmethod();
+                }
+
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    callsUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
+                    activityModelClass.setSyncStatus(Constants.FAILED);
+                    activityModelClass.setSyncCount(activityModelClass.getSyncCount() + 1);
+                    listDates.get(parentPos).getChildItems().get(childPos).getActivityModelClasses().set(outBoxListIndex, activityModelClass);
+                    CallAPIOfflineActivity(parentPos, childPos, listDates.get(parentPos).getChildItems().get(4).getActivityModelClasses(), groupModelClass);
+                    notifyedmethod();
+                }
+            });
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void CallSendActivityUploadAPI(int parentPos, int childPos, GroupModelClass groupModelClass, ActivityUploadModelClass activityUploadModelClass, int outBoxListIndex) {
+        try {
+            File file = new File(activityUploadModelClass.getFilePath());
+            MultipartBody.Part img = convertImg("ActivityFile", String.valueOf(file));
+            HashMap<String, RequestBody> values = field(activityUploadModelClass.getJsonData());
+            Call<JsonObject> saveAttachment = apiInterface.SaveImg(values, img);
+            saveAttachment.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                    if(response.isSuccessful()) {
+                        try {
+                            JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
+                            if(jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
+                                activityUploadDataDao.deleteUploadActivity(activityUploadModelClass.getId(), activityUploadModelClass.getActivityID());
+                                listDates.get(parentPos).getChildItems().get(childPos).getActivityUploadModelClasses().remove(outBoxListIndex);
+                            }else {
+                                callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
+                                activityUploadModelClass.setSyncStatus(Constants.FAILED);
+                                activityUploadModelClass.setSyncCount(5);
+                                listDates.get(parentPos).getChildItems().get(childPos).getActivityUploadModelClasses().set(outBoxListIndex, activityUploadModelClass);
+                            }
+                            CallAPIActivityUpload(parentPos, childPos, listDates.get(parentPos).getChildItems().get(4).getActivityUploadModelClasses(), groupModelClass);
+                        } catch (Exception e) {
+                            callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.EXCEPTION_ERROR);
+                            activityUploadModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
+                            activityUploadModelClass.setSyncCount(5);
+                            listDates.get(parentPos).getChildItems().get(childPos).getActivityUploadModelClasses().set(outBoxListIndex, activityUploadModelClass);
+                            Log.v("SendOutboxCall", "---" + e);
+                            e.printStackTrace();
+                            CallAPIActivityUpload(parentPos, childPos, listDates.get(parentPos).getChildItems().get(4).getActivityUploadModelClasses(), groupModelClass);
+                        }
+                    }
+                    notifyedmethod();
+                }
+
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable throwable) {
+                    callsUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
+                    activityUploadModelClass.setSyncStatus(Constants.FAILED);
+                    activityUploadModelClass.setSyncCount(activityUploadModelClass.getSyncCount() + 1);
+                    listDates.get(parentPos).getChildItems().get(childPos).getActivityUploadModelClasses().set(outBoxListIndex, activityUploadModelClass);
+                    CallAPIActivityUpload(parentPos, childPos, listDates.get(parentPos).getChildItems().get(4).getActivityUploadModelClasses(), groupModelClass);
+                    notifyedmethod();
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }

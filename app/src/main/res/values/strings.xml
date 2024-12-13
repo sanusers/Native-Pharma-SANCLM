@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">R.2.1.0</string>
+    <string name="app_version" translatable="false">R.2.2.0</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -296,6 +296,9 @@
     <string name="call_saved_successfully">Call Saved Successfully</string>
     <string name="call_already_exist">Call Already Exist</string>
     <string name="call_failed">Call Failed! Try Again</string>
+    <string name="activity_saved_successfully">Activity Saved Successfully</string>
+    <string name="activity_already_exist">Activity Already Exist</string>
+    <string name="activity_failed">Activity Failed! Try Again</string>
     <string name="call_fail">Call Failed</string>
     <string name="duplicate_call">Duplicate Call</string>
     <string name="waiting_for_sync">Waiting for Sync</string>
@@ -509,4 +512,12 @@
     <string name="standard_tour_planned_for">Standard Tour Planned for</string>
     <string name="no_welcome_presentation_found">No Welcome presentation was found</string>
     <string name="welcome">Welcome</string>
+    <string name="sync_failed">Sync Failed</string>
+    <string name="activity_upload_saved_successfully">Activity Upload Saved Successfully</string>
+    <string name="welcome_to_quiz_session">Welcome to Quiz Session</string>
+    <string name="general_instructions">General Instructions</string>
+    <string name="start_quiz">Start Quiz</string>
+    <string name="no_of_questions">No of Questions :</string>
+    <string name="no_of_attempts_allowed">No of Attempts Allowed :</string>
+    <string name="total_time">Total Time :</string>
 </resources>

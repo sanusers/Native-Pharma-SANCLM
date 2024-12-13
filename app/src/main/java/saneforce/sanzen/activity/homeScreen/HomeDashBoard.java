@@ -1771,7 +1771,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         if (SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
-            menu.findItem(R.id.quiz).setVisible(false);
+            menu.findItem(R.id.quiz).setVisible(true);
         }
         else {
             menu.findItem(R.id.quiz).setVisible(false);

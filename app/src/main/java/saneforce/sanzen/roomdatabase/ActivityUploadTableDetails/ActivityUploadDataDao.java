@@ -36,17 +36,17 @@ public interface ActivityUploadDataDao {
     @Query("SELECT COUNT(1) > 0 FROM ACTIVITY_UPLOAD_TABLE WHERE `ACTIVITY_DATE` = :date")
     boolean isAvailableActivityOnDate(String date);
 
-    @Query("SELECT EXISTS(SELECT 1 FROM `ACTIVITY_UPLOAD_TABLE` WHERE `STATUS` = :status)")
+    @Query("SELECT EXISTS(SELECT 1 FROM `ACTIVITY_UPLOAD_TABLE` WHERE `SYNC_STATUS` = :status)")
     boolean isActivityAvailableByStatus(String status);
 
-    @Query("SELECT * FROM `ACTIVITY_UPLOAD_TABLE` WHERE `NAME` = :name AND `ACTIVITY_DATE` = :date AND `ACTIVITY_DATE` = :id")
-    ActivityUploadDataTable getActivityUploadData(String id, String name, String date);
+    @Query("SELECT * FROM `ACTIVITY_UPLOAD_TABLE` WHERE `ACTIVITY_ID` = :id")
+    ActivityUploadDataTable getActivityUploadData(int id);
 
     @Query("SELECT `JSON_DATA` FROM `ACTIVITY_UPLOAD_TABLE` WHERE `ACTIVITY_DATE` = :date AND `NAME` = :name AND `ACTIVITY_DATE` = :id")
-    String getActivityJson(String id, String name, String date);
+    String getActivityJson(int id, String name, String date);
 
-    @Query("DELETE FROM `ACTIVITY_UPLOAD_TABLE` WHERE `NAME` = :name AND `ACTIVITY_DATE` = :date AND `ACTIVITY_DATE` = :id")
-    void deleteUploadActivity(String id, String name, String date);
+    @Query("DELETE FROM `ACTIVITY_UPLOAD_TABLE` WHERE `id` = :id AND `ACTIVITY_ID` = :activityID")
+    void deleteUploadActivity(int id, int activityID);
 
     @Query("SELECT * FROM `ACTIVITY_UPLOAD_TABLE` WHERE `ACTIVITY_DATE` = :date")
     List<ActivityUploadDataTable> getOutBoxActivityUploadList(String date);
@@ -61,7 +61,7 @@ public interface ActivityUploadDataDao {
         ArrayList<ActivityUploadModelClass> activityUploadModelClassList = new ArrayList<>();
         List<ActivityUploadDataTable> list = getOutBoxActivityUploadList(date);
         for(ActivityUploadDataTable activityUploadDataTable : list) {
-            activityUploadModelClassList.add(new ActivityUploadModelClass(activityUploadDataTable.getId(), activityUploadDataTable.getActivityDate(), activityUploadDataTable.getActivityTime(), activityUploadDataTable.getSlNo(), activityUploadDataTable.getName(), activityUploadDataTable.getImageName(), activityUploadDataTable.getFilePath(), activityUploadDataTable.getJsonData(), activityUploadDataTable.getStatus(), activityUploadDataTable.getSyncStatus()));
+            activityUploadModelClassList.add(new ActivityUploadModelClass(activityUploadDataTable.getId(), activityUploadDataTable.getActivityID(), activityUploadDataTable.getActivityDate(), activityUploadDataTable.getActivityTime(), activityUploadDataTable.getSlNo(), activityUploadDataTable.getName(), activityUploadDataTable.getImageName(), activityUploadDataTable.getFilePath(), activityUploadDataTable.getJsonData(), activityUploadDataTable.getSyncCount(), activityUploadDataTable.getSyncStatus()));
         }
         return activityUploadModelClassList;
     }

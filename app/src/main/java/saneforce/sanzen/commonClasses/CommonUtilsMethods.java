@@ -72,6 +72,7 @@ public class CommonUtilsMethods {
     Context context;
     Activity activity;
     public static boolean isLocationFounded = false;
+    public static Toast toast;
 
     public CommonUtilsMethods(Activity activity) {
         this.activity = activity;
@@ -320,7 +321,10 @@ public class CommonUtilsMethods {
         TextView text = layout.findViewById(R.id.text);
         text.setText(message);
 
-        Toast toast = new Toast(activity.getApplicationContext());
+        if(toast != null) {
+            toast.cancel();
+        }
+        toast = new Toast(activity.getApplicationContext());
 //        Toast toast = Toast.makeText(activity.getApplicationContext(), message, Toast.LENGTH_LONG);
         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.setDuration(Toast.LENGTH_LONG);
@@ -338,7 +342,10 @@ public class CommonUtilsMethods {
         TextView text = layout.findViewById(R.id.text);
         text.setText(message);
 
-        Toast toast = new Toast(context);
+        if(toast != null) {
+            toast.cancel();
+        }
+        toast = new Toast(context);
         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);

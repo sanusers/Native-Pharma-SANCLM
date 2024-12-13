@@ -1,6 +1,5 @@
 package saneforce.sanzen.roomdatabase.ActivityOfflineTableDetails;
 
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -12,10 +11,9 @@ import org.json.JSONException;
 @Entity(tableName = "activity_offline_table")
 public class ActivityOfflineDataTable {
 
-    @PrimaryKey
-    @NonNull
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private String id = "";
+    int id;
 
     @ColumnInfo(name = "activity_date")
     private String activityDate = "";
@@ -29,35 +27,49 @@ public class ActivityOfflineDataTable {
     @ColumnInfo(name = "name")
     private String name = "";
 
+    @ColumnInfo(name = "dr_code")
+    private String drCode = "";
+
     @ColumnInfo(name = "json_data")
     private String jsonData = "";
 
-    @ColumnInfo(name = "status")
-    private String status = "";
+    @ColumnInfo(name = "sync_count")
+    private int syncCount = 0;
 
     @ColumnInfo(name = "sync_status")
-    private int syncStatus = 0;
+    private String syncStatus = "";
 
     @Ignore
     public ActivityOfflineDataTable() {
     }
 
-    public ActivityOfflineDataTable(String slNo, String name, String activityDate, String activityTime, String jsonData, String status, int syncStatus) {
-        this.name = name;
+    @Ignore
+    public ActivityOfflineDataTable(String slNo, String name, String activityDate, String activityTime, String jsonData, int syncCount, String syncStatus) {
         this.slNo = slNo;
+        this.name = name;
         this.activityDate = activityDate;
         this.activityTime = activityTime;
         this.jsonData = jsonData;
-        this.status = status;
+        this.syncCount = syncCount;
         this.syncStatus = syncStatus;
     }
 
-    @NonNull
-    public String getId() {
+    public ActivityOfflineDataTable(String slNo, String name, String drCode, String activityDate, String activityTime, String jsonData, int syncCount, String syncStatus) {
+        this.slNo = slNo;
+        this.name = name;
+        this.drCode = drCode;
+        this.activityDate = activityDate;
+        this.activityTime = activityTime;
+        this.jsonData = jsonData;
+        this.syncCount = syncCount;
+        this.syncStatus = syncStatus;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(@NonNull String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -67,14 +79,6 @@ public class ActivityOfflineDataTable {
 
     public void setJsonData(String jsonData) {
         this.jsonData = jsonData;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public JSONArray getActivityDataJSONArray() {
@@ -119,11 +123,27 @@ public class ActivityOfflineDataTable {
         this.slNo = slNo;
     }
 
-    public int getSyncStatus() {
+    public String getSyncStatus() {
         return syncStatus;
     }
 
-    public void setSyncStatus(int syncStatus) {
+    public void setSyncStatus(String syncStatus) {
         this.syncStatus = syncStatus;
+    }
+
+    public int getSyncCount() {
+        return syncCount;
+    }
+
+    public void setSyncCount(int syncCount) {
+        this.syncCount = syncCount;
+    }
+
+    public String getDrCode() {
+        return drCode;
+    }
+
+    public void setDrCode(String drCode) {
+        this.drCode = drCode;
     }
 }

@@ -1,9 +1,8 @@
 package saneforce.sanzen.activity.homeScreen.modelClass;
 
-import androidx.room.ColumnInfo;
-
 public class ActivityUploadModelClass {
-    private String id;
+    private int id;
+    private int activityID;
     private String activityDate;
     private String activityTime;
     private String slNo;
@@ -11,11 +10,12 @@ public class ActivityUploadModelClass {
     private String imageName;
     private String filePath;
     private String jsonData;
-    private String status;
-    private int syncStatus;
+    private int syncCount;
+    private String syncStatus;
 
-    public ActivityUploadModelClass(String id, String activityDate, String activityTime, String slNo, String name, String imageName, String filePath, String jsonData, String status, int syncStatus) {
+    public ActivityUploadModelClass(int id, int activityID, String activityDate, String activityTime, String slNo, String name, String imageName, String filePath, String jsonData, int syncCount, String syncStatus) {
         this.id = id;
+        this.activityID = activityID;
         this.activityDate = activityDate;
         this.activityTime = activityTime;
         this.slNo = slNo;
@@ -23,15 +23,15 @@ public class ActivityUploadModelClass {
         this.imageName = imageName;
         this.filePath = filePath;
         this.jsonData = jsonData;
-        this.status = status;
+        this.syncCount = syncCount;
         this.syncStatus = syncStatus;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -91,19 +91,27 @@ public class ActivityUploadModelClass {
         this.jsonData = jsonData;
     }
 
-    public String getStatus() {
-        return status;
+    public int getSyncCount() {
+        return syncCount;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setSyncCount(int syncCount) {
+        this.syncCount = syncCount;
     }
 
-    public int getSyncStatus() {
+    public String getSyncStatus() {
         return syncStatus;
     }
 
-    public void setSyncStatus(int syncStatus) {
+    public void setSyncStatus(String syncStatus) {
         this.syncStatus = syncStatus;
+    }
+
+    public int getActivityID() {
+        return activityID;
+    }
+
+    public void setActivityID(int activityID) {
+        this.activityID = activityID;
     }
 }

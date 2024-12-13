@@ -10,6 +10,8 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.view.Gravity.CENTER;
 import static android.view.Gravity.TOP;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -63,7 +65,6 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -163,7 +164,7 @@ public class DynamicActivity extends AppCompatActivity {
         binding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(this)));
         binding.txthqName.setText(SharedPref.getHqName(DynamicActivity.this));
         binding.btnsumit.setEnabled(false);
-        adapter = new ActivityAdapter(DynamicActivity.this, ActivityList, classGroup -> {
+        adapter = new ActivityAdapter(DynamicActivity.this, ActivityList, (classGroup, holder) -> {
             binding.namechooseActivity.setText(classGroup.getActivityName());
             binding.llActivityDetailsView.removeAllViews();
             getActivityDetails(classGroup);
@@ -217,11 +218,11 @@ public class DynamicActivity extends AppCompatActivity {
             }
         });
 
-        if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
-            binding.rlheadquates.setVisibility(View.VISIBLE);
-        }else {
+//        if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+//            binding.rlheadquates.setVisibility(View.VISIBLE);
+//        }else {
             binding.rlheadquates.setVisibility(View.GONE);
-        }
+//        }
 
         binding.rlheadquates.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -2335,11 +2336,22 @@ public class DynamicActivity extends AppCompatActivity {
                     }else {
                         FilnameTet.setText(String.valueOf(filenmae));
                         commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.file_accepted));
-                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
-                        if(!dir1.exists()) {
-                            dir1.mkdirs();
+//                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
+//                        if(!dir1.exists()) {
+//                            dir1.mkdirs();
+//                        }
+                        File file = null;
+                        if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                            file = new File(context.getExternalFilesDir(null) + "/ActivityUpload/");
+                        }else {
+                            Log.e("File Creation", "captureFile: No media mounted");
                         }
-                        copyFileOrDirectory(String.valueOf(fullPath), String.valueOf(dir1));
+                        if(file != null && !file.exists()) {
+                            if(!file.mkdirs()) {
+                                Log.e("File Creation", "Directory Creation Failed.");
+                            }
+                        }
+                        copyFileOrDirectory(String.valueOf(fullPath), String.valueOf(file));
                     }
                 } catch (Exception ex) {
                     Log.v("Error", ex.toString());
@@ -2413,6 +2425,7 @@ public class DynamicActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject();
                     ActivityDetailsModelClass List = ActivityViewItem.get(i);
                     Date today = new Date();
+                    String dateTime = TimeUtils.GetCurrentTimeStamp(TimeUtils.FORMAT_1);
                     String dateToStr = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_1, HomeDashBoard.binding.textDate.getText().toString());
                     SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
                     String dateToStr1 = format1.format(today) + " 00:00:00";
@@ -2420,7 +2433,7 @@ public class DynamicActivity extends AppCompatActivity {
                     jsonObject.put("division_code", SharedPref.getDivisionCode(this));
                     jsonObject.put("act_date", dateToStr);
                     jsonObject.put("dcr_date", dateToStr1);
-                    jsonObject.put("update_time", dateToStr);
+                    jsonObject.put("update_time", dateTime);
                     jsonObject.put("ModTime", "");
                     jsonObject.put("slno", List.getSlno());
                     jsonObject.put("ctrl_id", List.getControlId());
@@ -2480,18 +2493,20 @@ public class DynamicActivity extends AppCompatActivity {
                 }
 
                 if(conut == ActivityViewItem.size()) {
+                    isEdited = false;
                     activityDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                     activityTime = CommonUtilsMethods.getCurrentInstance("HH:mm:ss");
-                    activityOfflineDataDao.saveActivityOfflineData(new ActivityOfflineDataTable(choosenActivityModelClass.getSlNo(), choosenActivityModelClass.getActivityName(), activityDate, activityTime, jsonArray.toString(), Constants.WAITING_FOR_SYNC, 0));
                     binding.progresssumit.setVisibility(View.VISIBLE);
                     JSONObject MainObject = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
                     MainObject.put("tableName", "savedcract");
                     MainObject.put("val", jsonArray);
+                    MainObject.put("division_code", SharedPref.getDivisionCode(DynamicActivity.this));
                     Log.v("JsonObject  :", "" + MainObject.toString());
+                    Long id = activityOfflineDataDao.saveActivityOfflineData(new ActivityOfflineDataTable(choosenActivityModelClass.getSlNo(), choosenActivityModelClass.getActivityName(), activityDate, activityTime, MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
                     Map<String, String> QryParam = new HashMap<>();
                     QryParam.put("axn", "save/activity");
                     Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(DynamicActivity.this), QryParam, MainObject.toString());
-                    TaggedImage();
+                    TaggedImage(id);
 //                    call.enqueue(new Callback<JsonElement>() {
 //                        @Override
 //                        public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
@@ -2499,12 +2514,12 @@ public class DynamicActivity extends AppCompatActivity {
 //                                commonUtilsMethods.showToastMessage(DynamicActivity.this, "Activity Submitted successfully");
                                 binding.progresssumit.setVisibility(View.GONE);
 //                                TaggedImage();
-//                                Intent intent = getIntent();
-//                                overridePendingTransition(0, 0);
-//                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                                finish();
-//                                overridePendingTransition(0, 0);
-//                                startActivity(intent);
+                                Intent intent = getIntent();
+                                overridePendingTransition(0, 0);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                finish();
+                                overridePendingTransition(0, 0);
+                                startActivity(intent);
 //
 //                            }
 //                        }
@@ -2526,11 +2541,11 @@ public class DynamicActivity extends AppCompatActivity {
 //        }
     }
 
-    public void TaggedImage() {
+    public void TaggedImage(Long id) {
         try {
             for (int i = 0; i<ActivityViewItem.size(); i++) {
                 ActivityDetailsModelClass List = ActivityViewItem.get(i);
-                if(List.getControlId().equalsIgnoreCase("10")) {
+                if(List.getControlId().equalsIgnoreCase("10") && !List.getAnswerTxt().isEmpty()) {
                     binding.progresssumit.setVisibility(View.VISIBLE);
                     JSONObject jsonObject = new JSONObject();
 
@@ -2572,14 +2587,33 @@ public class DynamicActivity extends AppCompatActivity {
                     Log.v("JsonObject  :", "" + MainObject.toString());
                     MainObject.put("tableName", "savedcract");
                     MainObject.put("val", jsonArray);
-
+                    MainObject.put("division_code", SharedPref.getDivisionCode(DynamicActivity.this));
                     ApiInterface apiInterface1 = RetrofitClient.getRetrofit(DynamicActivity.this, SharedPref.getTagApiImageUrl(DynamicActivity.this));
-                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
-                    file1 = new File(file.getAbsolutePath() + "/", List.getAnswerTxt());
+//                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
+                    File file = null;
+                    if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                        file = new File(context.getExternalFilesDir(null) + "/ActivityUpload/");
+                    }else {
+                        Log.e("File Creation", "captureFile: No media mounted");
+                    }
+                    if(file != null && !file.exists()) {
+                        if(!file.mkdirs()) {
+                            Log.e("File Creation", "Directory Creation Failed.");
+                        }
+                    }
+                    File destinationFile = new File(file, List.getAnswerTxt());
+                    try {
+                        if(!destinationFile.createNewFile()) {
+                            Log.e("File Creation", "Destination File Creation Failed.");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+//                    file1 = new File(file.getAbsolutePath() + "/", List.getAnswerTxt());
 
-                    activityUploadDataDao.saveActivityUploadData(new ActivityUploadDataTable(choosenActivityModelClass.getSlNo(), choosenActivityModelClass.getActivityName(), activityDate, activityTime, List.getAnswerTxt(), file1.getAbsolutePath(), jsonArray.toString(), Constants.WAITING_FOR_SYNC, 0));
-                    MultipartBody.Part img = convertImg("ActivityFile", String.valueOf(file1));
-                    HashMap<String, RequestBody> values = field(MainObject.toString());
+                    activityUploadDataDao.saveActivityUploadData(new ActivityUploadDataTable(Integer.parseInt(String.valueOf(id)), choosenActivityModelClass.getSlNo(), choosenActivityModelClass.getActivityName(), activityDate, activityTime, List.getAnswerTxt(), destinationFile.getAbsolutePath(), MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
+//                    MultipartBody.Part img = convertImg("ActivityFile", String.valueOf(file1));
+//                    HashMap<String, RequestBody> values = field(MainObject.toString());
 //                    Call<JsonObject> saveAttachement = apiInterface1.SaveImg(values, img);
 //
 //                    saveAttachement.enqueue(new Callback<JsonObject>() {
@@ -2607,6 +2641,7 @@ public class DynamicActivity extends AppCompatActivity {
                 }
 
             }
+            commonUtilsMethods.showToastMessage(DynamicActivity.this, "Activity Saved Successfully");
         } catch (Exception a) {
             a.printStackTrace();
         }
