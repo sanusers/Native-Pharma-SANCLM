@@ -55,7 +55,7 @@ public class CallsUtil {
         offlineDaySubmitDao.deleteAllData();
         activityOfflineDataDao.deleteAllData();
         activityUploadDataDao.deleteAllData();
-        quizOfflineDataDao.deleteAllData();
+//        quizOfflineDataDao.deleteAllData();
     }
 
     public void deleteOfflineCalls(String cusCode, String cusName, String date) {

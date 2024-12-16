@@ -155,6 +155,8 @@ dependencies {
     //pdf-viewer
 //    implementation fileTree(dir: 'libs', include: ['*.jar'])
 //    implementation project(":libs:jetified-android-pdf-viewer-2.8.2")
-    
+
+    //lottie animations
+    implementation 'com.airbnb.android:lottie:6.6.0'
 }
 

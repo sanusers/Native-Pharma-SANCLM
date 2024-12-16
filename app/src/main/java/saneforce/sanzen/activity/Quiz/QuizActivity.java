@@ -13,28 +13,44 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.gson.JsonElement;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.Quiz.adapter.QuizCountAdapter;
 import saneforce.sanzen.activity.Quiz.adapter.QuizQuestionAdapter;
 import saneforce.sanzen.activity.Quiz.model.QuizModelClass;
 import saneforce.sanzen.activity.Quiz.model.QuizOptionModelClass;
 import saneforce.sanzen.activity.Quiz.model.QuizQuesNoModel;
+import saneforce.sanzen.activity.leave.Leave_Application;
+import saneforce.sanzen.activity.leave.Leavedetails_adapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityQuizBinding;
+import saneforce.sanzen.network.ApiInterface;
+import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.QuizOfflineTableDetails.QuizOfflineDataDao;
 import saneforce.sanzen.roomdatabase.QuizOfflineTableDetails.QuizOfflineDataTable;
@@ -53,7 +69,7 @@ public class QuizActivity extends AppCompatActivity {
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private QuizOfflineDataDao quizOfflineDataDao;
-    private int QuestionNumber = 0;
+    private int QuestionNumber = 0, noOfCorrectAnswers = 0;
     private boolean isShuffleAllowed = false, isPaused = false;
     private String noOfAttemptsAllowed = "0", timeLimit ="00:00:00", startTime = "", surveyID = "";
     private CountDownTimer countDownTimer;
@@ -62,6 +78,7 @@ public class QuizActivity extends AppCompatActivity {
     private CommonUtilsMethods commonUtilsMethods;
     private long remainingTime;
     private JSONObject saveJsonObject;
+    private ApiInterface apiInterface;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -131,7 +148,15 @@ public class QuizActivity extends AppCompatActivity {
             pauseTimer();
             showSubmitAlert();
         }else{
-            commonUtilsMethods.showToastMessage(QuizActivity.this, "Not Completed");
+            List<Integer> unAttendedQuestions = IntStream.rangeClosed(1, quesNumberModelList.size())
+                    .boxed()
+                    .collect(Collectors.toList());
+            for (QuizOptionModelClass quizOptionModelClass : sQuizMainAnswerList) {
+                if(unAttendedQuestions.contains(quizOptionModelClass.getQuestionId() + 1)) {
+                    unAttendedQuestions.remove(quizOptionModelClass.getQuestionId());
+                }
+            }
+            commonUtilsMethods.showToastMessage(QuizActivity.this, "Please Complete " + Arrays.toString(unAttendedQuestions.toArray()).replaceAll("\\[", "").replaceAll("]", ""));
         }
     }
 
@@ -171,14 +196,19 @@ public class QuizActivity extends AppCompatActivity {
     private void submitQuiz() {
         pauseTimer();
         createJson();
-        quizOfflineDataDao.insert(new QuizOfflineDataTable(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32), saveJsonObject.toString(), 0, Constants.WAITING_FOR_SYNC));
-        finish();
+        binding.score.setText(String.format("%d out of %d", noOfCorrectAnswers, quesNumberModelList.size()));
+        binding.rlScore.setVisibility(View.VISIBLE);
+        binding.rlQuizMain.setVisibility(View.GONE);
+        callSaveAPI();
+//        quizOfflineDataDao.insert(new QuizOfflineDataTable(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32), saveJsonObject.toString(), 0, Constants.WAITING_FOR_SYNC));
     }
 
     private void createJson() {
         try {
+            noOfCorrectAnswers = 0;
             saveJsonObject = CommonUtilsMethods.CommonObjectParameter(QuizActivity.this);
             saveJsonObject.put("tableName", "Quiz_Results");
+            saveJsonObject.put("sfcode", SharedPref.getSfCode(this));
             saveJsonObject.put("division_code", SharedPref.getDivisionCode(QuizActivity.this));
 
             JSONArray jsonArray = new JSONArray(), quizResults = new JSONArray();
@@ -196,6 +226,7 @@ public class QuizActivity extends AppCompatActivity {
                 if(quizOptionModelClass != null && quizOptionModelClass.getSelctionCode() != null && quizOptionModelClass.getSelctionCode().equalsIgnoreCase(quizModelClass.getAnswerCode())){
                     Log.d("QUIZ", "createJson: correct Ans -> " + quizOptionModelClass.getSelctionCode() + " = " + quizOptionModelClass.getSelectedOption());
                     correctAns = "1";
+                    noOfCorrectAnswers ++;
                 }
 
                 JSONObject jsonObject = new JSONObject();
@@ -225,6 +256,36 @@ public class QuizActivity extends AppCompatActivity {
 
             saveJsonObject.put("Quiz_Results", quizResults);
             Log.v("Quiz json", "createJson: " + saveJsonObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void callSaveAPI() {
+        try {
+            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+
+            Map<String, String> qry = new HashMap<>();
+            qry.put("axn", "result/quiz");
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), qry, saveJsonObject.toString());
+            if (call != null) {
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        if (response.isSuccessful()) {
+                            Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
+                            commonUtilsMethods.showToastMessage(QuizActivity.this, "Quiz Submitted Successfully");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.poor_connection));
+                    }
+
+                });
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

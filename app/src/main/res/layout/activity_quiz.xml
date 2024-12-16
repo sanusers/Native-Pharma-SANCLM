@@ -602,4 +602,46 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appBar"
+        android:id="@+id/rl_score"
+        android:visibility="gone">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
+            app:lottie_rawRes="@raw/completed"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="false"
+            android:layout_centerInParent="true"
+            android:id="@+id/completed_anim"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:layout_above="@id/score"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/score"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/satoshi_variable"
+            android:text="0 out of 0"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_7sdp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/thank_you"
+            android:layout_below="@id/score"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:fontFamily="@font/satoshi_variable"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_7sdp"
+            android:text="Thank you for attending the challenge"/>
+
+    </RelativeLayout>
+
 </RelativeLayout>
