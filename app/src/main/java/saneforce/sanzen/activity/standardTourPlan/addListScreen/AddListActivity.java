@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.standardTourPlan.addListScreen;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
@@ -114,12 +112,24 @@ public class AddListActivity extends AppCompatActivity {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
             }else if(selectedDataList.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, "Please select any " + drCap + " or" + chmCap);
-            }else {
+            }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
+                commonUtilsMethods.showToastMessage(this, "Cannot Save, Already Approved");
+            }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
+                commonUtilsMethods.showToastMessage(this, "Cannot Save, Waiting For Approval");
+            } else {
                 saveSelectedDCR();
             }
         });
 
-        activityAddListBinding.selectedClusters.setOnClickListener(v -> showMultiCluster());
+        activityAddListBinding.selectedClusters.setOnClickListener(v -> {
+            if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
+                commonUtilsMethods.showToastMessage(this, "Cannot Clear, Already Approved");
+            }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
+                commonUtilsMethods.showToastMessage(this, "Cannot Clear, Waiting For Approval");
+            } else {
+                showMultiCluster();
+            }
+        });
 
         activityAddListBinding.tagTvDoctor.setOnClickListener(v -> {
             if(strClusterName.isEmpty()) {
@@ -193,11 +203,17 @@ public class AddListActivity extends AppCompatActivity {
         });
 
         activityAddListBinding.btnClear.setOnClickListener(v -> {
-            List<DCRModel> dcrModels = selectedDCRMap.get(selectedDCR);
-            if(dcrModels != null && !dcrModels.isEmpty()) {
-                clearSelection(selectedDCR, false);
-            }else {
-                commonUtilsMethods.showToastMessage(this, "Nothing selected to clear");
+            if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
+                commonUtilsMethods.showToastMessage(this, "Cannot Clear, Already Approved");
+            }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
+                commonUtilsMethods.showToastMessage(this, "Cannot Clear, Waiting For Approval");
+            } else {
+                List<DCRModel> dcrModels = selectedDCRMap.get(selectedDCR);
+                if(dcrModels != null && !dcrModels.isEmpty()) {
+                    clearSelection(selectedDCR, false);
+                }else {
+                    commonUtilsMethods.showToastMessage(this, "Nothing selected to clear");
+                }
             }
         });
 
@@ -640,30 +656,36 @@ public class AddListActivity extends AppCompatActivity {
 
     private final SelectedDCRAdapter.DeleteClickListener deleteClickListener = (dcrModel, selectedDCR) -> {
 
-        List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
-        if(dcrModelList != null && !dcrModelList.isEmpty()) {
-            for (int index = 0; index<dcrModelList.size(); index++) {
-                DCRModel oldDcrModel = dcrModelList.get(index);
-                if(oldDcrModel.getCode().equals(dcrModel.getCode())) {
-                    oldDcrModel.setSelected(false);
-                    dcrModelList.set(index, oldDcrModel);
-                    break;
+        if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
+            commonUtilsMethods.showToastMessage(this, "Cannot Delete, Already Approved");
+        }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
+            commonUtilsMethods.showToastMessage(this, "Cannot Delete, Waiting For Approval");
+        } else {
+            List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
+            if (dcrModelList != null && !dcrModelList.isEmpty()) {
+                for (int index = 0; index < dcrModelList.size(); index++) {
+                    DCRModel oldDcrModel = dcrModelList.get(index);
+                    if (oldDcrModel.getCode().equals(dcrModel.getCode())) {
+                        oldDcrModel.setSelected(false);
+                        dcrModelList.set(index, oldDcrModel);
+                        break;
+                    }
+                }
+                populateDcrData();
+            }
+
+            if (selectedDCRMap.containsKey(selectedDCR)) {
+                List<DCRModel> selectedDCRModels = selectedDCRMap.get(selectedDCR);
+                if (selectedDCRModels != null) {
+                    selectedDCRModels.remove(dcrModel);
+                    selectedDCRMap.put(selectedDCR, selectedDCRModels);
+                    updateSelectedDCRList();
                 }
             }
-            populateDcrData();
-        }
 
-        if(selectedDCRMap.containsKey(selectedDCR)) {
-            List<DCRModel> selectedDCRModels = selectedDCRMap.get(selectedDCR);
-            if(selectedDCRModels != null) {
-                selectedDCRModels.remove(dcrModel);
-                selectedDCRMap.put(selectedDCR, selectedDCRModels);
-                updateSelectedDCRList();
+            if (activityAddListBinding.etSearch.getText() != null && !activityAddListBinding.etSearch.getText().toString().trim().isEmpty()) {
+                activityAddListBinding.etSearch.setText("");
             }
-        }
-
-        if(activityAddListBinding.etSearch.getText() != null && !activityAddListBinding.etSearch.getText().toString().trim().isEmpty()) {
-            activityAddListBinding.etSearch.setText("");
         }
 
     };
@@ -894,7 +916,7 @@ public class AddListActivity extends AppCompatActivity {
             apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
             Map<String, String> mapString = new HashMap<>();
             mapString.put("axn", "save/stp");
-            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
             call.enqueue(new Callback<JsonElement>() {
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {

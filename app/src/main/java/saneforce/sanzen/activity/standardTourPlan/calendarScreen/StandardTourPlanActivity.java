@@ -149,6 +149,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 }
             }
         } else {
+            stpFlag = "3";
             SharedPref.setStpStatus(StandardTourPlanActivity.this, "Planning...");
             activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.planning));
             activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
@@ -1015,15 +1016,17 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     });
 
     private final CalendarAdapter.CalendarDayClickListener calendarDayClickListener = (calendarModel, mode) -> {
-        if(!stpFlag.equalsIgnoreCase("0") && !stpFlag.equalsIgnoreCase("2")) {
+//        if(!stpFlag.equalsIgnoreCase("0") && !stpFlag.equalsIgnoreCase("2")) {
             Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
             intent.putExtra("MODE", String.valueOf(mode));
             intent.putExtra("DAY_ID", calendarModel.getId());
             intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
             activityResultLauncher.launch(intent);
-        }else {
-            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
-        }
+//        }else if (stpFlag.equalsIgnoreCase("0")){
+//            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
+//        }else if (stpFlag.equalsIgnoreCase("2")){
+//            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+//        }
     };
 
     private final CalendarAdapter.CalendarDayMenuClickListener calendarDayMenuClickListener = (calendarModel, menuItem) -> {
@@ -1042,8 +1045,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 Log.d("STP Item", "Swap");
                 showSwapDialog(calendarModel.getId(), calendarModel.getCaption());
             }
-        }else {
+        }else if (stpFlag.equalsIgnoreCase("0")){
             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
+        }else if (stpFlag.equalsIgnoreCase("2")){
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
         }
     };
 

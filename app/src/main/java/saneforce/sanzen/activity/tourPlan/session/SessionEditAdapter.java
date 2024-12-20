@@ -54,6 +54,7 @@ import saneforce.sanzen.activity.tourPlan.model.EditModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.STPDaySorter;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -228,7 +229,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
 
         //Work Day
-        if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+        if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
             holder.workDayLayout.setVisibility(View.VISIBLE);
             if(inputDataArray.getSTP_Code().isEmpty()) {
                 holder.workDayField.setText("Select");
@@ -272,7 +273,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     holder.hqField.setText(holder.sessionData.getHQ().getName());
                     holder.selectedHq = holder.sessionData.getHQ().getCode();
                 }
-                if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+                if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
                     holder.hqLayout.setVisibility(View.GONE);
                 }
 
@@ -468,7 +469,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                     }
                     holder.sessionItemAdapterArray = filteredArray;
-                    populateSessionItemAdapter(holder, false);
+                    populateSessionItemAdapter(holder, false, true);
                     holder.fieldSelected = true;
                     onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_TYPE);
                 }else {
@@ -480,7 +481,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             }
         });
 
-        if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+        if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
             holder.workDayLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -504,10 +505,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+                            new STPDaySorter().sortDaysTP(workDayArray);
                             holder.workDayArray = workDayArray;
                         }
                         holder.sessionItemAdapterArray = holder.workDayArray;
-                        populateSessionItemAdapter(holder, false);
+                        populateSessionItemAdapter(holder, false, false);
                         holder.fieldSelected = true;
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_DAY);
                     }else {
@@ -534,7 +536,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             holder.hqArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray());
                         }
                         holder.sessionItemAdapterArray = holder.hqArray;
-                        populateSessionItemAdapter(holder, false);
+                        populateSessionItemAdapter(holder, false, true);
                         holder.fieldSelected = true;
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.SUBORDINATE);
                     }else {
@@ -547,7 +549,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             }
         });
 
-        if(!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0"))) {
+        if(!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1"))) {
             holder.clusterLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -569,7 +571,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 }
                                 holder.fieldSelected = true;
                                 holder.sessionItemAdapterArray = holder.clusterArray;
-                                populateSessionItemAdapter(holder, true);
+                                populateSessionItemAdapter(holder, true, true);
                                 onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CLUSTER);
                             }else {
                                 holder.fieldSelected = false;
@@ -606,7 +608,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                         holder.fieldSelected = true;
                         holder.sessionItemAdapterArray = holder.jointCallArray;
-                        populateSessionItemAdapter(holder, true);
+                        populateSessionItemAdapter(holder, true, true);
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.JOINT_WORK);
                     }else {
                         holder.fieldSelected = false;
@@ -642,7 +644,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                         holder.fieldSelected = true;
                         holder.sessionItemAdapterArray = filterJsonArray(holder, holder.listedDrArray);
-                        populateSessionItemAdapter(holder, true);
+                        populateSessionItemAdapter(holder, true, true);
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR);
                     }else {
                         holder.fieldSelected = false;
@@ -679,7 +681,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
                         holder.fieldSelected = true;
                         holder.sessionItemAdapterArray = filterJsonArray(holder, holder.chemistArray);
-                        populateSessionItemAdapter(holder, true);
+                        populateSessionItemAdapter(holder, true, true);
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST);
                     }else {
                         holder.fieldSelected = false;
@@ -713,7 +715,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                         holder.fieldSelected = true;
                         holder.sessionItemAdapterArray = holder.stockiestArray;
-                        populateSessionItemAdapter(holder, true);
+                        populateSessionItemAdapter(holder, true, true);
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST);
                     }else {
                         holder.fieldSelected = false;
@@ -749,7 +751,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                         holder.fieldSelected = true;
                         holder.sessionItemAdapterArray = filterJsonArray(holder, holder.unListedDrArray);
-                        populateSessionItemAdapter(holder, true);
+                        populateSessionItemAdapter(holder, true, true);
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.UNLISTED_DOCTOR);
                     }else {
                         holder.fieldSelected = false;
@@ -785,7 +787,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                         holder.fieldSelected = true;
                         holder.sessionItemAdapterArray = filterJsonArray(holder, holder.cipArray);
-                        populateSessionItemAdapter(holder, true);
+                        populateSessionItemAdapter(holder, true, true);
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CIP);
                     }else {
                         holder.fieldSelected = false;
@@ -820,7 +822,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                         holder.fieldSelected = true;
                         holder.sessionItemAdapterArray = filterJsonArray(holder, holder.hospArray);
-                        populateSessionItemAdapter(holder, true);
+                        populateSessionItemAdapter(holder, true, true);
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.HOSPITAL);
                     }else {
                         holder.fieldSelected = false;
@@ -928,7 +930,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 else
                     holder.hospLayout.setVisibility(View.GONE);
 
-                if(SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0")) {
+                if(SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
                     holder.workDayLayout.setVisibility(View.VISIBLE);
                 } else {
                     holder.workDayLayout.setVisibility(View.GONE);
@@ -1027,7 +1029,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 else
                     holder.hospLayout.setVisibility(View.GONE);
 
-                if(SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0")) {
+                if(SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
                     holder.workDayLayout.setVisibility(View.VISIBLE);
                 } else {
                     holder.workDayLayout.setVisibility(View.GONE);
@@ -1249,14 +1251,16 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
     }
 
-    public void populateSessionItemAdapter(MyViewHolder holder, boolean checkBoxNeed) {
+    public void populateSessionItemAdapter(MyViewHolder holder, boolean checkBoxNeed, boolean isSortNeeded) {
 
-        Collections.sort(holder.sessionItemAdapterArray, new Comparator<EditModelClass>() {
-            @Override
-            public int compare(EditModelClass editModelClass, EditModelClass t1) {
-                return editModelClass.getName().compareTo(t1.getName());
-            }
-        });
+        if (isSortNeeded) {
+            Collections.sort(holder.sessionItemAdapterArray, new Comparator<EditModelClass>() {
+                @Override
+                public int compare(EditModelClass editModelClass, EditModelClass t1) {
+                    return editModelClass.getName().compareTo(t1.getName());
+                }
+            });
+        }
 
         sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, checkBoxNeed, new SessionItemInterface() {
             @Override

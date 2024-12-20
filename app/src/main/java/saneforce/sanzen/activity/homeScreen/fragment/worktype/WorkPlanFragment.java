@@ -96,7 +96,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     public String chk_cluster = "";
     public static ArrayList<Multicheckclass_clust> listSelectedCluster = new ArrayList<>();
-    public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "", mFinalRemarks = "", mTerratiry1 = "", mTerratiry2 = "", dayStatus = "", tpWorkType = "", tpCluster = "", tpDoctor = "", deviation = "0", remarks = "0", tpApprovalStatus = "", workDayName = "", workDayCode = "";
+    public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "", mFinalRemarks = "", mTerratiry1 = "", mTerratiry2 = "", dayStatus = "", tpWorkType = "", tpCluster = "", tpDoctor = "", deviation = "0", remarks = "", tpApprovalStatus = "", workDayName = "", workDayCode = "";
     @SuppressLint("StaticFieldLeak")
     public static WorkplanFragmentBinding binding;
     ProgressDialog progressDialog;
@@ -358,11 +358,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                             rlHQ.setVisibility(View.VISIBLE);
                         }
-                        if(STPNeed.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")){
+                        if(STPNeed.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")){
                             binding.rlworkday2.setVisibility(View.VISIBLE);
                         } else {
-                            workDayCode = "";
-                            workDayName = "";
+//                            workDayCode = "";
+//                            workDayName = "";
                             binding.rlworkday2.setVisibility(View.GONE);
                         }
                     }else {
@@ -372,8 +372,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         mHQCode2 = "";
                         mHQName2 = "";
                         chk_cluster = "";
-                        workDayCode = "";
-                        workDayName = "";
+//                        workDayCode = "";
+//                        workDayName = "";
                         rlculster.setVisibility(View.GONE);
                         rlHQ.setVisibility(View.GONE);
                         binding.rlworkday2.setVisibility(View.GONE);
@@ -815,21 +815,21 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     break;
 
                 case R.id.rlworkday1:
-                    if(binding.txtworkday1.getText().toString().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_workday));
-                    }else {
+//                    if(binding.txtworkday1.getText().toString().equalsIgnoreCase("")) {
+//                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_workday));
+//                    }else {
                         updateWorkDayList();
                         showWorkDay(binding.txtworkday1, binding.txtCluster1);
-                    }
+//                    }
                     break;
 
                 case R.id.rlworkday2:
-                    if(binding.txtworkday2.getText().toString().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_workday));
-                    }else {
+//                    if(binding.txtworkday2.getText().toString().equalsIgnoreCase("")) {
+//                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_workday));
+//                    }else {
                         updateWorkDayList();
                         showWorkDay(binding.txtworkday2, binding.txtCluster1);
-                    }
+//                    }
                     break;
 
                 case R.id.txtSave:
@@ -841,7 +841,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if(((TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
                                 || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")))
                                 && binding.switchButton.isChecked()) {
-                            showDeviationAlert();
+                            if ((EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) && binding.txtworkday1.getText().toString().trim().isEmpty()) {
+                                commonUtilsMethods.showToastMessage(requireContext(), "Select Work Day for Session 1");
+                            } else if ((EditSession.equalsIgnoreCase("2") || DayPlanCount.equalsIgnoreCase("2")) && binding.txtworkday2.getText().toString().trim().isEmpty()) {
+                                commonUtilsMethods.showToastMessage(requireContext(), "Select Work Day for Session 2");
+                            } else {
+                                showDeviationAlert();
+                            }
                         } else {
                             if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
                                 if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
@@ -961,7 +967,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if(dayStatus.equalsIgnoreCase("2") || dayStatus.equalsIgnoreCase("3") || (binding.switchButton.isChecked()) || (TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && !TPDCRDeviation.equalsIgnoreCase("0"))) {
                             dialogEditOrDelete("1");
                         }else {
-                            if(binding.switchButton.getVisibility() == View.VISIBLE) {
+                            if(binding.llDeviation.getVisibility() == View.VISIBLE) {
                                 commonUtilsMethods.showToastMessage(requireContext(), "Deviate to edit WorkPlan");
                             } else {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need));
@@ -991,7 +997,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if(dayStatus.equalsIgnoreCase("2") || dayStatus.equalsIgnoreCase("3") || (binding.switchButton.isChecked()) || (TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && !TPDCRDeviation.equalsIgnoreCase("0"))) {
                             dialogEditOrDelete("2");
                         }else {
-                            if(binding.switchButton.getVisibility() == View.VISIBLE) {
+                            if(binding.llDeviation.getVisibility() == View.VISIBLE) {
                                 commonUtilsMethods.showToastMessage(requireContext(), "Deviate to edit WorkPlan");
                             } else {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need));
@@ -1757,7 +1763,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             FirstSeasonObject.put("Pl", mTowncode1);
             FirstSeasonObject.put("PlNm", mTownname1);
             FirstSeasonObject.put("Rem", "");
-            FirstSeasonObject.put("TpVwFlg", "2");
+            FirstSeasonObject.put("TpVwFlg", deviation.equals("1")? "1" : "2");
             FirstSeasonObject.put("TP_Doctor", tpDoctor);
             FirstSeasonObject.put("TP_cluster", tpCluster);
             FirstSeasonObject.put("TP_worktype", tpWorkType);
@@ -1777,12 +1783,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 SecondSeasonObject.put("Pl", mTowncode2);
                 SecondSeasonObject.put("PlNm", mTownname2);
                 SecondSeasonObject.put("Rem", "");
-                SecondSeasonObject.put("TpVwFlg", "2");
+                SecondSeasonObject.put("TpVwFlg", deviation.equals("1")? "1" : "2");
                 SecondSeasonObject.put("TP_Doctor", tpDoctor);
                 SecondSeasonObject.put("TP_cluster", tpCluster);
                 SecondSeasonObject.put("TP_worktype", tpWorkType);
-                FirstSeasonObject.put("Others_Code", workDayCode);
-                FirstSeasonObject.put("Others_Name", workDayName);
+                SecondSeasonObject.put("Others_Code", workDayCode);
+                SecondSeasonObject.put("Others_Name", workDayName);
                 WorkPlanDataList.put(SecondSeasonObject);
             }
             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, WorkPlanDataList.toString(), 2));
@@ -1833,6 +1839,22 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
             }
             SharedPref.setDayPlanStartedDate(requireContext(), HomeDashBoard.selectedDate.toString());
+            if(TPDCRDeviation.equalsIgnoreCase("0")) {
+                if(deviation.equalsIgnoreCase("1")) {
+                    binding.llDeviation.setVisibility(View.GONE);
+                    binding.switchButton.setChecked(false);
+                    setUpDeviationLock();
+                }else {
+                    if (!isFromTP) {
+                        binding.llDeviation.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.llDeviation.setVisibility(View.GONE);
+                    }
+                    binding.switchButton.setChecked(deviation.equalsIgnoreCase("1"));
+                }
+            }else {
+                binding.llDeviation.setVisibility(View.GONE);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2072,6 +2094,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             mFwFlg = "";
             mHQName = "";
             mFinalRemarks = "";
+            deviation = "0";
             isFromTP = false;
             if(workTypeArray.length()>0) {
                 if(HomeDashBoard.selectedDate != null) {
@@ -2144,10 +2167,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             }else {
                                 binding.rlheadquates1.setVisibility(View.GONE);
                                 SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
+                                if(STPNeed.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                                    binding.rlworkday1.setVisibility(View.VISIBLE);
+                                }
                             }
 
                             binding.rlcluster1.setVisibility(View.VISIBLE);
-                            binding.rlworkday1.setVisibility(View.VISIBLE);
                             binding.txtWorktype1.setText(mWTName1);
                             binding.txtCluster1.setText(CommonUtilsMethods.removeLastComma(mTownname1));
                             binding.txtheadquaters1.setText(mHQName1);
@@ -2165,7 +2190,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             workDayName = FirstSeasonDayPlanObject.optString("Others_Name");
                             isFromTP = FirstSeasonDayPlanObject.optBoolean("isFromTP", false);
                             Log.i("TP", "setUpWorkPlan: " + isFromTP);
-                            if(STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                            if(STPNeed.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
                                 binding.rlworkday1.setVisibility(View.VISIBLE);
                                 binding.txtworkday1.setText(workDayName);
 
@@ -2184,7 +2209,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     binding.switchButton.setChecked(false);
                                     setUpDeviationLock();
                                 }else {
-                                    binding.llDeviation.setVisibility(View.VISIBLE);
+                                    if (!isFromTP) {
+                                        binding.llDeviation.setVisibility(View.VISIBLE);
+                                    } else {
+                                        binding.llDeviation.setVisibility(View.GONE);
+                                    }
                                     binding.switchButton.setChecked(deviation.equalsIgnoreCase("1"));
                                 }
                             }else {

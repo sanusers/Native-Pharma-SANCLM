@@ -59,7 +59,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
            holder.remarksLayout.setVisibility(View.GONE);
        }
 
-       if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+       if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && SharedPref.getSfType(context).equalsIgnoreCase("1")) {
            if(holder.data.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
                holder.workDayLayout.setVisibility(View.VISIBLE);
            }else {
