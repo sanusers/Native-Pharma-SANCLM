@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">R.2.2.0</string>
+    <string name="app_version" translatable="false">R.2.2.1</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -520,4 +520,27 @@
     <string name="no_of_questions">No of Questions :</string>
     <string name="no_of_attempts_allowed">No of Attempts Allowed :</string>
     <string name="total_time">Total Time :</string>
+    <string name="docnm">Doctor Name</string>
+    <string name="chmnm">Chemist Name</string>
+    <string name="addrss">Address</string>
+    <string name="select_the_territory">Select the Territory</string>
+    <string name="headquater">HEAD QUARTER</string>
+    <string name="select_headquater">SELECT HEADQUARTER</string>
+    <string name="phone">Phone</string>
+    <string name="sv_prsn">Save</string>
+    <string name="invalid_char">Invalid Character</string>
+    <string name="fill_all">Please fill all fields</string>
+    <string name="list_selection"> List Selection</string>
+    <string name="additional_doctor">Add Unlisted Doctor</string>
+    <string name="qualifications">Qualification</string>
+    <string name="sclt_qualy">Select Qualification</string>
+    <string name="catogy">Category</string>
+    <string name="select_the_category">Select the Category</string>
+    <string name="hospital">Hospital</string>
+    <string name="clases">Class</string>
+    <string name="sclt_class">Select Class</string>
+    <string name="sclt_spcl">Select Speciality</string>
+    <string name="pincode">Pincode</string>
+    <string name="mobile">Mobile</string>
+    <string name="no_quiz_found">No Quiz Found</string>
 </resources>

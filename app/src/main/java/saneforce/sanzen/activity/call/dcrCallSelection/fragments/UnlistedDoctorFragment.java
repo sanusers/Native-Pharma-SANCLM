@@ -2,11 +2,14 @@ package saneforce.sanzen.activity.call.dcrCallSelection.fragments;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,21 +17,29 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.JsonElement;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
@@ -36,18 +47,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.homeScreen.adapters.AdapterPopupSpinnerSelection;
 import saneforce.sanzen.activity.map.custSelection.CustList;
+import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.network.ApiInterface;
+import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
@@ -68,16 +88,24 @@ public class UnlistedDoctorFragment extends Fragment {
     TextView tvSpec, tvCate, tvTerritory, tvClass, noULDoctor;
     ConstraintLayout constraintLayout ;
     ListView lv_spec, lv_cate, lv_terr,lv_class;
-
+    FloatingActionButton btn_add;
 
     String specialityCode = "", categoryCode = "", territoryCode = "", classCode = "";
     String specialityName = "", categoryName = "", territoryName = "", className = "";
+    String SfType = "", SfCode = "", SfName = "", DivCode = "", terrname = "", terrcode = "";
+    String txt_qua = "", txt_cat = "", txt_class = "", txt_spec = "", txt_terr = "", hospitaltxt="";
     TextView tv_hqName, tv_add_condition, tv_filterCount;
-    Button btn_apply, btn_clear;
+    Button btn_apply, btn_clear, save_btn;
+    TextView txt_select_qua, txt_select_category, txt_select_class, txt_select_spec, txt_select_terr, tv_hospital, txt_select_hospital;
     ArrayList<DCRFillteredModelClass> filterSelectionList = new ArrayList<>();
     ArrayList<CustList> FilltercustArraList = new ArrayList<>();
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+    private ProgressDialog progressDialog;
+    ApiInterface apiInterface;
+    ArrayList<MasterSyncItemModel> UnlistedModelArray = new ArrayList<>();
+    ArrayList<MasterSyncItemModel> arrayForAdapter = new ArrayList<>();
+    int UnlistedStatus = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -98,9 +126,17 @@ public class UnlistedDoctorFragment extends Fragment {
         SetupAdapter();
         InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(ed_search.getWindowToken(), 0);
-
+        btn_add=v.findViewById(R.id.add_unlst);
+        if (SharedPref.getUnlistAddition(context).equalsIgnoreCase("0")) {
+            btn_add.setVisibility(View.VISIBLE);
+        } else {
+            btn_add.setVisibility(View.GONE);
+        }
         iv_filter.setOnClickListener(view -> {
             CustomizeFiltered();
+        });
+        btn_add.setOnClickListener(view -> {
+            popupAddUnlisted();
         });
 
         ed_search.addTextChangedListener(new TextWatcher() {
@@ -578,6 +614,404 @@ public class UnlistedDoctorFragment extends Fragment {
             adapterDCRCallSelection.filterList(FilltercustArraList);
         }
         dialogFilter.dismiss();
+    }
+
+    public void popupAddUnlisted() {
+        final Dialog dialog = new Dialog(getActivity(), R.style.AlertDialogCustom);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setContentView(R.layout.popup_add_dcr);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        txt_select_qua = dialog.findViewById(R.id.txt_select_qua);
+        txt_select_category = dialog.findViewById(R.id.txt_select_category);
+        txt_select_class = dialog.findViewById(R.id.txt_select_class);
+        txt_select_spec = dialog.findViewById(R.id.txt_select_spec);
+        txt_select_terr = dialog.findViewById(R.id.txt_select_terr);
+        ImageView img_close = dialog.findViewById(R.id.img_close);
+        save_btn = dialog.findViewById(R.id.btn_save);
+        TextView drtagname = dialog.findViewById(R.id.drtagname);
+        final EditText edt_dr = dialog.findViewById(R.id.edt_dr);
+        final EditText edt_addr = dialog.findViewById(R.id.edt_addr);
+        final EditText edt_mob = dialog.findViewById(R.id.edt_mob);
+        final EditText edt_code = dialog.findViewById(R.id.edt_code);
+        final EditText edt_phone = dialog.findViewById(R.id.edt_phone);
+        RelativeLayout hos_dropdown = dialog.findViewById(R.id.lnhosdropdown);
+        txt_select_hospital = dialog.findViewById(R.id.txt_select_hospitals);
+        if (SharedPref.getUNLcap(requireContext()).isEmpty() || SharedPref.getChmCap(requireContext()) == null) {
+            drtagname.setText(getResources().getString(R.string.add) + " " + "Unlisted Doctor");
+        } else {
+            drtagname.setText(getResources().getString(R.string.add) + " " + SharedPref.getUNLcap(requireContext()));
+        }
+        if (SharedPref.getHospNeed(context).equalsIgnoreCase("0"))
+            hos_dropdown.setVisibility(View.VISIBLE);
+        else
+            hos_dropdown.setVisibility(View.GONE);
+
+        save_btn.setOnClickListener(v -> {
+            save_btn.setEnabled(false);
+            if (!txt_select_qua.getText().toString().isEmpty() && !txt_select_category.getText().toString().isEmpty()
+                    && !txt_select_class.getText().toString().isEmpty() && !txt_select_spec.getText().toString().isEmpty()
+                    && !txt_select_terr.getText().toString().isEmpty() && !edt_dr.getText().toString().isEmpty()
+                    && !edt_dr.getText().toString().contains("'")) {
+                Log.v("qualification_txt", "arent_empty");
+                save_btn.setEnabled(false);
+                JSONObject json = new JSONObject();
+                try {
+                    SfType = SharedPref.getSfType(requireContext());
+                    SfName = SharedPref.getSfName(requireContext());
+                    DivCode = SharedPref.getDivisionCode(requireContext());
+                    json.put("tableName", "savenewdr");
+//                    if (SF_Type.equalsIgnoreCase("2"))
+//                        json.put("sfcode", SF_coding.get(spinnerpostion));
+//                    else
+//                        json.put("sfcode", SF_Code);
+                    if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+                        SfCode = SharedPref.getHqCode(requireContext());
+                    }
+                    else {
+                        SfCode = SharedPref.getSfCode(requireContext());
+                    }
+                    json.put("sfcode", SfCode);
+                    json.put("division_code", DivCode);
+                    json.put("DrName", edt_dr.getText().toString());
+                    json.put("DrQCd", txt_qua);
+                    json.put("DrQNm", txt_select_qua.getText().toString());
+                    json.put("DrClsCd", txt_class);
+                    json.put("DrClsNm", txt_select_class.getText().toString());
+                    json.put("DrCatCd", txt_cat);
+                    json.put("DrCatNm", txt_select_category.getText().toString());
+                    json.put("DrSpcCd", txt_spec);
+                    json.put("DrSpcNm", txt_select_spec.getText().toString());
+                    json.put("DrAddr", edt_addr.getText().toString());
+                    json.put("DrTerCd", txt_terr);
+                    json.put("DrTerNm", txt_select_terr.getText().toString());
+                    json.put("DrPincd", edt_code.getText().toString());
+                    json.put("DrPhone", edt_phone.getText().toString());
+                    json.put("DrMob", edt_mob.getText().toString());
+                    if (SharedPref.getHospNeed(context).equalsIgnoreCase("0")) {
+                        json.put("DrHosNm", txt_select_hospital.getText().toString());
+                        json.put("DrHosCd", hospitaltxt);
+                    }
+                    Log.v("printing_add_dr", json.toString());
+                    save_btn.setEnabled(false);
+                    addDoctor(json.toString(), dialog);
+                }
+                catch (Exception e) {
+                    save_btn.setEnabled(true);
+                }
+            }
+            else {
+                if (edt_dr.getText().toString().contains("'")) {
+                    edt_dr.setError("Invalid Character");
+                    save_btn.setEnabled(true);
+                } else {
+                    commonUtilsMethods.showToastMessage(getActivity(), getResources().getString(R.string.fill_all));
+                    save_btn.setEnabled(true);
+                }
+            }
+        });
+
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                commonFun();
+            }
+        });
+
+        txt_select_qua.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gettingTableValue(1);
+            }
+        });
+
+        txt_select_category.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gettingTableValue(2);
+            }
+        });
+
+        txt_select_class.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gettingTableValue(3);
+            }
+        });
+
+        txt_select_spec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gettingTableValue(4);
+            }
+        });
+
+        txt_select_terr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gettingTableValue(5);
+            }
+        });
+
+        txt_select_hospital.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gettingTableValue(6);
+            }
+        });
+
+    }
+
+    public void commonFun() {
+        try {
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        } catch (Exception e) {
+
+        }
+    }
+    public void gettingTableValue(int x) {
+        try {
+            filterSelectionList.clear();
+            JSONArray jsonArray = new JSONArray();
+            if (x == 1){
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.QUALIFICATION).getMasterSyncDataJsonArray();
+            }
+            else if (x == 2){
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray();
+            }
+            else if (x == 3){
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLASS).getMasterSyncDataJsonArray();
+            }
+            else if (x == 4){
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray();
+            }
+            else if (x == 6) {
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL +  DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+            }
+            else{
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+            }
+            Log.v("jsonArray", "--" + jsonArray.length());
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                filterSelectionList.add(new DCRFillteredModelClass(jsonObject.getString("Name"), jsonObject.getString("Code")));
+            }
+        }
+        catch (Exception ignored)
+        {
+        }
+        popupSpinner(x);
+    }
+    public void popupSpinner(final int x) {
+        String a = "undr";
+        final Dialog dialog = new Dialog(getActivity(), R.style.AlertDialogCustom);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setContentView(R.layout.popup_spinner_selection);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        ListView popup_list = dialog.findViewById(R.id.popup_list);
+        ImageView close_btn = dialog.findViewById(R.id.close_img);
+
+        close_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        AdapterPopupSpinnerSelection popupAdapter = new AdapterPopupSpinnerSelection(getActivity(), filterSelectionList, a);
+        popup_list.setAdapter(popupAdapter);
+        popupAdapter.notifyDataSetChanged();
+
+        popup_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.v("qualification_select", filterSelectionList.get(position).getName());
+                if (x == 1) {
+                    txt_select_qua.setText(filterSelectionList.get(position).getName());
+                    txt_qua =filterSelectionList.get(position).getCode();
+                } else if (x == 2) {
+                    txt_select_category.setText(filterSelectionList.get(position).getName());
+                    txt_cat = filterSelectionList.get(position).getCode();
+                } else if (x == 3) {
+                    txt_select_class.setText(filterSelectionList.get(position).getName());
+                    txt_class = filterSelectionList.get(position).getCode();
+                } else if (x == 4) {
+                    txt_select_spec.setText(filterSelectionList.get(position).getName());
+                    txt_spec = filterSelectionList.get(position).getCode();
+                } else if (x == 6) {
+                    txt_select_hospital.setText(filterSelectionList.get(position).getName());
+                    hospitaltxt = filterSelectionList.get(position).getCode();
+                } else {
+                    txt_select_terr.setText(filterSelectionList.get(position).getName());
+                    txt_terr = filterSelectionList.get(position).getCode();
+                }
+                dialog.dismiss();
+            }
+        });
+    }
+    public void addDoctor(String val, final Dialog dialog) {
+        try {
+            if (progressDialog == null) {
+                CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(getActivity());
+                progressDialog = CommonUtilsMethods.createProgressDialog(getActivity());
+                progressDialog.show();
+            } else {
+                progressDialog.show();
+            }
+
+            if (isNetworkConnected()) {
+                String baseUrl = SharedPref.getBaseWebUrl(getActivity());
+                String pathUrl = SharedPref.getPhpPathUrl(getActivity());
+                String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
+                Log.e("test", "login url : " + baseUrl + replacedUrl);
+                apiInterface = RetrofitClient.getRetrofit(getActivity(), baseUrl + replacedUrl);
+                Log.d("save_obj", String.valueOf(val));
+                Map<String, String> mapString = new HashMap<>();
+                mapString.put("axn", "save/masterdata");
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, val);
+
+                if (call != null) {
+                    call.enqueue(new Callback<JsonElement>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                            if (response.isSuccessful()) {
+                                progressDialog.dismiss();
+                                dialog.dismiss();
+                                Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
+                                if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")){
+                                    SfCode = SharedPref.getHqCode(requireContext());}
+                                else {
+                                    SfCode = SharedPref.getSfCode(requireContext());
+                                }
+                                SyncUnlisted(SfCode);
+                                commonUtilsMethods.showToastMessage(getActivity(), getResources().getString(R.string.saved_successfully));
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                            save_btn.setEnabled(true);
+                            progressDialog.dismiss();
+                            commonUtilsMethods.showToastMessage(getActivity(), getResources().getString(R.string.poor_connection));
+                        }
+                    });
+                }
+            }
+            else {
+                save_btn.setEnabled(true);
+                progressDialog.dismiss();
+                commonUtilsMethods.showToastMessage(getActivity(), getResources().getString(R.string.poor_connection));
+            }
+
+        }
+        catch (Exception e) {
+            save_btn.setEnabled(true);
+            progressDialog.dismiss();
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
+    }
+    public void SyncUnlisted(String hqCode) {
+        UnlistedModelArray.clear();
+        UnlistedStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + hqCode);
+        MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(getActivity()),  Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, UnlistedStatus, false);
+        UnlistedModelArray.add(unListModel);
+        arrayForAdapter.clear();
+        arrayForAdapter.addAll(UnlistedModelArray);
+        populateAdapter(arrayForAdapter);
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    public void populateAdapter(ArrayList<MasterSyncItemModel> masterSyncItemModels) {
+        try{
+            for (int i = 0; i < masterSyncItemModels.size(); i++) {
+                MasterSyncItemModel item = masterSyncItemModels.get(i);
+                sync(item.getMasterOf(), item.getRemoteTableName(), UnlistedModelArray, i);
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void sync(String masterOf, String remoteTableName, ArrayList<MasterSyncItemModel> masterSyncItemModels, int position) {
+
+        try {
+            apiInterface = RetrofitClient.getRetrofit(getActivity(), SharedPref.getCallApiUrl(getActivity()));
+            JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(getActivity());
+            jsonObject.put("tableName", remoteTableName);
+            jsonObject.put("sfcode", SharedPref.getSfCode(getActivity()));
+            jsonObject.put("division_code", SharedPref.getDivisionCode(getActivity()));
+            jsonObject.put("Rsf", SfCode);
+            jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+            apiInterface = RetrofitClient.getRetrofit(getActivity(), SharedPref.getCallApiUrl(getActivity()));
+            Map<String, String> mapString = new HashMap<>();
+            Log.e("API Object", "master sync obj : " + jsonObject);
+            Call<JsonElement> call = null;
+            if (masterOf.equalsIgnoreCase(Constants.DOCTOR)) {
+                mapString.put("axn", "table/dcrmasterdata");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getActivity()), mapString, jsonObject.toString());
+            }
+            if (call != null) {
+                call.enqueue(new Callback<JsonElement>() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        // masterSyncItemModels.get(position).setPBarVisibility(false);
+                        Log.e("response :   ",  remoteTableName + " : " + response.body().toString());
+                        boolean success = false;
+                        JSONArray jsonArray = new JSONArray();
+                        JSONObject jsonObject2=new JSONObject();
+                        if (response.isSuccessful()) {
+                            Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + response.body().toString());
+                            try {
+                                JsonElement jsonElement = response.body();
+                                if (!jsonElement.isJsonNull()) {
+                                    if (jsonElement.isJsonArray()) {
+                                        jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                        success = true;
+                                    } else if (jsonElement.isJsonObject()) {
+                                        jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
+                                        if (!jsonObject2.has("success")) {
+                                            // response as jsonObject with {"success" : "fail" } will be received only when there are unformed object passed or there are no data in back end.
+                                            jsonArray.put(jsonObject2);
+                                            success = true;
+                                        }
+                                        else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                            masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
+                                            masterSyncItemModels.get(position).setSyncSuccess(1);
+                                        }
+                                    }
+
+                                    if (success) {
+                                        masterSyncItemModels.get(position).setCount(jsonArray.length());
+                                        masterSyncItemModels.get(position).setSyncSuccess(2);
+                                        masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 2));
+                                    }
+                                    SetupAdapter();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    }
+                });
+            }
+        } catch (Exception e) {
+            Log.v("masterCheck", "--error-" + e);
+            e.printStackTrace();
+        }
+
     }
 
 }

@@ -16,14 +16,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -44,16 +42,16 @@ import saneforce.sanzen.activity.Quiz.adapter.QuizQuestionAdapter;
 import saneforce.sanzen.activity.Quiz.model.QuizModelClass;
 import saneforce.sanzen.activity.Quiz.model.QuizOptionModelClass;
 import saneforce.sanzen.activity.Quiz.model.QuizQuesNoModel;
-import saneforce.sanzen.activity.leave.Leave_Application;
-import saneforce.sanzen.activity.leave.Leavedetails_adapter;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityQuizBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.QuizOfflineTableDetails.QuizOfflineDataDao;
-import saneforce.sanzen.roomdatabase.QuizOfflineTableDetails.QuizOfflineDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
@@ -71,7 +69,7 @@ public class QuizActivity extends AppCompatActivity {
     private QuizOfflineDataDao quizOfflineDataDao;
     private int QuestionNumber = 0, noOfCorrectAnswers = 0;
     private boolean isShuffleAllowed = false, isPaused = false;
-    private String noOfAttemptsAllowed = "0", timeLimit ="00:00:00", startTime = "", surveyID = "";
+    private String noOfAttemptsAllowed = "0", timeLimit = "00:00:00", startTime = "", surveyID = "";
     private CountDownTimer countDownTimer;
     QuizQuestionAdapter quizQuestionAdapter;
     QuizCountAdapter quizCountAdapter;
@@ -91,14 +89,13 @@ public class QuizActivity extends AppCompatActivity {
         binding = ActivityQuizBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
+        callSyncAPI();
         commonUtilsMethods = new CommonUtilsMethods(QuizActivity.this);
+        SharedPref.setLastQuizVisitedDate(QuizActivity.this, HomeDashBoard.selectedDate.toString());
 
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         quizOfflineDataDao = roomDB.quizOfflineDataDao();
-        getData();
-        setupQuizWelcome();
 
         binding.backArrow.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -108,7 +105,7 @@ public class QuizActivity extends AppCompatActivity {
                 QuestionNumber = QuestionNumber - 1;
                 setQuestion(QuestionNumber);
             }
-            if(QuestionNumber == 0) {
+            if (QuestionNumber == 0) {
                 binding.btnpreview.setAlpha(0.5f);
                 binding.btnNext.setAlpha(1f);
             } else {
@@ -122,7 +119,7 @@ public class QuizActivity extends AppCompatActivity {
                 QuestionNumber = QuestionNumber + 1;
                 setQuestion(QuestionNumber);
             }
-            if(QuestionNumber == mQuizList.size() - 1) {
+            if (QuestionNumber == mQuizList.size() - 1) {
                 binding.btnpreview.setAlpha(1f);
                 binding.btnNext.setAlpha(0.5f);
             } else {
@@ -138,21 +135,25 @@ public class QuizActivity extends AppCompatActivity {
         });
 
         binding.btnSave.setOnClickListener(view -> {
-            validated();
+            validate();
         });
 
     }
 
-    private void validated() {
-        if(sQuizMainAnswerList.size() == quesNumberModelList.size()) {
-            pauseTimer();
-            showSubmitAlert();
-        }else{
+    private void validate() {
+        if (sQuizMainAnswerList.size() == quesNumberModelList.size()) {
+//            pauseTimer();
+            if (UtilityClass.isNetworkAvailable(QuizActivity.this)) {
+                showSubmitAlert();
+            } else {
+                commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network));
+            }
+        } else {
             List<Integer> unAttendedQuestions = IntStream.rangeClosed(1, quesNumberModelList.size())
                     .boxed()
                     .collect(Collectors.toList());
             for (QuizOptionModelClass quizOptionModelClass : sQuizMainAnswerList) {
-                if(unAttendedQuestions.contains(quizOptionModelClass.getQuestionId() + 1)) {
+                if (unAttendedQuestions.contains(quizOptionModelClass.getQuestionId() + 1)) {
                     unAttendedQuestions.remove(quizOptionModelClass.getQuestionId());
                 }
             }
@@ -176,9 +177,9 @@ public class QuizActivity extends AppCompatActivity {
         btn_clear.setText(getString(R.string.cancel));
         content.setText(getString(R.string.are_you_sure) + " Want to Submit");
         String remTime = TimeUtils.getMillisToFormattedTime(remainingTime, TimeUtils.FORMAT_32);
-        if(remainingTime > 0) {
-            content.setText(getString(R.string.are_you_sure) + " Want to Submit \nYou have Remaining Time : " + remTime);
-        }
+//        if(remainingTime > 0) {
+//            content.setText(getString(R.string.are_you_sure) + " Want to Submit \nYou have Remaining Time : " + remTime);
+//        }
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
         btn_save.setOnClickListener(view -> {
@@ -187,20 +188,40 @@ public class QuizActivity extends AppCompatActivity {
         });
         btn_clear.setOnClickListener(view -> {
             dialogOptionSelection.dismiss();
-            resumeTimer();
+//            resumeTimer();
         });
         iv_close.setOnClickListener(view -> dialogOptionSelection.dismiss());
         dialogOptionSelection.show();
     }
 
     private void submitQuiz() {
-        pauseTimer();
-        createJson();
-        binding.score.setText(String.format("%d out of %d", noOfCorrectAnswers, quesNumberModelList.size()));
+        if (UtilityClass.isNetworkAvailable(QuizActivity.this)) {
+            pauseTimer();
+            createJson();
+            callSaveAPI();
+            setScoreView();
+        } else {
+            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network));
+        }
+//        quizOfflineDataDao.insert(new QuizOfflineDataTable(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32), saveJsonObject.toString(), 0, Constants.WAITING_FOR_SYNC));
+    }
+
+    private void setScoreView() {
+        int totalQuestions = quesNumberModelList.size();
+        int badThreshold = (int) (totalQuestions * 0.34);
+        int okThreshold = (int) (totalQuestions * 0.67);
+
+        if (noOfCorrectAnswers <= badThreshold) {
+            binding.completedAnim.setGifResource(R.raw.poor);
+        } else if (noOfCorrectAnswers <= okThreshold) {
+            binding.completedAnim.setGifResource(R.raw.medium);
+        } else {
+            binding.completedAnim.setGifResource(R.raw.good);
+        }
+
+        binding.score.setText(String.format("%d out of %d", noOfCorrectAnswers, totalQuestions));
         binding.rlScore.setVisibility(View.VISIBLE);
         binding.rlQuizMain.setVisibility(View.GONE);
-        callSaveAPI();
-//        quizOfflineDataDao.insert(new QuizOfflineDataTable(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32), saveJsonObject.toString(), 0, Constants.WAITING_FOR_SYNC));
     }
 
     private void createJson() {
@@ -212,10 +233,10 @@ public class QuizActivity extends AppCompatActivity {
             saveJsonObject.put("division_code", SharedPref.getDivisionCode(QuizActivity.this));
 
             JSONArray jsonArray = new JSONArray(), quizResults = new JSONArray();
-            for (int i = 0; i<sQuizMainAnswerList.size(); i++) {
+            for (int i = 0; i < sQuizMainAnswerList.size(); i++) {
                 QuizOptionModelClass quizOptionModelClass = null;
-                for (int j = 0; j<sQuizMainAnswerList.size(); j++) {
-                    if(sQuizMainAnswerList.get(j).getQuestionId() == i){
+                for (int j = 0; j < sQuizMainAnswerList.size(); j++) {
+                    if (sQuizMainAnswerList.get(j).getQuestionId() == i) {
                         quizOptionModelClass = sQuizMainAnswerList.get(j);
                         break;
                     }
@@ -223,10 +244,10 @@ public class QuizActivity extends AppCompatActivity {
                 QuizModelClass quizModelClass = mQuizList.get(i);
 
                 String correctAns = "0";
-                if(quizOptionModelClass != null && quizOptionModelClass.getSelctionCode() != null && quizOptionModelClass.getSelctionCode().equalsIgnoreCase(quizModelClass.getAnswerCode())){
+                if (quizOptionModelClass != null && quizOptionModelClass.getSelctionCode() != null && quizOptionModelClass.getSelctionCode().equalsIgnoreCase(quizModelClass.getAnswerCode())) {
                     Log.d("QUIZ", "createJson: correct Ans -> " + quizOptionModelClass.getSelctionCode() + " = " + quizOptionModelClass.getSelectedOption());
                     correctAns = "1";
-                    noOfCorrectAnswers ++;
+                    noOfCorrectAnswers++;
                 }
 
                 JSONObject jsonObject = new JSONObject();
@@ -261,17 +282,72 @@ public class QuizActivity extends AppCompatActivity {
         }
     }
 
+    private void callSyncAPI() {
+        if (UtilityClass.isNetworkAvailable(QuizActivity.this)) {
+            binding.flProgress.setVisibility(View.VISIBLE);
+            try {
+                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                jsonObject.put("tableName", "getquiz");
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_22, HomeDashBoard.selectedDate.toString()));
+                Log.i("QUIZ", "callSyncAPI: json -- " + jsonObject);
+                Map<String, String> qry = new HashMap<>();
+                qry.put("axn", "table/additionaldcrmasterdata");
+                Call<JsonElement> quiz = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), qry, jsonObject.toString());
+                if (quiz != null) {
+                    quiz.enqueue(new Callback<JsonElement>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonElement> quiz, @NonNull Response<JsonElement> response) {
+                            binding.flProgress.setVisibility(View.GONE);
+                            if (response.isSuccessful()) {
+                                Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
+                                try {
+                                    String responseData = response.body().toString();
+                                    if (!responseData.equalsIgnoreCase("[]")) {
+                                        JSONObject object = new JSONObject(responseData);
+                                        JSONArray jsonArray = new JSONArray();
+                                        jsonArray.put(object);
+                                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.QUIZ, jsonArray.toString(), 2));
+                                    }else {
+                                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.QUIZ, "[]", 2));
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                getData();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<JsonElement> quiz, @NonNull Throwable t) {
+                            t.printStackTrace();
+                            binding.flProgress.setVisibility(View.GONE);
+                            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.poor_connection));
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                binding.flProgress.setVisibility(View.GONE);
+                e.printStackTrace();
+            }
+        } else {
+            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network));
+        }
+    }
+
     private void callSaveAPI() {
         try {
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
             Map<String, String> qry = new HashMap<>();
             qry.put("axn", "result/quiz");
-            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), qry, saveJsonObject.toString());
-            if (call != null) {
-                call.enqueue(new Callback<JsonElement>() {
+            Call<JsonElement> quiz = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), qry, saveJsonObject.toString());
+            if (quiz != null) {
+                quiz.enqueue(new Callback<JsonElement>() {
                     @Override
-                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    public void onResponse(@NonNull Call<JsonElement> quiz, @NonNull Response<JsonElement> response) {
                         if (response.isSuccessful()) {
                             Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
                             commonUtilsMethods.showToastMessage(QuizActivity.this, "Quiz Submitted Successfully");
@@ -279,13 +355,11 @@ public class QuizActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<JsonElement> quiz, @NonNull Throwable t) {
                         commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.poor_connection));
                     }
-
                 });
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -296,6 +370,8 @@ public class QuizActivity extends AppCompatActivity {
         try {
             JSONArray quizdata = masterDataDao.getMasterDataTableOrNew(Constants.QUIZ).getMasterSyncDataJsonArray();
             if (quizdata.length() > 0) {
+                binding.rlStartQuiz.setVisibility(View.VISIBLE);
+                binding.constraintNoData.setVisibility(View.GONE);
                 for (int i = 0; i < quizdata.length(); i++) {
                     JSONObject jsonObject = quizdata.getJSONObject(i);
                     String quizTitle = jsonObject.getString("quiztitle");
@@ -307,11 +383,14 @@ public class QuizActivity extends AppCompatActivity {
                     QuesttionjsonArray = new JSONArray(questionText);
                     AnswerjsonArray = new JSONArray(answerText);
                 }
+                setupQuizWelcome();
             } else {
                 quizTitleJsonArray = null;
                 processUserJsonArray = null;
                 QuesttionjsonArray = null;
                 AnswerjsonArray = null;
+                binding.rlStartQuiz.setVisibility(View.GONE);
+                binding.constraintNoData.setVisibility(View.VISIBLE);
             }
         } catch (Exception a) {
             Log.v("error", "----" + a.getMessage());
@@ -319,61 +398,69 @@ public class QuizActivity extends AppCompatActivity {
         }
     }
 
-    private void setupQuizWelcome(){
+    private void setupQuizWelcome() {
         int noOfQuestions = 0;
-        if(QuesttionjsonArray != null) {
+        if (QuesttionjsonArray != null) {
             noOfQuestions = QuesttionjsonArray.length();
         }
         String filename = "";
-        try{
-            JSONObject jsonObject = processUserJsonArray.optJSONObject(0);
-            noOfAttemptsAllowed = jsonObject.optString("NoOfAttempts");
-            String type = jsonObject.getString("type");
-            isShuffleAllowed = !type.equalsIgnoreCase("No Suffle");
-            timeLimit = jsonObject.optString("timelimit");
-
-            jsonObject = quizTitleJsonArray.optJSONObject(0);
-            filename = jsonObject.optString("FileName");
-            surveyID = jsonObject.optString("survey_id");
+        try {
+            JSONObject jsonObject = new JSONObject();
+            if (processUserJsonArray != null) {
+                jsonObject = processUserJsonArray.optJSONObject(0);
+                if (jsonObject != null) {
+                    noOfAttemptsAllowed = jsonObject.optString("NoOfAttempts");
+                    String type = jsonObject.getString("type");
+                    isShuffleAllowed = !type.equalsIgnoreCase("No Suffle");
+                    timeLimit = jsonObject.optString("timelimit");
+                }
+            }
+            if (quizTitleJsonArray != null) {
+                jsonObject = quizTitleJsonArray.optJSONObject(0);
+                if (jsonObject != null) {
+                    filename = jsonObject.optString("FileName");
+                    surveyID = jsonObject.optString("survey_id");
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         binding.noOfQuestions.setText(String.valueOf(noOfQuestions));
         binding.noOfAttemptsAllowed.setText(noOfAttemptsAllowed);
         binding.totalTime.setText(timeLimit);
-        if(filename.isEmpty()) {
+        if (filename.isEmpty()) {
             binding.downloadAssertsBtn.setVisibility(View.GONE);
         } else {
             binding.downloadAssertsBtn.setVisibility(View.VISIBLE);
         }
     }
 
-    private void populateData(){
+    private void populateData() {
         try {
             Map<String, ArrayList<JSONObject>> optionListMap = new HashMap<>();
-            for (int i = 0; i<AnswerjsonArray.length(); i++) {
+            for (int i = 0; i < AnswerjsonArray.length(); i++) {
                 JSONObject jsonObject = AnswerjsonArray.getJSONObject(i);
                 String questionId = jsonObject.getString("Question_Id");
 
-                if(optionListMap.containsKey(questionId)) {
+                if (optionListMap.containsKey(questionId)) {
                     optionListMap.get(questionId).add(jsonObject);
-                }else {
+                } else {
                     ArrayList<JSONObject> newList = new ArrayList<>();
                     newList.add(jsonObject);
                     optionListMap.put(questionId, newList);
                 }
             }
 
-            if(QuesttionjsonArray.length()>0) {
-                for (int j = 0; j<QuesttionjsonArray.length(); j++) {
+            if (QuesttionjsonArray.length() > 0) {
+                for (int j = 0; j < QuesttionjsonArray.length(); j++) {
                     String optionname = "", optionCode = "", answercode = "";
                     JSONObject jsonObject = QuesttionjsonArray.getJSONObject(j);
                     ArrayList<JSONObject> jsonObject1 = optionListMap.get(jsonObject.getString("Question_Id"));
-                    if(jsonObject1 != null) {
+                    if (jsonObject1 != null) {
                         for (JSONObject obj : jsonObject1) {
                             optionname = optionname + obj.getString("Input_Text") + ",";
                             optionCode = optionCode + obj.getString("input_id") + ",";
-                            if(obj.getString("Correct_Ans").equalsIgnoreCase("1")) {
+                            if (obj.getString("Correct_Ans").equalsIgnoreCase("1")) {
                                 answercode = obj.getString("input_id");
                             }
                         }
@@ -382,12 +469,12 @@ public class QuizActivity extends AppCompatActivity {
                 }
 
             }
-            if(!mQuizList.isEmpty()) {
+            if (!mQuizList.isEmpty()) {
                 startTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1);
                 startTimer();
                 populateQuestionNumber();
                 setQuestion(0);
-            }else {
+            } else {
                 commonUtilsMethods.showToastMessage(QuizActivity.this, "Sync Quiz from Master Sync");
                 finish();
             }
@@ -415,7 +502,7 @@ public class QuizActivity extends AppCompatActivity {
             }
         }
 
-        for (int i=0; i<optionSplit.length; i++) {
+        for (int i = 0; i < optionSplit.length; i++) {
             String optionName = optionSplit[i], optionCode = optionSplitIds[i];
             if (!SelctionName.equalsIgnoreCase("") && SelctionName.equalsIgnoreCase(optionName)) {
                 optionList.add(new QuizOptionModelClass(true, optionName, optionCode));
@@ -434,7 +521,7 @@ public class QuizActivity extends AppCompatActivity {
                 }
                 sQuizMainAnswerList.add(new QuizOptionModelClass(position, optionSplit, optionSplitIds, classGroup.getOptionName(), classGroup.getOptionCode()));
                 optionList.clear();
-                for (int i=0; i<optionSplit.length; i++) {
+                for (int i = 0; i < optionSplit.length; i++) {
                     String optionName = optionSplit[i], optionCode = optionSplitIds[i];
                     if (!classGroup.getOptionName().equalsIgnoreCase("") && classGroup.getOptionName().equalsIgnoreCase(optionName)) {
                         optionList.add(new QuizOptionModelClass(true, optionName, optionCode));
@@ -461,11 +548,11 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void populateQuestionNumber() {
-        for (int i = 0; i<mQuizList.size(); i++) {
-            if(i== 0) {
-                quesNumberModelList.add(new QuizQuesNoModel(i+1, true, false));
-            }else {
-                quesNumberModelList.add(new QuizQuesNoModel(i+1, false, false));
+        for (int i = 0; i < mQuizList.size(); i++) {
+            if (i == 0) {
+                quesNumberModelList.add(new QuizQuesNoModel(i + 1, true, false));
+            } else {
+                quesNumberModelList.add(new QuizQuesNoModel(i + 1, false, false));
             }
         }
         quizCountAdapter = new QuizCountAdapter(quesNumberModelList, this);
@@ -499,7 +586,8 @@ public class QuizActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
             commonUtilsMethods.showToastMessage(QuizActivity.this, "Please try after sometime");
-            finish();;
+            finish();
+            ;
         }
     }
 

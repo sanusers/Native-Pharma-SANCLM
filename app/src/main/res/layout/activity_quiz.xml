@@ -219,8 +219,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/txt_queston_name"
-                    android:layout_marginTop="@dimen/_1sdp"
                     android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_marginTop="@dimen/_1sdp"
                     android:visibility="visible">
 
                 </androidx.recyclerview.widget.RecyclerView>
@@ -396,10 +396,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/appBar"
-        android:visibility="visible"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:visibility="visible">
 
         <ScrollView
             android:layout_width="wrap_content"
@@ -415,10 +415,10 @@
                 android:padding="@dimen/_10sdp">
 
                 <ImageView
-                    android:layout_marginTop="@dimen/_20sdp"
                     android:layout_width="@dimen/_50sdp"
                     android:layout_height="@dimen/_50sdp"
                     android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_20sdp"
                     android:src="@drawable/bulb" />
 
                 <TextView
@@ -479,13 +479,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textAllCaps="false"
                     android:layout_marginTop="@dimen/_20sdp"
                     android:background="@drawable/backround_button"
                     android:fontFamily="@font/satoshi_medium"
                     android:paddingHorizontal="@dimen/_20sdp"
                     android:paddingVertical="@dimen/_5sdp"
                     android:text="@string/start_quiz"
+                    android:textAllCaps="false"
                     android:textColor="@color/white" />
 
             </LinearLayout>
@@ -494,40 +494,40 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/bg_grey"
-            android:padding="@dimen/_10sdp"
-            android:layout_margin="@dimen/_5sdp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:orientation="vertical">
+            android:layout_margin="@dimen/_5sdp"
+            android:background="@color/bg_grey"
+            android:orientation="vertical"
+            android:padding="@dimen/_10sdp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/satoshi_medium"
-                android:padding="@dimen/_2sdp"
-                android:text="@string/no_of_questions"
-                android:textColor="@color/black_45"
-                android:textSize="@dimen/_7ssp"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="@string/no_of_questions"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/satoshi_medium"
-                android:padding="@dimen/_2sdp"
-                android:text="0"
-                android:id="@+id/no_of_questions"
-                android:textColor="@color/black_45"
-                android:textSize="@dimen/_7ssp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/no_of_questions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="0"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -536,28 +536,28 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/satoshi_medium"
-                android:padding="@dimen/_2sdp"
-                android:text="@string/no_of_attempts_allowed"
-                android:textColor="@color/black_45"
-                android:textSize="@dimen/_7ssp"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="@string/no_of_attempts_allowed"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/satoshi_medium"
-                android:padding="@dimen/_2sdp"
-                android:text="0"
-                android:id="@+id/no_of_attempts_allowed"
-                android:textColor="@color/black_45"
-                android:textSize="@dimen/_7ssp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/no_of_attempts_allowed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="0"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -567,34 +567,34 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/clock"
                     android:layout_width="@dimen/_10sdp"
                     android:layout_height="@dimen/_10sdp"
-                    android:src="@drawable/clock"
                     android:layout_gravity="center"
-                    android:id="@+id/clock"/>
+                    android:src="@drawable/clock" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/satoshi_medium"
-                android:padding="@dimen/_2sdp"
-                android:text="@string/total_time"
-                android:textColor="@color/text_grey"
-                android:textSize="@dimen/_7ssp"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="@string/total_time"
+                    android:textColor="@color/text_grey"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/satoshi_medium"
-                android:padding="@dimen/_2sdp"
-                android:text="00:00:00"
-                android:id="@+id/total_time"
-                android:textColor="@color/text_grey"
-                android:textSize="@dimen/_7ssp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/total_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="00:00:00"
+                    android:textColor="@color/text_grey"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -603,45 +603,117 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_score"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/appBar"
-        android:id="@+id/rl_score"
         android:visibility="gone">
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="@dimen/_80sdp"
-            app:lottie_rawRes="@raw/completed"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="false"
-            android:layout_centerInParent="true"
+        <saneforce.sanzen.commonClasses.GifView
             android:id="@+id/completed_anim"
-            android:layout_marginBottom="@dimen/_20sdp"
-            android:layout_above="@id/score"/>
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_60sdp"
+            android:layout_above="@id/score"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="@dimen/_10sdp" />
 
         <TextView
+            android:id="@+id/score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/score"
             android:layout_centerInParent="true"
             android:fontFamily="@font/satoshi_variable"
             android:text="0 out of 0"
             android:textColor="@color/dark_purple"
-            android:textSize="@dimen/_7sdp"/>
+            android:textSize="@dimen/_7sdp" />
 
         <TextView
+            android:id="@+id/thank_you"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/thank_you"
             android:layout_below="@id/score"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/_20sdp"
             android:fontFamily="@font/satoshi_variable"
+            android:text="Thank you for attending the challenge"
             android:textColor="@color/dark_purple"
-            android:textSize="@dimen/_7sdp"
-            android:text="Thank you for attending the challenge"/>
+            android:textSize="@dimen/_7sdp" />
 
     </RelativeLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_no_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:windowSoftInputMode="adjustResize|adjustPan">
+
+        <ImageView
+            android:id="@+id/img_not_found"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_marginHorizontal="@dimen/_1sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:src="@drawable/no_data_folder"
+            android:windowSoftInputMode="adjustResize|adjustPan"
+            app:layout_constraintBottom_toTopOf="@id/tv_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:padding="@dimen/_2sdp"
+            android:text="@string/no_quiz_found"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_7ssp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_not_found" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#AA000000"
+        android:elevation="@dimen/_5sdp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/ll_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="@dimen/_5sdp"
+            android:visibility="visible">
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/pink" />
+
+            <TextView
+                android:id="@+id/tv_progress_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:text="Syncing Quiz..."
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp" />
+        </LinearLayout>
+    </FrameLayout>
 
 </RelativeLayout>

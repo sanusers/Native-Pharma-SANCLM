@@ -4,7 +4,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -433,6 +432,10 @@ public class SharedPref {
     public static final String STP_BASED_MTP = "STP_BASED_MTP";
     public static final String STP_BASED_DCR = "STP_BASED_DCR";
 
+    public static final String ADD_CHM = "addChm";
+    public static final String ADD_UNLST = "addDr";
+    public static final String QUIZ_DATE = "Quiz Date";
+
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -758,6 +761,8 @@ public class SharedPref {
         editor.putString(STP_APPR_NEED, jsonObject.getString("STP_Appr_Need"));
         editor.putString(STP_BASED_MTP, jsonObject.getString("STP_Based_MTP"));
         editor.putString(STP_BASED_DCR, jsonObject.getString("STP_Based_DCR"));
+        editor.putString(ADD_CHM, jsonObject.getString("addChm"));
+        editor.putString(ADD_UNLST, jsonObject.getString("addDr"));
         editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\",""));
         editor.putString(WELCOME_SLIDES_PATH, "Welcomepage_upload/");
         editor.apply();
@@ -1981,7 +1986,6 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME_NOT_DELETE, MODE_PRIVATE).getString(SELECTED_LANGUAGE, "");
     }
 
-
     public static void Loginsite(Context context, String site) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2566,6 +2570,24 @@ public class SharedPref {
 
     public static String getStpStatus(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_STATUS, "");
+    }
+
+    public static String getChemistAddition(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ADD_CHM, "");
+    }
+
+    public static String getUnlistAddition(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ADD_UNLST, "");
+    }
+
+    public static String getLastQuizVisitedDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(QUIZ_DATE, "");
+    }
+
+    public static void setLastQuizVisitedDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME_NOT_DELETE, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(QUIZ_DATE, date).apply();
     }
 
 }

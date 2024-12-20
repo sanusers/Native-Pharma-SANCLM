@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -59,6 +60,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.fragment.CallsFragment;
 import saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment;
@@ -278,6 +280,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //            setUpMyDayplan();
 //        }
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()
+                && SharedPref.getQuizNeed(requireContext()).equalsIgnoreCase("0")
+                && SharedPref.getQuizNeedMandt(requireContext()).equalsIgnoreCase("0")
+                && UtilityClass.isNetworkAvailable(requireContext())
+                && SharedPref.getLastQuizVisitedDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+            commonUtilsMethods.showToastMessage(requireContext(), "Complete Quiz");
+            requireActivity().startActivity(new Intent(requireActivity(), QuizActivity.class));
+        }
     }
 
     public void ShowWorkTypeAlert(TextView mTxtWorktype, RelativeLayout rlculster, RelativeLayout rlHQ) {
