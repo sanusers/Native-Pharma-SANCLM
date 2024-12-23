@@ -91,13 +91,24 @@ public class QuizActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         callSyncAPI();
         commonUtilsMethods = new CommonUtilsMethods(QuizActivity.this);
-        SharedPref.setLastQuizVisitedDate(QuizActivity.this, HomeDashBoard.selectedDate.toString());
+        if(HomeDashBoard.selectedDate != null) {
+            SharedPref.setLastQuizVisitedDate(QuizActivity.this, HomeDashBoard.selectedDate.toString());
+        } else {
+            SharedPref.setLastQuizVisitedDate(QuizActivity.this, "");
+        }
 
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         quizOfflineDataDao = roomDB.quizOfflineDataDao();
 
-        binding.backArrow.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        binding.backArrow.setOnClickListener(v -> {
+            getOnBackPressedDispatcher().onBackPressed();
+            finish();
+        });
+        binding.btnskip.setOnClickListener(v -> {
+            getOnBackPressedDispatcher().onBackPressed();
+            finish();
+        });
 
         binding.btnpreview.setAlpha(0.5f);
         binding.btnpreview.setOnClickListener(view -> {
