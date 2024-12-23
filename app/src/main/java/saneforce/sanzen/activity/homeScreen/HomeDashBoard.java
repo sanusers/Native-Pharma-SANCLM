@@ -1243,6 +1243,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     startActivity(new Intent(HomeDashBoard.this, QuizActivity.class));
                 } else {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.please_select_a_date));
+                    binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
+                    binding.myDrawerLayout.closeDrawer(GravityCompat.START);
                 }
             } else {
                 commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));

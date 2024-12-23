@@ -592,6 +592,7 @@ public class QuizActivity extends AppCompatActivity {
                 @Override
                 public void onFinish() {
                     binding.txtRemainigtime.setText("Time's up!");
+                    submitQuiz();
                 }
             }.start();
         } catch (Exception e) {
