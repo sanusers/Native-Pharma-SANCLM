@@ -98,7 +98,7 @@ public class ActvityList2Adapter extends RecyclerView.Adapter<ActvityList2Adapte
                 String searchString = constraint.toString().toLowerCase();
                 List<ActivityModelClass> filtered = new ArrayList<>();
                 for (ActivityModelClass data : List) {
-                    if (data.getName().contains(searchString)) {
+                    if (data.getName().toLowerCase().contains(searchString)) {
                             filtered.add(data);
                     }
 

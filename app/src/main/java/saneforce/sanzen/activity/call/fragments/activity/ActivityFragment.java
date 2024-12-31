@@ -187,6 +187,7 @@ public class ActivityFragment extends Fragment {
         fontmedium = ResourcesCompat.getFont(requireContext(), R.font.satoshi_medium);
         fontregular = ResourcesCompat.getFont(requireContext(), R.font.satoshi_regular);
         fragmentActivityBinding.listTitle.setText(String.format("List of %s", SharedPref.getActivityCap(requireContext())));
+        fragmentActivityBinding.tvContent.setText(String.format("Select any %s on list  to view content", SharedPref.getActivityCap(requireContext())));
         fragmentActivityBinding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(requireContext())));
         fragmentActivityBinding.txthqName.setText(SharedPref.getHqName(requireContext()));
         fragmentActivityBinding.btnsumit.setEnabled(false);
@@ -1278,7 +1279,7 @@ public class ActivityFragment extends Fragment {
                 TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(), new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        textViewtime1.setText(hourOfDay + ":" + minute);
+                        textViewtime1.setText(String.format("%02d:%02d", hourOfDay, minute));
                         commonFun();
                     }
                 }, mHour, mMinute, true);
@@ -1371,7 +1372,7 @@ public class ActivityFragment extends Fragment {
                 TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(), new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        textviewfromtime.setText(hourOfDay + ":" + minute);
+                        textviewfromtime.setText(String.format("%02d:%02d", hourOfDay, minute));
                         commonFun();
                     }
                 }, mHour, mMinute, false);
@@ -1425,7 +1426,7 @@ public class ActivityFragment extends Fragment {
                         @Override
                         public void onTimeSet(TimePicker view, int hour, int minute) {
                             if(mHour<hour || mMinute<minute) {
-                                textviewtotime.setText(hour + ":" + minute);
+                                textviewtotime.setText(String.format("%02d:%02d", hour, minute));
                             }else {
                                 commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_as_after_from_time));
                                 textviewtotime.setText("");
@@ -1750,7 +1751,7 @@ public class ActivityFragment extends Fragment {
         textLinearLayout2.setOrientation(LinearLayout.HORIZONTAL);
         textLinearLayout1.addView(textLinearLayout2);
         TextView textviewdata1 = new TextView(requireContext());
-        textviewdata.setText(List.getFieldName());
+//        textviewdata.setText(List.getFieldName());
         LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params11.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textviewdata1.setBackgroundColor(Color.WHITE);

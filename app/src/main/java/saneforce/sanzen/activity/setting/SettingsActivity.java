@@ -59,7 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
     AsyncInterface asyncInterface;
     PackageManager packageManager;
     PackageInfo packageInfo;
-    String deviceId = "", url = "", licenseKey = "", divisionCode = "", baseWebUrl = "", phpPathUrl = "", reportsUrl = "", slidesUrl = "", logoUrl = "";
+    String deviceId = "", url = "", licenseKey = "", divisionCode = "", baseWebUrl = "", phpPathUrl = "", reportsUrl = "", slidesUrl = "", logoUrl = "", optionFiles = "";
     int hitCount = 0;
     CommonUtilsMethods commonUtilsMethods;
     Resources resources;
@@ -290,6 +290,7 @@ public class SettingsActivity extends AppCompatActivity {
                                     reportsUrl = config.getString("reportUrl");
                                     slidesUrl = config.getString("slideurl");
                                     logoUrl = config.getString("logoimg");
+                                    optionFiles = config.getString("optionFiles");
 
                                     String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
                                     String urlData = web_url_getText + phpPathUrl;
@@ -299,7 +300,7 @@ public class SettingsActivity extends AppCompatActivity {
                                     SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
 
                                     String[] splitUrl = logoUrl.split("/");
-                                    SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, logoUrl, true);
+                                    SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, logoUrl, optionFiles, true);
                                     SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
                                     downloadImage(baseWebUrl + logoUrl, splitUrl[splitUrl.length - 1], enteredUrl);
                                     licenseKeyValid = true;

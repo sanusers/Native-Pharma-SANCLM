@@ -2242,9 +2242,11 @@ public class MasterSyncActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.slide_downloader_alert_box, null);
         RecyclerView recyclerView = dialogView.findViewById(R.id.recyelerview123);
+        TextView txt_alert_title = dialogView.findViewById(R.id.alert_title);
         TextView txt_downloadCount = dialogView.findViewById(R.id.txt_downloadcount);
         TextView txt_total = dialogView.findViewById(R.id.txt_totaldownloadcount);
         ImageView cancel_img = dialogView.findViewById(R.id.cancel_img);
+        txt_alert_title.setText("Welcome Slide Downloader");
         WelcomeSlideAdapter adapter = new WelcomeSlideAdapter(this);
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setNestedScrollingEnabled(false);

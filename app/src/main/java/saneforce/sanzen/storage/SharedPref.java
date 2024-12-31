@@ -30,6 +30,7 @@ public class SharedPref {
     public static final String SLIDES_PATH = "SLIDES_PATH";
     public static final String WELCOME_SLIDES_PATH = "WELCOME_SLIDES_PATH";
     public static final String LOGO_URL = "logo_url";
+    public static final String OPTION_FILES_URL = "logo_url";
     public static final String CALL_API_URL = "call_api_url";
     public static final String LOGI_SITE = "log_site";
     public static final String SAVE_URL_SETTING = "save_url_setting";
@@ -1992,7 +1993,7 @@ public class SharedPref {
         editor.putString(LOGI_SITE, site).apply();
     }
 
-    public static void saveUrls(Context context, String baseUrl, String licenseKey, String baseWebUrl, String PhpPathUrl, String reportsUrl, String logoUrl, boolean settingState) {
+    public static void saveUrls(Context context, String baseUrl, String licenseKey, String baseWebUrl, String PhpPathUrl, String reportsUrl, String logoUrl, String optionFiles, boolean settingState) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(BASE_URL, baseUrl);
@@ -2001,6 +2002,7 @@ public class SharedPref {
         editor.putString(PHP_PATH_URL, PhpPathUrl);
         editor.putString(REPORTS_URL, reportsUrl);
         editor.putString(LOGO_URL, logoUrl);
+        editor.putString(OPTION_FILES_URL, logoUrl);
         editor.putBoolean(SETTING_STATE, settingState);
         editor.apply();
     }

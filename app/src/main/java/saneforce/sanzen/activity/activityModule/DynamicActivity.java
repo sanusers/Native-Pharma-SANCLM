@@ -162,6 +162,7 @@ public class DynamicActivity extends AppCompatActivity {
         binding.title.setText(SharedPref.getActivityCap(this));
         binding.listTitle.setText(String.format("List of %s", SharedPref.getActivityCap(this)));
         binding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(this)));
+        binding.tvContent.setText(String.format("Select any %s on list  to view content", SharedPref.getActivityCap(DynamicActivity.this)));
         binding.txthqName.setText(SharedPref.getHqName(DynamicActivity.this));
         binding.btnsumit.setEnabled(false);
         adapter = new ActivityAdapter(DynamicActivity.this, ActivityList, (classGroup, holder) -> {
@@ -218,24 +219,18 @@ public class DynamicActivity extends AppCompatActivity {
             }
         });
 
-//        if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
-//            binding.rlheadquates.setVisibility(View.VISIBLE);
-//        }else {
+        if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+            binding.rlheadquates.setVisibility(View.VISIBLE);
+        }else {
             binding.rlheadquates.setVisibility(View.GONE);
-//        }
+        }
 
-        binding.rlheadquates.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showHQ();
-            }
-        });
+        binding.rlheadquates.setOnClickListener(view -> showHQ());
 
-        binding.btnsumit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveActivity();
-            }
+        binding.btnsumit.setOnClickListener(view -> saveActivity());
+
+        binding.btnClearall.setOnClickListener(v -> {
+            
         });
     }
 
@@ -1438,7 +1433,7 @@ public class DynamicActivity extends AppCompatActivity {
                 TimePickerDialog timePickerDialog = new TimePickerDialog(DynamicActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        textViewtime1.setText(hourOfDay + ":" + minute);
+                        textViewtime1.setText(String.format("%02d:%02d", hourOfDay, minute));
                         commonFun();
                     }
                 }, mHour, mMinute, true);
@@ -1531,7 +1526,7 @@ public class DynamicActivity extends AppCompatActivity {
                 TimePickerDialog timePickerDialog = new TimePickerDialog(DynamicActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        textviewfromtime.setText(hourOfDay + ":" + minute);
+                        textviewfromtime.setText(String.format("%02d:%02d", hourOfDay, minute));
                         commonFun();
                     }
                 }, mHour, mMinute, false);
@@ -1585,7 +1580,7 @@ public class DynamicActivity extends AppCompatActivity {
                         @Override
                         public void onTimeSet(TimePicker view, int hour, int minute) {
                             if(mHour<hour || mMinute<minute) {
-                                textviewtotime.setText(hour + ":" + minute);
+                                textviewtotime.setText(String.format("%02d:%02d", hour, minute));
                             }else {
                                 commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_as_after_from_time));
                                 textviewtotime.setText("");
@@ -1910,7 +1905,7 @@ public class DynamicActivity extends AppCompatActivity {
         textLinearLayout2.setOrientation(LinearLayout.HORIZONTAL);
         textLinearLayout1.addView(textLinearLayout2);
         TextView textviewdata1 = new TextView(this);
-        textviewdata.setText(List.getFieldName());
+//        textviewdata.setText(List.getFieldName());
         LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params11.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textviewdata1.setBackgroundColor(Color.WHITE);

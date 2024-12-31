@@ -315,7 +315,9 @@ public class CallsFragment extends Fragment {
 
         binding.TvAddActivty.setOnClickListener(view -> {
 //            if(UtilityClass.isNetworkAvailable(requireContext())){
-            if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
+            if(HomeDashBoard.selectedDate == null || (HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().isEmpty())){
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+            }else if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
                 CommonAlertBox.ApprovalAlert(requireActivity());
             }else if(SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                 CommonAlertBox.TpAlert(requireActivity());
@@ -362,7 +364,9 @@ public class CallsFragment extends Fragment {
 
         binding.tvAddCall.setOnClickListener(view -> {
             // startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
-            if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
+            if(HomeDashBoard.selectedDate == null || (HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().isEmpty())){
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+            }else if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
                 CommonAlertBox.ApprovalAlert(requireActivity());
             }else if(SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                 CommonAlertBox.TpAlert(requireActivity());

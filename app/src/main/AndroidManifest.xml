@@ -105,6 +105,7 @@
         <activity
             android:name=".activity.activityModule.DynamicActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustPan|stateHidden"
             android:screenOrientation="landscape"
             android:theme="@style/CustomTheme" />
         <activity

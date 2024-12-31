@@ -1237,7 +1237,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             startActivity(intent);
             return true;
         }
-        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.quiz))) {
+        if (item.getTitle().toString().equalsIgnoreCase(SharedPref.getQuizHeading(HomeDashBoard.this))) {
             if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
                 if(HomeDashBoard.selectedDate != null) {
                     startActivity(new Intent(HomeDashBoard.this, QuizActivity.class));
@@ -1782,6 +1782,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.quiz).setVisible(true);
+            menu.findItem(R.id.quiz).setTitle(SharedPref.getQuizHeading(HomeDashBoard.this));
         }
         else {
             menu.findItem(R.id.quiz).setVisible(false);

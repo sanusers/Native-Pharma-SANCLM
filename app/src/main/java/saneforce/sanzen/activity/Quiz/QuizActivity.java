@@ -89,6 +89,9 @@ public class QuizActivity extends AppCompatActivity {
         binding = ActivityQuizBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        binding.quizTitle.setText(SharedPref.getQuizHeading(QuizActivity.this));
+        binding.welcomeTitle.setText(String.format("Welcome to %s Session", SharedPref.getQuizHeading(QuizActivity.this)));
+        binding.startQuizBtn.setText(String.format("Start %s", SharedPref.getQuizHeading(QuizActivity.this)));
         callSyncAPI();
         commonUtilsMethods = new CommonUtilsMethods(QuizActivity.this);
         if(HomeDashBoard.selectedDate != null) {
@@ -102,12 +105,22 @@ public class QuizActivity extends AppCompatActivity {
         quizOfflineDataDao = roomDB.quizOfflineDataDao();
 
         binding.backArrow.setOnClickListener(v -> {
-            getOnBackPressedDispatcher().onBackPressed();
-            finish();
+            if(SharedPref.getQuizNeedMandt(QuizActivity.this).equalsIgnoreCase("0")) {
+                // TODO: 27-12-2024
+            }else {
+                backAlert();
+            }
         });
         binding.btnskip.setOnClickListener(v -> {
-            getOnBackPressedDispatcher().onBackPressed();
-            finish();
+            if(SharedPref.getQuizNeedMandt(QuizActivity.this).equalsIgnoreCase("0")) {
+                // TODO: 27-12-2024  
+            }else {
+                backAlert();
+            }
+        });
+
+        binding.downloadAssertsBtn.setOnClickListener(v -> {
+
         });
 
         binding.btnpreview.setAlpha(0.5f);
@@ -149,6 +162,35 @@ public class QuizActivity extends AppCompatActivity {
             validate();
         });
 
+    }
+    
+    private void backAlert() {
+        Dialog dialogBackConfirmation = new Dialog(QuizActivity.this);
+        dialogBackConfirmation.setContentView(R.layout.popup_remarks);
+        Objects.requireNonNull(dialogBackConfirmation.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogBackConfirmation.setCancelable(false);
+        ImageView iv_close = dialogBackConfirmation.findViewById(R.id.img_close);
+        EditText ed_remarks = dialogBackConfirmation.findViewById(R.id.ed_remark);
+        TextView heading = dialogBackConfirmation.findViewById(R.id.tv_head);
+        TextView content = dialogBackConfirmation.findViewById(R.id.content);
+        Button btn_clear = dialogBackConfirmation.findViewById(R.id.btn_clear);
+        Button btn_save = dialogBackConfirmation.findViewById(R.id.btn_save);
+        heading.setText(R.string.alert);
+        btn_save.setText(getString(R.string.yes));
+        btn_clear.setText(getString(R.string.no));
+        content.setText(getString(R.string.are_you_sure) + " want to go back");
+        content.setVisibility(View.VISIBLE);
+        ed_remarks.setVisibility(View.INVISIBLE);
+        btn_save.setOnClickListener(view -> {
+            dialogBackConfirmation.dismiss();
+            getOnBackPressedDispatcher().onBackPressed();
+            finish();
+        });
+        btn_clear.setOnClickListener(view -> {
+            dialogBackConfirmation.dismiss();
+        });
+        iv_close.setOnClickListener(view -> dialogBackConfirmation.dismiss());
+        dialogBackConfirmation.show();
     }
 
     private void validate() {
@@ -209,7 +251,7 @@ public class QuizActivity extends AppCompatActivity {
         if (UtilityClass.isNetworkAvailable(QuizActivity.this)) {
             pauseTimer();
             createJson();
-            callSaveAPI();
+//            callSaveAPI();
             setScoreView();
         } else {
             commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network));
@@ -599,7 +641,6 @@ public class QuizActivity extends AppCompatActivity {
             e.printStackTrace();
             commonUtilsMethods.showToastMessage(QuizActivity.this, "Please try after sometime");
             finish();
-            ;
         }
     }
 

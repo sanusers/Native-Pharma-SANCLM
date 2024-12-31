@@ -149,7 +149,7 @@ public class DCRCallActivity extends AppCompatActivity {
     GPSTrack gpsTrack;
 
     JSONObject jsonSaveDcr, jsonImage;
-    String GeoChk, capPrd, capInp, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, InputNeed, ProductNeed, AdditionalCallNeed;
+    String GeoChk, capPrd, capInp, capActivity, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, InputNeed, ProductNeed, AdditionalCallNeed;
     double lat, lng;
     ApiInterface api_interface;
     String ChemName = "", CheCode = "";
@@ -540,13 +540,12 @@ public class DCRCallActivity extends AppCompatActivity {
                     pages.add("RCPA");
                 }
             }
-
+            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+                viewPagerAdapter.add(new ActivityFragment(), capActivity);
+                pages.add(capActivity);
+            }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new ActivityFragment(), "Activity");
-                pages.add("Activity");
-            }
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -562,13 +561,12 @@ public class DCRCallActivity extends AppCompatActivity {
                     pages.add("RCPA");
                 }
             }
+            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+                viewPagerAdapter.add(new ActivityFragment(), capActivity);
+                pages.add(capActivity);
+            }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new ActivityFragment(), "Activity");
-                pages.add("Activity");
-            }
-
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -578,13 +576,12 @@ public class DCRCallActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new InputFragment(), capInp);
                 pages.add(capInp);
             }
+            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+                viewPagerAdapter.add(new ActivityFragment(), capActivity);
+                pages.add(capActivity);
+            }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new ActivityFragment(), "Activity");
-                pages.add("Activity");
-            }
-
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -594,25 +591,23 @@ public class DCRCallActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new InputFragment(), capInp);
                 pages.add(capInp);
             }
+            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+                viewPagerAdapter.add(new ActivityFragment(), capActivity);
+                pages.add(capActivity);
+            }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new ActivityFragment(), "Activity");
-                pages.add("Activity");
-            }
-
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("5")) {
             viewPagerAdapter.add(new ProductFragment(), "Product");
             pages.add("Product");
             viewPagerAdapter.add(new InputFragment(), "Input");
             pages.add("Input");
+            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+                viewPagerAdapter.add(new ActivityFragment(), capActivity);
+                pages.add(capActivity);
+            }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new ActivityFragment(), "Activity");
-                pages.add("Activity");
-            }
-
         }
 
         dcrCallBinding.viewPager.setAdapter(viewPagerAdapter);
@@ -2382,6 +2377,7 @@ public class DCRCallActivity extends AppCompatActivity {
             StateCode =  SharedPref.getStateCode(this);
             RcpaCompetitorAdd =  SharedPref.getRcpaCompetitorAdd(this);;
             EventCapMandatory =  SharedPref.getCipEventMd(this);;
+            capActivity = SharedPref.getActivityCap(this);
 
             switch (CallActivityCustDetails.get(0).getType()) {
                 case "1": //Dr
