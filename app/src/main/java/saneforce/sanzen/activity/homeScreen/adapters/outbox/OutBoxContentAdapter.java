@@ -139,6 +139,11 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
 
         switch (contentList.getChildId()) {
             case 0:
+                if (contentList.getCheckInOutModelClasses() == null) {
+                    holder.expandContentView.setVisibility(View.GONE);
+                } else {
+                    holder.expandContentView.setVisibility(View.VISIBLE);
+                }
                 holder.tvCount.setText(String.valueOf(contentList.getCheckInOutModelClasses().size()));
                 if (contentList.isExpanded() && !contentList.getCheckInOutModelClasses().isEmpty()) {
                     SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses(), contentList.getActivityUploadModelClasses());
@@ -155,6 +160,11 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 }
                 break;
             case 2:
+                if (contentList.getOutBoxCallLists() == null) {
+                    holder.expandContentView.setVisibility(View.GONE);
+                } else {
+                    holder.expandContentView.setVisibility(View.VISIBLE);
+                }
                 holder.tvCount.setText(String.valueOf(contentList.getOutBoxCallLists().size()));
                 if (contentList.isExpanded() && !contentList.getOutBoxCallLists().isEmpty()) {
                     SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses(), contentList.getActivityUploadModelClasses());
@@ -164,6 +174,11 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 }
                 break;
             case 3:
+                if (contentList.getEcModelClasses() == null) {
+                    holder.expandContentView.setVisibility(View.GONE);
+                } else {
+                    holder.expandContentView.setVisibility(View.VISIBLE);
+                }
                 holder.tvCount.setText(String.valueOf(contentList.getEcModelClasses().size()));
                 if (contentList.isExpanded() && !contentList.getEcModelClasses().isEmpty()) {
                     SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses(), contentList.getActivityUploadModelClasses());
@@ -173,6 +188,11 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 }
                 break;
             case 4:
+                if (contentList.getActivityModelClasses() == null) {
+                    holder.expandContentView.setVisibility(View.GONE);
+                } else {
+                    holder.expandContentView.setVisibility(View.VISIBLE);
+                }
                 holder.tvCount.setText(String.valueOf(contentList.getActivityModelClasses().size()));
                 if(contentList.isExpanded() && !contentList.getActivityModelClasses().isEmpty()) {
                     SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses(), contentList.getActivityUploadModelClasses());
@@ -182,6 +202,11 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 }
                 break;
             case 5:
+                if (contentList.getActivityUploadModelClasses() == null) {
+                    holder.expandContentView.setVisibility(View.GONE);
+                } else {
+                    holder.expandContentView.setVisibility(View.VISIBLE);
+                }
                 holder.tvCount.setText(String.valueOf(contentList.getActivityUploadModelClasses().size()));
                 if(contentList.isExpanded() && !contentList.getActivityUploadModelClasses().isEmpty()) {
                     SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getActivityModelClasses(), contentList.getActivityUploadModelClasses());

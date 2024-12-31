@@ -72,7 +72,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
 //                }else {
                     rowindex = position;
                     notifyDataSetChanged();
-                    activityView.ChooseActivity(DataList.get(position), holder);
+                    activityView.ChooseActivity(DataList.get(position), holder, position);
 //                }
 
 
@@ -88,6 +88,11 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             holder.layout.setBackgroundColor(Color.WHITE);
             holder.imageView.setImageResource(R.drawable.right_arrow);
         }
+    }
+
+    public void changeRowIndex(int index) {
+        rowindex = index;
+        notifyDataSetChanged();
     }
 
     public void changeSelected(Viewholder holder) {

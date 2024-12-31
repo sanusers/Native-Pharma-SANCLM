@@ -15,6 +15,7 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -64,7 +65,9 @@ import androidx.core.content.PermissionChecker;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -96,6 +99,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -111,6 +115,7 @@ import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataTab
 import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDataDao;
 import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDataTable;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
@@ -125,12 +130,13 @@ public class DynamicActivity extends AppCompatActivity {
     ArrayList<ActivityDetailsModelClass> ActivityViewItem = new ArrayList<>();
     String[] value, valfrom, valto;
     ActvityList2Adapter adapter1;
-
+    List<String> SynqList = new ArrayList<>();
+    private ProgressDialog syncProgressDialog;
     ActivityAdapter adapter;
     GPSTrack gpsTrack;
     Typeface fontregular, fontmedium;
     Uri uri;
-    int StorageFlag = 0;
+    int StorageFlag = 0, chosenActivityPosition = -1;
     File file1;
     CommonUtilsMethods commonUtilsMethods;
     public static TextView FilnameTet;
@@ -140,7 +146,7 @@ public class DynamicActivity extends AppCompatActivity {
     private ActivityOfflineDataDao activityOfflineDataDao;
     private ActivityUploadDataDao activityUploadDataDao;
     public static boolean isEdited = false;
-    private ActivityModelClass choosenActivityModelClass;
+    private ActivityModelClass chosenActivityModelClass;
     private String activityDate, activityTime;
 
     @Override
@@ -165,11 +171,22 @@ public class DynamicActivity extends AppCompatActivity {
         binding.tvContent.setText(String.format("Select any %s on list  to view content", SharedPref.getActivityCap(DynamicActivity.this)));
         binding.txthqName.setText(SharedPref.getHqName(DynamicActivity.this));
         binding.btnsumit.setEnabled(false);
-        adapter = new ActivityAdapter(DynamicActivity.this, ActivityList, (classGroup, holder) -> {
-            binding.namechooseActivity.setText(classGroup.getActivityName());
-            binding.llActivityDetailsView.removeAllViews();
-            getActivityDetails(classGroup);
-            choosenActivityModelClass = classGroup;
+
+        syncProgressDialog = new ProgressDialog(DynamicActivity.this);
+        syncProgressDialog.setMessage(DynamicActivity.this.getString(R.string.head_quarters_syncing));
+        syncProgressDialog.setCancelable(false);
+        syncProgressDialog.setIndeterminate(true);
+
+        adapter = new ActivityAdapter(DynamicActivity.this, ActivityList, (classGroup, holder, position) -> {
+            if (this.chosenActivityPosition != position && this.chosenActivityPosition != -1) {
+                activityChangeAlert(classGroup, position);
+            } else {
+                binding.namechooseActivity.setText(classGroup.getActivityName());
+                binding.llActivityDetailsView.removeAllViews();
+                chosenActivityModelClass = classGroup;
+                chosenActivityPosition = position;
+                getActivityDetails(classGroup);
+            }
         });
         binding.skRecylerview.setLayoutManager(new LinearLayoutManager(this));
         binding.skRecylerview.setAdapter(adapter);
@@ -197,7 +214,7 @@ public class DynamicActivity extends AppCompatActivity {
         });
 
         binding.backArrow.setOnClickListener(v -> {
-            if(DynamicActivity.isEdited) {
+            if (DynamicActivity.isEdited) {
                 Dialog dialog = new Dialog(DynamicActivity.this);
                 dialog.setContentView(R.layout.dcr_cancel_alert);
                 dialog.setCancelable(false);
@@ -214,14 +231,14 @@ public class DynamicActivity extends AppCompatActivity {
                 btn_no.setOnClickListener(view12 -> {
                     dialog.dismiss();
                 });
-            }else {
+            } else {
                 getOnBackPressedDispatcher().onBackPressed();
             }
         });
 
-        if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
             binding.rlheadquates.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             binding.rlheadquates.setVisibility(View.GONE);
         }
 
@@ -230,8 +247,57 @@ public class DynamicActivity extends AppCompatActivity {
         binding.btnsumit.setOnClickListener(view -> saveActivity());
 
         binding.btnClearall.setOnClickListener(v -> {
-            
+            showClearAlert();
         });
+    }
+
+    private void activityChangeAlert(ActivityModelClass classGroup, int position) {
+        Dialog dialog = new Dialog(DynamicActivity.this);
+        dialog.setContentView(R.layout.dcr_cancel_alert);
+        dialog.setCancelable(false);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+        TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
+        TextView btn_no = dialog.findViewById(R.id.btn_no);
+        alertText.setText(String.format("%s Want to change %s.\nYour entered %s details will be cleared", DynamicActivity.this.getString(R.string.are_you_sure), SharedPref.getActivityCap(DynamicActivity.this), SharedPref.getActivityCap(DynamicActivity.this)));
+        btn_yes.setOnClickListener(view12 -> {
+            binding.namechooseActivity.setText(classGroup.getActivityName());
+            binding.llActivityDetailsView.removeAllViews();
+            chosenActivityModelClass = classGroup;
+            chosenActivityPosition = position;
+            getActivityDetails(classGroup);
+            dialog.dismiss();
+        });
+        btn_no.setOnClickListener(view12 -> {
+            adapter.changeRowIndex(chosenActivityPosition);
+            dialog.dismiss();
+        });
+    }
+
+    private void showClearAlert() {
+        Dialog dialog = new Dialog(DynamicActivity.this);
+        dialog.setContentView(R.layout.dcr_cancel_alert);
+        dialog.setCancelable(false);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+        TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
+        TextView btn_no = dialog.findViewById(R.id.btn_no);
+        alertText.setText(DynamicActivity.this.getString(R.string.are_you_sure_you_want_to_clear));
+        btn_yes.setOnClickListener(view12 -> {
+            clearViews();
+            dialog.dismiss();
+        });
+        btn_no.setOnClickListener(view12 -> {
+            dialog.dismiss();
+        });
+    }
+
+    private void clearViews() {
+        binding.llActivityDetailsView.removeAllViews();
+        chosenActivityModelClass = ActivityList.get(chosenActivityPosition);
+        getActivityDetails(ActivityList.get(chosenActivityPosition));
     }
 
     public void getActivity() {
@@ -239,12 +305,12 @@ public class DynamicActivity extends AppCompatActivity {
         ActivityList.clear();
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.ACTIVITY).getMasterSyncDataJsonArray();
-            for (int i = 0; i<jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.optJSONObject(i);
                 String activityDesignation = jsonObject.optString("Activity_Desig"), activityFor = jsonObject.optString("Activity_For");
                 String dsName = SharedPref.getDsName(DynamicActivity.this);
 
-                if(activityDesignation.contains(dsName) && activityFor.contains("0")) {
+                if (activityDesignation.contains(dsName) && activityFor.contains("0")) {
                     binding.rlNoActivity.setVisibility(View.GONE);
                     binding.llMainLayout.setVisibility(View.VISIBLE);
                     binding.rlDetailsMain.setVisibility(View.VISIBLE);
@@ -252,7 +318,7 @@ public class DynamicActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 }
             }
-            if(ActivityList.isEmpty()) {
+            if (ActivityList.isEmpty()) {
                 adapter.notifyDataSetChanged();
                 binding.rlDetailsMain.setVisibility(View.GONE);
                 binding.rlNoActivity.setVisibility(View.VISIBLE);
@@ -272,11 +338,11 @@ public class DynamicActivity extends AppCompatActivity {
         try {
             ActivityDetailsDataTable activityDetailsDataTable = activityDetailsDataDao.getActivityDetailsByID(activityModelClass.getSlNo());
             JSONArray jsonArray = activityDetailsDataTable.getActivityDataJSONArray();
-            if(jsonArray.length()>0) {
+            if (jsonArray.length() > 0) {
                 binding.rldatalayout.setVisibility(View.VISIBLE);
                 binding.btnsumit.setVisibility(View.VISIBLE);
                 binding.rlNoData.setVisibility(View.GONE);
-                for (int i = 0; i<jsonArray.length(); i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                     String Control_Id = jsonObject1.getString("Control_Id");
                     String Field_Name = jsonObject1.getString("Field_Name");
@@ -288,8 +354,8 @@ public class DynamicActivity extends AppCompatActivity {
                     ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID, activityModelClass.getSlNo()));
                 }
                 int jjj = 0;
-                for (int i = 0; i<ActivityDetailsList.size(); i++) {
-                    switch (ActivityDetailsList.get(i).getControlId()){
+                for (int i = 0; i < ActivityDetailsList.size(); i++) {
+                    switch (ActivityDetailsList.get(i).getControlId()) {
                         case "0":
                             CreateLabelView(ActivityDetailsList.get(i), i);
                             break;
@@ -348,30 +414,30 @@ public class DynamicActivity extends AppCompatActivity {
                             break;
                     }
                     jjj++;
-                    if(ActivityDetailsList.size() == jjj) {
+                    if (ActivityDetailsList.size() == jjj) {
                         binding.btnsumit.setEnabled(true);
                     }
                 }
             }
-            if(!ActivityDetailsList.isEmpty()) {
+            if (!ActivityDetailsList.isEmpty()) {
                 binding.progrlessdetail.setVisibility(View.GONE);
                 binding.rlNoData.setVisibility(View.GONE);
                 binding.rlDetailsMain.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 binding.rlNoData.setVisibility(View.VISIBLE);
                 binding.rlDetailsMain.setVisibility(View.GONE);
                 binding.btnsumit.setVisibility(View.GONE);
                 binding.progrlessdetail.setVisibility(View.GONE);
                 commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void getActivity(String hqcode) {
         if (UtilityClass.isNetworkAvailable(this)) {
-            isEdited=false;
+            isEdited = false;
             binding.progressMain.setVisibility(View.VISIBLE);
             try {
                 JSONObject object = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
@@ -390,19 +456,19 @@ public class DynamicActivity extends AppCompatActivity {
                         ActivityList.clear();
                         Log.v("Response API :", "" + response);
                         JSONArray jsonArray = new JSONArray();
-                        if(response.isSuccessful()) {
+                        if (response.isSuccessful()) {
                             try {
                                 JsonElement jsonElement = response.body();
                                 jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-                                if(jsonArray.length()>0) {
-                                    for (int i = 0; i<jsonArray.length(); i++) {
+                                if (jsonArray.length() > 0) {
+                                    for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         String[] Activity_Desig = jsonObject.getString("Activity_Desig").split(",\\s*");
                                         String[] ActivityFor = jsonObject.getString("Activity_For").split(",");
                                         List<String> ActivityForList = Arrays.asList(ActivityFor);
                                         List<String> DegList = Arrays.asList(Activity_Desig);
 
-                                        if(DegList.contains(SharedPref.getDsName(DynamicActivity.this)) && ActivityForList.contains("0")) {
+                                        if (DegList.contains(SharedPref.getDsName(DynamicActivity.this)) && ActivityForList.contains("0")) {
                                             binding.rlNoActivity.setVisibility(View.GONE);
                                             binding.llMainLayout.setVisibility(View.VISIBLE);
                                             binding.rlDetailsMain.setVisibility(View.VISIBLE);
@@ -412,7 +478,7 @@ public class DynamicActivity extends AppCompatActivity {
                                     }
                                 }
 
-                                if(ActivityList.size()<=0) {
+                                if (ActivityList.size() <= 0) {
                                     adapter.notifyDataSetChanged();
                                     binding.rlDetailsMain.setVisibility(View.GONE);
                                     binding.rlNoActivity.setVisibility(View.VISIBLE);
@@ -437,13 +503,13 @@ public class DynamicActivity extends AppCompatActivity {
             } catch (Exception a) {
                 a.printStackTrace();
             }
-        }else {
+        } else {
             commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
         }
     }
 
     public void getActivityDetails1(ActivityModelClass Data) {
-        if(UtilityClass.isNetworkAvailable(this)) {
+        if (UtilityClass.isNetworkAvailable(this)) {
             isEdited = false;
             binding.progrlessdetail.setVisibility(View.VISIBLE);
             try {
@@ -463,17 +529,17 @@ public class DynamicActivity extends AppCompatActivity {
                     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                         Log.v("Response :", "" + response);
                         JSONArray jsonArray = new JSONArray();
-                        if(response.isSuccessful()) {
+                        if (response.isSuccessful()) {
                             ActivityDetailsList.clear();
                             ActivityViewItem.clear();
                             try {
                                 JsonElement jsonElement = response.body();
                                 jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-                                if(jsonArray.length()>0) {
+                                if (jsonArray.length() > 0) {
                                     binding.rldatalayout.setVisibility(View.VISIBLE);
                                     binding.btnsumit.setVisibility(View.VISIBLE);
                                     binding.rlNoData.setVisibility(View.GONE);
-                                    for (int i = 0; i<jsonArray.length(); i++) {
+                                    for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                                         String Control_Id = jsonObject1.getString("Control_Id");
                                         String Field_Name = jsonObject1.getString("Field_Name");
@@ -485,8 +551,8 @@ public class DynamicActivity extends AppCompatActivity {
                                         ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID, Data.getSlNo()));
                                     }
                                     int jjj = 0;
-                                    for (int i = 0; i<ActivityDetailsList.size(); i++) {
-                                        switch (ActivityDetailsList.get(i).getControlId()){
+                                    for (int i = 0; i < ActivityDetailsList.size(); i++) {
+                                        switch (ActivityDetailsList.get(i).getControlId()) {
                                             case "0":
                                                 CreateLabelView(ActivityDetailsList.get(i), i);
                                                 break;
@@ -545,16 +611,16 @@ public class DynamicActivity extends AppCompatActivity {
                                                 break;
                                         }
                                         jjj++;
-                                        if(ActivityDetailsList.size() == jjj) {
+                                        if (ActivityDetailsList.size() == jjj) {
                                             binding.btnsumit.setEnabled(true);
                                         }
                                     }
                                 }
-                                if(!ActivityDetailsList.isEmpty()) {
+                                if (!ActivityDetailsList.isEmpty()) {
                                     binding.progrlessdetail.setVisibility(View.GONE);
                                     binding.rlNoData.setVisibility(View.GONE);
                                     binding.rlDetailsMain.setVisibility(View.VISIBLE);
-                                }else {
+                                } else {
                                     binding.rlNoData.setVisibility(View.VISIBLE);
                                     binding.rlDetailsMain.setVisibility(View.GONE);
                                     binding.btnsumit.setVisibility(View.GONE);
@@ -581,7 +647,7 @@ public class DynamicActivity extends AppCompatActivity {
             } catch (Exception a) {
                 a.printStackTrace();
             }
-        }else {
+        } else {
             commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no_network));
         }
     }
@@ -621,9 +687,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             txtLabelName.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             txtLabelName.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -677,7 +743,7 @@ public class DynamicActivity extends AppCompatActivity {
         textcharacter.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
                     hideKeyboard(v);
                     v.clearFocus();
                     return true;
@@ -701,9 +767,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -752,7 +818,7 @@ public class DynamicActivity extends AppCompatActivity {
         textnumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
                     hideKeyboard(v);
                     v.clearFocus();
                     return true;
@@ -776,9 +842,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -835,7 +901,7 @@ public class DynamicActivity extends AppCompatActivity {
         textarea.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
                     hideKeyboard(v);
                     v.clearFocus();
                     return true;
@@ -856,9 +922,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -941,9 +1007,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
@@ -1033,9 +1099,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -1148,9 +1214,9 @@ public class DynamicActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String fromdate = textviewfromdate.getText().toString();
-                if(fromdate.equals("")) {
+                if (fromdate.equals("")) {
                     commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.select_from_date));
-                }else {
+                } else {
                     String datee[] = fromdate.split("-");
                     final Calendar c = Calendar.getInstance();
                     int mYear = Integer.parseInt(datee[2]);
@@ -1183,9 +1249,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -1308,9 +1374,9 @@ public class DynamicActivity extends AppCompatActivity {
             @Override
             public void onClick(View view2) {
                 String fromdate = textviewfromdate.getText().toString();
-                if(fromdate.equals("")) {
+                if (fromdate.equals("")) {
                     commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.select_from_date));
-                }else {
+                } else {
                     String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30, TimeUtils.FORMAT_5, fromdate);
                     String Time = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30, TimeUtils.FORMAT_29, fromdate);
                     String[] datas = Time.split(":");
@@ -1334,14 +1400,14 @@ public class DynamicActivity extends AppCompatActivity {
                             c.set(Calendar.HOUR_OF_DAY, hourOfDay);
                             c.set(Calendar.MINUTE, minute1);
                             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
-                            if(monthOfYear == mMonth && year1 == mYear && dayOfMonth1 == mDay) {
-                                if(mHour<hourOfDay || mMinute<minute1) {
+                            if (monthOfYear == mMonth && year1 == mYear && dayOfMonth1 == mDay) {
+                                if (mHour < hourOfDay || mMinute < minute1) {
                                     textviewtodate.setText(dateFormat.format(c.getTime()));
-                                }else {
+                                } else {
                                     commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_as_after_from_time));
                                     textviewtodate.setText("");
                                 }
-                            }else {
+                            } else {
                                 textviewtodate.setText(dateFormat.format(c.getTime()));
                                 commonFun();
                             }
@@ -1367,9 +1433,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
@@ -1438,7 +1504,7 @@ public class DynamicActivity extends AppCompatActivity {
                     }
                 }, mHour, mMinute, true);
                 timePickerDialog.show();
-                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.R) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     timePickerDialog.getWindow().setDecorFitsSystemWindows(true);
                 }
             }
@@ -1456,9 +1522,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
@@ -1569,9 +1635,9 @@ public class DynamicActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String data = textviewfromtime.getText().toString();
-                if(data.equalsIgnoreCase("")) {
+                if (data.equalsIgnoreCase("")) {
                     commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_from_time));
-                }else {
+                } else {
                     String[] datas = data.split(":");
                     final int mHour = Integer.parseInt(datas[0]);
                     final int mMinute = Integer.parseInt(datas[1]);
@@ -1579,9 +1645,9 @@ public class DynamicActivity extends AppCompatActivity {
                     TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker view, int hour, int minute) {
-                            if(mHour<hour || mMinute<minute) {
+                            if (mHour < hour || mMinute < minute) {
                                 textviewtotime.setText(String.format("%02d:%02d", hour, minute));
-                            }else {
+                            } else {
                                 commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_as_after_from_time));
                                 textviewtotime.setText("");
                             }
@@ -1604,9 +1670,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textcombosingle.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textcombosingle.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -1674,8 +1740,8 @@ public class DynamicActivity extends AppCompatActivity {
                 ArrayList<ActivityModelClass> mlist = new ArrayList<>();
                 try {
                     JSONArray jsonArray = new JSONArray(List.getInput());
-                    if(jsonArray.length()>0) {
-                        for (int i = 0; i<jsonArray.length(); i++) {
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             String[] data = jsonObject.toString().replaceAll("[{}]", "").split(",");
                             String[] mCode = data[0].split(":");
@@ -1701,9 +1767,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textcombomultiple.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textcombomultiple.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -1772,16 +1838,16 @@ public class DynamicActivity extends AppCompatActivity {
                 List<String> activityForList = Arrays.asList(selectedIds);
                 try {
                     JSONArray jsonArray = new JSONArray(List.getInput());
-                    if(jsonArray.length()>0) {
-                        for (int i = 0; i<jsonArray.length(); i++) {
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             String[] data = jsonObject.toString().replaceAll("[{}]", "").split(",");
                             String[] mCode = data[0].split(":");
                             String[] mName = data[1].split(":");
                             Log.v("eeeswa", "" + mCode[1].replaceAll("\"", ""));
-                            if(activityForList.contains(mCode[1].replaceAll("\"", ""))) {
+                            if (activityForList.contains(mCode[1].replaceAll("\"", ""))) {
                                 mlist.add(new ActivityModelClass(mCode[1].replaceAll("\"", ""), mName[1].replaceAll("\"", ""), true));
-                            }else {
+                            } else {
                                 mlist.add(new ActivityModelClass(mCode[1].replaceAll("\"", ""), mName[1].replaceAll("\"", ""), false));
                             }
                         }
@@ -1806,9 +1872,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -1862,9 +1928,9 @@ public class DynamicActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 FilnameTet = textfileupload;
-                if(!CheckStoragePermission()) {
+                if (!CheckStoragePermission()) {
                     RequestStoragePermission();
-                }else {
+                } else {
                     Open_Storage();
                 }
             }
@@ -1885,9 +1951,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
@@ -2015,16 +2081,16 @@ public class DynamicActivity extends AppCompatActivity {
         String address;
         double latitude = gpsTrack.getLatitude();
         double longitude = gpsTrack.getLongitude();
-        if(UtilityClass.isNetworkAvailable(DynamicActivity.this)) {
+        if (UtilityClass.isNetworkAvailable(DynamicActivity.this)) {
             address = CommonUtilsMethods.gettingAddress(this, latitude, longitude, false);
-        }else {
+        } else {
             address = "No Address Found";
         }
         AddressText.setText(address);
         LatText.setText("Lat  :" + String.valueOf(latitude));
         LongText.setText("Long  :" + String.valueOf(longitude));
 
-        if(latitude == 0.0 || longitude == 0.0)
+        if (latitude == 0.0 || longitude == 0.0)
             ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
         else
             ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "Lat  :" + latitude + " " + "Long  :" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
@@ -2033,24 +2099,24 @@ public class DynamicActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    if(!CheckLocPermission()) {
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    if (!CheckLocPermission()) {
                         RequestLocationPermission();
-                    }else {
+                    } else {
                         commonUtilsMethods.showToastMessage(DynamicActivity.this, "Wait For Location");
                         String address;
                         double latitude = gpsTrack.getLatitude();
                         double longitude = gpsTrack.getLongitude();
                         address = CommonUtilsMethods.gettingAddress(DynamicActivity.this, latitude, longitude, false);
 
-                        if(ActivityViewItem != null && ActivityViewItem.size()>k) {
+                        if (ActivityViewItem != null && ActivityViewItem.size() > k) {
                             ActivityViewItem.get(k).setAnswerTxt("Lat  :" + latitude + " " + "Long  :" + longitude);
                             ActivityViewItem.get(k).setAnswerTxt2(address);
                         }
                         LatText.setText("Lat  :" + String.valueOf(latitude));
                         LongText.setText("Long  :" + String.valueOf(longitude));
                     }
-                }else {
+                } else {
                     CommonUtilsMethods.RequestGPSPermission(DynamicActivity.this);
                 }
             }
@@ -2058,7 +2124,7 @@ public class DynamicActivity extends AppCompatActivity {
     }
 
     public void addeditcurrencyconvertor(ActivityDetailsModelClass List, int k) {
-        if(!List.getControlPara().equals("")) {
+        if (!List.getControlPara().equals("")) {
             value = List.getControlPara().split("[/]");
             valfrom = value[0].split("[-]");
             valto = value[1].split("[-]");
@@ -2084,9 +2150,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
@@ -2190,9 +2256,9 @@ public class DynamicActivity extends AppCompatActivity {
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
-        if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
+        if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
-        }else {
+        } else {
             textviewdata.setText(List.getFieldName());
         }
         textviewdata.setTypeface(fontmedium);
@@ -2232,10 +2298,10 @@ public class DynamicActivity extends AppCompatActivity {
     }
 
     public void ShowListPopup(TextView NameView, TextView IdView, ArrayList<ActivityModelClass> List, String name, boolean isMultipleCheck) {
-        if(isMultipleCheck) {
+        if (isMultipleCheck) {
             binding.SlideScreen.viewDummy1.setVisibility(View.VISIBLE);
             binding.SlideScreen.txtClDone.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             binding.SlideScreen.viewDummy1.setVisibility(View.GONE);
             binding.SlideScreen.txtClDone.setVisibility(View.GONE);
         }
@@ -2249,11 +2315,11 @@ public class DynamicActivity extends AppCompatActivity {
         adapter1 = new ActvityList2Adapter(DynamicActivity.this, List, IdView, isMultipleCheck, new CheckBoxInterface() {
             @Override
             public void Checked(ActivityModelClass activityModelClass) {
-                if(isMultipleCheck) {
+                if (isMultipleCheck) {
                     mListName.add(activityModelClass.getName());
                     mListId.add(activityModelClass.getCode());
                     IdView.setText(activityModelClass.getCode());
-                }else {
+                } else {
                     binding.mainLayout.closeDrawer(Gravity.RIGHT);
                     NameView.setText(activityModelClass.getName());
                     IdView.setText(activityModelClass.getCode());
@@ -2288,9 +2354,9 @@ public class DynamicActivity extends AppCompatActivity {
         binding.SlideScreen.txtClDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isMultipleCheck) {
+                if (isMultipleCheck) {
                     String lids = "";
-                    for (int i = 0; i<mListId.size(); i++) {
+                    for (int i = 0; i < mListId.size(); i++) {
                         lids = lids + "," + mListId.get(i);
                     }
                     NameView.setText(mListName.toString().replaceAll("[\\[\\]]", ""));
@@ -2318,17 +2384,17 @@ public class DynamicActivity extends AppCompatActivity {
     @SuppressLint({"MissingSuperCall", "Range"})
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 7) {
-            if(resultCode == RESULT_OK && data.getData() != null) {
+        if (requestCode == 7) {
+            if (resultCode == RESULT_OK && data.getData() != null) {
                 try {
                     uri = data.getData();
                     String fullPath = getPathFromURI(DynamicActivity.this, uri);
                     String[] parts = fullPath.split("/");
                     String filenmae = parts[parts.length - 1];
 
-                    if(filenmae.endsWith(".zip")) {
+                    if (filenmae.endsWith(".zip")) {
                         commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.zip_not_supported));
-                    }else {
+                    } else {
                         FilnameTet.setText(String.valueOf(filenmae));
                         commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.file_accepted));
 //                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
@@ -2336,13 +2402,13 @@ public class DynamicActivity extends AppCompatActivity {
 //                            dir1.mkdirs();
 //                        }
                         File file = null;
-                        if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                             file = new File(context.getExternalFilesDir(null) + "/ActivityUpload/");
-                        }else {
+                        } else {
                             Log.e("File Creation", "captureFile: No media mounted");
                         }
-                        if(file != null && !file.exists()) {
-                            if(!file.mkdirs()) {
+                        if (file != null && !file.exists()) {
+                            if (!file.mkdirs()) {
                                 Log.e("File Creation", "Directory Creation Failed.");
                             }
                         }
@@ -2353,7 +2419,7 @@ public class DynamicActivity extends AppCompatActivity {
                     commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_correct_path));
                     ex.printStackTrace();
                 }
-            }else {
+            } else {
                 commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_correct_path));
             }
             commonFun();
@@ -2365,15 +2431,15 @@ public class DynamicActivity extends AppCompatActivity {
             File src = new File(srcDir);
             File dst = new File(dstDir, src.getName());
             Log.d("string", src.getName());
-            if(src.isDirectory()) {
+            if (src.isDirectory()) {
                 String files[] = src.list();
                 int filesLength = files.length;
-                for (int i = 0; i<filesLength; i++) {
+                for (int i = 0; i < filesLength; i++) {
                     String src1 = (new File(src, files[i]).getPath());
                     String dst1 = dst.getPath();
                     copyFileOrDirectory(src1, dst1);
                 }
-            }else {
+            } else {
                 copyFile(src, dst);
             }
         } catch (Exception e) {
@@ -2383,9 +2449,9 @@ public class DynamicActivity extends AppCompatActivity {
 
     // @RequiresApi(api = Build.VERSION_CODES.Q)
     public static void copyFile(File sourceFile, File destFile) throws IOException {
-        if(!destFile.getParentFile().exists()) destFile.getParentFile().mkdirs();
+        if (!destFile.getParentFile().exists()) destFile.getParentFile().mkdirs();
 
-        if(!destFile.exists()) {
+        if (!destFile.exists()) {
             destFile.createNewFile();
         }
 
@@ -2402,10 +2468,10 @@ public class DynamicActivity extends AppCompatActivity {
             destination.transferFrom(source, 0, source.size());
             // destination.write(source, 0, source.size());
         } finally {
-            if(source != null) {
+            if (source != null) {
                 source.close();
             }
-            if(destination != null) {
+            if (destination != null) {
                 destination.close();
             }
         }
@@ -2413,108 +2479,108 @@ public class DynamicActivity extends AppCompatActivity {
 
     public void saveActivity() {
 //        if(UtilityClass.isNetworkAvailable(DynamicActivity.this)) {
-            int conut = 0;
-            try {
-                JSONArray jsonArray = new JSONArray();
-                for (int i = 0; i<ActivityViewItem.size(); i++) {
-                    JSONObject jsonObject = new JSONObject();
-                    ActivityDetailsModelClass List = ActivityViewItem.get(i);
-                    Date today = new Date();
-                    String dateTime = TimeUtils.GetCurrentTimeStamp(TimeUtils.FORMAT_1);
-                    String dateToStr = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_1, HomeDashBoard.binding.textDate.getText().toString());
-                    SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-                    String dateToStr1 = format1.format(today) + " 00:00:00";
-                    jsonObject.put("sfcode", SharedPref.getSfCode(this));
-                    jsonObject.put("division_code", SharedPref.getDivisionCode(this));
-                    jsonObject.put("act_date", dateToStr);
-                    jsonObject.put("dcr_date", dateToStr1);
-                    jsonObject.put("update_time", dateTime);
-                    jsonObject.put("ModTime", "");
-                    jsonObject.put("slno", List.getSlno());
-                    jsonObject.put("ctrl_id", List.getControlId());
-                    jsonObject.put("creat_id", List.getCreationId());
-                    jsonObject.put("group_creat_id", List.getCreationId());
-                    jsonObject.put("WT", "0");
-                    jsonObject.put("Pl", "0");
-                    jsonObject.put("cus_code", "0");
-                    jsonObject.put("lat", gpsTrack.getLatitude());
-                    jsonObject.put("lng", gpsTrack.getLongitude());
-                    jsonObject.put("cusname", "Name");
-                    jsonObject.put("DataSF", SharedPref.getSfCode(this));
-                    jsonObject.put("type", "0");
-                    jsonObject.put("WT_code", "");
-                    jsonObject.put("WTName", "");
-                    jsonObject.put("FWFlg", "");
-                    jsonObject.put("town_code", "");
-                    jsonObject.put("town_name", "");
-                    jsonObject.put("Rsf", SharedPref.getHqCode(DynamicActivity.this));
-                    jsonObject.put("sf_type", SharedPref.getSfType(this));
-                    jsonObject.put("Designation", SharedPref.getDesig(this));
-                    jsonObject.put("state_code", SharedPref.getStateCode(this));
-                    jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+        int conut = 0;
+        try {
+            JSONArray jsonArray = new JSONArray();
+            for (int i = 0; i < ActivityViewItem.size(); i++) {
+                JSONObject jsonObject = new JSONObject();
+                ActivityDetailsModelClass List = ActivityViewItem.get(i);
+                Date today = new Date();
+                String dateTime = TimeUtils.GetCurrentTimeStamp(TimeUtils.FORMAT_1);
+                String dateToStr = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_1, HomeDashBoard.binding.textDate.getText().toString());
+                SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+                String dateToStr1 = format1.format(today) + " 00:00:00";
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                jsonObject.put("act_date", dateToStr);
+                jsonObject.put("dcr_date", dateToStr1);
+                jsonObject.put("update_time", dateTime);
+                jsonObject.put("ModTime", "");
+                jsonObject.put("slno", List.getSlno());
+                jsonObject.put("ctrl_id", List.getControlId());
+                jsonObject.put("creat_id", List.getCreationId());
+                jsonObject.put("group_creat_id", List.getCreationId());
+                jsonObject.put("WT", "0");
+                jsonObject.put("Pl", "0");
+                jsonObject.put("cus_code", "0");
+                jsonObject.put("lat", gpsTrack.getLatitude());
+                jsonObject.put("lng", gpsTrack.getLongitude());
+                jsonObject.put("cusname", "Name");
+                jsonObject.put("DataSF", SharedPref.getSfCode(this));
+                jsonObject.put("type", "0");
+                jsonObject.put("WT_code", "");
+                jsonObject.put("WTName", "");
+                jsonObject.put("FWFlg", "");
+                jsonObject.put("town_code", "");
+                jsonObject.put("town_name", "");
+                jsonObject.put("Rsf", SharedPref.getHqCode(DynamicActivity.this));
+                jsonObject.put("sf_type", SharedPref.getSfType(this));
+                jsonObject.put("Designation", SharedPref.getDesig(this));
+                jsonObject.put("state_code", SharedPref.getStateCode(this));
+                jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
 
-                    if(List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
-                        if(List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
-                            commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The From " + List.getFieldName());
-                            break;
-                        }else if(List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
-                            commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The To" + List.getFieldName());
-                            break;
-                        }else {
-                            jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
-                            jsonObject.put("codes", List.getCodes());
-                            Log.v("codes", List.getCodes());
-                        }
-                    }else if(List.getControlId().equalsIgnoreCase("17")) {
-                        if(List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                            commonUtilsMethods.showToastMessage(DynamicActivity.this, "Choose The " + List.getFieldName() + "");
-                            break;
-                        }else {
-                            jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
-                            jsonObject.put("codes", List.getCodes());
-                        }
-                    }else {
-                        if(List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                            commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The " + List.getFieldName() + "");
-                            break;
-                        }else {
-                            jsonObject.put("values", List.getAnswerTxt());
-                            jsonObject.put("codes", List.getCodes());
-                            Log.v("codes", List.getCodes());
-                        }
+                if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
+                    if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The From " + List.getFieldName());
+                        break;
+                    } else if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The To" + List.getFieldName());
+                        break;
+                    } else {
+                        jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
+                        jsonObject.put("codes", List.getCodes());
+                        Log.v("codes", List.getCodes());
                     }
-                    jsonArray.put(jsonObject);
-                    conut++;
+                } else if (List.getControlId().equalsIgnoreCase("17")) {
+                    if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Choose The " + List.getFieldName() + "");
+                        break;
+                    } else {
+                        jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
+                        jsonObject.put("codes", List.getCodes());
+                    }
+                } else {
+                    if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "Fill The " + List.getFieldName() + "");
+                        break;
+                    } else {
+                        jsonObject.put("values", List.getAnswerTxt());
+                        jsonObject.put("codes", List.getCodes());
+                        Log.v("codes", List.getCodes());
+                    }
                 }
+                jsonArray.put(jsonObject);
+                conut++;
+            }
 
-                if(conut == ActivityViewItem.size()) {
-                    isEdited = false;
-                    activityDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
-                    activityTime = CommonUtilsMethods.getCurrentInstance("HH:mm:ss");
-                    binding.progresssumit.setVisibility(View.VISIBLE);
-                    JSONObject MainObject = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
-                    MainObject.put("tableName", "savedcract");
-                    MainObject.put("val", jsonArray);
-                    MainObject.put("division_code", SharedPref.getDivisionCode(DynamicActivity.this));
-                    Log.v("JsonObject  :", "" + MainObject.toString());
-                    Long id = activityOfflineDataDao.saveActivityOfflineData(new ActivityOfflineDataTable(choosenActivityModelClass.getSlNo(), choosenActivityModelClass.getActivityName(), activityDate, activityTime, MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
-                    Map<String, String> QryParam = new HashMap<>();
-                    QryParam.put("axn", "save/activity");
-                    Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(DynamicActivity.this), QryParam, MainObject.toString());
-                    TaggedImage(id);
+            if (conut == ActivityViewItem.size()) {
+                isEdited = false;
+                activityDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                activityTime = CommonUtilsMethods.getCurrentInstance("HH:mm:ss");
+                binding.progresssumit.setVisibility(View.VISIBLE);
+                JSONObject MainObject = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
+                MainObject.put("tableName", "savedcract");
+                MainObject.put("val", jsonArray);
+                MainObject.put("division_code", SharedPref.getDivisionCode(DynamicActivity.this));
+                Log.v("JsonObject  :", "" + MainObject.toString());
+                Long id = activityOfflineDataDao.saveActivityOfflineData(new ActivityOfflineDataTable(chosenActivityModelClass.getSlNo(), chosenActivityModelClass.getActivityName(), activityDate, activityTime, MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
+                Map<String, String> QryParam = new HashMap<>();
+                QryParam.put("axn", "save/activity");
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(DynamicActivity.this), QryParam, MainObject.toString());
+                TaggedImage(id);
 //                    call.enqueue(new Callback<JsonElement>() {
 //                        @Override
 //                        public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
 //                            if(response.code() == 200 || response.code() == 201) {
 //                                commonUtilsMethods.showToastMessage(DynamicActivity.this, "Activity Submitted successfully");
-                                binding.progresssumit.setVisibility(View.GONE);
+                binding.progresssumit.setVisibility(View.GONE);
 //                                TaggedImage();
-                                Intent intent = getIntent();
-                                overridePendingTransition(0, 0);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                finish();
-                                overridePendingTransition(0, 0);
-                                startActivity(intent);
+                Intent intent = getIntent();
+                overridePendingTransition(0, 0);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(intent);
 //
 //                            }
 //                        }
@@ -2525,10 +2591,10 @@ public class DynamicActivity extends AppCompatActivity {
 //                            binding.progresssumit.setVisibility(View.GONE);
 //                        }
 //                    });
-                }
-            } catch (Exception a) {
-                a.printStackTrace();
             }
+        } catch (Exception a) {
+            a.printStackTrace();
+        }
 
 //        }else {
 //            commonUtilsMethods.showToastMessage(DynamicActivity.this, getResources().getString(R.string.no_network));
@@ -2538,9 +2604,9 @@ public class DynamicActivity extends AppCompatActivity {
 
     public void TaggedImage(Long id) {
         try {
-            for (int i = 0; i<ActivityViewItem.size(); i++) {
+            for (int i = 0; i < ActivityViewItem.size(); i++) {
                 ActivityDetailsModelClass List = ActivityViewItem.get(i);
-                if(List.getControlId().equalsIgnoreCase("10") && !List.getAnswerTxt().isEmpty()) {
+                if (List.getControlId().equalsIgnoreCase("10") && !List.getAnswerTxt().isEmpty()) {
                     binding.progresssumit.setVisibility(View.VISIBLE);
                     JSONObject jsonObject = new JSONObject();
 
@@ -2586,19 +2652,19 @@ public class DynamicActivity extends AppCompatActivity {
                     ApiInterface apiInterface1 = RetrofitClient.getRetrofit(DynamicActivity.this, SharedPref.getTagApiImageUrl(DynamicActivity.this));
 //                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
                     File file = null;
-                    if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                    if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                         file = new File(context.getExternalFilesDir(null) + "/ActivityUpload/");
-                    }else {
+                    } else {
                         Log.e("File Creation", "captureFile: No media mounted");
                     }
-                    if(file != null && !file.exists()) {
-                        if(!file.mkdirs()) {
+                    if (file != null && !file.exists()) {
+                        if (!file.mkdirs()) {
                             Log.e("File Creation", "Directory Creation Failed.");
                         }
                     }
                     File destinationFile = new File(file, List.getAnswerTxt());
                     try {
-                        if(!destinationFile.createNewFile()) {
+                        if (!destinationFile.createNewFile()) {
                             Log.e("File Creation", "Destination File Creation Failed.");
                         }
                     } catch (IOException e) {
@@ -2606,7 +2672,7 @@ public class DynamicActivity extends AppCompatActivity {
                     }
 //                    file1 = new File(file.getAbsolutePath() + "/", List.getAnswerTxt());
 
-                    activityUploadDataDao.saveActivityUploadData(new ActivityUploadDataTable(Integer.parseInt(String.valueOf(id)), choosenActivityModelClass.getSlNo(), choosenActivityModelClass.getActivityName(), activityDate, activityTime, List.getAnswerTxt(), destinationFile.getAbsolutePath(), MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
+                    activityUploadDataDao.saveActivityUploadData(new ActivityUploadDataTable(Integer.parseInt(String.valueOf(id)), chosenActivityModelClass.getSlNo(), chosenActivityModelClass.getActivityName(), activityDate, activityTime, List.getAnswerTxt(), destinationFile.getAbsolutePath(), MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
 //                    MultipartBody.Part img = convertImg("ActivityFile", String.valueOf(file1));
 //                    HashMap<String, RequestBody> values = field(MainObject.toString());
 //                    Call<JsonObject> saveAttachement = apiInterface1.SaveImg(values, img);
@@ -2614,7 +2680,7 @@ public class DynamicActivity extends AppCompatActivity {
 //                    saveAttachement.enqueue(new Callback<JsonObject>() {
 //                        @Override
 //                        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                            binding.progresssumit.setVisibility(View.GONE);
+                    binding.progresssumit.setVisibility(View.GONE);
 //                            if(response.isSuccessful()) {
 //                                try {
 //                                    assert response.body() != null;
@@ -2654,17 +2720,17 @@ public class DynamicActivity extends AppCompatActivity {
     }
 
     public static String getPathFromURI(final Context Context, final Uri uri) {
-        if(DocumentsContract.isDocumentUri(Context, uri)) {
-            if(isExternalStorageDocument(uri)) {
+        if (DocumentsContract.isDocumentUri(Context, uri)) {
+            if (isExternalStorageDocument(uri)) {
                 Log.v("bv1", "------" + uri);
                 final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
                 final String type = split[0];
 
-                if("primary".equalsIgnoreCase(type)) {
+                if ("primary".equalsIgnoreCase(type)) {
                     return Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
-            }else if(isDownloadsDocument(uri)) {
+            } else if (isDownloadsDocument(uri)) {
                 Log.v("bv2", "------" + uri);
                 try {
                     final String id = DocumentsContract.getDocumentId(uri);
@@ -2674,17 +2740,17 @@ public class DynamicActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-            }else if(isMediaDocument(uri)) {
+            } else if (isMediaDocument(uri)) {
                 final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
                 final String type = split[0];
                 Log.v("bv3", "------" + uri);
                 Uri contentUri = null;
-                if("image".equals(type)) {
+                if ("image".equals(type)) {
                     contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                }else if("video".equals(type)) {
+                } else if ("video".equals(type)) {
                     contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                }else if("audio".equals(type)) {
+                } else if ("audio".equals(type)) {
                     contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 }
 
@@ -2693,10 +2759,10 @@ public class DynamicActivity extends AppCompatActivity {
 
                 return getDataColumn(Context, contentUri, selection, selectionArgs);
             }
-        }else if("content".equalsIgnoreCase(uri.getScheme())) {
+        } else if ("content".equalsIgnoreCase(uri.getScheme())) {
             Log.v("bv4", "------" + uri);
             return getDataColumn(Context, uri, null, null);
-        }else if("file".equalsIgnoreCase(uri.getScheme())) {
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
             Log.v("bv5", "------" + uri);
             return uri.getPath();
         }
@@ -2709,12 +2775,12 @@ public class DynamicActivity extends AppCompatActivity {
         final String[] projection = {column};
         try {
             cursor = Context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
-            if(cursor != null && cursor.moveToFirst()) {
+            if (cursor != null && cursor.moveToFirst()) {
                 final int column_index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(column_index);
             }
         } finally {
-            if(cursor != null) cursor.close();
+            if (cursor != null) cursor.close();
         }
         return null;
     }
@@ -2740,10 +2806,10 @@ public class DynamicActivity extends AppCompatActivity {
         MultipartBody.Part yy = null;
         try {
             File file;
-            if(path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
+            if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
                 file = new Compressor(DynamicActivity.this).compressToFile(new File(path));
                 Log.d("path", tag + "-" + path);
-            }else {
+            } else {
                 file = new File(path);
             }
             RequestBody requestBody = RequestBody.create(file, MultipartBody.FORM);
@@ -2759,8 +2825,8 @@ public class DynamicActivity extends AppCompatActivity {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
             ArrayList<String> list = new ArrayList<>();
-            if(jsonArray.length()>0) {
-                for (int i = 0; i<jsonArray.length(); i++) {
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     list.add(jsonObject.getString("name"));
                 }
@@ -2793,11 +2859,12 @@ public class DynamicActivity extends AppCompatActivity {
             listView.setOnItemClickListener((adapterView, view1, position, l) -> {
                 String selectedHq = listView.getItemAtPosition(position).toString();
                 binding.txthqName.setText(selectedHq);
-                for (int i = 0; i<jsonArray.length(); i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     try {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if(jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
-                            getActivity(jsonObject.getString("id"));
+                        if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
+                            getHQData(jsonObject.getString("id"));
+//                            getActivity(jsonObject.getString("id"));
                             break;
                         }
                     } catch (JSONException e) {
@@ -2815,10 +2882,127 @@ public class DynamicActivity extends AppCompatActivity {
         }
     }
 
+    private void getHQData(String hqCode) {
+        try {
+            Log.d("DynamicActivity", "showHQ: " + hqCode);
+            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR + hqCode),
+                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST + hqCode),
+                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST + hqCode),
+                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR + hqCode),
+//                        hosAvailability = masterDataDao.isDataAvailable(Constants.HOSPITAL + hqCode),
+//                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
+                    clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode);
+            Log.e("DynamicActivity", "showHQ: " + docAvailability + " " + chemAvailability + " " + stkAvailability + " " + ulDocAvailability + " " + clusterAvailability);
+//                if(docAvailability && chemAvailability && stkAvailability && ulDocAvailability && hosAvailability && cipAvailability && clusterAvailability){
+            if (docAvailability && chemAvailability && stkAvailability && ulDocAvailability && clusterAvailability) {
+                Log.d("DynamicActivity", "getHQData: Data Available");
+            } else if (UtilityClass.isNetworkAvailable(DynamicActivity.this)) {
+                getData(hqCode);
+            } else {
+                commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no_network));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getData(String hqCode) {
+        SynqList = SharedPref.getsyn_hqcode(DynamicActivity.this);
+        SynqList.add(hqCode);
+        SharedPref.setSyncHQ(DynamicActivity.this, SynqList);
+        syncProgressDialog.show();
+        List<MasterSyncItemModel> list = new ArrayList<>();
+        list.add(new MasterSyncItemModel("Doctor", "Doctor", "getdoctors", Constants.DOCTOR + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Chemist", "Doctor", "getchemist", Constants.CHEMIST + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Stockiest", "Doctor", "getstockist", Constants.STOCKIEST + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Unlisted Doctor", "Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("Hospital", 0, "Doctor", "gethospital", Constants.HOSPITAL + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("CIP", 0, "Doctor", "getcip", Constants.CIP + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Cluster", "Doctor", "getterritory", Constants.CLUSTER + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Joint Work", Constants.SUBORDINATE, "getjointwork", Constants.JOINT_WORK + hqCode, 0, false));
+
+        for (int i = 0; i < list.size(); i++) {
+            syncMaster(list.get(i).getMasterOf(), list.get(i).getRemoteTableName(), list.get(i).getLocalTableKeyName(), hqCode);
+        }
+    }
+
+    public void syncMaster(String masterFor, String remoteTableName, String LocalTableKeyName, String hqCode) {
+        if (UtilityClass.isNetworkAvailable(DynamicActivity.this)) {
+            try {
+                String baseUrl = SharedPref.getBaseWebUrl(DynamicActivity.this);
+                String pathUrl = SharedPref.getPhpPathUrl(DynamicActivity.this);
+                String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
+                apiInterface = RetrofitClient.getRetrofit(DynamicActivity.this, baseUrl + replacedUrl);
+
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
+                jsonObject.put("tableName", remoteTableName);
+                jsonObject.put("sfcode", SharedPref.getSfCode(DynamicActivity.this));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(DynamicActivity.this));
+                jsonObject.put("Rsf", hqCode);
+
+                Map<String, String> mapString = new HashMap<>();
+                mapString.put("axn", "table/dcrmasterdata");
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(DynamicActivity.this), mapString, jsonObject.toString());
+
+                if (call != null) {
+                    call.enqueue(new Callback<JsonElement>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                            boolean success = false;
+                            JSONArray jsonArray = new JSONArray();
+
+                            if (response.isSuccessful()) {
+                                Log.e("test", "response : " + masterFor + " -- " + remoteTableName + " : " + Objects.requireNonNull(response.body()));
+                                try {
+                                    JsonElement jsonElement = response.body();
+                                    if (!jsonElement.isJsonNull()) {
+                                        if (jsonElement.isJsonArray()) {
+                                            JsonArray jsonArray1 = jsonElement.getAsJsonArray();
+                                            jsonArray = new JSONArray(jsonArray1.toString());
+                                            success = true;
+                                        } else if (jsonElement.isJsonObject()) {
+                                            JsonObject jsonObject1 = jsonElement.getAsJsonObject();
+                                            JSONObject jsonObject2 = new JSONObject(jsonObject1.toString());
+                                            if (!jsonObject2.has("success")) {
+                                                jsonArray.put(jsonObject2);
+                                                success = true;
+                                            } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                                masterDataDao.saveMasterSyncStatus(LocalTableKeyName, 1);
+                                            }
+                                        }
+
+                                        if (success) {
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(LocalTableKeyName, jsonArray.toString(), 2));
+                                        }
+                                    }
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            syncProgressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                            syncProgressDialog.dismiss();
+                            t.printStackTrace();
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                syncProgressDialog.dismiss();
+                e.printStackTrace();
+            }
+        } else {
+            commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no_network));
+        }
+    }
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if(hasFocus) {
+        if (hasFocus) {
             binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
@@ -2840,12 +3024,12 @@ public class DynamicActivity extends AppCompatActivity {
     }
 
     public boolean CheckStoragePermission() {
-        if(android.os.Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             int image = ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES);
             int video = ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO);
             int audio = ContextCompat.checkSelfPermission(this, READ_MEDIA_AUDIO);
             return image == PackageManager.PERMISSION_GRANTED && video == PackageManager.PERMISSION_GRANTED && audio == PackageManager.PERMISSION_GRANTED;
-        }else {
+        } else {
             int Write = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
             int Read = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
             return Write == PackageManager.PERMISSION_GRANTED && Read == PackageManager.PERMISSION_GRANTED;
@@ -2853,19 +3037,19 @@ public class DynamicActivity extends AppCompatActivity {
     }
 
     private void RequestStoragePermission() {
-        if(android.os.Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
-            if((ActivityCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) || ActivityCompat.checkSelfPermission(this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                if(ActivityCompat.shouldShowRequestPermissionRationale(this, READ_MEDIA_IMAGES)) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if ((ActivityCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) || ActivityCompat.checkSelfPermission(this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_MEDIA_IMAGES)) {
                     ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
-                }else {
+                } else {
                     ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
                 }
             }
-        }else {
-            if(ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if((ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE))) {
+        } else {
+            if (ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE))) {
                     ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
-                }else {
+                } else {
                     ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
                 }
             }
@@ -2877,31 +3061,31 @@ public class DynamicActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         boolean DontAskAgain = false;
 
-        if(requestCode == 101) {
+        if (requestCode == 101) {
             for (String allowedPermissions : permissions) {
-                if(ActivityCompat.shouldShowRequestPermissionRationale(this, allowedPermissions)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, allowedPermissions)) {
                     StorageFlag++;
-                }else if(PermissionChecker.checkCallingOrSelfPermission(this, allowedPermissions) != PermissionChecker.PERMISSION_GRANTED) {
+                } else if (PermissionChecker.checkCallingOrSelfPermission(this, allowedPermissions) != PermissionChecker.PERMISSION_GRANTED) {
                     DontAskAgain = true;
                     StorageFlag++;
                     break;
-                }else {
+                } else {
                     Open_Storage();
                 }
             }
-            if((DontAskAgain) && (StorageFlag>1)) {
+            if ((DontAskAgain) && (StorageFlag > 1)) {
                 CommonUtilsMethods.RequestGPSPermission(DynamicActivity.this, "Files");
             }
         }
-        if(requestCode == 102) {
-            if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == 102) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = getIntent();
                 overridePendingTransition(0, 0);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 finish();
                 overridePendingTransition(0, 0);
                 startActivity(intent);
-            }else {
+            } else {
                 // Permission denied, show a message to the user
                 CommonUtilsMethods.RequestGPSPermission(DynamicActivity.this, "Location");
             }
@@ -2914,10 +3098,10 @@ public class DynamicActivity extends AppCompatActivity {
     }
 
     private void RequestLocationPermission() {
-        if(ContextCompat.checkSelfPermission(DynamicActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(DynamicActivity.this, ACCESS_FINE_LOCATION)) {
+        if (ContextCompat.checkSelfPermission(DynamicActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(DynamicActivity.this, ACCESS_FINE_LOCATION)) {
                 ActivityCompat.requestPermissions(DynamicActivity.this, new String[]{ACCESS_FINE_LOCATION}, 102);
-            }else {
+            } else {
                 ActivityCompat.requestPermissions(DynamicActivity.this, new String[]{ACCESS_FINE_LOCATION}, 102);
             }
         }

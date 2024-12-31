@@ -466,6 +466,7 @@ public class DCRCallActivity extends AppCompatActivity {
             }else{
                 if (isFromActivity.equalsIgnoreCase("new")) {
                     callsUtil.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+                    callsUtil.deleteOfflineActivity(CallActivityCustDetails.get(0).getCode(), HomeDashBoard.selectedDate.toString());
                     Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);

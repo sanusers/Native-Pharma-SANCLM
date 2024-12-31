@@ -18,6 +18,7 @@ import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDet
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -26,6 +27,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -90,6 +92,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MultipartBody;
@@ -103,6 +106,7 @@ import saneforce.sanzen.activity.activityModule.ActivityDetailsModelClass;
 import saneforce.sanzen.activity.activityModule.ActivityModelClass;
 import saneforce.sanzen.activity.activityModule.ActvityList2Adapter;
 import saneforce.sanzen.activity.activityModule.CheckBoxInterface;
+import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -118,6 +122,7 @@ import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataDao
 import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataTable;
 import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDataDao;
 import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDataTable;
+import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
@@ -138,7 +143,7 @@ public class ActivityFragment extends Fragment {
     GPSTrack gpsTrack;
     Typeface fontregular, fontmedium;
     Uri uri;
-    int StorageFlag = 0;
+    int StorageFlag = 0, chosenActivityPosition = -1;
     File file1;
     CommonUtilsMethods commonUtilsMethods;
     public static TextView FilnameTet;
@@ -147,11 +152,11 @@ public class ActivityFragment extends Fragment {
     private ActivityDetailsDataDao activityDetailsDataDao;
     private ActivityOfflineDataDao activityOfflineDataDao;
     private ActivityUploadDataDao activityUploadDataDao;
+    private CallsUtil callsUtil;
     public static boolean isEdited = false;
-    private ActivityModelClass choosenActivityModelClass;
+    private ActivityModelClass chosenActivityModelClass;
     private String activityDate, activityTime;
     public static List<JSONObject> activityData;
-    private ActivityAdapter.Viewholder holder;
 
     @Override
     public void onResume() {
@@ -182,6 +187,7 @@ public class ActivityFragment extends Fragment {
         activityDetailsDataDao = roomDB.activityDetailsDataDao();
         activityOfflineDataDao = roomDB.activityOfflineDataDao();
         activityUploadDataDao = roomDB.activityUploadDataDao();
+        callsUtil = new CallsUtil(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         fontmedium = ResourcesCompat.getFont(requireContext(), R.font.satoshi_medium);
@@ -191,12 +197,16 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(requireContext())));
         fragmentActivityBinding.txthqName.setText(SharedPref.getHqName(requireContext()));
         fragmentActivityBinding.btnsumit.setEnabled(false);
-        adapter = new ActivityAdapter(requireContext(), ActivityList, (classGroup, holder) -> {
-            this.holder = holder;
-            fragmentActivityBinding.namechooseActivity.setText(classGroup.getActivityName());
-            fragmentActivityBinding.llActivityDetailsView.removeAllViews();
-            getActivityDetails(classGroup);
-            choosenActivityModelClass = classGroup;
+        adapter = new ActivityAdapter(requireContext(), ActivityList, (classGroup, holder, position) -> {
+            if (this.chosenActivityPosition != position && this.chosenActivityPosition != -1) {
+                activityChangeAlert(classGroup, position);
+            }else {
+                fragmentActivityBinding.namechooseActivity.setText(classGroup.getActivityName());
+                fragmentActivityBinding.llActivityDetailsView.removeAllViews();
+                chosenActivityModelClass = classGroup;
+                chosenActivityPosition = position;
+                getActivityDetails(classGroup);
+            }
         });
         fragmentActivityBinding.skRecylerview.setLayoutManager(new LinearLayoutManager(requireContext()));
         fragmentActivityBinding.skRecylerview.setAdapter(adapter);
@@ -222,6 +232,66 @@ public class ActivityFragment extends Fragment {
                 saveActivity();
             }
         });
+
+        fragmentActivityBinding.btnClearall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showClearAlert();
+            }
+        });
+
+    }
+
+    private void activityChangeAlert(ActivityModelClass classGroup, int position) {
+        Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.dcr_cancel_alert);
+        dialog.setCancelable(false);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+        TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
+        TextView btn_no = dialog.findViewById(R.id.btn_no);
+        alertText.setText(String.format("%s Want to change %s.\nYour entered %s details will be cleared", requireContext().getString(R.string.are_you_sure), SharedPref.getActivityCap(requireContext()), SharedPref.getActivityCap(requireContext())));
+        btn_yes.setOnClickListener(view12 -> {
+            fragmentActivityBinding.namechooseActivity.setText(classGroup.getActivityName());
+            fragmentActivityBinding.llActivityDetailsView.removeAllViews();
+            chosenActivityModelClass = classGroup;
+            chosenActivityPosition = position;
+            getActivityDetails(classGroup);
+            dialog.dismiss();
+        });
+        btn_no.setOnClickListener(view12 -> {
+            adapter.changeRowIndex(chosenActivityPosition);
+            dialog.dismiss();
+        });
+    }
+
+    private void showClearAlert() {
+        Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.dcr_cancel_alert);
+        dialog.setCancelable(false);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+        TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
+        TextView btn_no = dialog.findViewById(R.id.btn_no);
+        alertText.setText(requireContext().getString(R.string.are_you_sure_you_want_to_clear));
+        btn_yes.setOnClickListener(view12 -> {
+            clearViews();
+            dialog.dismiss();
+        });
+        btn_no.setOnClickListener(view12 -> {
+            dialog.dismiss();
+        });
+    }
+
+    private void clearViews() {
+        fragmentActivityBinding.llActivityDetailsView.removeAllViews();
+        chosenActivityModelClass = ActivityList.get(chosenActivityPosition);
+        getActivityDetails(ActivityList.get(chosenActivityPosition));
+        fragmentActivityBinding.btnsumit.setEnabled(true);
+        fragmentActivityBinding.btnsumit.setAlpha(1f);
+        callsUtil.deleteOfflineActivity(CallActivityCustDetails.get(0).getCode(), HomeDashBoard.selectedDate.toString());
     }
 
     public void getActivityData() {
@@ -2297,17 +2367,18 @@ public class ActivityFragment extends Fragment {
                 MainObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
                 MainObject.put("val", jsonArray);
                 Log.v("JsonObject  :", "" + MainObject.toString());
-                Long id = activityOfflineDataDao.saveActivityOfflineData(new ActivityOfflineDataTable(choosenActivityModelClass.getSlNo(), choosenActivityModelClass.getActivityName(), CallActivityCustDetails.get(0).getCode(), activityDate, activityTime, MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
+                Long id = activityOfflineDataDao.saveActivityOfflineData(new ActivityOfflineDataTable(chosenActivityModelClass.getSlNo(), chosenActivityModelClass.getActivityName(), CallActivityCustDetails.get(0).getCode(), activityDate, activityTime, MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
                 activityData.add(MainObject);
                 TaggedImage(id);
 
                 fragmentActivityBinding.progresssumit.setVisibility(View.GONE);
 
-                adapter.changeSelected(holder);
-                fragmentActivityBinding.rlNoData.setVisibility(View.VISIBLE);
-                fragmentActivityBinding.rlDetailsMain.setVisibility(View.GONE);
-                fragmentActivityBinding.btnsumit.setVisibility(View.GONE);
-                fragmentActivityBinding.progrlessdetail.setVisibility(View.GONE);
+//                adapter.changeSelected(holder);
+//                fragmentActivityBinding.rlNoData.setVisibility(View.VISIBLE);
+//                fragmentActivityBinding.rlDetailsMain.setVisibility(View.GONE);
+                fragmentActivityBinding.btnsumit.setEnabled(false);
+                fragmentActivityBinding.btnsumit.setAlpha(0.5f);
+//                fragmentActivityBinding.progrlessdetail.setVisibility(View.GONE);
             }
         } catch (Exception a) {
             a.printStackTrace();
@@ -2380,7 +2451,7 @@ public class ActivityFragment extends Fragment {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    activityUploadDataDao.saveActivityUploadData(new ActivityUploadDataTable(Integer.parseInt(String.valueOf(id)), choosenActivityModelClass.getSlNo(), choosenActivityModelClass.getActivityName(), activityDate, activityTime, List.getAnswerTxt(), destinationFile.getAbsolutePath(), MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
+                    activityUploadDataDao.saveActivityUploadData(new ActivityUploadDataTable(Integer.parseInt(String.valueOf(id)), chosenActivityModelClass.getSlNo(), chosenActivityModelClass.getActivityName(), activityDate, activityTime, List.getAnswerTxt(), destinationFile.getAbsolutePath(), MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
 
                     fragmentActivityBinding.progresssumit.setVisibility(View.GONE);
                 }

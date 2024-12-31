@@ -41,8 +41,11 @@ public interface ActivityOfflineDataDao {
     @Query("SELECT EXISTS(SELECT 1 FROM `ACTIVITY_OFFLINE_TABLE` WHERE `SYNC_STATUS` = :status)")
     boolean isActivityAvailableByStatus(String status);
 
-    @Query("SELECT * FROM `ACTIVITY_OFFLINE_TABLE` WHERE `ACTIVITY_DATE` = :id")
+    @Query("SELECT * FROM `ACTIVITY_OFFLINE_TABLE` WHERE `id` = :id")
     ActivityOfflineDataTable getActivityOfflineData(int id);
+
+    @Query("SELECT * FROM `ACTIVITY_OFFLINE_TABLE` WHERE `ACTIVITY_DATE` = :date AND `DR_CODE` = :drCode")
+    ActivityOfflineDataTable getActivityOfflineData(String date, String drCode);
 
     @Query("SELECT `JSON_DATA` FROM `ACTIVITY_OFFLINE_TABLE` WHERE `ACTIVITY_DATE` = :date AND `NAME` = :name AND `ACTIVITY_DATE` = :id")
     String getActivityJson(int id, String name, String date);

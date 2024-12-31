@@ -39,6 +39,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityModelClass;
+import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -65,6 +66,7 @@ public class OutBoxActivityAdapter extends RecyclerView.Adapter<OutBoxActivityAd
     private final RoomDB roomDB;
     private final OfflineDaySubmitDao offlineDaySubmitDao;
     private final ActivityOfflineDataDao activityOfflineDataDao;
+    private final ActivityUploadDataDao activityUploadDataDao;
     private final CallsUtil callsUtil;
 
     public OutBoxActivityAdapter(Activity activity, Context context, ArrayList<ActivityModelClass> activityModelClassList, ApiInterface apiInterface) {
@@ -76,6 +78,7 @@ public class OutBoxActivityAdapter extends RecyclerView.Adapter<OutBoxActivityAd
         roomDB=RoomDB.getDatabase(context);
         offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
         activityOfflineDataDao = roomDB.activityOfflineDataDao();
+        activityUploadDataDao = roomDB.activityUploadDataDao();
         callsUtil = new CallsUtil(context);
     }
 
@@ -136,6 +139,7 @@ public class OutBoxActivityAdapter extends RecyclerView.Adapter<OutBoxActivityAd
 
                     btn_yes.setOnClickListener(view -> {
                         activityOfflineDataDao.deleteOfflineActivity(activityModelClassList.get(position).getId());
+                        activityUploadDataDao.deleteUploadActivity(activityModelClassList.get(position).getId());
                         dialog.dismiss();
                         removeAt(position);
                     });
@@ -213,6 +217,24 @@ public class OutBoxActivityAdapter extends RecyclerView.Adapter<OutBoxActivityAd
         activityModelClassList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, activityModelClassList.size());
+        ArrayList<GroupModelClass> listDatesDup = callsUtil.getOutBoxDatesWithData();
+        try {
+            for (int i = 0; i < listDates.size(); i++) {
+                GroupModelClass groupModelClass = listDates.get(i);
+                if (groupModelClass.isExpanded()) {
+                    for (int j = 0; j < listDatesDup.size(); j++) {
+                        GroupModelClass groupModelClass1 = listDatesDup.get(j);
+                        if (groupModelClass1.getGroupName().equalsIgnoreCase(groupModelClass.getGroupName())) {
+                            groupModelClass1.setExpanded(true);
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        listDates = listDatesDup;
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
         commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
         outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
