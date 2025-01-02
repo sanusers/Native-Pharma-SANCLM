@@ -436,6 +436,7 @@ public class SharedPref {
     public static final String ADD_CHM = "addChm";
     public static final String ADD_UNLST = "addDr";
     public static final String QUIZ_DATE = "Quiz Date";
+    public static final String QUIZ_ATTEMPTS = "Quiz Attempts";
 
     public static SharedPreferences.Editor editor;
 
@@ -2582,14 +2583,24 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ADD_UNLST, "");
     }
 
-    public static String getLastQuizVisitedDate(Context context) {
+    public static String getLastQuizSubmittedDate(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(QUIZ_DATE, "");
     }
 
-    public static void setLastQuizVisitedDate(Context context, String date) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME_NOT_DELETE, MODE_PRIVATE);
+    public static void setLastQuizSubmittedDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(QUIZ_DATE, date).apply();
+    }
+
+    public static int getQuizAttempts(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(QUIZ_ATTEMPTS, 0);
+    }
+
+    public static void setQuizAttempts(Context context, int attempts) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putInt(QUIZ_ATTEMPTS, attempts).apply();
     }
 
 }
