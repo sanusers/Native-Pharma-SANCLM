@@ -35,6 +35,8 @@ import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDataTable;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataTable;
+import saneforce.sanzen.roomdatabase.QuizAssertsTable.QuizAssertsDao;
+import saneforce.sanzen.roomdatabase.QuizAssertsTable.QuizAssertsDataTable;
 import saneforce.sanzen.roomdatabase.QuizOfflineTableDetails.QuizOfflineDataDao;
 import saneforce.sanzen.roomdatabase.QuizOfflineTableDetails.QuizOfflineDataTable;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
@@ -48,7 +50,7 @@ import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOffline
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataTable;
 
-@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class, SlidesTableDeatils.class, STPOfflineDataTable.class, WelcomeSlidesDataTable.class, ActivityDetailsDataTable.class, ActivityOfflineDataTable.class, ActivityUploadDataTable.class, QuizOfflineDataTable.class}, version = 4, exportSchema = false)
+@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class, SlidesTableDeatils.class, STPOfflineDataTable.class, WelcomeSlidesDataTable.class, ActivityDetailsDataTable.class, ActivityOfflineDataTable.class, ActivityUploadDataTable.class, QuizOfflineDataTable.class, QuizAssertsDataTable.class}, version = 4, exportSchema = false)
 public abstract class RoomDB extends RoomDatabase {
     private static final String DATABASE_NAME = "sanclmroom.dp";
     private static RoomDB database;
@@ -90,6 +92,7 @@ public abstract class RoomDB extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("CREATE TABLE IF NOT EXISTS `quiz_offline_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `quiz_date` TEXT, `quiz_time` TEXT, `json_data` TEXT, `sync_count` INTEGER NOT NULL, `sync_status` TEXT)");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `quiz_asserts_table` (`name` TEXT NOT NULL PRIMARY KEY, `assert_size` TEXT, `downloading_status` TEXT, `progress` TEXT, `background_task` TEXT, `assert_position` TEXT)");
         }
     };
 
@@ -155,5 +158,7 @@ public abstract class RoomDB extends RoomDatabase {
     public abstract ActivityUploadDataDao activityUploadDataDao();
 
     public abstract QuizOfflineDataDao quizOfflineDataDao();
+
+    public abstract QuizAssertsDao quizAssertsDao();
 
 }

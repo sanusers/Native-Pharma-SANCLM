@@ -218,6 +218,8 @@ public class LoginActivity extends AppCompatActivity {
         roomDB.callOfflineWorkTypeDataDao().deleteAllData();
         roomDB.offlineDaySubmitDao().deleteAllData();
         roomDB.stpOfflineDataDao().deleteAllData();
+        roomDB.quizOfflineDataDao().deleteAllData();
+        roomDB.quizAssertsDao().deleteAllData();
   //      roomDB.slidesDao().deleteAllData();
 
         SharedPref.clearSP(LoginActivity.this);

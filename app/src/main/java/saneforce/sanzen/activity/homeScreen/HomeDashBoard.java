@@ -975,7 +975,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         old_password.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
                 String str = s.toString();
                 if (str.length() > 0 && str.contains(" ")) {
 //                    old_password.setError("Space is not allowed");
@@ -1000,13 +999,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // TODO Auto-generated method stub
             }
         });
         new_password.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
                 String str = s.toString();
                 if (str.length() > 0 && str.contains(" ")) {
 //                    old_password.setError("Space is not allowed");
@@ -1031,13 +1028,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // TODO Auto-generated method stub
             }
         });
         remain_password.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
                 String str = s.toString();
                 if (str.length() > 0 && str.contains(" ")) {
 //                    old_password.setError("Space is not allowed");
@@ -1062,7 +1057,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // TODO Auto-generated method stub
             }
         });
 

@@ -23,6 +23,7 @@ import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataTabl
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
+import saneforce.sanzen.roomdatabase.QuizAssertsTable.QuizAssertsDao;
 import saneforce.sanzen.roomdatabase.QuizOfflineTableDetails.QuizOfflineDataDao;
 
 public class CallsUtil {
@@ -34,6 +35,7 @@ public class CallsUtil {
     private final ActivityOfflineDataDao activityOfflineDataDao;
     private final ActivityUploadDataDao activityUploadDataDao;
     private final QuizOfflineDataDao quizOfflineDataDao;
+    private final QuizAssertsDao quizAssertsDao;
 
     public CallsUtil(Context context) {
         RoomDB roomDB = RoomDB.getDatabase(context);
@@ -45,6 +47,7 @@ public class CallsUtil {
         activityOfflineDataDao = roomDB.activityOfflineDataDao();
         activityUploadDataDao = roomDB.activityUploadDataDao();
         quizOfflineDataDao = roomDB.quizOfflineDataDao();
+        quizAssertsDao = roomDB.quizAssertsDao();
     }
 
     public void deleteOfflineCalls() {

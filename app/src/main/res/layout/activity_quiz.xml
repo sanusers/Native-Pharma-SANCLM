@@ -40,12 +40,12 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/quiz_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_16sdp"
                 android:fontFamily="@font/satoshi_variable"
                 android:text="@string/quiz"
-                android:id="@+id/quiz_title"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_7sdp" />
 
@@ -423,10 +423,10 @@
                     android:src="@drawable/bulb" />
 
                 <TextView
+                    android:id="@+id/welcome_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:id="@+id/welcome_title"
                     android:layout_marginVertical="@dimen/_5sdp"
                     android:fontFamily="@font/satoshi_medium"
                     android:padding="@dimen/_2sdp"
@@ -435,22 +435,35 @@
                     android:textSize="@dimen/_10ssp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/download_asserts_btn"
+                <LinearLayout
+                    android:id="@+id/ll_download_asserts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginVertical="@dimen/_5sdp"
                     android:background="@drawable/bg_green_border"
-                    android:drawablePadding="@dimen/_5sdp"
-                    android:fontFamily="@font/satoshi_medium"
-                    android:padding="@dimen/_5sdp"
-                    android:text="Download Asserts"
-                    android:textColor="@color/green_60"
-                    android:textSize="@dimen/_6ssp"
-                    android:textStyle="bold"
-                    app:drawableStartCompat="@drawable/outline_cloud_download_24"
-                    app:drawableTint="@color/green_60" />
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_5sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/outline_cloud_download_24"
+                        app:tint="@color/green_60" />
+
+                    <TextView
+                        android:id="@+id/download_asserts_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="@string/download_asserts"
+                        android:textColor="@color/green_60"
+                        android:textSize="@dimen/_6ssp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"

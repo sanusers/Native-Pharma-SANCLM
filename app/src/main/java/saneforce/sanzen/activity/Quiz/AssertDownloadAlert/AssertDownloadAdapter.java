@@ -1,4 +1,4 @@
-package saneforce.sanzen.activity.slideDownloaderAlertBox;
+package saneforce.sanzen.activity.Quiz.AssertDownloadAlert;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -23,49 +23,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
+import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
+import saneforce.sanzen.roomdatabase.QuizAssertsTable.QuizAssertsDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
-import saneforce.sanzen.roomdatabase.SlideTable.WelcomeSlidesDataTable;
 import saneforce.sanzen.storage.SharedPref;
 
-public class WelcomeSlideAdapter extends RecyclerView.Adapter<WelcomeSlideAdapter.ListDataViewHolder> {
+public class AssertDownloadAdapter extends RecyclerView.Adapter<AssertDownloadAdapter.ListDataViewHolder> {
     Activity activity;
     CommonUtilsMethods commonUtilsMethods;
-    private List<WelcomeSlidesDataTable> list = new ArrayList<>();
+    private List<QuizAssertsDataTable> list = new ArrayList<>();
     RoomDB roomDB;
 
-    public WelcomeSlideAdapter(Activity activity) {
+    public AssertDownloadAdapter(Activity activity) {
         this.activity = activity;
-        commonUtilsMethods=new CommonUtilsMethods(activity);
-        roomDB=RoomDB.getDatabase(activity);
+        commonUtilsMethods = new CommonUtilsMethods(activity);
+        roomDB = RoomDB.getDatabase(activity);
     }
 
     @NonNull
     @Override
-    public ListDataViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AssertDownloadAdapter.ListDataViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_slide_item, parent, false);
-        return new ListDataViewHolder(view);
+        return new AssertDownloadAdapter.ListDataViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ListDataViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull AssertDownloadAdapter.ListDataViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.setIsRecyclable(false);
         // 0- failure,1-New, 2-Processing, 3- Success
         holder.txt_image_name.setText(list.get(position).getName());
-        if(list.get(position).getDownloadingStatus().equalsIgnoreCase("3")){
+        if (list.get(position).getDownloadingStatus().equalsIgnoreCase("3")) {
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
             holder.text_download_size.setText("Downloading Completed");
-        }
-        else if(list.get(position).getDownloadingStatus().equalsIgnoreCase("2")){
-            holder.text_download_size.setText(list.get(position).getSlideSize());
+        } else if (list.get(position).getDownloadingStatus().equalsIgnoreCase("2")) {
+            holder.text_download_size.setText(list.get(position).getAssertSize());
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
 
-        }   else if(list.get(position).getDownloadingStatus().equalsIgnoreCase("1")){
+        } else if (list.get(position).getDownloadingStatus().equalsIgnoreCase("1")) {
             holder.text_download_size.setText("");
             holder.progressBar.setProgress(0);
-        }else {
+        } else {
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
             holder.text_download_size.setText("Downloading Failed");
             holder.progressBar.setProgress(0);
@@ -83,20 +82,18 @@ public class WelcomeSlideAdapter extends RecyclerView.Adapter<WelcomeSlideAdapte
 
         }
 
-        if(!SharedPref.getWelcomeSlideDownloadingStatus(activity)){
+        if (!SharedPref.getSlideDowloadingStatus(activity)) {
             holder.reload_img.setVisibility(View.GONE);
-        }else {
+        } else {
             if (roomDB.slidesDao().getInProcessCount() != 0) {
                 holder.reload_img.setVisibility(View.GONE);
-            }else {
+            } else {
                 holder.reload_img.setVisibility(View.VISIBLE);
             }
         }
-
-
     }
 
-    public void setSlides(List<WelcomeSlidesDataTable> slides) {
+    public void setSlides(List<QuizAssertsDataTable> slides) {
         list.clear();
         this.list = slides;
         notifyDataSetChanged();
@@ -109,7 +106,7 @@ public class WelcomeSlideAdapter extends RecyclerView.Adapter<WelcomeSlideAdapte
 
     public class ListDataViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txt_image_name,text_download_size;
+        TextView txt_image_name, text_download_size;
         ImageView reload_img;
         public ProgressBar progressBar;
 
@@ -128,24 +125,23 @@ public class WelcomeSlideAdapter extends RecyclerView.Adapter<WelcomeSlideAdapte
             reload_img.setOnClickListener(view -> {
                 int position = getAdapterPosition();
                 if (UtilityClass.isNetworkAvailable(activity)) {
-                    MasterSyncActivity.isSingleWelcomeSlideDownloadingStatus=true;
+                    QuizActivity.isSingleAssertDownloadingStatus = true;
                     text_download_size.setText("Downloading");
-                    String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getWelcomeSlideUrl(activity) + list.get(position).getName();
+                    String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getOptionFilesUrl(activity) + list.get(position).getName();
                     Log.e("DownloadingAPI", url);
                     Data inputData = new Data.Builder()
                             .putString("Flag", "2")
                             .putString("file_url", url)
-                            .putString("Slide_name", list.get(position).getName())
-                            .putString("FilePosition", list.get(position).getListSlidePosition())
+                            .putString("Assert_name", list.get(position).getName())
+                            .putString("FilePosition", list.get(position).getListAssertPosition())
                             .build();
 
-                    OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(WelcomeSlideDownloadWorker.class)
+                    OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(AssertDownloadWorker.class)
                             .setInputData(inputData)
                             .build();
                     WorkManager workManager = WorkManager.getInstance(activity);
                     workManager.enqueue(fileDownloadRequest);
-                }
-                else {
+                } else {
                     commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
                 }
             });
