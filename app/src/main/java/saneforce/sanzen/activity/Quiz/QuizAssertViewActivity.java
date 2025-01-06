@@ -115,8 +115,10 @@ public class QuizAssertViewActivity extends AppCompatActivity {
 //                binding.webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
 //                try {
 //                    String encodedUrl = URLEncoder.encode(file.toURI().toURL().toString(), "UTF-8");
-//                    String docUrl = "https://docs.google.com/gview?embedded=true&url=" + encodedUrl;
-//                    Log.v("Slides", " --2222-- " + docUrl);
+//                    Log.d("Quiz Asserts", "file path: " + file.getAbsolutePath());
+//                    Log.d("Quiz Asserts", "encoded url: " + encodedUrl);
+//                    String docUrl = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + encodedUrl;
+//                    Log.v("Quiz Asserts", " --2222-- " + docUrl);
 //                    binding.webView.loadUrl("file://" + docUrl);
 //                } catch (Exception e) {
 //                    e.printStackTrace();

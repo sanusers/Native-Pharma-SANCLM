@@ -508,7 +508,9 @@ public class QuizActivity extends AppCompatActivity {
             finish();
         });
 
-        quizResultDialog.show();
+        if(!isFinishing()) {
+            quizResultDialog.show();
+        }
     }
 
     private void createJson() {

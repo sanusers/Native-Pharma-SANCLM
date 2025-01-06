@@ -290,7 +290,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 && SharedPref.getQuizNeedMandt(requireContext()).equalsIgnoreCase("0")
                 && UtilityClass.isNetworkAvailable(requireContext())
                 && HomeDashBoard.selectedDate != null
-                && SharedPref.getLastQuizSubmittedDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+                && !SharedPref.getLastQuizSubmittedDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
             commonUtilsMethods.showToastMessage(requireContext(), "Complete Quiz");
             requireActivity().startActivity(new Intent(requireActivity(), QuizActivity.class));
         }
