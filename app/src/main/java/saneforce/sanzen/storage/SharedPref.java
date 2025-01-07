@@ -4,7 +4,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -2555,12 +2554,10 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_STATUS, "");
     }
 
-
-    public static void setTpdcrDeviationApprStatus(Context context, String status) {
+    public static void setTpDcrDeviationApprStatus(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(TPDCR_DEVIATION_APPR_STATUS, status).apply();
     }
-
 
 }

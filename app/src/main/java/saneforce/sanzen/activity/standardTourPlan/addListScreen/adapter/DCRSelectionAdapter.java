@@ -138,6 +138,7 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             if(dcrModel.getPlannedForName().toLowerCase().contains((dayCaption + ",").toLowerCase())) {
                                 plannedForName = dcrModel.getPlannedForName().replaceAll(dayCaption + ",", "");
                             }
+                            plannedForName = CommonUtilsMethods.removeLastComma(String.format("%s%s,", plannedForName, dayCaption));
                             commonUtilsMethods.displayPopupWindow(context, view, CommonUtilsMethods.removeLastComma(plannedForName.isEmpty() ? "-" : plannedForName));
                         }
                     });

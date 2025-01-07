@@ -118,9 +118,21 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 //        super.onBackPressed();
     }
 
+    //To Hide the bottomNavigation When popup
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            activityStandardTourPlanBinding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        if(stpFlag == null || stpFlag.isEmpty()) {
+            stpFlag = "3";
+        }
         checkApprovalButtonStatus();
 
         if(stpFlag != null && !stpFlag.isEmpty()) {
@@ -376,7 +388,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 String doctorCode = stpOfflineDataTable.getDoctorCode();
                 String chemistCode = stpOfflineDataTable.getChemistCode();
                 JSONObject jsonObject = new JSONObject(stpOfflineDataTable.getStpData());
-                stpFlag = jsonObject.optString("Active_Flag", "");
+                stpFlag = jsonObject.optString("Active_Flag", "3");
                 rejectReason = jsonObject.optString("Stp_Reject_Reason", "");
                 selectedClusterCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(clusterCode)).split(",")));
                 selectedDocCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));

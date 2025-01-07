@@ -146,10 +146,16 @@ public class TourPlanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityTourPlanBinding.inflate(getLayoutInflater());
 
-        if(SharedPref.getSfType(this).equalsIgnoreCase("1") && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0") && (SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Planning...") || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Rejected"))) {
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
+
+        if(SharedPref.getSfType(this).equalsIgnoreCase("1") && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0") && (SharedPref.getStpStatus(TourPlanActivity.this).isEmpty() || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Planning...") || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Rejected"))) {
             commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Prepare Standard Tour Plan and get Approved to prepare Tour Plan");
             Intent intent = new Intent(getApplicationContext(), StandardTourPlanActivity.class);
             startActivity(intent);
+            finish();
+        }else if(SharedPref.getSfType(this).equalsIgnoreCase("1") && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0") && (SharedPref.getStpStatus(TourPlanActivity.this).isEmpty() || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Waiting for approval"))) {
+            commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Standard Tour Plan must be approved to enter Tour Plan");
             finish();
         }
 

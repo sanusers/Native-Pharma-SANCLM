@@ -84,6 +84,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
 
        //Cluster
        if (holder.data.getCluster().size() > 0){
+           holder.clusterLayout.setVisibility(View.VISIBLE);
            StringBuilder clusterName = new StringBuilder();
            for (int i=0;i<holder.clusterModelArray.size();i++){
                if (clusterName.length() == 0){
