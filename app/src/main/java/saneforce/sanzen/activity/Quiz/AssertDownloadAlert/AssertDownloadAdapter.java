@@ -54,46 +54,46 @@ public class AssertDownloadAdapter extends RecyclerView.Adapter<AssertDownloadAd
         holder.setIsRecyclable(false);
         // 0- failure,1-New, 2-Processing, 3- Success
         holder.txt_image_name.setText(list.get(position).getName());
-        if (list.get(position).getDownloadingStatus().equalsIgnoreCase("3")) {
+        if(list.get(position).getDownloadingStatus().equalsIgnoreCase("3")) {
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
             holder.text_download_size.setText("Downloading Completed");
-        } else if (list.get(position).getDownloadingStatus().equalsIgnoreCase("2")) {
+        }else if(list.get(position).getDownloadingStatus().equalsIgnoreCase("2")) {
             holder.text_download_size.setText(list.get(position).getAssertSize());
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
 
-        } else if (list.get(position).getDownloadingStatus().equalsIgnoreCase("1")) {
+        }else if(list.get(position).getDownloadingStatus().equalsIgnoreCase("1")) {
             holder.text_download_size.setText("");
             holder.progressBar.setProgress(0);
-        } else {
+        }else {
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
             holder.text_download_size.setText("Downloading Failed");
             holder.progressBar.setProgress(0);
         }
 
-        if (list.get(position).getDownloadingStatus().equalsIgnoreCase("0")) {
+        if(list.get(position).getDownloadingStatus().equalsIgnoreCase("0")) {
             int redColor = Color.RED;
             ColorStateList colorStateList = ColorStateList.valueOf(redColor);
             holder.progressBar.setProgressTintList(colorStateList);
 
-        } else {
+        }else {
             int greencolor = activity.getResources().getColor(R.color.Green_45);
             ColorStateList colorStateList = ColorStateList.valueOf(greencolor);
             holder.progressBar.setProgressTintList(colorStateList);
 
         }
 
-        if (!SharedPref.getSlideDowloadingStatus(activity)) {
+        if(!SharedPref.getSlideDowloadingStatus(activity)) {
             holder.reload_img.setVisibility(View.GONE);
-        } else {
-            if (roomDB.slidesDao().getInProcessCount() != 0) {
+        }else {
+            if(roomDB.slidesDao().getInProcessCount() != 0) {
                 holder.reload_img.setVisibility(View.GONE);
-            } else {
+            }else {
                 holder.reload_img.setVisibility(View.VISIBLE);
             }
         }
     }
 
-    public void setSlides(List<QuizAssertsDataTable> slides) {
+    public void setQuizAsserts(List<QuizAssertsDataTable> slides) {
         list.clear();
         this.list = slides;
         notifyDataSetChanged();
@@ -124,7 +124,7 @@ public class AssertDownloadAdapter extends RecyclerView.Adapter<AssertDownloadAd
 
             reload_img.setOnClickListener(view -> {
                 int position = getAdapterPosition();
-                if (UtilityClass.isNetworkAvailable(activity)) {
+                if(UtilityClass.isNetworkAvailable(activity)) {
                     QuizActivity.isSingleAssertDownloadingStatus = true;
                     text_download_size.setText("Downloading");
                     String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getOptionFilesUrl(activity) + list.get(position).getName();
@@ -141,7 +141,7 @@ public class AssertDownloadAdapter extends RecyclerView.Adapter<AssertDownloadAd
                             .build();
                     WorkManager workManager = WorkManager.getInstance(activity);
                     workManager.enqueue(fileDownloadRequest);
-                } else {
+                }else {
                     commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
                 }
             });

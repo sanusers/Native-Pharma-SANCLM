@@ -62,6 +62,9 @@ public interface QuizAssertsDao {
     @Query("Update `QUIZ_ASSERTS_TABLE` set `BACKGROUND_TASK`=:New WHERE `BACKGROUND_TASK` = :old")
     void setChangeStatus(String New, String old);
 
+    @Query("SELECT EXISTS(SELECT 1 FROM `QUIZ_ASSERTS_TABLE` WHERE `NAME` = :name)")
+    boolean isQuizAssertAvailable(String name);
+
     @Query("SELECT `NAME` FROM `QUIZ_ASSERTS_TABLE` WHERE `NAME` = :name")
     String getQuizAssertName(String name);
 
@@ -71,7 +74,7 @@ public interface QuizAssertsDao {
     default ArrayList<QuizAssertsDataTable> cursorToArrayList() {
         Cursor cursor = getAllQuizAsserts();
         ArrayList<QuizAssertsDataTable> quizAsserts = new ArrayList<>();
-        if (cursor != null && cursor.moveToFirst()) {
+        if(cursor != null && cursor.moveToFirst()) {
             do {
                 @SuppressLint("Range") String quizAssertName = cursor.getString(cursor.getColumnIndex("name"));
                 @SuppressLint("Range") String quizAssertSize = cursor.getString(cursor.getColumnIndex("assert_size"));

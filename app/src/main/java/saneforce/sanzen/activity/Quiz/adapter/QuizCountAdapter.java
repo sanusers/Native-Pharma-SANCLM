@@ -16,16 +16,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.Quiz.model.QuizModelClass;
 import saneforce.sanzen.activity.Quiz.model.QuizQuesNoModel;
 
 public class QuizCountAdapter extends RecyclerView.Adapter<QuizCountAdapter.ViewHolder> {
 
     ArrayList<QuizQuesNoModel> quizQuesNoModels;
     Context context;
+    private QuestionClickListener questionClickListener;
 
-    public QuizCountAdapter(ArrayList<QuizQuesNoModel> quizQuesNoModels, Context context) {
+    public interface QuestionClickListener {
+        void onClick(QuizQuesNoModel quizQuesNoModel);
+    }
+
+    public QuizCountAdapter(ArrayList<QuizQuesNoModel> quizQuesNoModels, Context context, QuestionClickListener questionClickListener) {
         this.quizQuesNoModels = quizQuesNoModels;
         this.context = context;
+        this.questionClickListener = questionClickListener;
     }
 
     @NonNull
@@ -51,6 +58,10 @@ public class QuizCountAdapter extends RecyclerView.Adapter<QuizCountAdapter.View
             ViewCompat.setBackgroundTintList(holder.linearLayout, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)));
             holder.txt_questno.setTextColor(ContextCompat.getColor(context, R.color.black));
         }
+
+        holder.linearLayout.setOnClickListener(view -> {
+            questionClickListener.onClick(quizQuesNoModel);
+        });
     }
 
     @Override

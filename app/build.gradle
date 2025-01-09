@@ -16,7 +16,7 @@ android {
         minSdk 23
         targetSdk 34
         versionCode 50
-        versionName "2.2.3"
+        versionName "2.2.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -40,9 +40,6 @@ android {
 
         }
     }
-    lintOptions {
-        abortOnError true
-    }
     compileOptions {
         //To use java Local(Date) library below api level 26
         coreLibraryDesugaringEnabled = true
@@ -52,6 +49,9 @@ android {
     }
     buildFeatures {
         viewBinding = true
+    }
+    lint {
+        abortOnError true
     }
 
 }
@@ -155,5 +155,8 @@ dependencies {
 
     //lottie animations
     implementation 'com.airbnb.android:lottie:6.6.0'
+
+    //Apache commons IO
+    implementation 'commons-io:commons-io:2.18.0'
 }
 

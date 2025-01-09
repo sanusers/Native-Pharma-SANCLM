@@ -672,13 +672,13 @@
             android:layout_marginTop="@dimen/_2sdp"
             android:src="@drawable/no_data_folder"
             android:windowSoftInputMode="adjustResize|adjustPan"
-            app:layout_constraintBottom_toTopOf="@id/tv_content"
+            app:layout_constraintBottom_toTopOf="@id/tv_no_quiz"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_content"
+            android:id="@+id/tv_no_quiz"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/_2sdp"
