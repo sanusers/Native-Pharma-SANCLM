@@ -3,8 +3,12 @@ package saneforce.sanzen.activity.Quiz;
 import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.MediaController;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,10 +18,12 @@ import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy;
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 
 import java.io.File;
+import java.net.URLEncoder;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.databinding.ActivityQuizAssertViewBinding;
+import saneforce.sanzen.storage.SharedPref;
 
 public class QuizAssertViewActivity extends AppCompatActivity {
     private ActivityQuizAssertViewBinding binding;
@@ -82,41 +88,44 @@ public class QuizAssertViewActivity extends AppCompatActivity {
                 binding.webView.setVisibility(View.GONE);
                 loadPdf(file.getAbsolutePath());
             }else if(fileType.toLowerCase().contains("msword") || fileType.toLowerCase().contains("excel") || fileType.toLowerCase().contains("sheet") || fileType.toLowerCase().contains("ppt")) {
-//                binding.imgView.setVisibility(View.GONE);
-//                binding.pdfView.setVisibility(View.GONE);
-//                binding.videoView.setVisibility(View.GONE);
-//                binding.webView.setVisibility(View.VISIBLE);
-//                binding.webView.getSettings().setBuiltInZoomControls(false);
-//                binding.webView.getSettings().setDisplayZoomControls(false);
-//                binding.webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
-//                binding.webView.getSettings().setJavaScriptEnabled(true);
-//                binding.webView.getSettings().setLoadWithOverviewMode(true);
-//                binding.webView.getSettings().setUseWideViewPort(true);
-//                binding.webView.getSettings().setPluginState(WebSettings.PluginState.ON);
-//                binding.webView.getSettings().setLoadsImagesAutomatically(true);
-//                binding.webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-//                binding.webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-//                binding.webView.getSettings().setAllowFileAccess(true);
-//                binding.webView.setHorizontalScrollBarEnabled(false);
-//                binding.webView.setVerticalScrollBarEnabled(false);
-//                binding.webView.getSettings().setDomStorageEnabled(true);
-//                binding.webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-//                binding.webView.getSettings().setDatabaseEnabled(true);
-//                binding.webView.setInitialScale(1);
-//                binding.webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-//                try {
-//                    String encodedUrl = URLEncoder.encode(file.toURI().toURL().toString(), "UTF-8");
-//                    Log.d("Quiz Asserts", "file path: " + file.getAbsolutePath());
-//                    Log.d("Quiz Asserts", "encoded url: " + encodedUrl);
-//                    String docUrl = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + encodedUrl;
-//                    Log.v("Quiz Asserts", " --2222-- " + docUrl);
-//                    binding.webView.loadUrl("file://" + docUrl);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-                new CommonUtilsMethods(QuizAssertViewActivity.this).showToastMessage(QuizAssertViewActivity.this, "Under Development for MS Word, Excel, PPT");
-                setResult(RESULT_OK);
-                finish();
+                binding.imgView.setVisibility(View.GONE);
+                binding.pdfView.setVisibility(View.GONE);
+                binding.videoView.setVisibility(View.GONE);
+                binding.webView.setVisibility(View.VISIBLE);
+                binding.webView.getSettings().setBuiltInZoomControls(false);
+                binding.webView.getSettings().setDisplayZoomControls(false);
+                binding.webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+                binding.webView.getSettings().setJavaScriptEnabled(true);
+                binding.webView.getSettings().setLoadWithOverviewMode(true);
+                binding.webView.getSettings().setUseWideViewPort(true);
+                binding.webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+                binding.webView.getSettings().setLoadsImagesAutomatically(true);
+                binding.webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+                binding.webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+                binding.webView.getSettings().setAllowFileAccess(true);
+                binding.webView.setHorizontalScrollBarEnabled(false);
+                binding.webView.setVerticalScrollBarEnabled(false);
+                binding.webView.getSettings().setDomStorageEnabled(true);
+                binding.webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+                binding.webView.getSettings().setDatabaseEnabled(true);
+                binding.webView.setInitialScale(1);
+                binding.webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+                try {
+                    String encodedUrl = URLEncoder.encode(file.toURI().toURL().toString(), "UTF-8");
+                    Log.d("Quiz Asserts", "file path: " + file.getAbsolutePath());
+                    Log.d("Quiz Asserts", "encoded url: " + encodedUrl);
+                    String url = SharedPref.getLogInsite(getApplicationContext()) + "/" + SharedPref.getOptionFilesUrl(getApplicationContext()) + fileName;
+//                    String docUrl = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + url;
+                    String docUrl = "https://docs.google.com/gview?embedded=true&url=" + url;
+                    Log.v("Quiz Asserts", " --2222-- " + docUrl);
+                    binding.webView.loadUrl(docUrl);
+//                    binding.webView.loadUrl("file://" + file.getAbsolutePath());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+//                new CommonUtilsMethods(QuizAssertViewActivity.this).showToastMessage(QuizAssertViewActivity.this, "Under Development for MS Word, Excel, PPT");
+//                setResult(RESULT_OK);
+//                finish();
             }
         }
     }

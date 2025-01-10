@@ -476,7 +476,7 @@ public class QuizActivity extends AppCompatActivity {
                 attempts--;
             }
             SharedPref.setQuizAttempts(QuizActivity.this, attempts);
-//            callSaveAPI();
+            callSaveAPI();
             setScoreView();
         }else {
             commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network));
