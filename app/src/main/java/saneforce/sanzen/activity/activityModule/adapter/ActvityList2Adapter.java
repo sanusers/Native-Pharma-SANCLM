@@ -1,4 +1,4 @@
-package saneforce.sanzen.activity.activityModule;
+package saneforce.sanzen.activity.activityModule.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,10 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.activityModule.model.ActivityModelClass;
+import saneforce.sanzen.activity.activityModule.CheckBoxInterface;
 
 public class ActvityList2Adapter extends RecyclerView.Adapter<ActvityList2Adapter.Viewholder> {
 

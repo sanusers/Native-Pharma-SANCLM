@@ -1,9 +1,7 @@
-package saneforce.sanzen.activity.activityModule;
+package saneforce.sanzen.activity.activityModule.adapter;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.activityModule.model.ActivityModelClass;
+import saneforce.sanzen.activity.activityModule.ActivityView;
 
 public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewholder> {
 

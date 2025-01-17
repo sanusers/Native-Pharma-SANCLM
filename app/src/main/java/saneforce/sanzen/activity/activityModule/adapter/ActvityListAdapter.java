@@ -1,4 +1,4 @@
-package saneforce.sanzen.activity.activityModule;
+package saneforce.sanzen.activity.activityModule.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.activityModule.ChooseHeadQuaters;
 
 public class ActvityListAdapter extends RecyclerView.Adapter<ActvityListAdapter.Viewholder> {
 

@@ -1,4 +1,4 @@
-package saneforce.sanzen.activity.activityModule;
+package saneforce.sanzen.activity.activityModule.model;
 
 public class ActivityDetailsModelClass {
 
