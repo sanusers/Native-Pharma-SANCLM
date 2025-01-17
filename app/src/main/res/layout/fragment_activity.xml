@@ -204,7 +204,7 @@
 
                         <ScrollView
                             android:visibility="visible"
-                            android:id="@+id/rldatalayout"
+                            android:id="@+id/rl_data_layout"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_above="@+id/ll_btns"
@@ -267,7 +267,7 @@
                                 android:layout_height="match_parent"/>
 
                         <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/btnsumit"
+                            android:id="@+id/btn_submit"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_20sdp"
                             android:background="@drawable/edittext_stroke"
@@ -284,7 +284,7 @@
                         </LinearLayout>
 
                         <ProgressBar
-                            android:id="@+id/progresssumit"
+                            android:id="@+id/progress_submit"
                             android:layout_width="@dimen/_25sdp"
                             android:layout_height="@dimen/_25sdp"
                             android:backgroundTint="@color/black_45"
@@ -304,6 +304,6 @@
         </LinearLayout>
     </LinearLayout>
     <include layout="@layout/sidescreen_activity"
-        android:id="@+id/SlideScreen"/>
+        android:id="@+id/slide_screen"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

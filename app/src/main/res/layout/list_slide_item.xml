@@ -75,7 +75,7 @@
         android:id="@+id/view_dummy"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_above="@id/btnsumit"
+        android:layout_above="@id/btn_submit"
         android:layout_marginBottom="@dimen/_2sdp"
         android:background="#9e9ea5"
         />

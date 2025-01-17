@@ -823,7 +823,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                     break;
 
-                case R.id.btnsumit:
+                case R.id.btn_submit:
                     if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
                         CommonAlertBox.ApprovalAlert(requireActivity());
                     }else if(SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {

@@ -67,9 +67,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activity.Quiz.QuizAssertViewActivity"
+            android:name=".activity.Survey.SurveyActivity"
+            android:exported="false"
             android:screenOrientation="landscape"
-            android:exported="false" />
+            android:theme="@style/CustomTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".activity.Quiz.QuizAssertViewActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.approvals.stp.STPApprovalActivity"
             android:exported="false"

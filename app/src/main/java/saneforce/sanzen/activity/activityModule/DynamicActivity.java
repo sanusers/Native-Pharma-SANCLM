@@ -174,7 +174,7 @@ public class DynamicActivity extends AppCompatActivity {
         binding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(this)));
         binding.tvContent.setText(String.format("Select any %s on list  to view content", SharedPref.getActivityCap(DynamicActivity.this)));
         binding.txthqName.setText(SharedPref.getHqName(DynamicActivity.this));
-        binding.btnsumit.setEnabled(false);
+        binding.btnSubmit.setEnabled(false);
 
         syncProgressDialog = new ProgressDialog(DynamicActivity.this);
         syncProgressDialog.setMessage(DynamicActivity.this.getString(R.string.head_quarters_syncing));
@@ -248,7 +248,7 @@ public class DynamicActivity extends AppCompatActivity {
 
         binding.rlheadquates.setOnClickListener(view -> showHQ());
 
-        binding.btnsumit.setOnClickListener(view -> saveActivity());
+        binding.btnSubmit.setOnClickListener(view -> saveActivity());
 
         binding.btnClearall.setOnClickListener(v -> {
             showClearAlert();
@@ -343,8 +343,8 @@ public class DynamicActivity extends AppCompatActivity {
             ActivityDetailsDataTable activityDetailsDataTable = activityDetailsDataDao.getActivityDetailsByID(activityModelClass.getSlNo());
             JSONArray jsonArray = activityDetailsDataTable.getActivityDataJSONArray();
             if (jsonArray.length() > 0) {
-                binding.rldatalayout.setVisibility(View.VISIBLE);
-                binding.btnsumit.setVisibility(View.VISIBLE);
+                binding.rlDataLayout.setVisibility(View.VISIBLE);
+                binding.btnSubmit.setVisibility(View.VISIBLE);
                 binding.rlNoData.setVisibility(View.GONE);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
@@ -419,7 +419,7 @@ public class DynamicActivity extends AppCompatActivity {
                     }
                     jjj++;
                     if (ActivityDetailsList.size() == jjj) {
-                        binding.btnsumit.setEnabled(true);
+                        binding.btnSubmit.setEnabled(true);
                     }
                 }
             }
@@ -430,7 +430,7 @@ public class DynamicActivity extends AppCompatActivity {
             } else {
                 binding.rlNoData.setVisibility(View.VISIBLE);
                 binding.rlDetailsMain.setVisibility(View.GONE);
-                binding.btnsumit.setVisibility(View.GONE);
+                binding.btnSubmit.setVisibility(View.GONE);
                 binding.progrlessdetail.setVisibility(View.GONE);
                 commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
             }
@@ -540,8 +540,8 @@ public class DynamicActivity extends AppCompatActivity {
                                 JsonElement jsonElement = response.body();
                                 jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
                                 if (jsonArray.length() > 0) {
-                                    binding.rldatalayout.setVisibility(View.VISIBLE);
-                                    binding.btnsumit.setVisibility(View.VISIBLE);
+                                    binding.rlDataLayout.setVisibility(View.VISIBLE);
+                                    binding.btnSubmit.setVisibility(View.VISIBLE);
                                     binding.rlNoData.setVisibility(View.GONE);
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
@@ -616,7 +616,7 @@ public class DynamicActivity extends AppCompatActivity {
                                         }
                                         jjj++;
                                         if (ActivityDetailsList.size() == jjj) {
-                                            binding.btnsumit.setEnabled(true);
+                                            binding.btnSubmit.setEnabled(true);
                                         }
                                     }
                                 }
@@ -627,7 +627,7 @@ public class DynamicActivity extends AppCompatActivity {
                                 } else {
                                     binding.rlNoData.setVisibility(View.VISIBLE);
                                     binding.rlDetailsMain.setVisibility(View.GONE);
-                                    binding.btnsumit.setVisibility(View.GONE);
+                                    binding.btnSubmit.setVisibility(View.GONE);
                                     binding.progrlessdetail.setVisibility(View.GONE);
                                     commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
                                 }
@@ -643,7 +643,7 @@ public class DynamicActivity extends AppCompatActivity {
                         commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
                         binding.rlNoData.setVisibility(View.VISIBLE);
                         binding.rlDetailsMain.setVisibility(View.GONE);
-                        binding.btnsumit.setVisibility(View.GONE);
+                        binding.btnSubmit.setVisibility(View.GONE);
                         binding.progrlessdetail.setVisibility(View.GONE);
                     }
                 });
@@ -2303,19 +2303,19 @@ public class DynamicActivity extends AppCompatActivity {
 
     public void ShowListPopup(TextView NameView, TextView IdView, ArrayList<ActivityModelClass> List, String name, boolean isMultipleCheck) {
         if (isMultipleCheck) {
-            binding.SlideScreen.viewDummy1.setVisibility(View.VISIBLE);
-            binding.SlideScreen.txtClDone.setVisibility(View.VISIBLE);
+            binding.slideScreen.viewDummy1.setVisibility(View.VISIBLE);
+            binding.slideScreen.txtClDone.setVisibility(View.VISIBLE);
         } else {
-            binding.SlideScreen.viewDummy1.setVisibility(View.GONE);
-            binding.SlideScreen.txtClDone.setVisibility(View.GONE);
+            binding.slideScreen.viewDummy1.setVisibility(View.GONE);
+            binding.slideScreen.txtClDone.setVisibility(View.GONE);
         }
 
         List<String> mListName = new ArrayList<>();
         List<String> mListId = new ArrayList<>();
         binding.mainLayout.openDrawer(Gravity.RIGHT);
-        binding.SlideScreen.etSearch.setText("");
-        binding.SlideScreen.tvSearchheader.setText("Select " + name);
-        binding.SlideScreen.etSearch.setHint("Search " + name);
+        binding.slideScreen.etSearch.setText("");
+        binding.slideScreen.tvSearchheader.setText("Select " + name);
+        binding.slideScreen.etSearch.setHint("Search " + name);
         adapter1 = new ActvityList2Adapter(DynamicActivity.this, List, IdView, isMultipleCheck, new CheckBoxInterface() {
             @Override
             public void Checked(ActivityModelClass activityModelClass) {
@@ -2336,10 +2336,10 @@ public class DynamicActivity extends AppCompatActivity {
                 mListId.remove(activityModelClass.getCode());
             }
         });
-        binding.SlideScreen.acRecyelerView.setLayoutManager(new LinearLayoutManager(DynamicActivity.this));
-        binding.SlideScreen.acRecyelerView.setAdapter(adapter1);
+        binding.slideScreen.acRecyelerView.setLayoutManager(new LinearLayoutManager(DynamicActivity.this));
+        binding.slideScreen.acRecyelerView.setAdapter(adapter1);
 
-        binding.SlideScreen.etSearch.addTextChangedListener(new TextWatcher() {
+        binding.slideScreen.etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
@@ -2355,7 +2355,7 @@ public class DynamicActivity extends AppCompatActivity {
             }
         });
 
-        binding.SlideScreen.txtClDone.setOnClickListener(new View.OnClickListener() {
+        binding.slideScreen.txtClDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isMultipleCheck) {
@@ -2370,7 +2370,7 @@ public class DynamicActivity extends AppCompatActivity {
             }
         });
 
-        binding.SlideScreen.cancelImg.setOnClickListener(new View.OnClickListener() {
+        binding.slideScreen.cancelImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 binding.mainLayout.closeDrawer(Gravity.RIGHT);
@@ -2561,7 +2561,7 @@ public class DynamicActivity extends AppCompatActivity {
                 isEdited = false;
                 activityDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                 activityTime = CommonUtilsMethods.getCurrentInstance("HH:mm:ss");
-                binding.progresssumit.setVisibility(View.VISIBLE);
+                binding.progressSubmit.setVisibility(View.VISIBLE);
                 JSONObject MainObject = commonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
                 MainObject.put("tableName", "savedcract");
                 MainObject.put("val", jsonArray);
@@ -2577,7 +2577,7 @@ public class DynamicActivity extends AppCompatActivity {
 //                        public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
 //                            if(response.code() == 200 || response.code() == 201) {
 //                                commonUtilsMethods.showToastMessage(DynamicActivity.this, "Activity Submitted successfully");
-                binding.progresssumit.setVisibility(View.GONE);
+                binding.progressSubmit.setVisibility(View.GONE);
 //                                TaggedImage();
                 Intent intent = getIntent();
                 overridePendingTransition(0, 0);
@@ -2592,7 +2592,7 @@ public class DynamicActivity extends AppCompatActivity {
 //                        @Override
 //                        public void onFailure(Call<JsonElement> call, Throwable t) {
 //                            commonUtilsMethods.showToastMessage(DynamicActivity.this, t.getMessage());
-//                            binding.progresssumit.setVisibility(View.GONE);
+//                            binding.progressSubmit.setVisibility(View.GONE);
 //                        }
 //                    });
             }
@@ -2611,7 +2611,7 @@ public class DynamicActivity extends AppCompatActivity {
             for (int i = 0; i < ActivityViewItem.size(); i++) {
                 ActivityDetailsModelClass List = ActivityViewItem.get(i);
                 if (List.getControlId().equalsIgnoreCase("10") && !List.getAnswerTxt().isEmpty()) {
-                    binding.progresssumit.setVisibility(View.VISIBLE);
+                    binding.progressSubmit.setVisibility(View.VISIBLE);
                     JSONObject jsonObject = new JSONObject();
 
                     Date today = new Date();
@@ -2684,7 +2684,7 @@ public class DynamicActivity extends AppCompatActivity {
 //                    saveAttachement.enqueue(new Callback<JsonObject>() {
 //                        @Override
 //                        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    binding.progresssumit.setVisibility(View.GONE);
+                    binding.progressSubmit.setVisibility(View.GONE);
 //                            if(response.isSuccessful()) {
 //                                try {
 //                                    assert response.body() != null;
@@ -2700,7 +2700,7 @@ public class DynamicActivity extends AppCompatActivity {
 //
 //                        @Override
 //                        public void onFailure(Call<JsonObject> call, Throwable t) {
-//                            binding.progresssumit.setVisibility(View.GONE);
+//                            binding.progressSubmit.setVisibility(View.GONE);
 //                        }
 //                    });
                 }

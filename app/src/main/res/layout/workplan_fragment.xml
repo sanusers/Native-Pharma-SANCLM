@@ -651,7 +651,7 @@
             android:id="@+id/view_dummy"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_above="@id/btnsumit"
+            android:layout_above="@id/btn_submit"
             android:layout_marginStart="@dimen/_2sdp"
             android:layout_marginTop="@dimen/_2sdp"
             android:layout_marginEnd="@dimen/_2sdp"
@@ -661,7 +661,7 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnsumit"
+            android:id="@+id/btn_submit"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_23sdp"
             android:layout_alignParentBottom="true"
