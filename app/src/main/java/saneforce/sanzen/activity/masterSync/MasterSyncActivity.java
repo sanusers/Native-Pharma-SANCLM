@@ -1267,7 +1267,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                             stpOfflineDataDao.deleteAllData();
                                             saveSTPDataToLocal();
                                         } else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
-//                                            activityDetailsDataDao.deleteAllData();
+                                            activityDetailsDataDao.deleteAllData();
                                             syncIndividualActivityDetails();
                                         }
                                         JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
@@ -1414,7 +1414,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         JsonElement jsonElement = response.body();
                                         if(jsonElement != null) {
                                             JSONArray jsonArray1 = new JSONArray(jsonElement.getAsJsonArray().toString());
-                                            activityDetailsDataDao.saveActivityDetailsData(new ActivityDetailsDataTable(id, jsonArray1.toString(), "0"));
+                                            activityDetailsDataDao.saveActivityDetailsData(new ActivityDetailsDataTable(id + "_" + SharedPref.getHqCode(MasterSyncActivity.this), jsonArray1.toString(), "0"));
                                         }
                                     } catch (Exception a) {
                                         Log.e("Error", "----- " + a);

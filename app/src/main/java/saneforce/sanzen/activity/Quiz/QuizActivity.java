@@ -130,15 +130,6 @@ public class QuizActivity extends AppCompatActivity {
         if(SharedPref.getQuizAttempts(QuizActivity.this)>0 && HomeDashBoard.selectedDate != null && SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
             getData();
         }else {
-            try {
-                quizAssertsDao.deleteAllData();
-                File file = new File(this.getExternalFilesDir(null) + "/QuizAsserts");
-                if(file.exists()) {
-                    cleanDirectory(file);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             callSyncAPI();
         }
 
@@ -150,6 +141,7 @@ public class QuizActivity extends AppCompatActivity {
                 if(isStarted) {
                     backAlert();
                 }else {
+                    pauseTimer();
                     isStarted = false;
                     getOnBackPressedDispatcher().onBackPressed();
                     finish();
@@ -165,6 +157,7 @@ public class QuizActivity extends AppCompatActivity {
                 if(isStarted) {
                     backAlert();
                 }else {
+                    pauseTimer();
                     isStarted = false;
                     getOnBackPressedDispatcher().onBackPressed();
                     finish();
@@ -212,7 +205,6 @@ public class QuizActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("Name", fileName);
             jsonArray.put(jsonObject);
-            insertQuizAsserts(jsonArray);
             QuizAssertsDataTable quizAssertsDataTable = quizAssertsDao.getQuizAssertsDataByName(fileName);
             if(quizAssertsDataTable != null && quizAssertsDataTable.getDownloadingStatus().equalsIgnoreCase("3")) {
                 if(!isFinishing()) {
@@ -220,6 +212,16 @@ public class QuizActivity extends AppCompatActivity {
                     viewDownloadedQuizAssert();
                 }
             }else {
+                try {
+                    quizAssertsDao.deleteAllData();
+                    File file = new File(this.getExternalFilesDir(null) + "/QuizAsserts");
+                    if(file.exists()) {
+                        cleanDirectory(file);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                insertQuizAsserts(jsonArray);
                 quizAssertAlertBox(true);
             }
         } catch (Exception e) {
@@ -395,8 +397,9 @@ public class QuizActivity extends AppCompatActivity {
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
         btn_save.setOnClickListener(view -> {
-            dialogBackConfirmation.dismiss();
+            pauseTimer();
             isStarted = false;
+            dialogBackConfirmation.dismiss();
             getOnBackPressedDispatcher().onBackPressed();
             finish();
         });
@@ -605,7 +608,7 @@ public class QuizActivity extends AppCompatActivity {
                 jsonObject.put("sfcode", SharedPref.getSfCode(this));
                 jsonObject.put("division_code", SharedPref.getDivisionCode(this));
                 jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_22, HomeDashBoard.selectedDate.toString()));
-                Log.i("QUIZ", "callSyncAPI: json -- " + jsonObject);
+                Log.i("QUIZ", "quiz: json -- " + jsonObject);
                 Map<String, String> qry = new HashMap<>();
                 qry.put("axn", "table/additionaldcrmasterdata");
                 Call<JsonElement> quiz = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), qry, jsonObject.toString());
@@ -962,7 +965,9 @@ public class QuizActivity extends AppCompatActivity {
 
     private void pauseTimer() {
         isPaused = true;
-        countDownTimer.cancel();
+        if(countDownTimer != null) {
+            countDownTimer.cancel();
+        }
     }
 
     private void resumeTimer() {

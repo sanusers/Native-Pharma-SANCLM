@@ -147,7 +147,7 @@ public class DynamicActivity extends AppCompatActivity {
     private ActivityUploadDataDao activityUploadDataDao;
     public static boolean isEdited = false;
     private ActivityModelClass chosenActivityModelClass;
-    private String activityDate, activityTime;
+    private String activityDate, activityTime, selectedHQ = "";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -178,7 +178,7 @@ public class DynamicActivity extends AppCompatActivity {
         syncProgressDialog.setIndeterminate(true);
 
         adapter = new ActivityAdapter(DynamicActivity.this, ActivityList, (classGroup, holder, position) -> {
-            if (this.chosenActivityPosition != position && this.chosenActivityPosition != -1) {
+            if (this.chosenActivityPosition != position && this.chosenActivityPosition != -1 && validateActivityData()) {
                 activityChangeAlert(classGroup, position);
             } else {
                 binding.namechooseActivity.setText(classGroup.getActivityName());
@@ -249,6 +249,18 @@ public class DynamicActivity extends AppCompatActivity {
         binding.btnClearall.setOnClickListener(v -> {
             showClearAlert();
         });
+    }
+
+    private boolean validateActivityData() {
+        boolean isDataEntered = false;
+        for (int i = 0; i<ActivityViewItem.size(); i++) {
+            ActivityDetailsModelClass activityDetailsModelClass = ActivityViewItem.get(i);
+            if(activityDetailsModelClass.getAnswerTxt() != null && !activityDetailsModelClass.getAnswerTxt().isEmpty()) {
+                isDataEntered = true;
+                break;
+            }
+        }
+        return isDataEntered;
     }
 
     private void activityChangeAlert(ActivityModelClass classGroup, int position) {
@@ -336,7 +348,7 @@ public class DynamicActivity extends AppCompatActivity {
         ActivityDetailsList.clear();
         ActivityViewItem.clear();
         try {
-            ActivityDetailsDataTable activityDetailsDataTable = activityDetailsDataDao.getActivityDetailsByID(activityModelClass.getSlNo());
+            ActivityDetailsDataTable activityDetailsDataTable = activityDetailsDataDao.getActivityDetailsByID(activityModelClass.getSlNo() + "_" + SharedPref.getHqCode(DynamicActivity.this));
             JSONArray jsonArray = activityDetailsDataTable.getActivityDataJSONArray();
             if (jsonArray.length() > 0) {
                 binding.rldatalayout.setVisibility(View.VISIBLE);
@@ -2862,8 +2874,9 @@ public class DynamicActivity extends AppCompatActivity {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
-                            getHQData(jsonObject.getString("id"));
+                        if (jsonObject.optString("name").equalsIgnoreCase(selectedHq)) {
+                            selectedHQ = jsonObject.optString("id");
+                            getHQData(jsonObject.optString("id"));
 //                            getActivity(jsonObject.getString("id"));
                             break;
                         }

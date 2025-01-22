@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.Quiz;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.MediaController;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +32,7 @@ public class QuizAssertViewActivity extends AppCompatActivity {
     private String fileName, fileType;
     public static String BUNDLE_TAG = "FileData", FILE_NAME = "FileName", FILE_TYPE = "FileType";
     private MediaController mediaController;
+    private ProgressDialog progressDialog;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -41,6 +44,7 @@ public class QuizAssertViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityQuizAssertViewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         mediaController = new MediaController(this);
         mediaController.setAnchorView(binding.videoView);
@@ -61,6 +65,10 @@ public class QuizAssertViewActivity extends AppCompatActivity {
             finish();
         });
 
+        binding.retry.setOnClickListener(view -> {
+            setUpViews();
+        });
+
     }
 
     private void setUpViews() {
@@ -71,12 +79,14 @@ public class QuizAssertViewActivity extends AppCompatActivity {
                 binding.pdfView.setVisibility(View.GONE);
                 binding.videoView.setVisibility(View.GONE);
                 binding.webView.setVisibility(View.GONE);
+                binding.retry.setVisibility(View.GONE);
                 Glide.with(QuizAssertViewActivity.this).load(new File(file.getAbsolutePath())).downsample(DownsampleStrategy.FIT_CENTER).placeholder(R.drawable.baseline_cached_24).into(binding.imgView);
             }else if(fileType.toLowerCase().contains("video")) {
                 binding.imgView.setVisibility(View.GONE);
                 binding.pdfView.setVisibility(View.GONE);
                 binding.videoView.setVisibility(View.VISIBLE);
                 binding.webView.setVisibility(View.GONE);
+                binding.retry.setVisibility(View.GONE);
                 Uri uri = Uri.parse(file.getAbsolutePath());
                 binding.videoView.setVideoURI(uri);
                 binding.videoView.setMediaController(mediaController);
@@ -86,12 +96,15 @@ public class QuizAssertViewActivity extends AppCompatActivity {
                 binding.pdfView.setVisibility(View.VISIBLE);
                 binding.videoView.setVisibility(View.GONE);
                 binding.webView.setVisibility(View.GONE);
+                binding.retry.setVisibility(View.GONE);
                 loadPdf(file.getAbsolutePath());
-            }else if(fileType.toLowerCase().contains("msword") || fileType.toLowerCase().contains("excel") || fileType.toLowerCase().contains("sheet") || fileType.toLowerCase().contains("ppt")) {
+            }else if(fileType.toLowerCase().contains("msword") || fileType.toLowerCase().contains("excel") || fileType.toLowerCase().contains("sheet") || fileType.toLowerCase().contains("ppt") || fileType.toLowerCase().contains("presentation")) {
+                progressDialog = CommonUtilsMethods.createProgressDialog(QuizAssertViewActivity.this);
                 binding.imgView.setVisibility(View.GONE);
                 binding.pdfView.setVisibility(View.GONE);
                 binding.videoView.setVisibility(View.GONE);
                 binding.webView.setVisibility(View.VISIBLE);
+                binding.retry.setVisibility(View.VISIBLE);
                 binding.webView.getSettings().setBuiltInZoomControls(false);
                 binding.webView.getSettings().setDisplayZoomControls(false);
                 binding.webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
@@ -119,6 +132,22 @@ public class QuizAssertViewActivity extends AppCompatActivity {
                     String docUrl = "https://docs.google.com/gview?embedded=true&url=" + url;
                     Log.v("Quiz Asserts", " --2222-- " + docUrl);
                     binding.webView.loadUrl(docUrl);
+
+                    binding.webView.setWebViewClient(new WebViewClient() {
+                        @Override
+                        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                            if (url != null && !url.isEmpty()) {
+                                binding.webView.loadUrl(url);
+                            }
+                            return true;
+                        }
+
+                        @Override
+                        public void onPageFinished(WebView view, String url) {
+                            progressDialog.dismiss();
+                            super.onPageFinished(view, url);
+                        }
+                    });
 //                    binding.webView.loadUrl("file://" + file.getAbsolutePath());
                 } catch (Exception e) {
                     e.printStackTrace();
