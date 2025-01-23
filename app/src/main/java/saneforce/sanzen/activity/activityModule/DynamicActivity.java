@@ -99,6 +99,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -147,7 +148,7 @@ public class DynamicActivity extends AppCompatActivity {
     private ActivityUploadDataDao activityUploadDataDao;
     public static boolean isEdited = false;
     private ActivityModelClass chosenActivityModelClass;
-    private String activityDate, activityTime, selectedHQ = "";
+    private String activityDate, activityTime, selectedHQ = "", activityCap;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -156,6 +157,9 @@ public class DynamicActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(binding.getRoot());
         gpsTrack = new GPSTrack(this);
+        selectedHQ = SharedPref.getHqCode(this);
+        binding.txthqName.setText(SharedPref.getHqName(DynamicActivity.this));
+        activityCap = SharedPref.getActivityCap(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         activityDetailsDataDao = roomDB.activityDetailsDataDao();
@@ -169,7 +173,6 @@ public class DynamicActivity extends AppCompatActivity {
         binding.listTitle.setText(String.format("List of %s", SharedPref.getActivityCap(this)));
         binding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(this)));
         binding.tvContent.setText(String.format("Select any %s on list  to view content", SharedPref.getActivityCap(DynamicActivity.this)));
-        binding.txthqName.setText(SharedPref.getHqName(DynamicActivity.this));
         binding.btnsumit.setEnabled(false);
 
         syncProgressDialog = new ProgressDialog(DynamicActivity.this);
@@ -255,7 +258,7 @@ public class DynamicActivity extends AppCompatActivity {
         boolean isDataEntered = false;
         for (int i = 0; i<ActivityViewItem.size(); i++) {
             ActivityDetailsModelClass activityDetailsModelClass = ActivityViewItem.get(i);
-            if(activityDetailsModelClass.getAnswerTxt() != null && !activityDetailsModelClass.getAnswerTxt().isEmpty()) {
+            if(activityDetailsModelClass.getAnswerTxt() != null && !activityDetailsModelClass.getAnswerTxt().isEmpty() && !activityDetailsModelClass.getControlId().equalsIgnoreCase("0") && !activityDetailsModelClass.getControlId().equalsIgnoreCase("17")) {
                 isDataEntered = true;
                 break;
             }
@@ -326,7 +329,8 @@ public class DynamicActivity extends AppCompatActivity {
                     binding.rlNoActivity.setVisibility(View.GONE);
                     binding.llMainLayout.setVisibility(View.VISIBLE);
                     binding.rlDetailsMain.setVisibility(View.VISIBLE);
-                    ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available")));
+                    boolean isAvailableOffline = activityDetailsDataDao.isActivityDataAvailable(jsonObject.getString("Activity_SlNo") + "_" + selectedHQ);
+                    ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available"), isAvailableOffline));
                     adapter.notifyDataSetChanged();
                 }
             }
@@ -335,7 +339,7 @@ public class DynamicActivity extends AppCompatActivity {
                 binding.rlDetailsMain.setVisibility(View.GONE);
                 binding.rlNoActivity.setVisibility(View.VISIBLE);
                 binding.llMainLayout.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity");
+                commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap);
             }
             binding.progressMain.setVisibility(View.GONE);
         } catch (Exception e) {
@@ -347,103 +351,181 @@ public class DynamicActivity extends AppCompatActivity {
         binding.progrlessdetail.setVisibility(View.VISIBLE);
         ActivityDetailsList.clear();
         ActivityViewItem.clear();
-        try {
-            ActivityDetailsDataTable activityDetailsDataTable = activityDetailsDataDao.getActivityDetailsByID(activityModelClass.getSlNo() + "_" + SharedPref.getHqCode(DynamicActivity.this));
-            JSONArray jsonArray = activityDetailsDataTable.getActivityDataJSONArray();
-            if (jsonArray.length() > 0) {
-                binding.rldatalayout.setVisibility(View.VISIBLE);
-                binding.btnsumit.setVisibility(View.VISIBLE);
-                binding.rlNoData.setVisibility(View.GONE);
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                    String Control_Id = jsonObject1.getString("Control_Id");
-                    String Field_Name = jsonObject1.getString("Field_Name");
-                    String Creation_Id = jsonObject1.getString("Creation_Id");
-                    String input = jsonObject1.getString("input");
-                    String madantaory = jsonObject1.getString("Mandatory");
-                    String Control_Para = jsonObject1.getString("Control_Para");
-                    String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
-                    ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID, activityModelClass.getSlNo()));
-                }
-                int jjj = 0;
-                for (int i = 0; i < ActivityDetailsList.size(); i++) {
-                    switch (ActivityDetailsList.get(i).getControlId()) {
-                        case "0":
-                            CreateLabelView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "1":
-                            CreateNameView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "2":
-                            CreateNumberView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "3":
-                            CreateMultipleLineViewText(ActivityDetailsList.get(i), i);
-                            break;
-                        case "4":
-                            CreateSelectionDateView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "5":
-                            CreateFromAndToDateSelectionView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "6":
-                            CreateSelectionTimeView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "7":
-                            CreateFromAndToTimeSelectionView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "8":
-                        case "12":
-                            CreateSingleListSelection(ActivityDetailsList.get(i), i);
-                            break;
-                        case "9":
-                        case "13":
-                            CreateMultipleListSelection(ActivityDetailsList.get(i), i);
-                            break;
-                        case "10":
-                            adduploadfile(ActivityDetailsList.get(i), i);
-                            break;
-                        case "11":
-                            addedittextnumericcurrency(ActivityDetailsList.get(i), i);
-                            break;
-                        case "14":
-                            TableList(ActivityDetailsList.get(i), i);
-                            break;
-                        case "15":
-                            CreateSelectionDateWithTimeView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "16":
-                            CreateFromAndToDateWithTimeSelectionView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "17":
-                            CreateLocationView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "18":
-                            addeditcurrencyconvertor(ActivityDetailsList.get(i), i);
-                            break;
-                        case "19":
-                            digitalsign(ActivityDetailsList.get(i), i);
-                            break;
-                    }
-                    jjj++;
-                    if (ActivityDetailsList.size() == jjj) {
-                        binding.btnsumit.setEnabled(true);
-                    }
-                }
-            }
-            if (!ActivityDetailsList.isEmpty()) {
-                binding.progrlessdetail.setVisibility(View.GONE);
-                binding.rlNoData.setVisibility(View.GONE);
-                binding.rlDetailsMain.setVisibility(View.VISIBLE);
+        if(!activityDetailsDataDao.isActivityDataAvailable(activityModelClass.getSlNo() + "_" + selectedHQ)) {
+            if(UtilityClass.isNetworkAvailable(this)) {
+                callActivityDetailsAPI(activityModelClass);
             } else {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+                chosenActivityModelClass = null;
+                chosenActivityPosition = -1;
+                this.adapter.changeRowIndex(-1);
                 binding.rlNoData.setVisibility(View.VISIBLE);
                 binding.rlDetailsMain.setVisibility(View.GONE);
                 binding.btnsumit.setVisibility(View.GONE);
                 binding.progrlessdetail.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            try {
+                ActivityDetailsDataTable activityDetailsDataTable = activityDetailsDataDao.getActivityDetailsByID(activityModelClass.getSlNo() + "_" + selectedHQ);
+                JSONArray jsonArray = activityDetailsDataTable.getActivityDataJSONArray();
+                if(jsonArray.length()>0) {
+                    binding.rldatalayout.setVisibility(View.VISIBLE);
+                    binding.btnsumit.setVisibility(View.VISIBLE);
+                    binding.rlNoData.setVisibility(View.GONE);
+                    for (int i = 0; i<jsonArray.length(); i++) {
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        String Control_Id = jsonObject1.getString("Control_Id");
+                        String Field_Name = jsonObject1.getString("Field_Name");
+                        String Creation_Id = jsonObject1.getString("Creation_Id");
+                        String input = jsonObject1.getString("input");
+                        String madantaory = jsonObject1.getString("Mandatory");
+                        String Control_Para = jsonObject1.getString("Control_Para");
+                        String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
+                        ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID, activityModelClass.getSlNo()));
+                        String controlParam = Control_Para.toLowerCase();
+                        if(controlParam.contains("doctor") || controlParam.contains("dr")
+                                || controlParam.contains("chemist") || controlParam.contains("chm")
+                                || controlParam.contains("stockist") || controlParam.contains("stock") || controlParam.contains("stk")
+                                || controlParam.contains("unlisted") || controlParam.contains("un") || controlParam.contains("unlst")
+                                || controlParam.contains("cluster")
+                                || controlParam.contains("joint")) {
+                            chosenActivityModelClass = null;
+                            chosenActivityPosition = -1;
+                            this.adapter.changeRowIndex(-1);
+                            binding.rlNoData.setVisibility(View.VISIBLE);
+                            binding.rlDetailsMain.setVisibility(View.GONE);
+                            binding.btnsumit.setVisibility(View.GONE);
+                            binding.progrlessdetail.setVisibility(View.GONE);
+                            commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.select_headquater));
+                            showHQ();
+                            return;
+                        }
+                    }
+                    int jjj = 0;
+                    for (int i = 0; i<ActivityDetailsList.size(); i++) {
+                        switch (ActivityDetailsList.get(i).getControlId()){
+                            case "0":
+                                CreateLabelView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "1":
+                                CreateNameView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "2":
+                                CreateNumberView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "3":
+                                CreateMultipleLineViewText(ActivityDetailsList.get(i), i);
+                                break;
+                            case "4":
+                                CreateSelectionDateView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "5":
+                                CreateFromAndToDateSelectionView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "6":
+                                CreateSelectionTimeView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "7":
+                                CreateFromAndToTimeSelectionView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "8":
+                            case "12":
+                                CreateSingleListSelection(ActivityDetailsList.get(i), i);
+                                break;
+                            case "9":
+                            case "13":
+                                CreateMultipleListSelection(ActivityDetailsList.get(i), i);
+                                break;
+                            case "10":
+                                adduploadfile(ActivityDetailsList.get(i), i);
+                                break;
+                            case "11":
+                                addedittextnumericcurrency(ActivityDetailsList.get(i), i);
+                                break;
+                            case "14":
+                                TableList(ActivityDetailsList.get(i), i);
+                                break;
+                            case "15":
+                                CreateSelectionDateWithTimeView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "16":
+                                CreateFromAndToDateWithTimeSelectionView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "17":
+                                CreateLocationView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "18":
+                                addeditcurrencyconvertor(ActivityDetailsList.get(i), i);
+                                break;
+                            case "19":
+                                digitalsign(ActivityDetailsList.get(i), i);
+                                break;
+                        }
+                        jjj++;
+                        if(ActivityDetailsList.size() == jjj) {
+                            binding.btnsumit.setEnabled(true);
+                        }
+                    }
+                }
+                if(!ActivityDetailsList.isEmpty()) {
+                    binding.progrlessdetail.setVisibility(View.GONE);
+                    binding.rlNoData.setVisibility(View.GONE);
+                    binding.rlDetailsMain.setVisibility(View.VISIBLE);
+                }else {
+                    binding.rlNoData.setVisibility(View.VISIBLE);
+                    binding.rlDetailsMain.setVisibility(View.GONE);
+                    binding.btnsumit.setVisibility(View.GONE);
+                    binding.progrlessdetail.setVisibility(View.GONE);
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap + " Details");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void callActivityDetailsAPI(ActivityModelClass activityModelClass) {
+        binding.progressMain.setVisibility(View.VISIBLE);
+        try {
+            JSONObject object = CommonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
+            object.put("tableName", "getdynactivity_details");
+            object.put("sfcode", SharedPref.getSfCode(this));
+            object.put("division_code", SharedPref.getDivisionCode(this));
+            object.put("Rsf", selectedHQ);
+            object.put("slno", activityModelClass.getSlNo());
+            Log.v("JsonObject  :", object.toString());
+            Map<String, String> QueryParam = new HashMap<>();
+            QueryParam.put("axn", "get/activity");
+
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(DynamicActivity.this), QueryParam, object.toString());
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                    Log.v("Response :", "" + response);
+                    binding.progressMain.setVisibility(View.GONE);
+                    if(response.isSuccessful()) {
+                        try {
+                            JsonElement jsonElement = response.body();
+                            if(jsonElement != null) {
+                                JSONArray jsonArray1 = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                activityDetailsDataDao.saveActivityDetailsData(new ActivityDetailsDataTable(activityModelClass.getSlNo() + "_" + selectedHQ, jsonArray1.toString(), "0"));
+                                activityModelClass.setAvailableOffline(true);
+                                adapter.notifyDataSetChanged();
+                                getActivityDetails(activityModelClass);
+                            }
+                        } catch (Exception a) {
+                            Log.e("Error", "----- " + a);
+                            a.printStackTrace();
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        } catch (Exception a) {
+            a.printStackTrace();
         }
     }
 
@@ -484,7 +566,7 @@ public class DynamicActivity extends AppCompatActivity {
                                             binding.rlNoActivity.setVisibility(View.GONE);
                                             binding.llMainLayout.setVisibility(View.VISIBLE);
                                             binding.rlDetailsMain.setVisibility(View.VISIBLE);
-                                            ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available")));
+                                            ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available"), false));
                                             adapter.notifyDataSetChanged();
                                         }
                                     }
@@ -496,7 +578,7 @@ public class DynamicActivity extends AppCompatActivity {
                                     binding.rlNoActivity.setVisibility(View.VISIBLE);
                                     binding.llMainLayout.setVisibility(View.GONE);
 
-                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity");
+                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap);
                                 }
                             } catch (Exception a) {
                                 a.printStackTrace();
@@ -637,10 +719,10 @@ public class DynamicActivity extends AppCompatActivity {
                                     binding.rlDetailsMain.setVisibility(View.GONE);
                                     binding.btnsumit.setVisibility(View.GONE);
                                     binding.progrlessdetail.setVisibility(View.GONE);
-                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
+                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap + " Details");
                                 }
                             } catch (Exception a) {
-                                commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
+                                commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap + " Details");
                                 Log.e("Error", "----- " + a);
                             }
                         }
@@ -648,7 +730,7 @@ public class DynamicActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap + " Details");
                         binding.rlNoData.setVisibility(View.VISIBLE);
                         binding.rlDetailsMain.setVisibility(View.GONE);
                         binding.btnsumit.setVisibility(View.GONE);
@@ -999,7 +1081,7 @@ public class DynamicActivity extends AppCompatActivity {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(DynamicActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        textviewdate1.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        textviewdate1.setText(String.format(Locale.getDefault(), "%02d-%02d-%04d", dayOfMonth, monthOfYear + 1, year));
                         commonFun();
                     }
                 }, year, month, day);
@@ -1182,7 +1264,7 @@ public class DynamicActivity extends AppCompatActivity {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(DynamicActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        textviewfromdate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        textviewfromdate.setText(String.format(Locale.getDefault(), "%02d-%02d-%04d", dayOfMonth, monthOfYear + 1, year));
                         commonFun();
                     }
                 }, year, month, day);
@@ -1241,7 +1323,7 @@ public class DynamicActivity extends AppCompatActivity {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(DynamicActivity.this, (view1, year, monthOfYear, dayOfMonth) -> textviewtodate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year), mYear, mMonth, mDay);
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(DynamicActivity.this, (view1, year, monthOfYear, dayOfMonth) -> textviewtodate.setText(String.format(Locale.getDefault(), "%02d-%02d-%04d", dayOfMonth, monthOfYear + 1, year)), mYear, mMonth, mDay);
                     commonFun();
                     datePickerDialog.getDatePicker().setMinDate(dateBefore.getTime());
                     datePickerDialog.show();
@@ -2091,6 +2173,7 @@ public class DynamicActivity extends AppCompatActivity {
         MainLayout.addView(AddressText);
 
         String address;
+        gpsTrack = new GPSTrack(this);
         double latitude = gpsTrack.getLatitude();
         double longitude = gpsTrack.getLongitude();
         if (UtilityClass.isNetworkAvailable(DynamicActivity.this)) {
@@ -2117,6 +2200,7 @@ public class DynamicActivity extends AppCompatActivity {
                     } else {
                         commonUtilsMethods.showToastMessage(DynamicActivity.this, "Wait For Location");
                         String address;
+                        gpsTrack = new GPSTrack(DynamicActivity.this);
                         double latitude = gpsTrack.getLatitude();
                         double longitude = gpsTrack.getLongitude();
                         address = CommonUtilsMethods.gettingAddress(DynamicActivity.this, latitude, longitude, false);
@@ -2525,7 +2609,7 @@ public class DynamicActivity extends AppCompatActivity {
                 jsonObject.put("FWFlg", "");
                 jsonObject.put("town_code", "");
                 jsonObject.put("town_name", "");
-                jsonObject.put("Rsf", SharedPref.getHqCode(DynamicActivity.this));
+                jsonObject.put("Rsf", selectedHQ);
                 jsonObject.put("sf_type", SharedPref.getSfType(this));
                 jsonObject.put("Designation", SharedPref.getDesig(this));
                 jsonObject.put("state_code", SharedPref.getStateCode(this));
@@ -2714,7 +2798,7 @@ public class DynamicActivity extends AppCompatActivity {
                 }
 
             }
-            commonUtilsMethods.showToastMessage(DynamicActivity.this, "Activity Saved Successfully");
+            commonUtilsMethods.showToastMessage(DynamicActivity.this, activityCap + " Saved Successfully");
         } catch (Exception a) {
             a.printStackTrace();
         }
@@ -2835,11 +2919,19 @@ public class DynamicActivity extends AppCompatActivity {
 
     void showHQ() {
         try {
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+            JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+            JSONArray newJsonArray = new JSONArray();
+            JSONObject independent = new JSONObject();
+            independent.put("name", "Independent");
+            independent.put("id", SharedPref.getSfCode(DynamicActivity.this));
+            newJsonArray.put(independent);
+            for (int i = 0; i<jsonArray1.length(); i++) {
+                newJsonArray.put(jsonArray1.optJSONObject(i));
+            }
             ArrayList<String> list = new ArrayList<>();
-            if (jsonArray.length() > 0) {
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+            if (newJsonArray.length() > 0) {
+                for (int i = 0; i < newJsonArray.length(); i++) {
+                    JSONObject jsonObject = newJsonArray.getJSONObject(i);
                     list.add(jsonObject.getString("name"));
                 }
             }
@@ -2871,12 +2963,19 @@ public class DynamicActivity extends AppCompatActivity {
             listView.setOnItemClickListener((adapterView, view1, position, l) -> {
                 String selectedHq = listView.getItemAtPosition(position).toString();
                 binding.txthqName.setText(selectedHq);
-                for (int i = 0; i < jsonArray.length(); i++) {
+                for (int i = 0; i < newJsonArray.length(); i++) {
                     try {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        JSONObject jsonObject = newJsonArray.getJSONObject(i);
                         if (jsonObject.optString("name").equalsIgnoreCase(selectedHq)) {
                             selectedHQ = jsonObject.optString("id");
-                            getHQData(jsonObject.optString("id"));
+                            binding.rlNoData.setVisibility(View.VISIBLE);
+                            binding.rlDetailsMain.setVisibility(View.GONE);
+                            binding.btnsumit.setVisibility(View.GONE);
+                            chosenActivityModelClass = null;
+                            chosenActivityPosition = -1;
+                            this.adapter.changeRowIndex(-1);
+                            getActivity();
+//                            getHQData(jsonObject.optString("id"));
 //                            getActivity(jsonObject.getString("id"));
                             break;
                         }

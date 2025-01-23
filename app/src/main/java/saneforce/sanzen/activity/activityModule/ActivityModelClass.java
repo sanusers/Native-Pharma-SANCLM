@@ -8,7 +8,7 @@ public class ActivityModelClass {
     private String activeFlag;
     private String activityDesig;
     private String activityAvailable;
-
+    private boolean isAvailableOffline;
 
     private String Code;
     private String Name;
@@ -37,13 +37,14 @@ public class ActivityModelClass {
        this.ischeck = ischeck;
     }
 
-    public ActivityModelClass(String slNo, String activityName, String activityFor, String activeFlag, String activityDesig, String activityAvailable) {
+    public ActivityModelClass(String slNo, String activityName, String activityFor, String activeFlag, String activityDesig, String activityAvailable, boolean isAvailableOffline) {
         this.slNo = slNo;
         this.activityName = activityName;
         this.activityFor = activityFor;
         this.activeFlag = activeFlag;
         this.activityDesig = activityDesig;
         this.activityAvailable = activityAvailable;
+        this.isAvailableOffline = isAvailableOffline;
     }
 
     public boolean getIscheck() {
@@ -100,5 +101,13 @@ public class ActivityModelClass {
 
     public void setActivityAvailable(String activityAvailable) {
         this.activityAvailable = activityAvailable;
+    }
+
+    public boolean isAvailableOffline() {
+        return isAvailableOffline;
+    }
+
+    public void setAvailableOffline(boolean availableOffline) {
+        isAvailableOffline = availableOffline;
     }
 }

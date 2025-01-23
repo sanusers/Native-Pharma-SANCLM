@@ -64,12 +64,15 @@ public class CallsUtil {
     public void deleteOfflineCalls(String cusCode, String cusName, String date) {
         callOfflineDataDao.deleteOfflineCalls(cusCode, cusName, date);
         callOfflineECDataDao.deleteOfflineCalls(cusCode, cusName, date);
+        deleteOfflineActivity(cusCode, date);
     }
 
     public void deleteOfflineActivity(String cusCode, String date) {
-        ActivityOfflineDataTable activityOfflineDataTable = activityOfflineDataDao.getActivityOfflineData(date, cusCode);
-        if (activityOfflineDataTable != null) {
-            deleteOfflineActivity(activityOfflineDataTable.getId());
+        List<ActivityOfflineDataTable> activityOfflineDataTableList = activityOfflineDataDao.getActivityOfflineData(date, cusCode);
+        if (activityOfflineDataTableList != null && !activityOfflineDataTableList.isEmpty()) {
+            for (ActivityOfflineDataTable activityOfflineDataTable : activityOfflineDataTableList) {
+                deleteOfflineActivity(activityOfflineDataTable.getId());
+            }
         }
     }
 

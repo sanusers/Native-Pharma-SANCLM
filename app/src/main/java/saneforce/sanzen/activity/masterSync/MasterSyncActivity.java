@@ -1268,7 +1268,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                             saveSTPDataToLocal();
                                         } else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
                                             activityDetailsDataDao.deleteAllData();
-                                            syncIndividualActivityDetails();
+//                                            syncIndividualActivityDetails();
                                         }
                                         JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
                                         for (int bean = 0; bean < input.length(); bean++) {
