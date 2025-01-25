@@ -15,6 +15,7 @@ import static android.view.Gravity.TOP;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
+import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -155,8 +156,8 @@ public class ActivityFragment extends Fragment {
     private ActivityModelClass chosenActivityModelClass;
     private String activityDate, activityTime, activityCap = "Activity";
     public static List<JSONObject> activityData;
-    private Set<String> savedActivityList = new HashSet<>();
-    private HashMap<String, HashMap<Integer, ActivityDetailsModelClass>> activityAnswerData = new HashMap<>();
+    public static Set<String> savedActivityList = new HashSet<>();
+    public static HashMap<String, HashMap<Integer, ActivityDetailsModelClass>> activityAnswerData = new HashMap<>();
 
     @Override
     public void onResume() {
@@ -167,6 +168,17 @@ public class ActivityFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        gpsTrack = new GPSTrack(requireContext());
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
+        activityDetailsDataDao = roomDB.activityDetailsDataDao();
+        activityOfflineDataDao = roomDB.activityOfflineDataDao();
+        activityUploadDataDao = roomDB.activityUploadDataDao();
+        activityCap = SharedPref.getActivityCap(requireContext());
+        callsUtil = new CallsUtil(requireContext());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
     }
 
     @Override
@@ -180,16 +192,6 @@ public class ActivityFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        gpsTrack = new GPSTrack(requireContext());
-        roomDB = RoomDB.getDatabase(requireContext());
-        masterDataDao = roomDB.masterDataDao();
-        activityDetailsDataDao = roomDB.activityDetailsDataDao();
-        activityOfflineDataDao = roomDB.activityOfflineDataDao();
-        activityUploadDataDao = roomDB.activityUploadDataDao();
-        activityCap = SharedPref.getActivityCap(requireContext());
-        callsUtil = new CallsUtil(requireContext());
-        commonUtilsMethods = new CommonUtilsMethods(requireContext());
-        apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         fontmedium = ResourcesCompat.getFont(requireContext(), R.font.satoshi_medium);
         fontregular = ResourcesCompat.getFont(requireContext(), R.font.satoshi_regular);
         fragmentActivityBinding.listTitle.setText(String.format("List of %s", SharedPref.getActivityCap(requireContext())));
@@ -197,8 +199,12 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(requireContext())));
         fragmentActivityBinding.txthqName.setText(SharedPref.getHqName(requireContext()));
         fragmentActivityBinding.btnsumit.setEnabled(false);
-        activityAnswerData = new HashMap<>();
-        savedActivityList = new HashSet<>();
+        if(activityAnswerData == null) {
+            activityAnswerData = new HashMap<>();
+        }
+        if(savedActivityList == null) {
+            savedActivityList = new HashSet<>();
+        }
         adapter = new ActivityAdapter(requireContext(), ActivityList, (classGroup, holder, position) -> {
             if(this.chosenActivityPosition == position) {
                 Log.d("Activity", "onViewCreated: Same activity, Do nothing");
@@ -209,13 +215,13 @@ public class ActivityFragment extends Fragment {
                 fragmentActivityBinding.llActivityDetailsView.removeAllViews();
                 chosenActivityModelClass = classGroup;
                 chosenActivityPosition = position;
-                if(savedActivityList.contains(chosenActivityModelClass.getSlNo())) {
-                    fragmentActivityBinding.btnsumit.setEnabled(false);
-                    fragmentActivityBinding.btnsumit.setAlpha(0.5f);
-                } else {
-                    fragmentActivityBinding.btnsumit.setEnabled(true);
-                    fragmentActivityBinding.btnsumit.setAlpha(1f);
-                }
+//                if(savedActivityList.contains(chosenActivityModelClass.getSlNo())) {
+//                    fragmentActivityBinding.btnsumit.setEnabled(false);
+//                    fragmentActivityBinding.btnsumit.setAlpha(0.5f);
+//                } else {
+//                    fragmentActivityBinding.btnsumit.setEnabled(true);
+//                    fragmentActivityBinding.btnsumit.setAlpha(1f);
+//                }
                 getActivityDetails(classGroup);
             }
         });
@@ -242,6 +248,8 @@ public class ActivityFragment extends Fragment {
             public void onClick(View view) {
                 if(chosenActivityModelClass != null && !savedActivityList.contains(chosenActivityModelClass.getSlNo())) {
                     saveActivity();
+                }else if(chosenActivityModelClass != null && savedActivityList.contains(chosenActivityModelClass.getSlNo())) {
+                    showSaveAlert();
                 }
             }
         });
@@ -253,6 +261,25 @@ public class ActivityFragment extends Fragment {
             }
         });
 
+    }
+
+    private void showSaveAlert() {
+        Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.dcr_cancel_alert);
+        dialog.setCancelable(false);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+        TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
+        TextView btn_no = dialog.findViewById(R.id.btn_no);
+        alertText.setText("Are you sure, Already saved will be overwritten!");
+        btn_yes.setOnClickListener(view12 -> {
+            saveActivity();
+            dialog.dismiss();
+        });
+        btn_no.setOnClickListener(view12 -> {
+            dialog.dismiss();
+        });
     }
 
     private boolean validateActivityData() {
@@ -2808,14 +2835,26 @@ public class ActivityFragment extends Fragment {
         String slNo = chosenActivityModelClass.getSlNo();
         try {
             JSONArray jsonArray = new JSONArray();
+            String wtCode = "", wtName = "", fwFlag = "";
+
+            JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+            for (int j = 0; j < jsonArrayWt.length(); j++) {
+                JSONObject workTypeData = jsonArrayWt.getJSONObject(j);
+                if (workTypeData.getString("FWFlg").equalsIgnoreCase("F")) {
+                    wtCode =  workTypeData.getString("Code");
+                    wtName = workTypeData.getString("Name");
+                    fwFlag = workTypeData.getString("FWFlg");
+                }
+            }
+            Date today = new Date();
+            String dateTime = TimeUtils.GetCurrentTimeStamp(TimeUtils.FORMAT_1);
+            String dateToStr = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_1, HomeDashBoard.binding.textDate.getText().toString());
+            SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+            String dateToStr1 = format1.format(today) + " 00:00:00";
+
             for (int i = 0; i<ActivityViewItem.size(); i++) {
-                JSONObject jsonObject = new JSONObject();
                 ActivityDetailsModelClass List = ActivityViewItem.get(i);
-                Date today = new Date();
-                String dateTime = TimeUtils.GetCurrentTimeStamp(TimeUtils.FORMAT_1);
-                String dateToStr = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_1, HomeDashBoard.binding.textDate.getText().toString());
-                SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-                String dateToStr1 = format1.format(today) + " 00:00:00";
+                JSONObject jsonObject = new JSONObject();
                 jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
                 jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
                 jsonObject.put("act_date", dateToStr);
@@ -2826,19 +2865,19 @@ public class ActivityFragment extends Fragment {
                 jsonObject.put("ctrl_id", List.getControlId());
                 jsonObject.put("creat_id", List.getCreationId());
                 jsonObject.put("group_creat_id", List.getCreationId());
-                jsonObject.put("WT", "0");
-                jsonObject.put("Pl", "0");
-                jsonObject.put("cus_code", "0");
+                jsonObject.put("WT", wtCode);
+                jsonObject.put("Pl", "0"); // cluster code
+                jsonObject.put("cus_code", CallActivityCustDetails.get(0).getCode());
                 jsonObject.put("lat", gpsTrack.getLatitude());
                 jsonObject.put("lng", gpsTrack.getLongitude());
-                jsonObject.put("cusname", "Name");
+                jsonObject.put("cusname", CallActivityCustDetails.get(0).getName());
                 jsonObject.put("DataSF", SharedPref.getSfCode(requireContext()));
-                jsonObject.put("type", "0");
-                jsonObject.put("WT_code", "");
-                jsonObject.put("WTName", "");
-                jsonObject.put("FWFlg", "");
-                jsonObject.put("town_code", "");
-                jsonObject.put("town_name", "");
+                jsonObject.put("type", CallActivityCustDetails.get(0).getType());
+                jsonObject.put("WT_code", wtCode);
+                jsonObject.put("WTName", wtName);
+                jsonObject.put("FWFlg", fwFlag);
+                jsonObject.put("town_code", CallActivityCustDetails.get(0).getTown_code());
+                jsonObject.put("town_name", CallActivityCustDetails.get(0).getTown_name());
                 jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
                 jsonObject.put("sf_type", SharedPref.getSfType(requireContext()));
                 jsonObject.put("Designation", SharedPref.getDesig(requireContext()));
@@ -2899,8 +2938,8 @@ public class ActivityFragment extends Fragment {
 //                adapter.changeSelected(holder);
 //                fragmentActivityBinding.rlNoData.setVisibility(View.VISIBLE);
 //                fragmentActivityBinding.rlDetailsMain.setVisibility(View.GONE);
-                fragmentActivityBinding.btnsumit.setEnabled(false);
-                fragmentActivityBinding.btnsumit.setAlpha(0.5f);
+//                fragmentActivityBinding.btnsumit.setEnabled(false);
+//                fragmentActivityBinding.btnsumit.setAlpha(0.5f);
 //                fragmentActivityBinding.progrlessdetail.setVisibility(View.GONE);
             }
         } catch (Exception a) {
