@@ -64,6 +64,11 @@ public class CallsUtil {
     public void deleteOfflineCalls(String cusCode, String cusName, String date) {
         callOfflineDataDao.deleteOfflineCalls(cusCode, cusName, date);
         callOfflineECDataDao.deleteOfflineCalls(cusCode, cusName, date);
+    }
+
+    public void deleteOfflineCallsWithActivity(String cusCode, String cusName, String date) {
+        callOfflineDataDao.deleteOfflineCalls(cusCode, cusName, date);
+        callOfflineECDataDao.deleteOfflineCalls(cusCode, cusName, date);
         deleteOfflineActivity(cusCode, date);
     }
 
