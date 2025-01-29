@@ -61,6 +61,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 
@@ -71,6 +72,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.activityModule.ActivityDetailsModelClass;
 import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.call.adapter.DCRCallTabLayoutAdapter;
 import saneforce.sanzen.activity.call.adapter.additionalCalls.AdditionalCusListAdapter;
@@ -107,6 +109,7 @@ import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 
 import saneforce.sanzen.activity.remaindercalls.RemaindercallsActivity;
+import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -149,7 +152,7 @@ public class DCRCallActivity extends AppCompatActivity {
     GPSTrack gpsTrack;
 
     JSONObject jsonSaveDcr, jsonImage;
-    String GeoChk, capPrd, capInp, capActivity, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, InputNeed, ProductNeed, AdditionalCallNeed;
+    String GeoChk, capPrd, capInp, capActivity, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, InputNeed, ProductNeed, AdditionalCallNeed, ActivityNeed;
     double lat, lng;
     ApiInterface api_interface;
     String ChemName = "", CheCode = "";
@@ -283,6 +286,7 @@ public class DCRCallActivity extends AppCompatActivity {
         AddAdditionalCallData();
         AddRCPAData();
         AddJWData();
+        AddActivityData();
         dcrCallBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -541,7 +545,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     pages.add("RCPA");
                 }
             }
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+            if(ActivityNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
@@ -562,7 +566,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     pages.add("RCPA");
                 }
             }
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+            if(ActivityNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
@@ -577,7 +581,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new InputFragment(), capInp);
                 pages.add(capInp);
             }
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+            if(ActivityNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
@@ -592,7 +596,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new InputFragment(), capInp);
                 pages.add(capInp);
             }
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+            if(ActivityNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
@@ -603,7 +607,7 @@ public class DCRCallActivity extends AppCompatActivity {
             pages.add("Product");
             viewPagerAdapter.add(new InputFragment(), "Input");
             pages.add("Input");
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+            if(ActivityNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
@@ -1551,6 +1555,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 }
             }
+            Log.v("jsonExtractOnline", "----" + RCPAFragment.ProductSelectedList.size() + "----" + RCPASelectCompSide.rcpa_comp_list.size());
 
             if (json.has("event_capture") && !json.getString("event_capture").equalsIgnoreCase("[]")) {
                 JSONArray jsonArrayEC = new JSONArray(json.getString("event_capture"));
@@ -1560,7 +1565,69 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
-            Log.v("jsonExtractOnline", "----" + RCPAFragment.ProductSelectedList.size() + "----" + RCPASelectCompSide.rcpa_comp_list.size());
+            if (json.has("Dcr_activity") && !json.getString("Dcr_activity").equalsIgnoreCase("[]")) {
+                JSONArray jsonArrayActivity = new JSONArray(json.getString("Dcr_activity"));
+                ActivityFragment.activityAnswerData = new HashMap<>();
+                ActivityFragment.savedActivityList = new HashSet<>();
+                if (jsonArrayActivity.length() > 0) {
+                    for (int i = 0; i < jsonArrayActivity.length(); i++) {
+                        JSONObject jsonObject = jsonArrayActivity.optJSONObject(i);
+                        String slNo = jsonObject.getString("Main_id");
+                        String activityName = jsonObject.getString("Main_Name");
+                        String sfCode = jsonObject.getString("Main_id");
+                        String groupID = jsonObject.getString("Main_id");
+                        String status = jsonObject.getString("Main_id");
+                        JSONObject dateObj = jsonObject.optJSONObject("DCR_Date");
+                        if (dateObj != null) {
+                            String date = dateObj.optString("date");
+                        }
+
+                        ActivityFragment.activityAnswerData.put(slNo, new HashMap<>());
+                        ActivityFragment.savedActivityList.add(slNo);
+
+                        JSONArray jsonArrayActivityData = jsonObject.optJSONArray("Activity_data");
+                        if (jsonArrayActivityData != null && jsonArrayActivityData.length() > 0) {
+                            for (int j = 0; j < jsonArrayActivityData.length() ; j++) {
+                                JSONObject jsonObjectActivityData = jsonArrayActivityData.optJSONObject(j);
+                                String SFCode = jsonObjectActivityData.optString("Sf_Code");
+                                String controlID = jsonObjectActivityData.optString("Ctrl_id");
+                                String creationID = jsonObjectActivityData.optString("Creation_id");
+                                String creationCode = jsonObjectActivityData.optString("Creation_Code");
+                                String creationName = jsonObjectActivityData.optString("Creation_Name");
+
+                                String answer1 = "", answer2 = "";
+                                if(controlID.equalsIgnoreCase("5") || controlID.equalsIgnoreCase("7") || controlID.equalsIgnoreCase("16")) {
+                                    String[] answers = creationName.split(",");
+                                    if(answers.length > 0) {
+                                        answer1 = answers[0];
+                                    }
+                                    if(answers.length > 1) {
+                                        answer2 = answers[1];
+                                    }
+                                } else if(controlID.equalsIgnoreCase("17")) {
+                                    String[] answers = creationName.split("\\$", 2);
+                                    if(answers.length > 0) {
+                                        answer1 = answers[0];
+                                    }
+                                    if(answers.length > 1) {
+                                        answer2 = answers[1];
+                                    }
+                                } else {
+                                    answer1 = creationName;
+                                }
+                                ActivityDetailsModelClass activityDetailsModelClass = new ActivityDetailsModelClass(j, "", answer1, answer2, controlID, creationID, "", "", "", creationID, creationCode, slNo);
+                                if(!ActivityFragment.activityAnswerData.containsKey(slNo)) {
+                                    ActivityFragment.activityAnswerData.put(slNo, new HashMap<>());
+                                    ActivityFragment.savedActivityList.add(slNo);
+                                }
+                                ActivityFragment.activityAnswerData.get(slNo).put(creationID, activityDetailsModelClass);
+                            }
+                        }
+
+                    }
+                }
+                Log.d("jsonExtractOnline", "----- " + ActivityFragment.activityAnswerData);
+            }
         } catch (Exception e) {
             Log.v("jsonExtractOnline", "----" + e);
             e.printStackTrace();
@@ -1839,10 +1906,77 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 }
             }
+
+            //Activity
+            if(json.has("ActivityDCR") && !json.optString("ActivityDCR").equalsIgnoreCase("[]")) {
+                ActivityFragment.activityAnswerData = new HashMap<>();
+                ActivityFragment.savedActivityList = new HashSet<>();
+                JSONArray jsonArrayActivity = new JSONArray(json.optString("ActivityDCR"));
+                for (int i = 0; i<jsonArrayActivity.length(); i++) {
+                    JSONArray jsonArrayVal = jsonArrayActivity.optJSONArray(i);
+                    if(jsonArrayVal == null) jsonArrayVal = new JSONArray();
+                    for (int j = 0; j<jsonArrayVal.length(); j++) {
+                        JSONObject jsonObject = jsonArrayVal.getJSONObject(j);
+                        String activityDate = jsonObject.optString("act_date");
+                        String dcrDate = jsonObject.optString("dcr_date");
+                        String updateTime = jsonObject.optString("update_time");
+                        String modTime = jsonObject.optString("ModTime");
+                        String slNo = jsonObject.optString("slno");
+                        String controlID = jsonObject.optString("ctrl_id");
+                        String creationID = jsonObject.optString("creat_id");
+                        String groupCreationID = jsonObject.optString("group_creat_id");
+                        String wt = jsonObject.optString("WT");
+                        String pl = jsonObject.optString("Pl");
+                        String cusCode = jsonObject.optString("cus_code");
+                        String latitude = jsonObject.optString("lat");
+                        String longitude = jsonObject.optString("lng");
+                        String cusName = jsonObject.optString("cusname");
+                        String dataSF = jsonObject.optString("DataSF");
+                        String type = jsonObject.optString("type");
+                        String wtCode = jsonObject.optString("WT_code");
+                        String wtName = jsonObject.optString("WTName");
+                        String fwFlag = jsonObject.optString("FWFlg");
+                        String TownCode = jsonObject.optString("town_code");
+                        String TownName = jsonObject.optString("town_name");
+                        String RSF = jsonObject.optString("Rsf");
+                        String values = jsonObject.optString("values");
+                        String codes = jsonObject.optString("codes");
+                        String answer1 = "", answer2 = "";
+                        if(controlID.equalsIgnoreCase("5") || controlID.equalsIgnoreCase("7") || controlID.equalsIgnoreCase("16")) {
+                            String[] answers = values.split(",");
+                            if(answers.length > 0) {
+                                answer1 = answers[0];
+                            }
+                            if(answers.length > 1) {
+                                answer2 = answers[1];
+                            }
+                        } else if(controlID.equalsIgnoreCase("17")) {
+                            String[] answers = values.split("\\$");
+                            if(answers.length > 0) {
+                                answer1 = answers[0];
+                            }
+                            if(answers.length > 1) {
+                                answer2 = answers[1];
+                            }
+                        }else {
+                            answer1 = values;
+                        }
+                        ActivityDetailsModelClass activityDetailsModelClass = new ActivityDetailsModelClass(j, "", answer1, answer2, controlID, creationID, "", "", "", groupCreationID, codes, slNo);
+                        if(!ActivityFragment.activityAnswerData.containsKey(slNo)) {
+                            ActivityFragment.activityAnswerData.put(slNo, new HashMap<>());
+                            ActivityFragment.savedActivityList.add(slNo);
+                        }
+                        ActivityFragment.activityAnswerData.get(slNo).put(creationID, activityDetailsModelClass);
+                    }
+                }
+                Log.d("activity", "jsonExtractLocal: " + ActivityFragment.activityAnswerData.keySet().toString());
+            }
+
         } catch (Exception e) {
             Log.v("jsonExtractLocal", "----" + e);
         }
     }
+
     public void Remainder_calls(){
         try{
             String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
@@ -2223,10 +2357,10 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("RCPAEntry", jsonArray);
 
             //Activity
-            if(SharedPref.getActivityNd(DCRCallActivity.this).equalsIgnoreCase("0")) {
+            if(ActivityNeed.equalsIgnoreCase("0")) {
                 jsonArray = new JSONArray();
                 for (int i = 0; i<ActivityFragment.activityData.size(); i++) {
-                    jsonArray.put(ActivityFragment.activityData.get(i));
+                    jsonArray.put(ActivityFragment.activityData.get(i).getJSONArray("val"));
                 }
                 jsonSaveDcr.put("ActivityDCR", jsonArray);
             }
@@ -2379,6 +2513,7 @@ public class DCRCallActivity extends AppCompatActivity {
             RcpaCompetitorAdd =  SharedPref.getRcpaCompetitorAdd(this);;
             EventCapMandatory =  SharedPref.getCipEventMd(this);;
             capActivity = SharedPref.getActivityCap(this);
+            ActivityNeed = SharedPref.getActivityNd(this);
 
             switch (CallActivityCustDetails.get(0).getType()) {
                 case "1": //Dr
@@ -2655,6 +2790,11 @@ public class DCRCallActivity extends AppCompatActivity {
         RCPAFragment.ChemistSelectedList = new ArrayList<>();
         RCPAFragment.ProductSelectedList = new ArrayList<>();
         RCPASelectCompSide.rcpa_comp_list = new ArrayList<>();
+    }
+
+    private void AddActivityData() {
+        ActivityFragment.activityAnswerData = new HashMap<>();
+        ActivityFragment.savedActivityList = new HashSet<>();
     }
 
     private void AddAdditionalCallData() {

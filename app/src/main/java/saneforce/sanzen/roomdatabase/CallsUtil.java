@@ -69,7 +69,12 @@ public class CallsUtil {
     public void deleteOfflineCallsWithActivity(String cusCode, String cusName, String date) {
         callOfflineDataDao.deleteOfflineCalls(cusCode, cusName, date);
         callOfflineECDataDao.deleteOfflineCalls(cusCode, cusName, date);
-        deleteOfflineActivity(cusCode, date);
+        deleteOfflineActivityUpload(cusCode, date);
+//        deleteOfflineActivity(cusCode, date);
+    }
+
+    public void deleteOfflineActivityUpload(String cusCode, String date) {
+        activityUploadDataDao.deleteUploadActivity(Integer.parseInt(cusCode), date);
     }
 
     public void deleteOfflineActivity(String cusCode, String date) {
@@ -79,6 +84,7 @@ public class CallsUtil {
                 deleteOfflineActivity(activityOfflineDataTable.getId());
             }
         }
+        deleteOfflineActivityUpload(cusCode, date);
     }
 
     private void deleteOfflineActivity(int id) {

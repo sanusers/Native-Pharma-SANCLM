@@ -383,12 +383,12 @@ public class DynamicActivity extends AppCompatActivity {
                         String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
                         ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID, activityModelClass.getSlNo()));
                         String controlParam = Control_Para.toLowerCase();
-                        if(controlParam.contains("doctor") || controlParam.contains("dr")
+                        if(SharedPref.getSfType(DynamicActivity.this).equalsIgnoreCase("2") && (controlParam.contains("doctor") || controlParam.contains("dr")
                                 || controlParam.contains("chemist") || controlParam.contains("chm")
                                 || controlParam.contains("stockist") || controlParam.contains("stock") || controlParam.contains("stk")
                                 || controlParam.contains("unlisted") || controlParam.contains("un") || controlParam.contains("unlst")
                                 || controlParam.contains("cluster")
-                                || controlParam.contains("joint")) {
+                                || controlParam.contains("joint"))) {
                             chosenActivityModelClass = null;
                             chosenActivityPosition = -1;
                             this.adapter.changeRowIndex(-1);

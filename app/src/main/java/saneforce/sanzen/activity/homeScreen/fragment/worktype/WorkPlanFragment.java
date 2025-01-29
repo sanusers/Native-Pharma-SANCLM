@@ -88,7 +88,6 @@ import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOffline
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
-
 public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     public String chk_cluster = "";

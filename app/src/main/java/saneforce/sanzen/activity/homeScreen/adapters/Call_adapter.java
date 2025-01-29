@@ -288,6 +288,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
             jsonObject.put("cusname", docName);
             jsonObject.put("custype", type);
             jsonObject.put("pob", "1");
+            jsonObject.put("activitynd", SharedPref.getActivityNd(context));
             Log.v("editCall", jsonObject.toString());
 
         } catch (Exception e) {

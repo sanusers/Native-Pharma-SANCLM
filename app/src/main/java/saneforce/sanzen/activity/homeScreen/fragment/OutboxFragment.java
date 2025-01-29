@@ -423,7 +423,7 @@ public class OutboxFragment extends Fragment {
             isCallAvailable = false;
         }
         if (!isCallAvailable) {
-            CallAPIActivityUpload(ParentPos, 5, listDates.get(ParentPos).getChildItems().get(4).getActivityUploadModelClasses(), modelClass);
+            CallAPIActivityUpload(ParentPos, 5, listDates.get(ParentPos).getChildItems().get(5).getActivityUploadModelClasses(), modelClass);
         }
     }
 
@@ -447,7 +447,7 @@ public class OutboxFragment extends Fragment {
             isCallAvailable = false;
         }
         if (!isCallAvailable) {
-            CallAPIDaySubmit(ParentPos, 6, listDates.get(ParentPos).getChildItems().get(4).getDaySubmitModelClass(), modelClass);
+            CallAPIDaySubmit(ParentPos, 6, listDates.get(ParentPos).getChildItems().get(6).getDaySubmitModelClass(), modelClass);
         }
     }
 

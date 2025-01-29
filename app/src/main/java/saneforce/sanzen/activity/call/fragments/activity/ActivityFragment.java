@@ -157,7 +157,7 @@ public class ActivityFragment extends Fragment {
     private String activityDate, activityTime, activityCap = "Activity";
     public static List<JSONObject> activityData;
     public static Set<String> savedActivityList = new HashSet<>();
-    public static HashMap<String, HashMap<Integer, ActivityDetailsModelClass>> activityAnswerData = new HashMap<>();
+    public static HashMap<String, HashMap<String, ActivityDetailsModelClass>> activityAnswerData = new HashMap<>();
 
     @Override
     public void onResume() {
@@ -640,8 +640,8 @@ public class ActivityFragment extends Fragment {
         textlabel.setId(k);
         fragmentActivityBinding.llActivityDetailsView.addView(textLinearLayout);
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), List.getFieldName(), "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-        if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-            activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), List.getFieldName(), "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+        if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), List.getFieldName(), "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
         }
     }
 
@@ -697,11 +697,11 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt() != null) {
-                    textcharacter.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt());
+            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                    textcharacter.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                 }
             }
         } catch (Exception e) {
@@ -723,10 +723,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textcharacter.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textcharacter.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -797,11 +797,11 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt() != null) {
-                    textnumber.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt());
+            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                    textnumber.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                 }
             }
         } catch (Exception e) {
@@ -823,10 +823,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textnumber.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textnumber.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -903,11 +903,11 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt() != null) {
-                    textarea.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt());
+            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                    textarea.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                 }
             }
         } catch (Exception e) {
@@ -929,10 +929,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textarea.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textarea.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1004,11 +1004,11 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt() != null) {
-                    textviewdate1.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt());
+            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                    textviewdate1.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                 }
             }
         } catch (Exception e) {
@@ -1030,10 +1030,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textviewdate1.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textviewdate1.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 }catch (Exception e) {
                     e.printStackTrace();
@@ -1112,11 +1112,11 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt() != null) {
-                    textviewdate1.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt());
+            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                    textviewdate1.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                 }
             }
         } catch (Exception e) {
@@ -1138,10 +1138,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textviewdate1.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textviewdate1.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e){
                     e.printStackTrace();
@@ -1247,10 +1247,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textviewfromdate.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textviewfromdate.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1294,14 +1294,14 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt() != null) {
-                    textviewfromdate.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt());
+            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                    textviewfromdate.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                 }
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt2() != null) {
-                    textviewtodate.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt2());
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
+                    textviewtodate.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
                 }
             }
         } catch (Exception e) {
@@ -1323,10 +1323,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt2(textviewtodate.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt2(textviewtodate.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1436,10 +1436,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textviewfromdate.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textviewfromdate.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1491,14 +1491,14 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt() != null) {
-                    textviewfromdate.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt());
+            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                    textviewfromdate.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                 }
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt2() != null) {
-                    textviewtodate.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt2());
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
+                    textviewtodate.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
                 }
             }
         } catch (Exception e) {
@@ -1520,10 +1520,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt2(textviewtodate.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt2(textviewtodate.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1637,11 +1637,11 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt() != null) {
-                    textViewtime1.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt());
+            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                    textViewtime1.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                 }
             }
         } catch (Exception e) {
@@ -1663,10 +1663,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textViewtime1.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textViewtime1.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1766,10 +1766,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textviewfromtime.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textviewfromtime.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1812,14 +1812,14 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt() != null) {
-                    textviewfromtime.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt());
+            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                    textviewfromtime.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                 }
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt2() != null) {
-                    textviewtotime.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt2());
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
+                    textviewtotime.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
                 }
             }
         } catch (Exception e) {
@@ -1841,10 +1841,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt2(textviewtotime.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt2(textviewtotime.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1927,14 +1927,14 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt() != null) {
-                    singlecomboedittext.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt());
+            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                    singlecomboedittext.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                 }
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getCodes() != null) {
-                    Idview.setText(activityAnswerData.get(List.getSlno()).get(k).getCodes());
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getCodes() != null) {
+                    Idview.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getCodes());
                 }
             }
         } catch (Exception e) {
@@ -1956,10 +1956,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(singlecomboedittext.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(singlecomboedittext.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1983,10 +1983,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setCodes(Idview.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setCodes(Idview.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2062,14 +2062,14 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt() != null) {
-                    multicomboeditext.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt());
+            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                    multicomboeditext.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                 }
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getCodes() != null) {
-                    TextCode.setText(activityAnswerData.get(List.getSlno()).get(k).getCodes());
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getCodes() != null) {
+                    TextCode.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getCodes());
                 }
             }
         } catch (Exception e) {
@@ -2091,10 +2091,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(multicomboeditext.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(multicomboeditext.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2117,10 +2117,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setCodes(TextCode.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setCodes(TextCode.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2207,11 +2207,11 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt() != null) {
-                    textfileupload.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt());
+            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                    textfileupload.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                 }
             }
         } catch (Exception e) {
@@ -2233,10 +2233,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textfileupload.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textfileupload.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2325,11 +2325,11 @@ public class ActivityFragment extends Fragment {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
         try {
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
-            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt() != null) {
-                    textcurrency.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt());
+            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                    textcurrency.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                 }
             }
         } catch (Exception e) {
@@ -2351,10 +2351,10 @@ public class ActivityFragment extends Fragment {
                 ActivityViewItem.get(k).setAnswerTxt(textcurrency.getText().toString());
 
                 try {
-                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                    if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                        ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                         activityDetailsModelClass.setAnswerTxt(textcurrency.getText().toString());
-                        activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                        activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2438,31 +2438,71 @@ public class ActivityFragment extends Fragment {
         if(latitude == 0.0 || longitude == 0.0) {
             ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            try {
+                if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+                }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                        String latLongStr = activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt().replace("Lat  :", "").replace("Long  :", "");
+                        String[] latLongData = latLongStr.split(" ");
+                        if (latLongData.length > 1) {
+                            LatText.setText(String.format("Lat  :%s", latLongData[0]));
+                            LongText.setText(String.format("Long  :%s", latLongData[1]));
+                        }else {
+                            AddressText.setText(address);
+                            LatText.setText("Lat  :" + String.valueOf(latitude));
+                            LongText.setText("Long  :" + String.valueOf(longitude));
+                        }
+                    }
+                    if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
+                        AddressText.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
         } else {
             ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "Lat  :" + latitude + " " + "Long  :" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
-            if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "Lat  :" + latitude + " " + "Long  :" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+            try {
+                if (activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "Lat  :" + latitude + " " + "Long  :" + longitude, address, List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+                } else if (activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                    if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+                        String latLongStr = activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt().replace("Lat  :", "").replace("Long  :", "");
+                        String[] latLongData = latLongStr.split(" ");
+                        if (latLongData.length > 1) {
+                            LatText.setText(String.format("Lat  :%s", latLongData[0]));
+                            LongText.setText(String.format("Long  :%s", latLongData[1]));
+                        } else {
+                            AddressText.setText(address);
+                            LatText.setText("Lat  :" + String.valueOf(latitude));
+                            LongText.setText("Long  :" + String.valueOf(longitude));
+                        }
+                    }
+                    if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
+                        AddressText.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
         }
 
 //        try {
-//            if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-//                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt() != null) {
-//                    String data = activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt();
+//            if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+//                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
+//                    String data = activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt();
 //                    data.replace("Lat  :", "");
 //                    data.replace("Long  :", "");
 //                    String[] latLong = data.split(" ");
 //                    LatText.setText("Lat  :" + latLong[0]);
 //                    LongText.setText("Long  :" + latLong[1]);
 //                }
-//                if(activityAnswerData.get(List.getSlno()).get(k) != null && activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt2() != null) {
-//                    AddressText.setText(activityAnswerData.get(List.getSlno()).get(k).getAnswerTxt2());
+//                if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
+//                    AddressText.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
 //                }
 //            }
 //        } catch (Exception e) {
@@ -2488,11 +2528,11 @@ public class ActivityFragment extends Fragment {
                             ActivityViewItem.get(k).setAnswerTxt("Lat  :" + latitude + " " + "Long  :" + longitude);
                             ActivityViewItem.get(k).setAnswerTxt2(address);
 
-                            if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(k)) {
-                                ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(k);
+                            if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+                                ActivityDetailsModelClass activityDetailsModelClass = activityAnswerData.get(List.getSlno()).get(List.getCreationId());
                                 activityDetailsModelClass.setAnswerTxt("Lat  :" + latitude + " " + "Long  :" + longitude);
                                 activityDetailsModelClass.setAnswerTxt2(address);
-                                activityAnswerData.get(List.getSlno()).put(k, activityDetailsModelClass);
+                                activityAnswerData.get(List.getSlno()).put(List.getCreationId(), activityDetailsModelClass);
                             }
 
                         }
@@ -2626,8 +2666,8 @@ public class ActivityFragment extends Fragment {
         txtcurconvert2.setHint("Amount");
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
-        if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-            activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+        if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
         }
 
     }
@@ -2680,8 +2720,8 @@ public class ActivityFragment extends Fragment {
         textLinearLayout2.addView(textViewtime1);
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
-        if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-            activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+        if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
         }
 
     }
@@ -2689,8 +2729,8 @@ public class ActivityFragment extends Fragment {
     public void TableList(ActivityDetailsModelClass List, int k) {
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
-        if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(k)) {
-            activityAnswerData.get(List.getSlno()).put(k, new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
+        if(activityAnswerData.get(List.getSlno()) != null && !activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
+            activityAnswerData.get(List.getSlno()).put(List.getCreationId(), new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
         }
 
     }
@@ -2924,14 +2964,14 @@ public class ActivityFragment extends Fragment {
                 activityTime = CommonUtilsMethods.getCurrentInstance("HH:mm:ss");
                 fragmentActivityBinding.progresssumit.setVisibility(View.VISIBLE);
                 JSONObject MainObject = new JSONObject();
-                MainObject.put("tableName", "savedcract");
-                MainObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
+//                MainObject.put("tableName", "savedcract");
+//                MainObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
                 MainObject.put("val", jsonArray);
                 Log.v("JsonObject  :", "" + MainObject.toString());
-                Long id = activityOfflineDataDao.saveActivityOfflineData(new ActivityOfflineDataTable(chosenActivityModelClass.getSlNo(), chosenActivityModelClass.getActivityName(), CallActivityCustDetails.get(0).getCode(), activityDate, activityTime, MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
+//                Long id = activityOfflineDataDao.saveActivityOfflineData(new ActivityOfflineDataTable(chosenActivityModelClass.getSlNo(), chosenActivityModelClass.getActivityName(), CallActivityCustDetails.get(0).getCode(), activityDate, activityTime, MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
                 activityData.add(MainObject);
                 savedActivityList.add(slNo);
-                TaggedImage(id);
+                TaggedImage();
 
                 fragmentActivityBinding.progresssumit.setVisibility(View.GONE);
 
@@ -2947,7 +2987,7 @@ public class ActivityFragment extends Fragment {
         }
     }
 
-    public void TaggedImage(Long id) {
+    public void TaggedImage() {
         try {
             for (int i = 0; i<ActivityViewItem.size(); i++) {
                 ActivityDetailsModelClass List = ActivityViewItem.get(i);
@@ -3013,7 +3053,7 @@ public class ActivityFragment extends Fragment {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    activityUploadDataDao.saveActivityUploadData(new ActivityUploadDataTable(Integer.parseInt(String.valueOf(id)), chosenActivityModelClass.getSlNo(), chosenActivityModelClass.getActivityName(), activityDate, activityTime, List.getAnswerTxt(), destinationFile.getAbsolutePath(), MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
+                    activityUploadDataDao.saveActivityUploadData(new ActivityUploadDataTable(Integer.parseInt(CallActivityCustDetails.get(0).getCode()), chosenActivityModelClass.getSlNo(), chosenActivityModelClass.getActivityName(), activityDate, activityTime, List.getAnswerTxt(), destinationFile.getAbsolutePath(), MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
 
                     fragmentActivityBinding.progresssumit.setVisibility(View.GONE);
                 }
