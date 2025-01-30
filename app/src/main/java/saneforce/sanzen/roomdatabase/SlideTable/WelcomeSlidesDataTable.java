@@ -25,7 +25,7 @@ public class WelcomeSlidesDataTable {
     @ColumnInfo(name = "background_task")
     private String backgroundTask;
 
-    @ColumnInfo(name=("file_position"))
+    @ColumnInfo(name= "file_position")
     private String listSlidePosition;
 
     public WelcomeSlidesDataTable(String name, String slideSize, String downloadingStatus, String progress, String backgroundTask, String listSlidePosition) {

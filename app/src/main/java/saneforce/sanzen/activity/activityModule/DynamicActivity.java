@@ -12,6 +12,8 @@ import static android.view.Gravity.TOP;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.IsFromDCR;
+
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -98,6 +100,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
@@ -197,24 +200,24 @@ public class DynamicActivity extends AppCompatActivity {
 //        getActivity(SharedPref.getHqCode(DynamicActivity.this));
         getActivity();
 
-        binding.backArrow.setOnClickListener(v -> {
-            Dialog dialog = new Dialog(DynamicActivity.this);
-            dialog.setContentView(R.layout.dcr_cancel_alert);
-            dialog.setCancelable(false);
-            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.show();
-            TextView btn_yes = dialog.findViewById(R.id.btn_yes);
-            TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
-            TextView btn_no = dialog.findViewById(R.id.btn_no);
-            alertText.setText("Are you sure, you want to exit ?");
-            btn_yes.setOnClickListener(view12 -> {
-                dialog.dismiss();
-                finish();
-            });
-            btn_no.setOnClickListener(view12 -> {
-                dialog.dismiss();
-            });
-        });
+//        binding.backArrow.setOnClickListener(v -> {
+//            Dialog dialog = new Dialog(DynamicActivity.this);
+//            dialog.setContentView(R.layout.dcr_cancel_alert);
+//            dialog.setCancelable(false);
+//            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//            dialog.show();
+//            TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+//            TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
+//            TextView btn_no = dialog.findViewById(R.id.btn_no);
+//            alertText.setText("Are you sure, you want to exit ?");
+//            btn_yes.setOnClickListener(view12 -> {
+//                dialog.dismiss();
+//                finish();
+//            });
+//            btn_no.setOnClickListener(view12 -> {
+//                dialog.dismiss();
+//            });
+//        });
 
         binding.backArrow.setOnClickListener(v -> {
             if (DynamicActivity.isEdited) {
@@ -230,12 +233,22 @@ public class DynamicActivity extends AppCompatActivity {
                 btn_yes.setOnClickListener(view12 -> {
                     dialog.dismiss();
                     getOnBackPressedDispatcher().onBackPressed();
+                    IsFromDCR = true;
+                    HomeDashBoard.isDcrFrom=true;
+                    Intent intent = new Intent(DynamicActivity.this, HomeDashBoard.class);
+                    startActivity(intent);
+                    finish();
                 });
                 btn_no.setOnClickListener(view12 -> {
                     dialog.dismiss();
                 });
             } else {
                 getOnBackPressedDispatcher().onBackPressed();
+                IsFromDCR = true;
+                HomeDashBoard.isDcrFrom=true;
+                Intent intent = new Intent(DynamicActivity.this, HomeDashBoard.class);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -383,7 +396,7 @@ public class DynamicActivity extends AppCompatActivity {
                         String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
                         ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID, activityModelClass.getSlNo()));
                         String controlParam = Control_Para.toLowerCase();
-                        if(SharedPref.getSfType(DynamicActivity.this).equalsIgnoreCase("2") && (controlParam.contains("doctor") || controlParam.contains("dr")
+                        if(SharedPref.getSfType(DynamicActivity.this).equalsIgnoreCase("2") && selectedHQ.equalsIgnoreCase(SharedPref.getSfCode(DynamicActivity.this)) && (controlParam.contains("doctor") || controlParam.contains("dr")
                                 || controlParam.contains("chemist") || controlParam.contains("chm")
                                 || controlParam.contains("stockist") || controlParam.contains("stock") || controlParam.contains("stk")
                                 || controlParam.contains("unlisted") || controlParam.contains("un") || controlParam.contains("unlst")

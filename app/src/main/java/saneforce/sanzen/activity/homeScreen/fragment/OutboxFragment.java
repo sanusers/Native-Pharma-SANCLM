@@ -470,7 +470,9 @@ public class OutboxFragment extends Fragment {
                     && listDates.get(ParentPos).getChildItems().get(1).getWorkPlanModelClass() == null
                     && listDates.get(ParentPos).getChildItems().get(2).getOutBoxCallLists().isEmpty()
                     && listDates.get(ParentPos).getChildItems().get(3).getEcModelClasses().isEmpty()
-                    && listDates.get(ParentPos).getChildItems().get(4).getDaySubmitModelClass() == null) {
+                    && listDates.get(ParentPos).getChildItems().get(4).getActivityModelClasses().isEmpty()
+                    && listDates.get(ParentPos).getChildItems().get(5).getActivityUploadModelClasses().isEmpty()
+                    && listDates.get(ParentPos).getChildItems().get(6).getDaySubmitModelClass() == null) {
                 listDates.remove(ParentPos);
             }else {
                 modelClass.setSynced(1);

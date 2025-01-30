@@ -2104,7 +2104,8 @@ private void accessibility(){
                  CommonUtilsMethods.accessDialogBox(this);
              }
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+//            throw new RuntimeException(e);
         }
     }
     if (!SharedPref.getAppAccess(this).equals("1")){

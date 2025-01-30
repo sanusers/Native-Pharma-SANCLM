@@ -702,6 +702,7 @@ public class ActivityFragment extends Fragment {
             }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textcharacter.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
+                    ActivityViewItem.get(k).setAnswerTxt(textcharacter.getText().toString());
                 }
             }
         } catch (Exception e) {
@@ -802,6 +803,7 @@ public class ActivityFragment extends Fragment {
             }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textnumber.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
+                    ActivityViewItem.get(k).setAnswerTxt(textnumber.getText().toString());
                 }
             }
         } catch (Exception e) {
@@ -908,6 +910,7 @@ public class ActivityFragment extends Fragment {
             }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textarea.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
+                    ActivityViewItem.get(k).setAnswerTxt(textarea.getText().toString());
                 }
             }
         } catch (Exception e) {
@@ -1009,6 +1012,7 @@ public class ActivityFragment extends Fragment {
             }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textviewdate1.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
+                    ActivityViewItem.get(k).setAnswerTxt(textviewdate1.getText().toString());
                 }
             }
         } catch (Exception e) {
@@ -1117,6 +1121,7 @@ public class ActivityFragment extends Fragment {
             }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textviewdate1.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
+                    ActivityViewItem.get(k).setAnswerTxt(textviewdate1.getText().toString());
                 }
             }
         } catch (Exception e) {
@@ -1299,9 +1304,11 @@ public class ActivityFragment extends Fragment {
             }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textviewfromdate.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
+                    ActivityViewItem.get(k).setAnswerTxt(textviewfromdate.getText().toString());
                 }
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
                     textviewtodate.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
+                    ActivityViewItem.get(k).setAnswerTxt2(textviewtodate.getText().toString());
                 }
             }
         } catch (Exception e) {
@@ -1496,9 +1503,11 @@ public class ActivityFragment extends Fragment {
             }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textviewfromdate.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
+                    ActivityViewItem.get(k).setAnswerTxt(textviewfromdate.getText().toString());
                 }
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
                     textviewtodate.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
+                    ActivityViewItem.get(k).setAnswerTxt2(textviewtodate.getText().toString());
                 }
             }
         } catch (Exception e) {
@@ -1642,6 +1651,7 @@ public class ActivityFragment extends Fragment {
             }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textViewtime1.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
+                    ActivityViewItem.get(k).setAnswerTxt(textViewtime1.getText().toString());
                 }
             }
         } catch (Exception e) {
@@ -1817,9 +1827,11 @@ public class ActivityFragment extends Fragment {
             }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textviewfromtime.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
+                    ActivityViewItem.get(k).setAnswerTxt(textviewfromtime.getText().toString());
                 }
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
                     textviewtotime.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
+                    ActivityViewItem.get(k).setAnswerTxt2(textviewtotime.getText().toString());
                 }
             }
         } catch (Exception e) {
@@ -1932,9 +1944,11 @@ public class ActivityFragment extends Fragment {
             }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     singlecomboedittext.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
+                    ActivityViewItem.get(k).setAnswerTxt(singlecomboedittext.getText().toString());
                 }
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getCodes() != null) {
                     Idview.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getCodes());
+                    ActivityViewItem.get(k).setCodes(Idview.getText().toString());
                 }
             }
         } catch (Exception e) {
@@ -2067,9 +2081,11 @@ public class ActivityFragment extends Fragment {
             }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     multicomboeditext.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
+                    ActivityViewItem.get(k).setAnswerTxt(multicomboeditext.getText().toString());
                 }
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getCodes() != null) {
                     TextCode.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getCodes());
+                    ActivityViewItem.get(k).setCodes(TextCode.getText().toString());
                 }
             }
         } catch (Exception e) {
@@ -2212,6 +2228,7 @@ public class ActivityFragment extends Fragment {
             }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textfileupload.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
+                    ActivityViewItem.get(k).setAnswerTxt(textfileupload.getText().toString());
                 }
             }
         } catch (Exception e) {
@@ -2330,6 +2347,7 @@ public class ActivityFragment extends Fragment {
             }else if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textcurrency.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
+                    ActivityViewItem.get(k).setAnswerTxt(textcurrency.getText().toString());
                 }
             }
         } catch (Exception e) {
@@ -2453,9 +2471,11 @@ public class ActivityFragment extends Fragment {
                             LatText.setText("Lat  :" + String.valueOf(latitude));
                             LongText.setText("Long  :" + String.valueOf(longitude));
                         }
+                        ActivityViewItem.get(k).setAnswerTxt(LatText.getText().toString() + " " + LongText.getText().toString());
                     }
                     if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
                         AddressText.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
+                        ActivityViewItem.get(k).setAnswerTxt2(AddressText.getText().toString());
                     }
                 }
             } catch (Exception e) {
@@ -2480,9 +2500,11 @@ public class ActivityFragment extends Fragment {
                             LatText.setText("Lat  :" + String.valueOf(latitude));
                             LongText.setText("Long  :" + String.valueOf(longitude));
                         }
+                        ActivityViewItem.get(k).setAnswerTxt(LatText.getText().toString() + " " + LongText.getText().toString());
                     }
                     if (activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2() != null) {
                         AddressText.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt2());
+                        ActivityViewItem.get(k).setAnswerTxt2(AddressText.getText().toString());
                     }
                 }
             } catch (Exception e) {
