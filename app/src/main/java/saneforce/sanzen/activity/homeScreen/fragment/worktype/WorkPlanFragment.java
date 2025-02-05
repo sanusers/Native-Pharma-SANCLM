@@ -60,6 +60,7 @@ import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.fragment.CallsFragment;
 import saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
+import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -728,7 +729,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 saveOrUpdateWorkPlan();
                             }else {
                                 gpsTrack = new GPSTrack(requireContext());
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_try_again));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_location_please_try_again));
                             }
                         }else {
                             saveOrUpdateWorkPlan();
@@ -780,7 +781,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 submitMyDayPlan();
                             }else {
                                 gpsTrack = new GPSTrack(requireContext());
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_try_again));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_location_please_try_again));
                             }
                         }else {
                             submitMyDayPlan();
@@ -1591,6 +1592,30 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                                     binding.progressHq2.setVisibility(View.GONE);
                                                 }
                                                 getDatabaseHeadQuarters(hqCode);
+                                            }
+                                            if(LocalTableKeyName.equalsIgnoreCase(Constants.JOINT_WORK + hqCode)) {
+                                                JSONObject jointWorkJsonObject = new JSONObject();
+                                                jointWorkJsonObject.put("Code", SharedPref.getSfCode(requireContext()));
+                                                jointWorkJsonObject.put("Name", "Independent");
+                                                jointWorkJsonObject.put("SfName", "Independent");
+                                                jointWorkJsonObject.put("Reporting_To_SF", "");
+                                                jointWorkJsonObject.put("OwnDiv", "");
+                                                jointWorkJsonObject.put("Division_Code", SharedPref.getDivisionCode(requireContext()));
+                                                jointWorkJsonObject.put("SF_Status", "");
+                                                jointWorkJsonObject.put("ActFlg", "");
+                                                jointWorkJsonObject.put("UsrDfd_UserName", "");
+                                                jointWorkJsonObject.put("DS_name", "");
+                                                jointWorkJsonObject.put("sf_type", SharedPref.getSfType(requireContext()));
+                                                jointWorkJsonObject.put("Desig", SharedPref.getDesig(requireContext()));
+                                                jointWorkJsonObject.put("steps", "");
+
+                                                JSONArray jointWorkJsonArray = new JSONArray();
+                                                jointWorkJsonArray.put(jointWorkJsonObject);
+                                                for (int i = 0; i<jsonArray.length(); i++) {
+                                                    jointWorkJsonObject = jsonArray.optJSONObject(i);
+                                                    jointWorkJsonArray.put(jointWorkJsonObject);
+                                                }
+                                                masterDataDao.saveMasterSyncData(new MasterDataTable(LocalTableKeyName, jointWorkJsonArray.toString(), 2));
                                             }
                                         }
                                     }

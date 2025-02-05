@@ -57,9 +57,9 @@ public class CommonAlertBox {
 
     private static boolean isMockLocation(Context context) {
         boolean NmockLocationsEnabled = false;
-        if (Build.MANUFACTURER.equalsIgnoreCase("LENOVO")) {
-            NmockLocationsEnabled = areThereMockPermissionApps(context);
-        }
+//        if (Build.MANUFACTURER.equalsIgnoreCase("LENOVO")) {
+//            NmockLocationsEnabled = areThereMockPermissionApps(context);
+//        }
         boolean mockLocationsEnabled = areMockLocationsEnabled(context);
         return mockLocationsEnabled || NmockLocationsEnabled;
 
@@ -81,11 +81,15 @@ public class CommonAlertBox {
                     for (int i = 0; i < requestedPermissions.length; i++) {
                         if (requestedPermissions[i].equals("android.permission.ACCESS_MOCK_LOCATION") && !applicationInfo.packageName.equals(context.getPackageName())) {
                             count++;
+                            throw new Exception("Fake Location App : " + applicationInfo.packageName);
                         }
                     }
                 }
             } catch (PackageManager.NameNotFoundException e) {
                 Log.e("Got exception ", e.getMessage());
+            } catch (Exception e) {
+                Log.e("Fake Location", "areThereMockPermissionApps: " + applicationInfo.packageName);
+                e.printStackTrace();
             }
         }
         if (count > 0) return true;
