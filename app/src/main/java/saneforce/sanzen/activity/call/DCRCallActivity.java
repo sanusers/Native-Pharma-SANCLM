@@ -355,7 +355,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 if(gpsTrack != null && ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0))) {
                     submitCall();
                 }else {
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.please_try_again));
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.no_location_please_try_again));
                     progressDialog.dismiss();
                 }
             }else {
