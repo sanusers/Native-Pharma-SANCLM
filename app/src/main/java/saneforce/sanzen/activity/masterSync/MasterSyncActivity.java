@@ -894,14 +894,18 @@ public class MasterSyncActivity extends AppCompatActivity {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
                         }
                     } else {
-                        masterSyncItemModels.get(position).setPBarVisibility(false);
+                        if(position < masterSyncItemModels.size()) {
+                            masterSyncItemModels.get(position).setPBarVisibility(false);
+                        }
                         commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.poor_connection));
                         masterSyncAdapter.notifyDataSetChanged();
                     }
                 });
                 networkStatusTask.execute();
             } else {
-                masterSyncItemModels.get(position).setPBarVisibility(false);
+                if(position < masterSyncItemModels.size()) {
+                    masterSyncItemModels.get(position).setPBarVisibility(false);
+                }
                 commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
                 masterSyncAdapter.notifyDataSetChanged();
             }

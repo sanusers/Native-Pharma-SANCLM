@@ -2056,7 +2056,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                 });
 
-            } catch (JSONException a) {
+            } catch (Exception a) {
                 binding.progress.setVisibility(View.GONE);
                 commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_sync_workplan));
                 a.printStackTrace();

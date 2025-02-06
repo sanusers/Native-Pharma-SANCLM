@@ -528,7 +528,11 @@ public class OutboxFragment extends Fragment {
                             outBoxCallList.setStatus(Constants.EXCEPTION_ERROR);
                             outBoxCallList.setSyncCount(5);
                             UpdateEcData(date, cusCode, cusName, Constants.EXCEPTION_ERROR, 0);
-                            CallOfflineCalls(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getOutBoxCallLists(), modelClass);
+                            if(listDates.size() > parentPos && listDates.get(parentPos).getChildItems().size() > childPos) {
+                                CallOfflineCalls(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getOutBoxCallLists(), modelClass);
+                            }else {
+                                CallOfflineCalls(parentPos, childPos, new ArrayList<>(), modelClass);
+                            }
                             Log.v("SendOutboxCall", "---" + e);
                         }
                     }

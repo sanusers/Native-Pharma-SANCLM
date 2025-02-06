@@ -241,13 +241,17 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
         });
 
         holder.switch_prompt.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (isTouched) {
-                isTouched = false;
-                if (b) {
-                    productListArrayList.set(holder.getBindingAdapterPosition(), new SaveCallProductList(productListArrayList.get(holder.getBindingAdapterPosition()).getName(), productListArrayList.get(holder.getBindingAdapterPosition()).getCode(), productListArrayList.get(holder.getBindingAdapterPosition()).getCategory(), productListArrayList.get(holder.getBindingAdapterPosition()).getBalance_sam_stk(), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), productListArrayList.get(holder.getBindingAdapterPosition()).getSample_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRx_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRcpa_qty(), "0", productListArrayList.get(holder.getBindingAdapterPosition()).isClicked()));
-                } else {
-                    productListArrayList.set(holder.getBindingAdapterPosition(), new SaveCallProductList(productListArrayList.get(holder.getBindingAdapterPosition()).getName(), productListArrayList.get(holder.getBindingAdapterPosition()).getCode(), productListArrayList.get(holder.getBindingAdapterPosition()).getCategory(), productListArrayList.get(holder.getBindingAdapterPosition()).getBalance_sam_stk(), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), productListArrayList.get(holder.getBindingAdapterPosition()).getSample_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRx_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRcpa_qty(), "1", productListArrayList.get(holder.getBindingAdapterPosition()).isClicked()));
+            try {
+                if(isTouched) {
+                    isTouched = false;
+                    if(b) {
+                        productListArrayList.set(holder.getBindingAdapterPosition(), new SaveCallProductList(productListArrayList.get(holder.getBindingAdapterPosition()).getName(), productListArrayList.get(holder.getBindingAdapterPosition()).getCode(), productListArrayList.get(holder.getBindingAdapterPosition()).getCategory(), productListArrayList.get(holder.getBindingAdapterPosition()).getBalance_sam_stk(), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), productListArrayList.get(holder.getBindingAdapterPosition()).getSample_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRx_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRcpa_qty(), "0", productListArrayList.get(holder.getBindingAdapterPosition()).isClicked()));
+                    }else {
+                        productListArrayList.set(holder.getBindingAdapterPosition(), new SaveCallProductList(productListArrayList.get(holder.getBindingAdapterPosition()).getName(), productListArrayList.get(holder.getBindingAdapterPosition()).getCode(), productListArrayList.get(holder.getBindingAdapterPosition()).getCategory(), productListArrayList.get(holder.getBindingAdapterPosition()).getBalance_sam_stk(), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), productListArrayList.get(holder.getBindingAdapterPosition()).getSample_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRx_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRcpa_qty(), "1", productListArrayList.get(holder.getBindingAdapterPosition()).isClicked()));
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
