@@ -84,7 +84,7 @@ public abstract class RoomDB extends RoomDatabase {
             database.execSQL("CREATE TABLE IF NOT EXISTS `activity_details_table` (`id` TEXT NOT NULL PRIMARY KEY, `json_data` TEXT, `status` TEXT)");
             database.execSQL("CREATE TABLE IF NOT EXISTS `activity_offline_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `activity_date` TEXT, `activity_time` TEXT, `sl_no` TEXT, `name` TEXT, `dr_code` TEXT, `json_data` TEXT, `sync_count` INTEGER NOT NULL, `sync_status` TEXT)");
             database.execSQL("CREATE TABLE IF NOT EXISTS `activity_upload_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `activity_id` INTEGER NOT NULL, `activity_date` TEXT, `activity_time` TEXT, `sl_no` TEXT,  `name` TEXT, `image_name` TEXT,  `file_path` TEXT, `json_data` TEXT, `sync_count` INTEGER NOT NULL, `sync_status` TEXT)");
-            database.execSQL("CREATE INDEX IF NOT EXISTS `index_activity_upload_table_activity_id` ON `activity_upload_table` (`activity_id`)");
+//            database.execSQL("CREATE INDEX IF NOT EXISTS `index_activity_upload_table_activity_id` ON `activity_upload_table` (`activity_id`)");
         }
     };
 

@@ -62,6 +62,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -73,6 +74,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.activityModule.ActivityDetailsModelClass;
+import saneforce.sanzen.activity.activityModule.ActivityModelClass;
 import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.call.adapter.DCRCallTabLayoutAdapter;
 import saneforce.sanzen.activity.call.adapter.additionalCalls.AdditionalCusListAdapter;
@@ -217,6 +219,7 @@ public class DCRCallActivity extends AppCompatActivity {
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
         callsUtil = new CallsUtil(this);
+        gpsTrack = new GPSTrack(this);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
         if(savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
@@ -544,10 +547,10 @@ public class DCRCallActivity extends AppCompatActivity {
                     viewPagerAdapter.add(new RCPAFragment(), "RCPA");
                     pages.add("RCPA");
                 }
-            }
-            if(ActivityNeed.equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new ActivityFragment(), capActivity);
-                pages.add(capActivity);
+                if(ActivityNeed.equalsIgnoreCase("0")) {
+                    viewPagerAdapter.add(new ActivityFragment(), capActivity);
+                    pages.add(capActivity);
+                }
             }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
@@ -565,10 +568,10 @@ public class DCRCallActivity extends AppCompatActivity {
                     viewPagerAdapter.add(new RCPAFragment(), "RCPA");
                     pages.add("RCPA");
                 }
-            }
-            if(ActivityNeed.equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new ActivityFragment(), capActivity);
-                pages.add(capActivity);
+                if(ActivityNeed.equalsIgnoreCase("0")) {
+                    viewPagerAdapter.add(new ActivityFragment(), capActivity);
+                    pages.add(capActivity);
+                }
             }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
@@ -1567,7 +1570,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
             if (json.has("Dcr_activity") && !json.getString("Dcr_activity").equalsIgnoreCase("[]")) {
                 JSONArray jsonArrayActivity = new JSONArray(json.getString("Dcr_activity"));
-                ActivityFragment.activityAnswerData = new HashMap<>();
+                ActivityFragment.activityAnswerData = new LinkedHashMap<>();
                 ActivityFragment.savedActivityList = new HashSet<>();
                 if (jsonArrayActivity.length() > 0) {
                     for (int i = 0; i < jsonArrayActivity.length(); i++) {
@@ -1582,7 +1585,7 @@ public class DCRCallActivity extends AppCompatActivity {
                             String date = dateObj.optString("date");
                         }
 
-                        ActivityFragment.activityAnswerData.put(slNo, new HashMap<>());
+                        ActivityFragment.activityAnswerData.put(slNo, new LinkedHashMap<>());
                         ActivityFragment.savedActivityList.add(slNo);
 
                         JSONArray jsonArrayActivityData = jsonObject.optJSONArray("Activity_data");
@@ -1617,7 +1620,7 @@ public class DCRCallActivity extends AppCompatActivity {
                                 }
                                 ActivityDetailsModelClass activityDetailsModelClass = new ActivityDetailsModelClass(j, "", answer1, answer2, controlID, creationID, "", "", "", creationID, creationCode, slNo);
                                 if(!ActivityFragment.activityAnswerData.containsKey(slNo)) {
-                                    ActivityFragment.activityAnswerData.put(slNo, new HashMap<>());
+                                    ActivityFragment.activityAnswerData.put(slNo, new LinkedHashMap<>());
                                     ActivityFragment.savedActivityList.add(slNo);
                                 }
                                 ActivityFragment.activityAnswerData.get(slNo).put(creationID, activityDetailsModelClass);
@@ -1633,7 +1636,6 @@ public class DCRCallActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
 
     private void jsonExtractLocal(String jsonArray) {
         try {
@@ -1909,7 +1911,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
             //Activity
             if(json.has("ActivityDCR") && !json.optString("ActivityDCR").equalsIgnoreCase("[]")) {
-                ActivityFragment.activityAnswerData = new HashMap<>();
+                ActivityFragment.activityAnswerData = new LinkedHashMap<>();
                 ActivityFragment.savedActivityList = new HashSet<>();
                 JSONArray jsonArrayActivity = new JSONArray(json.optString("ActivityDCR"));
                 for (int i = 0; i<jsonArrayActivity.length(); i++) {
@@ -1963,7 +1965,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         }
                         ActivityDetailsModelClass activityDetailsModelClass = new ActivityDetailsModelClass(j, "", answer1, answer2, controlID, creationID, "", "", "", groupCreationID, codes, slNo);
                         if(!ActivityFragment.activityAnswerData.containsKey(slNo)) {
-                            ActivityFragment.activityAnswerData.put(slNo, new HashMap<>());
+                            ActivityFragment.activityAnswerData.put(slNo, new LinkedHashMap<>());
                             ActivityFragment.savedActivityList.add(slNo);
                         }
                         ActivityFragment.activityAnswerData.get(slNo).put(creationID, activityDetailsModelClass);
@@ -2358,6 +2360,104 @@ public class DCRCallActivity extends AppCompatActivity {
 
             //Activity
             if(ActivityNeed.equalsIgnoreCase("0")) {
+
+                String wtCode = "", wtName = "", fwFlag = "";
+                JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+                for (int j = 0; j<jsonArrayWt.length(); j++) {
+                    JSONObject workTypeData = jsonArrayWt.getJSONObject(j);
+                    if(workTypeData.getString("FWFlg").equalsIgnoreCase("F")) {
+                        wtCode = workTypeData.getString("Code");
+                        wtName = workTypeData.getString("Name");
+                        fwFlag = workTypeData.getString("FWFlg");
+                    }
+                }
+                Date today = new Date();
+                String dateTime = TimeUtils.GetCurrentTimeStamp(TimeUtils.FORMAT_1);
+                String dateToStr = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_1, HomeDashBoard.binding.textDate.getText().toString());
+                SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+                String dateToStr1 = format1.format(today) + " 00:00:00";
+
+                if(ActivityFragment.activityAnswerData != null && !ActivityFragment.activityAnswerData.isEmpty()) {
+                    for (String slNo : ActivityFragment.activityAnswerData.keySet()) {
+                        try {
+                            JSONArray jsonArrayActivity = new JSONArray();
+                            if(ActivityFragment.activityAnswerData.get(slNo) != null && !ActivityFragment.activityAnswerData.get(slNo).isEmpty()) {
+                                for (String creationID : ActivityFragment.activityAnswerData.get(slNo).keySet()) {
+                                    ActivityDetailsModelClass List = ActivityFragment.activityAnswerData.get(slNo).get(creationID);
+                                    JSONObject jsonObject = new JSONObject();
+                                    jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                                    jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                                    jsonObject.put("act_date", dateToStr);
+                                    jsonObject.put("dcr_date", dateToStr1);
+                                    jsonObject.put("update_time", dateTime);
+                                    jsonObject.put("ModTime", "");
+                                    jsonObject.put("slno", List.getSlno());
+                                    jsonObject.put("ctrl_id", List.getControlId());
+                                    jsonObject.put("creat_id", List.getCreationId());
+                                    jsonObject.put("group_creat_id", List.getCreationId());
+                                    jsonObject.put("WT", wtCode);
+                                    jsonObject.put("Pl", "0"); // cluster code
+                                    jsonObject.put("cus_code", CallActivityCustDetails.get(0).getCode());
+                                    jsonObject.put("lat", gpsTrack.getLatitude());
+                                    jsonObject.put("lng", gpsTrack.getLongitude());
+                                    jsonObject.put("cusname", CallActivityCustDetails.get(0).getName());
+                                    jsonObject.put("DataSF", SharedPref.getSfCode(this));
+                                    jsonObject.put("type", CallActivityCustDetails.get(0).getType());
+                                    jsonObject.put("WT_code", wtCode);
+                                    jsonObject.put("WTName", wtName);
+                                    jsonObject.put("FWFlg", fwFlag);
+                                    jsonObject.put("town_code", CallActivityCustDetails.get(0).getTown_code());
+                                    jsonObject.put("town_name", CallActivityCustDetails.get(0).getTown_name());
+                                    jsonObject.put("Rsf", SharedPref.getHqCode(this));
+                                    jsonObject.put("sf_type", SharedPref.getSfType(this));
+                                    jsonObject.put("Designation", SharedPref.getDesig(this));
+                                    jsonObject.put("state_code", SharedPref.getStateCode(this));
+                                    jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+
+                                    if(List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
+                                        if(List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
+                                            commonUtilsMethods.showToastMessage(this, "Fill The From " + List.getFieldName());
+                                            break;
+                                        }else if(List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
+                                            commonUtilsMethods.showToastMessage(this, "Fill The To" + List.getFieldName());
+                                            break;
+                                        }else {
+                                            jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
+                                            jsonObject.put("codes", List.getCodes());
+                                            Log.v("codes", List.getCodes());
+                                        }
+                                    }else if(List.getControlId().equalsIgnoreCase("17")) {
+                                        if(List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
+                                            commonUtilsMethods.showToastMessage(this, "Choose The " + List.getFieldName() + "");
+                                            break;
+                                        }else {
+                                            jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
+                                            jsonObject.put("codes", List.getCodes());
+                                        }
+                                    }else {
+                                        if(List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
+                                            commonUtilsMethods.showToastMessage(this, "Fill The " + List.getFieldName() + "");
+                                            break;
+                                        }else {
+                                            jsonObject.put("values", List.getAnswerTxt());
+                                            jsonObject.put("codes", List.getCodes());
+                                            Log.v("codes", List.getCodes());
+                                        }
+                                    }
+                                    jsonArrayActivity.put(jsonObject);
+                                }
+                                JSONObject MainObject = new JSONObject();
+                                MainObject.put("val", jsonArrayActivity);
+                                Log.v("JsonObject  :", MainObject.toString());
+                                ActivityFragment.activityData.add(MainObject);
+                            }
+                        } catch (Exception a) {
+                            a.printStackTrace();
+                        }
+                    }
+                    Log.w("DCRCallActivity", "jsonExtractOnline: " + ActivityFragment.activityData);
+                }
+
                 jsonArray = new JSONArray();
                 for (int i = 0; i<ActivityFragment.activityData.size(); i++) {
                     jsonArray.put(ActivityFragment.activityData.get(i).getJSONArray("val"));
@@ -2793,8 +2893,9 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     private void AddActivityData() {
-        ActivityFragment.activityAnswerData = new HashMap<>();
+        ActivityFragment.activityAnswerData = new LinkedHashMap<>();
         ActivityFragment.savedActivityList = new HashSet<>();
+        ActivityFragment.activityData = new ArrayList<>();
     }
 
     private void AddAdditionalCallData() {

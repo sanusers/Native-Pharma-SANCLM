@@ -29,13 +29,24 @@
             android:layout_marginTop="@dimen/_2sdp"
             android:layout_marginEnd="@dimen/_2sdp"
             android:layout_marginBottom="@dimen/_2sdp"
-            android:layout_toStartOf="@id/img_available_offline"
+            android:layout_toStartOf="@id/img_edit"
             android:fontFamily="@font/satoshi_medium"
             android:hint="Meeting"
             android:padding="@dimen/_4sdp"
             android:textColor="@color/text_dark"
             android:textColorHint="@color/text_dark"
             android:textSize="@dimen/_7sdp" />
+
+        <ImageView
+            android:id="@+id/img_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginHorizontal="@dimen/_3sdp"
+            android:layout_toStartOf="@id/img_available_offline"
+            android:src="@drawable/img_edit"
+            android:visibility="gone"
+            app:tint="@color/dark_purple" />
 
         <ImageView
             android:id="@+id/img_available_offline"
@@ -51,9 +62,9 @@
             android:id="@+id/img_arrow_1"
             android:layout_width="@dimen/_10sdp"
             android:layout_height="@dimen/_6sdp"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
-            android:layout_marginRight="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
             android:src="@drawable/right_arrow" />
     </RelativeLayout>
 

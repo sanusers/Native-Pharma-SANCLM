@@ -87,6 +87,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -157,7 +158,7 @@ public class ActivityFragment extends Fragment {
     private String activityDate, activityTime, activityCap = "Activity";
     public static List<JSONObject> activityData;
     public static Set<String> savedActivityList = new HashSet<>();
-    public static HashMap<String, HashMap<String, ActivityDetailsModelClass>> activityAnswerData = new HashMap<>();
+    public static LinkedHashMap<String, LinkedHashMap<String, ActivityDetailsModelClass>> activityAnswerData = new LinkedHashMap<>();
 
     @Override
     public void onResume() {
@@ -185,7 +186,6 @@ public class ActivityFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         fragmentActivityBinding = FragmentActivityBinding.inflate(inflater);
-        activityData = new ArrayList<>();
         return fragmentActivityBinding.getRoot();
     }
 
@@ -200,10 +200,13 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.txthqName.setText(SharedPref.getHqName(requireContext()));
         fragmentActivityBinding.btnsumit.setEnabled(false);
         if(activityAnswerData == null) {
-            activityAnswerData = new HashMap<>();
+            activityAnswerData = new LinkedHashMap<>();
         }
         if(savedActivityList == null) {
             savedActivityList = new HashSet<>();
+        }
+        if(activityData == null) {
+            activityData = new ArrayList<>();
         }
         adapter = new ActivityAdapter(requireContext(), ActivityList, (classGroup, holder, position) -> {
             if(this.chosenActivityPosition == position) {
@@ -272,7 +275,7 @@ public class ActivityFragment extends Fragment {
         TextView btn_yes = dialog.findViewById(R.id.btn_yes);
         TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
         TextView btn_no = dialog.findViewById(R.id.btn_no);
-        alertText.setText("Are you sure, Already saved will be overwritten!");
+        alertText.setText(R.string.already_saved_will_be_updated);
         btn_yes.setOnClickListener(view12 -> {
             saveActivity();
             dialog.dismiss();
@@ -305,7 +308,7 @@ public class ActivityFragment extends Fragment {
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         alertText.setText(String.format("%s Want to change %s.\nYour entered %s details will be cleared", requireContext().getString(R.string.are_you_sure), SharedPref.getActivityCap(requireContext()), SharedPref.getActivityCap(requireContext())));
         btn_yes.setOnClickListener(view12 -> {
-            activityAnswerData.put(chosenActivityModelClass.getSlNo(), new HashMap<>());
+            activityAnswerData.put(chosenActivityModelClass.getSlNo(), new LinkedHashMap<>());
             fragmentActivityBinding.namechooseActivity.setText(classGroup.getActivityName());
             fragmentActivityBinding.llActivityDetailsView.removeAllViews();
             chosenActivityModelClass = classGroup;
@@ -340,7 +343,7 @@ public class ActivityFragment extends Fragment {
 
     private void clearViews() {
         fragmentActivityBinding.llActivityDetailsView.removeAllViews();
-        activityAnswerData.put(chosenActivityModelClass.getSlNo(), new HashMap<>());
+        activityAnswerData.put(chosenActivityModelClass.getSlNo(), new LinkedHashMap<>());
         savedActivityList.remove(chosenActivityModelClass.getSlNo());
         chosenActivityModelClass = ActivityList.get(chosenActivityPosition);
         getActivityDetails(ActivityList.get(chosenActivityPosition));
@@ -420,7 +423,7 @@ public class ActivityFragment extends Fragment {
                     int jjj = 0;
                     for (int i = 0; i<ActivityDetailsList.size(); i++) {
                         if(!activityAnswerData.containsKey(ActivityDetailsList.get(i).getSlno())) {
-                            activityAnswerData.put(ActivityDetailsList.get(i).getSlno(), new HashMap<>());
+                            activityAnswerData.put(ActivityDetailsList.get(i).getSlno(), new LinkedHashMap<>());
                         }
                         switch (ActivityDetailsList.get(i).getControlId()){
                             case "0":
@@ -657,7 +660,7 @@ public class ActivityFragment extends Fragment {
 
         TextView txtLabelName = new TextView(requireContext());
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             txtLabelName.setText(Html.fromHtml(firstChar + firstChar2));
@@ -686,12 +689,14 @@ public class ActivityFragment extends Fragment {
         textLinearLayout1.addView(textcharacter);
         textcharacter.setInputType(InputType.TYPE_CLASS_TEXT);
         textcharacter.setId(k);
-        textcharacter.setHint("Name");
+        textcharacter.setHint("Enter " + List.getFieldName());
         textcharacter.setCursorVisible(true);
         textcharacter.setClickable(true);
-        InputFilter[] fArray = new InputFilter[1];
-        fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
-        textcharacter.setFilters(fArray);
+        if(!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
+            InputFilter[] fArray = new InputFilter[1];
+            fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
+            textcharacter.setFilters(fArray);
+        }
 
         // CreateName
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
@@ -761,7 +766,7 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(requireContext());
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -788,12 +793,14 @@ public class ActivityFragment extends Fragment {
         textnumber.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textnumber.setInputType(InputType.TYPE_CLASS_NUMBER);
         textnumber.setId(k);
-        textnumber.setHint("Number");
+        textnumber.setHint("Enter " + List.getFieldName());
         textnumber.setClickable(false);
         textnumber.setCursorVisible(true);
-        InputFilter[] fArray = new InputFilter[1];
-        fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
-        textnumber.setFilters(fArray);
+        if(!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
+            InputFilter[] fArray = new InputFilter[1];
+            fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
+            textnumber.setFilters(fArray);
+        }
         textLinearLayout1.addView(textnumber);
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
@@ -861,7 +868,7 @@ public class ActivityFragment extends Fragment {
 
         TextView textviewdata = new TextView(requireContext());
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -895,12 +902,14 @@ public class ActivityFragment extends Fragment {
         textarea.setMinLines(5);
         textarea.setMaxLines(8);
         textarea.setId(k);
-        textarea.setHint("Multi line Text");
+        textarea.setHint("Enter " + List.getFieldName());
         textarea.setCursorVisible(true);
         textarea.setClickable(true);
-        InputFilter[] fArray = new InputFilter[1];
-        fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
-        textarea.setFilters(fArray);
+        if(!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
+            InputFilter[] fArray = new InputFilter[1];
+            fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
+            textarea.setFilters(fArray);
+        }
 
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
@@ -965,7 +974,7 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(requireContext());
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -1074,7 +1083,7 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(requireContext());
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -1190,7 +1199,7 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(requireContext());
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -1379,7 +1388,7 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(requireContext());
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -1602,7 +1611,7 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(requireContext());
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -1715,7 +1724,7 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(requireContext());
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -1902,7 +1911,7 @@ public class ActivityFragment extends Fragment {
 
         TextView textcombosingle = new TextView(requireContext());
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textcombosingle.setText(Html.fromHtml(firstChar + firstChar2));
@@ -2039,7 +2048,7 @@ public class ActivityFragment extends Fragment {
 
         TextView textcombomultiple = new TextView(requireContext());
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textcombomultiple.setText(Html.fromHtml(firstChar + firstChar2));
@@ -2184,7 +2193,7 @@ public class ActivityFragment extends Fragment {
 
         TextView textviewdata = new TextView(requireContext());
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -2198,27 +2207,64 @@ public class ActivityFragment extends Fragment {
         textviewdata.setLayoutParams(params1);
         textviewdata.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
         textLinearLayout1.addView(textviewdata);
-        LinearLayout textLinearLayout2 = new LinearLayout(requireContext());
+        LinearLayout textLinearLayout2 = new LinearLayout(context);
+        LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        linearLayoutParams.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
+        textLinearLayout2.setLayoutParams(linearLayoutParams);
         textLinearLayout2.setOrientation(LinearLayout.HORIZONTAL);
         textLinearLayout1.addView(textLinearLayout2);
 
-        TextView textfileupload = new TextView(requireContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        Drawable drawable = requireActivity().getDrawable(R.drawable.form);
+        TextView textfileupload = new TextView(context);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
+//        params.setMargins(1, 1, 1, 1);
+        params.weight = 1;
+        Drawable drawable = context.getDrawable(R.drawable.form);
+        assert drawable != null;
         drawable.setBounds(0, 0, (int) getResources().getDimension(R.dimen._10sdp), (int) getResources().getDimension(R.dimen._10sdp));
         textfileupload.setCompoundDrawables(drawable, null, null, null);
-        params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textfileupload.setBackgroundColor(Color.WHITE);
         textfileupload.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen._4sdp));
-        textfileupload.setBackgroundResource(R.drawable.background_card_white_plan);
-        textfileupload.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
+//        textfileupload.setBackgroundResource(R.drawable.background_card_white_plan);
+//        textfileupload.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textfileupload.setTextColor(getResources().getColor(R.color.text_dark));
         textfileupload.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
 
         textfileupload.setLayoutParams(params);
-        textLinearLayout2.addView(textfileupload);
+        textfileupload.setHint("Select " + List.getFieldName());
+//        textLinearLayout2.addView(textfileupload);
         textLinearLayout2.setId(k);
-        textfileupload.setHint("File");
+
+        LinearLayout parentLayout = new LinearLayout(context);
+        parentLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        parentLayout.setOrientation(LinearLayout.HORIZONTAL);
+        parentLayout.setBackgroundResource(R.drawable.background_card_white_plan);
+
+        ImageView clearButton = new ImageView(context);
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
+                (int) getResources().getDimension(R.dimen._15sdp),
+                (int) getResources().getDimension(R.dimen._15sdp)
+        );
+        buttonParams.gravity = Gravity.CENTER_VERTICAL;
+        clearButton.setLayoutParams(buttonParams);
+        clearButton.setPadding(0, (int) getResources().getDimension(R.dimen._2sdp), 0, (int) getResources().getDimension(R.dimen._2sdp));
+        clearButton.setImageResource(R.drawable.close_icon);
+        clearButton.setVisibility(View.GONE);
+
+        parentLayout.addView(textfileupload);
+        parentLayout.addView(clearButton);
+
+        clearButton.setOnClickListener(v -> {
+            if(textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
+                removeFile(textfileupload.getText().toString());
+                textfileupload.setText("");
+            }
+        });
+
+        textLinearLayout2.addView(parentLayout);
 
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
@@ -2229,6 +2275,14 @@ public class ActivityFragment extends Fragment {
                 if(activityAnswerData.get(List.getSlno()).get(List.getCreationId()) != null && activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt() != null) {
                     textfileupload.setText(activityAnswerData.get(List.getSlno()).get(List.getCreationId()).getAnswerTxt());
                     ActivityViewItem.get(k).setAnswerTxt(textfileupload.getText().toString());
+                    if(textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
+                        drawable.setTint(context.getColor(R.color.green_60));
+                        clearButton.setVisibility(View.VISIBLE);
+                    } else {
+                        clearButton.setVisibility(View.GONE);
+                        drawable.setTint(context.getColor(R.color.dark_purple));
+                    }
+
                 }
             }
         } catch (Exception e) {
@@ -2248,6 +2302,14 @@ public class ActivityFragment extends Fragment {
             public void afterTextChanged(Editable editable) {
                 isEdited = true;
                 ActivityViewItem.get(k).setAnswerTxt(textfileupload.getText().toString());
+
+                if(textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
+                    drawable.setTint(context.getColor(R.color.green_60));
+                    clearButton.setVisibility(View.VISIBLE);
+                } else {
+                    clearButton.setVisibility(View.GONE);
+                    drawable.setTint(context.getColor(R.color.dark_purple));
+                }
 
                 try {
                     if(activityAnswerData.get(List.getSlno()) != null && activityAnswerData.get(List.getSlno()).containsKey(List.getCreationId())) {
@@ -2287,7 +2349,7 @@ public class ActivityFragment extends Fragment {
 
         TextView textviewdata = new TextView(requireContext());
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -2336,7 +2398,7 @@ public class ActivityFragment extends Fragment {
         textLinearLayout2.addView(textcurrency);
         textcurrency.setInputType(InputType.TYPE_CLASS_NUMBER);
         textcurrency.setId(k);
-        textcurrency.setHint("Amount");
+        textcurrency.setHint("Enter " + List.getFieldName());
         textcurrency.setCursorVisible(true);
         textcurrency.setClickable(true);
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
@@ -2593,7 +2655,7 @@ public class ActivityFragment extends Fragment {
         TextView textviewdata = new TextView(requireContext());
 
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -2704,7 +2766,7 @@ public class ActivityFragment extends Fragment {
         TextView textviewdata = new TextView(requireContext());
 
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -2778,7 +2840,7 @@ public class ActivityFragment extends Fragment {
                 if(isMultipleCheck) {
                     mListName.add(activityModelClass.getName());
                     mListId.add(activityModelClass.getCode());
-                    IdView.setText(activityModelClass.getCode());
+//                    IdView.setText(activityModelClass.getCode());
                 }else {
                     fragmentActivityBinding.mainLayout.closeDrawer(Gravity.RIGHT);
                     NameView.setText(activityModelClass.getName());
@@ -2817,7 +2879,7 @@ public class ActivityFragment extends Fragment {
                 if(isMultipleCheck) {
                     String lids = "";
                     for (int i = 0; i<mListId.size(); i++) {
-                        lids = lids + "," + mListId.get(i);
+                        lids = lids + mListId.get(i) + ",";
                     }
                     NameView.setText(mListName.toString().replaceAll("[\\[\\]]", ""));
                     IdView.setText(lids);
@@ -2892,9 +2954,28 @@ public class ActivityFragment extends Fragment {
         }
     }
 
+    public void removeFile(String fileName) {
+        File file = null;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            file = new File(context.getExternalFilesDir(null) + "/ActivityUpload/" + fileName);
+        } else {
+            Log.e("File Deletion", "captureFile: No media mounted");
+        }
+        if (file != null && !file.exists()) {
+            Log.w("File Deletion", "No File Found" + file.getAbsolutePath());
+        } else if(file != null && file.exists()){
+            if (file.delete()) {
+                Log.d("FileDeleter", "File deleted: " + file.getAbsolutePath());
+            } else {
+                Log.e("FileDeleter", "File not deleted: " + file.getAbsolutePath());
+            }
+        }
+    }
+
     public void saveActivity() {
         int conut = 0;
         String slNo = chosenActivityModelClass.getSlNo();
+        Log.i("Activity Fragment", "saveActivity: " + activityData.toString());
         try {
             JSONArray jsonArray = new JSONArray();
             String wtCode = "", wtName = "", fwFlag = "";
@@ -2910,16 +2991,17 @@ public class ActivityFragment extends Fragment {
             }
             Date today = new Date();
             String dateTime = TimeUtils.GetCurrentTimeStamp(TimeUtils.FORMAT_1);
-            String dateToStr = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_1, HomeDashBoard.binding.textDate.getText().toString());
+            String dateToStr = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString());
             SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
             String dateToStr1 = format1.format(today) + " 00:00:00";
+            String time = TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_32);
 
             for (int i = 0; i<ActivityViewItem.size(); i++) {
                 ActivityDetailsModelClass List = ActivityViewItem.get(i);
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
                 jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
-                jsonObject.put("act_date", dateToStr);
+                jsonObject.put("act_date", dateToStr + " " + time);
                 jsonObject.put("dcr_date", dateToStr1);
                 jsonObject.put("update_time", dateTime);
                 jsonObject.put("ModTime", "");
@@ -2996,6 +3078,7 @@ public class ActivityFragment extends Fragment {
                 TaggedImage();
 
                 fragmentActivityBinding.progresssumit.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
 
 //                adapter.changeSelected(holder);
 //                fragmentActivityBinding.rlNoData.setVisibility(View.VISIBLE);
@@ -3389,7 +3472,7 @@ public class ActivityFragment extends Fragment {
                     ex.printStackTrace();
                 }
             }else {
-                commonUtilsMethods.showToastMessage(requireActivity(), requireActivity().getString(R.string.please_select_correct_path));
+                commonUtilsMethods.showToastMessage(requireActivity(),  requireActivity().getString(R.string.no_file_selected));
             }
             commonFun();
         }

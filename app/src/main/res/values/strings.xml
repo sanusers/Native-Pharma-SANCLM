@@ -470,6 +470,7 @@
     <string name="zip_not_supported">ZIP not Supported</string>
     <string name="file_accepted">File Accepted</string>
     <string name="please_select_correct_path">Sorry Please Select Correct path</string>
+    <string name="no_file_selected">"No File Selected"</string>
     <string name="remaindercalls_added_successfully">Remaindercalls Added Successfully</string>
     <string name="logout_successfully">Logout Successfully</string>
     <string name="data_cleared_successfully">Data Cleared Successfully</string>
@@ -544,4 +545,5 @@
     <string name="mobile">Mobile</string>
     <string name="no_quiz_found">No Quiz Found</string>
     <string name="download_asserts">Download Asserts / View</string>
+    <string name="already_saved_will_be_updated">Are you sure, Already saved will be updated!</string>
 </resources>

@@ -43,6 +43,7 @@ public class AssertDownloadService extends Service {
                     if (mList.getDownloadingStatus().equalsIgnoreCase("1")) {
                         if (!QuizActivity.assertsNames.contains(mList.getName())) {
                             String url = "https://" + SharedPref.getLogInsite(getApplicationContext()) + "/" + SharedPref.getOptionFilesUrl(getApplicationContext()) + mList.getName();
+                            Log.i("QuizAssert", "onCreate: " + url);
                             Data inputData = new Data.Builder()
                                     .putString("Flag", "1")
                                     .putString("file_url", url)

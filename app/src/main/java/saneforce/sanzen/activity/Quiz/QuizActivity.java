@@ -793,8 +793,8 @@ public class QuizActivity extends AppCompatActivity {
                     ArrayList<JSONObject> jsonObject1 = optionListMap.get(jsonObject.getString("Question_Id"));
                     if(jsonObject1 != null) {
                         for (JSONObject obj : jsonObject1) {
-                            optionname = optionname + obj.getString("Input_Text") + ",";
-                            optionCode = optionCode + obj.getString("input_id") + ",";
+                            optionname = optionname + obj.getString("Input_Text") + "^^";
+                            optionCode = optionCode + obj.getString("input_id") + "^^";
                             if(obj.getString("Correct_Ans").equalsIgnoreCase("1")) {
                                 answercode = obj.getString("input_id");
                             }
@@ -846,8 +846,8 @@ public class QuizActivity extends AppCompatActivity {
         if(position<mQuizList.size()) {
             binding.txtQuestonName.setText(mQuizList.get(position).getQuestionName());
             binding.txtQuestonNo.setText("Question : " + (position + 1));
-            String[] optionSplit = mQuizList.get(position).getOption().split(",");
-            String[] optionSplitIds = mQuizList.get(position).getOptionCode().split(",");
+            String[] optionSplit = mQuizList.get(position).getOption().split("\\^\\^");
+            String[] optionSplitIds = mQuizList.get(position).getOptionCode().split("\\^\\^");
 
             quizCountAdapter.setSelected(position);
 
