@@ -13,9 +13,11 @@ import org.json.JSONException;
 
 import saneforce.sanzen.roomdatabase.ActivityOfflineTableDetails.ActivityOfflineDataTable;
 
-@Entity(tableName = "activity_upload_table", foreignKeys = {
-        @ForeignKey(entity = ActivityOfflineDataTable.class, parentColumns = "id", childColumns = "activity_id", onDelete = ForeignKey.CASCADE)
-}, indices = {@Index(value = {"activity_id"})})
+@Entity(tableName = "activity_upload_table"
+//        , foreignKeys = {
+//        @ForeignKey(entity = ActivityOfflineDataTable.class, parentColumns = "id", childColumns = "activity_id", onDelete = ForeignKey.CASCADE)
+//}, indices = {@Index(value = {"activity_id"})}
+)
 public class ActivityUploadDataTable {
 
     @PrimaryKey(autoGenerate = true)

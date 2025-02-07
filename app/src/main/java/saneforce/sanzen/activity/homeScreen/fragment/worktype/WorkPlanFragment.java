@@ -183,9 +183,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
 
         if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
-            binding.btnsumit.setText(requireContext().getString(R.string.final_submit_check_out));
+            binding.btnSubmit.setText(requireContext().getString(R.string.final_submit_check_out));
         }else {
-            binding.btnsumit.setText(requireContext().getString(R.string.final_submit));
+            binding.btnSubmit.setText(requireContext().getString(R.string.final_submit));
         }
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
@@ -204,7 +204,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             binding.rlheadquates2.setVisibility(View.GONE);
         }
 
-        binding.btnsumit.setOnClickListener(this);
+        binding.btnSubmit.setOnClickListener(this);
         binding.rlworktype1.setOnClickListener(this);
         binding.rlcluster1.setOnClickListener(this);
         binding.rlheadquates1.setOnClickListener(this);

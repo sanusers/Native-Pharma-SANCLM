@@ -67,4 +67,8 @@
         android:id="@+id/check_for_update"
         android:icon="@drawable/refresh_icon"
         android:title="@string/check_for_update" />
+
+    <item
+        android:id="@+id/empty"
+        android:title="" />
 </menu>

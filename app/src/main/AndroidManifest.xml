@@ -67,10 +67,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activity.Survey.SurveyActivity"
+            android:name=".activity.survey.SurveyActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:theme="@style/CustomTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.Quiz.QuizAssertViewActivity"

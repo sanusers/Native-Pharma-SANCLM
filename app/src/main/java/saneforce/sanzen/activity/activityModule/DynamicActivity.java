@@ -197,25 +197,25 @@ public class DynamicActivity extends AppCompatActivity {
 
 //        getActivity(SharedPref.getHqCode(DynamicActivity.this));
         getActivity();
-
-        binding.backArrow.setOnClickListener(v -> {
-            Dialog dialog = new Dialog(DynamicActivity.this);
-            dialog.setContentView(R.layout.dcr_cancel_alert);
-            dialog.setCancelable(false);
-            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.show();
-            TextView btn_yes = dialog.findViewById(R.id.btn_yes);
-            TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
-            TextView btn_no = dialog.findViewById(R.id.btn_no);
-            alertText.setText("Are you sure, you want to exit ?");
-            btn_yes.setOnClickListener(view12 -> {
-                dialog.dismiss();
-                finish();
-            });
-            btn_no.setOnClickListener(view12 -> {
-                dialog.dismiss();
-            });
-        });
+//
+//        binding.backArrow.setOnClickListener(v -> {
+//            Dialog dialog = new Dialog(DynamicActivity.this);
+//            dialog.setContentView(R.layout.dcr_cancel_alert);
+//            dialog.setCancelable(false);
+//            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//            dialog.show();
+//            TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+//            TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
+//            TextView btn_no = dialog.findViewById(R.id.btn_no);
+//            alertText.setText("Are you sure, you want to exit ?");
+//            btn_yes.setOnClickListener(view12 -> {
+//                dialog.dismiss();
+//                finish();
+//            });
+//            btn_no.setOnClickListener(view12 -> {
+//                dialog.dismiss();
+//            });
+//        });
 
         binding.backArrow.setOnClickListener(v -> {
             if (DynamicActivity.isEdited) {
@@ -227,7 +227,7 @@ public class DynamicActivity extends AppCompatActivity {
                 TextView btn_yes = dialog.findViewById(R.id.btn_yes);
                 TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
                 TextView btn_no = dialog.findViewById(R.id.btn_no);
-                alertText.setText("Are you sure, you want to exit ?");
+                alertText.setText(R.string.are_you_sure_you_want_to_exit);
                 btn_yes.setOnClickListener(view12 -> {
                     dialog.dismiss();
                     getOnBackPressedDispatcher().onBackPressed();
@@ -331,6 +331,7 @@ public class DynamicActivity extends AppCompatActivity {
             }
             binding.progressMain.setVisibility(View.GONE);
         } catch (Exception e) {
+            binding.progressMain.setVisibility(View.GONE);
             e.printStackTrace();
         }
     }

@@ -57,9 +57,14 @@ public class Constants {
     public static final String TOUR_PLAN = "Tour Plan";
     public static final String TP_SETUP = "Tour Plan Setup";
 
+    //Quiz
+    public static final String QUIZ = "Quiz";
+
+    //Survey
+    public static final String SURVEY = "Survey";
+
     //Subordinate
     public static final String SUBORDINATE = "Subordinate";
-    public static final String QUIZ = "Quiz";
     public static final String SUBORDINATE_MGR = "Subordinate Mgr";
     public static final String JOINT_WORK = "Joint_Work_";
 

@@ -195,7 +195,7 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.tvContent.setText(String.format("Select any %s on list  to view content", SharedPref.getActivityCap(requireContext())));
         fragmentActivityBinding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(requireContext())));
         fragmentActivityBinding.txthqName.setText(SharedPref.getHqName(requireContext()));
-        fragmentActivityBinding.btnsumit.setEnabled(false);
+        fragmentActivityBinding.btnSubmit.setEnabled(false);
         adapter = new ActivityAdapter(requireContext(), ActivityList, (classGroup, holder, position) -> {
             if (this.chosenActivityPosition != position && this.chosenActivityPosition != -1) {
                 activityChangeAlert(classGroup, position);
@@ -225,7 +225,7 @@ public class ActivityFragment extends Fragment {
             }
         });
 
-        fragmentActivityBinding.btnsumit.setOnClickListener(new View.OnClickListener() {
+        fragmentActivityBinding.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveActivity();
@@ -288,8 +288,8 @@ public class ActivityFragment extends Fragment {
         fragmentActivityBinding.llActivityDetailsView.removeAllViews();
         chosenActivityModelClass = ActivityList.get(chosenActivityPosition);
         getActivityDetails(ActivityList.get(chosenActivityPosition));
-        fragmentActivityBinding.btnsumit.setEnabled(true);
-        fragmentActivityBinding.btnsumit.setAlpha(1f);
+        fragmentActivityBinding.btnSubmit.setEnabled(true);
+        fragmentActivityBinding.btnSubmit.setAlpha(1f);
         callsUtil.deleteOfflineActivity(CallActivityCustDetails.get(0).getCode(), HomeDashBoard.selectedDate.toString());
     }
 
@@ -332,8 +332,8 @@ public class ActivityFragment extends Fragment {
             ActivityDetailsDataTable activityDetailsDataTable = activityDetailsDataDao.getActivityDetailsByID(activityModelClass.getSlNo());
             JSONArray jsonArray = activityDetailsDataTable.getActivityDataJSONArray();
             if(jsonArray.length()>0) {
-                fragmentActivityBinding.rldatalayout.setVisibility(View.VISIBLE);
-                fragmentActivityBinding.btnsumit.setVisibility(View.VISIBLE);
+                fragmentActivityBinding.rlDataLayout.setVisibility(View.VISIBLE);
+                fragmentActivityBinding.btnSubmit.setVisibility(View.VISIBLE);
                 fragmentActivityBinding.rlNoData.setVisibility(View.GONE);
                 for (int i = 0; i<jsonArray.length(); i++) {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
@@ -408,7 +408,7 @@ public class ActivityFragment extends Fragment {
                     }
                     jjj++;
                     if(ActivityDetailsList.size() == jjj) {
-                        fragmentActivityBinding.btnsumit.setEnabled(true);
+                        fragmentActivityBinding.btnSubmit.setEnabled(true);
                     }
                 }
             }
@@ -419,7 +419,7 @@ public class ActivityFragment extends Fragment {
             }else {
                 fragmentActivityBinding.rlNoData.setVisibility(View.VISIBLE);
                 fragmentActivityBinding.rlDetailsMain.setVisibility(View.GONE);
-                fragmentActivityBinding.btnsumit.setVisibility(View.GONE);
+                fragmentActivityBinding.btnSubmit.setVisibility(View.GONE);
                 fragmentActivityBinding.progrlessdetail.setVisibility(View.GONE);
                 commonUtilsMethods.showToastMessage(requireContext(), "No Activity Details");
             }
@@ -2148,19 +2148,19 @@ public class ActivityFragment extends Fragment {
 
     public void ShowListPopup(TextView NameView, TextView IdView, ArrayList<ActivityModelClass> List, String name, boolean isMultipleCheck) {
         if(isMultipleCheck) {
-            fragmentActivityBinding.SlideScreen.viewDummy1.setVisibility(View.VISIBLE);
-            fragmentActivityBinding.SlideScreen.txtClDone.setVisibility(View.VISIBLE);
+            fragmentActivityBinding.slideScreen.viewDummy1.setVisibility(View.VISIBLE);
+            fragmentActivityBinding.slideScreen.txtClDone.setVisibility(View.VISIBLE);
         }else {
-            fragmentActivityBinding.SlideScreen.viewDummy1.setVisibility(View.GONE);
-            fragmentActivityBinding.SlideScreen.txtClDone.setVisibility(View.GONE);
+            fragmentActivityBinding.slideScreen.viewDummy1.setVisibility(View.GONE);
+            fragmentActivityBinding.slideScreen.txtClDone.setVisibility(View.GONE);
         }
 
         List<String> mListName = new ArrayList<>();
         List<String> mListId = new ArrayList<>();
         fragmentActivityBinding.mainLayout.openDrawer(Gravity.RIGHT);
-        fragmentActivityBinding.SlideScreen.etSearch.setText("");
-        fragmentActivityBinding.SlideScreen.tvSearchheader.setText("Select " + name);
-        fragmentActivityBinding.SlideScreen.etSearch.setHint("Search " + name);
+        fragmentActivityBinding.slideScreen.etSearch.setText("");
+        fragmentActivityBinding.slideScreen.tvSearchheader.setText("Select " + name);
+        fragmentActivityBinding.slideScreen.etSearch.setHint("Search " + name);
         adapter1 = new ActvityList2Adapter(requireContext(), List, IdView, isMultipleCheck, new CheckBoxInterface() {
             @Override
             public void Checked(ActivityModelClass activityModelClass) {
@@ -2181,10 +2181,10 @@ public class ActivityFragment extends Fragment {
                 mListId.remove(activityModelClass.getCode());
             }
         });
-        fragmentActivityBinding.SlideScreen.acRecyelerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        fragmentActivityBinding.SlideScreen.acRecyelerView.setAdapter(adapter1);
+        fragmentActivityBinding.slideScreen.acRecyelerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        fragmentActivityBinding.slideScreen.acRecyelerView.setAdapter(adapter1);
 
-        fragmentActivityBinding.SlideScreen.etSearch.addTextChangedListener(new TextWatcher() {
+        fragmentActivityBinding.slideScreen.etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
@@ -2200,7 +2200,7 @@ public class ActivityFragment extends Fragment {
             }
         });
 
-        fragmentActivityBinding.SlideScreen.txtClDone.setOnClickListener(new View.OnClickListener() {
+        fragmentActivityBinding.slideScreen.txtClDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(isMultipleCheck) {
@@ -2215,7 +2215,7 @@ public class ActivityFragment extends Fragment {
             }
         });
 
-        fragmentActivityBinding.SlideScreen.cancelImg.setOnClickListener(new View.OnClickListener() {
+        fragmentActivityBinding.slideScreen.cancelImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 fragmentActivityBinding.mainLayout.closeDrawer(Gravity.RIGHT);
@@ -2360,7 +2360,7 @@ public class ActivityFragment extends Fragment {
                 isEdited = false;
                 activityDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                 activityTime = CommonUtilsMethods.getCurrentInstance("HH:mm:ss");
-                fragmentActivityBinding.progresssumit.setVisibility(View.VISIBLE);
+                fragmentActivityBinding.progressSubmit.setVisibility(View.VISIBLE);
                 JSONObject MainObject = new JSONObject();
                 MainObject.put("tableName", "savedcract");
                 MainObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
@@ -2370,13 +2370,13 @@ public class ActivityFragment extends Fragment {
                 activityData.add(MainObject);
                 TaggedImage(id);
 
-                fragmentActivityBinding.progresssumit.setVisibility(View.GONE);
+                fragmentActivityBinding.progressSubmit.setVisibility(View.GONE);
 
 //                adapter.changeSelected(holder);
 //                fragmentActivityBinding.rlNoData.setVisibility(View.VISIBLE);
 //                fragmentActivityBinding.rlDetailsMain.setVisibility(View.GONE);
-                fragmentActivityBinding.btnsumit.setEnabled(false);
-                fragmentActivityBinding.btnsumit.setAlpha(0.5f);
+                fragmentActivityBinding.btnSubmit.setEnabled(false);
+                fragmentActivityBinding.btnSubmit.setAlpha(0.5f);
 //                fragmentActivityBinding.progrlessdetail.setVisibility(View.GONE);
             }
         } catch (Exception a) {
@@ -2389,7 +2389,7 @@ public class ActivityFragment extends Fragment {
             for (int i = 0; i<ActivityViewItem.size(); i++) {
                 ActivityDetailsModelClass List = ActivityViewItem.get(i);
                 if(List.getControlId().equalsIgnoreCase("10") && !List.getAnswerTxt().isEmpty()) {
-                    fragmentActivityBinding.progresssumit.setVisibility(View.VISIBLE);
+                    fragmentActivityBinding.progressSubmit.setVisibility(View.VISIBLE);
                     JSONObject jsonObject = new JSONObject();
 
                     Date today = new Date();
@@ -2452,7 +2452,7 @@ public class ActivityFragment extends Fragment {
                     }
                     activityUploadDataDao.saveActivityUploadData(new ActivityUploadDataTable(Integer.parseInt(String.valueOf(id)), chosenActivityModelClass.getSlNo(), chosenActivityModelClass.getActivityName(), activityDate, activityTime, List.getAnswerTxt(), destinationFile.getAbsolutePath(), MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
 
-                    fragmentActivityBinding.progresssumit.setVisibility(View.GONE);
+                    fragmentActivityBinding.progressSubmit.setVisibility(View.GONE);
                 }
 
             }

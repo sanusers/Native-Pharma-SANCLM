@@ -69,8 +69,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
 //                        dialog.dismiss();
 //                    });
 //                }else {
-                    rowindex = position;
-                    notifyDataSetChanged();
+                rowindex = position;
+                notifyDataSetChanged();
                     activityView.ChooseActivity(DataList.get(position), holder, position);
 //                }
 

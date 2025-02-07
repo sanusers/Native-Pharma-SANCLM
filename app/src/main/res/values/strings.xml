@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">R.2.2.4</string>
+    <string name="app_version" translatable="false">R.2.3.0</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -544,4 +544,11 @@
     <string name="mobile">Mobile</string>
     <string name="no_quiz_found">No Quiz Found</string>
     <string name="download_asserts">Download Asserts</string>
+    <string name="are_you_sure_you_want_to_exit">Are you sure, you want to exit ?</string>
+    <string name="customer_type">Customer Type</string>
+    <string name="select_customer_type">Select Customer Type</string>
+    <string name="customer">Customer</string>
+    <string name="select_customer">Select Customer</string>
+    <string name="select_head_quarter">Select Head Quarter</string>
+    <string name="head_quarter">Head Quarter</string>
 </resources>

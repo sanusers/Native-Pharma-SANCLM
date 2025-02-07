@@ -92,7 +92,7 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.FAQ.FAQ;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
-import saneforce.sanzen.activity.Survey.SurveyActivity;
+import saneforce.sanzen.activity.survey.SurveyActivity;
 import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
 import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
@@ -1785,7 +1785,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         if (SharedPref.getSurveyNd(this).equalsIgnoreCase("0")) {
-            menu.findItem(R.id.survey).setVisible(false);
+            menu.findItem(R.id.survey).setVisible(true);
         }
         else {
             menu.findItem(R.id.survey).setVisible(false);
