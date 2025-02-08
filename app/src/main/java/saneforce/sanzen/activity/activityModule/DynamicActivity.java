@@ -2014,6 +2014,7 @@ public class DynamicActivity extends AppCompatActivity {
         Drawable drawable = getDrawable(R.drawable.form);
         assert drawable != null;
         drawable.setBounds(0, 0, (int) getResources().getDimension(R.dimen._10sdp), (int) getResources().getDimension(R.dimen._10sdp));
+        drawable.setTint(getColor(R.color.dark_purple));
         textfileupload.setCompoundDrawables(drawable, null, null, null);
         textfileupload.setBackgroundColor(Color.WHITE);
         textfileupload.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen._4sdp));

@@ -786,6 +786,20 @@ public class DCRCallActivity extends AppCompatActivity {
 
     public boolean CheckRequiredFunctions() {
 
+        if (ActivityNeed.equalsIgnoreCase("0")) {
+            for (String slNo : ActivityFragment.activityAnswerData.keySet()) {
+                LinkedHashMap<String, ActivityDetailsModelClass> activityDetailsModelClassMap = ActivityFragment.activityAnswerData.get(slNo);
+                if (!ActivityFragment.savedActivityList.contains(slNo) && activityDetailsModelClassMap != null) {
+                    for (ActivityDetailsModelClass activityDetailsModelClass : activityDetailsModelClassMap.values()) {
+                        if (!activityDetailsModelClass.getAnswerTxt().isEmpty() && (!activityDetailsModelClass.getControlId().equalsIgnoreCase("0") && !activityDetailsModelClass.getControlId().equalsIgnoreCase("17"))) {
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.save).trim(), capActivity));
+                            moveToPage(capActivity);
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
         switch (CallActivityCustDetails.get(0).getType()) {
             case "1":
                 if(ProductNeed.equalsIgnoreCase("0")) {
@@ -2379,80 +2393,82 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 if(ActivityFragment.activityAnswerData != null && !ActivityFragment.activityAnswerData.isEmpty()) {
                     for (String slNo : ActivityFragment.activityAnswerData.keySet()) {
-                        try {
-                            JSONArray jsonArrayActivity = new JSONArray();
-                            if(ActivityFragment.activityAnswerData.get(slNo) != null && !ActivityFragment.activityAnswerData.get(slNo).isEmpty()) {
-                                for (String creationID : ActivityFragment.activityAnswerData.get(slNo).keySet()) {
-                                    ActivityDetailsModelClass List = ActivityFragment.activityAnswerData.get(slNo).get(creationID);
-                                    JSONObject jsonObject = new JSONObject();
-                                    jsonObject.put("sfcode", SharedPref.getSfCode(this));
-                                    jsonObject.put("division_code", SharedPref.getDivisionCode(this));
-                                    jsonObject.put("act_date", dateToStr);
-                                    jsonObject.put("dcr_date", dateToStr1);
-                                    jsonObject.put("update_time", dateTime);
-                                    jsonObject.put("ModTime", "");
-                                    jsonObject.put("slno", List.getSlno());
-                                    jsonObject.put("ctrl_id", List.getControlId());
-                                    jsonObject.put("creat_id", List.getCreationId());
-                                    jsonObject.put("group_creat_id", List.getCreationId());
-                                    jsonObject.put("WT", wtCode);
-                                    jsonObject.put("Pl", "0"); // cluster code
-                                    jsonObject.put("cus_code", CallActivityCustDetails.get(0).getCode());
-                                    jsonObject.put("lat", gpsTrack.getLatitude());
-                                    jsonObject.put("lng", gpsTrack.getLongitude());
-                                    jsonObject.put("cusname", CallActivityCustDetails.get(0).getName());
-                                    jsonObject.put("DataSF", SharedPref.getSfCode(this));
-                                    jsonObject.put("type", CallActivityCustDetails.get(0).getType());
-                                    jsonObject.put("WT_code", wtCode);
-                                    jsonObject.put("WTName", wtName);
-                                    jsonObject.put("FWFlg", fwFlag);
-                                    jsonObject.put("town_code", CallActivityCustDetails.get(0).getTown_code());
-                                    jsonObject.put("town_name", CallActivityCustDetails.get(0).getTown_name());
-                                    jsonObject.put("Rsf", SharedPref.getHqCode(this));
-                                    jsonObject.put("sf_type", SharedPref.getSfType(this));
-                                    jsonObject.put("Designation", SharedPref.getDesig(this));
-                                    jsonObject.put("state_code", SharedPref.getStateCode(this));
-                                    jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+                        if (ActivityFragment.savedActivityList.contains(slNo)) {
+                            try {
+                                JSONArray jsonArrayActivity = new JSONArray();
+                                if (ActivityFragment.activityAnswerData.get(slNo) != null && !ActivityFragment.activityAnswerData.get(slNo).isEmpty()) {
+                                    for (String creationID : ActivityFragment.activityAnswerData.get(slNo).keySet()) {
+                                        ActivityDetailsModelClass List = ActivityFragment.activityAnswerData.get(slNo).get(creationID);
+                                        JSONObject jsonObject = new JSONObject();
+                                        jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                                        jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                                        jsonObject.put("act_date", dateToStr);
+                                        jsonObject.put("dcr_date", dateToStr1);
+                                        jsonObject.put("update_time", dateTime);
+                                        jsonObject.put("ModTime", "");
+                                        jsonObject.put("slno", List.getSlno());
+                                        jsonObject.put("ctrl_id", List.getControlId());
+                                        jsonObject.put("creat_id", List.getCreationId());
+                                        jsonObject.put("group_creat_id", List.getCreationId());
+                                        jsonObject.put("WT", wtCode);
+                                        jsonObject.put("Pl", "0"); // cluster code
+                                        jsonObject.put("cus_code", CallActivityCustDetails.get(0).getCode());
+                                        jsonObject.put("lat", gpsTrack.getLatitude());
+                                        jsonObject.put("lng", gpsTrack.getLongitude());
+                                        jsonObject.put("cusname", CallActivityCustDetails.get(0).getName());
+                                        jsonObject.put("DataSF", SharedPref.getSfCode(this));
+                                        jsonObject.put("type", CallActivityCustDetails.get(0).getType());
+                                        jsonObject.put("WT_code", wtCode);
+                                        jsonObject.put("WTName", wtName);
+                                        jsonObject.put("FWFlg", fwFlag);
+                                        jsonObject.put("town_code", CallActivityCustDetails.get(0).getTown_code());
+                                        jsonObject.put("town_name", CallActivityCustDetails.get(0).getTown_name());
+                                        jsonObject.put("Rsf", SharedPref.getHqCode(this));
+                                        jsonObject.put("sf_type", SharedPref.getSfType(this));
+                                        jsonObject.put("Designation", SharedPref.getDesig(this));
+                                        jsonObject.put("state_code", SharedPref.getStateCode(this));
+                                        jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
 
-                                    if(List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
-                                        if(List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
-                                            commonUtilsMethods.showToastMessage(this, "Fill The From " + List.getFieldName());
-                                            break;
-                                        }else if(List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
-                                            commonUtilsMethods.showToastMessage(this, "Fill The To" + List.getFieldName());
-                                            break;
-                                        }else {
-                                            jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
-                                            jsonObject.put("codes", List.getCodes());
-                                            Log.v("codes", List.getCodes());
+                                        if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
+                                            if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
+                                                commonUtilsMethods.showToastMessage(this, "Fill The From " + List.getFieldName());
+                                                break;
+                                            } else if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
+                                                commonUtilsMethods.showToastMessage(this, "Fill The To" + List.getFieldName());
+                                                break;
+                                            } else {
+                                                jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
+                                                jsonObject.put("codes", List.getCodes());
+                                                Log.v("codes", List.getCodes());
+                                            }
+                                        } else if (List.getControlId().equalsIgnoreCase("17")) {
+                                            if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
+                                                commonUtilsMethods.showToastMessage(this, "Choose The " + List.getFieldName() + "");
+                                                break;
+                                            } else {
+                                                jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
+                                                jsonObject.put("codes", List.getCodes());
+                                            }
+                                        } else {
+                                            if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
+                                                commonUtilsMethods.showToastMessage(this, "Fill The " + List.getFieldName() + "");
+                                                break;
+                                            } else {
+                                                jsonObject.put("values", List.getAnswerTxt());
+                                                jsonObject.put("codes", List.getCodes());
+                                                Log.v("codes", List.getCodes());
+                                            }
                                         }
-                                    }else if(List.getControlId().equalsIgnoreCase("17")) {
-                                        if(List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                                            commonUtilsMethods.showToastMessage(this, "Choose The " + List.getFieldName() + "");
-                                            break;
-                                        }else {
-                                            jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
-                                            jsonObject.put("codes", List.getCodes());
-                                        }
-                                    }else {
-                                        if(List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                                            commonUtilsMethods.showToastMessage(this, "Fill The " + List.getFieldName() + "");
-                                            break;
-                                        }else {
-                                            jsonObject.put("values", List.getAnswerTxt());
-                                            jsonObject.put("codes", List.getCodes());
-                                            Log.v("codes", List.getCodes());
-                                        }
+                                        jsonArrayActivity.put(jsonObject);
                                     }
-                                    jsonArrayActivity.put(jsonObject);
+                                    JSONObject MainObject = new JSONObject();
+                                    MainObject.put("val", jsonArrayActivity);
+                                    Log.v("JsonObject  :", MainObject.toString());
+                                    ActivityFragment.activityData.add(MainObject);
                                 }
-                                JSONObject MainObject = new JSONObject();
-                                MainObject.put("val", jsonArrayActivity);
-                                Log.v("JsonObject  :", MainObject.toString());
-                                ActivityFragment.activityData.add(MainObject);
+                            } catch (Exception a) {
+                                a.printStackTrace();
                             }
-                        } catch (Exception a) {
-                            a.printStackTrace();
                         }
                     }
                     Log.w("DCRCallActivity", "jsonExtractOnline: " + ActivityFragment.activityData);

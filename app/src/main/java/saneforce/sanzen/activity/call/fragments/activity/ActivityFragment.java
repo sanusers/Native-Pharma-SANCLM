@@ -214,17 +214,13 @@ public class ActivityFragment extends Fragment {
             }else if (this.chosenActivityPosition != -1 && chosenActivityModelClass != null && !savedActivityList.contains(chosenActivityModelClass.getSlNo()) && validateActivityData()) {
                 activityChangeAlert(classGroup, position);
             }else {
+                if(chosenActivityModelClass != null && !savedActivityList.contains(chosenActivityModelClass.getSlNo())) {
+                    activityAnswerData.put(chosenActivityModelClass.getSlNo(), new LinkedHashMap<>());
+                }
                 fragmentActivityBinding.namechooseActivity.setText(classGroup.getActivityName());
                 fragmentActivityBinding.llActivityDetailsView.removeAllViews();
                 chosenActivityModelClass = classGroup;
                 chosenActivityPosition = position;
-//                if(savedActivityList.contains(chosenActivityModelClass.getSlNo())) {
-//                    fragmentActivityBinding.btnsumit.setEnabled(false);
-//                    fragmentActivityBinding.btnsumit.setAlpha(0.5f);
-//                } else {
-//                    fragmentActivityBinding.btnsumit.setEnabled(true);
-//                    fragmentActivityBinding.btnsumit.setAlpha(1f);
-//                }
                 getActivityDetails(classGroup);
             }
         });
@@ -2222,6 +2218,7 @@ public class ActivityFragment extends Fragment {
         Drawable drawable = context.getDrawable(R.drawable.form);
         assert drawable != null;
         drawable.setBounds(0, 0, (int) getResources().getDimension(R.dimen._10sdp), (int) getResources().getDimension(R.dimen._10sdp));
+        drawable.setTint(requireActivity().getColor(R.color.dark_purple));
         textfileupload.setCompoundDrawables(drawable, null, null, null);
         textfileupload.setBackgroundColor(Color.WHITE);
         textfileupload.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen._4sdp));
@@ -2240,6 +2237,7 @@ public class ActivityFragment extends Fragment {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
+        parentLayout.setPadding(0, 3, 0, 3);
         parentLayout.setOrientation(LinearLayout.HORIZONTAL);
         parentLayout.setBackgroundResource(R.drawable.background_card_white_plan);
 

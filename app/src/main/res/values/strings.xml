@@ -296,7 +296,7 @@
     <string name="call_saved_successfully">Call Saved Successfully</string>
     <string name="call_already_exist">Call Already Exist</string>
     <string name="call_failed">Call Failed! Try Again</string>
-    <string name="activity_saved_successfully">Activity Saved Successfully</string>
+    <string name="activity_saved_successfully">Activity Saved</string>
     <string name="activity_already_exist">Activity Already Exist</string>
     <string name="activity_failed">Activity Failed! Try Again</string>
     <string name="call_fail">Call Failed</string>
