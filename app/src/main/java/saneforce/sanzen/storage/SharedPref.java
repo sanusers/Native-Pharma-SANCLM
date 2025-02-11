@@ -425,6 +425,8 @@ public class SharedPref {
     public static final String JOININGYEAR = "JOINING_YEAR";
     public static final String SANZEN_EDET = "sanzen_edet";
 
+    public static final String LAST_CALL_SYNC_DATE = "Last Call Sync Date";
+
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -2517,6 +2519,16 @@ public class SharedPref {
     }
     public static int getJoiningYear(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(JOININGYEAR, 0);
+    }
+
+    public static void setLastCallSyncDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LAST_CALL_SYNC_DATE, date).apply();
+    }
+
+    public static String getLastCallSyncDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LAST_CALL_SYNC_DATE, "");
     }
 
 }
