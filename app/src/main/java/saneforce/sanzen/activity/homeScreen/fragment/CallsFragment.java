@@ -64,11 +64,19 @@ public class CallsFragment extends Fragment {
     public static ArrayList<CallsModalClass> TodayCallList = new ArrayList<>();
     public static boolean isNeedtoAdd;
     public static ProgressDialog progressDialog;
-    ApiInterface apiInterface;
+    private static ApiInterface apiInterface;
     private RoomDB db;
     private static MasterDataDao masterDataDao;
     CommonUtilsMethods commonUtilsMethods;
-    public static  Context Mcontext;
+    @SuppressLint("StaticFieldLeak")
+    public static Context Mcontext;
+    public static boolean syncCalls = false;
+
+    public static void syncCalls() {
+        if(Mcontext != null && apiInterface != null) {
+            CallTodayCallsAPI(Mcontext, apiInterface, false);
+        }
+    }
 
     public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, boolean isProgressNeed) {
         if(HomeDashBoard.selectedDate != null) {
@@ -280,7 +288,10 @@ public class CallsFragment extends Fragment {
 
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         getFromLocal(requireContext(), apiInterface);
-        CallTodayCallsAPI(requireContext(), apiInterface, false);
+        if(syncCalls) {
+            syncCalls = false;
+            CallTodayCallsAPI(requireContext(), apiInterface, false);
+        }
         db = RoomDB.getDatabase(requireContext());
         masterDataDao =db.masterDataDao();
 

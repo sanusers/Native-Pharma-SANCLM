@@ -9,7 +9,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 
-import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,17 +30,18 @@ import saneforce.sanzen.storage.SharedPref;
 public class CommonAlertBox {
 
     private static final String TAG = "LocationStatus";
+    public static AlertDialog dialog;
 
-    public static void CheckLocationStatus(Activity activity) {
+    public static void CheckLocationStatus(Activity activity, GPSTrack gpsTrack) {
         if(SharedPref.getGeoChk(activity).equalsIgnoreCase("0")){
-            if (isMockLocation(activity)) {
+            if (isMockLocation(activity) || (gpsTrack != null && gpsTrack.isFakeLocation())) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(activity);
                 alert.setCancelable(false);
                 LayoutInflater inflater = activity.getLayoutInflater();
                 View alertLayout = inflater.inflate(R.layout.fake_gps_alert_box, null);
                 Button btnOk = alertLayout.findViewById(R.id.BtnClose);
                 alert.setView(alertLayout);
-                AlertDialog dialog = alert.create();
+                dialog = alert.create();
                 dialog.show();
                 btnOk.setOnClickListener(v -> {
                     activity.finishAffinity();

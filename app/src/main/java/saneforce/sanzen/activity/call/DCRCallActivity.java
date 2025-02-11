@@ -18,22 +18,17 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
-import android.os.AsyncTask;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -41,19 +36,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,7 +62,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.call.adapter.DCRCallTabLayoutAdapter;
 import saneforce.sanzen.activity.call.adapter.additionalCalls.AdditionalCusListAdapter;
 import saneforce.sanzen.activity.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
@@ -103,6 +93,7 @@ import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedCompList;
 import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedProdList;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.homeScreen.fragment.CallsFragment;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 
 import saneforce.sanzen.activity.remaindercalls.RemaindercallsActivity;
@@ -114,10 +105,8 @@ import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityDcrcallBinding;
 
 import saneforce.sanzen.commonClasses.CommonAlertBox;
-import saneforce.sanzen.databinding.DialogTimezoneBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
-import saneforce.sanzen.response.CustomSetupResponse;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
@@ -432,7 +421,8 @@ public class DCRCallActivity extends AppCompatActivity {
 //                    }else {
                         progressDialog.dismiss();
                         IsFromDCR = true;
-                       HomeDashBoard.isDcrFrom=true;
+                        HomeDashBoard.isDcrFrom=true;
+                        CallsFragment.syncCalls = true;
                         Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                         startActivity(intent);
                         finish();
@@ -2869,7 +2859,7 @@ public class DCRCallActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        CommonAlertBox.CheckLocationStatus(DCRCallActivity.this);
+        CommonAlertBox.CheckLocationStatus(DCRCallActivity.this, gpsTrack);
         Log.e("TAG", "onResume: ");
         timeZoneVerification();
     }

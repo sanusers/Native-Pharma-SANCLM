@@ -1,6 +1,7 @@
 package saneforce.sanzen.commonClasses;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,12 +12,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.core.app.ActivityCompat;
 
 import java.util.Objects;
 
 import saneforce.sanzen.BuildConfig;
+import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.splash.SplashScreen;
 
 public class GPSTrack implements LocationListener {
 
@@ -44,9 +51,38 @@ public class GPSTrack implements LocationListener {
     // Declaring a Location Manager
     protected LocationManager locationManager;
     Activity activity;
+    private static AlertDialog dialog;
 
     @Override
     public void onLocationChanged(Location location) {
+        if(location != null && location.isFromMockProvider() && !(activity instanceof SplashScreen)) {
+            if(dialog != null && dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            HomeDashBoard.isFakeLocationDetected = true;
+            try {
+                AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+                alert.setCancelable(false);
+                LayoutInflater inflater = activity.getLayoutInflater();
+                View alertLayout = inflater.inflate(R.layout.fake_gps_alert_box, null);
+                Button btnOk = alertLayout.findViewById(R.id.BtnClose);
+                alert.setView(alertLayout);
+                dialog = alert.create();
+                if(!activity.isFinishing()) {
+                    dialog.show();
+                    if(CommonAlertBox.dialog != null && CommonAlertBox.dialog.isShowing()) {
+                        CommonAlertBox.dialog.dismiss();
+                    }
+                }
+                btnOk.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    activity.finishAffinity();
+                    System.exit(0);
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -68,8 +104,11 @@ public class GPSTrack implements LocationListener {
 
     public GPSTrack(Context context) {
         this.mContext = context;
-        activity = (Activity) context;
-
+        try {
+            activity = (Activity) context;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //isLocationEnabled();
         getLocation();
     }
@@ -173,6 +212,12 @@ public class GPSTrack implements LocationListener {
         return longitude;
     }
 
+    public boolean isFakeLocation() {
+        if(location != null) {
+            return location.isFromMockProvider();
+        }
+        return false;
+    }
 
     private void openSettings() {
         Intent intent = new Intent();

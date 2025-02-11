@@ -168,7 +168,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
         callOfflineWorkTypeDataDao = roomDB.callOfflineWorkTypeDataDao();
         offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
-        gpsTrack = new GPSTrack(requireContext());
+        gpsTrack = new GPSTrack(requireActivity());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         chk_cluster = "";
@@ -728,7 +728,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
                                 saveOrUpdateWorkPlan();
                             }else {
-                                gpsTrack = new GPSTrack(requireContext());
+                                gpsTrack = new GPSTrack(requireActivity());
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_location_please_try_again));
                             }
                         }else {
@@ -780,7 +780,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
                                 submitMyDayPlan();
                             }else {
-                                gpsTrack = new GPSTrack(requireContext());
+                                gpsTrack = new GPSTrack(requireActivity());
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_location_please_try_again));
                             }
                         }else {
@@ -2065,7 +2065,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
     private void finalSubmit(String remark) {
-        gpsTrack = new GPSTrack(requireContext());
+        gpsTrack = new GPSTrack(requireActivity());
         latitude = gpsTrack.getLatitude();
         longitude = gpsTrack.getLongitude();
         if(UtilityClass.isNetworkAvailable(requireContext())) {
