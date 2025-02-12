@@ -201,6 +201,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private InAppUpdate inAppUpdate;
     private static CallsUtil callsUtil;
     private static HomeDashBoard activity;
+    public static boolean isFakeLocationDetected = false;
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -219,29 +220,30 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onResume() {
-        if(isDateSelectionClicked) {
-            setUpCalendar();
-        }
-        timeZoneVerification();
-        accessibility();
-        super.onResume();
-        AppIdentify();
-        Log.d("ACTIVITY_STATUS", "OnResume");
-        commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
-        if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
-            binding.myDrawerLayout.closeDrawer(GravityCompat.START);
-        }
-
-        try {
-            if (Build.VERSION.SDK_INT >= 33) {
-                registerReceiver(receiver, intentFilter, RECEIVER_NOT_EXPORTED);
-            } else {
-                registerReceiver(receiver, intentFilter);
+        if(!isFakeLocationDetected) {
+            if(isDateSelectionClicked) {
+                setUpCalendar();
             }
-        } catch (Exception ignored) {
+            timeZoneVerification();
+            accessibility();
+            super.onResume();
+            AppIdentify();
+            Log.d("ACTIVITY_STATUS", "OnResume");
+            commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
+            if(binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
+                binding.myDrawerLayout.closeDrawer(GravityCompat.START);
+            }
 
-        }
+            try {
+                if(Build.VERSION.SDK_INT>=33) {
+                    registerReceiver(receiver, intentFilter, RECEIVER_NOT_EXPORTED);
+                }else {
+                    registerReceiver(receiver, intentFilter);
+                }
+            } catch (Exception ignored) {
+
+            }
 
         Menu menu = binding.navView.getMenu();
         if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
@@ -252,23 +254,26 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             menu.findItem(R.id.stp).setVisible(SharedPref.getStpNeed(this).equalsIgnoreCase("0"));
         }
 
-        if(SharedPref.getTpdcrMgrappr(this).equalsIgnoreCase("0")) {
-            binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.VISIBLE);
-            binding.viewCalerderLayout.txtTpDeviationRele.setVisibility(View.VISIBLE);
-        }else {
-            binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.GONE);
-            binding.viewCalerderLayout.txtTpDeviationRele.setVisibility(View.GONE);
-        }
+            if(SharedPref.getTpdcrMgrappr(this).equalsIgnoreCase("0")) {
+                binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.VISIBLE);
+                binding.viewCalerderLayout.txtTpDeviationRele.setVisibility(View.VISIBLE);
+            }else {
+                binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.GONE);
+                binding.viewCalerderLayout.txtTpDeviationRele.setVisibility(View.GONE);
+            }
 
-        CommonAlertBox.CheckLocationStatus(HomeDashBoard.this);
-        if(SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2")&& SharedPref.getApprMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0")){
-            CheckingManatoryApprovals();
-        }
-        CheckedTpRange();
-        checkAndSetEntryDate(this, true);
-        if(isDcrFrom){
-            binding.viewPager.setCurrentItem(1);
-            isDcrFrom=false;
+            CommonAlertBox.CheckLocationStatus(HomeDashBoard.this, gpsTrack);
+            if(SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0")) {
+                CheckingManatoryApprovals();
+            }
+            CheckedTpRange();
+            checkAndSetEntryDate(this, true);
+            if(isDcrFrom) {
+                binding.viewPager.setCurrentItem(1);
+                isDcrFrom = false;
+            }
+        } else{
+            super.onResume();
         }
 
     }

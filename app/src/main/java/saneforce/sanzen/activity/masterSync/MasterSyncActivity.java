@@ -945,14 +945,18 @@ public class MasterSyncActivity extends AppCompatActivity {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
                         }
                     } else {
-                        masterSyncItemModels.get(position).setPBarVisibility(false);
+                        if(position < masterSyncItemModels.size()) {
+                            masterSyncItemModels.get(position).setPBarVisibility(false);
+                        }
                         commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.poor_connection));
                         masterSyncAdapter.notifyDataSetChanged();
                     }
                 });
                 networkStatusTask.execute();
             } else {
-                masterSyncItemModels.get(position).setPBarVisibility(false);
+                if(position < masterSyncItemModels.size()) {
+                    masterSyncItemModels.get(position).setPBarVisibility(false);
+                }
                 commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
                 masterSyncAdapter.notifyDataSetChanged();
             }
@@ -1214,6 +1218,30 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.DATE_SYNC)){
                                             isDateSynced = true;
                                             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC_DUP, jsonArray.toString(), 2));
+                                        }
+                                        else if(!rsf.isEmpty() && masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.JOINT_WORK + rsf)) {
+                                            JSONObject jointWorkJsonObject = new JSONObject();
+                                            jointWorkJsonObject.put("Code", SharedPref.getSfCode(MasterSyncActivity.this));
+                                            jointWorkJsonObject.put("Name", "Independent");
+                                            jointWorkJsonObject.put("SfName", "Independent");
+                                            jointWorkJsonObject.put("Reporting_To_SF", "");
+                                            jointWorkJsonObject.put("OwnDiv", "");
+                                            jointWorkJsonObject.put("Division_Code", SharedPref.getDivisionCode(MasterSyncActivity.this));
+                                            jointWorkJsonObject.put("SF_Status", "");
+                                            jointWorkJsonObject.put("ActFlg", "");
+                                            jointWorkJsonObject.put("UsrDfd_UserName", "");
+                                            jointWorkJsonObject.put("DS_name", "");
+                                            jointWorkJsonObject.put("sf_type", SharedPref.getSfType(MasterSyncActivity.this));
+                                            jointWorkJsonObject.put("Desig", SharedPref.getDesig(MasterSyncActivity.this));
+                                            jointWorkJsonObject.put("steps", "");
+
+                                            JSONArray jointWorkJsonArray = new JSONArray();
+                                            jointWorkJsonArray.put(jointWorkJsonObject);
+                                            for (int i = 0; i<jsonArray.length(); i++) {
+                                                jointWorkJsonObject = jsonArray.optJSONObject(i);
+                                                jointWorkJsonArray.put(jointWorkJsonObject);
+                                            }
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.JOINT_WORK + rsf, jointWorkJsonArray.toString(), 2));
                                         }
                                         if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
                                             if (jsonArray.length() > 0) {

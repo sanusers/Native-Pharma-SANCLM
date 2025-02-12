@@ -98,6 +98,7 @@ public class OutboxFragment extends Fragment {
     private ActivityOfflineDataDao activityOfflineDataDao;
     private ActivityUploadDataDao activityUploadDataDao;
     private static CallsUtil callsUtil;
+    private int callSyncCount = 0;
 
     public static void NetworkConnectCallHomeDashBoard(String log) {
 
@@ -142,6 +143,7 @@ public class OutboxFragment extends Fragment {
         activityOfflineDataDao = db.activityOfflineDataDao();
         activityUploadDataDao = db.activityUploadDataDao();
         callsUtil = new CallsUtil(requireContext());
+        callSyncCount = 0;
         SetupOutBoxAdapter(requireActivity(), requireContext());
 
         new Handler().postDelayed(this::refreshPendingFunction, 200);
@@ -290,6 +292,11 @@ public class OutboxFragment extends Fragment {
     private void sendingOfflineCalls() {
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
 
+        if(callSyncCount > 0) {
+            CallsFragment.syncCalls();
+            callSyncCount = 0;
+        }
+
         //CheckInOutData
         if (!listDates.isEmpty()) {
             isCallAvailable = false;
@@ -367,6 +374,7 @@ public class OutboxFragment extends Fragment {
                     if (outBoxCallList.getSyncCount() <= 4) {
                         isCallAvailable = true;
                         Log.v("SendOutboxCall", "---" + outBoxCallList.getCusName());
+                        callSyncCount++;
                         CallSendAPI(outBoxCallList, ParentPos, ChildPos, m, outBoxCallList.getDates(), outBoxCallList.getCusName(), outBoxCallList.getCusCode(), outBoxCallList.getJsonData(), outBoxCallList.getCusType(), outBoxCallList.getSyncCount(), modelClass);
                         break;
                     }
@@ -584,7 +592,11 @@ public class OutboxFragment extends Fragment {
                             outBoxCallList.setStatus(Constants.EXCEPTION_ERROR);
                             outBoxCallList.setSyncCount(5);
                             UpdateEcData(date, cusCode, cusName, Constants.EXCEPTION_ERROR, 0);
-                            CallOfflineCalls(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getOutBoxCallLists(), modelClass);
+                            if(listDates.size() > parentPos && listDates.get(parentPos).getChildItems().size() > childPos) {
+                                CallOfflineCalls(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getOutBoxCallLists(), modelClass);
+                            }else {
+                                CallOfflineCalls(parentPos, childPos, new ArrayList<>(), modelClass);
+                            }
                             Log.v("SendOutboxCall", "---" + e);
                         }
                     }

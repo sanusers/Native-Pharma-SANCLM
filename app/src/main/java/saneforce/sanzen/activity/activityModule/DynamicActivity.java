@@ -3206,7 +3206,7 @@ public class DynamicActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        CommonAlertBox.CheckLocationStatus(DynamicActivity.this);
+        CommonAlertBox.CheckLocationStatus(DynamicActivity.this, gpsTrack);
     }
 
     @Override

@@ -3,19 +3,16 @@ package saneforce.sanzen.activity.call.dcrCallSelection;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.view.GravityCompat;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -257,6 +254,6 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        CommonAlertBox.CheckLocationStatus(DcrCallTabLayoutActivity.this);
+        CommonAlertBox.CheckLocationStatus(DcrCallTabLayoutActivity.this, gpsTrack);
     }
 }

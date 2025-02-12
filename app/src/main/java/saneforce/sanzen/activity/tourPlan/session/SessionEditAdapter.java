@@ -1203,6 +1203,31 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
                                         if(success) {
                                             masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 2));
+
+                                            if(masterSyncItemModel.getLocalTableKeyName().equalsIgnoreCase(Constants.JOINT_WORK + hqCode)) {
+                                                JSONObject jointWorkJsonObject = new JSONObject();
+                                                jointWorkJsonObject.put("Code", SharedPref.getSfCode(context));
+                                                jointWorkJsonObject.put("Name", "Independent");
+                                                jointWorkJsonObject.put("SfName", "Independent");
+                                                jointWorkJsonObject.put("Reporting_To_SF", "");
+                                                jointWorkJsonObject.put("OwnDiv", "");
+                                                jointWorkJsonObject.put("Division_Code", SharedPref.getDivisionCode(context));
+                                                jointWorkJsonObject.put("SF_Status", "");
+                                                jointWorkJsonObject.put("ActFlg", "");
+                                                jointWorkJsonObject.put("UsrDfd_UserName", "");
+                                                jointWorkJsonObject.put("DS_name", "");
+                                                jointWorkJsonObject.put("sf_type", SharedPref.getSfType(context));
+                                                jointWorkJsonObject.put("Desig", SharedPref.getDesig(context));
+                                                jointWorkJsonObject.put("steps", "");
+
+                                                JSONArray jointWorkJsonArray = new JSONArray();
+                                                jointWorkJsonArray.put(jointWorkJsonObject);
+                                                for (int i = 0; i<jsonArray.length(); i++) {
+                                                    jointWorkJsonObject = jsonArray.optJSONObject(i);
+                                                    jointWorkJsonArray.put(jointWorkJsonObject);
+                                                }
+                                                masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jointWorkJsonArray.toString(), 2));
+                                            }
                                         }
                                     }else {
                                         masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);

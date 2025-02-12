@@ -523,7 +523,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 
                     if(!BrandName.equalsIgnoreCase("Welcome")) {
                         String eTime;
-                        if(arrayStore.contains(new StoreImageTypeUrl(SlideName))) {
+                        if(arrayStore != null && !arrayStore.isEmpty() && arrayStore.contains(new StoreImageTypeUrl(SlideName))) {
                             eTime = findingEndTime(i);
                             int index = checkForProduct(SlideName);
                             StoreImageTypeUrl mmm = arrayStore.get(index);
