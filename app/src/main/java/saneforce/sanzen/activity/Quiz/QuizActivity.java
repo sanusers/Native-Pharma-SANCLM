@@ -91,7 +91,7 @@ public class QuizActivity extends AppCompatActivity {
     private QuizOfflineDataDao quizOfflineDataDao;
     private QuizAssertsDao quizAssertsDao;
     private int QuestionNumber = 0, noOfCorrectAnswers = 0;
-    private boolean isShuffleAllowed = false, isPaused = false, isStarted = false;
+    private boolean isShuffleAllowed = false, isPaused = false, isStarted = false, isQuizAvailable = false;
     private String noOfAttemptsAllowed = "0", timeLimit = "00:00:00", startTime = "", surveyID = "", quizCap = "", fileName = "", fileType = "";
     private CountDownTimer countDownTimer;
     QuizQuestionAdapter quizQuestionAdapter;
@@ -135,7 +135,9 @@ public class QuizActivity extends AppCompatActivity {
 
         binding.backArrow.setOnClickListener(v -> {
             if(SharedPref.getQuizNeedMandt(QuizActivity.this).equalsIgnoreCase("0")
-                    && !SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+                    && isQuizAvailable
+                    && (!SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
+                    || SharedPref.getQuizAttempts(QuizActivity.this)>0) ) {
                 noBackAlert();
             }else {
                 if(isStarted) {
@@ -151,7 +153,9 @@ public class QuizActivity extends AppCompatActivity {
 
         binding.btnskip.setOnClickListener(v -> {
             if(SharedPref.getQuizNeedMandt(QuizActivity.this).equalsIgnoreCase("0")
-                    && !SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+                    && isQuizAvailable
+                    && (!SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
+                    || SharedPref.getQuizAttempts(QuizActivity.this)>0) ) {
                 noBackAlert();
             }else {
                 if(isStarted) {
@@ -391,17 +395,18 @@ public class QuizActivity extends AppCompatActivity {
         Button btn_clear = dialogBackConfirmation.findViewById(R.id.btn_clear);
         Button btn_save = dialogBackConfirmation.findViewById(R.id.btn_save);
         heading.setText(R.string.alert);
-        btn_save.setText(getString(R.string.yes));
-        btn_clear.setText(getString(R.string.no));
-        content.setText(String.format("%s want to go back.\n%s will not be resumed", getString(R.string.are_you_sure), quizCap));
+        btn_clear.setVisibility(View.GONE);
+        btn_save.setText(getString(R.string.continuee));
+//        btn_clear.setText(getString(R.string.no));
+        content.setText(String.format("%s started, Cannot go back", quizCap));
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
         btn_save.setOnClickListener(view -> {
-            pauseTimer();
-            isStarted = false;
+//            pauseTimer();
+//            isStarted = false;
             dialogBackConfirmation.dismiss();
-            getOnBackPressedDispatcher().onBackPressed();
-            finish();
+//            getOnBackPressedDispatcher().onBackPressed();
+//            finish();
         });
         btn_clear.setOnClickListener(view -> {
             dialogBackConfirmation.dismiss();
@@ -474,13 +479,8 @@ public class QuizActivity extends AppCompatActivity {
         if(UtilityClass.isNetworkAvailable(QuizActivity.this)) {
             pauseTimer();
             createJson();
-            int attempts = SharedPref.getQuizAttempts(QuizActivity.this);
-            if(attempts>0) {
-                attempts--;
-            }
-            SharedPref.setQuizAttempts(QuizActivity.this, attempts);
             callSaveAPI();
-            setScoreView();
+//            setScoreView();
         }else {
             commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network));
         }
@@ -626,6 +626,7 @@ public class QuizActivity extends AppCompatActivity {
                                         JSONArray jsonArray = new JSONArray();
                                         jsonArray.put(object);
                                         masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.QUIZ, jsonArray.toString(), 2));
+                                        SharedPref.setQuizAvailableDate(QuizActivity.this, HomeDashBoard.selectedDate.toString());
                                     }else {
                                         masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.QUIZ, "[]", 2));
                                     }
@@ -668,7 +669,15 @@ public class QuizActivity extends AppCompatActivity {
                                 Log.e("test", "response : " + " : " + response.body());
                             }
                             commonUtilsMethods.showToastMessage(QuizActivity.this, quizCap + " Submitted Successfully");
-                            SharedPref.setLastQuizSubmittedDate(QuizActivity.this, HomeDashBoard.selectedDate.toString());
+                            int attempts = SharedPref.getQuizAttempts(QuizActivity.this);
+//                            if(attempts == 1) {
+                                SharedPref.setLastQuizSubmittedDate(QuizActivity.this, HomeDashBoard.selectedDate.toString());
+//                            }
+                            if(attempts>0) {
+                                attempts--;
+                            }
+                            SharedPref.setQuizAttempts(QuizActivity.this, attempts);
+                            setScoreView();
                         }
                     }
 
@@ -691,6 +700,7 @@ public class QuizActivity extends AppCompatActivity {
         try {
             JSONArray quizdata = masterDataDao.getMasterDataTableOrNew(Constants.QUIZ).getMasterSyncDataJsonArray();
             if(quizdata.length()>0) {
+                isQuizAvailable = true;
                 binding.rlStartQuiz.setVisibility(View.VISIBLE);
                 binding.constraintNoData.setVisibility(View.GONE);
                 for (int i = 0; i<quizdata.length(); i++) {
@@ -706,6 +716,7 @@ public class QuizActivity extends AppCompatActivity {
                 }
                 setupQuizWelcome();
             }else {
+                isQuizAvailable = false;
                 quizTitleJsonArray = null;
                 processUserJsonArray = null;
                 QuesttionjsonArray = null;
@@ -749,6 +760,7 @@ public class QuizActivity extends AppCompatActivity {
         int numberOfAttempts = 0;
         try {
             numberOfAttempts = Integer.parseInt(noOfAttemptsAllowed);
+            binding.noOfAttemptsAllowed.setText(String.valueOf(numberOfAttempts));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -758,9 +770,9 @@ public class QuizActivity extends AppCompatActivity {
             noOfAttemptsAllowed = String.valueOf(SharedPref.getQuizAttempts(QuizActivity.this));
         }
         binding.noOfQuestions.setText(String.valueOf(noOfQuestions));
-        binding.noOfAttemptsAllowed.setText(noOfAttemptsAllowed);
+        binding.noOfAttemptsLeft.setText(noOfAttemptsAllowed);
 
-        binding.totalTime.setText(timeLimit);
+        binding.totalTime.setText(String.format("%s:00", timeLimit));
         if(fileName.isEmpty()) {
             binding.llDownloadAsserts.setVisibility(View.GONE);
         }else {

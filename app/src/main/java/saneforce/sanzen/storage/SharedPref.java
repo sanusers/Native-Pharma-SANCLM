@@ -438,6 +438,7 @@ public class SharedPref {
     public static final String QUIZ_DATE = "Quiz Date";
     public static final String QUIZ_ATTEMPTS = "Quiz Attempts";
     public static final String QUIZ_ASSERT_DOWNLOADING_STATUS = "Quiz_assert_downloding_status";
+    public static final String QUIZ_AVAILABLE_DATE = "Quiz Available Date";
 
     public static SharedPreferences.Editor editor;
 
@@ -2644,6 +2645,16 @@ public class SharedPref {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putInt(QUIZ_ATTEMPTS, attempts).apply();
+    }
+
+    public static String getQuizAvailableDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(QUIZ_AVAILABLE_DATE, "");
+    }
+
+    public static void setQuizAvailableDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(QUIZ_AVAILABLE_DATE, date).apply();
     }
 
 }

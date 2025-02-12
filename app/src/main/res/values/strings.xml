@@ -547,4 +547,5 @@
     <string name="no_quiz_found">No Quiz Found</string>
     <string name="download_asserts">Download Asserts / View</string>
     <string name="already_saved_will_be_updated">Are you sure, Already saved will be updated!</string>
+    <string name="no_of_attempts_left">No of Attempts Left :</string>
 </resources>

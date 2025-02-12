@@ -163,7 +163,7 @@ public class ActivityFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        CommonAlertBox.CheckLocationStatus(requireActivity());
+        CommonAlertBox.CheckLocationStatus(requireActivity(), gpsTrack);
     }
 
     @Override
