@@ -21,8 +21,17 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +52,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.adapters.outbox.OutBoxHeaderAdapter;
@@ -435,7 +445,7 @@ public class OutboxFragment extends Fragment {
     }
 
 
-    private void CallSendAPIImage(int parentPos, EcModelClass ecModelClass, int childPos, int CurrentPos, String jsonValues, String filePath, String id, GroupModelClass modelClass) {
+    /*private void CallSendAPIImage(int parentPos, EcModelClass ecModelClass, int childPos, int CurrentPos, String jsonValues, String filePath, String id, GroupModelClass modelClass) {
         ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
         MultipartBody.Part img = convertImg("EventImg", filePath);
         HashMap<String, RequestBody> values = field(jsonValues);
@@ -472,6 +482,91 @@ public class OutboxFragment extends Fragment {
                 CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
             }
         });
+    }*/
+
+    private void CallSendAPIImage(int parentPos, EcModelClass ecModelClass, int childPos, int CurrentPos,
+                                  String jsonValues, String filePath, String id, GroupModelClass modelClass) {
+        try {
+
+            CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                    context,
+                    "ap-south-1:c4c0fc81-118d-43e3-84cf-051f1bd831b9",
+                    Regions.AP_SOUTH_1);
+
+            AmazonS3Client s3Client = new AmazonS3Client(credentialsProvider);
+            s3Client.setRegion(Region.getRegion(Regions.AP_SOUTH_1));
+
+
+            File fileToUpload = new File(filePath);
+            Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
+            if (!fileToUpload.exists()) {
+                Log.d("fileToUpload", "not exists: " + filePath);
+            } else {
+
+                String bucketName = "san.one";
+                String s3Key = "uploads/" + fileToUpload.getName();
+                Log.d("TAG", "CallSendAPIImage: " + s3Key);
+
+                String UploadUrl = "https://" + "s3." + "ap-south-1." + "amazonaws.com/" + bucketName + "/" + s3Key;
+                Log.d("S3UploadUrl", "CallSendAPIImage: " + UploadUrl);
+
+                TransferNetworkLossHandler.getInstance(context);
+
+                TransferUtility transferUtility = TransferUtility.builder()
+                        .context(context)
+                        .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                        .s3Client(s3Client)
+                        .defaultBucket(bucketName)
+                        .build();
+
+                TransferObserver uploadObserver = transferUtility.upload(
+                        bucketName,
+                        s3Key,
+                        fileToUpload);
+                uploadObserver.setTransferListener(new TransferListener() {
+                    @Override
+                    public void onStateChanged(int id, TransferState state) {
+                        if (state == TransferState.COMPLETED) {
+                            Log.d("TAG", "ecModelClass: " + filePath);
+                            InsertImage(ecModelClass.getFilePath(), context);
+
+                            Log.d("S3 Upload", "Upload Successful: " + s3Key);
+
+
+                        } else if (state == TransferState.FAILED) {
+
+                            Log.e("S3 Upload", "Upload Failed");
+                            InsertImage(ecModelClass.getFilePath(), context);
+
+                            ecModelClass.setSynced(1);
+                            ecModelClass.setSync_status(Constants.CALL_FAILED);
+                            DeleteCacheFile(filePath, "", CurrentPos, parentPos, childPos, modelClass);
+                            callOfflineECDataDao.updateECStatus("", Constants.CALL_FAILED, 1);
+                            CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                        }
+
+                    }
+
+                    @Override
+                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                        double progress = (bytesCurrent * 100.0) / bytesTotal;
+                        Log.d("S3 Upload", "Upload Progress: " + progress + "%");
+                    }
+
+                    @Override
+                    public void onError(int id, Exception ex) {
+                        Log.e("S3 Upload", "Error: " + ex.getMessage());
+                        ecModelClass.setSynced(1);
+                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        callOfflineECDataDao.updateECStatus("", Constants.EXCEPTION_ERROR, 1);
+                    }
+                });
+
+            }
+        } catch(Exception e){
+            Log.v("img_tag", e.toString());
+        }
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -856,6 +951,13 @@ public class OutboxFragment extends Fragment {
         } catch (Exception ignored) {
         }
         return yy;
+    }
+
+    private void InsertImage(final String ImageUrl, Context context) {
+        File imageFile = new File(ImageUrl);
+        Log.d("AWS_s3", "fileToUpload" + "--" + imageFile);
+        String fileName = new File(ImageUrl).getName();
+        new AWSBuckets(context,fileName,imageFile, "");
     }
 /*
     private void CallSendAPIImage(ArrayList<EcModelClass> ecModelClasses, int position, String id, String jsonValues, String filePath) {

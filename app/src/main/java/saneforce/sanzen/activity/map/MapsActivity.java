@@ -51,7 +51,16 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3Client;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -88,6 +97,8 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanzen.AWS.AWSBuckets;
+import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.camera.CameraActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
@@ -198,6 +209,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TransferNetworkLossHandler.getInstance(getApplicationContext());
         mapsBinding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(mapsBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
@@ -720,7 +732,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 btn_confirm.setEnabled(false);
                 btn_confirm.setBackground(ContextCompat.getDrawable(context, R.drawable.tagging_disable_button));
                 if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                    CallImageAPI(jsonImage.toString(), jsonObject.toString(),progressBar);
+                    tag_Image();
+                    CallImageAPI(jsonImage.toString(), jsonObject.toString(), progressBar);
+
                 } else {
                     CallAPIGeo(jsonObject.toString(),progressBar);
                 }
@@ -974,51 +988,128 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void CallImageAPI(String jsonImage, String jsonTag,ProgressBar progressBar) {
+//    private void CallImageAPI(String jsonImage, String jsonTag,ProgressBar progressBar) {
+//        try {
+//            ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
+//            Call<JsonObject> callImage;
+//            HashMap<String, RequestBody> values = field(jsonImage);
+//            MultipartBody.Part img = convertImg("UploadImg", destinationFilePath);
+//            callImage = apiInterface.SaveImg(values, img);
+//
+//            callImage.enqueue(new Callback<JsonObject>() {
+//                @Override
+//                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+//                    assert response.body() != null;
+//                    Log.v("img_tag", response + "---" + response.body() + "---" + response.message() + "---" + call);
+//                    if (response.isSuccessful()) {
+//                        try {
+//                            JSONObject jsonImgRes;
+//                            jsonImgRes = new JSONObject(response.body().toString());
+//                            Log.v("img_tag", jsonImgRes.getString("success"));
+//                            if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
+//                                progressBar.setVisibility(View.VISIBLE);
+//                                CallAPIGeo(jsonTag,progressBar);
+//                            } else {
+//                                dialogTagCust.dismiss();
+//                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed));
+//                            }
+//                        } catch (Exception e) {
+//                            Log.v("img_tag", e.toString());
+//                            dialogTagCust.dismiss();
+//                        }
+//                    } else {
+//                        dialogTagCust.dismiss();
+//                        commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+//                    commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+//                    dialogTagCust.dismiss();
+//                }
+//            });
+//        } catch (Exception e) {
+//            dialogTagCust.dismiss();
+//        }
+//    }
+
+    private void CallImageAPI(String jsonImage, String jsonTag, ProgressBar progressBar) {
         try {
-            ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
-            Call<JsonObject> callImage;
-            HashMap<String, RequestBody> values = field(jsonImage);
-            MultipartBody.Part img = convertImg("UploadImg", destinationFilePath);
-            callImage = apiInterface.SaveImg(values, img);
+            progressBar.setVisibility(View.VISIBLE);
 
-            callImage.enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                    assert response.body() != null;
-                    Log.v("img_tag", response + "---" + response.body() + "---" + response.message() + "---" + call);
-                    if (response.isSuccessful()) {
-                        try {
-                            JSONObject jsonImgRes;
-                            jsonImgRes = new JSONObject(response.body().toString());
-                            Log.v("img_tag", jsonImgRes.getString("success"));
-                            if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
-                                progressBar.setVisibility(View.VISIBLE);
-                                CallAPIGeo(jsonTag,progressBar);
-                            } else {
-                                dialogTagCust.dismiss();
-                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed));
-                            }
-                        } catch (Exception e) {
-                            Log.v("img_tag", e.toString());
-                            dialogTagCust.dismiss();
-                        }
-                    } else {
-                        dialogTagCust.dismiss();
-                        commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
-                    }
-                }
+            if(jsonImage != null) {
+                CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                        getApplicationContext(),
+                        "ap-south-1:c4c0fc81-118d-43e3-84cf-051f1bd831b9", Regions.AP_SOUTH_1);
 
-                @Override
-                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                    commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                AmazonS3Client S3Client = new AmazonS3Client(credentialsProvider);
+                File fileToUpload = new File(destinationFilePath);
+                Log.d("fileToUpload", "CallImageAPI: "+ fileToUpload.getAbsolutePath());
+                if (!fileToUpload.exists()) {
+                    Log.e("S3Upload", "File does not exist: " + destinationFilePath);
                     dialogTagCust.dismiss();
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, "File does not exist.");
+                    return;
                 }
-            });
+                String bucketName = "san.one";
+                String fileKey = "uploads/" + fileToUpload.getName();
+                String upload_url = "https://"+"s3."+"ap-south-1."+"amazonaws.com/"+bucketName+"/"+fileKey ;
+                Log.i("s3url", "Uploading to S3: " + upload_url);
+
+                TransferUtility transferUtility = TransferUtility.builder()
+                        .context(getApplicationContext())
+                        .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                        .s3Client(S3Client)
+                        .build();
+
+                TransferObserver uploadObserver = transferUtility.upload(
+                        bucketName,
+                        fileKey,
+                        fileToUpload);
+                uploadObserver.setTransferListener(new TransferListener() {
+                    @Override
+                    public void onStateChanged(int id, TransferState state) {
+                        if (state == TransferState.COMPLETED) {
+                            Log.v("S3Upload", "Upload successful"+img_url);
+                            CallAPIGeo(jsonTag, progressBar);
+                        } else if (state == TransferState.FAILED) {
+                            Log.e("S3Upload", "Upload failed");
+                            dialogTagCust.dismiss();
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed));
+                        }
+                    }
+                    @Override
+                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                        int percentDone = (int) ((bytesCurrent / (float) bytesTotal) * 100);
+                        Log.d("S3Upload", "Progress: " + percentDone + "%");
+                    }
+
+                    @Override
+                    public void onError(int id, Exception ex) {
+                        Log.e("S3Upload", "Error: " + ex.getMessage());
+                        dialogTagCust.dismiss();
+                        commonUtilsMethods.showToastMessage(MapsActivity.this, "Upload failed. Please try again.");
+                    }
+                });
+            }
         } catch (Exception e) {
+            Log.v("img_tag", e.toString());
             dialogTagCust.dismiss();
         }
     }
+
+    public void tag_Image() {
+        File imageFile = new File(destinationFilePath);
+        if(imageFile != null){
+            Log.d("tag_Image", "imageFile: "+"the file exists"+imageFile);
+        }else {
+            Log.d("tag_Image", "imageFile: "+"the file do not exist");
+        }
+        new AWSBuckets(MapsActivity.this, imageName, imageFile, SharedPref.getDivisionName(MapsActivity.this));
+        Log.d("tag_Image", "image" + imageFile);
+    }
+
 
     @Override
     protected void onResume() {
@@ -1278,7 +1369,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.setInfoWindowAdapter(new MyInfoWindowAdapter(mm, MapsActivity.this));
             }
 
-            if (GeoTagImageNeed.equalsIgnoreCase("0")) {
+          /*  if (GeoTagImageNeed.equalsIgnoreCase("0")) {
                 mMap.setOnInfoWindowClickListener(marker -> {
                     Dialog dialog = new Dialog(MapsActivity.this);
                     dialog.setContentView(R.layout.map_img_layout);
@@ -1293,6 +1384,43 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Glide.with(getApplicationContext()).load(img_url + "photos/" + marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1)).centerCrop().into(imageView);
                             dialog.show();
                         }
+                    }
+                });
+            }*/
+            if (GeoTagImageNeed.equalsIgnoreCase("0")) {
+                mMap.setOnInfoWindowClickListener(marker -> {
+                    Dialog dialog = new Dialog(MapsActivity.this);
+                    dialog.setContentView(R.layout.map_img_layout);
+                    ImageView imageView = dialog.findViewById(R.id.img_dr_content);
+
+                    String imageName = marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1);
+                    Log.d("ImageName", "image : " + imageName);
+                    String fileName = imageName;
+
+                    if (Objects.requireNonNull(fileName).isEmpty()) {
+                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_no_img_found));
+                    } else {
+                        String bucketName = "san.one";
+                        String region = "ap-south-1";
+                        String s3Key = "uploads/" + fileName;
+                        String imageUrl = "https://s3." + region + ".amazonaws.com/" + bucketName + "/" + s3Key;
+                        Log.d("Image URL", "Fetching image from: " + imageUrl);
+                        File MapView = new File(MapsActivity.this.getCacheDir(), fileName);
+                        Log.d("TAG", "AddTaggedDetails: "+MapView.getAbsolutePath());
+                        String MapFileName = SharedPref.getDivisionName(MapsActivity.this);
+                        new AWSBuckets(MapsActivity.this, fileName, MapView, 0, MapFileName, new S3DownloadFiles() {
+                            @Override
+                            public void fileDataAdd(int pos, Bitmap bitmap) {
+                                if(bitmap != null) {
+                                    Log.d("bitmap image", "image: "+ "bitmap map is not null");
+                                    imageView.setImageBitmap(bitmap);
+                                    imageView.setVisibility(View.VISIBLE);
+                                    dialog.show();
+                                }else {
+                                    Log.d("bitmap image", "image: "+"bitmap image is null");
+                                }
+                            }
+                        });
                     }
                 });
             }

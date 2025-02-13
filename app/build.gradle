@@ -129,7 +129,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
     //Pdf viewer
-    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+//    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+    implementation 'com.github.barteksc:AndroidPdfViewer:master-SNAPSHOT'
 
     //imgCompressor
     implementation 'id.zelory:compressor:2.1.1'
@@ -154,6 +155,12 @@ dependencies {
     //pdf-viewer
 //    implementation fileTree(dir: 'libs', include: ['*.jar'])
 //    implementation project(":libs:jetified-android-pdf-viewer-2.8.2")
-    
+
+    //AWS S3
+    def aws_version = "2.51.0"
+    implementation "com.amazonaws:aws-android-sdk-s3:$aws_version"
+    implementation("com.amazonaws:aws-android-sdk-mobile-client:$aws_version") { transitive = true }
 }
+    
+
 
