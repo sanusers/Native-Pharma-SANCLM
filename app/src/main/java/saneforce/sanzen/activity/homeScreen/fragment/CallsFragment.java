@@ -79,7 +79,6 @@ public class CallsFragment extends Fragment {
     }
 
     public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, boolean isProgressNeed) {
-        SharedPref.setLastCallSyncDate(context, HomeDashBoard.selectedDate.toString());
         if(HomeDashBoard.selectedDate != null) {
             if(UtilityClass.isNetworkAvailable(context)) {
                 CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
@@ -184,6 +183,7 @@ public class CallsFragment extends Fragment {
                                             binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
                                             adapter.notifyDataSetChanged();
                                             if(isProgressNeed) progressDialog.dismiss();
+                                            SharedPref.setLastCallSyncDate(context, HomeDashBoard.selectedDate.toString());
                                         } catch (Exception e) {
                                             if(isProgressNeed) progressDialog.dismiss();
                                             Log.v("TodayCalls", "--error--" + e);
@@ -289,7 +289,9 @@ public class CallsFragment extends Fragment {
 
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         getFromLocal(requireContext(), apiInterface);
-        if(syncCalls || (HomeDashBoard.selectedDate != null && !(SharedPref.getLastCallSyncDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())))) {
+        if(
+//                syncCalls ||
+                        (HomeDashBoard.selectedDate != null && !(SharedPref.getLastCallSyncDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())))) {
             syncCalls = false;
             CallTodayCallsAPI(requireContext(), apiInterface, false);
         }
