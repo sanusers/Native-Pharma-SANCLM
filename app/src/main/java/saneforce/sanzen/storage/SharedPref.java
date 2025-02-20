@@ -436,9 +436,11 @@ public class SharedPref {
     public static final String ADD_CHM = "addChm";
     public static final String ADD_UNLST = "addDr";
     public static final String QUIZ_DATE = "Quiz Date";
+    public static final String QUIZ_SYNC_DATE = "Quiz Sync Date";
     public static final String QUIZ_ATTEMPTS = "Quiz Attempts";
     public static final String QUIZ_ASSERT_DOWNLOADING_STATUS = "Quiz_assert_downloding_status";
     public static final String QUIZ_AVAILABLE_DATE = "Quiz Available Date";
+    public static final String QUIZ_DATA = "Quiz Data";
 
     public static SharedPreferences.Editor editor;
 
@@ -2655,6 +2657,26 @@ public class SharedPref {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(QUIZ_AVAILABLE_DATE, date).apply();
+    }
+
+    public static String getLastQuizSyncDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(QUIZ_SYNC_DATE, "");
+    }
+
+    public static void setLastQuizSyncDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(QUIZ_SYNC_DATE, date).apply();
+    }
+
+    public static String getQuizData(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(QUIZ_DATA, "");
+    }
+
+    public static void setQuizData(Context context, String data) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(QUIZ_DATA, data).apply();
     }
 
 }

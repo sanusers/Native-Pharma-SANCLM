@@ -1118,22 +1118,27 @@ public class MasterSyncActivity extends AppCompatActivity {
                     jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                     break;
                 }
+                case "getquiz":
                 case "gettodaydcr": {
-                    WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
-                        @Override
-                        public void datesFound() {
-                            try {
-                                jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, SharedPref.getSelectedDateCal(MasterSyncActivity.this)));
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                    if(HomeDashBoard.selectedDate != null) {
+                        jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
+                    } else {
+                        WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
+                            @Override
+                            public void datesFound() {
+                                try {
+                                    jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, SharedPref.getSelectedDateCal(MasterSyncActivity.this)));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void noDatesFound() {
-                            Log.e("Master Sync", "Get MyDayPlan Call and Date Sync failed!" );
-                        }
-                    });
+                            @Override
+                            public void noDatesFound() {
+                                Log.e("Master Sync", "Get MyDayPlan Call and Date Sync failed!");
+                            }
+                        });
+                    }
                 }
             }
 

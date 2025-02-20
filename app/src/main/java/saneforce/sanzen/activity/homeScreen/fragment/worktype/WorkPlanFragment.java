@@ -285,17 +285,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()
-                && SharedPref.getQuizNeed(requireContext()).equalsIgnoreCase("0")
-                && SharedPref.getQuizNeedMandt(requireContext()).equalsIgnoreCase("0")
-                && UtilityClass.isNetworkAvailable(requireContext())
-                && HomeDashBoard.selectedDate != null
-                && (!SharedPref.getLastQuizSubmittedDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
-                    || SharedPref.getQuizAttempts(requireContext())>0)
-                && SharedPref.getQuizAvailableDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
-            commonUtilsMethods.showToastMessage(requireContext(), "Complete Quiz");
-            requireActivity().startActivity(new Intent(requireActivity(), QuizActivity.class));
-        }
     }
 
     public void ShowWorkTypeAlert(TextView mTxtWorktype, RelativeLayout rlculster, RelativeLayout rlHQ) {

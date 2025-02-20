@@ -157,9 +157,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     CommonUtilsMethods commonUtilsMethods;
     LocationManager locationManager;
     ApiInterface apiInterface;
-   public static boolean isDcrFrom=false;
-
-//    CustomSetupResponse customSetupResponse;
+    public static boolean isDcrFrom=false;
     IntentFilter intentFilter;
     NetworkChangeReceiver receiver;
     Callstatusadapter callstatusadapter;
@@ -1415,6 +1413,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         SharedPref.setLastCallDate(context, "");
                     }
                     setupLeftViewPager(context, fragmentManager);
+                    if(SharedPref.getQuizNeed(context).equalsIgnoreCase("0")
+                            && SharedPref.getQuizNeedMandt(context).equalsIgnoreCase("0")) {
+                        activity.setUpQuiz();
+                    }
                 }else {
                     isDateSelectionClicked = true;
                 }
@@ -1433,6 +1435,97 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 Log.e("TAG 4", "checkAndSetEntryDate: " + selectedDate);
             }
         });
+    }
+
+    private void setUpQuiz() {
+        if(selectedDate != null && SharedPref.getLastQuizSyncDate(activity).equalsIgnoreCase(selectedDate.toString())) {
+            Log.d("TAG", "setUpQuiz: new sync");
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.QUIZ).getMasterSyncDataJsonArray();
+            if(!jsonArray.toString().equalsIgnoreCase("[]")) {
+                commonUtilsMethods.showToastMessage(activity, "Complete " + SharedPref.getQuizHeading(HomeDashBoard.this));
+                startActivity(new Intent(activity, QuizActivity.class));
+            }
+        } else if(selectedDate != null && !SharedPref.getLastQuizSyncDate(activity).equalsIgnoreCase(selectedDate.toString())) {
+            Log.d("TAG", "setUpQuiz: new sync");
+            CallQuizSyncAPI();
+        }
+    }
+
+    private void CallQuizSyncAPI() {
+        if(activity != null && selectedDate != null) {
+            if(UtilityClass.isNetworkAvailable(activity)) {
+                binding.flSyncQuizProgress.setVisibility(View.VISIBLE);
+                try {
+                    apiInterface = RetrofitClient.getRetrofit(activity, SharedPref.getCallApiUrl(getApplicationContext()));
+                    JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                    jsonObject.put("tableName", "getquiz");
+                    jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                    jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                    jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_22, HomeDashBoard.selectedDate.toString()));
+                    Log.i("QUIZ", "quiz: json -- " + jsonObject);
+                    Map<String, String> qry = new HashMap<>();
+                    qry.put("axn", "table/additionaldcrmasterdata");
+                    Call<JsonElement> quiz = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), qry, jsonObject.toString());
+                    if(quiz != null) {
+                        quiz.enqueue(new Callback<JsonElement>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonElement> quiz, @NonNull Response<JsonElement> response) {
+                                binding.flSyncQuizProgress.setVisibility(View.GONE);
+                                SharedPref.setLastQuizSyncDate(activity, HomeDashBoard.selectedDate.toString());
+                                if(response.isSuccessful()) {
+                                    Log.e("quiz sync", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
+                                    try {
+                                        String responseData = response.body().toString();
+                                        if(!responseData.equalsIgnoreCase("[]") && !responseData.isEmpty()) {
+                                            JSONObject object = new JSONObject(responseData);
+                                            JSONArray jsonArray = new JSONArray();
+                                            jsonArray.put(object);
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.QUIZ, jsonArray.toString(), 2));
+                                            SharedPref.setQuizAvailableDate(activity, HomeDashBoard.selectedDate.toString());
+                                            commonUtilsMethods.showToastMessage(activity, "Complete " + SharedPref.getQuizHeading(HomeDashBoard.this));
+                                            Intent intent = new Intent(HomeDashBoard.this, QuizActivity.class);
+                                            intent.putExtra(QuizActivity.SYNC_NEEDED, false);
+                                            startActivity(intent);
+                                        }else {
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.QUIZ, "[]", 2));
+                                        }
+                                    } catch (Exception e) {
+                                        binding.flSyncQuizProgress.setVisibility(View.GONE);
+                                        Intent intent = new Intent(HomeDashBoard.this, QuizActivity.class);
+                                        intent.putExtra(QuizActivity.SYNC_NEEDED, true);
+                                        startActivity(intent);
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonElement> quiz, @NonNull Throwable t) {
+                                t.printStackTrace();
+                                binding.flSyncQuizProgress.setVisibility(View.GONE);
+                                commonUtilsMethods.showToastMessage(activity, getString(R.string.poor_connection));
+                                Intent intent = new Intent(HomeDashBoard.this, QuizActivity.class);
+                                intent.putExtra(QuizActivity.SYNC_NEEDED, true);
+                                startActivity(intent);
+//                                SharedPref.setLastQuizSyncDate(activity, HomeDashBoard.selectedDate.toString());
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    binding.flSyncQuizProgress.setVisibility(View.GONE);
+                    Intent intent = new Intent(HomeDashBoard.this, QuizActivity.class);
+                    intent.putExtra(QuizActivity.SYNC_NEEDED, true);
+                    startActivity(intent);
+//                    SharedPref.setLastQuizSyncDate(activity, HomeDashBoard.selectedDate.toString());
+                    e.printStackTrace();
+                }
+            }else {
+                commonUtilsMethods.showToastMessage(activity, getString(R.string.no_network));
+                Intent intent = new Intent(HomeDashBoard.this, QuizActivity.class);
+                intent.putExtra(QuizActivity.SYNC_NEEDED, true);
+                startActivity(intent);
+            }
+        }
     }
 
     @SuppressLint({"NonConstantResourceId", "NotifyDataSetChanged"})
