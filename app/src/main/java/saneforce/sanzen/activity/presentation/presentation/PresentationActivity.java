@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.presentation.presentation;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,13 +12,27 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import java.util.ArrayList;
 
+import saneforce.sanzen.activity.call.dcrCallSelection.adapter.TabLayoutAdapter;
+import saneforce.sanzen.activity.call.dcrCallSelection.fragments.CIPFragment;
+import saneforce.sanzen.activity.call.dcrCallSelection.fragments.ChemistFragment;
+import saneforce.sanzen.activity.call.dcrCallSelection.fragments.HospitalFragment;
+import saneforce.sanzen.activity.call.dcrCallSelection.fragments.ListedDoctorFragment;
+import saneforce.sanzen.activity.call.dcrCallSelection.fragments.StockiestFragment;
+import saneforce.sanzen.activity.call.dcrCallSelection.fragments.UnlistedDoctorFragment;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.presentation.createPresentation.CreatePresentationActivity;
+import saneforce.sanzen.activity.presentation.presentation.fragments.CIPPresentationFragment;
+import saneforce.sanzen.activity.presentation.presentation.fragments.ChemistPresentationFragment;
+import saneforce.sanzen.activity.presentation.presentation.fragments.DoctorPresentationFragment;
+import saneforce.sanzen.activity.presentation.presentation.fragments.HospitalPresentationFragment;
+import saneforce.sanzen.activity.presentation.presentation.fragments.StockistPresentationFragment;
+import saneforce.sanzen.activity.presentation.presentation.fragments.UnListedDoctorPresentationFragment;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.databinding.ActivityPresentationBinding;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
-
+import saneforce.sanzen.storage.SharedPref;
 
 
 public class PresentationActivity extends AppCompatActivity {
@@ -26,7 +42,10 @@ public class PresentationActivity extends AppCompatActivity {
     ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
     private PresentationDataDao presentationDataDao;
+
+    TabLayoutAdapter viewPagerAdapter;
 
     //To Hide the bottomNavigation When popup
     @Override
@@ -53,7 +72,33 @@ public class PresentationActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         roomDB = RoomDB.getDatabase(this);
         presentationDataDao = roomDB.presentationDataDao();
+        masterDataDao = roomDB.masterDataDao();
         savedPresentation = presentationDataDao.getPresentations();
+
+        viewPagerAdapter = new TabLayoutAdapter(getSupportFragmentManager());
+        if (SharedPref.getDrNeed(context).equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new DoctorPresentationFragment(), SharedPref.getDrCap(context));
+        }
+        if (SharedPref.getChmNeed(context).equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new ChemistPresentationFragment(), SharedPref.getChmCap(context));
+        }
+        if (SharedPref.getStkNeed(context).equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new StockistPresentationFragment(), SharedPref.getStkCap(context));
+        }
+        if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new UnListedDoctorPresentationFragment(), SharedPref.getUNLcap(context));
+        }
+        if (SharedPref.getCipNeed(context).equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new CIPPresentationFragment(), SharedPref.getCipCaption(context));
+        }
+        if (SharedPref.getHospNeed(context).equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new HospitalPresentationFragment(), SharedPref.getHospCaption(context));
+        }
+
+        binding.viewPagerCallSelection.setAdapter(viewPagerAdapter);
+        binding.tabLayoutCall.setupWithViewPager(binding.viewPagerCallSelection);
+        binding.viewPagerCallSelection.setOffscreenPageLimit(7);
+
         populateAdapter();
 
         binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
