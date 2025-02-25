@@ -7,6 +7,7 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static java.lang.Double.parseDouble;
 import static java.lang.Double.valueOf;
 import static saneforce.sanzen.activity.approvals.geotagging.GeoTaggingAdapter.geoTagViewList;
+import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.IsFromDCR;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -76,11 +77,14 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MultipartBody;
@@ -89,6 +93,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.camera.CameraActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustListAdapter;
@@ -310,7 +315,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 TagCustSelectionList.SelectedCustPos = "";
                 SelectedHqCode = "";
                 SelectedHqName = "";
-                getOnBackPressedDispatcher().onBackPressed();
+                showTaggedAlert();
+//                getOnBackPressedDispatcher().onBackPressed();
             } else {
                 TagCustSelectionList.SelectedCustPos = "";
                 finish();
@@ -402,6 +408,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         mapsBinding.imgCurLoc.setOnClickListener(view -> mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f)));
+    }
+
+    private void showTaggedAlert() {
+        Dialog dialog = new Dialog(MapsActivity.this);
+        dialog.setContentView(R.layout.dcr_cancel_alert);
+        dialog.setCancelable(false);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+        TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
+        TextView btn_no = dialog.findViewById(R.id.btn_no);
+        btn_no.setVisibility(View.GONE);
+        btn_yes.setText(getString(R.string.ok));
+        String taggedCustomers = SharedPref.getTaggedDcrCustomers(MapsActivity.this);
+        taggedCustomers = taggedCustomers.replaceAll("\\^\\^", ", ");
+        alertText.setText("You have tagged some " + taggedCustomers + "\nKindly sync!");
+        btn_yes.setOnClickListener(view -> {
+            SharedPref.setTaggedDcrCustomers(MapsActivity.this, "");
+            dialog.dismiss();
+            getOnBackPressedDispatcher().onBackPressed();
+        });
+        btn_no.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
     }
 
     private void getRequiredData() {
@@ -719,9 +749,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 btn_confirm.setEnabled(false);
                 btn_confirm.setBackground(ContextCompat.getDrawable(context, R.drawable.tagging_disable_button));
                 if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                    CallImageAPI(jsonImage.toString(), jsonObject.toString(),progressBar);
+                    CallImageAPI(jsonImage.toString(), jsonObject.toString(), progressBar);
                 } else {
-                    CallAPIGeo(jsonObject.toString(),progressBar);
+                    CallAPIGeo(jsonObject.toString(), progressBar);
                 }
             }else {
                 commonUtilsMethods.showToastMessage(this,getString(R.string.no_network));
@@ -800,7 +830,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("Msg").equalsIgnoreCase("Tagged Successfully")) {
                             commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tagged_successfully));
                             dialogTagCust.dismiss();
-                            CallAPIList(SelectedTab,progressBar);
+                            updateMasterData(SelectedTab, jsonTag);
+//                            CallAPIList(SelectedTab,progressBar);
                             isTagged = true;
                             TaggedLat = String.valueOf(lat);
                             TaggedLng = String.valueOf(lng);
@@ -839,6 +870,150 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+    }
+
+    private void updateMasterData(String selectedTab, String json) {
+        try {
+            JSONArray masterJsonArray = new JSONArray();
+            JSONObject tagJsonObject = new JSONObject(json);
+            String custCode = tagJsonObject.optString("cuscode");
+            String custName = tagJsonObject.optString("cust_name");
+            String latitude = tagJsonObject.optString("lat");
+            String longitude = tagJsonObject.optString("long");
+            String address = tagJsonObject.optString("addr");
+            String imageName = tagJsonObject.optString("image_name");
+            String taggedHQ = tagJsonObject.optString("tagged_cust_HQ");
+            String tableKey = "";
+            switch (selectedTab){
+                case "D":
+                    masterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + taggedHQ).getMasterSyncDataJsonArray();
+                    addTaggedCustomer(SharedPref.getDrCap(MapsActivity.this));
+                    tableKey = Constants.DOCTOR + taggedHQ;
+                    break;
+                case "C":
+                    masterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + taggedHQ).getMasterSyncDataJsonArray();
+                    addTaggedCustomer(SharedPref.getChmCap(MapsActivity.this));
+                    tableKey = Constants.CHEMIST + taggedHQ;
+                    break;
+                case "S":
+                    masterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + taggedHQ).getMasterSyncDataJsonArray();
+                    addTaggedCustomer(SharedPref.getStkCap(MapsActivity.this));
+                    tableKey = Constants.STOCKIEST + taggedHQ;
+                    break;
+                case "U":
+                    masterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + taggedHQ).getMasterSyncDataJsonArray();
+                    addTaggedCustomer(SharedPref.getUNLcap(MapsActivity.this));
+                    tableKey = Constants.UNLISTED_DOCTOR + taggedHQ;
+                    break;
+                case "H":
+                    masterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + taggedHQ).getMasterSyncDataJsonArray();
+                    addTaggedCustomer(SharedPref.getHospCaption(MapsActivity.this));
+                    tableKey = Constants.HOSPITAL + taggedHQ;
+                    break;
+                case "CIP":
+                    masterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CIP + taggedHQ).getMasterSyncDataJsonArray();
+                    addTaggedCustomer(SharedPref.getCipCaption(MapsActivity.this));
+                    tableKey = Constants.CIP + taggedHQ;
+                    break;
+            }
+            ArrayList<JSONObject> custJsonObjects = new ArrayList<>();
+            JSONArray newMasterJsonArray = new JSONArray();
+            int index = -1;
+            for (int i = 0; i<masterJsonArray.length(); i++) {
+                JSONObject jsonObject = masterJsonArray.optJSONObject(i);
+                String masterCustCode = jsonObject.optString("Code");
+                if(masterCustCode.equalsIgnoreCase(custCode)) {
+                    custJsonObjects.add(jsonObject);
+                    if(index == -1) {
+                        index = i;
+                    }
+                }else {
+                    newMasterJsonArray.put(jsonObject);
+                }
+            }
+            if(!custJsonObjects.isEmpty()) {
+                String tagCount = custJsonObjects.get(0).optString("GEOTagCnt");
+                int taggedCount = 0, taggedSize = custJsonObjects.size();
+                if(!tagCount.isEmpty()) {
+                    taggedCount = Integer.parseInt(tagCount);
+                }
+                JSONObject jsonObject = new JSONObject(custJsonObjects.get(0).toString());
+                jsonObject.put("GEOTagCnt", "1");
+                if(SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
+                    jsonObject.put("cust_status", "1");
+                } else {
+                    jsonObject.put("cust_status", "0");
+                }
+                jsonObject.put("Lat", latitude);
+                jsonObject.put("Long", longitude);
+                jsonObject.put("Addrs", address);
+                if(!imageName.isEmpty()) {
+                    jsonObject.put("img_name", imageName);
+                } else {
+                    jsonObject.put("img_name", "noimage.png");
+                }
+                if(taggedCount == 0 && taggedSize == 1) {
+                    custJsonObjects.remove(0);
+                    custJsonObjects.add(0, jsonObject);
+                } else {
+//                    jsonObject.put("GEOTagCnt", String.valueOf(taggedSize + 1));
+//                    jsonObject.put("uRwID", String.valueOf(custJsonObjects.size()));
+//                    for (int i = 0; i<custJsonObjects.size(); i++) {
+//                        JSONObject jsonObject1 = custJsonObjects.get(i);
+//                        jsonObject1.put("GEOTagCnt", String.valueOf(taggedSize + 1));
+//                        jsonObject1.put("uRwID", String.valueOf(i+1));
+//                        custJsonObjects.remove(i);
+//                        custJsonObjects.add(i, jsonObject1);
+//                    }
+                    custJsonObjects.add(0, jsonObject);
+                }
+                Log.d("testtag", "updateMasterData: " + Arrays.toString(custJsonObjects.toArray()));
+                JSONArray finalMasterJsonArray = insertJsonObjects(newMasterJsonArray, custJsonObjects, index);
+                Log.e("testtag", "updateMasterData: " + finalMasterJsonArray);
+                masterDataDao.saveMasterSyncData(new MasterDataTable(tableKey, finalMasterJsonArray.toString(), 1));
+                showToast(selectedTab);
+                finish();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addTaggedCustomer(String caption) {
+        try {
+            String taggedDcrCustomers = SharedPref.getTaggedDcrCustomers(MapsActivity.this);
+            String[] taggedArray = taggedDcrCustomers.split("\\^\\^");
+            Set<String> taggedSet = new HashSet<>(Arrays.asList(taggedArray));
+            taggedSet.remove("");
+            taggedSet.remove(" ");
+            taggedSet.add(caption);
+            Log.d("testtag", "updateMasterData: " + taggedSet);
+            String resultTaggedDcrCustomers = taggedSet.toString().replaceAll("\\[", "").replaceAll("]", "").replaceAll(", ", "^^");
+            SharedPref.setTaggedDcrCustomers(MapsActivity.this, resultTaggedDcrCustomers);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private JSONArray insertJsonObjects(JSONArray jsonArray, ArrayList<JSONObject> jsonObjects, int index) {
+        JSONArray resultJsonArray = new JSONArray();
+        for (int i = 0; i<jsonArray.length(); i++) {
+            if(i == index) {
+                int rowID = 1, count = jsonObjects.size();
+                for (JSONObject jsonObject : jsonObjects) {
+                    try {
+                        jsonObject.put("GEOTagCnt", String.valueOf(count));
+                        jsonObject.put("uRwID", String.valueOf(rowID));
+                        rowID++;
+                        resultJsonArray.put(jsonObject);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            resultJsonArray.put(jsonArray.optJSONObject(i));
+        }
+        return resultJsonArray;
     }
 
     public void prepareMasterToSync(String hqCode, String Cust_Selected,ProgressBar progressBar) {
@@ -923,7 +1098,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                     }
                                 } catch (JSONException e) {
-                                    throw new RuntimeException(e);
+                                    e.printStackTrace();
                                 }
                             }else {
                                 customDialog.dismiss();
