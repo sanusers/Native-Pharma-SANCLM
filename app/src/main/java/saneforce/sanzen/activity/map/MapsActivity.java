@@ -315,8 +315,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 TagCustSelectionList.SelectedCustPos = "";
                 SelectedHqCode = "";
                 SelectedHqName = "";
-                showTaggedAlert();
-//                getOnBackPressedDispatcher().onBackPressed();
+                if (SharedPref.getTaggedDcrCustomers(MapsActivity.this).isEmpty()) {
+                    getOnBackPressedDispatcher().onBackPressed();
+                } else {
+                    showTaggedAlert();
+                }
             } else {
                 TagCustSelectionList.SelectedCustPos = "";
                 finish();
