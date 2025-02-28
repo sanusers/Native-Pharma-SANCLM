@@ -197,7 +197,9 @@ public class ApprovalsActivity extends AppCompatActivity {
         if (SharedPref.getTpNeed(context).equalsIgnoreCase("0")) {
             list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_approvals), String.valueOf(TpCount)));
         }
-        list_approvals.add(new AdapterModel(getResources().getString(R.string.dcr_approvals), String.valueOf(DcrCount)));
+        if (SharedPref.getDcrApprovalNeed(context).equalsIgnoreCase("0")) {
+            list_approvals.add(new AdapterModel(getResources().getString(R.string.dcr_approvals), String.valueOf(DcrCount)));
+        }
         if (SharedPref.getTpdcrMgrappr(context).equalsIgnoreCase("0")) {
             list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_deviation), String.valueOf(DeviationCount)));
         }

@@ -344,6 +344,7 @@ public class SharedPref {
     public static final String UNLIST_SRT_ND = "UnlistSrtNd";
     public static final String RCPA_COMPETITOR_ADD = "RCPA_competitor_add";
     public static final String GEOTAGGING = "GeoTagging";
+    public static final String DCR_APPROVAL_NEED = "DcrapprvNd";
    //myresource
     public static final String SETSYNHQ = "SETSYNHQ";
     public static final String SETSYN_HQCODE = "SETSYN_HQCODE";
@@ -748,6 +749,7 @@ public class SharedPref {
         editor.putString(EDIT_CALL_DEL_NEED, jsonObject.getString("EditCallDelNeed"));
         editor.putString(SANZEN_EDET, jsonObject.getString("sanzen_edet"));
         editor.putString(ACTIVITY_CAP, jsonObject.getString("ActivityCap"));
+        editor.putString(DCR_APPROVAL_NEED, jsonObject.optString("DcrapprvNd"));
         editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\",""));
         editor.apply();
 
@@ -1929,6 +1931,10 @@ public class SharedPref {
 
     public static String getDrAddCallNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DR_ADD_CALL_NEED, "");
+    }
+
+    public static String getDcrApprovalNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DCR_APPROVAL_NEED, "");
     }
 
     public static void setDrAddCallNeed(Context context, String drAddCallNeed) {

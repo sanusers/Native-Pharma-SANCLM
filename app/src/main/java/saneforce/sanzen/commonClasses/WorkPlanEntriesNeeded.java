@@ -222,9 +222,15 @@ public class WorkPlanEntriesNeeded {
             JSONArray holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray();
             for (int i = 0; i < holidayJSONArray.length(); i++) {
                 JSONObject jsonObject = holidayJSONArray.getJSONObject(i);
-                String holidayDate = jsonObject.optString("holiday_date");
+                String holidayDate = "";
+                if(jsonObject.has("holiday_date")) {
+                    holidayDate = jsonObject.optString("holiday_date");
+                } else {
+                    holidayDate = jsonObject.optString("Holiday_Date");
+                }
                 if(datesNeeded != null && !datesNeeded.isEmpty()) {
                     datesNeeded.remove(holidayDate);
+                    pastDates.remove(holidayDate);
                 }
             }
 
@@ -269,11 +275,12 @@ public class WorkPlanEntriesNeeded {
                 }
             }
 
-            TreeSet<String> datesNeededDup = new TreeSet<>(datesNeeded);
+            TreeSet<String> datesNeededDup = new TreeSet<>(pastDates);
             for (String date : datesNeededDup) {
                 String dayName = LocalDate.parse(date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)).getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
                 if(weeklyOffDays.contains(dayName)) {
                     datesNeeded.remove(date);
+                    pastDates.remove(date);
                 }
             }
 

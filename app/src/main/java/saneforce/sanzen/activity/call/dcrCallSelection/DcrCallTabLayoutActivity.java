@@ -202,8 +202,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         gpsTrack = new GPSTrack(this);
         double lat = gpsTrack.getLatitude();
         double lng = gpsTrack.getLongitude();
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if(CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
             CommonUtilsMethods.gettingAddress(this, Double.parseDouble(String.valueOf(lat)), Double.parseDouble(String.valueOf(lng)), true);
         }else {
             CommonUtilsMethods.RequestGPSPermission(this);

@@ -1028,8 +1028,7 @@ public class DCRCallActivity extends AppCompatActivity {
         if (GeoChk.equalsIgnoreCase("0")) {
             gpsTrack = new GPSTrack(DCRCallActivity.this);
             try {
-                LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                if (!CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
                     new android.app.AlertDialog.Builder(DCRCallActivity.this).setTitle("Alert") // GPS not found
                             .setCancelable(false).setMessage("Activate the Gps to proceed further") // Want to enable?
                             .setPositiveButton("Yes", (dialogInterface, i) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))).show();

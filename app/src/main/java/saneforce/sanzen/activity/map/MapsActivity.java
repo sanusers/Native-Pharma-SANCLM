@@ -635,8 +635,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         boolean val = false;
         gpsTrack = new GPSTrack(MapsActivity.this);
         try {
-            LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (!CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
                 new android.app.AlertDialog.Builder(MapsActivity.this).setTitle("Alert") // GPS not found
                         .setCancelable(false).setMessage("Activate the Gps to proceed further") // Want to enable?
                         .setPositiveButton("Yes", (dialogInterface, i) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))).show();
@@ -1037,7 +1036,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void locationCheck() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if (CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
             if(!CheckLocPermission()){
                 RequestLocationPermission();
             }

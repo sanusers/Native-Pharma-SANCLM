@@ -1892,7 +1892,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         double lat = gpsTrack.getLatitude();
         double lng = gpsTrack.getLongitude();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if (CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
             CommonUtilsMethods.gettingAddress(HomeDashBoard.this, Double.parseDouble(String.valueOf(lat)), Double.parseDouble(String.valueOf(lng)), true);
             binding.myDrawerLayout.closeDrawer(GravityCompat.START);
         } else {

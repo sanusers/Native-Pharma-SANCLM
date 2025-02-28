@@ -2102,8 +2102,7 @@ public class DynamicActivity extends AppCompatActivity {
         LabelText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                if(CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
                     if(!CheckLocPermission()) {
                         RequestLocationPermission();
                     }else {
