@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/_2sdp"
+    android:layout_marginBottom="?attr/actionBarSize"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_side_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/_8ssp"
+        android:fontFamily="@font/satoshi_medium"
+        android:padding="@dimen/_4sdp"
+        tools:text="Selected Customers"
+        android:textColor="@color/black_45"
+        android:textStyle="bold"
+        android:textAlignment="textStart"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/img_side_close"/>
+
+    <ImageView
+        android:id="@+id/img_side_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="@dimen/_2sdp"
+        android:src="@drawable/close_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <View
+        android:id="@+id/div_title"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/dark_purple"
+        android:layout_marginVertical="@dimen/_2sdp"
+        app:layout_constraintTop_toBottomOf="@id/tv_side_title"/>
+
+    <TextView
+        android:id="@+id/tv_side_hq"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/_8ssp"
+        android:fontFamily="@font/satoshi_medium"
+        android:padding="@dimen/_4sdp"
+        tools:text="Selected Headquarter"
+        android:textColor="@color/black_45"
+        android:textStyle="bold"
+        android:textAlignment="textStart"
+        app:layout_constraintTop_toBottomOf="@id/div_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/ll_search_layout"
+        app:layout_constraintTop_toBottomOf="@id/tv_side_hq"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginHorizontal="@dimen/_3sdp"
+        android:layout_marginVertical="@dimen/_5sdp"
+        android:background="@drawable/bg_white_search"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/_8sdp"
+            android:layout_height="@dimen/_7sdp"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:src="@drawable/grey_search" />
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_1sdp"
+            android:background="@null"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start"
+            android:hint="@string/search"
+            android:inputType="text"
+            android:imeOptions="actionDone"
+            android:maxLines="1"
+            android:padding="@dimen/_7sdp"
+            android:textSize="@dimen/_6ssp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_side"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        tools:listitem="@layout/customer_data_item"
+        app:layout_constraintTop_toBottomOf="@id/ll_search_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_edit"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_5sdp"
+        android:background="@drawable/bg_purple"
+        android:fontFamily="@font/satoshi_bold"
+        android:paddingHorizontal="@dimen/_15sdp"
+        android:text="@string/edit"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_6ssp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

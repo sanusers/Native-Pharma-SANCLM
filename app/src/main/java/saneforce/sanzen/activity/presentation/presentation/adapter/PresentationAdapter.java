@@ -1,9 +1,10 @@
-package saneforce.sanzen.activity.presentation.presentation;
+package saneforce.sanzen.activity.presentation.presentation.adapter;
 
 import static saneforce.sanzen.activity.presentation.presentation.PresentationActivity.binding;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.from_where;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,19 +34,24 @@ import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.sanzen.activity.presentation.playPreview.PlaySlidePreviewActivity;
+import saneforce.sanzen.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
-
 public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapter.MyViewHolder> {
-    Context context;
-    ArrayList<BrandModelClass.Presentation> arrayList = new ArrayList<>();
-    PopupWindow mypopupWindow;
+    private Context context;
+    private ArrayList<BrandModelClass.Presentation> arrayList = new ArrayList<>();
+    private PopupWindow mypopupWindow;
     Menu menu;
-    String isClickedFrom;
-    Intent intent;
+    private String isClickedFrom, caption;
+    private Intent intent;
     private RoomDB roomDB;
     private PresentationDataDao presentationDataDao;
+    private ShowCustomersClickListener showCustomersClickListener;
+
+    public interface ShowCustomersClickListener {
+        void onClick(String presentationName);
+    }
 
     public PresentationAdapter(Context context, ArrayList<BrandModelClass.Presentation> arrayList, String isClickedFrom) {
         this.context = context;
@@ -53,6 +59,16 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
         roomDB = RoomDB.getDatabase(context);
         presentationDataDao = roomDB.presentationDataDao();
         this.isClickedFrom = isClickedFrom;
+    }
+
+    public PresentationAdapter(Context context, ArrayList<BrandModelClass.Presentation> arrayList, String isClickedFrom, String caption, ShowCustomersClickListener showCustomersClickListener) {
+        this.context = context;
+        this.arrayList = arrayList;
+        roomDB = RoomDB.getDatabase(context);
+        presentationDataDao = roomDB.presentationDataDao();
+        this.isClickedFrom = isClickedFrom;
+        this.caption = caption;
+        this.showCustomersClickListener = showCustomersClickListener;
     }
 
     @NonNull
@@ -65,10 +81,10 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
-        if (isClickedFrom.equalsIgnoreCase("presentation")) {
+        if(isClickedFrom.equalsIgnoreCase("presentation") || isClickedFrom.equalsIgnoreCase("custom")) {
             holder.menu.setVisibility(View.VISIBLE);
             holder.playButton.setVisibility(View.GONE);
-        } else if (isClickedFrom.equalsIgnoreCase("customized")) {
+        }else if(isClickedFrom.equalsIgnoreCase("customized")) {
             holder.menu.setVisibility(View.GONE);
             holder.playButton.setVisibility(View.VISIBLE);
         }
@@ -76,11 +92,11 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
         BrandModelClass.Presentation presentation = arrayList.get(position);
         ArrayList<BrandModelClass.Product> products = presentation.getProducts();
 
-        if (products.size() > 0)
+        if(!products.isEmpty())
             SupportClass.setThumbnail(context, products.get(0).getSlideName(), holder.imageView);
 
         holder.name.setText(presentation.getPresentationName());
-        if (products.size() > 1)
+        if(products.size()>1)
             holder.count.setText(products.size() + " Asserts");
         else
             holder.count.setText(products.size() + " Assert");
@@ -89,9 +105,9 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
         holder.playButton.setOnClickListener(view -> {
             int SelectedPos = 0;
             int count = products.size();
-            if (count > 0) {
+            if(count>0) {
                 ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
-                if (from_where.equalsIgnoreCase("call")) {
+                if(from_where.equalsIgnoreCase("call")) {
 //                    for (int i = 0; i < arrayList.size(); i++) {
 //                        for (int j = 0; j < arrayList.get(i).getProducts().size(); j++) {
 //                            productsList.add(new BrandModelClass.Product(arrayList.get(i).getPresentationName(), arrayList.get(i).getProducts().get(j).getBrandName(), arrayList.get(i).getProducts().get(j).getBrandCode(), arrayList.get(i).getProducts().get(j).getSlideId()
@@ -106,7 +122,7 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
 //                    }
                     productsList = arrayList.get(position).getProducts();
                     intent = new Intent(context, PlaySlideDetailing.class);
-                } else {
+                }else {
                     productsList = arrayList.get(position).getProducts();
                     intent = new Intent(context, PlaySlidePreviewActivity.class);
                 }
@@ -124,11 +140,27 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
             Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
             final PopupMenu popup = new PopupMenu(wrapper, view, Gravity.END);
             popup.inflate(R.menu.presentation_menu);
+            if(isClickedFrom.equalsIgnoreCase("custom")) {
+                popup.getMenu().findItem(R.id.customer).setVisible(isClickedFrom.equalsIgnoreCase("custom"));
+                popup.getMenu().findItem(R.id.customer).setTitle("Show " + caption);
+            }
+            try {
+                ((Activity)context).getWindow().getDecorView().setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             popup.setOnMenuItemClickListener(menuItem -> {
                 PresentationActivity presentationActivity = (PresentationActivity) context;
 
-                if (menuItem.getItemId() == R.id.menuPlay) {
+                if(menuItem.getItemId() == R.id.menuPlay) {
+                    popup.dismiss();
                     Intent intent = new Intent(presentationActivity, PlaySlidePreviewActivity.class);
                     String data = new Gson().toJson(products);
                     Bundle bundle = new Bundle();
@@ -136,7 +168,8 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
                     bundle.putString("position", String.valueOf(0));
                     intent.putExtra("bundle", bundle);
                     context.startActivity(intent);
-                } else if (menuItem.getItemId() == R.id.menuEdit) {
+                }else if(menuItem.getItemId() == R.id.menuEdit) {
+                    popup.dismiss();
                     Intent intent = new Intent(presentationActivity, CreatePresentationActivity.class);
                     String data = new Gson().toJson(products);
                     Bundle bundle = new Bundle();
@@ -145,17 +178,23 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
                     bundle.putString("presentationName", presentation.getPresentationName());
                     intent.putExtra("bundle", bundle);
                     context.startActivity(intent);
-                } else if (menuItem.getItemId() == R.id.menuDelete) {
+                }else if(menuItem.getItemId() == R.id.menuDelete) {
+                    popup.dismiss();
                     removeAt(position);
                     presentationDataDao.deletePresentation(presentation.getPresentationName());
                     ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
                     savedPresentation = presentationDataDao.getPresentations();
-                    if (savedPresentation.size() > 0) {
+                    if(!savedPresentation.isEmpty()) {
                         binding.constraintNoData.setVisibility(View.GONE);
                         binding.presentationRecView.setVisibility(View.VISIBLE);
-                    } else {
+                    }else {
                         binding.constraintNoData.setVisibility(View.VISIBLE);
                         binding.presentationRecView.setVisibility(View.GONE);
+                    }
+                }else if(menuItem.getItemId() == R.id.customer) {
+                    popup.dismiss();
+                    if(isClickedFrom.equalsIgnoreCase("custom")) {
+                        showCustomersClickListener.onClick(presentation.getPresentationName());
                     }
                 }
                 return true;

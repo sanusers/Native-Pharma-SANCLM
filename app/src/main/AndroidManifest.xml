@@ -65,11 +65,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        tools:replace="android:label">
+        <activity
+            android:name=".activity.presentation.customerSelection.CustomerSelectionActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"/>
         <activity
             android:name=".activity.Quiz.QuizAssertViewActivity"
-            android:screenOrientation="landscape"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.approvals.stp.STPApprovalActivity"
             android:exported="false"

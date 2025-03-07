@@ -32,6 +32,7 @@ import saneforce.sanzen.activity.call.pojo.detailing.CallDetailingList;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.previewPresentation.fragment.BrandMatrix;
+import saneforce.sanzen.activity.previewPresentation.fragment.CustomPresentationFragment;
 import saneforce.sanzen.activity.previewPresentation.fragment.MyPresentation;
 import saneforce.sanzen.activity.previewPresentation.fragment.HomeBrands;
 import saneforce.sanzen.activity.previewPresentation.fragment.Speciality;
@@ -48,7 +49,7 @@ import saneforce.sanzen.utility.TimeUtils;
 public class PreviewActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static saneforce.sanzen.databinding.ActivityPreviewBinding previewBinding;
-    public static String SelectedTab = "Matrix", from_where = "", cus_name = "", SpecialityCode = "", SpecialityName = "", BrandCode = "", SlideCode = "", CusType = "";
+    public static String SelectedTab = "Matrix", from_where = "", cus_name = "", cus_code = "", SpecialityCode = "", SpecialityName = "", BrandCode = "", SlideCode = "", CusType = "";
     public static int SelectedPosPlay;
     PreviewTabAdapter viewPagerAdapter;
     String finalPrdNam;
@@ -95,6 +96,7 @@ public class PreviewActivity extends AppCompatActivity {
                 assert from_where != null;
                 if (from_where.equalsIgnoreCase("call")) {
                     cus_name = extra.getString("cus_name");
+                    cus_code = extra.getString("cus_code");
                     SpecialityCode = extra.getString("SpecialityCode");
                     SpecialityName = extra.getString("SpecialityName");
                     BrandCode = extra.getString("MappedProdCode");
@@ -125,6 +127,8 @@ public class PreviewActivity extends AppCompatActivity {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                         headingData.add("F");
                     }
+                    viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom));
+                    headingData.add("G");
                 } else {
                     viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
                     headingData.add("A");
@@ -140,6 +144,8 @@ public class PreviewActivity extends AppCompatActivity {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                         headingData.add("F");
                     }
+                    viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom));
+                    headingData.add("G");
                 }
             } else {
                 viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));

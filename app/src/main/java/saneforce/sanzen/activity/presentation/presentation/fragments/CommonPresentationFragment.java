@@ -2,43 +2,49 @@ package saneforce.sanzen.activity.presentation.presentation.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import java.util.ArrayList;
 
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
-import saneforce.sanzen.activity.presentation.customerSelection.CustomerSelectionActivity;
+import saneforce.sanzen.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.sanzen.activity.presentation.presentation.adapter.PresentationAdapter;
-import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.databinding.FragmentCustomerPresentationBinding;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.databinding.FragmentCommonPresentationBinding;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
-public class UnListedDoctorPresentationFragment extends Fragment {
-    private FragmentCustomerPresentationBinding binding;
+public class CommonPresentationFragment extends Fragment {
+    private FragmentCommonPresentationBinding binding;
     private ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
+    private CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
     private PresentationDataDao presentationDataDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        commonUtilsMethods = new CommonUtilsMethods(requireActivity());
         roomDB = RoomDB.getDatabase(requireContext());
         presentationDataDao = roomDB.presentationDataDao();
-        savedPresentation = presentationDataDao.getPresentations("4");
+        masterDataDao = roomDB.masterDataDao();
+        savedPresentation = presentationDataDao.getPresentations();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentCustomerPresentationBinding.inflate(inflater);
+        binding = FragmentCommonPresentationBinding.inflate(inflater);
         return binding.getRoot();
     }
 
@@ -53,23 +59,19 @@ public class UnListedDoctorPresentationFragment extends Fragment {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        binding.createPresentationBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), CustomerSelectionActivity.class);
-            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.UNLISTED_DOCTOR);
-            startActivity(intent);
-        });
+        binding.createPresentationBtn.setOnClickListener(v -> startActivity(new Intent(requireContext(), CreatePresentationActivity.class)));
 
         populateAdapter();
     }
 
     public void populateAdapter() {
-        if(!savedPresentation.isEmpty()) {
+        if (!savedPresentation.isEmpty()) {
             binding.constraintNoData.setVisibility(View.GONE);
             binding.presentationRecView.setVisibility(View.VISIBLE);
             PresentationAdapter presentationAdapter = new PresentationAdapter(requireContext(), savedPresentation, "presentation");
             binding.presentationRecView.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             binding.presentationRecView.setAdapter(presentationAdapter);
-        }else {
+        } else {
             binding.constraintNoData.setVisibility(View.VISIBLE);
             binding.presentationRecView.setVisibility(View.GONE);
         }

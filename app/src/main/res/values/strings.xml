@@ -550,4 +550,5 @@
     <string name="no_of_attempts_left">No of Attempts Left :</string>
     <string name="try_again">Try Again</string>
     <string name="close">Close</string>
+    <string name="custom">Custom</string>
 </resources>

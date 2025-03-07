@@ -33,6 +33,15 @@ public interface PresentationDataDao {
     @Query("SELECT `PRESENTATION_DATA` FROM `PRESENTATION_TABLE`")
     List<String> getAllPresentationData();
 
+    @Query("SELECT * FROM `PRESENTATION_TABLE` WHERE `PRESENTATION_NAME` = :presentationName")
+    PresentationDataTable getPresentationData(String presentationName);
+
+    @Query("SELECT `PRESENTATION_DATA` FROM `PRESENTATION_TABLE` WHERE `CUSTOMER_TYPE` = :customerType")
+    List<String> getAllPresentationData(String customerType);
+
+    @Query("SELECT `PRESENTATION_DATA` FROM `PRESENTATION_TABLE` WHERE `CUSTOMER_TYPE` = :customerType AND `CUSTOMER_CODES` LIKE '%' || :customerCode || '%'")
+    List<String> getAllPresentationData(String customerType, String customerCode);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void savePresentation(PresentationDataTable presentationDataTable);
 
@@ -41,6 +50,9 @@ public interface PresentationDataDao {
 
     @Query("DELETE FROM `PRESENTATION_TABLE` WHERE `PRESENTATION_NAME` = :presentationName")
     void deletePresentation(String presentationName);
+
+    @Query("UPDATE `PRESENTATION_TABLE` SET `CUSTOMER_CODES` = :customerCodes WHERE `PRESENTATION_NAME` = :presentationName")
+    void changeSelectedCustomers(String presentationName, String customerCodes);
 
     default void savePresentation(String oldName, String newName, String data) {
         PresentationDataTable presentationDataTable = new PresentationDataTable(newName, data);
@@ -52,9 +64,41 @@ public interface PresentationDataDao {
         }
     }
 
+    default void savePresentation(String oldName, String newName, String customerType, String customerCodes, String headquarteCode, String data) {
+        PresentationDataTable presentationDataTable = new PresentationDataTable(newName, customerType, customerCodes, headquarteCode, data);
+        if(!oldName.isEmpty()) {
+            deletePresentation(oldName);
+            savePresentation(presentationDataTable);
+        }else {
+            savePresentation(presentationDataTable);
+        }
+    }
+
+    default ArrayList<BrandModelClass.Presentation> getPresentations(String customerType, String customerCode) {
+        ArrayList<BrandModelClass.Presentation> presentations = new ArrayList<>();
+        List<String> values = getAllPresentationData(customerType, customerCode);
+        for (String data : values) {
+            Type type = new TypeToken<BrandModelClass.Presentation>() {
+            }.getType();
+            presentations.add(new Gson().fromJson(data, type));
+        }
+        return presentations;
+    }
+
+    default ArrayList<BrandModelClass.Presentation> getPresentations(String customerType) {
+        ArrayList<BrandModelClass.Presentation> presentations = new ArrayList<>();
+        List<String> values = getAllPresentationData(customerType);
+        for (String data : values) {
+            Type type = new TypeToken<BrandModelClass.Presentation>() {
+            }.getType();
+            presentations.add(new Gson().fromJson(data, type));
+        }
+        return presentations;
+    }
+
     default ArrayList<BrandModelClass.Presentation> getPresentations() {
         ArrayList<BrandModelClass.Presentation> presentations = new ArrayList<>();
-        List<String> values = getAllPresentationData();
+        List<String> values = getAllPresentationData("");
         for (String data : values) {
             Type type = new TypeToken<BrandModelClass.Presentation>() {
             }.getType();

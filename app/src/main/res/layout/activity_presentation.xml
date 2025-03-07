@@ -1,206 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ececec"
     tools:context=".activity.presentation.presentation.PresentationActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/text_dark"
-            android:backgroundTint="@color/text_dark"
-            android:minHeight="?attr/actionBarSize"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp">
-
-            <LinearLayout
-                android:id="@+id/backArrow"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="@dimen/_6sdp">
-
-                <ImageView
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_10sdp"
-                    android:src="@drawable/arrow_back_white"
-                    tools:ignore="ContentDescription" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_16sdp"
-                android:fontFamily="@font/satoshi_variable"
-                android:text="Presentation"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_7sdp"
-                tools:ignore="SpUsage" />
-
-        </androidx.appcompat.widget.Toolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.cardview.widget.CardView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/appBar"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/_6sdp"
-        app:cardElevation="0dp">
+        android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true">
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tab_layout_call"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_25sdp"
-                android:layout_marginStart="@dimen/_4sdp"
-                android:layout_marginTop="@dimen/_4sdp"
-                android:layout_marginEnd="@dimen/_4sdp"
-                android:background="@color/bg_grey"
-                android:maxWidth="@dimen/_120sdp"
-                app:layout_constraintBottom_toTopOf="@id/view_dummy"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tabGravity="fill"
-                app:tabIndicatorColor="@color/dark_purple"
-                app:tabIndicatorGravity="bottom"
-                app:tabIndicatorHeight="@dimen/_1sdp"
-                app:tabMode="scrollable"
-                app:tabPaddingEnd="@dimen/_10sdp"
-                app:tabPaddingStart="@dimen/_10sdp"
-                app:tabSelectedTextColor="@color/dark_purple"
-                app:tabTextAppearance="@style/tab_text"
-                app:tabTextColor="@color/bg_txt_color" />
-
-            <View
-                android:id="@+id/view_dummy"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="@dimen/_6sdp"
-                android:background="@color/bg_txt_color"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tab_layout_call"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/view_pager_call_selection"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginHorizontal="@dimen/_6sdp"
-                android:layout_marginVertical="@dimen/_4sdp"
-                android:background="@color/bg_grey"
-                android:touchscreenBlocksFocus="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tab_layout_call"
-                app:layout_constraintVertical_bias="1.0"
-                tools:ignore="SpeakableTextPresentCheck" />
-
-            <Button
-                android:id="@+id/createPresentationBtn"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_6sdp"
-                android:layout_marginTop="@dimen/_6sdp"
+                android:background="@color/text_dark"
                 android:backgroundTint="@color/text_dark"
-                android:fontFamily="@font/satoshi_variable"
-                android:gravity="center"
-                android:paddingStart="@dimen/_7sdp"
-                android:paddingTop="@dimen/_5sdp"
-                android:paddingEnd="@dimen/_7sdp"
-                android:paddingBottom="@dimen/_5sdp"
-                android:text="@string/create_presentation"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_6sdp"
-                app:icon="@drawable/iv_add_white"
-                app:iconGravity="start"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/presentationRecView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                tools:ignore="SpUsage" />
+                android:minHeight="?attr/actionBarSize"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="0dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_no_data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:windowSoftInputMode="adjustResize|adjustPan"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                <LinearLayout
+                    android:id="@+id/backArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/_6sdp">
 
-                <ImageView
-                    android:id="@+id/img_not_found"
-                    android:layout_width="@dimen/_100sdp"
-                    android:layout_height="@dimen/_100sdp"
-                    android:layout_marginHorizontal="@dimen/_1sdp"
-                    android:layout_marginTop="@dimen/_2sdp"
-                    android:src="@drawable/no_data_folder"
-                    android:windowSoftInputMode="adjustResize|adjustPan"
-                    app:layout_constraintBottom_toTopOf="@id/tv_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <ImageView
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:src="@drawable/arrow_back_white"
+                        tools:ignore="ContentDescription" />
+
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tv_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/_2sdp"
-                    android:fontFamily="@font/satoshi_medium"
-                    android:padding="@dimen/_2sdp"
-                    android:text="@string/no_presentation_found"
-                    android:textColor="@color/dark_purple"
-                    android:textSize="@dimen/_7ssp"
-                    android:textStyle="bold"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:fontFamily="@font/satoshi_variable"
+                    android:text="Presentation"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_7sdp"
+                    tools:ignore="SpUsage" />
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/appBar"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/_6sdp"
+            app:cardElevation="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tab_layout_call"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_4sdp"
+                    android:background="@color/bg_grey"
+                    android:maxWidth="@dimen/_120sdp"
+                    app:layout_constraintBottom_toTopOf="@id/view_dummy"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tabGravity="fill"
+                    app:tabIndicatorColor="@color/dark_purple"
+                    app:tabIndicatorGravity="bottom"
+                    app:tabIndicatorHeight="@dimen/_1sdp"
+                    app:tabMode="scrollable"
+                    app:tabPaddingEnd="@dimen/_10sdp"
+                    app:tabPaddingStart="@dimen/_10sdp"
+                    app:tabSelectedTextColor="@color/dark_purple"
+                    app:tabTextAppearance="@style/tab_text"
+                    app:tabTextColor="@color/bg_txt_color" />
+
+                <View
+                    android:id="@+id/view_dummy"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginHorizontal="@dimen/_6sdp"
+                    android:background="@color/bg_txt_color"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tab_layout_call"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/view_pager_call_selection"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginHorizontal="@dimen/_6sdp"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    android:background="@color/bg_grey"
+                    android:touchscreenBlocksFocus="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/img_not_found" />
+                    app:layout_constraintTop_toBottomOf="@id/tab_layout_call"
+                    app:layout_constraintVertical_bias="1.0"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <Button
+                    android:id="@+id/createPresentationBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:backgroundTint="@color/text_dark"
+                    android:fontFamily="@font/satoshi_variable"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/_7sdp"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:paddingEnd="@dimen/_7sdp"
+                    android:paddingBottom="@dimen/_5sdp"
+                    android:text="@string/create_presentation"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_6sdp"
+                    android:visibility="gone"
+                    app:icon="@drawable/iv_add_white"
+                    app:iconGravity="start"
+                    app:layout_constraintBottom_toTopOf="@id/presentationRecView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:ignore="SpUsage" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_no_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:windowSoftInputMode="adjustResize|adjustPan"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/img_not_found"
+                        android:layout_width="@dimen/_100sdp"
+                        android:layout_height="@dimen/_100sdp"
+                        android:layout_marginHorizontal="@dimen/_1sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:src="@drawable/no_data_folder"
+                        android:windowSoftInputMode="adjustResize|adjustPan"
+                        app:layout_constraintBottom_toTopOf="@id/tv_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_2sdp"
+                        android:text="@string/no_presentation_found"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_7ssp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/img_not_found" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/presentationRecView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:padding="@dimen/_3sdp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/createPresentationBtn" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/presentationRecView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:padding="@dimen/_3sdp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/createPresentationBtn" />
+        </androidx.cardview.widget.CardView>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        app:drawerLayoutCornerSize="0dp">
 
-    </androidx.cardview.widget.CardView>
+        <include
+            android:id="@+id/navigation_view"
+            layout="@layout/side_list_customer" />
 
+    </com.google.android.material.navigation.NavigationView>
 
-</RelativeLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

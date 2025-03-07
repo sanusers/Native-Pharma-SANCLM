@@ -1,66 +1,78 @@
 package saneforce.sanzen.activity.presentation.presentation.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import saneforce.sanzen.R;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link StockistPresentationFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+
+import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
+import saneforce.sanzen.activity.presentation.customerSelection.CustomerSelectionActivity;
+import saneforce.sanzen.activity.presentation.presentation.adapter.PresentationAdapter;
+import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.databinding.FragmentCustomerPresentationBinding;
+import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
+import saneforce.sanzen.roomdatabase.RoomDB;
+
 public class StockistPresentationFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public StockistPresentationFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment StockistPresentationFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static StockistPresentationFragment newInstance(String param1, String param2) {
-        StockistPresentationFragment fragment = new StockistPresentationFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private FragmentCustomerPresentationBinding binding;
+    private ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
+    private RoomDB roomDB;
+    private PresentationDataDao presentationDataDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        roomDB = RoomDB.getDatabase(requireContext());
+        presentationDataDao = roomDB.presentationDataDao();
+        savedPresentation = presentationDataDao.getPresentations("3");
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_stockist_presentation, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentCustomerPresentationBinding.inflate(inflater);
+        return binding.getRoot();
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        binding.getRoot().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        binding.createPresentationBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), CustomerSelectionActivity.class);
+            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.STOCKIEST);
+            startActivity(intent);
+        });
+
+        populateAdapter();
+    }
+
+    public void populateAdapter() {
+        if(!savedPresentation.isEmpty()) {
+            binding.constraintNoData.setVisibility(View.GONE);
+            binding.presentationRecView.setVisibility(View.VISIBLE);
+            PresentationAdapter presentationAdapter = new PresentationAdapter(requireContext(), savedPresentation, "presentation");
+            binding.presentationRecView.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            binding.presentationRecView.setAdapter(presentationAdapter);
+        }else {
+            binding.constraintNoData.setVisibility(View.VISIBLE);
+            binding.presentationRecView.setVisibility(View.GONE);
+        }
+    }
+
 }
