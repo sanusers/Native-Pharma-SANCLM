@@ -584,7 +584,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                     holder.tv_brandName.setText(context.getResources().getText(R.string.my_presentation));
                     break;
                 case "G":
-                    holder.tv_brandName.setText(context.getResources().getText(R.string.custom));
+                    holder.tv_brandName.setText(context.getResources().getText(R.string.custom_presentation));
                     break;
             }
 

@@ -84,7 +84,6 @@ public class ChemistPresentationFragment extends Fragment {
     }
 
     private final PresentationAdapter.ShowCustomersClickListener showCustomersClickListener = new PresentationAdapter.ShowCustomersClickListener() {
-        @SuppressLint("NotifyDataSetChanged")
         @Override
         public void onClick(String presentationName) {
             showSideScreenListener.onClick(Constants.CHEMIST, presentationName);

@@ -119,16 +119,16 @@ public class PresentationActivity extends AppCompatActivity {
             viewPagerAdapter.add(new ChemistPresentationFragment(this::viewSideScreen), chmCap);
         }
         if(SharedPref.getStkNeed(context).equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new StockistPresentationFragment(), stkCap);
+            viewPagerAdapter.add(new StockistPresentationFragment(this::viewSideScreen), stkCap);
         }
         if(SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new UnListedDoctorPresentationFragment(), unlDrCap);
+            viewPagerAdapter.add(new UnListedDoctorPresentationFragment(this::viewSideScreen), unlDrCap);
         }
         if(SharedPref.getCipNeed(context).equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new CIPPresentationFragment(), cipCap);
+            viewPagerAdapter.add(new CIPPresentationFragment(this::viewSideScreen), cipCap);
         }
         if(SharedPref.getHospNeed(context).equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new HospitalPresentationFragment(), hosCap);
+            viewPagerAdapter.add(new HospitalPresentationFragment(this::viewSideScreen), hosCap);
         }
 
         binding.viewPagerCallSelection.setAdapter(viewPagerAdapter);

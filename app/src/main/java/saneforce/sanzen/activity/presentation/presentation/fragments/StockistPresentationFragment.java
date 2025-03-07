@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.presentation.presentation.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,17 +16,24 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.presentation.customerSelection.CustomerSelectionActivity;
+import saneforce.sanzen.activity.presentation.presentation.ShowSideScreenListener;
 import saneforce.sanzen.activity.presentation.presentation.adapter.PresentationAdapter;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentCustomerPresentationBinding;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 
 public class StockistPresentationFragment extends Fragment {
     private FragmentCustomerPresentationBinding binding;
     private ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
     private RoomDB roomDB;
     private PresentationDataDao presentationDataDao;
+    private final ShowSideScreenListener showSideScreenListener;
+
+    public StockistPresentationFragment(ShowSideScreenListener showSideScreenListener) {
+        this.showSideScreenListener = showSideScreenListener;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,7 +74,7 @@ public class StockistPresentationFragment extends Fragment {
         if(!savedPresentation.isEmpty()) {
             binding.constraintNoData.setVisibility(View.GONE);
             binding.presentationRecView.setVisibility(View.VISIBLE);
-            PresentationAdapter presentationAdapter = new PresentationAdapter(requireContext(), savedPresentation, "presentation");
+            PresentationAdapter presentationAdapter = new PresentationAdapter(requireContext(), savedPresentation, "custom", SharedPref.getStkCap(requireContext()), showCustomersClickListener);
             binding.presentationRecView.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             binding.presentationRecView.setAdapter(presentationAdapter);
         }else {
@@ -74,5 +82,12 @@ public class StockistPresentationFragment extends Fragment {
             binding.presentationRecView.setVisibility(View.GONE);
         }
     }
+
+    private final PresentationAdapter.ShowCustomersClickListener showCustomersClickListener = new PresentationAdapter.ShowCustomersClickListener() {
+        @Override
+        public void onClick(String presentationName) {
+            showSideScreenListener.onClick(Constants.STOCKIEST, presentationName);
+        }
+    };
 
 }

@@ -20,7 +20,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Stream;
@@ -127,7 +126,7 @@ public class PreviewActivity extends AppCompatActivity {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                         headingData.add("F");
                     }
-                    viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom));
+                    viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
                     headingData.add("G");
                 } else {
                     viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
@@ -144,7 +143,7 @@ public class PreviewActivity extends AppCompatActivity {
                         viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                         headingData.add("F");
                     }
-                    viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom));
+                    viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
                     headingData.add("G");
                 }
             } else {

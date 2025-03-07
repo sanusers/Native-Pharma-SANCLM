@@ -16,17 +16,24 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.presentation.customerSelection.CustomerSelectionActivity;
+import saneforce.sanzen.activity.presentation.presentation.ShowSideScreenListener;
 import saneforce.sanzen.activity.presentation.presentation.adapter.PresentationAdapter;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentCustomerPresentationBinding;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 
 public class CIPPresentationFragment extends Fragment {
     private FragmentCustomerPresentationBinding binding;
     private ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
     private RoomDB roomDB;
     private PresentationDataDao presentationDataDao;
+    private final ShowSideScreenListener showSideScreenListener;
+
+    public CIPPresentationFragment(ShowSideScreenListener showSideScreenListener) {
+        this.showSideScreenListener = showSideScreenListener;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,7 +74,7 @@ public class CIPPresentationFragment extends Fragment {
         if(!savedPresentation.isEmpty()) {
             binding.constraintNoData.setVisibility(View.GONE);
             binding.presentationRecView.setVisibility(View.VISIBLE);
-            PresentationAdapter presentationAdapter = new PresentationAdapter(requireContext(), savedPresentation, "presentation");
+            PresentationAdapter presentationAdapter = new PresentationAdapter(requireContext(), savedPresentation, "custom", SharedPref.getCipCaption(requireContext()), showCustomersClickListener);
             binding.presentationRecView.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
             binding.presentationRecView.setAdapter(presentationAdapter);
         }else {
@@ -75,5 +82,12 @@ public class CIPPresentationFragment extends Fragment {
             binding.presentationRecView.setVisibility(View.GONE);
         }
     }
+
+    private final PresentationAdapter.ShowCustomersClickListener showCustomersClickListener = new PresentationAdapter.ShowCustomersClickListener() {
+        @Override
+        public void onClick(String presentationName) {
+            showSideScreenListener.onClick(Constants.CIP, presentationName);
+        }
+    };
 
 }
