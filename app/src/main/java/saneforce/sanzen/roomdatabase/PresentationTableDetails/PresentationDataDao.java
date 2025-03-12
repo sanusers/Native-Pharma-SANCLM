@@ -76,33 +76,45 @@ public interface PresentationDataDao {
 
     default ArrayList<BrandModelClass.Presentation> getPresentations(String customerType, String customerCode) {
         ArrayList<BrandModelClass.Presentation> presentations = new ArrayList<>();
-        List<String> values = getAllPresentationData(customerType, customerCode);
-        for (String data : values) {
-            Type type = new TypeToken<BrandModelClass.Presentation>() {
-            }.getType();
-            presentations.add(new Gson().fromJson(data, type));
+        try {
+            List<String> values = getAllPresentationData(customerType, customerCode);
+            for (String data : values) {
+                Type type = new TypeToken<BrandModelClass.Presentation>() {
+                }.getType();
+                presentations.add(new Gson().fromJson(data, type));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return presentations;
     }
 
     default ArrayList<BrandModelClass.Presentation> getPresentations(String customerType) {
         ArrayList<BrandModelClass.Presentation> presentations = new ArrayList<>();
-        List<String> values = getAllPresentationData(customerType);
-        for (String data : values) {
-            Type type = new TypeToken<BrandModelClass.Presentation>() {
-            }.getType();
-            presentations.add(new Gson().fromJson(data, type));
+        try {
+            List<String> values = getAllPresentationData(customerType);
+            for (String data : values) {
+                Type type = new TypeToken<BrandModelClass.Presentation>() {
+                }.getType();
+                presentations.add(new Gson().fromJson(data, type));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return presentations;
     }
 
     default ArrayList<BrandModelClass.Presentation> getPresentations() {
         ArrayList<BrandModelClass.Presentation> presentations = new ArrayList<>();
-        List<String> values = getAllPresentationData("");
-        for (String data : values) {
-            Type type = new TypeToken<BrandModelClass.Presentation>() {
-            }.getType();
-            presentations.add(new Gson().fromJson(data, type));
+        try {
+            List<String> values = getAllPresentationData("");
+            for (String data : values) {
+                Type type = new TypeToken<BrandModelClass.Presentation>() {
+                }.getType();
+                presentations.add(new Gson().fromJson(data, type));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return presentations;
     }

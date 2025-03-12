@@ -61,6 +61,15 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
         this.isClickedFrom = isClickedFrom;
     }
 
+    public PresentationAdapter(Context context, ArrayList<BrandModelClass.Presentation> arrayList, String isClickedFrom, ShowCustomersClickListener showCustomersClickListener) {
+        this.context = context;
+        this.arrayList = arrayList;
+        roomDB = RoomDB.getDatabase(context);
+        presentationDataDao = roomDB.presentationDataDao();
+        this.isClickedFrom = isClickedFrom;
+        this.showCustomersClickListener = showCustomersClickListener;
+    }
+
     public PresentationAdapter(Context context, ArrayList<BrandModelClass.Presentation> arrayList, String isClickedFrom, String caption, ShowCustomersClickListener showCustomersClickListener) {
         this.context = context;
         this.arrayList = arrayList;
@@ -84,7 +93,7 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
         if(isClickedFrom.equalsIgnoreCase("presentation") || isClickedFrom.equalsIgnoreCase("custom")) {
             holder.menu.setVisibility(View.VISIBLE);
             holder.playButton.setVisibility(View.GONE);
-        }else if(isClickedFrom.equalsIgnoreCase("customized")) {
+        }else if(isClickedFrom.equalsIgnoreCase("customized") || isClickedFrom.equalsIgnoreCase("preview")) {
             holder.menu.setVisibility(View.GONE);
             holder.playButton.setVisibility(View.VISIBLE);
         }
@@ -201,6 +210,13 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
             });
             popup.show();
         });
+
+        if(isClickedFrom.equalsIgnoreCase("preview")) {
+            holder.info.setVisibility(View.VISIBLE);
+            holder.info.setOnClickListener(view -> showCustomersClickListener.onClick(presentation.getPresentationName()));
+        } else {
+            holder.info.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -211,7 +227,7 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         LinearLayout menu;
         TextView name, count;
-        ImageView imageView, playButton;
+        ImageView imageView, playButton, info;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -220,6 +236,7 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
             name = itemView.findViewById(R.id.presentationName);
             imageView = itemView.findViewById(R.id.imageView);
             playButton = itemView.findViewById(R.id.play_button);
+            info = itemView.findViewById(R.id.info);
         }
     }
 
