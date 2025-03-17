@@ -216,6 +216,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
             jsonObject.put("CusType", type);
             jsonObject.put("sample_validation", SharedPref.getSampleValidation(context));
             jsonObject.put("input_validation",  SharedPref.getInputValidation(context));
+            jsonObject.put("activitynd", SharedPref.getActivityNd(context));
             Log.v("delCall", jsonObject.toString());
         } catch (Exception e) {
             Log.v("delCall", e.toString());
