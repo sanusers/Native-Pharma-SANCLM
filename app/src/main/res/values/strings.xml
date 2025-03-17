@@ -407,6 +407,7 @@
     <string name="fakegps_message">Fake Location detected. Your information has been sent to the admin.</string>
     <string name="title_activity_demo_main">DemoMainActivity</string>
     <string name="complete_day">Complete selected date to change date!</string>
+    <string name="no_location_please_try_again">Location not found. Please Try Again !</string>
     <string name="please_try_again">Please Try Again !</string>
     <string name="timezoneon">Turn on Automatic Date and Time in Settings.</string>
     <string name="turn_on_timezone">Turn on Automatic time zone</string>

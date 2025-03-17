@@ -11,8 +11,6 @@ import static android.view.Gravity.CENTER;
 import static android.view.Gravity.TOP;
 
 
-import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.storingSlide;
-
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -36,7 +34,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
@@ -59,7 +56,6 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -107,10 +103,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.call.DCRCallActivity;
-import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
-import saneforce.sanzen.activity.leave.Leave_Application;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -2109,8 +2102,7 @@ public class DynamicActivity extends AppCompatActivity {
         LabelText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                if(CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
                     if(!CheckLocPermission()) {
                         RequestLocationPermission();
                     }else {
@@ -2917,7 +2909,7 @@ public class DynamicActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        CommonAlertBox.CheckLocationStatus(DynamicActivity.this);
+        CommonAlertBox.CheckLocationStatus(DynamicActivity.this, gpsTrack);
     }
 
     @Override

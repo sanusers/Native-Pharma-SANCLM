@@ -24,21 +24,17 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -80,7 +76,6 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -640,8 +635,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         boolean val = false;
         gpsTrack = new GPSTrack(MapsActivity.this);
         try {
-            LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (!CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
                 new android.app.AlertDialog.Builder(MapsActivity.this).setTitle("Alert") // GPS not found
                         .setCancelable(false).setMessage("Activate the Gps to proceed further") // Want to enable?
                         .setPositiveButton("Yes", (dialogInterface, i) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))).show();
@@ -1027,7 +1021,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onResume() {
-        CommonAlertBox.CheckLocationStatus(MapsActivity.this);
+        CommonAlertBox.CheckLocationStatus(MapsActivity.this, gpsTrack);
         locationCheck();
         timeZoneVerification();
         if(mMap != null && SelectedTab != null) {
@@ -1042,7 +1036,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void locationCheck() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if (CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
             if(!CheckLocPermission()){
                 RequestLocationPermission();
             }

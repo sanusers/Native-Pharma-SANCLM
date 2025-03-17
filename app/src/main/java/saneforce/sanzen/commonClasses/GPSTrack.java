@@ -1,6 +1,8 @@
 package saneforce.sanzen.commonClasses;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,14 +11,26 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
-import java.util.Objects;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 import saneforce.sanzen.BuildConfig;
+import saneforce.sanzen.R;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.splash.SplashScreen;
 
 public class GPSTrack implements LocationListener {
 
@@ -31,9 +45,9 @@ public class GPSTrack implements LocationListener {
     // flag for GPS status
     boolean canGetLocation = false;
 
-    Location location; // location
-    double latitude; // latitude
-    double longitude; // longitude
+    static Location location; // location
+    static double latitude; // latitude
+    static double longitude; // longitude
 
     // The minimum distance to change Updates in meters
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 10 meters
@@ -44,9 +58,45 @@ public class GPSTrack implements LocationListener {
     // Declaring a Location Manager
     protected LocationManager locationManager;
     Activity activity;
+    private static AlertDialog dialog;
+    private LocationCallback locationCallback;
+    private FusedLocationProviderClient fusedLocationClient;
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(@NonNull Location location) {
+        GPSTrack.location = location;
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        locationManager.removeUpdates(this);
+        Log.w("Location", "onLocationChanged: " + latitude + " : " +longitude);
+        if(location.isFromMockProvider() && !(activity instanceof SplashScreen)) {
+            if(dialog != null && dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            HomeDashBoard.isFakeLocationDetected = true;
+            try {
+                AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+                alert.setCancelable(false);
+                LayoutInflater inflater = activity.getLayoutInflater();
+                View alertLayout = inflater.inflate(R.layout.fake_gps_alert_box, null);
+                Button btnOk = alertLayout.findViewById(R.id.BtnClose);
+                alert.setView(alertLayout);
+                dialog = alert.create();
+                if(!activity.isFinishing()) {
+                    dialog.show();
+                    if(CommonAlertBox.dialog != null && CommonAlertBox.dialog.isShowing()) {
+                        CommonAlertBox.dialog.dismiss();
+                    }
+                }
+                btnOk.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    activity.finishAffinity();
+                    System.exit(0);
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -68,12 +118,80 @@ public class GPSTrack implements LocationListener {
 
     public GPSTrack(Context context) {
         this.mContext = context;
-        activity = (Activity) context;
-
+        try {
+            activity = (Activity) context;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //isLocationEnabled();
-        getLocation();
+//        getLocation();
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext);
+
+        getCurrentLocation();
     }
 
+    private void getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); // Or PRIORITY_BALANCED_POWER_ACCURACY
+        locationRequest.setInterval(0); // Get updates as soon as possible
+        locationRequest.setFastestInterval(0); // Get updates as soon as possible
+
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                Location location = locationResult.getLastLocation(); // Get the most recent location
+
+                if (location != null) {
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+
+                    // Stop location updates once we have a fix
+                    fusedLocationClient.removeLocationUpdates(locationCallback);
+                    locationCallback = null; // Important: Clear the callback to avoid memory leaks
+
+                    GPSTrack.location = location;
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                    Log.w("Location", "onLocationChanged: " + latitude + " : " +longitude);
+                    if(location.isFromMockProvider() && !(activity instanceof SplashScreen)) {
+                        if(dialog != null && dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        HomeDashBoard.isFakeLocationDetected = true;
+                        try {
+                            AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+                            alert.setCancelable(false);
+                            LayoutInflater inflater = activity.getLayoutInflater();
+                            View alertLayout = inflater.inflate(R.layout.fake_gps_alert_box, null);
+                            Button btnOk = alertLayout.findViewById(R.id.BtnClose);
+                            alert.setView(alertLayout);
+                            dialog = alert.create();
+                            if(!activity.isFinishing()) {
+                                dialog.show();
+                                if(CommonAlertBox.dialog != null && CommonAlertBox.dialog.isShowing()) {
+                                    CommonAlertBox.dialog.dismiss();
+                                }
+                            }
+                            btnOk.setOnClickListener(v -> {
+                                dialog.dismiss();
+                                activity.finishAffinity();
+                                System.exit(0);
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+        };
+
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
 
     public Location getLocation() {
         try {
@@ -92,14 +210,44 @@ public class GPSTrack implements LocationListener {
 
             Log.v("isNetworkEnabled", "=" + isNetworkEnabled);
 
-            if (!isGPSEnabled && !isNetworkEnabled) {
+            if(!isGPSEnabled && !isNetworkEnabled) {
                 // no network provider is enabled
-               // isLocationEnabled();
-            } else {
+                // isLocationEnabled();
+                return location;
+            }else {
                 this.canGetLocation = true;
-                if (isNetworkEnabled) {
-                    location = null;
-                    if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // if GPS Enabled get lat/long using GPS Services
+                if(isGPSEnabled) {
+//                    location = null;
+                    if(ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return location;
+                    }
+                    locationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER,
+                            MIN_TIME_BW_UPDATES,
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                    Log.d("GPS Enabled", "GPS Enabled");
+//                    if(locationManager != null) {
+//                        location = locationManager
+//                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//                        if(location != null) {
+//                            latitude = location.getLatitude();
+//                            longitude = location.getLongitude();
+//                            Log.d("GPS Enabled", "GPS Enabled" + latitude);
+//
+//                        }
+//                    }
+                }
+
+                if(isNetworkEnabled) {
+//                    location = null;
+                    if(ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         // TODO: Consider calling
                         //    ActivityCompat#requestPermissions
                         // here to request the missing permissions, and then overriding
@@ -114,35 +262,15 @@ public class GPSTrack implements LocationListener {
                             MIN_TIME_BW_UPDATES,
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                     Log.d("Network", "Network");
-                    if (locationManager != null) {
-                        location = locationManager
-                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        if (location != null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                        }
-                    }
+//                    if(locationManager != null) {
+//                        location = locationManager
+//                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//                        if(location != null) {
+//                            latitude = location.getLatitude();
+//                            longitude = location.getLongitude();
+//                        }
+//                    }
                 }
-                // if GPS Enabled get lat/long using GPS Services
-                if (isGPSEnabled) {
-                    location=null;
-                    Objects.requireNonNull(locationManager).requestLocationUpdates(
-                            LocationManager.GPS_PROVIDER,
-                            MIN_TIME_BW_UPDATES,
-                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                    Log.d("GPS Enabled", "GPS Enabled");
-                    if (locationManager != null) {
-                        location = locationManager
-                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        if (location != null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                            Log.d("GPS Enabled", "GPS Enabled"+latitude);
-
-                        }
-                    }
-                }
-
 
             }
 
@@ -152,8 +280,9 @@ public class GPSTrack implements LocationListener {
 
         return location;
     }
+
     public double getLatitude() {
-        if (location != null) {
+        if(location != null) {
             latitude = location.getLatitude();
             Log.v("LATITUDE", String.valueOf(latitude));
         }
@@ -163,7 +292,7 @@ public class GPSTrack implements LocationListener {
     }
 
     public double getLongitude() {
-        if (location != null) {
+        if(location != null) {
             longitude = location.getLongitude();
 
             Log.v("LATITUDE", String.valueOf(longitude));
@@ -173,13 +302,17 @@ public class GPSTrack implements LocationListener {
         return longitude;
     }
 
+    public boolean isFakeLocation() {
+        if(location != null) {
+            return location.isFromMockProvider();
+        }
+        return false;
+    }
 
     private void openSettings() {
         Intent intent = new Intent();
-        intent.setAction(
-                Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts("package",
-                BuildConfig.APPLICATION_ID, null);
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null);
         intent.setData(uri);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(intent);

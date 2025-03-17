@@ -220,8 +220,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     protected void onResume() {
         super.onResume();
         startBackgroundThread();
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if(CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
             if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, true);
@@ -510,8 +509,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
         boolean val = false;
         gpsTrack = new GPSTrack(this);
         try {
-            LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-            if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if(!CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
                 new android.app.AlertDialog.Builder(this).setTitle("Alert")
                         .setCancelable(false).setMessage("Activate the Gps to proceed further")
                         .setPositiveButton("Yes", (dialogInterface, i) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))).show();

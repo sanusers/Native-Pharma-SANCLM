@@ -343,6 +343,7 @@ public class SharedPref {
     public static final String UNLIST_SRT_ND = "UnlistSrtNd";
     public static final String RCPA_COMPETITOR_ADD = "RCPA_competitor_add";
     public static final String GEOTAGGING = "GeoTagging";
+    public static final String DCR_APPROVAL_NEED = "DcrapprvNd";
    //myresource
     public static final String SETSYNHQ = "SETSYNHQ";
     public static final String SETSYN_HQCODE = "SETSYN_HQCODE";
@@ -429,6 +430,8 @@ public class SharedPref {
     public static final String STP_APPR_NEED = "STP_APPR_NEED";
     public static final String STP_BASED_MTP = "STP_BASED_MTP";
     public static final String STP_BASED_DCR = "STP_BASED_DCR";
+
+    public static final String LAST_CALL_SYNC_DATE = "Last Call Sync Date";
 
     public static SharedPreferences.Editor editor;
 
@@ -755,6 +758,7 @@ public class SharedPref {
         editor.putString(STP_APPR_NEED, jsonObject.getString("STP_Appr_Need"));
         editor.putString(STP_BASED_MTP, jsonObject.getString("STP_Based_MTP"));
         editor.putString(STP_BASED_DCR, jsonObject.getString("STP_Based_DCR"));
+        editor.putString(DCR_APPROVAL_NEED, jsonObject.optString("DcrapprvNd"));
         editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\",""));
         editor.apply();
 
@@ -1954,6 +1958,10 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_BASED_DCR, "");
     }
 
+    public static String getDcrApprovalNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DCR_APPROVAL_NEED, "");
+    }
+
     public static void setDrAddCallNeed(Context context, String drAddCallNeed) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2558,6 +2566,16 @@ public class SharedPref {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(TPDCR_DEVIATION_APPR_STATUS, status).apply();
+    }
+
+    public static void setLastCallSyncDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LAST_CALL_SYNC_DATE, date).apply();
+    }
+
+    public static String getLastCallSyncDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LAST_CALL_SYNC_DATE, "");
     }
 
 }

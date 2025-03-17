@@ -3,19 +3,16 @@ package saneforce.sanzen.activity.call.dcrCallSelection;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.view.GravityCompat;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -205,8 +202,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         gpsTrack = new GPSTrack(this);
         double lat = gpsTrack.getLatitude();
         double lng = gpsTrack.getLongitude();
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if(CommonUtilsMethods.isLocationEnabled(getApplicationContext())) {
             CommonUtilsMethods.gettingAddress(this, Double.parseDouble(String.valueOf(lat)), Double.parseDouble(String.valueOf(lng)), true);
         }else {
             CommonUtilsMethods.RequestGPSPermission(this);
@@ -257,6 +253,6 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        CommonAlertBox.CheckLocationStatus(DcrCallTabLayoutActivity.this);
+        CommonAlertBox.CheckLocationStatus(DcrCallTabLayoutActivity.this, gpsTrack);
     }
 }

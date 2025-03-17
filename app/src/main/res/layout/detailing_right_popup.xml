@@ -81,6 +81,7 @@
         android:layout_height="@dimen/_22sdp"
         android:layout_marginHorizontal="@dimen/_5sdp"
         android:layout_marginVertical="@dimen/_3sdp"
+        android:visibility="gone"
         android:background="@drawable/outline_orange"
         app:layout_constraintBottom_toTopOf="@id/rl_paint"
         app:layout_constraintEnd_toEndOf="parent"

@@ -222,9 +222,15 @@ public class WorkPlanEntriesNeeded {
             JSONArray holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray();
             for (int i = 0; i < holidayJSONArray.length(); i++) {
                 JSONObject jsonObject = holidayJSONArray.getJSONObject(i);
-                String holidayDate = jsonObject.optString("holiday_date");
+                String holidayDate = "";
+                if(jsonObject.has("holiday_date")) {
+                    holidayDate = jsonObject.optString("holiday_date");
+                } else {
+                    holidayDate = jsonObject.optString("Holiday_Date");
+                }
                 if(datesNeeded != null && !datesNeeded.isEmpty()) {
                     datesNeeded.remove(holidayDate);
+                    pastDates.remove(holidayDate);
                 }
             }
 
@@ -269,11 +275,12 @@ public class WorkPlanEntriesNeeded {
                 }
             }
 
-            TreeSet<String> datesNeededDup = new TreeSet<>(datesNeeded);
+            TreeSet<String> datesNeededDup = new TreeSet<>(pastDates);
             for (String date : datesNeededDup) {
                 String dayName = LocalDate.parse(date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)).getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
                 if(weeklyOffDays.contains(dayName)) {
                     datesNeeded.remove(date);
+                    pastDates.remove(date);
                 }
             }
 
@@ -300,26 +307,36 @@ public class WorkPlanEntriesNeeded {
 
         String date = null;
         Log.i("TAG", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
-        if(!SharedPref.getDayPlanStartedDate(context).isEmpty() && datesNeeded.contains(SharedPref.getDayPlanStartedDate(context)))  {
+        if(!SharedPref.getDayPlanStartedDate(context).isEmpty()
+                && datesNeeded.contains(SharedPref.getDayPlanStartedDate(context)))  {
             Log.e("set date switched1 ", "setupMyDayPlanEntriesNeeded: " + SharedPref.getDayPlanStartedDate(context));
             date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, SharedPref.getDayPlanStartedDate(context));
         }
-        else if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+        else if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")
+                && !datesNeeded.isEmpty()) {
             Log.e("set date sequential", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
             date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, datesNeeded.first());
         }
-        else if(!SharedPref.getSelectedDateCal(context).isEmpty() && datesNeeded.contains(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)))) {
+        else if(!SharedPref.getSelectedDateCal(context).isEmpty()
+                && datesNeeded.contains(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)))) {
             Log.e("set date switched2 ", "setupMyDayPlanEntriesNeeded: " + SharedPref.getSelectedDateCal(context));
             date = SharedPref.getSelectedDateCal(context);
         }
-        else if(SharedPref.getSelectedDateCal(context).isEmpty() && !datesNeeded.isEmpty() && isCallDataAvailable){
+        else if(SharedPref.getSelectedDateCal(context).isEmpty()
+                && !datesNeeded.isEmpty()
+                && isCallDataAvailable){
             Log.e("set date first", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
             date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, datesNeeded.first());
         }
-        else if(SharedPref.getSelectedDateCal(context).isEmpty() && !datesNeeded.isEmpty() && !isCallDataAvailable){
+        else if(SharedPref.getSelectedDateCal(context).isEmpty()
+                && !datesNeeded.isEmpty()
+                && !isCallDataAvailable){
             Log.e("not set date first", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
         }
-        else if(dates.containsKey(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)) && Objects.requireNonNull(dates.get(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))).equalsIgnoreCase("01") && datesNeeded.isEmpty()) {
+        else if(dates.containsKey(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))
+                && dates.get(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)) != null
+                && dates.get(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)).equalsIgnoreCase("01")
+                && datesNeeded.isEmpty()) {
             Log.e("set date today finished", "setupMyDayPlanEntriesNeeded: dates empty");
         }
         else if(!datesNeeded.isEmpty()) {
