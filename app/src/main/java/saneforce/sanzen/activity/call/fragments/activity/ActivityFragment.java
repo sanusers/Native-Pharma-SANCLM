@@ -3071,7 +3071,7 @@ public class ActivityFragment extends Fragment {
                 MainObject.put("val", jsonArray);
                 Log.v("JsonObject  :", "" + MainObject.toString());
 //                Long id = activityOfflineDataDao.saveActivityOfflineData(new ActivityOfflineDataTable(chosenActivityModelClass.getSlNo(), chosenActivityModelClass.getActivityName(), CallActivityCustDetails.get(0).getCode(), activityDate, activityTime, MainObject.toString(), 0, Constants.WAITING_FOR_SYNC));
-                activityData.add(MainObject);
+//                activityData.add(MainObject);
                 savedActivityList.add(slNo);
                 TaggedImage();
 
