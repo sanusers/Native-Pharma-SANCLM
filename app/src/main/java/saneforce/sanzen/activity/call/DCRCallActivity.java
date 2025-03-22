@@ -2497,9 +2497,7 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("mappedProds", "");
             jsonSaveDcr.put("mode", "0");
             jsonSaveDcr.put("Appver", getResources().getString(R.string.app_version));
-
-
-
+            jsonSaveDcr.put("activitynd", ActivityNeed);
 
             JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArrayWt.length(); i++) {
