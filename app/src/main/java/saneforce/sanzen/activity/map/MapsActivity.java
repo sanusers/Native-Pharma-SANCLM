@@ -732,8 +732,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 btn_confirm.setEnabled(false);
                 btn_confirm.setBackground(ContextCompat.getDrawable(context, R.drawable.tagging_disable_button));
                 if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                    tag_Image();
+
                     CallImageAPI(jsonImage.toString(), jsonObject.toString(), progressBar);
+                    tag_Image();
 
                 } else {
                     CallAPIGeo(jsonObject.toString(),progressBar);
@@ -1045,6 +1046,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 AmazonS3Client S3Client = new AmazonS3Client(credentialsProvider);
                 File fileToUpload = new File(destinationFilePath);
+                Log.d("destfilepath", "CallImageAPI: "+destinationFilePath);
                 Log.d("fileToUpload", "CallImageAPI: "+ fileToUpload.getAbsolutePath());
                 if (!fileToUpload.exists()) {
                     Log.e("S3Upload", "File does not exist: " + destinationFilePath);
@@ -1071,7 +1073,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onStateChanged(int id, TransferState state) {
                         if (state == TransferState.COMPLETED) {
-                            Log.v("S3Upload", "Upload successful"+img_url);
+                            Log.v("S3Upload", "Upload successful"+upload_url);
                             CallAPIGeo(jsonTag, progressBar);
                         } else if (state == TransferState.FAILED) {
                             Log.e("S3Upload", "Upload failed");
@@ -1106,7 +1108,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }else {
             Log.d("tag_Image", "imageFile: "+"the file do not exist");
         }
-        new AWSBuckets(MapsActivity.this, imageName, imageFile, SharedPref.getDivisionName(MapsActivity.this));
+        new AWSBuckets(MapsActivity.this, imageName, imageFile,"");
         Log.d("tag_Image", "image" + imageFile);
     }
 
@@ -1368,32 +1370,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 mMap.setInfoWindowAdapter(new MyInfoWindowAdapter(mm, MapsActivity.this));
             }
-
-          /*  if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                mMap.setOnInfoWindowClickListener(marker -> {
-                    Dialog dialog = new Dialog(MapsActivity.this);
-                    dialog.setContentView(R.layout.map_img_layout);
-                    ImageView imageView = dialog.findViewById(R.id.img_dr_content);
-
-                    if (Objects.requireNonNull(marker.getSnippet()).substring(marker.getSnippet().lastIndexOf("^") + 1).isEmpty()) {
-                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_no_img_found));
-                    } else {
-                        if (img_url.equalsIgnoreCase("null") || img_url.isEmpty()) {
-                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.save_settings_con_screen));
-                        } else {
-                            Glide.with(getApplicationContext()).load(img_url + "photos/" + marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1)).centerCrop().into(imageView);
-                            dialog.show();
-                        }
-                    }
-                });
-            }*/
-            if (GeoTagImageNeed.equalsIgnoreCase("0")) {
+            if (GeoTagImageNeed.equalsIgnoreCase("0")) {      // change from cache dir to external dir
                 mMap.setOnInfoWindowClickListener(marker -> {
                     Dialog dialog = new Dialog(MapsActivity.this);
                     dialog.setContentView(R.layout.map_img_layout);
                     ImageView imageView = dialog.findViewById(R.id.img_dr_content);
 
                     String imageName = marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1);
+                    Log.d("marker", "AddTaggedDetails: "+marker.getSnippet());
                     Log.d("ImageName", "image : " + imageName);
                     String fileName = imageName;
 
@@ -1405,10 +1389,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         String s3Key = "uploads/" + fileName;
                         String imageUrl = "https://s3." + region + ".amazonaws.com/" + bucketName + "/" + s3Key;
                         Log.d("Image URL", "Fetching image from: " + imageUrl);
-                        File MapView = new File(MapsActivity.this.getCacheDir(), fileName);
+                        File MapView = new File(MapsActivity.this.getFilesDir(), fileName);
                         Log.d("TAG", "AddTaggedDetails: "+MapView.getAbsolutePath());
                         String MapFileName = SharedPref.getDivisionName(MapsActivity.this);
-                        new AWSBuckets(MapsActivity.this, fileName, MapView, 0, MapFileName, new S3DownloadFiles() {
+                        new AWSBuckets(MapsActivity.this, fileName, MapView, 0, "", new S3DownloadFiles() {
                             @Override
                             public void fileDataAdd(int pos, Bitmap bitmap) {
                                 if(bitmap != null) {

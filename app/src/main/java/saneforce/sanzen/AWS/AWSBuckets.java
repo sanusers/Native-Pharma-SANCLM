@@ -29,7 +29,7 @@ public class AWSBuckets {
     CommonUtilsMethods commonUtilsMethods;
 
 
-    public AWSBuckets(Context context, String Filename, File File, String filestored_name) {
+    public AWSBuckets(Context context, String Filename, File File, String filestored_name) {  // for upload
         this.context = context;
         this.filename = Filename;
         this.file = File;
@@ -40,7 +40,8 @@ public class AWSBuckets {
         new AWSbucketsclass().execute();
     }
 
-    public AWSBuckets(Context context, String Filename, File File, int filepos, String filestored_name,S3DownloadFiles s3Download_Files) {
+    // download
+    public AWSBuckets(Context context, String Filename, File File, int filepos, String filestored_name,S3DownloadFiles s3Download_Files) {  // for download/ retrival
         this.context = context;
         this.filename = Filename;
         this.file = File;

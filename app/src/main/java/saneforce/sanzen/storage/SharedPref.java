@@ -427,6 +427,26 @@ public class SharedPref {
 
     public static final String LAST_CALL_SYNC_DATE = "Last Call Sync Date";
 
+    public static final String SELECTED_QUALIFICATION = "selectedqualification";
+
+    public static final String SELECTED_CATEGORY = "selectedcategory";
+
+    public static final String SELECTED_SPECIALITY = "selectedspeciality";
+
+    public static final String SELECTED_CLUSTER = "selcectedcluster";
+
+    public static final String SELECT_HQ = "selectedhq";
+
+    public static final String TAGGED_ADDRESS = "tggedaddress";
+
+    public static final String SELECTED_CLASS = "selectedclass";
+
+    public static final String LATITUDE = "lati";
+    public static final String LONGITUDE = "longi";
+    public static final String ADD_CHM = "addChm";
+    public static final String ADD_UNLST = "addDr";
+//    public static final String TAGGED_ADDRESS = "tggedaddress";
+
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -748,6 +768,8 @@ public class SharedPref {
         editor.putString(EDIT_CALL_DEL_NEED, jsonObject.getString("EditCallDelNeed"));
         editor.putString(SANZEN_EDET, jsonObject.getString("sanzen_edet"));
         editor.putString(ACTIVITY_CAP, jsonObject.getString("ActivityCap"));
+            editor.putString(ADD_CHM, jsonObject.getString("addChm"));
+            editor.putString(ADD_UNLST, jsonObject.getString("addDr"));
         editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\",""));
         editor.apply();
 
@@ -2529,6 +2551,87 @@ public class SharedPref {
 
     public static String getLastCallSyncDate(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LAST_CALL_SYNC_DATE, "");
+    }
+
+    public static int getSelectedQualification(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(SELECTED_QUALIFICATION, 0);
+    }
+
+    public static int getSelectedCategory(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(SELECTED_CATEGORY, 0);
+    }
+
+    public static int getSelectedSpeciality(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(SELECTED_SPECIALITY, 0);
+    }
+
+    public static int getSelectedCluster(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(SELECTED_CLUSTER, 0);
+    }
+    public static String getHq(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SELECT_HQ, "");
+    }
+    public static String getSaveTaggedAddress(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TAGGED_ADDRESS, "");
+    }
+
+    public static void setSelectedCategory(Context context, int category) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putInt(SELECTED_CATEGORY, category).apply();
+    }
+
+    public static void setSelectedCluster(Context context, int cluster) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putInt(SELECTED_CLUSTER, cluster).apply();
+    }
+    public static void sethq(Context context, String hq) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SELECT_HQ, hq).apply();
+    }
+    public static void setSelectedQualification(Context context, int quali) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putInt(SELECTED_QUALIFICATION, quali).apply();
+    }
+    public static void setSelectedSpeciality(Context context, int speciality) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putInt(SELECTED_SPECIALITY, speciality).apply();
+    }
+
+    public static void setSelectedClass(Context context, int clas) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putInt(SELECTED_CLASS, clas).apply();
+    }
+
+    public static int getSelectedClass(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(SELECTED_CLASS, 0);
+    }
+    public static void setSaveLatitude(Context context, double lat) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LATITUDE, String.valueOf(lat)).apply();
+    }
+    public static void setSaveLongitutde(Context context, double lat) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LONGITUDE, String.valueOf(lat)).apply();
+    }
+    public static void setSaveTaggedAddress(Context context, String lat) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TAGGED_ADDRESS, lat).apply();
+    }
+    public static String getChemistAddition(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ADD_CHM, "");
+    }
+
+    public static String getUnlistAddition(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ADD_UNLST, "");
     }
 
 }
