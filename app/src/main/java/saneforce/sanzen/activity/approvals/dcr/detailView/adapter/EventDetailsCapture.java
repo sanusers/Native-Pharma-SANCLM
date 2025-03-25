@@ -2,6 +2,8 @@ package saneforce.sanzen.activity.approvals.dcr.detailView.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
+import saneforce.sanzen.AWS.AWSBuckets;
+import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.dayReport.model.EventCaptureModelClass;
 import saneforce.sanzen.storage.SharedPref;
@@ -53,7 +59,41 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
              ImageView imageView=view1.findViewById(R.id.image);
              AlertDialog dialog1=dialog.create();
              dialog1.show();
-             Glide.with(context).load(SharedPref.getTagImageUrl(context) + List.get(position).getEventimg()).fitCenter().into(imageView);
+             String imageName = List.get(position).getEventimg().replace("photos/","");
+             String fileName  = imageName;
+
+
+
+             if (Objects.requireNonNull(fileName).isEmpty()) {
+
+             }else {
+                 String bucketName = "san.one";
+                 String region = "ap-south-1";
+                 String s3Key = "uploads/"+fileName;
+                 String imageUrl = "https://s3." + region + ".amazonaws.com/" + bucketName + "/" + s3Key;
+                 Log.d("Image URL", "Fetching image from: " + imageUrl);
+
+                 File file = new File(context.getFilesDir(),fileName);
+                 Log.d("TAG", "onBindViewHolder: " + file.getAbsolutePath());
+
+                 /*String getFile = SharedPref.getDivisionName((Activity) context);*/
+                 new AWSBuckets(context, fileName, file, 0, "", new S3DownloadFiles() {
+                     @Override
+                     public void fileDataAdd(int pos, Bitmap bitmap) {
+                         if (bitmap != null) {
+                             Log.d("bitmap image", "Image successfully loaded.");
+                             holder.Imageview.setImageBitmap(bitmap);
+                             holder.Imageview.setVisibility(View.VISIBLE);
+                         } else {
+                             Log.d("bitmap image", "Failed to load image, bitmap is null.");
+                             holder.Imageview.setVisibility(View.GONE);
+                         }
+                     }
+                 });
+             }
+
+
+//             Glide.with(context).load(SharedPref.getTagImageUrl(context) + List.get(position).getEventimg()).fitCenter().into(imageView);
          });
 
 

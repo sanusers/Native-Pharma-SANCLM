@@ -1316,15 +1316,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.near_me))) {
-            if (SharedPref.getSrtNd(this).equalsIgnoreCase("0")) {
-                if (SharedPref.getSkipCheckIn(getApplicationContext())) {
-                    goToNearMeActivity();
-                } else {
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.submit_checkin));
-                }
-            } else {
+//            if (SharedPref.getSrtNd(this).equalsIgnoreCase("0")) {
+//                if (SharedPref.getSkipCheckIn(getApplicationContext())) {
+//                    goToNearMeActivity();
+//                } else {
+//                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.submit_checkin));
+//                }
+//            } else {
                 goToNearMeActivity();
-            }
+//            }
         }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.survey))) {

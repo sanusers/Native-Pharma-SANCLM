@@ -3,7 +3,9 @@ package saneforce.sanzen.activity.homeScreen.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -21,6 +23,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -43,7 +55,10 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.R;
+//import saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1;
+//import saneforce.sanzen.activity.call.pojo.Signature.CallSignCaptureImageList;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.adapters.outbox.OutBoxHeaderAdapter;
 import saneforce.sanzen.activity.homeScreen.modelClass.CheckInOutModelClass;
@@ -51,6 +66,7 @@ import saneforce.sanzen.activity.homeScreen.modelClass.DaySubmitModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
+//import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.WorkPlanModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -59,6 +75,7 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
+//import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
 import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -89,10 +106,15 @@ public class OutboxFragment extends Fragment {
     private static MasterDataDao masterDataDao;
     private OfflineCheckInOutDataDao offlineCheckInOutDataDao;
     private CallOfflineECDataDao callOfflineECDataDao;
+//    private CallOfflineSignDataDao callOfflineSignDataDao;
     private CallOfflineWorkTypeDataDao offlineWorkTypeDataDao;
     private OfflineDaySubmitDao offlineDaySubmitDao;
     private static CallsUtil callsUtil;
     private int callSyncCount = 0;
+    ProgressDialog progressDialog = null;
+    String baseUrl = "http://sanffa.info/iOSServer/db_api.php/";
+
+    private android.graphics.Bitmap Bitmap;
 
     public static void NetworkConnectCallHomeDashBoard(String log) {
 
@@ -132,6 +154,7 @@ public class OutboxFragment extends Fragment {
         masterDataDao =db.masterDataDao();
         offlineCheckInOutDataDao = db.offlineCheckInOutDataDao();
         callOfflineECDataDao = db.callOfflineECDataDao();
+//        callOfflineSignDataDao = db.callOfflineSignDataDao();
         offlineWorkTypeDataDao = db.callOfflineWorkTypeDataDao();
         offlineDaySubmitDao = db.offlineDaySubmitDao();
         callsUtil = new CallsUtil(requireContext());
@@ -402,8 +425,31 @@ public class OutboxFragment extends Fragment {
         }
         if (!isCallAvailable) {
             CallAPIDaySubmit(ParentPos, 4, listDates.get(ParentPos).getChildItems().get(4).getDaySubmitModelClass(), modelClass);
+//             CallOfflineSignImg(ParentPos,4 , listDates.get(ParentPos).getChildItems().get(4).getSignModelClasses(), modelClass);
         }
     }
+
+    // something wrong!!!! the size is 0 rectify it
+//    private void CallOfflineSignImg(int ParentPos, int ChildPos, ArrayList<SignModelClass> signModelClasses, GroupModelClass modelClass){
+//         if(signModelClasses.size()>0){                                       // the size should be 1
+//             Log.d("SignModelClass", "CallOfflineSignImg: "+signModelClasses.size());
+//            isCallAvailable = false;                                          // value should be false
+//            for (int i = 0; i<signModelClasses.size(); i++){                  // value is 1
+//                SignModelClass signModelClass = signModelClasses.get(i);      // should give all the det of model class
+//                if (signModelClass.getSynced() == 0){
+//                    isCallAvailable = true;
+//                    CallSendSignImage(ParentPos, signModelClass, ChildPos, i, signModelClass.getFilePath(),signModelClass.getJson_values(),String.valueOf(signModelClass.getId()), modelClass);
+//                    break;
+//                }
+//            }
+//        }else{
+//            isCallAvailable = false;
+//            Log.d("MC", "CallOfflineSignImg: "+"is absent");
+//        }
+//        if (!isCallAvailable){
+//            CallAPIDaySubmit(ParentPos, 5, listDates.get(ParentPos).getChildItems().get(5).getDaySubmitModelClass(), modelClass);
+//        }
+//    }
 
     private void CallAPIDaySubmit(int ParentPos, int ChildPos, DaySubmitModelClass daySubmitModelClass, GroupModelClass modelClass) {
         if(daySubmitModelClass != null) {
@@ -424,6 +470,7 @@ public class OutboxFragment extends Fragment {
                     && listDates.get(ParentPos).getChildItems().get(1).getWorkPlanModelClass() == null
                     && listDates.get(ParentPos).getChildItems().get(2).getOutBoxCallLists().isEmpty()
                     && listDates.get(ParentPos).getChildItems().get(3).getEcModelClasses().isEmpty()
+//                    && listDates.get(ParentPos).getChildItems().get(4).getSignModelClasses().isEmpty()
                     && listDates.get(ParentPos).getChildItems().get(4).getDaySubmitModelClass() == null) {
                 listDates.remove(ParentPos);
             }else {
@@ -435,43 +482,129 @@ public class OutboxFragment extends Fragment {
     }
 
 
-    private void CallSendAPIImage(int parentPos, EcModelClass ecModelClass, int childPos, int CurrentPos, String jsonValues, String filePath, String id, GroupModelClass modelClass) {
-        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
-        MultipartBody.Part img = convertImg("EventImg", filePath);
-        HashMap<String, RequestBody> values = field(jsonValues);
-        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
-        saveImgDcr.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        assert response.body() != null;
-                        JSONObject json = new JSONObject(response.body().toString());
-                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
-                            DeleteCacheFile(filePath, id, CurrentPos, parentPos, childPos, modelClass);
-                        } else {
+//    private void CallSendAPIImage(int parentPos, EcModelClass ecModelClass, int childPos, int CurrentPos,
+//    String jsonValues, String filePath, String id, GroupModelClass modelClass) {
+//        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
+//        MultipartBody.Part img = convertImg("EventImg", filePath);
+//        HashMap<String, RequestBody> values = field(jsonValues);
+//        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
+//        saveImgDcr.enqueue(new Callback<JsonObject>() {
+//            @Override
+//            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+//                if (response.isSuccessful()) {
+//                    try {
+//                        assert response.body() != null;
+//                        JSONObject json = new JSONObject(response.body().toString());
+//                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
+//                            DeleteCacheFile(filePath, id, CurrentPos, parentPos, childPos, modelClass);
+//                        } else {
+//                            ecModelClass.setSynced(1);
+//                            ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
+//                            callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
+//                            CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+//                        }
+//                    } catch (Exception e) {
+//                        Log.v("SendOutboxCall", "-error---" + e);
+//                        ecModelClass.setSynced(1);
+//                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+//                        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+//                ecModelClass.setSynced(1);
+//                ecModelClass.setSync_status(Constants.CALL_FAILED);
+//                callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
+//                CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+//            }
+//        });
+//    }
+
+    // Event Capture S3
+    private void CallSendAPIImage(int parentPos, EcModelClass ecModelClass, int childPos, int CurrentPos,
+                                  String jsonValues, String filePath, String id, GroupModelClass modelClass) {
+        try {
+
+            CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                    context,
+                    "ap-south-1:c4c0fc81-118d-43e3-84cf-051f1bd831b9",
+                    Regions.AP_SOUTH_1);
+
+            AmazonS3Client s3Client = new AmazonS3Client(credentialsProvider);
+            s3Client.setRegion(Region.getRegion(Regions.AP_SOUTH_1));
+
+
+            File fileToUpload = new File(filePath);
+            Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
+            if (!fileToUpload.exists()) {
+                Log.d("fileToUpload", "not exists: " + filePath);
+            } else {
+
+                String bucketName = "san.one";
+                String s3Key = "uploads/" + fileToUpload.getName();
+                Log.d("TAG", "CallSendAPIImage: " + s3Key);
+
+                String UploadUrl = "https://" + "s3." + "ap-south-1." + "amazonaws.com/" + bucketName + "/" + s3Key;
+                Log.d("S3UploadUrl", "CallSendAPIImage: " + UploadUrl);
+
+                TransferNetworkLossHandler.getInstance(context);
+
+                TransferUtility transferUtility = TransferUtility.builder()
+                        .context(context)
+                        .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                        .s3Client(s3Client)
+                        .defaultBucket(bucketName)
+                        .build();
+
+                TransferObserver uploadObserver = transferUtility.upload(
+                        bucketName,
+                        s3Key,
+                        fileToUpload);
+                uploadObserver.setTransferListener(new TransferListener() {
+                    @Override
+                    public void onStateChanged(int id, TransferState state) {
+                        if (state == TransferState.COMPLETED) {
+                            Log.d("TAG", "ecModelClass: " + filePath);
+                            InsertImage(ecModelClass.getFilePath(), context);
+                            DeleteCacheFile(filePath, "", CurrentPos, parentPos, childPos, modelClass);
+                            Log.d("S3 Upload", "Upload Successful: " + s3Key);
+
+
+                        } else if (state == TransferState.FAILED) {
+
+                            Log.e("S3 Upload", "Upload Failed");
+                            InsertImage(ecModelClass.getFilePath(), context);
+
                             ecModelClass.setSynced(1);
-                            ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
-                            callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
+                            ecModelClass.setSync_status(Constants.CALL_FAILED);
+                            callOfflineECDataDao.updateECStatus("", Constants.CALL_FAILED, 1);
                             CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
                         }
-                    } catch (Exception e) {
-                        Log.v("SendOutboxCall", "-error---" + e);
+
+                    }
+
+                    @Override
+                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                        double progress = (bytesCurrent * 100.0) / bytesTotal;
+                        Log.d("S3 Upload", "Upload Progress: " + progress + "%");
+                    }
+
+                    @Override
+                    public void onError(int id, Exception ex) {
+                        Log.e("S3 Upload", "Error: " + ex.getMessage());
                         ecModelClass.setSynced(1);
                         ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-                        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+                        callOfflineECDataDao.updateECStatus("", Constants.EXCEPTION_ERROR, 1);
                     }
-                }
-            }
+                });
 
-            @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                ecModelClass.setSynced(1);
-                ecModelClass.setSync_status(Constants.CALL_FAILED);
-                callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
-                CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
             }
-        });
+        } catch(Exception e){
+            Log.v("img_tag", e.toString());
+        }
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -489,6 +622,94 @@ public class OutboxFragment extends Fragment {
         notifyedmethod();
         CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
     }
+//   private void CallSendSignImage(int parentPos, SignModelClass signModelClass, int childPos, int CurrentPos, String jsonValues, String filePath, String id, GroupModelClass modelClass) {
+//        try {
+//            MultipartBody.Part signImg = convertImg("Signature", filePath);
+//            if (signImg == null) {
+//                Log.e("ConvertImg", "uploadSignature: File Doesn't exist");
+//                return;
+//            }
+//
+//            ApiInterface apiInterface = RetrofitClient.getRetrofit(context, baseUrl);
+//            HashMap<String, RequestBody> values = field(jsonValues);
+//            Call<JsonObject> signUpload = apiInterface.SignUpload(values, signImg);
+//
+//            signUpload.enqueue(new Callback<JsonObject>() {
+//                @Override
+//                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+//                    if (response.isSuccessful() && response.body() != null) {
+//                        try {
+//                            JSONObject json = new JSONObject(response.body().toString());
+//                            if ("true".equalsIgnoreCase(json.optString("success")) && "Sign Has Been Updated".equalsIgnoreCase(json.optString("msg"))) {
+//                                DeleteFileCache(filePath,id,CurrentPos,childPos,parentPos,modelClass);
+//                                Log.d("SignUpload", "Signature uploaded successfully: " + filePath);
+//                            } else {
+//                                handleUploadFailure(signModelClass, id, Constants.DUPLICATE_CALL, parentPos, childPos, modelClass);
+//                                Log.e("SignUpload", "Signature upload failed: " + json.toString());
+//                            }
+//                        } catch (JSONException e) {
+//                            handleUploadFailure(signModelClass, id, Constants.EXCEPTION_ERROR, parentPos, childPos, modelClass);
+//                            Log.e("SignUpload", "JSONException: " + e.getMessage());
+//                        }
+//                    } else {
+//                        handleUploadFailure(signModelClass, id, Constants.CALL_FAILED, parentPos, childPos, modelClass);
+//                        Log.e("SignUpload", "API call failed: " + (response.errorBody() != null ? response.errorBody().toString() : ""));
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<JsonObject> call, Throwable t) {
+//                    handleUploadFailure(signModelClass, id, Constants.CALL_FAILED, parentPos, childPos, modelClass);
+//                    Log.e("SignUpload", "Network failure: " + t.getMessage());
+//                }
+//
+//                private void handleUploadFailure(SignModelClass signModelClass, String id, String status, int parentPos, int childPos, GroupModelClass modelClass) {
+//                    signModelClass.setSynced(1);
+//                    signModelClass.setSync_status(status);
+//                    callOfflineSignDataDao.updateSignStatus(id, status, 1);
+//                    CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
+//                }
+//            });
+//
+//        } catch (Exception e) {
+//            Log.e("SignUpload", "General Exception: " + e.getMessage());
+//        }
+//    }
+
+//    private void CallSendSignImage(int parentPos, SignModelClass signModelClass, int childPos, int CurrentPos, String jsonValues, String signFilePath, String id, GroupModelClass modelClass){
+//
+//        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, baseUrl);
+//        MultipartBody.Part signImg = convertImg("SignImage",signFilePath);
+//        HashMap<String,RequestBody> signValues = field(jsonValues);
+//        Call<JsonObject> saveSignImg = apiInterface.SignUpload(signValues,signImg);
+//        saveSignImg.enqueue(new Callback<JsonObject>() {
+//            @Override
+//            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<JsonObject> call, Throwable t) {
+//
+//            }
+//        });
+//
+//
+//    }
+//    private void DeleteFileCache(String filePath,String id, int currentPos, int parentPos, int childPos, GroupModelClass modelClass) {
+//        File fileDelete = new File(filePath);
+//        if (fileDelete.exists()) {
+//            if (fileDelete.delete()) {
+//                System.out.println("file Deleted :" + filePath);
+//            } else {
+//                System.out.println("file not Deleted :" + filePath);
+//            }
+//        }
+//        callOfflineSignDataDao.deleteAllSignData();
+//        listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses().remove(currentPos);
+//        notifyedmethod();
+//        CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
+//    }
 
     private void CallSendAPI(OutBoxCallList outBoxCallList, int parentPos, int childPos, int CurrentPos, String date, String cusName, String cusCode, String jsonData, String cusType, int syncCount, GroupModelClass modelClass) {
         JSONObject jsonSaveDcr;
@@ -857,6 +1078,13 @@ public class OutboxFragment extends Fragment {
         }
         return yy;
     }
+
+    private void InsertImage(final String ImageUrl, Context context) {
+        File imageFile = new File(ImageUrl);
+        Log.d("AWS_s3", "fileToUpload" + "--" + imageFile);
+        String fileName = new File(ImageUrl).getName();
+        new AWSBuckets(context,fileName,imageFile,"");
+    }
 /*
     private void CallSendAPIImage(ArrayList<EcModelClass> ecModelClasses, int position, String id, String jsonValues, String filePath) {
         ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
@@ -987,3 +1215,9 @@ public class OutboxFragment extends Fragment {
        }
    }
 }
+
+
+/*
+* to send the signature as itself to canvas
+*   Send the signature as image to server
+*   then create an method to reverse the process like get the image from server and place it in the canvas*/

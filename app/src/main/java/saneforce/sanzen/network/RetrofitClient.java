@@ -1,5 +1,7 @@
 package saneforce.sanzen.network;
 
+import static saneforce.sanzen.activity.homeScreen.fragment.CallAnalysisFragment.context;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 //import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -18,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    static Retrofit getClient(String baseUrl) {
+   public static Retrofit getClient(Context context, String baseUrl) {
         try {
 //            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
 //            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -46,8 +48,8 @@ public class RetrofitClient {
         return null;
     }
 
-    public static ApiInterface getRetrofit(Context context, String baseUrl) {
-        return getClient(baseUrl).create(ApiInterface.class);
+    public static ApiInterface getRetrofit(Context context,String baseUrl) {
+        return getClient(context,baseUrl).create(ApiInterface.class);
     }
 
     private static OkHttpClient.Builder GetConfigUnsafeOkHttpClient() {

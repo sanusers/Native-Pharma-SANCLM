@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:context=".activity.map.MapsActivity"
+        tools:layout="@layout/activity_maps" />
+
+
+    <View
+        android:id="@+id/view_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_30sdp"
+        android:background="@color/dark_purple"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="@dimen/_10sdp"
+        android:layout_height="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        android:cropToPadding="true"
+        android:gravity="center"
+        android:src="@drawable/arrow_back_white"
+        app:layout_constraintBottom_toBottomOf="@id/view_top"
+        app:layout_constraintRight_toLeftOf="@id/tag_selection"
+        app:layout_constraintStart_toStartOf="@id/view_top"
+        app:layout_constraintTop_toTopOf="@id/view_top"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tag_selection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:gravity="center"
+        android:padding="@dimen/_2sdp"
+        android:text="@string/txt_tagging"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_7ssp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/view_top"
+        app:layout_constraintLeft_toRightOf="@id/iv_back"
+        app:layout_constraintTop_toTopOf="@id/view_top"
+        tools:ignore="TextSizeCheck" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_mid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        app:layout_constraintBottom_toBottomOf="@id/view_top"
+        app:layout_constraintEnd_toStartOf="@id/btn_tag"
+        app:layout_constraintStart_toEndOf="@id/tag_selection"
+        app:layout_constraintTop_toTopOf="@id/view_top">
+
+        <View
+            android:id="@+id/view_one"
+            android:layout_width="0.5dp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:paddingVertical="@dimen/_2sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_16sdp"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:background="@drawable/bg_pink"
+        android:drawableStart="@drawable/img_tag"
+        android:drawablePadding="@dimen/_4sdp"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_6sdp"
+        android:text="@string/txt_add_tag"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_7ssp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/view_top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/constraint_mid"
+        app:layout_constraintTop_toTopOf="@id/view_top"
+        tools:ignore="RtlSymmetry,TextContrastCheck,TouchTargetSizeCheck,TouchTargetSizeCheck" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="visible"
+        android:id="@+id/constraint_tagged_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:drawablePadding="@dimen/_2sdp"
+        android:paddingVertical="@dimen/_4sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_top"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            android:id="@+id/tv_tagged_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start|center"
+            android:padding="@dimen/_1sdp"
+            android:singleLine="false"
+            android:text="No. 569, mount road, sathya murthy nagar, Teynampet, Chennai, Tamilnadu 600 018, India"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_6ssp"
+            android:textStyle="bold"
+            android:visibility="visible"
+            app:drawableStartCompat="@drawable/img_marker_purple"
+            app:layout_constraintBottom_toTopOf="@id/tv_tagged_address"
+            app:layout_constraintEnd_toStartOf="@id/tv_meters"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_meters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:background="@drawable/bg_sample"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_6sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:text="106 \n Meters"
+            android:textColor="@color/pink"
+            android:textSize="@dimen/_7ssp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_tagged_address"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/tv_tagged_address_old"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start|center"
+            android:padding="@dimen/_1sdp"
+            android:singleLine="false"
+            android:text="No. 569, mount road, sathya murthy nagar, Teynampet, Chennai, Tamilnadu 600 018, India"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_6ssp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/img_refresh_map"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
+        android:layout_margin="@dimen/_4sdp"
+        android:background="@drawable/bg_purple"
+        android:cropToPadding="true"
+        android:padding="@dimen/_4sdp"
+        android:src="@drawable/img_refresh"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/img_cur_loc"
+        app:layout_constraintTop_toBottomOf="@id/constraint_tagged_view"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="ContentDescription" />
+
+
+    <ImageView
+        android:id="@+id/img_cur_loc"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
+        android:layout_margin="@dimen/_4sdp"
+        android:background="@drawable/bg_purple"
+        android:cropToPadding="true"
+        android:padding="@dimen/_4sdp"
+        android:src="@drawable/img_curr_loc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraint_tagged_view"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="ContentDescription" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

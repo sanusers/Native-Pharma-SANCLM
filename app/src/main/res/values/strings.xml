@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">T.1.0.4</string>
+    <string name="app_version" translatable="false">T.1.0.5</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -488,4 +488,33 @@
     <string name="add_plan">Add Plan</string>
     <string name="rejection_re_entry_need">Should only be Rejection/Re-entry to edit or delete WorkPlan</string>
     <string name="deleting_field_work_with_calls">Deleting Field work will also delete all calls</string>
+
+    <string name="Signature">Signature</string>
+    <string name="fill">Please fill </string>
+    <string name="select_headquater">SELECT HEADQUARTER</string>
+    <string name="saved_successfully">Saved Successfully</string>
+    <string name="location_add"> Location Added Successfully</string>
+    <string name="name_mandt">Name <font color='#FF0000'>*</font></string>
+    <string name="hq_mandt">Headquarter <font color='#FF0000'>*</font></string>
+    <string name="additional_doctor">Add Unlisted Doctor</string>
+    <string name="Photocapture">Photo Capture</string>
+    <string name="mobile">Mobile</string>
+    <string name="DOB">DOB</string>
+    <string name="DOW">DOW</string>
+    <string name="catogy">Category</string>
+    <string name="phone">Phone</string>
+    <string name="qualifications">Qualification</string>
+    <string name="terr_mandt">Cluster <font color='#FF0000'>*</font></string>
+    <string name="additional_chemist">Add Chemist</string>
+    <string name="clases">Class</string>
+    <string name="cat_selection">Category Selection</string>
+    <string name="cluster_selection">Cluster Selection</string>
+    <string name="qualification_selction">Qualification Selection</string>
+    <string name="class_selction">Class Selection</string>
+    <string name="speciality_selction">Speciality Selection</string>
+    <string name="speciality_mandt">Speciality <font color='#FF0000'>*</font></string>
+    <string name="catogy_mandt">Category <font color='#FF0000'>*</font></string>
+    <string name="clases_mandt">Class <font color='#FF0000'>*</font></string>
+    <string name="qualifications_mandt">Qualification <font color='#FF0000'>*</font></string>
+
 </resources>

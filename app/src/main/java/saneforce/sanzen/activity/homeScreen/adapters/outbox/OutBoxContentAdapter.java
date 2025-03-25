@@ -48,6 +48,7 @@ import saneforce.sanzen.activity.homeScreen.modelClass.ChildListModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.DaySubmitModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
+//import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.WorkPlanModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -56,6 +57,7 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
+//import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
 import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -82,9 +84,11 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     MasterDataDao masterDataDao;
     private final OfflineCheckInOutDataDao offlineCheckInOutDataDao;
     private final CallOfflineECDataDao callOfflineECDataDao;
+//    private final CallOfflineSignDataDao callOfflineSignDataDao;
     private final OfflineDaySubmitDao offlineDaySubmitDao;
     private final CallOfflineWorkTypeDataDao callOfflineWorkTypeDataDao;
     private final CallsUtil callsUtil;
+    String baseUrl = "http://sanffa.info/iOSServer/db_api.php/";
 
     public OutBoxContentAdapter(Activity activity, Context context, ArrayList<ChildListModelClass> groupModelClasses) {
         this.activity = activity;
@@ -97,6 +101,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         masterDataDao=roomDB.masterDataDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
+//        callOfflineSignDataDao = roomDB.callOfflineSignDataDao();
         callOfflineWorkTypeDataDao = roomDB.callOfflineWorkTypeDataDao();
         offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
         callsUtil = new CallsUtil(context);
@@ -197,6 +202,8 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                         CallAPIListImage(position);
                         break;
                     case 4:
+//                        CallApiSignImage(position);
+//                    case 5:
                         CallAPIDaySubmit(position);
                         break;
                 }
@@ -465,9 +472,26 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         }
         if (!isCallAvailable) {
             progressDialog.dismiss();
-            RefreshAdapter();
         }
     }
+//    private void CallApiSignImage(int position){
+//        if(!childListModelClasses.get(position).getSignModelClasses().isEmpty()){
+//            isCallAvailable = false;
+//            for(int i = 0; i < childListModelClasses.get(position).getSignModelClasses().size();i++){
+//                SignModelClass signModelClass = childListModelClasses.get(position).getSignModelClasses().get(i);
+//                if(signModelClass.getSynced() == 0){
+//                    CallSendSignImage(position,i,signModelClass,signModelClass.getJson_values(),signModelClass.getFilePath(), String.valueOf(signModelClass.getId()));
+//                }
+//                break;
+//            }
+//        }else{
+//            isCallAvailable = false;
+//        }
+//        if (!isCallAvailable){
+//            progressDialog.dismiss();
+//            RefreshAdapter();
+//        }
+//    }
 
     @SuppressLint("NotifyDataSetChanged")
     private void RefreshAdapter() {
@@ -537,6 +561,51 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         CallAPIListImage(position);
     }
 
+//    private void CallSendSignImage(int position,int i, SignModelClass signModelClass, String jsonValues, String filePath, String id){
+//        ApiInterface apiInterface = RetrofitClient.getRetrofit(context,baseUrl);
+//        MultipartBody.Part signImg = convertImg("SignatureImage",filePath);
+//        HashMap<String,RequestBody> signValues = field(jsonValues);
+//        Call<JsonObject> saveSignImg = apiInterface.SignUpload(signValues,signImg);
+//
+//        saveSignImg.enqueue(new Callback<JsonObject>() {
+//            @Override
+//            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+//                if(response.isSuccessful()){
+//                    try{
+//                        assert response.body() != null;
+//                        JSONObject json = new JSONObject(response.body().toString());
+//                        if(json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Signature Recorded")){
+//                            DeleteCacheFile(filePath,id,i,position);
+//                        }else{
+//                            signModelClass.setSynced(1);
+//                            signModelClass.setSync_status(Constants.CALL_FAILED);
+//                            callOfflineSignDataDao.updateSignStatus(id, Constants.DUPLICATE_CALL, 1);
+//                            CallApiSignImage(position);
+//                        }
+//
+//                        if (!childListModelClasses.get(position).getEcModelClasses().isEmpty()) {
+//                            RefreshAdapter();
+//                        }
+//
+//                    } catch (Exception e) {
+//                        Log.v("SendOutboxCall", "-error---" + e);
+//                        signModelClass.setSynced(1);
+//                        signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+//                        callOfflineSignDataDao.updateSignStatus(id, Constants.EXCEPTION_ERROR, 1);
+//                        CallApiSignImage(position);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<JsonObject> call, Throwable t) {
+//                signModelClass.setSynced(1);
+//                signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+//                callOfflineSignDataDao.updateSignStatus(id, Constants.EXCEPTION_ERROR, 1);
+//                CallApiSignImage(position);
+//            }
+//        });
+//    }
 
     public HashMap<String, RequestBody> field(String val) {
         HashMap<String, RequestBody> xx = new HashMap<>();
@@ -744,3 +813,4 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     }
 }
 
+// want to write delete block for signature

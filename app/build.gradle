@@ -16,7 +16,7 @@ android {
         minSdk 23
         targetSdk 34
         versionCode 52
-        versionName "1.0.4"
+        versionName "1.0.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -133,7 +133,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
     //Pdf viewer
-    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+//    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+    implementation 'com.github.barteksc:AndroidPdfViewer:master-SNAPSHOT'
 
     //imgCompressor
     implementation 'id.zelory:compressor:2.1.1'
@@ -162,5 +163,9 @@ dependencies {
     //mail
 //    implementation 'com.sun.mail:android-mail:1.6.6'
 //    implementation 'com.sun.mail:android-activation:1.6.7'
+
+    //AWS S3
+    implementation "com.amazonaws:aws-android-sdk-s3:2.51.0"
+    implementation("com.amazonaws:aws-android-sdk-mobile-client:2.51.0") { transitive = true }
 }
 
