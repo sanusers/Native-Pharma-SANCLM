@@ -58,7 +58,7 @@ import saneforce.sanzen.activity.homeScreen.modelClass.DaySubmitModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
-import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
+//import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.WorkPlanModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -67,7 +67,7 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
-import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
+//import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
 import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -93,7 +93,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
      private final CallOfflineECDataDao callOfflineECDataDao;
      private final CallOfflineWorkTypeDataDao offlineWorkTypeDataDao;
      private final OfflineDaySubmitDao offlineDaySubmitDao;
-     private final CallOfflineSignDataDao callOfflineSignDataDao;
+//     private final CallOfflineSignDataDao callOfflineSignDataDao;
      private final CallsUtil callsUtil;
     String baseUrl = "http://sanffa.info/iOSServer/db_api.php/";
 
@@ -107,7 +107,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         masterDataDao=db.masterDataDao();
         offlineCheckInOutDataDao = db.offlineCheckInOutDataDao();
         callOfflineECDataDao = db.callOfflineECDataDao();
-        callOfflineSignDataDao = db.callOfflineSignDataDao();
+//        callOfflineSignDataDao = db.callOfflineSignDataDao();
         offlineWorkTypeDataDao = db.callOfflineWorkTypeDataDao();
         offlineDaySubmitDao = db.offlineDaySubmitDao();
         callsUtil = new CallsUtil(context);
@@ -350,30 +350,30 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         }
 
         if (!isCallAvailable) {
-            CallApiSignImage(groupModelClass, 4);
-//            CallAPIDaySubmit(groupModelClass, 4);
+//            CallApiSignImage(groupModelClass, 4);
+            CallAPIDaySubmit(groupModelClass, 4);
         }
     }
 
-    public void CallApiSignImage(GroupModelClass groupModelClass, int childPos){
-        if(!groupModelClass.getChildItems().get(childPos).getSignModelClasses().isEmpty()){
-            isCallAvailable = true;
-            for(int i=0; i< groupModelClass.getChildItems().get(childPos).getSignModelClasses().size(); i++){
-                SignModelClass signModelClass = groupModelClass.getChildItems().get(childPos).getSignModelClasses().get(i);
-                if(signModelClass.getSynced()==0){
-                    isCallAvailable = true;
-
-                    CallSendSignImage(groupModelClass,signModelClass,childPos,i,signModelClass.getJson_values(),signModelClass.getFilePath(),String.valueOf(signModelClass.getId()));
-                    break;
-                }
-            }
-        }else{
-            isCallAvailable = false;
-        }
-        if(!isCallAvailable){
-            CallAPIDaySubmit(groupModelClass, 5);
-        }
-    }
+//    public void CallApiSignImage(GroupModelClass groupModelClass, int childPos){
+//        if(!groupModelClass.getChildItems().get(childPos).getSignModelClasses().isEmpty()){
+//            isCallAvailable = true;
+//            for(int i=0; i< groupModelClass.getChildItems().get(childPos).getSignModelClasses().size(); i++){
+//                SignModelClass signModelClass = groupModelClass.getChildItems().get(childPos).getSignModelClasses().get(i);
+//                if(signModelClass.getSynced()==0){
+//                    isCallAvailable = true;
+//
+//                    CallSendSignImage(groupModelClass,signModelClass,childPos,i,signModelClass.getJson_values(),signModelClass.getFilePath(),String.valueOf(signModelClass.getId()));
+//                    break;
+//                }
+//            }
+//        }else{
+//            isCallAvailable = false;
+//        }
+//        if(!isCallAvailable){
+//            CallAPIDaySubmit(groupModelClass, 5);
+//        }
+//    }
 
     private void CallAPIDaySubmit(GroupModelClass groupModelClass, int childPos) {
         if(groupModelClass.getChildItems().get(childPos).getDaySubmitModelClass() != null) {
@@ -541,47 +541,48 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         CallAPIListImage(groupModelClass, childPos);
     }
 
-    public void CallSendSignImage(GroupModelClass groupModelClass,SignModelClass signModelClass,int childPos,int i,String jsonValues,String filePath,String id){
-        ApiInterface apiInterface = RetrofitClient.getRetrofit(context,baseUrl);
-        MultipartBody.Part signImg = convertImg("SignatureImage",filePath);
-        HashMap<String,RequestBody> signValues = field(jsonValues);
-        Call<JsonObject> saveSignImg = apiInterface.SignUpload(signValues,signImg);
+//    public void CallSendSignImage(GroupModelClass groupModelClass,SignModelClass signModelClass,int childPos,int i,String jsonValues,String filePath,String id){
+//        ApiInterface apiInterface = RetrofitClient.getRetrofit(context,baseUrl);
+//        MultipartBody.Part signImg = convertImg("SignatureImage",filePath);
+//        HashMap<String,RequestBody> signValues = field(jsonValues);
+//        Call<JsonObject> saveSignImg = apiInterface.SignUpload(signValues,signImg);
+//
+//        saveSignImg.enqueue(new Callback<JsonObject>() {
+//            @Override
+//            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+//                if(response.isSuccessful()){
+//                    try{
+//                        assert response.body() != null;
+//                        JSONObject json = new JSONObject(response.body().toString());
+//                        if(json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Signature Recorded")){
+//                            DeleteCacheFile(groupModelClass,groupModelClass.getChildItems().get(childPos).getEcModelClasses().get(i).getFilePath(),id,i,childPos);
+//                        }else{
+//                            signModelClass.setSynced(1);
+//                            signModelClass.setSync_status(Constants.CALL_FAILED);
+//                            callOfflineSignDataDao.updateSignStatus(id, Constants.DUPLICATE_CALL, 1);
+//                            CallApiSignImage(groupModelClass,childPos);
+//                        }
+//
+//                    } catch (Exception e) {
+//                        Log.v("SendOutboxCall", "-error---" + e);
+//                        signModelClass.setSynced(1);
+//                        signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+//                        callOfflineSignDataDao.updateSignStatus(id, Constants.EXCEPTION_ERROR, 1);
+//                        CallApiSignImage(groupModelClass, childPos);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<JsonObject> call, Throwable t) {
+//                signModelClass.setSynced(1);
+//                signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+//                callOfflineSignDataDao.updateSignStatus(id, Constants.EXCEPTION_ERROR, 1);
+//                CallApiSignImage(groupModelClass, childPos);
+//            }
+//        });
+//    }
 
-        saveSignImg.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if(response.isSuccessful()){
-                    try{
-                        assert response.body() != null;
-                        JSONObject json = new JSONObject(response.body().toString());
-                        if(json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Signature Recorded")){
-                            DeleteCacheFile(groupModelClass,groupModelClass.getChildItems().get(childPos).getEcModelClasses().get(i).getFilePath(),id,i,childPos);
-                        }else{
-                            signModelClass.setSynced(1);
-                            signModelClass.setSync_status(Constants.CALL_FAILED);
-                            callOfflineSignDataDao.updateSignStatus(id, Constants.DUPLICATE_CALL, 1);
-                            CallApiSignImage(groupModelClass,childPos);
-                        }
-
-                    } catch (Exception e) {
-                        Log.v("SendOutboxCall", "-error---" + e);
-                        signModelClass.setSynced(1);
-                        signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-                        callOfflineSignDataDao.updateSignStatus(id, Constants.EXCEPTION_ERROR, 1);
-                        CallApiSignImage(groupModelClass, childPos);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                signModelClass.setSynced(1);
-                signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-                callOfflineSignDataDao.updateSignStatus(id, Constants.EXCEPTION_ERROR, 1);
-                CallApiSignImage(groupModelClass, childPos);
-            }
-        });
-    }
     private void CallSendAPI(GroupModelClass groupModelClass, OutBoxCallList outBoxCallList, int childPos, int outBoxList, String date, String cusName, String cusCode, String jsonData, int SyncCount) {
         JSONObject jsonSaveDcr;
         try {

@@ -423,13 +423,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         AppIdentify();
         onClickListener();
         accessibility();
-        if (SharedPref.getSrtNd(this).equalsIgnoreCase("0") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
-            SharedPref.setCheckInTime(getApplicationContext(), "");
-            SharedPref.setSkipCheckIn(getApplicationContext(), true);
-            CheckInOutDate();
-        } else {
-            SharedPref.setSkipCheckIn(getApplicationContext(), false);
-        }
+//        if (SharedPref.getSrtNd(this).equalsIgnoreCase("0") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
+//            SharedPref.setCheckInTime(getApplicationContext(), "");
+//            SharedPref.setSkipCheckIn(getApplicationContext(), true);
+//            CheckInOutDate();
+//        } else {
+//            SharedPref.setSkipCheckIn(getApplicationContext(), false);
+//        }
 
         gpsTrack = new GPSTrack(this);
         latitude = gpsTrack.getLatitude();
@@ -1314,15 +1314,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.near_me))) {
-            if (SharedPref.getSrtNd(this).equalsIgnoreCase("0")) {
-                if (SharedPref.getSkipCheckIn(getApplicationContext())) {
-                    goToNearMeActivity();
-                } else {
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.submit_checkin));
-                }
-            } else {
+//            if (SharedPref.getSrtNd(this).equalsIgnoreCase("0")) {
+//                if (SharedPref.getSkipCheckIn(getApplicationContext())) {
+//                    goToNearMeActivity();
+//                } else {
+//                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.submit_checkin));
+//                }
+//            } else {
                 goToNearMeActivity();
-            }
+//            }
         }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.survey))) {
