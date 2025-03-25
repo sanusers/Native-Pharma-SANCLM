@@ -1,9 +1,5 @@
 package saneforce.sanzen.activity.call.dcrCallSelection;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
-import static saneforce.sanzen.activity.call.DCRCallActivity.SfCode;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -22,6 +18,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.Html;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -37,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -118,16 +119,17 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
     public static ActivityUnlistedadditionBinding unlistedadditionbinding;
     CommonUtilsMethods commonUtilsMethods;
     String SfType = "", SfCode = "", SfName = "", DivCode = "", terrname = "", terrcode = "",usersfcode="";
-    public static String filePath = "";
-    public String imageName = "";
+    public static String filePath = "", GeoTagImageNeed = "";
     public static GoogleMap mMap;
     int imgindx = 0;
-    private static String destinationFilePath;
+    private String destinationFilePath="";
     String txt_qua = "", txt_cat = "", txt_class = "", txt_spec = "", txt_terr = "",txt_hq="";
     ProgressDialog progressDialog;
     ApiInterface apiInterface;
     double latitude, longitude;
     GPSTrack gpsTrack;
+
+    String imageName = "";
     ArrayList<MasterSyncItemModel> UnlistedModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> arrayForAdapter = new ArrayList<>();
     int UnlistedStatus = 0;
@@ -153,6 +155,31 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
         } else {
             unlistedadditionbinding.drtagname.setText(getResources().getString(R.string.add) + " " + SharedPref.getUNLcap(this));
         }
+        String clusterCap = SharedPref.getClusterCap(this);
+        Log.d("ClusterCap", "Value: " + clusterCap);
+        String firstChar = "";
+        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        firstChar = "<font color='#000000'>" + getResources().getString(R.string.name) + "</font>";
+        unlistedadditionbinding.txtDr.setText(Html.fromHtml(firstChar + firstChar2));
+        firstChar = "<font color='#000000'>" + getResources().getString(R.string.headquarter) + "</font>";
+        unlistedadditionbinding.txtHq.setText(Html.fromHtml(firstChar + firstChar2));
+        firstChar = "<font color='#000000'>" + getResources().getString(R.string.speciality) + "</font>";
+        unlistedadditionbinding.txtSpec.setText(Html.fromHtml(firstChar + firstChar2));
+        firstChar = "<font color='#000000'>" + getResources().getString(R.string.category) + "</font>";
+        unlistedadditionbinding.txtCat.setText(Html.fromHtml(firstChar + firstChar2));
+        firstChar = "<font color='#000000'>" + getResources().getString(R.string.clases) + "</font>";
+        unlistedadditionbinding.txtClass.setText(Html.fromHtml(firstChar + firstChar2));
+        firstChar = "<font color='#000000'>" + getResources().getString(R.string.qualifications) + "</font>";
+        unlistedadditionbinding.txtQua.setText(Html.fromHtml(firstChar + firstChar2));
+        if (SharedPref.getClusterCap(this).isEmpty() || SharedPref.getClusterCap(this) == null) {
+            firstChar = "<font color='#000000'>" + getResources().getString(R.string.cluster) + "</font>";
+            unlistedadditionbinding.txtTerritory.setHint(getResources().getString(R.string.select_cluster));
+        } else {
+            firstChar = "<font color='#000000'>" + SharedPref.getClusterCap(this) + "</font>";
+            unlistedadditionbinding.txtTerritory.setHint(getResources().getString(R.string.select) + " " +clusterCap);
+        }
+        unlistedadditionbinding.txtTerritory.setText(Html.fromHtml(firstChar + firstChar2));
+
         SfType = SharedPref.getSfType(this);
         usersfcode = SharedPref.getSfCode(this);
         TagImgNd=SharedPref.getGeotagImg(this);
@@ -217,6 +244,12 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill)+" "+getResources().getString(R.string.qualifications));
                     unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                 }
+                else if (!unlistedadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("")&&
+                        TagImgNd.equalsIgnoreCase("0") && destinationFilePath.equalsIgnoreCase("")) {
+                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.Photo_mand));
+                    unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+
+                }
                 else{
                     Log.v("qualification_txt", "arent_empty");
                     unlistedadditionbinding.btnUnlstsave.setEnabled(false);
@@ -235,21 +268,21 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         json.put("sfcode", SfCode);
                         json.put("division_code", DivCode);
                         json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32));
-                        json.put("DeviceID", SharedPref.getDeviceId(context));
+                        json.put("DeviceID", SharedPref.getDeviceId(UnlistedDoctorAddition.this));
                         json.put("DrName", unlistedadditionbinding.edtDctr.getText().toString());
-                        json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(context)));
+                        json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(UnlistedDoctorAddition.this)));
                         json.put("DrqulNm", unlistedadditionbinding.txtSelectQua.getText().toString());
-                        json.put("DrClsCd", String.valueOf(SharedPref.getSelectedClass(context)));
+                        json.put("DrClsCd", String.valueOf(SharedPref.getSelectedClass(UnlistedDoctorAddition.this)));
                         json.put("DrClsNm", unlistedadditionbinding.txtSelectClass.getText().toString());
-                        json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(context)));
+                        json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(UnlistedDoctorAddition.this)));
                         json.put("DrCatNm", unlistedadditionbinding.txtSelectCategory.getText().toString());
-                        json.put("DrSpcCd", String.valueOf(SharedPref.getSelectedSpeciality(context)));
+                        json.put("DrSpcCd", String.valueOf(SharedPref.getSelectedSpeciality(UnlistedDoctorAddition.this)));
                         json.put("DrSpcNm", unlistedadditionbinding.txtSelectSpec.getText().toString());
                         json.put("DrAddr", unlistedadditionbinding.edtHomeaddr.getText().toString());
                         json.put("DrHospAddr", unlistedadditionbinding.edtHospaddr.getText().toString());
                         json.put("DrClusNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
-                        json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(context)));
-                        json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(context)));
+                        json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
+                        json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
                         json.put("DrTerNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
                         if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
                             json.put("DrHQCd", String.valueOf(SharedPref.getHq(UnlistedDoctorAddition.this)));
@@ -259,7 +292,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                             json.put("DrHQCd", SfCode);
                             json.put("DrHQNm", SfName);
                         }
-                        json.put("key", SharedPref.getSaveLicenseSetting(context));
+                        json.put("key", SharedPref.getSaveLicenseSetting(UnlistedDoctorAddition.this));
                         json.put("DrType", "U");
                         json.put("DrDOB", unlistedadditionbinding.edtDob.getText().toString()+ " 00:00:00");
                         json.put("DrDOW", unlistedadditionbinding.edtDow.getText().toString()+ " 00:00:00");
@@ -272,7 +305,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         longitude = gpsTrack.getLongitude();
                         json.put("DrLat", String.valueOf(latitude));
                         json.put("DrLong", String.valueOf(longitude));
-                        json.put("DrLocAddr", SharedPref.getSaveTaggedAddress(context));
+                        json.put("DrLocAddr", SharedPref.getSaveTaggedAddress(UnlistedDoctorAddition.this));
                         Log.v("printing_add_dr", json.toString());
                         unlistedadditionbinding.btnUnlstsave.setEnabled(false);
                         addDoctor(json.toString());
@@ -308,6 +341,12 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                 commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill)+" "+getResources().getString(R.string.qualifications));
                 unlistedadditionbinding.btnUnlstsave.setEnabled(true);
             }
+            else if (!unlistedadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("")&&
+                    TagImgNd.equalsIgnoreCase("0") && destinationFilePath.equalsIgnoreCase("")) {
+                commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.Photo_mand));
+                unlistedadditionbinding.btnUnlstsave.setEnabled(true);
+
+            }
             else{
                 Log.v("qualification_txt", "arent_empty");
                 unlistedadditionbinding.btnUnlstsave.setEnabled(false);
@@ -326,21 +365,21 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     json.put("sfcode", SfCode);
                     json.put("division_code", DivCode);
                     json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32));
-                    json.put("DeviceID", SharedPref.getDeviceId(context));
+                    json.put("DeviceID", SharedPref.getDeviceId(UnlistedDoctorAddition.this));
                     json.put("DrName", unlistedadditionbinding.edtDctr.getText().toString());
-                    json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(context)));
+                    json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(UnlistedDoctorAddition.this)));
                     json.put("DrqulNm", unlistedadditionbinding.txtSelectQua.getText().toString());
-                    json.put("DrClsCd", String.valueOf(SharedPref.getSelectedClass(context)));
+                    json.put("DrClsCd", String.valueOf(SharedPref.getSelectedClass(UnlistedDoctorAddition.this)));
                     json.put("DrClsNm", unlistedadditionbinding.txtSelectClass.getText().toString());
-                    json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(context)));
+                    json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(UnlistedDoctorAddition.this)));
                     json.put("DrCatNm", unlistedadditionbinding.txtSelectCategory.getText().toString());
-                    json.put("DrSpcCd", String.valueOf(SharedPref.getSelectedSpeciality(context)));
+                    json.put("DrSpcCd", String.valueOf(SharedPref.getSelectedSpeciality(UnlistedDoctorAddition.this)));
                     json.put("DrSpcNm", unlistedadditionbinding.txtSelectSpec.getText().toString());
                     json.put("DrAddr", unlistedadditionbinding.edtHomeaddr.getText().toString());
                     json.put("DrHospAddr", unlistedadditionbinding.edtHospaddr.getText().toString());
                     json.put("DrClusNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
-                    json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(context)));
-                    json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(context)));
+                    json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
+                    json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(UnlistedDoctorAddition.this)));
                     json.put("DrTerNm", unlistedadditionbinding.txtSelectTerritory.getText().toString());
                     if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
                         json.put("DrHQCd", String.valueOf(SharedPref.getHq(UnlistedDoctorAddition.this)));
@@ -350,7 +389,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         json.put("DrHQCd", SfCode);
                         json.put("DrHQNm", SfName);
                     }
-                    json.put("key", SharedPref.getSaveLicenseSetting(context));
+                    json.put("key", SharedPref.getSaveLicenseSetting(UnlistedDoctorAddition.this));
                     json.put("DrType", "U");
                     json.put("DrDOB", unlistedadditionbinding.edtDob.getText().toString()+ " 00:00:00");
                     json.put("DrDOW", unlistedadditionbinding.edtDow.getText().toString()+ " 00:00:00");
@@ -363,7 +402,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     longitude = gpsTrack.getLongitude();
                     json.put("DrLat", String.valueOf(latitude));
                     json.put("DrLong", String.valueOf(longitude));
-                    json.put("DrLocAddr", SharedPref.getSaveTaggedAddress(context));
+                    json.put("DrLocAddr", SharedPref.getSaveTaggedAddress(UnlistedDoctorAddition.this));
                     Log.v("printing_add_dr", json.toString());
                     unlistedadditionbinding.btnUnlstsave.setEnabled(false);
                     addDoctor(json.toString());
@@ -377,47 +416,13 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
         unlistedadditionbinding.btnUnlstcancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(UnlistedDoctorAddition.this);
-                alertDialogBuilder.setTitle("Warning!");
-                alertDialogBuilder.setIcon(getDrawable(R.drawable.icon_sync_failed));
-                alertDialogBuilder.setMessage("Are you sure, you want to cancel?");
-                alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert);
-
-                alertDialogBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        getOnBackPressedDispatcher().onBackPressed();
-                        finish();
-                    }
-                });
-
-                alertDialogBuilder.setNegativeButton(android.R.string.no, null);
-
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+                handleCancel();
             }
         });
         unlistedadditionbinding.adddrClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(UnlistedDoctorAddition.this);
-                alertDialogBuilder.setTitle("Warning!");
-                alertDialogBuilder.setIcon(getDrawable(R.drawable.icon_sync_failed));
-                alertDialogBuilder.setMessage("Are you sure, you want to go back?");
-                alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert);
-
-                alertDialogBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        getOnBackPressedDispatcher().onBackPressed();
-                        finish();
-                    }
-                });
-
-                alertDialogBuilder.setNegativeButton(android.R.string.no, null);
-
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+                handleCancel();
             }
         });
         unlistedadditionbinding.dobCalendarIcon.setOnClickListener(new View.OnClickListener() {
@@ -435,6 +440,46 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                 }
                 showDatePickerDialogforDOB();
             }
+        });
+        unlistedadditionbinding.edtPhone.setFilters(new InputFilter[]{ new InputFilter.LengthFilter(13) }); // Max length 13
+
+        unlistedadditionbinding.edtPhone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0 && s.length() < 7) {
+                    // Show error only if input is between 1 and 6 characters
+                    unlistedadditionbinding.edtPhone.setError(getResources().getString(R.string.enter_valid_phone));
+                } else {
+                    // Remove error when field is empty or valid
+                    unlistedadditionbinding.edtPhone.setError(null);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+        unlistedadditionbinding.edtMob.setFilters(new InputFilter[]{ new InputFilter.LengthFilter(13) }); // Max length 13
+
+        unlistedadditionbinding.edtMob.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0 && s.length() < 7) {
+                    // Show error only if input is between 1 and 6 characters
+                    unlistedadditionbinding.edtMob.setError(getResources().getString(R.string.enter_valid_Mobile));
+                } else {
+                    // Remove error when field is empty or valid
+                    unlistedadditionbinding.edtMob.setError(null);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
         unlistedadditionbinding.dowCalenderIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -460,61 +505,18 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                 captureFile();
             }
         });
-//        unlistedadditionbinding.dctrimage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (ContextCompat.checkSelfPermission(UnlistedDoctorAddition.this, Manifest.permission.CAMERA)
-//                        != PackageManager.PERMISSION_GRANTED )
-//                {
-//                    requestMultiplePermissionsLauncher.launch(new String[]{
-//                            Manifest.permission.CAMERA,});
-//                } else {
-//                    captureFile();
-//
-//                }
-//            }
-//        });
-//        unlistedadditionbinding.dctrimage1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (ContextCompat.checkSelfPermission(UnlistedDoctorAddition.this, Manifest.permission.CAMERA)
-//                        != PackageManager.PERMISSION_GRANTED )
-//                {
-//                    requestMultiplePermissionsLauncher.launch(new String[]{
-//                            Manifest.permission.CAMERA,});
-//                } else {
-//                    captureFile(1);
-//
-//                }
-//            }
-//
-//        });
-//        unlistedadditionbinding.dctrimage2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (ContextCompat.checkSelfPermission(UnlistedDoctorAddition.this, Manifest.permission.CAMERA)
-//                        != PackageManager.PERMISSION_GRANTED )
-//                {
-//                    requestMultiplePermissionsLauncher.launch(new String[]{
-//                            Manifest.permission.CAMERA,});
-//                } else {
-//                    captureFile(2);
-//
-//                }
-//            }
-//
-//        });
+
         unlistedadditionbinding.btnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (UtilityClass.isNetworkAvailable(context)) {
-                    Intent intent = new Intent(context, MapsAddition.class);
+                if (UtilityClass.isNetworkAvailable(UnlistedDoctorAddition.this)) {
+                    Intent intent = new Intent(UnlistedDoctorAddition.this, MapsAddition.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("Additionfrom", "U");
-                    context.startActivity(intent);
+                    UnlistedDoctorAddition.this.startActivity(intent);
 
                 } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, UnlistedDoctorAddition.this.getString(R.string.no_network));
                 }
             }
 
@@ -602,9 +604,18 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
             }
         });
 
+        unlistedadditionbinding.imgClearTag.setOnClickListener(view -> {
+            unlistedadditionbinding.edtGeotagaddr.setText("");
+            unlistedadditionbinding.layout7.setVisibility(View.GONE);
+            destinationFilePath = "";
+            imageName = "";
+            view.setVisibility(View.GONE);
+        });
+
     }
     public static void setAddressText(String addressText) {
         unlistedadditionbinding.edtGeotagaddr.setText(addressText); // Set the text on the EditText in ClassB
+        unlistedadditionbinding.imgClearTag.setVisibility(View.VISIBLE);
         if(TagImgNd.equalsIgnoreCase("0")){
             unlistedadditionbinding.layout7.setVisibility(View.VISIBLE);
         }
@@ -638,7 +649,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                 Log.d("save_obj", String.valueOf(val));
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "save/masterdata");
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, val);
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(UnlistedDoctorAddition.this), mapString, val);
 
                 if (call != null) {
                     call.enqueue(new Callback<JsonElement>() {
@@ -659,24 +670,23 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                                         SyncUnlisted(SfCode);
                                         //loadFragment(new UnlistedDoctorFragment());
                                         if(SharedPref.getGeotagImg(UnlistedDoctorAddition.this).equalsIgnoreCase("0")) {
-                                            if(!imageName.equalsIgnoreCase("")){
-                                            JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(UnlistedDoctorAddition.this);
-                                            try {
-                                                jsonImage.put("tableName", "imgupload");
-                                                jsonImage.put("sfcode", SfCode);
-                                                jsonImage.put("division_code", DivCode);
-                                                if (SfType.equalsIgnoreCase("1")) {
-                                                    jsonImage.put("Rsf", SfCode);
-                                                } else {
-                                                    jsonImage.put("Rsf", SharedPref.getHqCode(context));
+                                            if (!imageName.equalsIgnoreCase("")){
+                                                JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(UnlistedDoctorAddition.this);
+                                                try {
+                                                    jsonImage.put("tableName", "imgupload");
+                                                    jsonImage.put("sfcode", SfCode);
+                                                    jsonImage.put("division_code", DivCode);
+                                                    if (SfType.equalsIgnoreCase("1")) {
+                                                        jsonImage.put("Rsf", SfCode);
+                                                    } else {
+                                                        jsonImage.put("Rsf", SharedPref.getHqCode(UnlistedDoctorAddition.this));
+                                                    }
+                                                } catch (Exception ignored) {
+
                                                 }
-                                            } catch (Exception ignored) {
-
+                                                tag_Image();
+                                                CallImageAPI(jsonImage.toString(), destinationFilePath);
                                             }
-                                            tag_Image();
-                                            CallImageAPI(jsonImage.toString(), destinationFilePath);
-
-                                        }
                                         }
                                         commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.saved_successfully));
                                     }
@@ -711,12 +721,6 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
             progressDialog.dismiss();
             throw new RuntimeException(e);
         }
-    }
-    private void loadFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_select_cluster, fragment);  // Replace another fragment
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) UnlistedDoctorAddition.this.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -883,36 +887,9 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
 
                 }
             });
-    // Method to capture images dynamically
-//    public void captureFile(int imageIndex) {
-//        String imageName = usersfcode + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "")
-//                + CommonUtilsMethods.getCurrentInstance("HHmmss") + "_" + imageIndex + ".jpeg";
-//        Intent intent = new Intent(UnlistedDoctorAddition.this, CameraActivity.class);
-//        File file = new File(context.getExternalFilesDir(null) + "/AdditionTagged/");
-//        if (!file.exists() && !file.mkdirs()) {
-//            Log.e("File Creation", "Directory Creation Failed.");
-//            return;
-//        }
-//        File destinationFile = new File(file, imageName);
-//        try {
-//            if (!destinationFile.createNewFile()) {
-//                Log.e("File Creation", "Destination File Creation Failed.");
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        destinationFilePath= destinationFile.getAbsolutePath();
-//        imgindx=imageIndex;
-//        intent.putExtra("FILE_PATH", destinationFilePath);
-//        intent.putExtra("FROM", "UnlistedAddition");
-//        intent.putExtra("L_FLAG", "1");
-//        intent.putExtra("CAMERA_MODE", "ALL");
-//        intent.putExtra("IMAGE_INDEX", imageIndex);  // Pass the image inde
-//        someActivityResultLauncher.launch(intent);
-//    }
-// Capture File Method
+
     public void captureFile() {
-         imageName = usersfcode + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "")
+        imageName = usersfcode + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "")
                 + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
 
         File directory = new File(getExternalFilesDir(null), "AdditionTagged");
@@ -935,7 +912,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
         Intent intent = new Intent(this, CameraActivity.class);
         intent.putExtra("FILE_PATH", destinationFilePath);
         intent.putExtra("FROM", "UnlistedAddition");
-        intent.putExtra("L_FLAG", SharedPref.getGeoChk(this).equalsIgnoreCase("0"));
+        intent.putExtra("L_FLAG", "1");
         intent.putExtra("CAMERA_MODE", "ALL");
 
         someActivityResultLauncher.launch(intent);
@@ -966,106 +943,6 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                 }
             }
     );
-//    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
-//            new ActivityResultContracts.StartActivityForResult(),
-//            new ActivityResultCallback<ActivityResult>() {
-//                @Override
-//                public void onActivityResult(ActivityResult result) {
-//                    try {
-//                        if (result.getResultCode() == Activity.RESULT_OK) {
-//                            Bitmap photo = BitmapFactory.decodeFile(destinationFilePath);
-//                            if (photo == null) return; // Prevent null image crash
-//                            if (imagePaths.size() < 3) { // Allow max 3 images
-//                            //if (imagePaths.size() < 3) { // Allow max 3 images
-//                                imagePaths.add(destinationFilePath);
-//                            }
-//                            rearrangeImages(); // Update UI dynamically
-//                        } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
-//                            Log.d("Camera", "onActivityResult: Canceled");
-//                        }
-//                    } catch (Exception e) {
-//                        Log.e("Camera", "onActivityResult: " + e.getMessage());
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//    );
-
-//    private void deleteImage(int imageIndex) {
-//        if (imageIndex >= imagePaths.size()) return; // Prevent out-of-bounds errors
-//        imagePaths.remove(imageIndex);
-//        rearrangeImages();
-//    }
-//    private void rearrangeImages() {
-//        List<ImageView> imageViews = Arrays.asList(
-//                unlistedadditionbinding.dctrimage,
-//                unlistedadditionbinding.dctrimage1,
-//                unlistedadditionbinding.dctrimage2);
-//
-//        List<ImageView> deleteButtons = Arrays.asList(
-//                unlistedadditionbinding.delete,
-//                unlistedadditionbinding.delete1,
-//                unlistedadditionbinding.delete2);
-//
-//        // Clear all images but keep the buttons visible
-//        for (int i = 0; i < imageViews.size(); i++) {
-//            if (i < imagePaths.size()) {
-//                Bitmap photo = BitmapFactory.decodeFile(imagePaths.get(i));
-//                imageViews.get(i).setImageBitmap(photo);
-//                imageViews.get(i).setTag(imagePaths.get(i));
-//                imageViews.get(i).setVisibility(View.VISIBLE);
-//                deleteButtons.get(i).setVisibility(View.VISIBLE);
-//
-//                int finalI = i;
-//                deleteButtons.get(i).setOnClickListener(view -> deleteImage(finalI));
-//                imageViews.get(i).setOnClickListener(view -> showImagePopup((String) view.getTag()));
-//            } else {
-//                imageViews.get(i).setImageResource(R.drawable.camera_icon);
-//                imageViews.get(i).setScaleType(ImageView.ScaleType.FIT_XY);
-//                imageViews.get(i).setTag(null);
-//                imageViews.get(i).setVisibility(i == imagePaths.size() ? View.VISIBLE : View.GONE);
-//                deleteButtons.get(i).setVisibility(View.GONE);
-//
-//                int finalI = i;
-//                imageViews.get(i).setOnClickListener(view -> captureFile(finalI));  // Ensure button is clickable
-//            }
-//        }
-//    }
-//private void rearrangeImages() {
-//        List<ImageView> imageViews = Arrays.asList(
-//                unlistedadditionbinding.dctrimage,
-//                unlistedadditionbinding.dctrimage1,
-//                unlistedadditionbinding.dctrimage2);
-//
-//        List<ImageView> deleteButtons = Arrays.asList(
-//                unlistedadditionbinding.delete,
-//                unlistedadditionbinding.delete1,
-//                unlistedadditionbinding.delete2);
-//
-//        // Clear all images but keep the buttons visible
-//        for (int i = 0; i < imageViews.size(); i++) {
-//            if (i < imagePaths.size()) {
-//                Bitmap photo = BitmapFactory.decodeFile(imagePaths.get(i));
-//                imageViews.get(i).setImageBitmap(photo);
-//                imageViews.get(i).setTag(imagePaths.get(i));
-//                imageViews.get(i).setVisibility(View.VISIBLE);
-//                deleteButtons.get(i).setVisibility(View.VISIBLE);
-//
-//                int finalI = i;
-//                deleteButtons.get(i).setOnClickListener(view -> deleteImage(finalI));
-//                imageViews.get(i).setOnClickListener(view -> showImagePopup((String) view.getTag()));
-//            } else {
-//                imageViews.get(i).setImageResource(R.drawable.camera_icon);
-//                imageViews.get(i).setScaleType(ImageView.ScaleType.FIT_XY);
-//                imageViews.get(i).setTag(null);
-//                imageViews.get(i).setVisibility(i == imagePaths.size() ? View.VISIBLE : View.GONE);
-//                deleteButtons.get(i).setVisibility(View.GONE);
-//
-//                int finalI = i;
-//                imageViews.get(i).setOnClickListener(view -> captureFile(finalI));  // Ensure button is clickable
-//            }
-//        }
-//    }
 
     private void showImagePopup(String imagePath) {
         if (imagePath == null) return;
@@ -1094,46 +971,6 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
         closeButton.setOnClickListener(v -> dialog.dismiss()); // Close popup when clicked
     }
 
-  /*  private void CallImageAPI(String jsonImage,String file) {
-        try {
-            ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
-            Call<JsonObject> callImage;
-            HashMap<String, RequestBody> values = field(jsonImage);
-            MultipartBody.Part img = convertImg("UploadImg", file);
-            callImage = apiInterface.SaveImg(values, img);
-
-            callImage.enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                    assert response.body() != null;
-                    Log.v("img_tag", response + "---" + response.body() + "---" + response.message() + "---" + call);
-                    if (response.isSuccessful()) {
-                        try {
-                            JSONObject jsonImgRes;
-                            jsonImgRes = new JSONObject(response.body().toString());
-                            Log.v("img_tag", jsonImgRes.getString("success"));
-                            if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
-                                //commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed));
-                            }
-                        } catch (Exception e) {
-                            Log.v("img_tag", e.toString());
-                        }
-                    } else {
-
-                       // commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                    //commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
-
-                }
-            });
-        } catch (Exception e) {
-
-        }
-    }*/
 
     private void CallImageAPI(String jsonImage,String file) {
         if(jsonImage != null) {
@@ -1197,7 +1034,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
         }else {
             Log.d("tag_Image", "imageFile: "+"the file do not exist");
         }
-        new AWSBuckets(UnlistedDoctorAddition.this, imageName, imageFile, "");             //SharedPref.getDivisionName(UnlistedDoctorAddition.this)
+        new AWSBuckets(UnlistedDoctorAddition.this, imageName, imageFile, SharedPref.getDivisionName(UnlistedDoctorAddition.this));
         Log.d("tag_Image", "image" + imageFile);
     }
 
@@ -1229,5 +1066,22 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
         }
         return yy;
     }
+    private void handleCancel() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dcr_cancel_alert);
+        dialog.setCancelable(false);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+        TextView btn_yes=dialog.findViewById(R.id.btn_yes);
+        TextView btn_no=dialog.findViewById(R.id.btn_no);
 
+        btn_yes.setOnClickListener(view12 -> {
+            getOnBackPressedDispatcher().onBackPressed();
+        });
+
+        btn_no.setOnClickListener(view12 -> {
+            dialog.dismiss();
+        });
+
+    }
 }

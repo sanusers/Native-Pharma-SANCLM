@@ -208,7 +208,6 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
 
         dcrSelectionBinding.ivBack.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
-        Integer.parseInt("A");
     }
 
     private void setGpsTrack() {

@@ -150,7 +150,9 @@ public class GPSTrack implements LocationListener {
                     longitude = location.getLongitude();
 
                     // Stop location updates once we have a fix
-                    fusedLocationClient.removeLocationUpdates(locationCallback);
+                    if(locationCallback != null) {
+                        fusedLocationClient.removeLocationUpdates(locationCallback);
+                    }
                     locationCallback = null; // Important: Clear the callback to avoid memory leaks
 
                     GPSTrack.location = location;

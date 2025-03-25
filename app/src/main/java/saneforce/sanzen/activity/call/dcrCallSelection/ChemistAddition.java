@@ -1,21 +1,25 @@
 package saneforce.sanzen.activity.call.dcrCallSelection;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.Html;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,9 +29,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -45,7 +48,6 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,7 +57,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -86,14 +87,13 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
-public class ChemistAddtion extends AppCompatActivity {
+public class ChemistAddition extends AppCompatActivity {
     public static ActivityChemistadditionBinding chemistadditionbinding;
     CommonUtilsMethods commonUtilsMethods;
     String SfType = "", SfCode = "", SfName = "", DivCode = "", terrname = "", terrcode = "",usersfcode="";
-    public static String filePath = "";
-    public String  imageName = "";
+    public static String filePath = "", imageName = "";
     int imgindx = 0;
-    private String destinationFilePath;
+    private String destinationFilePath="";
     String txt_qua = "", txt_cat = "", txt_class = "", txt_spec = "", txt_terr = "",txt_hq="";
     ProgressDialog progressDialog;
     ApiInterface apiInterface;
@@ -126,6 +126,23 @@ public class ChemistAddtion extends AppCompatActivity {
         } else {
             chemistadditionbinding.chmtagname.setText(getResources().getString(R.string.add) + " " + SharedPref.getChmCap(this));
         }
+        String clusterCap = SharedPref.getClusterCap(this);
+        Log.d("ClusterCap", "Value: " + clusterCap);
+        String firstChar = "";
+        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        firstChar = "<font color='#000000'>" + getResources().getString(R.string.name) + "</font>";
+        chemistadditionbinding.txtDr.setText(Html.fromHtml(firstChar + firstChar2));
+        firstChar = "<font color='#000000'>" + getResources().getString(R.string.headquarter) + "</font>";
+        chemistadditionbinding.txtHq.setText(Html.fromHtml(firstChar + firstChar2));
+        if (SharedPref.getClusterCap(this).isEmpty() || SharedPref.getClusterCap(this) == null) {
+            firstChar = "<font color='#000000'>" + getResources().getString(R.string.cluster) + "</font>";
+            chemistadditionbinding.txtTerritory.setHint(getResources().getString(R.string.select_cluster));
+        } else {
+            firstChar = "<font color='#000000'>" + SharedPref.getClusterCap(this) + "</font>";
+            chemistadditionbinding.txtTerritory.setHint(getResources().getString(R.string.select) + " " +clusterCap);
+        }
+        chemistadditionbinding.txtTerritory.setText(Html.fromHtml(firstChar + firstChar2));
+
         SfType = SharedPref.getSfType(this);
         usersfcode = SharedPref.getSfCode(this);
         TagImgNd=SharedPref.getGeotagImg(this);
@@ -167,8 +184,19 @@ public class ChemistAddtion extends AppCompatActivity {
                 }
                 else if(chemistadditionbinding.txtSelectTerritory.getText().toString().isEmpty())
                 {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill)+" "+getResources().getString(R.string.territory));
+                    if (SharedPref.getClusterCap(this).isEmpty() || SharedPref.getClusterCap(this) == null) {
+                        commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill)+" "+getResources().getString(R.string.cluster));
+                        chemistadditionbinding.btnChmsave.setEnabled(true);
+                    } else {
+                        commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill)+" "+SharedPref.getClusterCap(this));
+                        chemistadditionbinding.btnChmsave.setEnabled(true);
+                    }
+                }
+                else if (!chemistadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("")&&
+                        TagImgNd.equalsIgnoreCase("0") && destinationFilePath.equalsIgnoreCase("")) {
+                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.Photo_mand));
                     chemistadditionbinding.btnChmsave.setEnabled(true);
+
                 }
                 else{
                     Log.v("qualification_txt", "arent_empty");
@@ -188,31 +216,31 @@ public class ChemistAddtion extends AppCompatActivity {
                         json.put("sfcode", SfCode);
                         json.put("division_code", DivCode);
                         json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32));
-                        json.put("DeviceID", SharedPref.getDeviceId(context));
+                        json.put("DeviceID", SharedPref.getDeviceId(ChemistAddition.this));
                         json.put("DrName", chemistadditionbinding.edtDctr.getText().toString());
-                        json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(context)));
+                        json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(ChemistAddition.this)));
                         json.put("DrqulNm", chemistadditionbinding.txtSelectQua.getText().toString());
                         json.put("DrClsCd", "");
                         json.put("DrClsNm","");
-                        json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(context)));
+                        json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(ChemistAddition.this)));
                         json.put("DrCatNm", chemistadditionbinding.txtSelectCategory.getText().toString());
-                        json.put("DrSpcCd", String.valueOf(SharedPref.getSelectedSpeciality(context)));
+                        json.put("DrSpcCd", String.valueOf(SharedPref.getSelectedSpeciality(ChemistAddition.this)));
                         json.put("DrSpcNm", chemistadditionbinding.txtSelectSpec.getText().toString());
                         json.put("DrAddr", chemistadditionbinding.edtHomeaddr.getText().toString());
                         json.put("DrHospAddr", chemistadditionbinding.edtHospaddr.getText().toString());
                         json.put("DrClusNm", chemistadditionbinding.txtSelectTerritory.getText().toString());
-                        json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(context)));
-                        json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(context)));
+                        json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(ChemistAddition.this)));
+                        json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(ChemistAddition.this)));
                         json.put("DrTerNm", chemistadditionbinding.txtSelectTerritory.getText().toString());
                         if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
-                            json.put("DrHQCd", String.valueOf(SharedPref.getHq(ChemistAddtion.this)));
+                            json.put("DrHQCd", String.valueOf(SharedPref.getHq(ChemistAddition.this)));
                             json.put("DrHQNm", chemistadditionbinding.txtSelectHq.getText().toString());
                         }
                         else {
                             json.put("DrHQCd", SfCode);
                             json.put("DrHQNm", SfName);
                         }
-                        json.put("key", SharedPref.getSaveLicenseSetting(context));
+                        json.put("key", SharedPref.getSaveLicenseSetting(ChemistAddition.this));
                         json.put("DrType", "C");
                         json.put("DrDOB", chemistadditionbinding.edtDob.getText().toString()+" 00:00:00");
                         json.put("DrDOW", chemistadditionbinding.edtDow.getText().toString()+" 00:00:00");
@@ -225,7 +253,7 @@ public class ChemistAddtion extends AppCompatActivity {
                         longitude = gpsTrack.getLongitude();
                         json.put("DrLat", String.valueOf(latitude));
                         json.put("DrLong", String.valueOf(longitude));
-                        json.put("DrLocAddr", SharedPref.getSaveTaggedAddress(context));
+                        json.put("DrLocAddr", SharedPref.getSaveTaggedAddress(ChemistAddition.this));
                         Log.v("printing_add_dr", json.toString());
                         chemistadditionbinding.btnChmsave.setEnabled(false);
                         addChm(json.toString());
@@ -238,10 +266,20 @@ public class ChemistAddtion extends AppCompatActivity {
             }
             else if(chemistadditionbinding.txtSelectTerritory.getText().toString().isEmpty())
             {
-                commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill)+" "+getResources().getString(R.string.territory));
-                chemistadditionbinding.btnChmsave.setEnabled(true);
+                if (SharedPref.getClusterCap(this).isEmpty() || SharedPref.getClusterCap(this) == null) {
+                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill)+" "+getResources().getString(R.string.cluster));
+                    chemistadditionbinding.btnChmsave.setEnabled(true);
+                } else {
+                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill)+" "+SharedPref.getClusterCap(this));
+                    chemistadditionbinding.btnChmsave.setEnabled(true);
+                }
             }
+            else if (!chemistadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("")&&
+                    TagImgNd.equalsIgnoreCase("0") && destinationFilePath.equalsIgnoreCase("")) {
+                commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.Photo_mand));
+                chemistadditionbinding.btnChmsave.setEnabled(true);
 
+            }
             else{
                 Log.v("qualification_txt", "arent_empty");
                 chemistadditionbinding.btnChmsave.setEnabled(false);
@@ -260,31 +298,31 @@ public class ChemistAddtion extends AppCompatActivity {
                     json.put("sfcode", SfCode);
                     json.put("division_code", DivCode);
                     json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32));
-                    json.put("DeviceID", SharedPref.getDeviceId(context));
+                    json.put("DeviceID", SharedPref.getDeviceId(ChemistAddition.this));
                     json.put("DrName", chemistadditionbinding.edtDctr.getText().toString());
-                    json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(context)));
+                    json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(ChemistAddition.this)));
                     json.put("DrqulNm", chemistadditionbinding.txtSelectQua.getText().toString());
                     json.put("DrClsCd", "");
                     json.put("DrClsNm","");
-                    json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(context)));
+                    json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(ChemistAddition.this)));
                     json.put("DrCatNm", chemistadditionbinding.txtSelectCategory.getText().toString());
-                    json.put("DrSpcCd", String.valueOf(SharedPref.getSelectedSpeciality(context)));
+                    json.put("DrSpcCd", String.valueOf(SharedPref.getSelectedSpeciality(ChemistAddition.this)));
                     json.put("DrSpcNm", chemistadditionbinding.txtSelectSpec.getText().toString());
                     json.put("DrAddr", chemistadditionbinding.edtHomeaddr.getText().toString());
                     json.put("DrHospAddr", chemistadditionbinding.edtHospaddr.getText().toString());
                     json.put("DrClusNm", chemistadditionbinding.txtSelectTerritory.getText().toString());
-                    json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(context)));
-                    json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(context)));
+                    json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(ChemistAddition.this)));
+                    json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(ChemistAddition.this)));
                     json.put("DrTerNm", chemistadditionbinding.txtSelectTerritory.getText().toString());
                     if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
-                        json.put("DrHQCd", String.valueOf(SharedPref.getHq(ChemistAddtion.this)));
+                        json.put("DrHQCd", String.valueOf(SharedPref.getHq(ChemistAddition.this)));
                         json.put("DrHQNm", chemistadditionbinding.txtSelectHq.getText().toString());
                     }
                     else {
                         json.put("DrHQCd", SfCode);
                         json.put("DrHQNm", SfName);
                     }
-                    json.put("key", SharedPref.getSaveLicenseSetting(context));
+                    json.put("key", SharedPref.getSaveLicenseSetting(ChemistAddition.this));
                     json.put("DrType", "C");
                     json.put("DrDOB", chemistadditionbinding.edtDob.getText().toString()+" 00:00:00");
                     json.put("DrDOW", chemistadditionbinding.edtDow.getText().toString()+" 00:00:00");
@@ -297,7 +335,7 @@ public class ChemistAddtion extends AppCompatActivity {
                     longitude = gpsTrack.getLongitude();
                     json.put("DrLat", String.valueOf(latitude));
                     json.put("DrLong", String.valueOf(longitude));
-                    json.put("DrLocAddr", SharedPref.getSaveTaggedAddress(context));
+                    json.put("DrLocAddr", SharedPref.getSaveTaggedAddress(ChemistAddition.this));
                     Log.v("printing_add_dr", json.toString());
                     chemistadditionbinding.btnChmsave.setEnabled(false);
                     addChm(json.toString());
@@ -311,47 +349,13 @@ public class ChemistAddtion extends AppCompatActivity {
         chemistadditionbinding.btnChmcancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ChemistAddtion.this);
-                alertDialogBuilder.setTitle("Warning!");
-                alertDialogBuilder.setIcon(getDrawable(R.drawable.icon_sync_failed));
-                alertDialogBuilder.setMessage("Are you sure, you want to cancel?");
-                alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert);
-
-                alertDialogBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        getOnBackPressedDispatcher().onBackPressed();
-                        finish();
-                    }
-                });
-
-                alertDialogBuilder.setNegativeButton(android.R.string.no, null);
-
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+                handleCancel();
             }
         });
         chemistadditionbinding.addchmClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ChemistAddtion.this);
-                alertDialogBuilder.setTitle("Warning!");
-                alertDialogBuilder.setIcon(getDrawable(R.drawable.icon_sync_failed));
-                alertDialogBuilder.setMessage("Are you sure, you want to go back?");
-                alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert);
-
-                alertDialogBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        getOnBackPressedDispatcher().onBackPressed();
-                        finish();
-                    }
-                });
-
-                alertDialogBuilder.setNegativeButton(android.R.string.no, null);
-
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+                handleCancel();
             }
         });
         chemistadditionbinding.dobCalendarIcon.setOnClickListener(new View.OnClickListener() {
@@ -385,6 +389,46 @@ public class ChemistAddtion extends AppCompatActivity {
                 }
                 showDatePickerDialogforDOW();
             }
+        });
+        chemistadditionbinding.edtPhone.setFilters(new InputFilter[]{ new InputFilter.LengthFilter(13) }); // Max length 13
+
+        chemistadditionbinding.edtPhone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0 && s.length() < 7) {
+                    // Show error only if input is between 1 and 6 characters
+                    chemistadditionbinding.edtPhone.setError(getResources().getString(R.string.enter_valid_phone));
+                } else {
+                    // Remove error when field is empty or valid
+                    chemistadditionbinding.edtPhone.setError(null);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+        chemistadditionbinding.edtMob.setFilters(new InputFilter[]{ new InputFilter.LengthFilter(13) }); // Max length 13
+
+        chemistadditionbinding.edtMob.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0 && s.length() < 7) {
+                    // Show error only if input is between 1 and 6 characters
+                    chemistadditionbinding.edtMob.setError(getResources().getString(R.string.enter_valid_Mobile));
+                } else {
+                    // Remove error when field is empty or valid
+                    chemistadditionbinding.edtMob.setError(null);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
         // OnClickListener for image capture
         chemistadditionbinding.dctrimage.setOnClickListener(view -> {
@@ -441,14 +485,14 @@ public class ChemistAddtion extends AppCompatActivity {
         chemistadditionbinding.btnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (UtilityClass.isNetworkAvailable(context)) {
-                    Intent intent = new Intent(context, MapsAddition.class);
+                if (UtilityClass.isNetworkAvailable(ChemistAddition.this)) {
+                    Intent intent = new Intent(ChemistAddition.this, MapsAddition.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("Additionfrom", "C");
-                    context.startActivity(intent);
+                    ChemistAddition.this.startActivity(intent);
 
                 } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(ChemistAddition.this, ChemistAddition.this.getString(R.string.no_network));
                 }
             }
 
@@ -502,7 +546,7 @@ public class ChemistAddtion extends AppCompatActivity {
                 }
                 if(SfType.equalsIgnoreCase("2")){
                     if(chemistadditionbinding.txtSelectHq.getText().toString().equalsIgnoreCase("")){
-                        commonUtilsMethods.showToastMessage(ChemistAddtion.this,getResources().getString(R.string.select_headquater));
+                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.select_headquater));
                     }
                     else{
                         chemistadditionbinding.fragmentSelectChmcluster.setVisibility(View.VISIBLE);
@@ -525,10 +569,17 @@ public class ChemistAddtion extends AppCompatActivity {
                 chemistadditionbinding.fragmentSelectChemisthq.setVisibility(View.VISIBLE);
             }
         });
-
+        chemistadditionbinding.imgClearTag.setOnClickListener(view -> {
+            chemistadditionbinding.edtGeotagaddr.setText("");
+            chemistadditionbinding.layout7.setVisibility(View.GONE);
+            destinationFilePath = "";
+            imageName = "";
+            view.setVisibility(View.GONE);
+        });
     }
     public static void setAddressText(String addressText) {
         chemistadditionbinding.edtGeotagaddr.setText(addressText); // Set the text on the EditText in ClassB
+        chemistadditionbinding.imgClearTag.setVisibility(View.VISIBLE);
         if(TagImgNd.equalsIgnoreCase("0")){
             chemistadditionbinding.layout7.setVisibility(View.VISIBLE);
         }
@@ -562,7 +613,7 @@ public class ChemistAddtion extends AppCompatActivity {
                 Log.d("save_obj", String.valueOf(val));
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "save/masterdata");
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, val);
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(ChemistAddition.this), mapString, val);
 
                 if (call != null) {
                     call.enqueue(new Callback<JsonElement>() {
@@ -575,33 +626,32 @@ public class ChemistAddtion extends AppCompatActivity {
                                     JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                                     if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                                         Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
-                                        if(SharedPref.getSfType(ChemistAddtion.this).equalsIgnoreCase("2")){
-                                            SfCode = SharedPref.getHqCode(ChemistAddtion.this);}
+                                        if(SharedPref.getSfType(ChemistAddition.this).equalsIgnoreCase("2")){
+                                            SfCode = SharedPref.getHqCode(ChemistAddition.this);}
                                         else {
-                                            SfCode = SharedPref.getSfCode(ChemistAddtion.this);
+                                            SfCode = SharedPref.getSfCode(ChemistAddition.this);
                                         }
                                         SyncChemist(SfCode);
-                                        if(SharedPref.getGeotagImg(ChemistAddtion.this).equalsIgnoreCase("0")) {
-                                            if(!imageName.equalsIgnoreCase("")) {
-                                                JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(ChemistAddtion.this);
-                                                try {
-                                                    jsonImage.put("tableName", "imgupload");
-                                                    jsonImage.put("sfcode", SfCode);
-                                                    jsonImage.put("division_code", DivCode);
-                                                    if (SfType.equalsIgnoreCase("1")) {
-                                                        jsonImage.put("Rsf", SfCode);
-                                                    } else {
-                                                        jsonImage.put("Rsf", SharedPref.getHqCode(context));
-                                                    }
-                                                } catch (Exception ignored) {
+                                        if(SharedPref.getGeotagImg(ChemistAddition.this).equalsIgnoreCase("0")) {
+                                            JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(ChemistAddition.this);
+                                            try {
+                                                jsonImage.put("tableName", "imgupload");
+                                                jsonImage.put("sfcode", SfCode);
+                                                jsonImage.put("division_code", DivCode);
+                                                if (SfType.equalsIgnoreCase("1")) {
+                                                    jsonImage.put("Rsf", SfCode);
+                                                } else {
+                                                    jsonImage.put("Rsf", SharedPref.getHqCode(ChemistAddition.this));
                                                 }
-                                                tag_Image();
-                                                CallImageAPI(jsonImage.toString(), destinationFilePath);
-
+                                            } catch (Exception ignored) {
                                             }
+                                            tag_Image();
+                                            CallImageAPI(jsonImage.toString(), destinationFilePath);
 
 
                                         }
+                                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.saved_successfully));
+
 //                                        getOnBackPressedDispatcher().onBackPressed();
 //                                        finish();
                                     }
@@ -611,7 +661,7 @@ public class ChemistAddtion extends AppCompatActivity {
                             else{
                                 chemistadditionbinding.btnChmsave.setEnabled(true);
                                 progressDialog.dismiss();
-                                commonUtilsMethods.showToastMessage(ChemistAddtion.this, getResources().getString(R.string.something_wrong));
+                                commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.something_wrong));
                             }
                         }
 
@@ -619,7 +669,7 @@ public class ChemistAddtion extends AppCompatActivity {
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             chemistadditionbinding.btnChmsave.setEnabled(true);
                             progressDialog.dismiss();
-                            commonUtilsMethods.showToastMessage(ChemistAddtion.this, getResources().getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.no_network));
                         }
                     });
                 }
@@ -627,7 +677,7 @@ public class ChemistAddtion extends AppCompatActivity {
             else {
                 chemistadditionbinding.btnChmsave.setEnabled(true);
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(ChemistAddtion.this, getResources().getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.no_network));
             }
 
         }
@@ -639,7 +689,7 @@ public class ChemistAddtion extends AppCompatActivity {
     }
 
     private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) ChemistAddtion.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) ChemistAddition.this.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
     public void SyncChemist(String hqCode) {
@@ -721,7 +771,7 @@ public class ChemistAddtion extends AppCompatActivity {
                                         masterSyncItemModels.get(position).setSyncSuccess(2);
                                         masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 2));
                                         new Handler().postDelayed(() -> {
-                                            commonUtilsMethods.showToastMessage(ChemistAddtion.this, getResources().getString(R.string.saved_successfully));
+                                            commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.saved_successfully));
                                             Intent resultIntent = new Intent();
                                             setResult(Activity.RESULT_OK, resultIntent);
                                             finish();
@@ -805,7 +855,7 @@ public class ChemistAddtion extends AppCompatActivity {
                 if (Boolean.TRUE.equals(cameraPermission)) {
                     captureFile();
                 } else {
-                    CommonUtilsMethods. RequestGPSPermission(ChemistAddtion.this,"Camera");
+                    CommonUtilsMethods. RequestGPSPermission(ChemistAddition.this, "Camera");
 
                 }
             });
@@ -824,7 +874,7 @@ public class ChemistAddtion extends AppCompatActivity {
 //        String imageName = usersfcode + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "")
 //                + CommonUtilsMethods.getCurrentInstance("HHmmss") + "_" + imageIndex + ".jpeg";
 //        Intent intent = new Intent(ChemistAddtion.this, CameraActivity.class);
-//        File file = new File(context.getExternalFilesDir(null) + "/AdditionTagged/");
+//        File file = new File(ChemistAddition.this.getExternalFilesDir(null) + "/AdditionTagged/");
 //        if (!file.exists() && !file.mkdirs()) {
 //            Log.e("File Creation", "Directory Creation Failed.");
 //            return;
@@ -870,7 +920,7 @@ public class ChemistAddtion extends AppCompatActivity {
         Intent intent = new Intent(this, CameraActivity.class);
         intent.putExtra("FILE_PATH", destinationFilePath);
         intent.putExtra("FROM", "UnlistedAddition");
-        intent.putExtra("L_FLAG", SharedPref.getGeoChk(this).equalsIgnoreCase("0"));
+        intent.putExtra("L_FLAG", "1");
         intent.putExtra("CAMERA_MODE", "ALL");
 
         someActivityResultLauncher.launch(intent);
@@ -1058,7 +1108,7 @@ public class ChemistAddtion extends AppCompatActivity {
             Log.d("fileToUpload", "CallImageAPI: "+ fileToUpload.getAbsolutePath());
             if (!fileToUpload.exists()) {
                 Log.e("S3Upload", "File does not exist: " + destinationFilePath);
-                commonUtilsMethods.showToastMessage(ChemistAddtion.this, "File does not exist.");
+                commonUtilsMethods.showToastMessage(ChemistAddition.this, "File does not exist.");
                 return;
             }
             String bucketName = "san.one";
@@ -1084,7 +1134,7 @@ public class ChemistAddtion extends AppCompatActivity {
                         Log.v("S3Upload", "Upload successful"+file);
                     }else if (state == TransferState.FAILED) {
                         Log.e("S3Upload", "Upload failed");
-                        commonUtilsMethods.showToastMessage(ChemistAddtion.this, getString(R.string.tag_failed));
+                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getString(R.string.tag_failed));
                     }
                 }
                 @Override
@@ -1097,23 +1147,12 @@ public class ChemistAddtion extends AppCompatActivity {
                 public void onError(int id, Exception ex) {
                     Log.e("S3Upload", "Error: " + ex.getMessage());
 
-                    commonUtilsMethods.showToastMessage(ChemistAddtion.this, "Upload failed. Please try again.");
+                    commonUtilsMethods.showToastMessage(ChemistAddition.this, "Upload failed. Please try again.");
                 }
             });
 
         }
     }
-    public void tag_Image() {
-        File imageFile = new File(destinationFilePath);
-        if(imageFile != null){
-            Log.d("tag_Image", "imageFile: "+"the file exists"+imageFile);
-        }else {
-            Log.d("tag_Image", "imageFile: "+"the file do not exist");
-        }
-        new AWSBuckets(ChemistAddtion.this, imageName, imageFile, "");      //SharedPref.getDivisionName(ChemistAddtion.this)
-        Log.d("tag_Image", "image" + imageFile);
-    }
-
     public HashMap<String, RequestBody> field(String val) {
         HashMap<String, RequestBody> xx = new HashMap<>();
         xx.put("data", createFromString(val));
@@ -1140,6 +1179,32 @@ public class ChemistAddtion extends AppCompatActivity {
         }
         return yy;
     }
+    public void tag_Image() {
+        File imageFile = new File(destinationFilePath);
+        if(imageFile != null){
+            Log.d("tag_Image", "imageFile: "+"the file exists"+imageFile);
+        }else {
+            Log.d("tag_Image", "imageFile: "+"the file do not exist");
+        }
+        new AWSBuckets(ChemistAddition.this, imageName, imageFile, SharedPref.getDivisionName(ChemistAddition.this));
+        Log.d("tag_Image", "image" + imageFile);
+    }
+    private void handleCancel() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dcr_cancel_alert);
+        dialog.setCancelable(false);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+        TextView btn_yes=dialog.findViewById(R.id.btn_yes);
+        TextView btn_no=dialog.findViewById(R.id.btn_no);
 
+        btn_yes.setOnClickListener(view12 -> {
+            getOnBackPressedDispatcher().onBackPressed();
+        });
 
+        btn_no.setOnClickListener(view12 -> {
+            dialog.dismiss();
+        });
+
+    }
 }

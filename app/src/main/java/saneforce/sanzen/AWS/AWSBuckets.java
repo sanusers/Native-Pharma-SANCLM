@@ -98,14 +98,14 @@ public class AWSBuckets {
                 image_upload.setTransferListener(new TransferListener() {
                     @Override
                     public void onStateChanged(int id, TransferState state) {
-                        if (TransferState.COMPLETED == state) {
-                            commonUtilsMethods.showToastMessage(context,"Upload Successful!");
-
-
-
-                        } else if (TransferState.FAILED == state) {
-                            commonUtilsMethods.showToastMessage(context,"Upload Failed");
-                        }
+//                        if (TransferState.COMPLETED == state) {
+//                            commonUtilsMethods.showToastMessage(context,"Upload Successful!");
+//
+//
+//
+//                        } else if (TransferState.FAILED == state) {
+//                            commonUtilsMethods.showToastMessage(context,"Upload Failed");
+//                        }
                     }
 
                     @Override
@@ -114,7 +114,7 @@ public class AWSBuckets {
 
                     @Override
                     public void onError(int id, Exception ex) {
-                        commonUtilsMethods.showToastMessage(context,"Error");
+//                        commonUtilsMethods.showToastMessage(context,"Error");
                         ex.printStackTrace();
                     }
                 });

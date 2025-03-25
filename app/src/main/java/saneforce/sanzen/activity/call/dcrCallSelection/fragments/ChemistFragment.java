@@ -42,7 +42,7 @@ import java.util.Comparator;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddtion;
+import saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddition;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
@@ -115,7 +115,7 @@ public class ChemistFragment extends Fragment {
 // Intent intent = new Intent(context, ChemistAddtion.class);
 // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 // context.startActivity(intent);
-            Intent intent = new Intent(getContext(), ChemistAddtion.class);
+            Intent intent = new Intent(getContext(), ChemistAddition.class);
             activityResultLauncher.launch(intent);
         });
         iv_filter.setOnClickListener(view -> {

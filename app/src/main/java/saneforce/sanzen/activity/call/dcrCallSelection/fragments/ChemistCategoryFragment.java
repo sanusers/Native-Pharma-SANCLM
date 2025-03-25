@@ -1,6 +1,6 @@
 package saneforce.sanzen.activity.call.dcrCallSelection.fragments;
 
-import static saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddtion.chemistadditionbinding;
+import static saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddition.chemistadditionbinding;
 
 
 import android.annotation.SuppressLint;

@@ -2,8 +2,6 @@ package saneforce.sanzen.activity.call.dcrCallSelection;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static java.lang.Double.parseDouble;
-import static saneforce.sanzen.activity.approvals.geotagging.GeoTaggingAdapter.geoTagViewList;
 import static saneforce.sanzen.activity.map.MapsActivity.BitmapFromVector;
 
 import android.Manifest;
@@ -22,7 +20,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.PermissionChecker;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,18 +29,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.text.DecimalFormat;
-
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.map.MapsActivity;
-import saneforce.sanzen.activity.map.custSelection.CustListAdapter;
-import saneforce.sanzen.activity.map.custSelection.TagCustSelectionList;
 //import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.databinding.ActivityMapsadditionBinding;
-import saneforce.sanzen.databinding.ActivityUnlistedadditionBinding;
 import saneforce.sanzen.storage.SharedPref;
 
 public class MapsAddition extends AppCompatActivity  implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -141,7 +132,7 @@ public class MapsAddition extends AppCompatActivity  implements OnMapReadyCallba
             SharedPref.setSaveLongitutde(MapsAddition.this, lng);
             SharedPref.setSaveTaggedAddress(MapsAddition.this, binding.tvTaggedAddress.getText().toString());
             if(valueFrom.equalsIgnoreCase("C")){
-                ChemistAddtion.setAddressText(binding.tvTaggedAddress.getText().toString());
+                ChemistAddition.setAddressText(binding.tvTaggedAddress.getText().toString());
             }
             else {
                 UnlistedDoctorAddition.setAddressText(binding.tvTaggedAddress.getText().toString());

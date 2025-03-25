@@ -285,7 +285,21 @@
             android:name=".activity.myresource.Categoryview.Cate_viewscreen"
             android:exported="false"
             android:screenOrientation="landscape" />
-
+        <activity
+            android:name=".activity.call.dcrCallSelection.UnlistedDoctorAddition"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".activity.call.dcrCallSelection.ChemistAddition"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".activity.call.dcrCallSelection.MapsAddition"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />

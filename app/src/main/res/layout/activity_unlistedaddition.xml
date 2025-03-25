@@ -135,12 +135,21 @@
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/edt_dctr"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_17sdp"
-                                android:layout_marginTop="5dp"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_marginHorizontal="@dimen/_1sdp"
+                                android:layout_marginBottom="@dimen/_1sdp"
                                 android:background="@drawable/border_shape_spinner"
+                                android:layout_marginTop="5dp"
+                                android:drawablePadding="@dimen/_5sdp"
                                 android:padding="5dp"
-                                android:textColor="#000000"
-                                android:textSize="@dimen/_7ssp" />
+                                android:hint="@string/enter_name"
+                                android:singleLine="true"
+                                android:imeOptions="actionDone"
+                                android:maxLines="1"
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/light_grey"
+                                android:textSize="@dimen/_6ssp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -162,18 +171,21 @@
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/txt_select_hq"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_17sdp"
                                 android:layout_marginTop="5dp"
-                                android:background="@drawable/border_shape_spinner"
                                 android:clickable="true"
                                 android:focusable="false"
                                 android:inputType="none"
-                                android:hint="@string/select"
-                                android:textColorHint="@color/black"
                                 android:padding="5dp"
-                                android:textColor="#000000"
                                 android:drawableEnd="@drawable/down_arrow"
-                                android:textSize="@dimen/_7ssp" />
+                                android:hint="@string/select_hq"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_marginHorizontal="@dimen/_1sdp"
+                                android:layout_marginBottom="@dimen/_1sdp"
+                                android:background="@drawable/border_shape_spinner"
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/light_grey"
+                                android:textSize="@dimen/_6ssp"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -195,18 +207,20 @@
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/txt_select_territory"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_17sdp"
-                                android:layout_marginTop="5dp"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_marginHorizontal="@dimen/_1sdp"
+                                android:layout_marginBottom="@dimen/_1sdp"
                                 android:background="@drawable/border_shape_spinner"
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/light_grey"
+                                android:textSize="@dimen/_6ssp"
+                                android:layout_marginTop="5dp"
                                 android:clickable="true"
                                 android:focusable="false"
-                                android:inputType="none"
-                                android:padding="5dp"
-                                android:hint="@string/select"
-                                android:textColorHint="@color/black"
-                                android:textColor="#000000"
                                 android:drawableEnd="@drawable/down_arrow"
-                                android:textSize="@dimen/_7ssp" />
+                                android:inputType="none"
+                                android:padding="5dp"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -235,18 +249,22 @@
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/txt_select_qua"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_17sdp"
-                                android:layout_marginTop="5dp"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_marginHorizontal="@dimen/_1sdp"
+                                android:layout_marginBottom="@dimen/_1sdp"
                                 android:background="@drawable/border_shape_spinner"
+                                android:layout_marginTop="5dp"
                                 android:clickable="true"
-                                android:focusable="false"
                                 android:drawableEnd="@drawable/down_arrow"
+                                android:focusable="false"
                                 android:inputType="none"
-                                android:hint="@string/select"
-                                android:textColorHint="@color/black"
                                 android:padding="5dp"
-                                android:textColor="#000000"
-                                android:textSize="@dimen/_7ssp" />
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/light_grey"
+                                android:textSize="@dimen/_6ssp"
+                                android:hint="@string/select_qualification"
+                                />
                         </LinearLayout>
 
                         <LinearLayout
@@ -275,19 +293,22 @@
                                 <androidx.appcompat.widget.AppCompatEditText
                                     android:id="@+id/edt_dob"
                                     android:layout_width="match_parent"
-                                    android:layout_height="@dimen/_17sdp"
-                                    android:layout_weight="1"
+                                    android:layout_height="@dimen/_20sdp"
                                     android:background="@drawable/border_shape_spinner"
+                                    android:layout_weight="1"
                                     android:clickable="true"
                                     android:padding="5dp"
+                                    android:hint="@string/choose_dob"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/light_grey"
+                                    android:textSize="@dimen/_6ssp"
                                     android:focusable="false"
-                                    android:textColor="#000000"
-                                    android:textSize="@dimen/_6ssp" />
+                                    />
 
                                 <ImageView
                                     android:id="@+id/dob_calendar_icon"
-                                    android:layout_width="40dp"
-                                    android:layout_height="@dimen/_17sdp"
+                                    android:layout_width="45dp"
+                                    android:layout_height="@dimen/_20sdp"
                                     android:background="@color/text_dark"
                                     android:padding="8dp"
                                     android:src="@drawable/calendar_img"
@@ -323,19 +344,22 @@
                                 <androidx.appcompat.widget.AppCompatEditText
                                     android:id="@+id/edt_dow"
                                     android:layout_width="match_parent"
-                                    android:layout_height="@dimen/_17sdp"
+                                    android:layout_height="@dimen/_20sdp"
                                     android:layout_weight="1"
                                     android:background="@drawable/border_shape_spinner"
                                     android:clickable="true"
                                     android:padding="5dp"
                                     android:focusable="false"
-                                    android:textColor="#000000"
-                                    android:textSize="@dimen/_6ssp" />
+                                    android:hint="@string/choose_dow"
+                                    android:paddingHorizontal="@dimen/_5sdp"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/light_grey"
+                                    android:textSize="@dimen/_6ssp"/>
 
                                 <ImageView
                                     android:id="@+id/dow_calender_icon"
-                                    android:layout_width="40dp"
-                                    android:layout_height="@dimen/_17sdp"
+                                    android:layout_width="45dp"
+                                    android:layout_height="@dimen/_20sdp"
                                     android:background="@color/text_dark"
                                     android:padding="8dp"
                                     android:src="@drawable/calendar_img"
@@ -371,17 +395,20 @@
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/txt_select_spec"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_17sdp"
-                                android:layout_marginTop="5dp"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_marginHorizontal="@dimen/_1sdp"
+                                android:layout_marginBottom="@dimen/_1sdp"
                                 android:background="@drawable/border_shape_spinner"
+                                android:layout_marginTop="5dp"
                                 android:padding="5dp"
-                                android:drawableEnd="@drawable/down_arrow"
                                 android:focusable="false"
-                                android:hint="@string/select"
-                                android:textColorHint="@color/black"
-                                android:inputType="none"
-                                android:textColor="#000000"
-                                android:textSize="@dimen/_7ssp" />
+                                android:drawableEnd="@drawable/down_arrow"
+                                android:hint="@string/select_speciality"
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/light_grey"
+                                android:textSize="@dimen/_6ssp"
+                                android:inputType="none"/>
                         </LinearLayout>
                         <LinearLayout
                             android:id="@+id/two_two"
@@ -402,17 +429,20 @@
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/txt_select_category"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_17sdp"
-                                android:layout_marginTop="5dp"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_marginHorizontal="@dimen/_1sdp"
+                                android:layout_marginBottom="@dimen/_1sdp"
                                 android:background="@drawable/border_shape_spinner"
+                                android:layout_marginTop="5dp"
                                 android:focusable="false"
                                 android:inputType="none"
-                                android:padding="5dp"
                                 android:drawableEnd="@drawable/down_arrow"
-                                android:hint="@string/select"
-                                android:textColorHint="@color/black"
-                                android:textColor="#000000"
-                                android:textSize="@dimen/_7ssp" />
+                                android:padding="5dp"
+                                android:hint="@string/select_category"
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/light_grey"
+                                android:textSize="@dimen/_6ssp"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -434,18 +464,21 @@
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/txt_select_class"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_17sdp"
-                                android:layout_marginTop="5dp"
-                                android:background="@drawable/border_shape_spinner"
                                 android:clickable="true"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_marginHorizontal="@dimen/_1sdp"
+                                android:layout_marginBottom="@dimen/_1sdp"
+                                android:background="@drawable/border_shape_spinner"
+                                android:layout_marginTop="5dp"
                                 android:focusable="false"
                                 android:inputType="none"
-                                android:padding="5dp"
                                 android:drawableEnd="@drawable/down_arrow"
-                                android:hint="@string/select"
-                                android:textColorHint="@color/black"
-                                android:textColor="#000000"
-                                android:textSize="@dimen/_7ssp" />
+                                android:padding="5dp"
+                                android:hint="@string/select_class"
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/light_grey"
+                                android:textSize="@dimen/_6ssp"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -475,14 +508,22 @@
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/edt_phone"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_17sdp"
-                                android:layout_marginTop="5dp"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_marginHorizontal="@dimen/_1sdp"
+                                android:layout_marginBottom="@dimen/_1sdp"
                                 android:background="@drawable/border_shape_spinner"
+                                android:layout_marginTop="5dp"
+                                android:hint="@string/enter_phone"
+                                android:singleLine="true"
+                                android:imeOptions="actionDone"
+                                android:maxLines="1"
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/light_grey"
+                                android:textSize="@dimen/_6ssp"
                                 android:inputType="number"
                                 android:maxLength="10"
-                                android:padding="5dp"
-                                android:textColor="#000000"
-                                android:textSize="@dimen/_7ssp" />
+                                android:padding="5dp" />
                         </LinearLayout>
                         <LinearLayout
                             android:id="@+id/four_two"
@@ -503,14 +544,22 @@
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/edt_mob"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_17sdp"
-                                android:layout_marginTop="5dp"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_marginHorizontal="@dimen/_1sdp"
+                                android:layout_marginBottom="@dimen/_1sdp"
                                 android:background="@drawable/border_shape_spinner"
+                                android:layout_marginTop="5dp"
                                 android:inputType="number"
                                 android:maxLength="10"
                                 android:padding="5dp"
-                                android:textColor="#000000"
-                                android:textSize="@dimen/_7ssp" />
+                                android:hint="@string/enter_mobile"
+                                android:singleLine="true"
+                                android:imeOptions="actionDone"
+                                android:maxLines="1"
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/light_grey"
+                                android:textSize="@dimen/_6ssp" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -539,11 +588,18 @@
                             <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/edt_homeaddr"
                                 android:layout_width="match_parent"
+                                android:layout_marginHorizontal="@dimen/_1sdp"
+                                android:layout_marginBottom="@dimen/_1sdp"
                                 android:layout_height="70dp"
+                                android:imeOptions="actionDone"
                                 android:layout_marginTop="5dp"
+                                android:hint="@string/enter_homeadd"
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/light_grey"
+                                android:textSize="@dimen/_6ssp"
                                 android:background="@drawable/border_shape_spinner"
-                                android:padding="5dp"
-                                android:textColor="#000000" />
+                                android:padding="5dp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -567,10 +623,17 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="70dp"
                                 android:layout_marginTop="5dp"
+                                android:layout_marginHorizontal="@dimen/_1sdp"
+                                android:layout_marginBottom="@dimen/_1sdp"
                                 android:background="@drawable/border_shape_spinner"
                                 android:padding="5dp"
-                                android:textColor="#000000"
-                                android:textSize="@dimen/_7ssp" />
+                                android:hint="@string/enter_hospadd"
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/light_grey"
+                                android:textSize="@dimen/_6ssp"
+                                android:imeOptions="actionDone"
+                                android:singleLine="true"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -602,19 +665,50 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp">
 
-                                <androidx.appcompat.widget.AppCompatEditText
-                                    android:id="@+id/edt_geotagaddr"
+                                <RelativeLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="@dimen/_17sdp"
+                                    android:layout_height="@dimen/_20sdp"
                                     android:layout_toLeftOf="@+id/btn_map"
+                                    android:paddingVertical="@dimen/_1sdp"
+                                    android:paddingHorizontal="@dimen/_5sdp"
                                     android:background="@drawable/shape_white_grey"
-                                    android:padding="5dp"
-                                    android:textColor="#000000" />
+                                    android:backgroundTint="@color/white"
+                                    android:orientation="horizontal">
+
+                                    <androidx.appcompat.widget.AppCompatEditText
+                                        android:id="@+id/edt_geotagaddr"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/_20sdp"
+                                        android:padding="5dp"
+                                        android:maxLines="1"
+                                        android:hint="@string/tag_add"
+                                        android:textSize="@dimen/_6ssp"
+                                        android:layout_alignParentTop="true"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_toStartOf="@id/img_clear_tag"
+                                        android:background="@color/white"
+                                        android:imeOptions="actionDone"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="@color/light_grey"/>
+
+                                    <ImageView
+                                        android:id="@+id/img_clear_tag"
+                                        android:layout_width="@dimen/_15sdp"
+                                        android:layout_height="@dimen/_15sdp"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_alignParentTop="true"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_marginHorizontal="@dimen/_3sdp"
+                                        android:visibility="gone"
+                                        android:src="@drawable/img_close"/>
+
+                                </RelativeLayout>
 
                                 <androidx.appcompat.widget.AppCompatButton
                                     android:id="@+id/btn_map"
-                                    android:layout_width="@dimen/_45sdp"
-                                    android:layout_height="@dimen/_17sdp"
+                                    android:layout_width="@dimen/_60sdp"
+                                    android:layout_height="@dimen/_20sdp"
                                     android:layout_alignParentEnd="true"
                                     android:background="@drawable/bg_purple"
                                     android:paddingLeft="5dp"
@@ -761,7 +855,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@color/white"
-            android:padding="0dp">
+            android:paddingHorizontal="@dimen/_5sdp">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_unlstcancel"
