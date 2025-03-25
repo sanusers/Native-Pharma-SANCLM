@@ -381,7 +381,7 @@ public class Leave_Application extends AppCompatActivity {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                                     String Leavename = (jsonObject.getString("Flg"));//Leave_Name
                                     String msg = (jsonObject.getString("Msg"));
-                                    System.out.println("leaveMessage--->" + msg);
+//                                    System.out.println("leaveMessage--->" + msg);
                                     if ((jsonObject.getString("Msg").equals(""))) {
                                         Leavedetails();
                                     } else {

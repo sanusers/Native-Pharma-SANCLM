@@ -418,7 +418,7 @@ public class MyResource_Activity extends AppCompatActivity {
                     count_list.add(id);
                     visitcount_list.add(String.valueOf(count));
                     values1 = String.valueOf(count_list.size());
-                    System.out.println("Tlvst: " + count_list + ", Count: " + visitcount_list);
+//                    System.out.println("Tlvst: " + count_list + ", Count: " + visitcount_list);
                 }
             }
 

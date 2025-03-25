@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -52,12 +53,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -111,6 +118,7 @@ import saneforce.sanzen.utility.TimeUtils;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
+    private static final String TAG = "TAG";
     public static ArrayList<ViewTagModel> list = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static ActivityMapsBinding mapsBinding;
@@ -120,6 +128,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static ViewTagModel mm = null;
     public static Marker marker;
     public static GoogleMap mMap;
+    private static Circle circle;
     public static String SelectedTab="", SelectedHqCode="", SelectedHqName="";
     public static String from_tagging = "", GeoTagImageNeed = "", GeoTagApprovalNeed = "", TaggedLat, TaggedLng, TaggedAdd;
     public static boolean isTagged = false;
@@ -140,6 +149,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     AlertDialog customDialog;
     String selectedTap;
     Button btn_confirm;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
 
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @SuppressLint("SuspiciousIndentation")
@@ -190,6 +202,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onSaveInstanceState(outState);
         if(HomeDashBoard.selectedDate != null) {
             outState.putString("date", HomeDashBoard.selectedDate.toString());
+            outState.putInt(Manifest.permission.ACCESS_FINE_LOCATION, ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION));
+            outState.putInt(Manifest.permission.ACCESS_COARSE_LOCATION, ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION));
+            outState.putInt(Manifest.permission.CAMERA, ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA));
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
+                outState.putInt(Manifest.permission.READ_MEDIA_AUDIO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO));
+                outState.putInt(Manifest.permission.READ_MEDIA_VIDEO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO));
+                outState.putInt(Manifest.permission.READ_MEDIA_IMAGES, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES));
+            }
+            outState.putInt(Manifest.permission.READ_EXTERNAL_STORAGE, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE));
+            outState.putInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE));
         }
         outState.putBoolean("isSaved", true);
     }
@@ -213,14 +235,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if(savedInstanceState.getString("date") != null) {
                 HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
             }
-            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
+            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_FINE_LOCATION, -1)
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_COARSE_LOCATION, -1)
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != savedInstanceState.getInt(Manifest.permission.CAMERA, -1)
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_AUDIO, -1)
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_VIDEO, -1)
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_IMAGES, -1)
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.READ_EXTERNAL_STORAGE, -1)
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, -1) ) {
                 CommonAlertBox.permissionChangeAlert(this);
             }
         }
@@ -387,12 +409,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         mapsBinding.imgRefreshMap.setOnClickListener(view -> {
-
             if (CurrentLoc()) {
                 lat = gpsTrack.getLatitude();
                 lng = gpsTrack.getLongitude();
                 LatLng latLng = new LatLng(lat, lng);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.2f));
+                Log.d("TAG", "refresh Map: " + lat + " , " + lng);
+                if(mMap != null) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.2f));
+                    addCircle(mMap);
+                }
                 if (from_tagging.equalsIgnoreCase("tagging")) {
                     mapsBinding.tvCustName.setText(cust_name);
                     mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
@@ -620,15 +645,50 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void addCircle(GoogleMap mMap) {
-        gpsTrack = new GPSTrack(this);
-        lat = gpsTrack.getLatitude();
-        lng = gpsTrack.getLongitude();
-        LatLng latLng = new LatLng(lat, lng);
-        int transparent = 0x12FD0B0B;
-        CircleOptions circle = new CircleOptions().center(latLng).radius(limitKm * 1000.0).strokeWidth(4).strokeColor(Color.RED).fillColor(transparent).clickable(true);
-        mMap.addCircle(circle);
-        mapsBinding.progressBar.setVisibility(View.GONE);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(120000);
+        locationRequest.setFastestInterval(120000);
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                for (Location location : locationResult.getLocations()) {
+                    lat = location.getLatitude();
+                    lng = location.getLongitude();
+                    gpsTrack.setLocation(location);
+                    LatLng latLng = new LatLng(lat, lng);
+                    Log.d("TAG", "addCircle: " + lat + " , " + lng);
+                    if(circle != null){
+                        circle.remove();
+                    }
+                    int transparent = 0x12FD0B0B;
+                    CircleOptions circleOptions = new CircleOptions().center(latLng).radius(limitKm * 1000.0).strokeWidth(4).strokeColor(Color.RED).fillColor(transparent).clickable(true);
+                    circle = mMap.addCircle(circleOptions);
+                    if(mapsBinding.progressBar.getVisibility() == View.VISIBLE) {
+                        mapsBinding.progressBar.setVisibility(View.GONE);
+                    }
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.2f));
+                }
+            }
+        };
+
+        try {
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, getMainLooper());
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+//        gpsTrack = new GPSTrack(this);
+//        lat = gpsTrack.getLatitude();
+//        lng = gpsTrack.getLongitude();
+//        LatLng latLng = new LatLng(lat, lng);
+//        Log.d("TAG", "addCircle: " + lat + " , " + lng);
+//        int transparent = 0x12FD0B0B;
+//        CircleOptions circle = new CircleOptions().center(latLng).radius(limitKm * 1000.0).strokeWidth(4).strokeColor(Color.RED).fillColor(transparent).clickable(true);
+//        mMap.addCircle(circle);
+//        mapsBinding.progressBar.setVisibility(View.GONE);
+//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
     }
 
     public boolean CurrentLoc() {
@@ -1024,10 +1084,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         CommonAlertBox.CheckLocationStatus(MapsActivity.this, gpsTrack);
         locationCheck();
         timeZoneVerification();
+        Log.d(TAG, "onResume: ");
         if(mMap != null && SelectedTab != null) {
             if (SfType.equalsIgnoreCase("1")) {
+                Log.d("TAG", "tab selected resume: " + lat + " , " + lng);
                 TabSelected(SelectedTab, SfCode);
             } else {
+                Log.d("TAG", "tab selected resume: " + lat + " , " + lng);
                 TabSelected(SelectedTab, SelectedHqCode);
             }
         }
@@ -1055,6 +1118,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         gpsTrack = new GPSTrack(this);
         lat = gpsTrack.getLatitude();
         lng = gpsTrack.getLongitude();
+        Log.d(TAG, "onMapReady: " + lat + " , " + lng);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -1162,6 +1226,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         gpsTrack = new GPSTrack(this);
         lat = gpsTrack.getLatitude();
         lng = gpsTrack.getLongitude();
+        Log.d(TAG, "AddTaggedDetails: " + lat + " , " + lng);
 
         switch (selected) {
             case "D":

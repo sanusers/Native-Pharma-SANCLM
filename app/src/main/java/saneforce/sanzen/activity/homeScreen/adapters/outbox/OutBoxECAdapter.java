@@ -162,9 +162,9 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                         File fileDelete = new File(ecModelClasses.get(position).getFilePath());
                         if(fileDelete.exists()) {
                             if(fileDelete.delete()) {
-                                System.out.println("file Deleted :" + ecModelClasses.get(position).getFilePath());
+//                                System.out.println("file Deleted :" + ecModelClasses.get(position).getFilePath());
                             }else {
-                                System.out.println("file not Deleted :" + ecModelClasses.get(position).getFilePath());
+//                                System.out.println("file not Deleted :" + ecModelClasses.get(position).getFilePath());
                             }
                         }
                         callOfflineECDataDao.deleteOfflineEC(String.valueOf(ecModelClasses.get(position).getId()));

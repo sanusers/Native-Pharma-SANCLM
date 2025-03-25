@@ -527,9 +527,9 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         File fileDelete = new File(filePath);
         if (fileDelete.exists()) {
             if (fileDelete.delete()) {
-                System.out.println("file Deleted :" + filePath);
+//                System.out.println("file Deleted :" + filePath);
             } else {
-                System.out.println("file not Deleted :" + filePath);
+//                System.out.println("file not Deleted :" + filePath);
             }
         }
         callOfflineECDataDao.deleteOfflineEC(id);

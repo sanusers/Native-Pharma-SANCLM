@@ -96,8 +96,8 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String count = String.valueOf((position + 1));
         final Resourcemodel_class app_adapt = FillteredList.get(position);
-        System.out.println("leaveWorkTypes--->" + app_adapt.getWorkType());
-        System.out.println("eligibility--->" + app_adapt.getEligible());
+//        System.out.println("leaveWorkTypes--->" + app_adapt.getWorkType());
+//        System.out.println("eligibility--->" + app_adapt.getEligible());
 //        Doc_geoneed = SharedPref.getGeotagNeed(context);
 //        Che_geoneed = SharedPref.getGeotagNeedChe(context);
 //        Stk_geoneed = SharedPref.getGeotagNeedStock(context);

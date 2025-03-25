@@ -309,6 +309,10 @@ public class GPSTrack implements LocationListener {
         return false;
     }
 
+    public void setLocation(Location location) {
+        GPSTrack.location = location;
+    }
+
     private void openSettings() {
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);

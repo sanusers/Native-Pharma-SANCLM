@@ -117,9 +117,9 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                 File fileDelete = new File(callCaptureImageList.getFilePath());
                 if(fileDelete.exists()) {
                     if(fileDelete.delete()) {
-                        System.out.println("file Deleted :" + callCaptureImageList.getFilePath());
+//                        System.out.println("file Deleted :" + callCaptureImageList.getFilePath());
                     }else {
-                        System.out.println("file not Deleted :" + callCaptureImageList.getFilePath());
+//                        System.out.println("file not Deleted :" + callCaptureImageList.getFilePath());
                     }
                 }
                 callOfflineECDataDao.deleteOfflineECImage(callCaptureImageList.getSystemImgName());
