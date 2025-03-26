@@ -89,13 +89,28 @@ public class ChemistHQFragment extends Fragment {
             }
         });
 
-        selectchmHQSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+        /*selectchmHQSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
             hqCode = list_code.get(i);
             hqName = list_name.get(i);
             selectchmHQSideBinding.searchList.setText("");
             SharedPref.sethq(requireContext(),hqCode);
             loadFragment(new ChemistClusterFragment());
             chemistadditionbinding.txtSelectHq.setText(selectchmHQSideBinding.selectListView.getItemAtPosition(i).toString());
+            chemistadditionbinding.fragmentSelectChemisthq.setVisibility(View.GONE);
+        });*/
+        selectchmHQSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+// Get selected item from the filtered list
+            String selectedItem = (String) adapterView.getItemAtPosition(i);
+// Find the correct index in the original list
+            int originalIndex = list_name.indexOf(selectedItem);
+            if (originalIndex != -1) {
+                hqCode = list_code.get(originalIndex);
+                hqName = list_name.get(originalIndex);
+            }
+            selectchmHQSideBinding.searchList.setText("");
+            SharedPref.sethq(requireContext(), hqCode);
+            loadFragment(new ChemistClusterFragment());
+            chemistadditionbinding.txtSelectHq.setText(selectedItem);
             chemistadditionbinding.fragmentSelectChemisthq.setVisibility(View.GONE);
         });
         return v;
