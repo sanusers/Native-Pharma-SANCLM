@@ -936,6 +936,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
 
                     } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                         Log.d("Camera", "onActivityResult: Canceled");
+                        destinationFilePath = "";
                     }
                 } catch (Exception e) {
                     Log.e("Camera", "onActivityResult Error: " + e.getMessage());
@@ -1005,10 +1006,10 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                 @Override
                 public void onStateChanged(int id, TransferState state) {
                     if (state == TransferState.COMPLETED) {
-                        Log.v("S3Upload", "Upload successful"+file);
+//                        Log.v("S3Upload", "Upload successful"+file);
                     }else if (state == TransferState.FAILED) {
                         Log.e("S3Upload", "Upload failed");
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getString(R.string.tag_failed));
+//                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getString(R.string.tag_failed));
                     }
                 }
                 @Override
@@ -1021,7 +1022,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                 public void onError(int id, Exception ex) {
                     Log.e("S3Upload", "Error: " + ex.getMessage());
 
-                    commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, "Upload failed. Please try again.");
+//                    commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, "Upload failed. Please try again.");
                 }
             });
 
@@ -1034,8 +1035,8 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
         }else {
             Log.d("tag_Image", "imageFile: "+"the file do not exist");
         }
-        new AWSBuckets(UnlistedDoctorAddition.this, imageName, imageFile, SharedPref.getDivisionName(UnlistedDoctorAddition.this));
-        Log.d("tag_Image", "image" + imageFile);
+        new AWSBuckets(UnlistedDoctorAddition.this, imageName, imageFile, "");             //SharedPref.getDivisionName(UnlistedDoctorAddition.this)
+
     }
 
 
