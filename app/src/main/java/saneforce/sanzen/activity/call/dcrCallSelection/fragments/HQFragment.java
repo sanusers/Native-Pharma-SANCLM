@@ -89,13 +89,28 @@ public class HQFragment extends Fragment {
             }
         });
 
-        selectHQSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+        /*selectHQSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
             hqCode = list_code.get(i);
             hqName = list_name.get(i);
             selectHQSideBinding.searchList.setText("");
             SharedPref.sethq(requireContext(),hqCode);
             loadFragment(new ClusterFragment());
             unlistedadditionbinding.txtSelectHq.setText(selectHQSideBinding.selectListView.getItemAtPosition(i).toString());
+            unlistedadditionbinding.fragmentSelectHq.setVisibility(View.GONE);
+        });*/
+        selectHQSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+// Get selected item from the filtered list
+            String selectedItem = (String) adapterView.getItemAtPosition(i);
+// Find the correct index in the original list
+            int originalIndex = list_name.indexOf(selectedItem);
+            if (originalIndex != -1) {
+                hqCode = list_code.get(originalIndex);
+                hqName = list_name.get(originalIndex);
+            }
+            selectHQSideBinding.searchList.setText("");
+            SharedPref.sethq(requireContext(), hqCode);
+            loadFragment(new ClusterFragment());
+            unlistedadditionbinding.txtSelectHq.setText(selectedItem);
             unlistedadditionbinding.fragmentSelectHq.setVisibility(View.GONE);
         });
         return v;
