@@ -178,7 +178,7 @@ public class Speciality extends Fragment {
                 previewAdapter = new PreviewAdapter(context, SlideSpecialityList);
                 specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
                 specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
-                Collections.sort(SlideSpecialityList, Comparator.comparing(BrandModelClass::getBrandName));
+//                Collections.sort(SlideSpecialityList, Comparator.comparing(BrandModelClass::getBrandName));
             } else {
                 specialityPreviewBinding.constraintNoData.setVisibility(View.VISIBLE);
                 specialityPreviewBinding.constraintSortFilter.setVisibility(View.GONE);

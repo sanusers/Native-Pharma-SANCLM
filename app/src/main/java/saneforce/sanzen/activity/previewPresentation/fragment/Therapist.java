@@ -255,7 +255,7 @@ public class Therapist extends Fragment {
                 previewAdapter = new PreviewAdapter(context, SlideTherapistList);
                 fragmentTherapistBinding.rvTherapistList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
                 fragmentTherapistBinding.rvTherapistList.setAdapter(previewAdapter);
-                Collections.sort(SlideTherapistList, Comparator.comparing(BrandModelClass::getBrandName));
+//                Collections.sort(SlideTherapistList, Comparator.comparing(BrandModelClass::getBrandName));
             } else {
                 fragmentTherapistBinding.constraintNoData.setVisibility(View.VISIBLE);
                 fragmentTherapistBinding.constraintSortFilter.setVisibility(View.GONE);

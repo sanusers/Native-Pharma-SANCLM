@@ -226,7 +226,7 @@ public class BrandMatrix extends Fragment {
                 previewAdapter = new PreviewAdapter(context, SlideBrandMatrixList);
                 brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
                 brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
-                Collections.sort(SlideBrandMatrixList, Comparator.comparing(BrandModelClass::getBrandName));
+//                Collections.sort(SlideBrandMatrixList, Comparator.comparing(BrandModelClass::getBrandName));
             } else {
                 brandMatrixBinding.constraintNoData.setVisibility(View.VISIBLE);
                 brandMatrixBinding.constraintSortFilter.setVisibility(View.GONE);
