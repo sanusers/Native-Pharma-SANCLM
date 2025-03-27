@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.call.dcrCallSelection.fragments;
 
 import static saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddition.chemistadditionbinding;
+import static saneforce.sanzen.activity.call.dcrCallSelection.UnlistedDoctorAddition.unlistedadditionbinding;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -28,7 +29,6 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentChemisthqBinding;
-//import saneforce.sanzen.databinding.FragmentHqBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
@@ -37,7 +37,7 @@ public class ChemistHQFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentChemisthqBinding selectchmHQSideBinding;
     public static String hqName = "", hqCode = "";
-    int sel_hqcode=0;
+    int sel_hqcode = 0;
     JSONArray jsonArray;
     JSONObject jsonObject;
     ArrayList<String> list_name = new ArrayList<>();
@@ -57,9 +57,10 @@ public class ChemistHQFragment extends Fragment {
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         SetupAdapter();
+        chemistadditionbinding.txtSelectTerritory.setText("");
         hqName = "";
         hqCode = "";
-        sel_hqcode=0;
+        sel_hqcode = 0;
         selectchmHQSideBinding.tvDummy.setOnClickListener(view -> {
         });
 
@@ -103,7 +104,7 @@ public class ChemistHQFragment extends Fragment {
             String selectedItem = (String) adapterView.getItemAtPosition(i);
 // Find the correct index in the original list
             int originalIndex = list_name.indexOf(selectedItem);
-            if (originalIndex != -1) {
+            if(originalIndex != -1) {
                 hqCode = list_code.get(originalIndex);
                 hqName = list_name.get(originalIndex);
             }
@@ -111,6 +112,7 @@ public class ChemistHQFragment extends Fragment {
             SharedPref.sethq(requireContext(), hqCode);
             loadFragment(new ChemistClusterFragment());
             chemistadditionbinding.txtSelectHq.setText(selectedItem);
+            chemistadditionbinding.txtSelectTerritory.setText("");
             chemistadditionbinding.fragmentSelectChemisthq.setVisibility(View.GONE);
         });
         return v;
@@ -122,12 +124,13 @@ public class ChemistHQFragment extends Fragment {
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
     private void SetupAdapter() {
         list_code.clear();
         list_name.clear();
         try {
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-            for (int i = 0; i < jsonArray.length(); i++) {
+            for (int i = 0; i<jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 list_name.add(jsonObject.getString("name"));
                 list_code.add(jsonObject.getString("id"));

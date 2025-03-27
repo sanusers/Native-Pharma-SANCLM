@@ -90,17 +90,18 @@ import saneforce.sanzen.utility.TimeUtils;
 public class ChemistAddition extends AppCompatActivity {
     public static ActivityChemistadditionBinding chemistadditionbinding;
     CommonUtilsMethods commonUtilsMethods;
-    String SfType = "", SfCode = "", SfName = "", DivCode = "", terrname = "", terrcode = "",usersfcode="";
-    public static String filePath = "", imageName = "";
+    String SfType = "", SfCode = "", SfName = "", DivCode = "", terrname = "", terrcode = "", usersfcode = "";
+    public static String filePath = "";
+    String imageName = "";
     int imgindx = 0;
-    private String destinationFilePath="";
-    String txt_qua = "", txt_cat = "", txt_class = "", txt_spec = "", txt_terr = "",txt_hq="";
+    private String destinationFilePath = "";
+    String txt_qua = "", txt_cat = "", txt_class = "", txt_spec = "", txt_terr = "", txt_hq = "";
     ProgressDialog progressDialog;
     ApiInterface apiInterface;
     double latitude, longitude;
     GPSTrack gpsTrack;
     ArrayList<MasterSyncItemModel> ChemistModelArray = new ArrayList<>();
-    int chemistStatus = 0,categoryStatus = 0;
+    int chemistStatus = 0, categoryStatus = 0;
     ArrayList<MasterSyncItemModel> arrayForAdapter = new ArrayList<>();
     int ChemistStatus = 0;
     MasterDataDao masterDataDao;
@@ -108,7 +109,7 @@ public class ChemistAddition extends AppCompatActivity {
     ArrayList<DCRFillteredModelClass> filterSelectionList = new ArrayList<>();
     private List<String> imagePaths = new ArrayList<>();
     private int currentImageIndex = 0;
-    static String TagImgNd="";
+    static String TagImgNd = "";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -121,9 +122,9 @@ public class ChemistAddition extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
-        if (SharedPref.getChmCap(this).isEmpty() || SharedPref.getChmCap(this) == null) {
+        if(SharedPref.getChmCap(this).isEmpty() || SharedPref.getChmCap(this) == null) {
             chemistadditionbinding.chmtagname.setText(getResources().getString(R.string.add) + " " + "Chemist");
-        } else {
+        }else {
             chemistadditionbinding.chmtagname.setText(getResources().getString(R.string.add) + " " + SharedPref.getChmCap(this));
         }
         String clusterCap = SharedPref.getClusterCap(this);
@@ -134,19 +135,19 @@ public class ChemistAddition extends AppCompatActivity {
         chemistadditionbinding.txtDr.setText(Html.fromHtml(firstChar + firstChar2));
         firstChar = "<font color='#000000'>" + getResources().getString(R.string.headquarter) + "</font>";
         chemistadditionbinding.txtHq.setText(Html.fromHtml(firstChar + firstChar2));
-        if (SharedPref.getClusterCap(this).isEmpty() || SharedPref.getClusterCap(this) == null) {
+        if(SharedPref.getClusterCap(this).isEmpty() || SharedPref.getClusterCap(this) == null) {
             firstChar = "<font color='#000000'>" + getResources().getString(R.string.cluster) + "</font>";
             chemistadditionbinding.txtTerritory.setHint(getResources().getString(R.string.select_cluster));
-        } else {
+        }else {
             firstChar = "<font color='#000000'>" + SharedPref.getClusterCap(this) + "</font>";
-            chemistadditionbinding.txtTerritory.setHint(getResources().getString(R.string.select) + " " +clusterCap);
+            chemistadditionbinding.txtTerritory.setHint(getResources().getString(R.string.select) + " " + clusterCap);
         }
         chemistadditionbinding.txtTerritory.setText(Html.fromHtml(firstChar + firstChar2));
 
         SfType = SharedPref.getSfType(this);
         usersfcode = SharedPref.getSfCode(this);
-        TagImgNd=SharedPref.getGeotagImg(this);
-        if(SfType.equalsIgnoreCase("1")){
+        TagImgNd = SharedPref.getGeotagImg(this);
+        if(SfType.equalsIgnoreCase("1")) {
             chemistadditionbinding.two.setVisibility(View.GONE);
             // Adjust weight of remaining layouts to take equal space
             LinearLayout.LayoutParams paramsOne = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.5f);
@@ -154,63 +155,52 @@ public class ChemistAddition extends AppCompatActivity {
             paramsThree.setMargins(15, 0, 0, 0);
             chemistadditionbinding.one.setLayoutParams(paramsOne);
             chemistadditionbinding.three.setLayoutParams(paramsThree);
-        }
-        else{
+        }else {
             chemistadditionbinding.two.setVisibility(View.VISIBLE);
         }
-        if(SharedPref.getGeoChk(this).equalsIgnoreCase("0")){
+        if(SharedPref.getGeoChk(this).equalsIgnoreCase("0")) {
             chemistadditionbinding.layout6.setVisibility(View.VISIBLE);
-        }
-        else{
+        }else {
             chemistadditionbinding.layout6.setVisibility(View.GONE);
         }
 
         chemistadditionbinding.btnChmsave.setOnClickListener(v -> {
             chemistadditionbinding.btnChmsave.setEnabled(false);
-            if(chemistadditionbinding.edtDctr.getText().toString().isEmpty())
-            {
-                commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill)+" "+getResources().getString(R.string.name));
+            if(chemistadditionbinding.edtDctr.getText().toString().isEmpty()) {
+                commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.name));
                 chemistadditionbinding.btnChmsave.setEnabled(true);
-            }
-            else if (chemistadditionbinding.edtDctr.getText().toString().contains("'")) {
+            }else if(chemistadditionbinding.edtDctr.getText().toString().contains("'")) {
                 chemistadditionbinding.edtDctr.setError("Invalid Character");
                 chemistadditionbinding.btnChmsave.setEnabled(true);
-            }
-            else if(SharedPref.getSfType(this).equalsIgnoreCase("2"))
-            {
-                if (chemistadditionbinding.txtSelectHq.getText().toString().isEmpty()) {
+            }else if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+                if(chemistadditionbinding.txtSelectHq.getText().toString().isEmpty()) {
                     commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.headquarter));
                     chemistadditionbinding.btnChmsave.setEnabled(true);
-                }
-                else if(chemistadditionbinding.txtSelectTerritory.getText().toString().isEmpty())
-                {
-                    if (SharedPref.getClusterCap(this).isEmpty() || SharedPref.getClusterCap(this) == null) {
-                        commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill)+" "+getResources().getString(R.string.cluster));
+                }else if(chemistadditionbinding.txtSelectTerritory.getText().toString().isEmpty()) {
+                    if(SharedPref.getClusterCap(this).isEmpty() || SharedPref.getClusterCap(this) == null) {
+                        commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.cluster));
                         chemistadditionbinding.btnChmsave.setEnabled(true);
-                    } else {
-                        commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill)+" "+SharedPref.getClusterCap(this));
+                    }else {
+                        commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + SharedPref.getClusterCap(this));
                         chemistadditionbinding.btnChmsave.setEnabled(true);
                     }
-                }
-                else if (!chemistadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("")&&
+                }else if(!chemistadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("") &&
                         TagImgNd.equalsIgnoreCase("0") && destinationFilePath.equalsIgnoreCase("")) {
                     commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.Photo_mand));
                     chemistadditionbinding.btnChmsave.setEnabled(true);
 
-                }
-                else{
+                }else {
                     Log.v("qualification_txt", "arent_empty");
                     chemistadditionbinding.btnChmsave.setEnabled(false);
-                    JSONObject json =CommonUtilsMethods.CommonObjectParameter(this);
+                    JSONObject json = CommonUtilsMethods.CommonObjectParameter(this);
                     try {
 
                         SfName = SharedPref.getSfName(this);
                         DivCode = SharedPref.getDivisionCode(this);
                         json.put("tableName", "savenew_master");
-                        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+                        if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
                             SfCode = SharedPref.getHqCode(this);
-                        }
-                        else {
+                        }else {
                             SfCode = SharedPref.getSfCode(this);
                         }
                         json.put("sfcode", SfCode);
@@ -221,7 +211,7 @@ public class ChemistAddition extends AppCompatActivity {
                         json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(ChemistAddition.this)));
                         json.put("DrqulNm", chemistadditionbinding.txtSelectQua.getText().toString());
                         json.put("DrClsCd", "");
-                        json.put("DrClsNm","");
+                        json.put("DrClsNm", "");
                         json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(ChemistAddition.this)));
                         json.put("DrCatNm", chemistadditionbinding.txtSelectCategory.getText().toString());
                         json.put("DrSpcCd", String.valueOf(SharedPref.getSelectedSpeciality(ChemistAddition.this)));
@@ -232,67 +222,67 @@ public class ChemistAddition extends AppCompatActivity {
                         json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(ChemistAddition.this)));
                         json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(ChemistAddition.this)));
                         json.put("DrTerNm", chemistadditionbinding.txtSelectTerritory.getText().toString());
-                        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+                        if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
                             json.put("DrHQCd", String.valueOf(SharedPref.getHq(ChemistAddition.this)));
                             json.put("DrHQNm", chemistadditionbinding.txtSelectHq.getText().toString());
-                        }
-                        else {
+                        }else {
                             json.put("DrHQCd", SfCode);
                             json.put("DrHQNm", SfName);
                         }
                         json.put("key", SharedPref.getSaveLicenseSetting(ChemistAddition.this));
                         json.put("DrType", "C");
-                        json.put("DrDOB", chemistadditionbinding.edtDob.getText().toString()+" 00:00:00");
-                        json.put("DrDOW", chemistadditionbinding.edtDow.getText().toString()+" 00:00:00");
+                        json.put("DrDOB", chemistadditionbinding.edtDob.getText().toString() + " 00:00:00");
+                        json.put("DrDOW", chemistadditionbinding.edtDow.getText().toString() + " 00:00:00");
                         json.put("DrPhone", chemistadditionbinding.edtPhone.getText().toString());
                         json.put("DrMob", chemistadditionbinding.edtMob.getText().toString());
                         json.put("imagePath", destinationFilePath);
                         json.put("imageName", imageName);
-                        gpsTrack = new GPSTrack(this);
-                        latitude = gpsTrack.getLatitude();
-                        longitude = gpsTrack.getLongitude();
-                        json.put("DrLat", String.valueOf(latitude));
-                        json.put("DrLong", String.valueOf(longitude));
+
+                        if(SharedPref.getGeoChk(this).equalsIgnoreCase("0") && !chemistadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("")) {
+                            gpsTrack = new GPSTrack(this);
+                            latitude = gpsTrack.getLatitude();
+                            longitude = gpsTrack.getLongitude();
+                            json.put("DrLat", String.valueOf(latitude));
+                            json.put("DrLong", String.valueOf(longitude));
+                        }
+                        else{
+                            json.put("DrLat", "");
+                            json.put("DrLong", "");
+                        }
                         json.put("DrLocAddr", SharedPref.getSaveTaggedAddress(ChemistAddition.this));
                         Log.v("printing_add_dr", json.toString());
                         chemistadditionbinding.btnChmsave.setEnabled(false);
                         addChm(json.toString());
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         chemistadditionbinding.btnChmsave.setEnabled(true);
                         e.printStackTrace();
                     }
                 }
-            }
-            else if(chemistadditionbinding.txtSelectTerritory.getText().toString().isEmpty())
-            {
-                if (SharedPref.getClusterCap(this).isEmpty() || SharedPref.getClusterCap(this) == null) {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill)+" "+getResources().getString(R.string.cluster));
+            }else if(chemistadditionbinding.txtSelectTerritory.getText().toString().isEmpty()) {
+                if(SharedPref.getClusterCap(this).isEmpty() || SharedPref.getClusterCap(this) == null) {
+                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.cluster));
                     chemistadditionbinding.btnChmsave.setEnabled(true);
-                } else {
-                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill)+" "+SharedPref.getClusterCap(this));
+                }else {
+                    commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + SharedPref.getClusterCap(this));
                     chemistadditionbinding.btnChmsave.setEnabled(true);
                 }
-            }
-            else if (!chemistadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("")&&
+            }else if(!chemistadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("") &&
                     TagImgNd.equalsIgnoreCase("0") && destinationFilePath.equalsIgnoreCase("")) {
                 commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.Photo_mand));
                 chemistadditionbinding.btnChmsave.setEnabled(true);
 
-            }
-            else{
+            }else {
                 Log.v("qualification_txt", "arent_empty");
                 chemistadditionbinding.btnChmsave.setEnabled(false);
-                JSONObject json =CommonUtilsMethods.CommonObjectParameter(this);
+                JSONObject json = CommonUtilsMethods.CommonObjectParameter(this);
                 try {
 
                     SfName = SharedPref.getSfName(this);
                     DivCode = SharedPref.getDivisionCode(this);
                     json.put("tableName", "savenew_master");
-                    if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+                    if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
                         SfCode = SharedPref.getHqCode(this);
-                    }
-                    else {
+                    }else {
                         SfCode = SharedPref.getSfCode(this);
                     }
                     json.put("sfcode", SfCode);
@@ -303,7 +293,7 @@ public class ChemistAddition extends AppCompatActivity {
                     json.put("DrQulCd", String.valueOf(SharedPref.getSelectedQualification(ChemistAddition.this)));
                     json.put("DrqulNm", chemistadditionbinding.txtSelectQua.getText().toString());
                     json.put("DrClsCd", "");
-                    json.put("DrClsNm","");
+                    json.put("DrClsNm", "");
                     json.put("DrCatCd", String.valueOf(SharedPref.getSelectedCategory(ChemistAddition.this)));
                     json.put("DrCatNm", chemistadditionbinding.txtSelectCategory.getText().toString());
                     json.put("DrSpcCd", String.valueOf(SharedPref.getSelectedSpeciality(ChemistAddition.this)));
@@ -314,33 +304,38 @@ public class ChemistAddition extends AppCompatActivity {
                     json.put("DrClusCd", String.valueOf(SharedPref.getSelectedCluster(ChemistAddition.this)));
                     json.put("DrTerCd", String.valueOf(SharedPref.getSelectedCluster(ChemistAddition.this)));
                     json.put("DrTerNm", chemistadditionbinding.txtSelectTerritory.getText().toString());
-                    if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+                    if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
                         json.put("DrHQCd", String.valueOf(SharedPref.getHq(ChemistAddition.this)));
                         json.put("DrHQNm", chemistadditionbinding.txtSelectHq.getText().toString());
-                    }
-                    else {
+                    }else {
                         json.put("DrHQCd", SfCode);
                         json.put("DrHQNm", SfName);
                     }
                     json.put("key", SharedPref.getSaveLicenseSetting(ChemistAddition.this));
                     json.put("DrType", "C");
-                    json.put("DrDOB", chemistadditionbinding.edtDob.getText().toString()+" 00:00:00");
-                    json.put("DrDOW", chemistadditionbinding.edtDow.getText().toString()+" 00:00:00");
+                    json.put("DrDOB", chemistadditionbinding.edtDob.getText().toString() + " 00:00:00");
+                    json.put("DrDOW", chemistadditionbinding.edtDow.getText().toString() + " 00:00:00");
                     json.put("DrPhone", chemistadditionbinding.edtPhone.getText().toString());
                     json.put("DrMob", chemistadditionbinding.edtMob.getText().toString());
                     json.put("imagePath", destinationFilePath);
                     json.put("imageName", imageName);
-                    gpsTrack = new GPSTrack(this);
-                    latitude = gpsTrack.getLatitude();
-                    longitude = gpsTrack.getLongitude();
-                    json.put("DrLat", String.valueOf(latitude));
-                    json.put("DrLong", String.valueOf(longitude));
+
+                    if(SharedPref.getGeoChk(this).equalsIgnoreCase("0") && !chemistadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("")) {
+                        gpsTrack = new GPSTrack(this);
+                        latitude = gpsTrack.getLatitude();
+                        longitude = gpsTrack.getLongitude();
+                        json.put("DrLat", String.valueOf(latitude));
+                        json.put("DrLong", String.valueOf(longitude));
+                    }
+                    else{
+                        json.put("DrLat", "");
+                        json.put("DrLong", "");
+                    }
                     json.put("DrLocAddr", SharedPref.getSaveTaggedAddress(ChemistAddition.this));
                     Log.v("printing_add_dr", json.toString());
                     chemistadditionbinding.btnChmsave.setEnabled(false);
                     addChm(json.toString());
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     chemistadditionbinding.btnChmsave.setEnabled(true);
                     e.printStackTrace();
                 }
@@ -367,8 +362,8 @@ public class ChemistAddition extends AppCompatActivity {
         chemistadditionbinding.edtDob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(imm != null) {
                     imm.hideSoftInputFromWindow(chemistadditionbinding.edtDob.getWindowToken(), 0);
                 }
                 showDatePickerDialogforDOB();
@@ -383,58 +378,62 @@ public class ChemistAddition extends AppCompatActivity {
         chemistadditionbinding.edtDow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(imm != null) {
                     imm.hideSoftInputFromWindow(chemistadditionbinding.edtDow.getWindowToken(), 0);
                 }
                 showDatePickerDialogforDOW();
             }
         });
-        chemistadditionbinding.edtPhone.setFilters(new InputFilter[]{ new InputFilter.LengthFilter(13) }); // Max length 13
+        chemistadditionbinding.edtPhone.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)}); // Max length 13
 
         chemistadditionbinding.edtPhone.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() > 0 && s.length() < 7) {
+                if(s.length()>0 && s.length()<7) {
                     // Show error only if input is between 1 and 6 characters
                     chemistadditionbinding.edtPhone.setError(getResources().getString(R.string.enter_valid_phone));
-                } else {
+                }else {
                     // Remove error when field is empty or valid
                     chemistadditionbinding.edtPhone.setError(null);
                 }
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
         });
-        chemistadditionbinding.edtMob.setFilters(new InputFilter[]{ new InputFilter.LengthFilter(13) }); // Max length 13
+        chemistadditionbinding.edtMob.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)}); // Max length 13
 
         chemistadditionbinding.edtMob.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() > 0 && s.length() < 7) {
+                if(s.length()>0 && s.length()<7) {
                     // Show error only if input is between 1 and 6 characters
                     chemistadditionbinding.edtMob.setError(getResources().getString(R.string.enter_valid_Mobile));
-                } else {
+                }else {
                     // Remove error when field is empty or valid
                     chemistadditionbinding.edtMob.setError(null);
                 }
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
         });
         // OnClickListener for image capture
         chemistadditionbinding.dctrimage.setOnClickListener(view -> {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestMultiplePermissionsLauncher.launch(new String[]{Manifest.permission.CAMERA});
-            } else {
+            }else {
                 captureFile();
             }
         });
@@ -485,13 +484,13 @@ public class ChemistAddition extends AppCompatActivity {
         chemistadditionbinding.btnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (UtilityClass.isNetworkAvailable(ChemistAddition.this)) {
+                if(UtilityClass.isNetworkAvailable(ChemistAddition.this)) {
                     Intent intent = new Intent(ChemistAddition.this, MapsAddition.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("Additionfrom", "C");
                     ChemistAddition.this.startActivity(intent);
 
-                } else {
+                }else {
                     commonUtilsMethods.showToastMessage(ChemistAddition.this, ChemistAddition.this.getString(R.string.no_network));
                 }
             }
@@ -502,8 +501,8 @@ public class ChemistAddition extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Hide the keyboard
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(imm != null) {
                     imm.hideSoftInputFromWindow(chemistadditionbinding.txtSelectQua.getWindowToken(), 0);
                 }
                 chemistadditionbinding.fragmentSelectChmquali.setVisibility(View.VISIBLE);
@@ -514,8 +513,8 @@ public class ChemistAddition extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Hide the keyboard
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(imm != null) {
                     imm.hideSoftInputFromWindow(chemistadditionbinding.txtSelectCategory.getWindowToken(), 0);
                 }
                 chemistadditionbinding.fragmentSelectChmcat.setVisibility(View.VISIBLE);
@@ -523,13 +522,12 @@ public class ChemistAddition extends AppCompatActivity {
         });
 
 
-
         chemistadditionbinding.txtSelectSpec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Hide the keyboard
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(imm != null) {
                     imm.hideSoftInputFromWindow(chemistadditionbinding.txtSelectSpec.getWindowToken(), 0);
                 }
                 chemistadditionbinding.fragmentSelectChmspeciality.setVisibility(View.VISIBLE);
@@ -540,19 +538,17 @@ public class ChemistAddition extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Hide the keyboard
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(imm != null) {
                     imm.hideSoftInputFromWindow(chemistadditionbinding.txtSelectTerritory.getWindowToken(), 0);
                 }
-                if(SfType.equalsIgnoreCase("2")){
-                    if(chemistadditionbinding.txtSelectHq.getText().toString().equalsIgnoreCase("")){
+                if(SfType.equalsIgnoreCase("2")) {
+                    if(chemistadditionbinding.txtSelectHq.getText().toString().equalsIgnoreCase("")) {
                         commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.select_headquater));
-                    }
-                    else{
+                    }else {
                         chemistadditionbinding.fragmentSelectChmcluster.setVisibility(View.VISIBLE);
                     }
-                }
-                else{
+                }else {
                     chemistadditionbinding.fragmentSelectChmcluster.setVisibility(View.VISIBLE);
                 }
 
@@ -562,8 +558,8 @@ public class ChemistAddition extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Hide the keyboard
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(imm != null) {
                     imm.hideSoftInputFromWindow(chemistadditionbinding.txtSelectHq.getWindowToken(), 0);
                 }
                 chemistadditionbinding.fragmentSelectChemisthq.setVisibility(View.VISIBLE);
@@ -574,19 +570,29 @@ public class ChemistAddition extends AppCompatActivity {
             chemistadditionbinding.layout7.setVisibility(View.GONE);
             destinationFilePath = "";
             imageName = "";
+            chemistadditionbinding.dctrimage.setImageBitmap(null);
+            chemistadditionbinding.dctrimage.setImageResource(R.drawable.ic_camera);
+            chemistadditionbinding.dctrimage.setOnClickListener(v -> {
+                if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    requestMultiplePermissionsLauncher.launch(new String[]{Manifest.permission.CAMERA});
+                }else {
+                    captureFile();
+                }
+            });
             view.setVisibility(View.GONE);
         });
     }
+
     public static void setAddressText(String addressText) {
         chemistadditionbinding.edtGeotagaddr.setText(addressText); // Set the text on the EditText in ClassB
         chemistadditionbinding.imgClearTag.setVisibility(View.VISIBLE);
-        if(TagImgNd.equalsIgnoreCase("0")){
+        if(TagImgNd.equalsIgnoreCase("0")) {
             chemistadditionbinding.layout7.setVisibility(View.VISIBLE);
-        }
-        else{
+        }else {
             chemistadditionbinding.layout7.setVisibility(View.GONE);
         }
     }
+
     public void commonFun() {
         try {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
@@ -594,17 +600,18 @@ public class ChemistAddition extends AppCompatActivity {
 
         }
     }
+
     public void addChm(String val) {
         try {
-            if (progressDialog == null) {
+            if(progressDialog == null) {
                 CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(this);
                 progressDialog = CommonUtilsMethods.createProgressDialog(this);
                 progressDialog.show();
-            } else {
+            }else {
                 progressDialog.show();
             }
 
-            if (isNetworkConnected()) {
+            if(isNetworkConnected()) {
                 String baseUrl = SharedPref.getBaseWebUrl(this);
                 String pathUrl = SharedPref.getPhpPathUrl(this);
                 String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
@@ -615,39 +622,41 @@ public class ChemistAddition extends AppCompatActivity {
                 mapString.put("axn", "save/masterdata");
                 Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(ChemistAddition.this), mapString, val);
 
-                if (call != null) {
+                if(call != null) {
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                            if (response.isSuccessful()) {
+                            if(response.isSuccessful()) {
                                 progressDialog.dismiss();
                                 try {
                                     assert response.body() != null;
                                     JSONObject jsonSaveRes = new JSONObject(response.body().toString());
-                                    if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
+                                    if(jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                                         Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
-                                        if(SharedPref.getSfType(ChemistAddition.this).equalsIgnoreCase("2")){
-                                            SfCode = SharedPref.getHqCode(ChemistAddition.this);}
-                                        else {
+                                        if(SharedPref.getSfType(ChemistAddition.this).equalsIgnoreCase("2")) {
+                                            SfCode = SharedPref.getHqCode(ChemistAddition.this);
+                                        }else {
                                             SfCode = SharedPref.getSfCode(ChemistAddition.this);
                                         }
                                         SyncChemist(SfCode);
                                         if(SharedPref.getGeotagImg(ChemistAddition.this).equalsIgnoreCase("0")) {
-                                            JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(ChemistAddition.this);
-                                            try {
-                                                jsonImage.put("tableName", "imgupload");
-                                                jsonImage.put("sfcode", SfCode);
-                                                jsonImage.put("division_code", DivCode);
-                                                if (SfType.equalsIgnoreCase("1")) {
-                                                    jsonImage.put("Rsf", SfCode);
-                                                } else {
-                                                    jsonImage.put("Rsf", SharedPref.getHqCode(ChemistAddition.this));
+                                            if(!imageName.equalsIgnoreCase("")) {
+                                                JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(ChemistAddition.this);
+                                                try {
+                                                    jsonImage.put("tableName", "imgupload");
+                                                    jsonImage.put("sfcode", SfCode);
+                                                    jsonImage.put("division_code", DivCode);
+                                                    if(SfType.equalsIgnoreCase("1")) {
+                                                        jsonImage.put("Rsf", SfCode);
+                                                    }else {
+                                                        jsonImage.put("Rsf", SharedPref.getHqCode(ChemistAddition.this));
+                                                    }
+                                                } catch (Exception ignored) {
                                                 }
-                                            } catch (Exception ignored) {
-                                            }
-                                            tag_Image();
-                                            CallImageAPI(jsonImage.toString(), destinationFilePath);
+                                                tag_Image();
+                                                CallImageAPI(jsonImage.toString(), destinationFilePath);
 
+                                            }
 
                                         }
                                         commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.saved_successfully));
@@ -657,8 +666,7 @@ public class ChemistAddition extends AppCompatActivity {
                                     }
                                 } catch (Exception e) {
                                 }
-                            }
-                            else{
+                            }else {
                                 chemistadditionbinding.btnChmsave.setEnabled(true);
                                 progressDialog.dismiss();
                                 commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.something_wrong));
@@ -673,15 +681,13 @@ public class ChemistAddition extends AppCompatActivity {
                         }
                     });
                 }
-            }
-            else {
+            }else {
                 chemistadditionbinding.btnChmsave.setEnabled(true);
                 progressDialog.dismiss();
                 commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.no_network));
             }
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             chemistadditionbinding.btnChmsave.setEnabled(true);
             progressDialog.dismiss();
             throw new RuntimeException(e);
@@ -692,35 +698,37 @@ public class ChemistAddition extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) ChemistAddition.this.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
+
     public void SyncChemist(String hqCode) {
         ChemistModelArray.clear();
         chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + hqCode);
         categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
-        MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this),  Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
-        MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY,  Constants.DOCTOR, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
+        MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
+        MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
         ChemistModelArray.add(cheModel);
         ChemistModelArray.add(chemistCategory);
         arrayForAdapter.clear();
         arrayForAdapter.addAll(ChemistModelArray);
         populateAdapter(arrayForAdapter);
     }
+
     @SuppressLint("NotifyDataSetChanged")
     public void populateAdapter(ArrayList<MasterSyncItemModel> masterSyncItemModels) {
-        try{
-            for (int i = 0; i < masterSyncItemModels.size(); i++) {
+        try {
+            for (int i = 0; i<masterSyncItemModels.size(); i++) {
                 MasterSyncItemModel item = masterSyncItemModels.get(i);
                 sync(item.getMasterOf(), item.getRemoteTableName(), ChemistModelArray, i);
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     public void sync(String masterOf, String remoteTableName, ArrayList<MasterSyncItemModel> masterSyncItemModels, int position) {
 
         try {
             apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
-            JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(this);
+            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
             jsonObject.put("tableName", remoteTableName);
             jsonObject.put("sfcode", SharedPref.getSfCode(this));
             jsonObject.put("division_code", SharedPref.getDivisionCode(this));
@@ -730,43 +738,42 @@ public class ChemistAddition extends AppCompatActivity {
             Map<String, String> mapString = new HashMap<>();
             Log.e("API Object", "master sync obj : " + jsonObject);
             Call<JsonElement> call = null;
-            if (masterOf.equalsIgnoreCase(Constants.DOCTOR)) {
+            if(masterOf.equalsIgnoreCase(Constants.DOCTOR)) {
                 mapString.put("axn", "table/dcrmasterdata");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
             }
-            if (call != null) {
+            if(call != null) {
                 call.enqueue(new Callback<JsonElement>() {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                         // masterSyncItemModels.get(position).setPBarVisibility(false);
-                        Log.e("response :   ",  remoteTableName + " : " + response.body().toString());
+                        Log.e("response :   ", remoteTableName + " : " + response.body().toString());
                         boolean success = false;
                         JSONArray jsonArray = new JSONArray();
-                        JSONObject jsonObject2=new JSONObject();
-                        if (response.isSuccessful()) {
+                        JSONObject jsonObject2 = new JSONObject();
+                        if(response.isSuccessful()) {
                             Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + response.body().toString());
                             try {
                                 JsonElement jsonElement = response.body();
-                                if (!jsonElement.isJsonNull()) {
-                                    if (jsonElement.isJsonArray()) {
+                                if(!jsonElement.isJsonNull()) {
+                                    if(jsonElement.isJsonArray()) {
                                         jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
                                         success = true;
-                                    } else if (jsonElement.isJsonObject()) {
+                                    }else if(jsonElement.isJsonObject()) {
                                         jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
-                                        if (!jsonObject2.has("success")) {
+                                        if(!jsonObject2.has("success")) {
                                             // response as jsonObject with {"success" : "fail" } will be received only when there are unformed object passed or there are no data in back end.
                                             jsonArray.put(jsonObject2);
                                             success = true;
                                             finish();
-                                        }
-                                        else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                        }else if(jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
                                             masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
                                             masterSyncItemModels.get(position).setSyncSuccess(1);
                                         }
                                     }
 
-                                    if (success) {
+                                    if(success) {
                                         masterSyncItemModels.get(position).setCount(jsonArray.length());
                                         masterSyncItemModels.get(position).setSyncSuccess(2);
                                         masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 2));
@@ -797,6 +804,7 @@ public class ChemistAddition extends AppCompatActivity {
         }
 
     }
+
     private void showDatePickerDialogforDOB() {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -823,6 +831,7 @@ public class ChemistAddition extends AppCompatActivity {
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.show();
     }
+
     private void showDatePickerDialogforDOW() {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -849,16 +858,18 @@ public class ChemistAddition extends AppCompatActivity {
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.show();
     }
+
     private final ActivityResultLauncher<String[]> requestMultiplePermissionsLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
                 Boolean cameraPermission = result.getOrDefault(Manifest.permission.CAMERA, false);
-                if (Boolean.TRUE.equals(cameraPermission)) {
+                if(Boolean.TRUE.equals(cameraPermission)) {
                     captureFile();
-                } else {
-                    CommonUtilsMethods. RequestGPSPermission(ChemistAddition.this, "Camera");
+                }else {
+                    CommonUtilsMethods.RequestGPSPermission(ChemistAddition.this, "Camera");
 
                 }
             });
+
     //    private final ActivityResultLauncher<String[]> requestMultiplePermissionsLauncher =
 //            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
 //                Boolean cameraPermission = result.getOrDefault(Manifest.permission.CAMERA, false);
@@ -901,14 +912,14 @@ public class ChemistAddition extends AppCompatActivity {
                 + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
 
         File directory = new File(getExternalFilesDir(null), "AdditionTagged");
-        if (!directory.exists() && !directory.mkdirs()) {
+        if(!directory.exists() && !directory.mkdirs()) {
             Log.e("File Creation", "Directory Creation Failed.");
             return;
         }
 
         File destinationFile = new File(directory, imageName);
         try {
-            if (!destinationFile.createNewFile()) {
+            if(!destinationFile.createNewFile()) {
                 Log.e("File Creation", "Destination File Creation Failed.");
             }
         } catch (IOException e) {
@@ -920,18 +931,19 @@ public class ChemistAddition extends AppCompatActivity {
         Intent intent = new Intent(this, CameraActivity.class);
         intent.putExtra("FILE_PATH", destinationFilePath);
         intent.putExtra("FROM", "UnlistedAddition");
-        intent.putExtra("L_FLAG", "1");
+        intent.putExtra("L_FLAG", SharedPref.getGeoChk(this).equalsIgnoreCase("0"));
         intent.putExtra("CAMERA_MODE", "ALL");
 
         someActivityResultLauncher.launch(intent);
     }
+
     private final ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 try {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
+                    if(result.getResultCode() == Activity.RESULT_OK) {
                         Bitmap photo = BitmapFactory.decodeFile(destinationFilePath);
-                        if (photo == null) return;
+                        if(photo == null) return;
 
                         // Set captured image to ImageView
                         chemistadditionbinding.dctrimage.setImageBitmap(photo);
@@ -940,7 +952,7 @@ public class ChemistAddition extends AppCompatActivity {
                         // Set click listener to show image popup
                         chemistadditionbinding.dctrimage.setOnClickListener(view -> showImagePopup(destinationFilePath));
 
-                    } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+                    }else if(result.getResultCode() == Activity.RESULT_CANCELED) {
                         Log.d("Camera", "onActivityResult: Canceled");
                         destinationFilePath = "";
                     }
@@ -1034,7 +1046,7 @@ public class ChemistAddition extends AppCompatActivity {
 //    }
 
     private void showImagePopup(String imagePath) {
-        if (imagePath == null) return;
+        if(imagePath == null) return;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -1059,6 +1071,7 @@ public class ChemistAddition extends AppCompatActivity {
         dialog.getWindow().setAttributes(params);
         closeButton.setOnClickListener(v -> dialog.dismiss()); // Close popup when clicked
     }
+
     //    private void CallImageAPI(String jsonImage,String file) {
 //        try {
 //            ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
@@ -1099,22 +1112,22 @@ public class ChemistAddition extends AppCompatActivity {
 //
 //        }
 //    }
-    private void CallImageAPI(String jsonImage,String file) {
+    private void CallImageAPI(String jsonImage, String file) {
         if(jsonImage != null) {
             CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                     getApplicationContext(),
                     "ap-south-1:c4c0fc81-118d-43e3-84cf-051f1bd831b9", Regions.AP_SOUTH_1);
             AmazonS3Client S3Client = new AmazonS3Client(credentialsProvider);
             File fileToUpload = new File(destinationFilePath);
-            Log.d("fileToUpload", "CallImageAPI: "+ fileToUpload.getAbsolutePath());
-            if (!fileToUpload.exists()) {
+            Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
+            if(!fileToUpload.exists()) {
                 Log.e("S3Upload", "File does not exist: " + destinationFilePath);
                 commonUtilsMethods.showToastMessage(ChemistAddition.this, "File does not exist.");
                 return;
             }
             String bucketName = "san.one";
             String fileKey = "uploads/" + fileToUpload.getName();
-            String upload_url = "https://"+"s3."+"ap-south-1."+"amazonaws.com/"+bucketName+"/"+fileKey ;
+            String upload_url = "https://" + "s3." + "ap-south-1." + "amazonaws.com/" + bucketName + "/" + fileKey;
             Log.i("s3url", "Uploading to S3: " + upload_url);
 
             TransferUtility transferUtility = TransferUtility.builder()
@@ -1131,13 +1144,14 @@ public class ChemistAddition extends AppCompatActivity {
             uploadObserver.setTransferListener(new TransferListener() {
                 @Override
                 public void onStateChanged(int id, TransferState state) {
-                    if (state == TransferState.COMPLETED) {
+                    if(state == TransferState.COMPLETED) {
 //                        Log.v("S3Upload", "Upload successful"+file);
-                    }else if (state == TransferState.FAILED) {
+                    }else if(state == TransferState.FAILED) {
                         Log.e("S3Upload", "Upload failed");
                         commonUtilsMethods.showToastMessage(ChemistAddition.this, getString(R.string.tag_failed));
                     }
                 }
+
                 @Override
                 public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
                     int percentDone = (int) ((bytesCurrent / (float) bytesTotal) * 100);
@@ -1154,6 +1168,7 @@ public class ChemistAddition extends AppCompatActivity {
 
         }
     }
+
     public HashMap<String, RequestBody> field(String val) {
         HashMap<String, RequestBody> xx = new HashMap<>();
         xx.put("data", createFromString(val));
@@ -1163,15 +1178,16 @@ public class ChemistAddition extends AppCompatActivity {
     private RequestBody createFromString(String txt) {
         return RequestBody.create(txt, MultipartBody.FORM);
     }
+
     public MultipartBody.Part convertImg(String tag, String path) {
         Log.d("path", tag + "-" + path);
         MultipartBody.Part yy = null;
         try {
             File file;
-            if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
+            if(path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
                 file = new Compressor(getApplicationContext()).compressToFile(new File(path));
                 Log.d("path", tag + "-" + path);
-            } else {
+            }else {
                 file = new File(path);
             }
             RequestBody requestBody = RequestBody.create(file, MultipartBody.FORM);
@@ -1180,24 +1196,26 @@ public class ChemistAddition extends AppCompatActivity {
         }
         return yy;
     }
+
     public void tag_Image() {
         File imageFile = new File(destinationFilePath);
-        if(imageFile != null){
-            Log.d("tag_Image", "imageFile: "+"the file exists"+imageFile);
+        if(imageFile != null) {
+            Log.d("tag_Image", "imageFile: " + "the file exists" + imageFile);
         }else {
-            Log.d("tag_Image", "imageFile: "+"the file do not exist");
+            Log.d("tag_Image", "imageFile: " + "the file do not exist");
         }
-        new AWSBuckets(ChemistAddition.this, imageName, imageFile, SharedPref.getDivisionName(ChemistAddition.this));
+        new AWSBuckets(ChemistAddition.this, imageName, imageFile, "");
         Log.d("tag_Image", "image" + imageFile);
     }
+
     private void handleCancel() {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dcr_cancel_alert);
         dialog.setCancelable(false);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
-        TextView btn_yes=dialog.findViewById(R.id.btn_yes);
-        TextView btn_no=dialog.findViewById(R.id.btn_no);
+        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+        TextView btn_no = dialog.findViewById(R.id.btn_no);
 
         btn_yes.setOnClickListener(view12 -> {
             getOnBackPressedDispatcher().onBackPressed();

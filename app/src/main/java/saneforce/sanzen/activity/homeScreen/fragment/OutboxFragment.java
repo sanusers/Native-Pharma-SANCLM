@@ -564,14 +564,16 @@ public class OutboxFragment extends Fragment {
                         fileToUpload);
                 uploadObserver.setTransferListener(new TransferListener() {
                     @Override
-                    public void onStateChanged(int id, TransferState state) {
+                    public void onStateChanged(int idInt, TransferState state) {
                         if (state == TransferState.COMPLETED) {
                             Log.d("TAG", "ecModelClass: " + filePath);
                             InsertImage(ecModelClass.getFilePath(), context);
-                            DeleteCacheFile(filePath, "", CurrentPos, parentPos, childPos, modelClass);
+                            DeleteCacheFile(filePath, id, CurrentPos, parentPos, childPos, modelClass);
                             Log.d("S3 Upload", "Upload Successful: " + s3Key);
 
-
+                            listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses().remove(CurrentPos);
+                            CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                            notifyedmethod();
                         } else if (state == TransferState.FAILED) {
 
                             Log.e("S3 Upload", "Upload Failed");
@@ -579,8 +581,9 @@ public class OutboxFragment extends Fragment {
 
                             ecModelClass.setSynced(1);
                             ecModelClass.setSync_status(Constants.CALL_FAILED);
-                            callOfflineECDataDao.updateECStatus("", Constants.CALL_FAILED, 1);
+                            callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
                             CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                            notifyedmethod();
                         }
 
                     }
@@ -592,17 +595,24 @@ public class OutboxFragment extends Fragment {
                     }
 
                     @Override
-                    public void onError(int id, Exception ex) {
+                    public void onError(int idInt, Exception ex) {
                         Log.e("S3 Upload", "Error: " + ex.getMessage());
                         ecModelClass.setSynced(1);
                         ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-                        callOfflineECDataDao.updateECStatus("", Constants.EXCEPTION_ERROR, 1);
+                        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+                        CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                        notifyedmethod();
                     }
                 });
 
             }
         } catch(Exception e){
             Log.v("img_tag", e.toString());
+            ecModelClass.setSynced(1);
+            ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+            callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+            CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+            notifyedmethod();
         }
 
     }
