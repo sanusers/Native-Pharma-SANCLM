@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -32,6 +33,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -1370,43 +1372,63 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 mMap.setInfoWindowAdapter(new MyInfoWindowAdapter(mm, MapsActivity.this));
             }
-            if (GeoTagImageNeed.equalsIgnoreCase("0")) {      // change from cache dir to external dir
+            if (GeoTagImageNeed.equalsIgnoreCase("0")) {
                 mMap.setOnInfoWindowClickListener(marker -> {
-                    Dialog dialog = new Dialog(MapsActivity.this);
-                    dialog.setContentView(R.layout.map_img_layout);
-                    ImageView imageView = dialog.findViewById(R.id.img_dr_content);
-
                     String imageName = marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1);
                     Log.d("marker", "AddTaggedDetails: "+marker.getSnippet());
                     Log.d("ImageName", "image : " + imageName);
                     String fileName = imageName;
+                    if(fileName.isEmpty()) return;
 
-                    if (Objects.requireNonNull(fileName).isEmpty()) {
-                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_no_img_found));
-                    } else {
-                        String bucketName = "san.one";
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    LayoutInflater inflater = getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.dialog_fullscreen_image, null);
+
+                    ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
+                    ImageButton closeButton = dialogView.findViewById(R.id.close_button);
+
+
+                        fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
+                        builder.setView(dialogView);
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                        dialog.getWindow().setLayout(
+                                (int) (getResources().getDisplayMetrics().widthPixels * 0.5),
+                                (int) (getResources().getDisplayMetrics().heightPixels * 0.9)
+                        );
+                        Dialog dialog_img = new Dialog(MapsActivity.this);
+                        dialog_img.setContentView(R.layout.map_img_layout);
+//                    ImageView imageView = dialog.findViewById(R.id.img_dr_content);
+
+                        if (Objects.requireNonNull(fileName).isEmpty()) {
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_no_img_found));
+                        } else {
+                        /*String bucketName = "san.one";
                         String region = "ap-south-1";
                         String s3Key = "uploads/" + fileName;
                         String imageUrl = "https://s3." + region + ".amazonaws.com/" + bucketName + "/" + s3Key;
-                        Log.d("Image URL", "Fetching image from: " + imageUrl);
-                        File MapView = new File(MapsActivity.this.getFilesDir(), fileName);
-                        Log.d("TAG", "AddTaggedDetails: "+MapView.getAbsolutePath());
-                        String MapFileName = SharedPref.getDivisionName(MapsActivity.this);
-                        new AWSBuckets(MapsActivity.this, fileName, MapView, 0, "", new S3DownloadFiles() {
-                            @Override
-                            public void fileDataAdd(int pos, Bitmap bitmap) {
-                                if(bitmap != null) {
-                                    Log.d("bitmap image", "image: "+ "bitmap map is not null");
-                                    imageView.setImageBitmap(bitmap);
-                                    imageView.setVisibility(View.VISIBLE);
-                                    dialog.show();
-                                }else {
-                                    Log.d("bitmap image", "image: "+"bitmap image is null");
+                        Log.d("Image URL", "Fetching image from: " + imageUrl);*/
+                            TransferNetworkLossHandler.getInstance(getApplicationContext());
+                            File MapView = new File(MapsActivity.this.getFilesDir(), fileName);
+                            Log.d("TAG", "AddTaggedDetails: " + MapView.getAbsolutePath());
+                            new AWSBuckets(MapsActivity.this, fileName, MapView, 0, "", new S3DownloadFiles() {
+                                @Override
+                                public void fileDataAdd(int pos, Bitmap bitmap) {
+                                    if (bitmap != null) {
+                                        Log.d("bitmap image", "image: " + "bitmap map is not null");
+                                        fullScreenImage.setImageBitmap(bitmap);
+                                        fullScreenImage.setVisibility(View.VISIBLE);
+                                        dialog.show();
+                                    } else {
+                                        Log.d("bitmap image", "image: " + "bitmap image is null");
+                                    }
                                 }
-                            }
-                        });
-                    }
+                            });
+                        }
+                        closeButton.setOnClickListener(v -> dialog.dismiss());
+
                 });
+
             }
 
             if (mapsBinding.rvList.getItemDecorationCount() > 0) {
