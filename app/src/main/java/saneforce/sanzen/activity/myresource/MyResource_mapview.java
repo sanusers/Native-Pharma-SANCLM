@@ -4,6 +4,7 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import static java.lang.Double.compare;
 import static java.lang.Double.parseDouble;
 import static java.lang.Double.valueOf;
 
@@ -13,23 +14,29 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -45,9 +52,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import saneforce.sanzen.AWS.AWSBuckets;
+import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.activity.myresource.myresourcemodel.ResourcerviewModelClass;
@@ -70,6 +80,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
     ActivityMyResourceMapviewBinding binding;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+    CommonUtilsMethods commonUtilsMethods;
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,12 +99,6 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
 
         CurrentLat = gpsTrack.getLatitude();
         CurrentLong = gpsTrack.getLongitude();
-
-        if (SharedPref.getGeotagImg(this).equalsIgnoreCase("0")) {
-            binding.viewImg.setVisibility(View.VISIBLE);
-        } else {
-            binding.viewImg.setVisibility(View.GONE);
-        }
 
         binding.mapbackArrow.setOnClickListener(v -> {
             finish();
@@ -145,6 +150,15 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
             parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + HQ_CODE).getMasterSyncDataJsonArray().toString());
         }
 
+        if (SharedPref.getGeotagImg(this).equalsIgnoreCase("0")) {
+            if (loclist != null && !loclist.isEmpty() && !loclist.get(0).getImageName().isEmpty()) {
+                binding.viewImg.setVisibility(View.VISIBLE);
+            }else {
+                binding.viewImg.setVisibility(View.GONE);
+            }
+        }else {
+            binding.viewImg.setVisibility(View.GONE);
+        }
     }
     private void parseJsonData(String jsonResponse) {
         try {
@@ -243,21 +257,50 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
     }
 
     private void showImagePopup() {
-
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.map_img_layout);
-        ImageView popupImageView = dialog.findViewById(R.id.img_dr_content);
-        if (ImageName == null || ImageName.isEmpty() || ImageName.contains("noimage") || ImageName.endsWith(".jpg")) {
-
-        } else {
-
-            String url = SharedPref.getTagImageUrl(context) + "photos/" + ImageName;
-            Log.e("Inmge", url);
-            Picasso.get().load(url).into(popupImageView);
+        ImageName = loclist.get(0).getImageName();
+        String fileName = ImageName;
+        if (fileName.isEmpty()) {
+            return;
         }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        Dialog dialog = new Dialog(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_fullscreen_image, null);
+        ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
+        ImageButton closeButton = dialogView.findViewById(R.id.close_button);
+        dialog.setContentView(R.layout.map_img_layout);
+//        ImageView popupImageView = dialog.findViewById(R.id.img_dr_content);
+        fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
+        builder.setView(dialogView);
+        AlertDialog dialog_fullScreen = builder.create();
+        dialog_fullScreen.show();
+        dialog_fullScreen.getWindow().setLayout(
+                (int) (getResources().getDisplayMetrics().widthPixels * 0.5),
+                (int) (getResources().getDisplayMetrics().heightPixels * 0.9)
+        );
+        if (ImageName == null || ImageName.isEmpty() || ImageName.contains("noimage") || ImageName.endsWith(".jpg")) {
+            Log.d("Image Name", "showImagePopup: "+"no image Found");
+        } else {
+                    TransferNetworkLossHandler.getInstance(getApplicationContext());
+                    File MapView = new File(MyResource_mapview.this.getFilesDir(), fileName);
+                    Log.d("TAG", "AddTaggedDetails: " + MapView.getAbsolutePath());
+                    new AWSBuckets(MyResource_mapview.this, fileName, MapView, 0, "", new S3DownloadFiles() {
+                        @Override
+                        public void fileDataAdd(int pos, Bitmap bitmap) {
+                            if (bitmap != null) {
+                                Log.d("bitmap image", "image: " + "bitmap map is not null");
+                                fullScreenImage.setImageBitmap(bitmap);
+                                fullScreenImage.setVisibility(View.VISIBLE);
+                            } else {
+                                Log.d("bitmap image", "image: " + "bitmap image is null");
+                            }
+                        }
+                    });
+        }
+        closeButton.setOnClickListener(v -> dialog_fullScreen.dismiss());
 
-        dialog.show();
     }
+
 
 
     private void RequestLocationPermission() {
