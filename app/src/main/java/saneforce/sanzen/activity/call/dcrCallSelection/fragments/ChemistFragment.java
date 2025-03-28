@@ -100,21 +100,16 @@ public class ChemistFragment extends Fragment {
 
         SetupAdapter();
 
-
-
         InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(ed_search.getWindowToken(), 0);
-        if(SharedPref.getChemistAddition(context).equalsIgnoreCase("0")) {
+        if ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && SharedPref.getEntryFormNeed(requireContext()).equalsIgnoreCase("0"))
+                || (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && SharedPref.getEntryFormMgr(requireContext()).equalsIgnoreCase("0"))) {
             btn_addchm.setVisibility(View.VISIBLE);
         }
         else{
             btn_addchm.setVisibility(View.GONE);
         }
         btn_addchm.setOnClickListener(view -> {
-//popupAddChemist();
-// Intent intent = new Intent(context, ChemistAddtion.class);
-// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-// context.startActivity(intent);
             Intent intent = new Intent(getContext(), ChemistAddition.class);
             activityResultLauncher.launch(intent);
         });

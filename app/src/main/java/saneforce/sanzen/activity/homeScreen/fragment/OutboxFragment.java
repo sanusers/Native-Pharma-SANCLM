@@ -570,10 +570,13 @@ public class OutboxFragment extends Fragment {
                             InsertImage(ecModelClass.getFilePath(), context);
                             DeleteCacheFile(filePath, id, CurrentPos, parentPos, childPos, modelClass);
                             Log.d("S3 Upload", "Upload Successful: " + s3Key);
-
-                            listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses().remove(CurrentPos);
-                            CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
-                            notifyedmethod();
+                            try {
+                                listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses().remove(CurrentPos);
+                                CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                                notifyedmethod();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         } else if (state == TransferState.FAILED) {
 
                             Log.e("S3 Upload", "Upload Failed");
@@ -619,18 +622,22 @@ public class OutboxFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     private void DeleteCacheFile(String filePath, String id, int currentPos, int parentPos, int childPos, GroupModelClass modelClass) {
-        File fileDelete = new File(filePath);
-        if (fileDelete.exists()) {
-            if (fileDelete.delete()) {
+        try {
+            File fileDelete = new File(filePath);
+            if(fileDelete.exists()) {
+                if(fileDelete.delete()) {
 //                System.out.println("file Deleted :" + filePath);
-            } else {
+                }else {
 //                System.out.println("file not Deleted :" + filePath);
+                }
             }
+            callOfflineECDataDao.deleteOfflineEC(id);
+            listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses().remove(currentPos);
+            notifyedmethod();
+            CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        callOfflineECDataDao.deleteOfflineEC(id);
-        listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses().remove(currentPos);
-        notifyedmethod();
-        CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
     }
 //   private void CallSendSignImage(int parentPos, SignModelClass signModelClass, int childPos, int CurrentPos, String jsonValues, String filePath, String id, GroupModelClass modelClass) {
 //        try {

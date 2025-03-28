@@ -105,7 +105,8 @@ public class UnlistedDoctorFragment extends Fragment {
         InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(ed_search.getWindowToken(), 0);
 
-        if (SharedPref.getUnlistAddition(context).equalsIgnoreCase("0")) {
+        if ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && SharedPref.getEntryFormNeed(requireContext()).equalsIgnoreCase("0"))
+                || (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && SharedPref.getEntryFormMgr(requireContext()).equalsIgnoreCase("0"))) {
             btn_add.setVisibility(View.VISIBLE);
         } else {
             btn_add.setVisibility(View.GONE);
@@ -114,11 +115,6 @@ public class UnlistedDoctorFragment extends Fragment {
             CustomizeFiltered();
         });
         btn_add.setOnClickListener(view -> {
-//popupAddUnlisted();
-// Intent intent = new Intent(context, UnlistedDoctorAddition.class);
-// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-// context.startActivity(intent);
-
             Intent intent = new Intent(getContext(), UnlistedDoctorAddition.class);
             activityResultLauncher.launch(intent);
         });
