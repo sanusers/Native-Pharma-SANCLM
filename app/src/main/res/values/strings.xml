@@ -490,7 +490,6 @@
     <string name="add_plan">Add Plan</string>
     <string name="rejection_re_entry_need">Should only be Rejection/Re-entry to edit or delete WorkPlan</string>
     <string name="deleting_field_work_with_calls">Deleting Field work will also delete all calls</string>
-
     <string name="Signature">Signature</string>
     <string name="fill">Please fill </string>
     <string name="select_headquater">SELECT HEADQUARTER</string>
