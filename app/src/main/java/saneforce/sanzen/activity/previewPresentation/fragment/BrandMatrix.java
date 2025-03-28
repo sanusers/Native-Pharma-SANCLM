@@ -40,7 +40,6 @@ import saneforce.sanzen.databinding.FragmentSpecialityPreviewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
-
 public class BrandMatrix extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSpecialityPreviewBinding brandMatrixBinding;
@@ -90,8 +89,10 @@ public class BrandMatrix extends Fragment {
                 }
             }
 
-            for (String brandCode : brandToProductWithPriority.keySet()) {
-                if(mappedBrands.contains(brandCode)) {
+//            for (String brandCode : brandToProductWithPriority.keySet()) {
+//                if(mappedBrands.contains(brandCode)) {
+            for (String brandCode : CommonUtilsMethods.removeLastComma(mappedBrands).split(",")) {
+                if(brandToProductWithPriority.containsKey(brandCode)) {
                     ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
                     String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "", priority = "";
                     LinkedHashMap<String, String> productWithPriority = brandToProductWithPriority.get(brandCode);
