@@ -770,7 +770,7 @@ public class SharedPref {
             editor.putString(ADD_CHM, jsonObject.getString("addChm"));
             editor.putString(ADD_UNLST, jsonObject.getString("addDr"));
             editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\", ""));
-            editor.putString(WELCOME_SLIDES_PATH, "Welcomepage_upload/");
+            editor.putString(WELCOME_SLIDES_PATH, "");
             editor.apply();
 
         } catch (Exception ignore) {
