@@ -198,7 +198,28 @@ public class MasterSyncActivity extends AppCompatActivity {
         //Initializing all the data array
         uiInitialization();
         arrayForAdapter.clear();
-        arrayForAdapter.addAll(doctorModelArray);
+        if(SharedPref.getDrNeed(this).equalsIgnoreCase("0")){
+            binding.listedDr.setSelected(true);
+            arrayForAdapter.addAll(doctorModelArray);
+        } else if(SharedPref.getChmNeed(this).equalsIgnoreCase("0")){
+            binding.chemist.setSelected(true);
+            arrayForAdapter.addAll(chemistModelArray);
+        } else if(SharedPref.getStkNeed(this).equalsIgnoreCase("0")){
+            binding.stockiest.setSelected(true);
+            arrayForAdapter.addAll(stockiestModelArray);
+        } else if(SharedPref.getUnlNeed(this).equalsIgnoreCase("0")){
+            binding.unlistedDoctor.setSelected(true);
+            arrayForAdapter.addAll(unlistedDrModelArray);
+        } else if(SharedPref.getCipNeed(this).equalsIgnoreCase("0")){
+            binding.cip.setSelected(true);
+            arrayForAdapter.addAll(cipModelArray);
+        } else if(SharedPref.getHospNeed(this).equalsIgnoreCase("0")){
+            binding.hospital.setSelected(true);
+            arrayForAdapter.addAll(hospitalModelArray);
+        } else {
+            binding.cluster.setSelected(true);
+            arrayForAdapter.addAll(clusterModelArray);
+        }
         populateAdapter(arrayForAdapter);
 
         if (navigateFrom.equalsIgnoreCase("Login")) {
@@ -231,13 +252,14 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         binding.backArrow.setOnClickListener(view -> {
 
-            if (navigateFrom.equalsIgnoreCase("Login")||navigateFrom.equalsIgnoreCase("Slide")) {
+//            if (navigateFrom.equalsIgnoreCase("Login")||navigateFrom.equalsIgnoreCase("Slide")) {
                 Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-            } else {
-                getOnBackPressedDispatcher().onBackPressed();
-            }
+                finish();
+//            } else {
+//                getOnBackPressedDispatcher().onBackPressed();
+//            }
 
         });
 
@@ -583,10 +605,10 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         });
 
-
-
         binding.masterSyncAll.setOnClickListener(v -> {
+            binding.masterSyncAll.setEnabled(false);
             masterSyncAll(false);
+            new Handler().postDelayed(() -> binding.masterSyncAll.setEnabled(true), 3000);
         });
     }
 
@@ -665,7 +687,21 @@ public class MasterSyncActivity extends AppCompatActivity {
         setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
 //        customSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CUSTOM_SETUP);
 
-        binding.listedDr.setSelected(true);
+//        if(SharedPref.getDrNeed(this).equalsIgnoreCase("0")){
+//            binding.listedDr.setSelected(true);
+//        } else if(SharedPref.getChmNeed(this).equalsIgnoreCase("0")){
+//            binding.chemist.setSelected(true);
+//        } else if(SharedPref.getStkNeed(this).equalsIgnoreCase("0")){
+//            binding.stockiest.setSelected(true);
+//        } else if(SharedPref.getUnlNeed(this).equalsIgnoreCase("0")){
+//            binding.unlistedDoctor.setSelected(true);
+//        } else if(SharedPref.getCipNeed(this).equalsIgnoreCase("0")){
+//            binding.cip.setSelected(true);
+//        } else if(SharedPref.getHospNeed(this).equalsIgnoreCase("0")){
+//            binding.hospital.setSelected(true);
+//        } else {
+//            binding.cluster.setSelected(true);
+//        }
         prepareArray(rsf);
 
     }
