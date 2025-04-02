@@ -50,7 +50,7 @@ public class Call_statusfrist_view extends Fragment {
         // Format the previous month in "MM" format
         SimpleDateFormat df = new SimpleDateFormat("M");
          previousMonth = df.format(c.getTime());
-         System.out.println("Previous month in MM format: " + previousMonth);
+//         System.out.println("Previous month in MM format: " + previousMonth);
         callsview();
         return v;
     }

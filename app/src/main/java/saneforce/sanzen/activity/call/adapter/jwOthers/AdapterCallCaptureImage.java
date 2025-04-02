@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.call.adapter.jwOthers;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
+import static saneforce.sanzen.commonClasses.CommonAlertBox.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -29,6 +30,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import saneforce.sanzen.AWS.AWSBuckets;
+import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment;
 import saneforce.sanzen.activity.call.pojo.CallCaptureImageList;
@@ -65,16 +68,20 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         CallCaptureImageList callCaptureImageList = callCaptureImageLists.get(position);
         holder.tv_image_name.setText(callCaptureImageList.getImg_name());
         holder.ed_img_desc.setText(callCaptureImageList.getImg_description());
-
         switch (isFromActivity) {
             case "new":
                 if(callCaptureImageList.getImg_view() == null){
                     try {
                         Bitmap photo = BitmapFactory.decodeFile(callCaptureImageList.getFilePath());
                         holder.img_view.setImageBitmap(photo);
-                        CallCaptureImageList callCaptureImageList1 = JWOthersFragment.callCaptureImageLists.get(position);
+                           CallCaptureImageList callCaptureImageList1 = JWOthersFragment.callCaptureImageLists.get(position);
                         callCaptureImageList1.setImg_view(photo);
                         JWOthersFragment.callCaptureImageLists.set(position, callCaptureImageList1);
+                        // Added S3 buckets upload
+                        File imageFile = new File(callCaptureImageList.getFilePath());
+                        String fileName = callCaptureImageList.getSystemImgName();
+
+                        new AWSBuckets(context, fileName, imageFile, "");
                     } catch (Exception e) {
                         Log.e("EC", "onBindViewHolder: " + e.getMessage());
                         e.printStackTrace();
@@ -95,7 +102,24 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     if(callCaptureImageList.isNewlyAdded()) {
                         holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
                     } else {
-                        Glide.with(context).load(SharedPref.getTagImageUrl(context) + "photos/" + callCaptureImageList.getSystemImgName()).fitCenter().into(holder.img_view);
+                        // Added S3 buckets downloa
+                        String fileName = callCaptureImageList.getSystemImgName();
+                        File file = new File(context.getFilesDir(),fileName);
+                        Log.d("TAG", "onBindViewHolder: " + file.getAbsolutePath());
+                        new AWSBuckets(context, fileName, file, 0, "", new S3DownloadFiles() {
+                            @Override
+                            public void fileDataAdd(int pos, Bitmap bitmap) {
+                                if (bitmap != null) {
+                                    Log.d("bitmap image", "Image successfully loaded.");
+                                    holder.img_view.setImageBitmap(bitmap);
+                                    holder.img_view.setVisibility(View.VISIBLE);
+                                } else {
+                                    Log.d("bitmap image", "Failed to load image, bitmap is null.");
+                                    holder.img_view.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+//                        Glide.with(context).load(SharedPref.getTagImageUrl(context) + "uploads/" + callCaptureImageList.getSystemImgName()).fitCenter().into(holder.img_view);
                     }
                 }
                 break;
@@ -117,9 +141,9 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                 File fileDelete = new File(callCaptureImageList.getFilePath());
                 if(fileDelete.exists()) {
                     if(fileDelete.delete()) {
-                        System.out.println("file Deleted :" + callCaptureImageList.getFilePath());
+//                        System.out.println("file Deleted :" + callCaptureImageList.getFilePath());
                     }else {
-                        System.out.println("file not Deleted :" + callCaptureImageList.getFilePath());
+//                        System.out.println("file not Deleted :" + callCaptureImageList.getFilePath());
                     }
                 }
                 callOfflineECDataDao.deleteOfflineECImage(callCaptureImageList.getSystemImgName());
@@ -147,7 +171,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                         }
                         if(callCaptureImageList.isNewlyAdded())
                             showImage(callCaptureImageList.getImg_view());
-                        else ShowImageEdit(callCaptureImageList.getSystemImgName());
+                        else ShowImageEdit(callCaptureImageList.getSystemImgName(),holder);
                     } else new CommonUtilsMethods(context).showToastMessage(context, "No network available!");
                     break;
             }
@@ -204,16 +228,35 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         }
     }
 
-    private void ShowImageEdit(String systemImgName) {
+    private void ShowImageEdit(String systemImgName,@NonNull ViewHolder holder) {
         Dialog builder = new Dialog(context);
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         builder.setCancelable(true);
         Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         ImageView imageView = new ImageView(context);
-        Glide.with(context).load(SharedPref.getTagImageUrl(context) + "photos/" + systemImgName).fitCenter().into(imageView);
-        builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
-        builder.show();
+        String fileName = systemImgName;
+        File file = new File(context.getFilesDir(),fileName);
+        Log.d("TAG", "onBindViewHolder: " + file.getAbsolutePath());
+        new AWSBuckets(context, fileName, file, 0, "", new S3DownloadFiles() {
+            @Override
+            public void fileDataAdd(int pos, Bitmap bitmap) {
+                if (bitmap != null) {
+                    Log.d("bitmap image", "Image successfully loaded.");
+                    holder.img_view.setImageBitmap(bitmap);
+                    holder.img_view.setVisibility(View.VISIBLE);
+                    showImage(bitmap);
+
+
+                } else {
+                    Log.d("bitmap image", "Failed to load image, bitmap is null.");
+                    holder.img_view.setVisibility(View.GONE);
+                }
+            }
+        });
+//        Glide.with(context).load(SharedPref.getTagImageUrl(context) + "photos/" + systemImgName).fitCenter().into(imageView);
+//        builder.addContentView(imageView, new RelativeLayout.LayoutParams((int)context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
+//        builder.show();
     }
 
     @Override
@@ -226,7 +269,6 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         builder.setCancelable(true);
         Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
         ImageView imageView = new ImageView(context);
         imageView.setImageBitmap(img_view);
         builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));

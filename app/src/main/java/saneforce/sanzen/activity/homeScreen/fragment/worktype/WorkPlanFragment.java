@@ -189,11 +189,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         hqCode = SharedPref.getHqCode(requireContext());
 
 
-        if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
-            binding.btnsumit.setText(requireContext().getString(R.string.final_submit_check_out));
-        }else {
+//        if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+//            binding.btnsumit.setText(requireContext().getString(R.string.final_submit_check_out));
+//        }else {
             binding.btnsumit.setText(requireContext().getString(R.string.final_submit));
-        }
+//        }
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
             binding.progressHq1.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
@@ -1364,15 +1364,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }else if(isFromTP){
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
             }else {
-                if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
-                    if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
-                        remarksAlertBox();
-                    }else {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
-                    }
-                }else {
+//                if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+//                    if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
+//                        remarksAlertBox();
+//                    }else {
+//                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
+//                    }
+//                }else {
                     remarksAlertBox();
-                }
+//                }
             }
         }else {
             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_select_a_date));
@@ -2789,11 +2789,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
             CallFinalSubmitAPI();
             tpDataObj = null;
-            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
-                if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
-                    CallCheckOutAPI();
-                }
-            }
+//            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+//                if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
+//                    CallCheckOutAPI();
+//                }
+//            }
         }else {
             if(TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")) {
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 0));
@@ -2811,12 +2811,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             SharedPref.setLastCallDate(requireContext(), "");
             SharedPref.setSelectedDateCal(requireContext(), "");
             SetupOutBoxAdapter(requireActivity(), requireContext());
-            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
-                if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
-                    offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
-                    CallDialogAfterCheckOut();
-                }
-            }
+//            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+//                if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
+//                    offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+//                    CallDialogAfterCheckOut();
+//                }
+//            }
             HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
         }
     }

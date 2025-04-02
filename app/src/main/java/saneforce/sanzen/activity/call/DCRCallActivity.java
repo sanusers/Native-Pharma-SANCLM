@@ -6,6 +6,10 @@ import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailed
 import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment.JWKCodeList;
 import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment.callCaptureImageLists;
 import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment.jwOthersBinding;
+//import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.callSignCaptureImageLists;
+//import saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1;
+
+//import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.signatureBinding;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.IsFromDCR;
 
 import android.Manifest;
@@ -34,6 +38,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonElement;
@@ -81,6 +87,7 @@ import saneforce.sanzen.activity.call.fragments.product.ProductFragment;
 import saneforce.sanzen.activity.call.fragments.rcpa.RCPAFragment;
 import saneforce.sanzen.activity.call.fragments.rcpa.RCPASelectCompSide;
 import saneforce.sanzen.activity.call.fragments.rcpa.RCPASelectPrdSide;
+//import saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1;
 import saneforce.sanzen.activity.call.pojo.CallCaptureImageList;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.activity.call.pojo.additionalCalls.AddInputAdditionalCall;
@@ -109,6 +116,7 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
+//import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -123,7 +131,7 @@ public class DCRCallActivity extends AppCompatActivity {
     public static ArrayList<StoreImageTypeUrl> arrayStore;
     @SuppressLint("StaticFieldLeak")
     public static ActivityDcrcallBinding dcrCallBinding;
-    public static String clickedLocalDate, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, PobNeed, CapPob, OverallFeedbackNeed, EventCaptureNeed, JwNeed, CusCheckInOutNeed, SampleValidation, InputValidation, PrdSamNeed, PrdRxNeed, PrdRcpaQtyNeed, CapSamQty, CapRxQty, RcpaCompetitorAdd, SamQtyRestriction, SamQtyRestrictValue, InpQtyRestriction, InpQtyRestrictValue, TodayPlanSfCode, PrdMandatory, InpMandatory;
+    public static String clickedLocalDate, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, PobNeed, CapPob, OverallFeedbackNeed, EventCaptureNeed, JwNeed, CusCheckInOutNeed, SampleValidation, InputValidation, PrdSamNeed, PrdRxNeed, PrdRcpaQtyNeed, CapSamQty, CapRxQty, RcpaCompetitorAdd, SamQtyRestriction, SamQtyRestrictValue, InpQtyRestriction, InpQtyRestrictValue, TodayPlanSfCode, PrdMandatory, InpMandatory, SignNeed, SignMandatory;
     public static ArrayList<CallCommonCheckedList> StockSample = new ArrayList<>();
     public static ArrayList<CallCommonCheckedList> StockInput = new ArrayList<>();
     public static String isFromActivity,save_valid,hqcode;
@@ -137,7 +145,7 @@ public class DCRCallActivity extends AppCompatActivity {
     GPSTrack gpsTrack;
 
     JSONObject jsonSaveDcr, jsonImage;
-    String GeoChk, capPrd, capInp, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, InputNeed, ProductNeed, AdditionalCallNeed;
+    String GeoChk, capPrd, capInp, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, InputNeed, ProductNeed, AdditionalCallNeed/*, SignNeed, SignMandatory*/;
     double lat, lng;
     ApiInterface api_interface;
     String ChemName = "", CheCode = "";
@@ -150,11 +158,14 @@ public class DCRCallActivity extends AppCompatActivity {
     Button btnCheckOut;
     TextView tv_address, tv_dateTime;
     String address, latEdit, lngEdit, VistTime, activityDate;
+    String baseUrl = "http://sanffa.info/iOSServer/db_api.php/";
     int mBatteryPercent = 0;
+//    SignatureFragment1 signatureFragment1;
 
     RoomDB roomDB;
     MasterDataDao masterDataDao;
     private CallOfflineECDataDao callOfflineECDataDao;
+//    private CallOfflineSignDataDao callOfflineSignDataDao;
     private CallOfflineDataDao callOfflineDataDao;
     private CallsUtil callsUtil;
     AlertDialog customDialog;
@@ -183,6 +194,16 @@ public class DCRCallActivity extends AppCompatActivity {
         outState.putParcelableArrayList("call", CallActivityCustDetails);
         if(HomeDashBoard.selectedDate != null) {
             outState.putString("date", HomeDashBoard.selectedDate.toString());
+            outState.putInt(Manifest.permission.ACCESS_FINE_LOCATION, ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION));
+            outState.putInt(Manifest.permission.ACCESS_COARSE_LOCATION, ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION));
+            outState.putInt(Manifest.permission.CAMERA, ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA));
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
+                outState.putInt(Manifest.permission.READ_MEDIA_AUDIO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO));
+                outState.putInt(Manifest.permission.READ_MEDIA_VIDEO, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO));
+                outState.putInt(Manifest.permission.READ_MEDIA_IMAGES, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES));
+            }
+            outState.putInt(Manifest.permission.READ_EXTERNAL_STORAGE, ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE));
+            outState.putInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE));
         }
         outState.putBoolean("isSaved", true);
         Log.d("save instance", "onSaveInstanceState: " + outState.size() + " -> " + Arrays.toString(outState.keySet().toArray()));
@@ -200,6 +221,7 @@ public class DCRCallActivity extends AppCompatActivity {
         roomDB=RoomDB.getDatabase(getApplicationContext());
         masterDataDao=roomDB.masterDataDao();
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
+//        callOfflineSignDataDao = roomDB.callOfflineSignDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
         callsUtil = new CallsUtil(this);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
@@ -213,16 +235,16 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 //            CommonAlertBox.permissionChangeAlert(this);
 //            if(SharedPref.getGeoNeed(this).equalsIgnoreCase("0")) {
-                if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-                        || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED
-                        || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED
-                        || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED
-                        || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                            || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
-                    CommonAlertBox.permissionChangeAlert(this);
-                }
+            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_FINE_LOCATION, -1)
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != savedInstanceState.getInt(Manifest.permission.ACCESS_COARSE_LOCATION, -1)
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != savedInstanceState.getInt(Manifest.permission.CAMERA, -1)
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_AUDIO, -1)
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_VIDEO, -1)
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != savedInstanceState.getInt(Manifest.permission.READ_MEDIA_IMAGES, -1)
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.READ_EXTERNAL_STORAGE, -1)
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != savedInstanceState.getInt(Manifest.permission.WRITE_EXTERNAL_STORAGE, -1) ) {
+                CommonAlertBox.permissionChangeAlert(this);
+            }
 //                    Log.e("TAG", "onCreate: Location permission disabled FL");
 //                }
 //                if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -271,6 +293,14 @@ public class DCRCallActivity extends AppCompatActivity {
         AddAdditionalCallData();
         AddRCPAData();
         AddJWData();
+        AddSignData();
+
+//        SignatureFragment1 signatureFragment = new SignatureFragment1();
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(signatureFragment1.signatureBinding, signatureFragment, "SignatureFragment1");
+//        fragmentTransaction.commit();
+
         dcrCallBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -340,6 +370,8 @@ public class DCRCallActivity extends AppCompatActivity {
             gpsTrack = new GPSTrack(this);
             RemaindercallsActivity.vals_rm = "";
             progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
+//            progressDialog.dismiss();
+//            callSignatureFragmentMethod();
             if(SharedPref.getGeoChk(this).equalsIgnoreCase("0")){
                 if(gpsTrack != null && ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0))) {
                     submitCall();
@@ -403,6 +435,11 @@ public class DCRCallActivity extends AppCompatActivity {
                             callOfflineECDataDao.saveOfflineEC(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
                         }
                     }
+//                    if(!SignatureFragment1.callSignCaptureImageLists.isEmpty()){
+//                        for (int i = 0; i< SignatureFragment1.callSignCaptureImageLists.size();i++){
+//                            callOfflineSignDataDao.saveOfflineSign(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), SignatureFragment1.callSignCaptureImageLists.get(i).getFilepath(),jsonImage.toString(),Constants.WAITING_FOR_SYNC,0);
+//                        }
+//                    }
                     UpdateInputStock();
                     UpdateSampleStock();
 
@@ -533,6 +570,9 @@ public class DCRCallActivity extends AppCompatActivity {
 
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
+
+//            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+//            pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -550,6 +590,9 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
+
+//            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+//            pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -561,6 +604,9 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
+
+//            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+//            pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -572,6 +618,9 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
+
+//            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+//            pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("5")) {
             viewPagerAdapter.add(new ProductFragment(), "Product");
             pages.add("Product");
@@ -579,6 +628,9 @@ public class DCRCallActivity extends AppCompatActivity {
             pages.add("Input");
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
+
+//            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+//            pages.add("Signature");
         }
 
         dcrCallBinding.viewPager.setAdapter(viewPagerAdapter);
@@ -683,8 +735,6 @@ public class DCRCallActivity extends AppCompatActivity {
                         }else {
                             masterDataDao.insert(mData);
                         }
-
-
                 }
             }
 
@@ -740,9 +790,9 @@ public class DCRCallActivity extends AppCompatActivity {
         File fileDelete = new File(filePath);
         if (fileDelete.exists()) {
             if (fileDelete.delete()) {
-                System.out.println("file Deleted :" + filePath);
+//                System.out.println("file Deleted :" + filePath);
             } else {
-                System.out.println("file not Deleted :" + filePath);
+//                System.out.println("file not Deleted :" + filePath);
             }
         }
     }
@@ -859,8 +909,15 @@ public class DCRCallActivity extends AppCompatActivity {
                         moveToPage("JFW/Others");
                         return false;
                     }
-                }
+                    if (SignNeed.equalsIgnoreCase("0")){
+//                        if(SignatureFragment1.callSignCaptureImageLists.isEmpty()){
+//                            commonUtilsMethods.showToastMessage(DCRCallActivity.this,getString(R.string.signneed));
+//                            moveToPage("Signature");
+//                            return false;
+//                        }
 
+                    }
+                }
                 break;
             case "2":
                 if (SfType.equalsIgnoreCase("1")) {
@@ -899,6 +956,14 @@ public class DCRCallActivity extends AppCompatActivity {
                             return false;
                         }
                     }
+                }
+                if (SignNeed.equalsIgnoreCase("0")){
+//                    if(SignatureFragment1.callSignCaptureImageLists.isEmpty()){
+//                            commonUtilsMethods.showToastMessage(DCRCallActivity.this,getString(R.string.signneed));
+//                        moveToPage("Signature");
+//                        return false;
+//                    }
+
                 }
 
 //              - Has been moved to validateRCPA()
@@ -1755,6 +1820,21 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
+            //Signature
+//            if(json.has("Sign")){
+//                JSONArray jsonArraySign = json.getJSONArray("Sign");
+//                if(jsonArraySign.length()>0){
+//                    for (int s = 0; s<jsonArraySign.length();s++){
+//                        JSONObject jsSign = jsonArraySign.getJSONObject(s);
+//                        callSignCaptureImageLists.add(new CallSignCaptureImageList(jsSign.getString("Signature"),
+//                                jsSign.getString("Customer Signature"),
+//                                jsSign.getString("savedFilePath"),
+//                                jsSign.getString("fileName")));
+//                    }
+//                }
+//
+//            }
+
             //RCPA
             if (!json.getString("RCPAEntry").equalsIgnoreCase("[]")) {
                 JSONArray jsonArrayRcpa = new JSONArray(json.getString("RCPAEntry"));
@@ -1890,7 +1970,7 @@ public class DCRCallActivity extends AppCompatActivity {
             String formattedDate = dateFormat.format(currentDate);
 
             // Print current date and time
-            System.out.println(formattedDate);
+//            System.out.println(formattedDate);
             jsonobjlist.put("vstTime", (formattedDate));
 
             jnobj.put("tbRemdrCall", jsonobjlist);
@@ -2299,6 +2379,32 @@ public class DCRCallActivity extends AppCompatActivity {
                 jsonSaveDcr.put("EventCapture", jsonArray);
             }
 
+            //Signature
+            jsonArray = new JSONArray();
+//            if(!callSignCaptureImageLists.isEmpty()){
+//                Log.d("Json", "CreateJsonFileCall: "+"json is not null");
+//                jsonImage = CommonUtilsMethods.CommonObjectParameter(DCRCallActivity.this);
+//                try{
+//                    jsonImage.put("table name","sign upload");
+//                    jsonImage.put("Sf code",SfCode);
+////                    jsonImage.put("sign_path",callSignCaptureImageLists.get(0).getFilepath());
+////                    jsonImage.put("SignImageName",callSignCaptureImageLists.get(0).getImg_Name());
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//                jsonSaveDcr.put("filepath","");
+//                for(int i=0;i< callSignCaptureImageLists.size();i++){
+//                    JSONObject json_signImg = new JSONObject();
+//                    json_signImg.put("Signature Upload","true");
+//                    json_signImg.put("Signature_Name",callSignCaptureImageLists.get(i).getImg_Name());
+//                    json_signImg.put("Signature_path",callSignCaptureImageLists.get(i).getFilepath());
+//                    jsonArray.put(json_signImg);
+//                }
+//                jsonSaveDcr.put("Signature",jsonArray);
+//            }else{
+//                Log.d("json", "CreateJsonFileCall: "+"json is NULL");
+//            }
+
             //POB
             String pobValue = Objects.requireNonNull(jwOthersBinding.edPob.getText()).toString();
             if (PobNeed.equalsIgnoreCase("0") && !pobValue.isEmpty()) {
@@ -2610,6 +2716,10 @@ public class DCRCallActivity extends AppCompatActivity {
         JointWorkSelectionSide.JwList = new ArrayList<>();
     }
 
+    private void AddSignData(){        // just added for reff
+//        callSignCaptureImageLists = new ArrayList<>();
+    }
+
     private void AddRCPAData() {
         RCPAFragment.ChemistSelectedList = new ArrayList<>();
         RCPAFragment.ProductSelectedList = new ArrayList<>();
@@ -2812,9 +2922,6 @@ public class DCRCallActivity extends AppCompatActivity {
         }
     }
 
-
-
-
     public String extractValues(String s, String data) {
         if (TextUtils.isEmpty(s)) return "";
 
@@ -2874,13 +2981,140 @@ public class DCRCallActivity extends AppCompatActivity {
             CommonUtilsMethods.showCustomDialog(this);
         }
     }
+
+//    private void callSignatureFragmentMethod() {
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        SignatureFragment1 signatureFragment = (SignatureFragment1) fragmentManager.findFragmentByTag("SignatureFragment1");
+//
+//        if (signatureFragment != null) {
+//            String signaturePath = signatureFragment.getSignaturePath();
+//            if (signaturePath != null) {
+//                // Use the signature path
+//                Log.d("MyActivity", "Signature path: " + signaturePath);
+//            } else {
+//                // Handle error
+//                Log.e("MyActivity", "Failed to get signature path.");
+//            }
+//        } else {
+//            Log.e("MyActivity", "SignatureFragment1 not found.");
+//        }
+//    }
+
+//    public void uploadSignature(Bitmap bitmap) {
+//        Log.d("Upload Method", "uploadSignature: Method Started");
+//        progressDialog = CommonUtilsMethods.createProgressDialog(getApplicationContext());
+////            progressDialog.show();
+//
+//        if (bitmap == null) {
+//            commonUtilsMethods.showToastMessage(this, "Failed to get signature");
+//            Log.e("Bitmap", "uploadSignature: Bitmap is null");
+//            progressDialog.dismiss();
+//            return;
+//        }
+//
+//        SignatureFragment signatureFragment = new SignatureFragment();
+//        String savedFilePath = signatureFragment.saveSignatureImage(bitmap);
+//        Log.d("SavedFilePath", "uploadSignature: " + savedFilePath);
+//        if (savedFilePath == null) {
+//            commonUtilsMethods.showToastMessage(this, "Failed to save signature locally");
+//            Log.e("FileSave", "uploadSignature: Failed to save signature locally");
+//            progressDialog.dismiss();
+//            return;
+//        }
+//
+//        CallSignCaptureImageList image = new CallSignCaptureImageList("Signature", "Customer Signature", savedFilePath,fileName, true, bitmap);
+//
+//        if (callSignCaptureImageLists == null) {
+//            callSignCaptureImageLists = new ArrayList<>();
+//        }
+//
+//        callSignCaptureImageLists.add(image);
+//
+//        if (callSignCaptureImageLists != null && !callSignCaptureImageLists.isEmpty()) {
+//            Log.d("arraylist", "callSignCaptureImageLists : is not empty ");
+//            ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl);
+//            Log.d("Url", "uploadSignature: " + baseUrl);
+//            for (int i = 0; i < callSignCaptureImageLists.size(); i++) {
+//                if (callSignCaptureImageLists.get(i).isSignAdded()) {
+//                    Log.v("ImgUpload", callSignCaptureImageLists.get(i).getFilepath());
+//                    try {
+//                        if (savedFilePath != null && savedFilePath.contains("Sign")) {
+//                            String[] sign = savedFilePath.split("/");
+//                            Log.d("sign_arr", "uploadSignature: " + java.util.Arrays.toString(sign));
+//                            if (sign.length > 9) {
+//                                savedFilePath = "storage/emulated/0/Android/data/saneforce.sanzen/files/Signatures/" + sign[9];
+//                            } else {
+//                                Log.e("FilePathMod", "Array 'sign' does not have enough elements.");
+//                            }
+//                        }
+//
+//                        JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(TedPermissionProvider.context);
+//                        jsonImage.put("sign_path", savedFilePath);
+//                        jsonImage.put("SignImageName", fileName);
+//                        MultipartBody.Part img = convertImg("Signature", callSignCaptureImageLists.get(i).getFilepath());
+//                        Log.d("getFilePath", "uploadSignature: "+callSignCaptureImageLists.get(i).getFilepath());
+//                        if(!img.toString().isEmpty()) {
+//                            Log.d("ConvertImg", "uploadSignature: " +img);
+//                        }else{
+//                            Log.e("ConvertImg", "uploadSignature: "+"File Doesn't exist" );
+//                        }
+//                        HashMap<String, RequestBody> values = field(jsonImage.toString());
+//                        Log.d("field", "uploadSignature: "+values);
+//                        Call<JsonObject> saveSignImg = apiInterface.SignUpload(values, img);
+//                        Log.d("Saveimg", "uploadSignature: " + apiInterface.SignUpload(values, img));
+//                        int finalI = i;
+//                        Log.d("Test", "uploadSignature: " + jsonImage);
+//                        saveSignImg.enqueue(new Callback<JsonObject>() {
+//                            @Override
+//                            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+//                                progressDialog.dismiss();
+//                                if (response.isSuccessful()) {
+//                                    if (response.body() != null) {
+//                                        try {
+//                                            JSONObject json = new JSONObject(response.body().toString());
+//                                            Log.v("ImgUpload", json.toString());
+//                                            if (json.has("success")) {
+//                                                json.getString("success");
+//                                                Log.d("upload", "onResponse: " + "Upload Successful!!");
+//                                                DeleteFileCache(callSignCaptureImageLists.get(finalI).getFilepath());
+//                                            } else {
+//                                                Log.e("ImgUpload", "Response JSON does not contain 'success' key");
+//                                            }
+//                                        } catch (JSONException e) {
+//                                            Log.e("ImgUpload", "JSON parsing error: " + e.getMessage(), e);
+//                                            DeleteFileCache(callSignCaptureImageLists.get(finalI).getFilepath());
+//                                        }
+//                                    } else {
+//                                        Log.e("ImgUpload", "Response body is null");
+//                                        DeleteFileCache(callSignCaptureImageLists.get(finalI).getFilepath());
+//                                    }
+//                                } else {
+//                                    Log.e("ImgUpload", "API call failed. Code: " + response.code() + ", Body: " + (response.errorBody() != null ? response.errorBody().toString() : "null"));
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+//                                progressDialog.dismiss();
+//                                Log.e("ImgUpload", "API call failed: " + t.getMessage(), t);
+//                                t.printStackTrace();
+//                            }
+//                        });
+//
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                        progressDialog.dismiss();
+//                        Log.e("ImgUpload", "Error during image upload: " + e.getMessage(), e);
+//                    }
+//                }
+//            }
+//        } else {
+//            Log.d("arraylist", "callSignCaptureImageLists : is empty ");
+//            progressDialog.dismiss();
+//        }
+//        Log.d("Upload Method", "uploadSignature: Method ended");
+//    }
 }
    /* Backend Pending:
-        1) Add CustStatus for Setup; --> GeoTagApprovalNeed
-        2) Add Cust_status for all Doctor,Chemist,Cip,Stockist,UnDr --> cust_status
-        3) Add Cust_status for json_object to send the mapped tagged Customer
-        4) Add Promoted & RCPA Products for json_object to send the dcr call Customer
-        5) Add Sample and Input Data for Additional_Call_Screen*/
-
-
-
+   1) storing the image in server
+        2) Signature Edit */

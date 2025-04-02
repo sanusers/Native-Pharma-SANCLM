@@ -47,7 +47,7 @@ public class FirebaseService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived (@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        System.out.println("message--->"+ remoteMessage.getNotification().getBody());
+//        System.out.println("message--->"+ remoteMessage.getNotification().getBody());
         imageUrl = String.valueOf(remoteMessage.getNotification().getImageUrl());
         title = remoteMessage.getNotification().getTitle();
         body = remoteMessage.getNotification().getBody();

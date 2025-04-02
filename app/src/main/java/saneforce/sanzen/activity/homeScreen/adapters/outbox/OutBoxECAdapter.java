@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,6 +27,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3Client;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -33,8 +45,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
+import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -103,9 +117,9 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             }
             popup.setOnMenuItemClickListener(menuItem -> {
                 if (menuItem.getItemId() == R.id.menuSync) {
-                    CallImageApi();
+                    CallImageApi(ecModelClasses.get(position));
                     if (UtilityClass.isNetworkAvailable(context)) {
-                        CallImageApi();
+                        CallImageApi(ecModelClasses.get(position));
                     } else {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                     }
@@ -162,9 +176,9 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                         File fileDelete = new File(ecModelClasses.get(position).getFilePath());
                         if(fileDelete.exists()) {
                             if(fileDelete.delete()) {
-                                System.out.println("file Deleted :" + ecModelClasses.get(position).getFilePath());
+//                                System.out.println("file Deleted :" + ecModelClasses.get(position).getFilePath());
                             }else {
-                                System.out.println("file not Deleted :" + ecModelClasses.get(position).getFilePath());
+//                                System.out.println("file not Deleted :" + ecModelClasses.get(position).getFilePath());
                             }
                         }
                         callOfflineECDataDao.deleteOfflineEC(String.valueOf(ecModelClasses.get(position).getId()));
@@ -181,7 +195,93 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         });
     }
 
-    private void CallImageApi() {
+    private void CallImageApi(/*int parentPos,*/ EcModelClass ecModelClass /*int childPos, int CurrentPos,*/
+                              /*String jsonValues,*/ /*String filePath *//*, String id, GroupModelClass modelClass*/) {
+        try {
+
+            CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                    context,
+                    "ap-south-1:c4c0fc81-118d-43e3-84cf-051f1bd831b9",
+                    Regions.AP_SOUTH_1);
+
+            AmazonS3Client s3Client = new AmazonS3Client(credentialsProvider);
+            s3Client.setRegion(Region.getRegion(Regions.AP_SOUTH_1));
+
+
+            File fileToUpload = new File(ecModelClass.getFilePath());
+            Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
+            if (!fileToUpload.exists()) {
+                Log.d("fileToUpload", "not exists: " + ecModelClass.getFilePath());
+            } else {
+
+                String bucketName = "san.one";
+                String s3Key = "uploads/" + fileToUpload.getName();
+                Log.d("TAG", "CallSendAPIImage: " + s3Key);
+
+                String UploadUrl = "https://" + "s3." + "ap-south-1." + "amazonaws.com/" + bucketName + "/" + s3Key;
+                Log.d("S3UploadUrl", "CallSendAPIImage: " + UploadUrl);
+
+                TransferNetworkLossHandler.getInstance(context);
+
+                TransferUtility transferUtility = TransferUtility.builder()
+                        .context(context)
+                        .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                        .s3Client(s3Client)
+                        .defaultBucket(bucketName)
+                        .build();
+
+                TransferObserver uploadObserver = transferUtility.upload(
+                        bucketName,
+                        s3Key,
+                        fileToUpload);
+                uploadObserver.setTransferListener(new TransferListener() {
+                    @Override
+                    public void onStateChanged(int id, TransferState state) {
+                        if (state == TransferState.COMPLETED) {
+                            Log.d("TAG", "ecModelClass: " + ecModelClass.getFilePath());
+                            InsertImage(ecModelClass.getFilePath(), context);
+                            /*DeleteCacheFile(filePath, "", CurrentPos, parentPos, childPos, modelClass);*/
+                            Log.d("S3 Upload", "Upload Successful: " + s3Key);
+
+
+                        } else if (state == TransferState.FAILED) {
+
+                            Log.e("S3 Upload", "Upload Failed");
+                            InsertImage(ecModelClass.getFilePath(), context);
+
+                            ecModelClass.setSynced(1);
+                            ecModelClass.setSync_status(Constants.CALL_FAILED);
+                            callOfflineECDataDao.updateECStatus("", Constants.CALL_FAILED, 1);
+//                            CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                        }
+
+                    }
+
+                    @Override
+                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                        double progress = (bytesCurrent * 100.0) / bytesTotal;
+                        Log.d("S3 Upload", "Upload Progress: " + progress + "%");
+                    }
+
+                    @Override
+                    public void onError(int id, Exception ex) {
+                        Log.e("S3 Upload", "Error: " + ex.getMessage());
+                        ecModelClass.setSynced(1);
+                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        callOfflineECDataDao.updateECStatus("", Constants.EXCEPTION_ERROR, 1);
+                    }
+                });
+
+            }
+        } catch(Exception e){
+            Log.v("img_tag", e.toString());
+        }
+    }
+   private void InsertImage(final String ImageUrl, Context context) {
+        File imageFile = new File(ImageUrl);
+        Log.d("AWS_s3", "fileToUpload" + "--" + imageFile);
+        String fileName = new File(ImageUrl).getName();
+        new AWSBuckets(context,fileName,imageFile,"");
     }
 
     @Override

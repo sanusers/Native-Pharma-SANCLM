@@ -1,7 +1,6 @@
 <resources>
-
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">R.2.0.1</string>
+    <string name="app_version" translatable="false">T.1.0.3</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -13,6 +12,7 @@
     <string name="txt_visit">Visit</string>
     <string name="view">View</string>
     <string name="search">Search</string>
+    <string name="tag_add">Tagged Address</string>
     <string name="brand_name">Brand Name</string>
     <string name="rating">Rating</string>
     <string name="feedback">Feedback</string>
@@ -166,6 +166,8 @@
     <string name="clear">Clear</string>
     <string name="comp_prd">Competitor Product</string>
     <string name="enter_name">Enter name</string>
+    <string name="enter_homeadd">Enter Home Address</string>
+    <string name="enter_hospadd">Enter Hospital Address</string>
     <string name="ent_brand_name">Enter Brand Name</string>
     <string name="tour_plan_approvals">Tour Plan Approvals</string>
     <string name="tp_planed_for">Tour Planned for</string>
@@ -178,8 +180,8 @@
     <string name="toast_enter_reason_for_reject">Enter reason for Reject</string>
     <string name="toast_enter_remarks">Enter Remarks</string>
     <string name="toast_enter_feedback">Enter Feedback</string>
-
-
+    <string name="enter_phone">Enter Phone</string>
+    <string name="enter_mobile">Enter Mobile</string>
     <string name="apply">Apply</string>
     <string name="headquarter">Headquarter</string>
     <string name="my_resource">My Resource</string>
@@ -510,4 +512,37 @@
     <string name="standard_tour_planned_for">Standard Tour Planned for</string>
     <string name="select_workday">Select WorkDay</string>
     <string name="refresh">Refresh</string>
+    <string name="Signature">Signature</string>
+    <string name="fill">Please fill </string>
+    <string name="select_headquater">SELECT HEADQUARTER</string>
+    <string name="saved_successfully">Saved Successfully</string>
+    <string name="location_add">Tagged Successfully</string>
+    <string name="name_mandt">Name <font color='#FF0000'> *</font></string>
+    <string name="hq_mandt">Headquarter <font color='#FF0000'>*</font></string>
+    <string name="additional_doctor">Add Unlisted Doctor</string>
+    <string name="Photocapture">Photo Capture</string>
+    <string name="mobile">Mobile</string>
+    <string name="DOB">DOB</string>
+    <string name="DOW">DOW</string>
+    <string name="catogy">Category</string>
+    <string name="phone">Phone</string>
+    <string name="qualifications">Qualification</string>
+    <string name="terr_mandt">Cluster <font color='#FF0000'>*</font></string>
+    <string name="additional_chemist">Add Chemist</string>
+    <string name="clases">Class</string>
+    <string name="cat_selection">Category Selection</string>
+    <string name="cluster_selection">Cluster Selection</string>
+    <string name="qualification_selction">Qualification Selection</string>
+    <string name="class_selction">Class Selection</string>
+    <string name="speciality_selction">Speciality Selection</string>
+    <string name="speciality_mandt">Speciality <font color='#FF0000'>*</font></string>
+    <string name="catogy_mandt">Category <font color='#FF0000'>*</font></string>
+    <string name="clases_mandt">Class <font color='#FF0000'>*</font></string>
+    <string name="qualifications_mandt">Qualification <font color='#FF0000'>*</font></string>
+    <string name="choose_dob">Choose DOB</string>
+    <string name="choose_dow">Choose DOW</string>
+    <string name="enter_valid_phone">Phone number must be at least 7 digits</string>
+    <string name="enter_valid_Mobile">Mobile number must be at least 7 digits</string>
+    <string name="Photo_mand">Photo Capture Mandatory</string>
+    <string name="select_class">Select Class</string>
 </resources>

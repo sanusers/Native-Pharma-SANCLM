@@ -15,8 +15,8 @@ android {
         applicationId "saneforce.sanzen"
         minSdk 23
         targetSdk 35
-        versionCode 50
-        versionName "2.0.1"
+        versionCode 54
+        versionName "1.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -47,13 +47,17 @@ android {
         //To use java Local(Date) library below api level 26
         coreLibraryDesugaringEnabled = true
 
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     buildFeatures {
         viewBinding = true
     }
 
+    packagingOptions {
+        pickFirst 'META-INF/NOTICE.md'
+        pickFirst 'META-INF/LICENSE.md'
+    }
 }
 
 dependencies {
@@ -151,6 +155,18 @@ dependencies {
 
     //GifImageView
     implementation "pl.droidsonroids.gif:android-gif-drawable:1.2.25"
+
+    //pdf-viewer
+//    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    implementation project(":libs:jetified-android-pdf-viewer-2.8.2")
+
+    //mail
+//    implementation 'com.sun.mail:android-mail:1.6.6'
+//    implementation 'com.sun.mail:android-activation:1.6.7'
+
+    //AWS S3
+    implementation "com.amazonaws:aws-android-sdk-s3:2.51.0"
+    implementation("com.amazonaws:aws-android-sdk-mobile-client:2.51.0") { transitive = true }
 
     //lottie animations
     implementation 'com.airbnb.android:lottie:6.6.0'

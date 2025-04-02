@@ -408,7 +408,7 @@ public class LoginActivity extends AppCompatActivity {
 //                            if (responseObject.getString("Android_Detailing").equals("1")) {
                                 Log.v("Android_Detailing", "--json-" + responseObject);
                                 appAccess = responseObject.getString("sanzen_edet");
-                                System.out.println("appAccess--->"+appAccess);
+//                                System.out.println("appAccess--->"+appAccess);
                                 if (appAccess.equals("1")) {
                                     process(responseObject);
                                     Toast.makeText(LoginActivity.this, getString(R.string.login_successfully), Toast.LENGTH_LONG).show();

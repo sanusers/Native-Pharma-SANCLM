@@ -371,7 +371,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                 } else {
                                     TPDCR = "TP , DCR";
                                 }
-                                System.out.println("jsonObjectWorkType--->" + jsonObject);
+//                                System.out.println("jsonObjectWorkType--->" + jsonObject);
                                 listresource.add(new Resourcemodel_class("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", workType, TPDCR, "workType", "", "", "", ""));
                             }
                         }

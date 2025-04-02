@@ -120,6 +120,7 @@ import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPla
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.ContinuousLogCollector;
 import saneforce.sanzen.commonClasses.GPSTrack;
 import saneforce.sanzen.commonClasses.InAppUpdate;
 import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
@@ -376,7 +377,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         binding.imgNotofication.setOnClickListener(view -> {
-            startActivity(new Intent(HomeDashBoard.this, MapViewActvity.class));
+            ContinuousLogCollector.stopLogging(getApplicationContext());
+//            startActivity(new Intent(HomeDashBoard.this, MapViewActvity.class));
         });
 
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -426,13 +428,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         AppIdentify();
         onClickListener();
         accessibility();
-        if (SharedPref.getSrtNd(this).equalsIgnoreCase("0") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
-            SharedPref.setCheckInTime(getApplicationContext(), "");
-            SharedPref.setSkipCheckIn(getApplicationContext(), true);
-            CheckInOutDate();
-        } else {
-            SharedPref.setSkipCheckIn(getApplicationContext(), false);
-        }
+//        if (SharedPref.getSrtNd(this).equalsIgnoreCase("0") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
+//            SharedPref.setCheckInTime(getApplicationContext(), "");
+//            SharedPref.setSkipCheckIn(getApplicationContext(), true);
+//            CheckInOutDate();
+//        } else {
+//            SharedPref.setSkipCheckIn(getApplicationContext(), false);
+//        }
 
         gpsTrack = new GPSTrack(this);
         latitude = gpsTrack.getLatitude();
@@ -1075,7 +1077,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         new_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(new_password)});
         remain_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(remain_password)});
         String password = SharedPref.getLoginUserPwd(this).toLowerCase();
-        System.out.println("loginPassword--->"+password);
+//        System.out.println("loginPassword--->"+password);
 
         old_view.setOnClickListener(v -> {
             if (!old_password.getText().toString().equals("")) {
@@ -1328,15 +1330,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.near_me))) {
-            if (SharedPref.getSrtNd(this).equalsIgnoreCase("0")) {
-                if (SharedPref.getSkipCheckIn(getApplicationContext())) {
-                    goToNearMeActivity();
-                } else {
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.submit_checkin));
-                }
-            } else {
+//            if (SharedPref.getSrtNd(this).equalsIgnoreCase("0")) {
+//                if (SharedPref.getSkipCheckIn(getApplicationContext())) {
+//                    goToNearMeActivity();
+//                } else {
+//                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.submit_checkin));
+//                }
+//            } else {
                 goToNearMeActivity();
-            }
+//            }
         }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.survey))) {
@@ -1503,6 +1505,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             case R.id.img_account:
                 showPopup(binding.imgAccount);
+                break;
 
             case R.id.cancel_img:
                 binding.drMainlayout.closeDrawer(GravityCompat.END);

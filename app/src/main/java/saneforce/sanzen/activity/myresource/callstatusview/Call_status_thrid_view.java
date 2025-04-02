@@ -65,7 +65,7 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
         SimpleDateFormat df = new SimpleDateFormat("M");
          previousMonth = df.format(c.getTime());
 
-        System.out.println("Previous month in third MM format: " + previousMonth);
+//        System.out.println("Previous month in third MM format: " + previousMonth);
 
 
         setUp();
@@ -75,7 +75,7 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
     }
 
     public void callsview() {
-        System.out.println("callsViewName--->" + doctorName);
+//        System.out.println("callsViewName--->" + doctorName);
         try {
             call_list.clear();
             String Dates_call = "", vALDATE = "";
@@ -199,11 +199,11 @@ private void setUp()  {
 
             Collections.sort(namesList);
 
-            System.out.println("Date: " + date);
+//            System.out.println("Date: " + date);
 
             for (String name : namesList) {
                 doctorName  = name;
-                System.out.println("doctorName: " + doctorName);
+//                System.out.println("doctorName: " + doctorName);
 
             }
         }

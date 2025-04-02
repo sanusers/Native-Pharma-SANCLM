@@ -6,8 +6,10 @@ import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFra
 import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.tpDataObj;
 import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.workDayCode;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -26,6 +28,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -48,6 +52,7 @@ import java.util.List;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddition;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
@@ -83,6 +88,7 @@ public class ChemistFragment extends Fragment {
 
     ListView lv_cate, lv_terr;
     ConstraintLayout constraintLayout ;
+    Button btn_addchm;
 
     ArrayList<CustList> FilltercustArraList = new ArrayList<>();
     private RoomDB roomDB;
@@ -101,7 +107,7 @@ public class ChemistFragment extends Fragment {
         tv_hqName = v.findViewById(R.id.tv_hq_name);
         noChemist = v.findViewById(R.id.no_chemist);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
-
+        btn_addchm=v.findViewById(R.id.add_chm);
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
@@ -113,7 +119,17 @@ public class ChemistFragment extends Fragment {
 
         InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(ed_search.getWindowToken(), 0);
-
+        if ((SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && SharedPref.getEntryFormNeed(requireContext()).equalsIgnoreCase("0"))
+                || (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && SharedPref.getEntryFormMgr(requireContext()).equalsIgnoreCase("0"))) {
+            btn_addchm.setVisibility(View.VISIBLE);
+        }
+        else{
+            btn_addchm.setVisibility(View.GONE);
+        }
+        btn_addchm.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), ChemistAddition.class);
+            activityResultLauncher.launch(intent);
+        });
         iv_filter.setOnClickListener(view -> {
             CustomizeFiltered();
         });
@@ -441,5 +457,13 @@ public class ChemistFragment extends Fragment {
         }
         dialogFilter.dismiss();
     }
+    private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) { // Check if data is saved successfully
+                    SetupAdapter(); // Reload the current fragment
+                }
+            }
+    );
 
 }

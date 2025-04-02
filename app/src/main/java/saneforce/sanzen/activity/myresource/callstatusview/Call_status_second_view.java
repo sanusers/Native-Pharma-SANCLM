@@ -58,7 +58,7 @@ public class Call_status_second_view extends Fragment {
         SimpleDateFormat df = new SimpleDateFormat("M");
         previousMonth = df.format(c.getTime());
 
-        System.out.println("Previous month in sec_MM format: " + previousMonth);
+//        System.out.println("Previous month in sec_MM format: " + previousMonth);
 
         callsview();
 

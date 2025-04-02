@@ -64,7 +64,6 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/search_cust"
                 android:layout_width="@dimen/_130sdp"
@@ -83,11 +82,27 @@
                 android:textColorHint="@color/light_grey"
                 android:textSize="@dimen/_6ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/iv_filter"
+                app:layout_constraintEnd_toStartOf="@id/add_chm"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
                 tools:ignore="TextContrastCheck" />
-
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginHorizontal="@dimen/_6sdp"
+                android:layout_marginVertical="@dimen/_3sdp"
+                android:background="@drawable/rounded_button"
+                android:text="+ Add New"
+                android:textColor="@color/white"
+                android:fontFamily="@font/satoshi_medium"
+                android:textAllCaps="false"
+                android:id="@+id/add_chm"
+                android:visibility="gone"
+                android:layout_centerHorizontal="true"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintEnd_toEndOf="@+id/search_cust"
+                app:layout_constraintEnd_toStartOf="@id/iv_filter"/>
             <ImageButton
                 android:id="@+id/iv_filter"
                 android:layout_width="@dimen/_20sdp"
@@ -103,7 +118,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
                 tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
-
             <TextView
                 android:id="@+id/tv_filter_count"
                 android:layout_width="@dimen/_10sdp"

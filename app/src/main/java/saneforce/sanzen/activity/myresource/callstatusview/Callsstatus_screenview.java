@@ -47,7 +47,7 @@ public class Callsstatus_screenview extends AppCompatActivity {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("mm");
         String CurrtDate = df.format(c.getTime());
-        System.out.println("Current month in MM format: " + CurrtDate);
+//        System.out.println("Current month in MM format: " + CurrtDate);
 
 
 

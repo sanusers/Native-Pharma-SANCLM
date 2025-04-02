@@ -34,7 +34,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         this.context = context;
         this.onDayClickInterface = onDayClickInterface;
         this.localDate = localDate;
-        System.out.println("localDate--->"+localDate);
+//        System.out.println("localDate--->"+localDate);
         localDate = LocalDate.now();
 
     }
@@ -73,7 +73,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
             public void onClick(View view) {
                 if(!arrayList.get(holder.getAbsoluteAdapterPosition()).equals("")){
                     onDayClickInterface.onDayClicked(holder.getAbsoluteAdapterPosition(),arrayList.get(holder.getAbsoluteAdapterPosition()),new ModelClass()); // Used the same Interface class which used for TourPlan.So passing 1st and 3rd argument for no purpose
-                System.out.println("onDayClickInterface--->"+myDate);
+//                System.out.println("onDayClickInterface--->"+myDate);
                 }
             }
         });
