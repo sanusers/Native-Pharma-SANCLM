@@ -909,14 +909,14 @@ public class DCRCallActivity extends AppCompatActivity {
                         moveToPage("JFW/Others");
                         return false;
                     }
-                    if (SignNeed.equalsIgnoreCase("0")){
+//                    if (SignNeed.equalsIgnoreCase("0")){
 //                        if(SignatureFragment1.callSignCaptureImageLists.isEmpty()){
 //                            commonUtilsMethods.showToastMessage(DCRCallActivity.this,getString(R.string.signneed));
 //                            moveToPage("Signature");
 //                            return false;
 //                        }
 
-                    }
+//                    }
                 }
                 break;
             case "2":
@@ -957,14 +957,14 @@ public class DCRCallActivity extends AppCompatActivity {
                         }
                     }
                 }
-                if (SignNeed.equalsIgnoreCase("0")){
+//                if (SignNeed.equalsIgnoreCase("0")){
 //                    if(SignatureFragment1.callSignCaptureImageLists.isEmpty()){
 //                            commonUtilsMethods.showToastMessage(DCRCallActivity.this,getString(R.string.signneed));
 //                        moveToPage("Signature");
 //                        return false;
 //                    }
 
-                }
+//                }
 
 //              - Has been moved to validateRCPA()
 //                for (int i = 0; i < RCPAFragment.ProductSelectedList.size(); i++) {
