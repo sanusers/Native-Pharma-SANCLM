@@ -430,6 +430,7 @@ public class SharedPref {
     public static final String STP_APPR_NEED = "STP_APPR_NEED";
     public static final String STP_BASED_MTP = "STP_BASED_MTP";
     public static final String STP_BASED_DCR = "STP_BASED_DCR";
+    public static final String STP_CAPTION = "Stp_Caption";
 
     public static final String LAST_CALL_SYNC_DATE = "Last Call Sync Date";
 
@@ -758,6 +759,7 @@ public class SharedPref {
         editor.putString(STP_APPR_NEED, jsonObject.getString("STP_Appr_Need"));
         editor.putString(STP_BASED_MTP, jsonObject.getString("STP_Based_MTP"));
         editor.putString(STP_BASED_DCR, jsonObject.getString("STP_Based_DCR"));
+        editor.putString(STP_CAPTION, jsonObject.getString("Stp_Caption"));
         editor.putString(DCR_APPROVAL_NEED, jsonObject.optString("DcrapprvNd"));
         editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\",""));
         editor.apply();
@@ -1956,6 +1958,10 @@ public class SharedPref {
 
     public static String getStpBasedDcr(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_BASED_DCR, "");
+    }
+
+    public static String getStpCaption(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_CAPTION, "");
     }
 
     public static String getDcrApprovalNeed(Context context) {

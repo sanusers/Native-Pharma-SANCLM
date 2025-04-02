@@ -1774,6 +1774,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } else {
             menu.findItem(R.id.approval).setVisible(false);
             menu.findItem(R.id.stp).setVisible(SharedPref.getStpNeed(this).equalsIgnoreCase("0"));
+            if(SharedPref.getStpCaption(this).isEmpty()) {
+                menu.findItem(R.id.stp).setTitle(Constants.STANDARD_TOUR_PLAN);
+            } else {
+                menu.findItem(R.id.stp).setTitle(SharedPref.getStpCaption(this));
+            }
         }
 
         if (SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {

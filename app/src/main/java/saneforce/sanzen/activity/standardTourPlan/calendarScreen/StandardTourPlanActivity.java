@@ -226,7 +226,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         unDrNeed = SharedPref.getUnlNeed(this);
         cipNeed = SharedPref.getCipNeed(this);
         hosNeed = SharedPref.getHospNeed(this);
-//        stpCap = SharedPref.getSTPCap(this);
+        stpCap = SharedPref.getStpCaption(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         stpOfflineDataDao = roomDB.stpOfflineDataDao();
@@ -245,6 +245,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         allSelectedDocXCatMap = new HashMap<>();
         allSelectedDocList = new ArrayList<>();
 
+        if(!stpCap.isEmpty()) {
+            activityStandardTourPlanBinding.title.setText(stpCap);
+        }
         getData();
 
         String stpStatus = SharedPref.getStpStatus(StandardTourPlanActivity.this);
@@ -610,10 +613,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 JSONObject jsonObject = jsonArray.optJSONObject(0);
                 dayCaptions = jsonObject.optString("Plan_Name", "");
                 dayIDs = jsonObject.optString("Plan_SName", "");
-                stpCap = jsonObject.optString("STP_Name", StandardTourPlanActivity.this.getString(R.string.standard_tour_plan));
-                if(!stpCap.isEmpty()) {
-                    activityStandardTourPlanBinding.title.setText(stpCap);
-                }
+//                stpCap = jsonObject.optString("STP_Name", StandardTourPlanActivity.this.getString(R.string.standard_tour_plan));
+//                if(!stpCap.isEmpty()) {
+//                    activityStandardTourPlanBinding.title.setText(stpCap);
+//                }
             }
             if(dayIDs == null || dayIDs.isEmpty()) {
                 commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Kindly sync Standard Tour Plan Setup!");

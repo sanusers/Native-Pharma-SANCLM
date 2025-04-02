@@ -776,8 +776,14 @@ public class MasterSyncActivity extends AppCompatActivity {
             tpModelArray.add(tPlan);
         }
         if(stpNeed) {
-            MasterSyncItemModel STPSetup = new MasterSyncItemModel(Constants.STP_SETUP, Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP, stpSetupStatus, false);
-            MasterSyncItemModel STPPlan = new MasterSyncItemModel(Constants.STANDARD_TOUR_PLAN,  Constants.STANDARD_TOUR_PLAN, "getstp_details", Constants.STANDARD_TOUR_PLAN, standardTourPLanStatus, false);
+            String stpCaption = SharedPref.getStpCaption(this), stpSetupCaption = Constants.STP_SETUP;
+            if(!stpCaption.isEmpty()) {
+                stpSetupCaption = stpCaption + " Setup";
+            } else {
+                stpCaption = Constants.STANDARD_TOUR_PLAN;
+            }
+            MasterSyncItemModel STPSetup = new MasterSyncItemModel(stpSetupCaption, Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP, stpSetupStatus, false);
+            MasterSyncItemModel STPPlan = new MasterSyncItemModel(stpCaption,  Constants.STANDARD_TOUR_PLAN, "getstp_details", Constants.STANDARD_TOUR_PLAN, standardTourPLanStatus, false);
             tpModelArray.add(STPSetup);
             tpModelArray.add(STPPlan);
         }
