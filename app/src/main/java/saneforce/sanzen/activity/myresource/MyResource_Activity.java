@@ -329,12 +329,18 @@ public class MyResource_Activity extends AppCompatActivity {
             }
             listed_data.add(new Resourcemodel_class(SharedPref.getClusterCap(this), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + synhqval1).getMasterSyncDataJsonArray().length()), "9"));
             listed_data.add(new Resourcemodel_class("Holiday / Weekly off", masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray().length() + " / " + masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray().length(), "10"));
-            listed_data.add(new Resourcemodel_class("Category", String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));
+            if(SharedPref.getDrNeed(this).equalsIgnoreCase("0") && SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
+                listed_data.add(new Resourcemodel_class("Category", String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));
+            } else if(SharedPref.getDrNeed(this).equalsIgnoreCase("0")){
+                listed_data.add(new Resourcemodel_class("Category", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length()), "11"));
+            } else if(SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
+                listed_data.add(new Resourcemodel_class("Category", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));
+            }
             listed_data.add(new Resourcemodel_class("WorkType", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray().length()), "12"));
             if (isLeaveEntitlementRequested) {
                 listed_data.add(new Resourcemodel_class("LeaveStatus", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length()), "13"));
             }
-            if (SharedPref.getVstNd(getApplicationContext()).equalsIgnoreCase("0") && SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+            if (SharedPref.getDrNeed(this).equals("0") && SharedPref.getVstNd(this).equalsIgnoreCase("0") && SharedPref.getSfType(this).equalsIgnoreCase("1")) {
 //                listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
                 listed_data.add(new Resourcemodel_class(dcrCaption + " " + "Visit", "", "14"));
             }

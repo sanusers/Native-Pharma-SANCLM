@@ -77,8 +77,25 @@ public class DayReportDetailFragment extends Fragment {
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         initialisation();
-        binding.doctor.setSelected(true);
-        getData("1", Constants.DOCTOR);
+        if(SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")){
+            binding.doctor.setSelected(true);
+            getData("1", Constants.DOCTOR);
+        } else if(SharedPref.getChmNeed(requireContext()).equalsIgnoreCase("0")){
+            binding.chemist.setSelected(true);
+            getData("2", Constants.CHEMIST);
+        } else if(SharedPref.getStkNeed(requireContext()).equalsIgnoreCase("0")){
+            binding.stockiest.setSelected(true);
+            getData("3", Constants.STOCKIEST);
+        } else if(SharedPref.getUnlNeed(requireContext()).equalsIgnoreCase("0")){
+            binding.unDr.setSelected(true);
+            getData("4", Constants.UNLISTED_DOCTOR);
+        } else if(SharedPref.getCipNeed(requireContext()).equalsIgnoreCase("0")){
+            binding.cip.setSelected(true);
+            getData("5", Constants.CIP);
+        } else if(SharedPref.getHospNeed(requireContext()).equalsIgnoreCase("0")){
+            binding.hosp.setSelected(true);
+            getData("6", Constants.HOSPITAL);
+        }
 
         binding.searchET.addTextChangedListener(new TextWatcher() {
             @Override
