@@ -515,7 +515,6 @@
     <string name="Signature">Signature</string>
     <string name="fill">Please fill </string>
     <string name="select_headquater">SELECT HEADQUARTER</string>
-    <string name="saved_successfully">Saved Successfully</string>
     <string name="location_add">Tagged Successfully</string>
     <string name="name_mandt">Name <font color='#FF0000'> *</font></string>
     <string name="hq_mandt">Headquarter <font color='#FF0000'>*</font></string>

@@ -326,7 +326,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                             rlHQ.setVisibility(View.VISIBLE);
                         }
-                        if(STPNeed.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")){
+                        if(TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")){
                             binding.rlworkday1.setVisibility(View.VISIBLE);
                         } else {
                             workDayCode = "";
@@ -358,7 +358,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                             rlHQ.setVisibility(View.VISIBLE);
                         }
-                        if(STPNeed.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")){
+                        if(TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")){
                             binding.rlworkday2.setVisibility(View.VISIBLE);
                         } else {
 //                            workDayCode = "";
@@ -648,7 +648,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void updateWorkDayList() {
         try {
-            if(STPNeed.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")) {
+            if(TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
                 List<STPOfflineDataTable> stpOfflineDataTableList = stpOfflineDataDao.getAllSTPData();
                 List<STPModelList> stpModelList = new ArrayList<>();
                 for (STPOfflineDataTable stpOfflineDataTable : stpOfflineDataTableList) {
@@ -2349,7 +2349,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             }else {
                                 binding.rlheadquates1.setVisibility(View.GONE);
                                 SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
-                                if(STPNeed.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                                if(TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
                                     binding.rlworkday1.setVisibility(View.VISIBLE);
                                 }
                             }
@@ -2372,7 +2372,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             workDayName = FirstSeasonDayPlanObject.optString("Others_Name");
                             isFromTP = FirstSeasonDayPlanObject.optBoolean("isFromTP", false);
                             Log.i("TP", "setUpWorkPlan: " + isFromTP);
-                            if(STPNeed.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                            if(TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
                                 binding.rlworkday1.setVisibility(View.VISIBLE);
                                 binding.txtworkday1.setText(workDayName);
 
@@ -3079,7 +3079,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.rlworkday1.setBackground(getResources().getDrawable(R.drawable.backround_text));
         binding.llPlan1.setBackground(getResources().getDrawable(R.drawable.backround_text));
         binding.flSession1.setVisibility(View.GONE);
-        if(STPNeed.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")){
+        if(TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")){
             binding.rlcluster1.setEnabled(false);
             binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
         }
@@ -3098,7 +3098,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.rlworkday2.setBackground(getResources().getDrawable(R.drawable.backround_text));
         binding.llPlan2.setBackground(getResources().getDrawable(R.drawable.backround_text));
         binding.flSession2.setVisibility(View.GONE);
-        if(STPNeed.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")){
+        if(TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")){
             binding.rlcluster2.setEnabled(false);
             binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
         }
