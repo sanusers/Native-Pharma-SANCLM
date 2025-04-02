@@ -278,6 +278,16 @@
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
+            android:name=".activity.myresource.ProfilingActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".activity.myresource.MapView"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
             android:name=".activity.myresource.callstatusview.Callsstatus_screenview"
             android:exported="false"
             android:screenOrientation="landscape" />

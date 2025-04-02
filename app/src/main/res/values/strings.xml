@@ -523,4 +523,22 @@
     <string name="enter_valid_Mobile">Mobile number must be at least 7 digits</string>
     <string name="Photo_mand">Photo Capture Mandatory</string>
     <string name="select_class">Select Class</string>
+    <string name="syncing_calls">Syncing calls. </string>
+    <string name="customer_Profiling">Customer Profiling</string>
+    <string name="doctor_details">Doctor Details</string>
+    <string name="personal_details">Personal Details</string>
+    <string name="Dateofbirth">Date of Birth</string>
+    <string name="Dateofwedding">Wedding Date</string>
+    <string name="email">Email</string>
+    <string name="tagadd1">Tagged Address 1</string>
+    <string name="tagadd2">Tagged Address 2</string>
+    <string name="tagadd3">Tagged Address 3</string>
+    <string name="viewmap">View on Map</string>
+    <string name="gender">Gender</string>
+    <string name="select_gender">Select Gender</string>
+    <string name="Res_Add">Resident Address</string>
+    <string name="Hosp_Add">Hospital Address</string>
+    <string name="updated_successfully">Master Updated Successfully</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="gender_selction">Gender Selection</string>
 </resources>

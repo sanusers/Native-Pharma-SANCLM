@@ -3,6 +3,35 @@ package saneforce.sanzen.activity.myresource;
 public class Resourcemodel_class {
 
     String listed_data, listed_count;
+    String tagcount;
+
+    public String getMaxcount() {
+        return maxcount;
+    }
+
+    public void setMaxcount(String maxcount) {
+        this.maxcount = maxcount;
+    }
+
+    public String getTagcount() {
+        return tagcount;
+    }
+
+    public void setTagcount(String tagcount) {
+        this.tagcount = tagcount;
+    }
+
+    String maxcount;
+
+    public String getQuacode() {
+        return quacode;
+    }
+
+    public void setQuacode(String quacode) {
+        this.quacode = quacode;
+    }
+
+    String quacode;
 
     String Dcr_code, Dcr_name, Res_custname, Res_Category, Res_rx, Res_Specialty, Latitude, Longtitude, Res_id, Custoum_name, val_pos, Res_Qualifiey, Res_adds, Res_Dob, Res_Dow, Res_mob,
             Res_phn, Res_Email, Res_listeddoc_sex, Res_Categorycode, Res_Specialtycode, Town_code, Town_name,Pos_name;
@@ -77,7 +106,8 @@ public class Resourcemodel_class {
     }
 
     public Resourcemodel_class(String dcr_code, String dcr_name, String res_custname, String res_Category, String res_Categorycode, String res_rx, String res_Specialtycode, String res_Specialty, String Latitude, String Longtitude, String Res_id,
-                               String Custoum_name, String res_Qualifiey, String Res_adds, String Res_Dob, String Res_Dow, String Res_mob, String Res_phn, String Res_Email, String Res_listeddoc_sex, String Town_code, String Town_name, String Pos_name, String workType, String TP_DCR, String type,String leaveTypes,String eligible,String available,String taken) {
+                               String Custoum_name, String res_Qualifiey, String Res_adds, String Res_Dob, String Res_Dow, String Res_mob, String Res_phn, String Res_Email, String Res_listeddoc_sex, String Town_code, String Town_name, String Pos_name,
+                               String workType, String TP_DCR, String type,String leaveTypes,String eligible,String available,String taken,String tagcount,String maxcount,String quacode) {
         Dcr_code = dcr_code;
         Dcr_name = dcr_name;
         Res_custname = res_custname;
@@ -108,8 +138,9 @@ public class Resourcemodel_class {
         this.eligible = eligible;
         this.available = available;
         this.taken = taken;
-
-
+        this.tagcount=tagcount;
+        this.maxcount=maxcount;
+        this.quacode=quacode;
     }
 
     public Resourcemodel_class(int visit_count, String custcode) {

@@ -447,6 +447,7 @@ public class SharedPref {
     public static final String ADD_CHM = "addChm";
     public static final String ADD_UNLST = "addDr";
 //    public static final String TAGGED_ADDRESS = "tggedaddress";
+public static final String PROFILING_NEED = "DrProfile";
 
     public static SharedPreferences.Editor editor;
 
@@ -773,6 +774,7 @@ public class SharedPref {
         editor.putString(ADD_CHM, jsonObject.getString("addChm"));
         editor.putString(ADD_UNLST, jsonObject.getString("addDr"));
         editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\",""));
+        editor.putString(PROFILING_NEED, jsonObject.getString("DrProfile"));
         editor.apply();
 
     }catch (Exception ignore){
@@ -2638,6 +2640,15 @@ public class SharedPref {
 
     public static String getUnlistAddition(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ADD_UNLST, "");
+    }
+    public static void setProfilingNeed(Context context, String profiling) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(PROFILING_NEED, profiling).apply();
+    }
+
+    public static String getProfilingNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(PROFILING_NEED, "");
     }
 
 }

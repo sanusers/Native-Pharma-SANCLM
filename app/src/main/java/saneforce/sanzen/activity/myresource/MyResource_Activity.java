@@ -82,8 +82,7 @@ public class MyResource_Activity extends AppCompatActivity {
     int inputCount = 0;
 
     Res_sidescreenAdapter appAdapter;
-
-
+    public static boolean shouldRefresh = false;
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -329,12 +328,18 @@ public class MyResource_Activity extends AppCompatActivity {
             }
             listed_data.add(new Resourcemodel_class(SharedPref.getClusterCap(this), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + synhqval1).getMasterSyncDataJsonArray().length()), "9"));
             listed_data.add(new Resourcemodel_class("Holiday / Weekly off", masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray().length() + " / " + masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray().length(), "10"));
-            listed_data.add(new Resourcemodel_class("Category", String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));
+            if(SharedPref.getDrNeed(this).equalsIgnoreCase("0") && SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
+                listed_data.add(new Resourcemodel_class("Category", String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));
+            } else if(SharedPref.getDrNeed(this).equalsIgnoreCase("0")){
+                listed_data.add(new Resourcemodel_class("Category", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length()), "11"));
+            } else if(SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
+                listed_data.add(new Resourcemodel_class("Category", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));
+            }
             listed_data.add(new Resourcemodel_class("WorkType", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray().length()), "12"));
             if (isLeaveEntitlementRequested) {
                 listed_data.add(new Resourcemodel_class("LeaveStatus", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length()), "13"));
             }
-            if (SharedPref.getVstNd(getApplicationContext()).equalsIgnoreCase("0") && SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+            if (SharedPref.getDrNeed(this).equals("0") && SharedPref.getVstNd(this).equalsIgnoreCase("0") && SharedPref.getSfType(this).equalsIgnoreCase("1")) {
 //                listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
                 listed_data.add(new Resourcemodel_class(dcrCaption + " " + "Visit", "", "14"));
             }
@@ -449,7 +454,7 @@ public class MyResource_Activity extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (SyHqList.contains(jsonObject.getString("id")) && (!list.contains(jsonObject.getString("id")))) {
                         list.add(jsonObject.getString("id"));
-                        listresource.add(new Resourcemodel_class(jsonObject.getString("id"), jsonObject.getString("name"), "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                        listresource.add(new Resourcemodel_class(jsonObject.getString("id"), jsonObject.getString("name"), "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "","","",""));
                     }
 
                     appAdapter = new Res_sidescreenAdapter(this, listresource, "1", "",null);
@@ -475,15 +480,11 @@ public class MyResource_Activity extends AppCompatActivity {
         }
     }
 
-
-
     private void setUp() {
         isInputRequested = SharedPref.getDiNeed(this).equals("0") || SharedPref.getCiNeed(this).equals("0") || SharedPref.getSiNeed(this).equals("0") || SharedPref.getNiNeed(this).equals("0");
         isProductRequested = SharedPref.getDpNeed(this).equals("0") || SharedPref.getCpNeed(this).equals("0") || SharedPref.getSpNeed(this).equals("0") || SharedPref.getNpNeed(this).equals("0");
     }
 
-
-   public void onRequestLocationPermission(){}
     private void RequestLocationPermission() {
         if (ContextCompat.checkSelfPermission(MyResource_Activity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(MyResource_Activity.this, ACCESS_FINE_LOCATION)) {
@@ -493,11 +494,13 @@ public class MyResource_Activity extends AppCompatActivity {
             }
         }
     }
+
     public boolean CheckLocPermission() {
         int FineLocation = ContextCompat.checkSelfPermission(MyResource_Activity.this, ACCESS_FINE_LOCATION);
         int CoarseLocation = ContextCompat.checkSelfPermission(MyResource_Activity.this, ACCESS_COARSE_LOCATION);
         return FineLocation == PackageManager.PERMISSION_GRANTED && CoarseLocation == PackageManager.PERMISSION_GRANTED;
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -510,5 +513,18 @@ public class MyResource_Activity extends AppCompatActivity {
             }
         }
     }
-
+    //    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if(shouldRefresh){
+//            Resource_list(SharedPref.getHqCode(this));
+//        }
+//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.END)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.END);
+        }
+    }
 }

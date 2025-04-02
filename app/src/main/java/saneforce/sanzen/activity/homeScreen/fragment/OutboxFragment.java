@@ -571,8 +571,10 @@ public class OutboxFragment extends Fragment {
                             DeleteCacheFile(filePath, id, CurrentPos, parentPos, childPos, modelClass);
                             Log.d("S3 Upload", "Upload Successful: " + s3Key);
                             try {
-                                listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses().remove(CurrentPos);
-                                CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                                if(!listDates.isEmpty() && listDates.size() > parentPos) {
+                                    listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses().remove(CurrentPos);
+                                    CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                                }
                                 notifyedmethod();
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -584,8 +586,14 @@ public class OutboxFragment extends Fragment {
 
                             ecModelClass.setSynced(1);
                             ecModelClass.setSync_status(Constants.CALL_FAILED);
-                            callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
-                            CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                            try {
+                                if(!listDates.isEmpty() && listDates.size()>parentPos) {
+                                    callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
+                                    CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             notifyedmethod();
                         }
 
@@ -603,7 +611,13 @@ public class OutboxFragment extends Fragment {
                         ecModelClass.setSynced(1);
                         ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
                         callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
-                        CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                        try {
+                            if(!listDates.isEmpty() && listDates.size()>parentPos) {
+                                CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         notifyedmethod();
                     }
                 });
@@ -614,7 +628,13 @@ public class OutboxFragment extends Fragment {
             ecModelClass.setSynced(1);
             ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
             callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
-            CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+            try {
+                if(!listDates.isEmpty() && listDates.size()>parentPos) {
+                    CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                }
+            } catch (Exception a) {
+                a.printStackTrace();
+            }
             notifyedmethod();
         }
 
@@ -632,9 +652,15 @@ public class OutboxFragment extends Fragment {
                 }
             }
             callOfflineECDataDao.deleteOfflineEC(id);
-            listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses().remove(currentPos);
+            try {
+                if(!listDates.isEmpty() && listDates.size()>parentPos) {
+                    listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses().remove(currentPos);
+                    CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                }
+            } catch (Exception a) {
+                a.printStackTrace();
+            }
             notifyedmethod();
-            CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
         } catch (Exception e) {
             e.printStackTrace();
         }
