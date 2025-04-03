@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">T.2.2.9</string>
+    <string name="app_version" translatable="false">T.2.3.4</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -11,7 +11,7 @@
     <string name="txt_undr">Unlisted Doctor</string>
     <string name="txt_add_tag">Add Tag</string>
     <string name="txt_visit">Visit</string>
-    <string name="view">View</string>
+    <string name="view">View</string>\
     <string name="search">Search</string>
     <string name="brand_name">Brand Name</string>
     <string name="rating">Rating</string>
@@ -25,6 +25,7 @@
     <string name="cancel">Cancel</string>
     <string name="final_submit">Final Submit</string>
     <string name="final_submit_check_out">Final Submit / Check OUT</string>
+    <string name="submit_check_out">Submit / Check OUT</string>
     <string name="input_name">Input Name</string>
     <string name="qty">Qty</string>
     <string name="name">Name</string>
@@ -550,4 +551,6 @@
     <string name="no_of_attempts_left">No of Attempts Left :</string>
     <string name="try_again">Try Again</string>
     <string name="close">Close</string>
+    <string name="no_address_found">No Address Found - No Internet Connection</string>
+    <string name="no_address_found2">No Address Found - Poor Internet Connection</string>
 </resources>

@@ -71,14 +71,17 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         holder.submitDate.setText(dayReportModel.getRptdate());
         holder.remarks.setText(dayReportModel.getRemarks());
         if (SharedPref.getSrtNd(context).equalsIgnoreCase("0")){
-            if (dayReportModel.getInaddress().equals("")){
+            dayReportModel.setInaddress("abc street");
+            dayReportModel.setOutaddress("xyz street");
+            dayReportModel.setIntime("");
+            if (dayReportModel.getInaddress().isEmpty()){
                 holder.rlCheckIn.setVisibility(View.GONE);
             }else{
                 holder.rlCheckIn.setVisibility(View.VISIBLE);
                 holder.checkInTime.setText(dayReportModel.getIntime());
                 holder.checkInAddress.setText(dayReportModel.getInaddress());
             }
-            if (dayReportModel.getOutaddress().equals("")){
+            if (dayReportModel.getOutaddress().isEmpty()){
                 holder.rlCheckOut.setVisibility(View.GONE);
             }else{
                 holder.rlCheckOut.setVisibility(View.VISIBLE);

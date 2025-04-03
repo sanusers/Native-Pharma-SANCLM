@@ -320,7 +320,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapsBinding.btnTag.setOnClickListener(view -> {
             if (from_tagging.equalsIgnoreCase("tagging")) {
                 mapsBinding.imgRefreshMap.setVisibility(View.GONE);
-                if (!mapsBinding.tvTaggedAddress.getText().toString().isEmpty() || !mapsBinding.tvTaggedAddress.getText().toString().equalsIgnoreCase("No Address Found")) {
+                if (!mapsBinding.tvTaggedAddress.getText().toString().isEmpty() || !mapsBinding.tvTaggedAddress.getText().toString().toLowerCase().contains("no address found")) {
                     if (GeoTagImageNeed.equalsIgnoreCase("0")) {
                         if (CheckCameraPermission()) {
                             RequestCameraPermission();

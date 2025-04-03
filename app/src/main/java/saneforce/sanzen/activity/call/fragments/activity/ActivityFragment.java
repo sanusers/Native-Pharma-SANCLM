@@ -170,7 +170,7 @@ public class ActivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        gpsTrack = new GPSTrack(requireContext());
+        gpsTrack = new GPSTrack(requireActivity());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         activityDetailsDataDao = roomDB.activityDetailsDataDao();
@@ -2501,13 +2501,13 @@ public class ActivityFragment extends Fragment {
         MainLayout.addView(AddressText);
 
         String address;
-        gpsTrack = new GPSTrack(requireContext());
+        gpsTrack = new GPSTrack(requireActivity());
         double latitude = gpsTrack.getLatitude();
         double longitude = gpsTrack.getLongitude();
         if(UtilityClass.isNetworkAvailable(requireContext())) {
             address = CommonUtilsMethods.gettingAddress(requireActivity(), latitude, longitude, false);
         }else {
-            address = "No Address Found";
+            address = getString(R.string.no_address_found);
         }
         AddressText.setText(address);
         LatText.setText("Lat  :" + String.valueOf(latitude));
@@ -2601,7 +2601,7 @@ public class ActivityFragment extends Fragment {
                     }else {
                         commonUtilsMethods.showToastMessage(requireContext(), "Wait For Location");
                         String address;
-                        gpsTrack = new GPSTrack(requireContext());
+                        gpsTrack = new GPSTrack(requireActivity());
                         double latitude = gpsTrack.getLatitude();
                         double longitude = gpsTrack.getLongitude();
                         address = CommonUtilsMethods.gettingAddress(requireActivity(), latitude, longitude, false);

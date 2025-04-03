@@ -34,10 +34,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.activityModule.DynamicActivity;
+import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.adapters.Call_adapter;
-import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.CallsModalClass;
+import saneforce.sanzen.commonClasses.CheckInOutManager;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -45,7 +47,6 @@ import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.CallsFragmentBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
-
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
@@ -60,7 +61,7 @@ public class CallsFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static CallsFragmentBinding binding;
     public static Call_adapter adapter;
-    public static String  FwFlag;
+    public static String FwFlag;
     public static ArrayList<CallsModalClass> TodayCallList = new ArrayList<>();
     public static boolean isNeedtoAdd;
     public static ProgressDialog progressDialog;
@@ -227,16 +228,16 @@ public class CallsFragment extends Fragment {
             TodayCallList.clear();
             String CheckDate = "";
             boolean isDataAvailable = false;
-            if (!SharedPref.getTodayCallList(context).isEmpty()) {
+            if(!SharedPref.getTodayCallList(context).isEmpty()) {
                 JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
                 CheckDate = jsonArray.getJSONObject(0).getString("vstTime").substring(0, 10);
 
-                if (CheckDate.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))))) {
+                if(CheckDate.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))))) {
                     isDataAvailable = true;
                 }
 
-                if (isDataAvailable) {
-                    for (int i = 0; i < jsonArray.length(); i++) {
+                if(isDataAvailable) {
+                    for (int i = 0; i<jsonArray.length(); i++) {
                         JSONObject json = jsonArray.getJSONObject(i);
                         SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
                         TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
@@ -250,7 +251,7 @@ public class CallsFragment extends Fragment {
         }
     }
 
-    public static void SaveDCRData(Context context,ArrayList<CallsModalClass> todayCallListTwo, int i, JSONArray jsonArray2) {
+    public static void SaveDCRData(Context context, ArrayList<CallsModalClass> todayCallListTwo, int i, JSONArray jsonArray2) {
         try {
             SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
             JSONObject jsonObject = new JSONObject();
@@ -264,11 +265,11 @@ public class CallsFragment extends Fragment {
             jsonObject.put("town_code", "");
             jsonObject.put("town_name", "");
             jsonObject.put("Dcr_flag", "");
-            jsonObject.put("SF_Code",  SharedPref.getSfCode(context));
+            jsonObject.put("SF_Code", SharedPref.getSfCode(context));
             jsonObject.put("Trans_SlNo", todayCallListTwo.get(i).getTrans_Slno());
             jsonObject.put("FW_Indicator", FwFlag);
             jsonObject.put("AMSLNo", todayCallListTwo.get(i).getADetSLNo());
-            jsonObject.put("versionNo",  context.getString(R.string.app_version));
+            jsonObject.put("versionNo", context.getString(R.string.app_version));
             jsonObject.put("mod", Constants.APP_MODE);
             jsonObject.put("Device_version", Build.VERSION.RELEASE);
             jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
@@ -285,7 +286,7 @@ public class CallsFragment extends Fragment {
         View v = binding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-        Mcontext=requireContext();
+        Mcontext = requireContext();
 
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         getFromLocal(requireContext(), apiInterface);
@@ -294,14 +295,14 @@ public class CallsFragment extends Fragment {
             CallTodayCallsAPI(requireContext(), apiInterface, false);
         }
         db = RoomDB.getDatabase(requireContext());
-        masterDataDao =db.masterDataDao();
+        masterDataDao = db.masterDataDao();
 
-        if(SharedPref.getActivityNd(requireContext()).equalsIgnoreCase("0")){
+        if(SharedPref.getActivityNd(requireContext()).equalsIgnoreCase("0")) {
             binding.TvAddActivty.setVisibility(View.VISIBLE);
         }else {
             binding.TvAddActivty.setVisibility(View.GONE);
         }
-        binding.TvAddActivty.setText("Add "+SharedPref.getActivityCap(requireContext()));
+        binding.TvAddActivty.setText("Add " + SharedPref.getActivityCap(requireContext()));
 
         adapter = new Call_adapter(requireContext(), TodayCallList, apiInterface);
         LinearLayoutManager manager = new LinearLayoutManager(requireContext());
@@ -312,16 +313,18 @@ public class CallsFragment extends Fragment {
         adapter.notifyDataSetChanged();
 
         binding.rlSyncCall.setOnClickListener(v12 -> {
-            if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2")&& SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")){
+            if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
                 CommonAlertBox.ApprovalAlert(requireActivity());
-            } else if (SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireActivity()).equalsIgnoreCase("0")&&SharedPref.getTpNeed(requireActivity()).equalsIgnoreCase("0")) {
+            }else if(SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireActivity()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireActivity()).equalsIgnoreCase("0")) {
                 CommonAlertBox.TpAlert(requireActivity());
-            }else {    if (UtilityClass.isNetworkAvailable(requireContext())) {
-                binding.rlSyncCall.setEnabled(false);
-                CallTodayCallsAPI(requireContext(), apiInterface, true);
-            } else {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
-            }}
+            }else {
+                if(UtilityClass.isNetworkAvailable(requireContext())) {
+                    binding.rlSyncCall.setEnabled(false);
+                    CallTodayCallsAPI(requireContext(), apiInterface, true);
+                }else {
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                }
+            }
 
         });
 
@@ -374,36 +377,26 @@ public class CallsFragment extends Fragment {
 //            }
         });
 
-
         binding.tvAddCall.setOnClickListener(view -> {
-            // startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
-            if(HomeDashBoard.selectedDate == null || (HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().isEmpty())){
+            if(HomeDashBoard.selectedDate == null || HomeDashBoard.selectedDate.toString().isEmpty()) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
             }else if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
                 CommonAlertBox.ApprovalAlert(requireActivity());
             }else if(SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                 CommonAlertBox.TpAlert(requireActivity());
+            }else if(CheckInOutManager.isCheckedId(requireContext())) {
+                WorkPlanFragment.showCheckInDialog();
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
             }else {
-
                 if(SharedPref.getSfCode(requireContext()).equalsIgnoreCase("0")) {
-                    if(SharedPref.getSkipCheckIn(requireContext())) {
-                        if(SharedPref.getHqCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getHqCode(requireContext()).isEmpty()) {
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-                        }else {
-                            startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
-                        }
+                    if(SharedPref.getHqCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getHqCode(requireContext()).isEmpty()) {
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                     }else {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
-                        try {
-                            HomeDashBoard.dialogCheckInOut.show();
-                        } catch (Exception ignored) {
-
-                        }
+                        startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
                     }
                 }else {
                     JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-
                     try {
                         if(workTypeArray.length()>0) {
                             JSONObject FirstSeasonDayPlanObject = workTypeArray.getJSONObject(0);

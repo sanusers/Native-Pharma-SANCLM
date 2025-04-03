@@ -35,6 +35,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonElement;
@@ -138,7 +139,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
             holder.imgPic.setImageResource(R.drawable.tp_hospital_icon);
         }
 
-        holder.tvInOut.setText(String.format("IN - %s OUT - %s", outBoxCallLists.get(position).getIn(), outBoxCallLists.get(position).getOut()));
+        holder.tvInOut.setText(HtmlCompat.fromHtml(String.format("<b>IN</b> - %s <b>OUT</b> - %s", outBoxCallLists.get(position).getIn(), outBoxCallLists.get(position).getOut()), HtmlCompat.FROM_HTML_MODE_LEGACY));
         String status = outBoxCallLists.get(position).getStatus();
         if (status.equalsIgnoreCase(Constants.WAITING_FOR_SYNC)) {
             holder.tvStatus.setText(context.getString(R.string.waiting_for_sync));

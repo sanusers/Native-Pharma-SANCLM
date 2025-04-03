@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,10 +37,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -54,6 +57,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -65,8 +69,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.activityModule.ActivityDetailsModelClass;
-import saneforce.sanzen.activity.activityModule.ActivityModelClass;
-import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.call.adapter.DCRCallTabLayoutAdapter;
 import saneforce.sanzen.activity.call.adapter.additionalCalls.AdditionalCusListAdapter;
 import saneforce.sanzen.activity.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
@@ -103,7 +105,6 @@ import saneforce.sanzen.activity.homeScreen.fragment.CallsFragment;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 
 import saneforce.sanzen.activity.remaindercalls.RemaindercallsActivity;
-import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -142,8 +143,7 @@ public class DCRCallActivity extends AppCompatActivity {
     CommonSharedPreference commonSharedPreference;
     ProgressDialog progressDialog = null;
     GPSTrack gpsTrack;
-
-    JSONObject jsonSaveDcr, jsonImage;
+    private JSONObject checkInOutJsonObject = new JSONObject(), checkOutJsonObject, jsonSaveDcr, jsonImage;
     String GeoChk, capPrd, capInp, capActivity, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, InputNeed, ProductNeed, AdditionalCallNeed, ActivityNeed;
     double lat, lng;
     ApiInterface api_interface;
@@ -155,7 +155,8 @@ public class DCRCallActivity extends AppCompatActivity {
     String FwFlag, FeildName;
     Dialog dialogCheckOut;
     Button btnCheckOut;
-    TextView tv_address, tv_dateTime;
+    TextView tv_address, tv_dateTime, tvLatLong;
+    ImageView imgClose;
     String address, latEdit, lngEdit, VistTime, activityDate;
     int mBatteryPercent = 0;
 
@@ -188,6 +189,7 @@ public class DCRCallActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("call", CallActivityCustDetails);
+        outState.putString("CheckInJsonObject", checkInOutJsonObject.toString());
         if(HomeDashBoard.selectedDate != null) {
             outState.putString("date", HomeDashBoard.selectedDate.toString());
         }
@@ -216,6 +218,14 @@ public class DCRCallActivity extends AppCompatActivity {
             Log.i("TAG1", "onCreate: " + savedInstanceState.size());
             Log.i("TAG2", "onCreate: " + Arrays.toString(savedInstanceState.keySet().toArray()));
             CallActivityCustDetails = savedInstanceState.getParcelableArrayList("call");
+            if(SharedPref.getSrtNd(this).equalsIgnoreCase("0")) {
+                String jsonObject = savedInstanceState.getString("CheckInJsonObject");
+                try {
+                    checkInOutJsonObject = new JSONObject(jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
             if(savedInstanceState.getString("date") != null) {
                 HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
             }
@@ -267,9 +277,15 @@ public class DCRCallActivity extends AppCompatActivity {
             isFromActivity = extra.getString(Constants.DCR_FROM_ACTIVITY);
             save_valid = extra.getString("remainder_save");
             hqcode = extra.getString("hq_code");
-//            Log.d("hqcode",hqcode);
+            if(extra.containsKey("CheckInJsonObject")) {
+                String jsonObject = extra.getString("CheckInJsonObject");
+                try {
+                    checkInOutJsonObject = new JSONObject(jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
 
         dcrCallBinding.tagCustName.setText(CallActivityCustDetails.get(0).getName());
         getRequiredData();
@@ -346,18 +362,14 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view ->{
-            gpsTrack = new GPSTrack(this);
-            RemaindercallsActivity.vals_rm = "";
-            progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
-            if(SharedPref.getGeoChk(this).equalsIgnoreCase("0")){
-                if(gpsTrack != null && ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0))) {
-                    submitCall();
-                }else {
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.no_location_please_try_again));
-                    progressDialog.dismiss();
-                }
-            }else {
-                submitCall();
+            if(CusCheckInOutNeed.equalsIgnoreCase("0")
+                    && checkInOutJsonObject != null && !checkInOutJsonObject.toString().isEmpty() && !checkInOutJsonObject.toString().equalsIgnoreCase("[]")
+                    && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))
+                    && !isFromActivity.equalsIgnoreCase("edit_local")
+                    && !isFromActivity.equalsIgnoreCase("edit_online")) {
+                DialogCheckOut();
+            } else {
+                onSubmitClicked();
             }
         });
 
@@ -369,23 +381,38 @@ public class DCRCallActivity extends AppCompatActivity {
         }
     }
 
+    private void onSubmitClicked(){
+        gpsTrack = new GPSTrack(this);
+        RemaindercallsActivity.vals_rm = "";
+        progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
+        if(SharedPref.getGeoChk(this).equalsIgnoreCase("0")){
+            if(gpsTrack != null && ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0))) {
+                submitCall();
+            }else {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_location_please_try_again));
+                progressDialog.dismiss();
+            }
+        }else {
+            submitCall();
+        }
+    }
+
     private void submitCall() {
 
         if(save_valid.equalsIgnoreCase("1")) {
             Remainder_calls();
         }else {
             isCreateJsonSuccess = true;
-            if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
+//            if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
 //                if(UtilityClass.isNetworkAvailable(getApplicationContext())) {
+//                    gpsTrack = new GPSTrack(this);
 //                    double lat = gpsTrack.getLatitude();
 //                    double lng = gpsTrack.getLongitude();
 //                    address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
-//                    tv_address.setText(address);
-//                    tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
 //                }else {
 //                    tv_address.setText(context.getString(R.string.no_network));
 //                }
-            }
+//            }
 
             if(CheckRequiredFunctions() && CheckCurrentLoc()) {
 
@@ -615,23 +642,55 @@ public class DCRCallActivity extends AppCompatActivity {
         dcrCallBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
     }
 
+    private void prepareCheckInOutJsonObject(JSONObject jsonObject) {
+        try {
+            jsonObject.put("OutDateTime", CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_1));
+            jsonObject.put("OutLatitude", String.valueOf(lat));
+            jsonObject.put("OutLongitude", String.valueOf(lng));
+            jsonObject.put("OutAddress", String.valueOf(address));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void DialogCheckOut() {
         dialogCheckOut = new Dialog(this);
         dialogCheckOut.setContentView(R.layout.dialog_cus_checkout);
         dialogCheckOut.setCancelable(false);
-        Objects.requireNonNull(dialogCheckOut.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        if(dialogCheckOut.getWindow() != null) {
+            dialogCheckOut.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        if(UtilityClass.isNetworkAvailable(this)) {
+            gpsTrack = new GPSTrack(this);
+            lat = gpsTrack.getLatitude();
+            lng = gpsTrack.getLongitude();
+            address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
+        }else {
+            gpsTrack = new GPSTrack(this);
+            lat = gpsTrack.getLatitude();
+            lng = gpsTrack.getLongitude();
+            address = getString(R.string.no_address_found);
+        }
 
         btnCheckOut = dialogCheckOut.findViewById(R.id.btn_checkOut);
         tv_address = dialogCheckOut.findViewById(R.id.txt_address);
         tv_dateTime = dialogCheckOut.findViewById(R.id.txt_date_time);
+        tvLatLong = dialogCheckOut.findViewById(R.id.txt_lat_lng);
+        imgClose = dialogCheckOut.findViewById(R.id.img_close);
+
+        tv_address.setText(address);
+        tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
+        tvLatLong.setText(String.format(Locale.getDefault(), "%f , %f", lat, lng));
+
+        dialogCheckOut.show();
+
+        imgClose.setOnClickListener(v -> dialogCheckOut.dismiss());
 
         btnCheckOut.setOnClickListener(v -> {
+            prepareCheckInOutJsonObject(checkInOutJsonObject);
+            onSubmitClicked();
             dialogCheckOut.dismiss();
-            IsFromDCR =true;
-            Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
         });
     }
 
@@ -1636,6 +1695,31 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
                 Log.d("jsonExtractOnline", "----- " + ActivityFragment.activityAnswerData);
             }
+
+            if(json.has("Dcr_checkin") && !json.getString("Dcr_checkin").equalsIgnoreCase("[]")) {
+                JSONArray checkInOutJsonArray = json.optJSONArray("Dcr_checkin");
+                JSONObject jsonObject = checkInOutJsonArray.optJSONObject(0);
+                JSONObject checkInDateTimeObj = jsonObject.optJSONObject("Checkin_time"), checkOutDateTimeObj = jsonObject.optJSONObject("Checkout_time");
+                String checkInDateTime = checkInDateTimeObj.optString("date"),
+                        checkInLatitude = jsonObject.optString("Checkin_Lat"),
+                        checkInLongitude = jsonObject.optString("Checkin_Long"),
+                        checkInAddress = jsonObject.optString("Checkin_addrs"),
+                        checkOutDateTime = checkOutDateTimeObj.optString("date"),
+                        checkOutLatitude = jsonObject.optString("Checkout_Lat"),
+                        checkOutLongitude = jsonObject.optString("Checkout_Long"),
+                        checkOutAddress = jsonObject.optString("Checkout_addrs");
+
+                checkInOutJsonObject = new JSONObject();
+
+                checkInOutJsonObject.put("InDateTime", checkInDateTime);
+                checkInOutJsonObject.put("InLatitude", checkInLatitude);
+                checkInOutJsonObject.put("InLongitude", checkInLongitude);
+                checkInOutJsonObject.put("InAddress", checkInAddress);
+                checkInOutJsonObject.put("OutDateTime", checkOutDateTime);
+                checkInOutJsonObject.put("OutLatitude", checkOutLatitude);
+                checkInOutJsonObject.put("OutLongitude", checkOutLongitude);
+                checkInOutJsonObject.put("OutAddress", checkOutAddress);
+            }
         } catch (Exception e) {
             Log.v("jsonExtractOnline", "----" + e);
             e.printStackTrace();
@@ -1979,6 +2063,11 @@ public class DCRCallActivity extends AppCompatActivity {
                 Log.d("activity", "jsonExtractLocal: " + ActivityFragment.activityAnswerData.keySet().toString());
             }
 
+            if(json.has("CheckInOut") && !json.getString("CheckInOut").equalsIgnoreCase("[]")) {
+                JSONArray checkInOutJsonArray = json.optJSONArray("CheckInOut");
+                checkInOutJsonObject = checkInOutJsonArray.optJSONObject(0);
+            }
+
         } catch (Exception e) {
             Log.v("jsonExtractLocal", "----" + e);
         }
@@ -2117,13 +2206,26 @@ public class DCRCallActivity extends AppCompatActivity {
                 gpsTrack = new GPSTrack(this);
                 lat = gpsTrack.getLatitude();
                 lng = gpsTrack.getLongitude();
-                address = "No Address Found";
+                address = getString(R.string.no_address_found);
             }
 
             Log.v("final_value_call", "---injonite---");
             JSONArray jsonArray = new JSONArray();
             jsonSaveDcr =CommonUtilsMethods.CommonObjectParameter(DCRCallActivity.this);
 
+            if(CusCheckInOutNeed.equalsIgnoreCase("0") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
+                jsonArray = new JSONArray();
+                jsonArray.put(checkInOutJsonObject);
+//                Log.v("final_value_call", "---checkin---"+ jsonArray);
+//                jsonSaveDcr.put("CheckIn", jsonArray);
+
+//                jsonArray = new JSONArray();
+//                jsonArray.put(checkOutJsonObject);
+                Log.v("final_value_call", "---check-in-out---"+ jsonArray);
+                jsonSaveDcr.put("CheckInOut", jsonArray);
+            }
+
+            jsonArray = new JSONArray();
             JWKCodeList.clear();
             //JointWork
             for (int i = 0; i < JWOthersFragment.callAddedJointList.size(); i++) {
@@ -2608,8 +2710,6 @@ public class DCRCallActivity extends AppCompatActivity {
 
     private void getRequiredData() {
         try {
-
-
             SfType = SharedPref.getSfType(this);
             SfCode =  SharedPref.getSfCode(this);
             SfName =  SharedPref.getSfName(this);
@@ -2732,7 +2832,6 @@ public class DCRCallActivity extends AppCompatActivity {
                     PrdSamNeed = "0"; //0
                     PrdRxNeed =SharedPref.getUlPobNeed(this);
                     PrdRcpaQtyNeed = "0"; //0
-                    CusCheckInOutNeed = "1"; //1
                     PobNeed = SharedPref.getUnlistedDoctorPobNeed(this);
 
                     //Mandatory
@@ -2878,8 +2977,13 @@ public class DCRCallActivity extends AppCompatActivity {
 //                PobNeed = customSetupResponse.getUndrPobNeed();
 //            }
 
-            if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
-//                DialogCheckOut();
+            if (CusCheckInOutNeed.equalsIgnoreCase("0")
+                    && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))
+                    && !isFromActivity.equalsIgnoreCase("edit_local")
+                    && !isFromActivity.equalsIgnoreCase("edit_online")) {
+                dcrCallBinding.btnFinalSubmit.setText(R.string.submit_check_out);
+            } else {
+                dcrCallBinding.btnFinalSubmit.setText(R.string.submit);
             }
 
         } catch (Exception ignored) {

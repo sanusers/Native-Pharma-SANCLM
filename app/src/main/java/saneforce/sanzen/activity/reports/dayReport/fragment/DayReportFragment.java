@@ -291,6 +291,7 @@ public class DayReportFragment extends Fragment {
                         jsonObject.put("divisionCode",SharedPref.getDivisionCode(requireContext()));
                         jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
                         jsonObject.put("rptDt", date);
+                        jsonObject.put("srtNd", SharedPref.getSrtNd(requireContext()));
 
                         Log.v("jsonDayReport", "---" + jsonObject);
 

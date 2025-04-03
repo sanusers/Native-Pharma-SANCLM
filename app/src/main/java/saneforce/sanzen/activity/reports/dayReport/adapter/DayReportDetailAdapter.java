@@ -39,6 +39,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -60,6 +61,7 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkStatusTask;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetailAdapter.MyViewHolder> implements Filterable {
 
@@ -125,7 +127,14 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         holder.jointWork.setText(dataModel.getWWith());
         holder.nextVisit.setText(dataModel.getNextVstDate());
         holder.overAllRemark.setText(dataModel.getRemarks());
-        holder.checkInOutLayout.setVisibility(View.GONE);
+        holder.checkInTime.setText(String.format(Locale.getDefault(), "%s %s", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, dataModel.getDcr_dt()), dataModel.getCheckin()));
+        holder.checkOutTime.setText(String.format(Locale.getDefault(), "%s %s", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, dataModel.getDcr_dt()), dataModel.getCheckout()));
+
+        if(checkInOutNeed) {
+            holder.checkInOutLayout.setVisibility(View.VISIBLE);
+        } else {
+            holder.checkInOutLayout.setVisibility(View.GONE);
+        }
         if (isRcpaRequested){
             holder.rcpaLayoutitle.setVisibility(View.VISIBLE);
         }
@@ -380,20 +389,13 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
         holder.checkInMarker.setOnClickListener(view -> {
 
-
-
-
-
-
         });
 
         holder.checkOutMarker.setOnClickListener(view -> {
 
-
         });
 
         holder.EventLayout.setOnClickListener(view -> {
-
             EvetCapureAPICall(position);
         });
 
@@ -536,7 +538,6 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         RelativeLayout rlNextVisit,pobLayOut,feedBackLayout;
         ConstraintLayout PrdLayout, InpLayout, expandLayout;
         CardView slideLayout;
-
 
         RecyclerView rvPrd, rvInput,rvRcpa,rvSlideDetails;
         View viewNextVisit,jointView, view5;
