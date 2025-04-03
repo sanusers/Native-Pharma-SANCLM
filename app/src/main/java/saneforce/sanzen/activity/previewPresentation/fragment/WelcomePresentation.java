@@ -93,6 +93,7 @@ public class WelcomePresentation extends Fragment {
             String slideId = "";
             String presentationName = productObject.optString("Subject");
             String fileName = productObject.optString("Name");
+            fileName = fileName.substring(fileName.indexOf('/') + 1);
             String slidePriority = productObject.getString("orderby");
             return new BrandModelClass.Product(presentationName, code, brandName, slideId, fileName, slidePriority, false);
         } catch (Exception e) {

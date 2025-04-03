@@ -311,7 +311,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
             holder.jcLayout.setVisibility(View.GONE);
         }else {
-            holder.jcLayout.setVisibility(View.VISIBLE);
+//            holder.jcLayout.setVisibility(View.VISIBLE);
             for (int i = 0; i<holder.jcModelArray.size(); i++) {
                 if(jcName.length() == 0) {
                     jcName = new StringBuilder(holder.jcModelArray.get(i).getName());

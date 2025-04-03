@@ -53,7 +53,7 @@ public class WelcomeSlideAdapter extends RecyclerView.Adapter<WelcomeSlideAdapte
     public void onBindViewHolder(@NonNull ListDataViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.setIsRecyclable(false);
         // 0- failure,1-New, 2-Processing, 3- Success
-        holder.txt_image_name.setText(list.get(position).getName());
+        holder.txt_image_name.setText(list.get(position).getName().substring(list.get(position).getName().indexOf('/') + 1));
         if(list.get(position).getDownloadingStatus().equalsIgnoreCase("3")){
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
             holder.text_download_size.setText("Downloading Completed");
