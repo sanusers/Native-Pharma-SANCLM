@@ -839,12 +839,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         CommonAlertBox.TpAlert(requireActivity());
                     }else {
                         if(((TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
-                                || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")))
+                                || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")))
                                 && binding.switchButton.isChecked()) {
-                            if ((EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) && binding.txtworkday1.getText().toString().trim().isEmpty()) {
-                                commonUtilsMethods.showToastMessage(requireContext(), "Select Work Day for Session 1");
-                            } else if ((EditSession.equalsIgnoreCase("2") || DayPlanCount.equalsIgnoreCase("2")) && binding.txtworkday2.getText().toString().trim().isEmpty()) {
-                                commonUtilsMethods.showToastMessage(requireContext(), "Select Work Day for Session 2");
+                            if((STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
+                                if((EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) && binding.txtworkday1.getText().toString().trim().isEmpty()) {
+                                    commonUtilsMethods.showToastMessage(requireContext(), "Select Work Day for Session 1");
+                                }else if((EditSession.equalsIgnoreCase("2") || DayPlanCount.equalsIgnoreCase("2")) && binding.txtworkday2.getText().toString().trim().isEmpty()) {
+                                    commonUtilsMethods.showToastMessage(requireContext(), "Select Work Day for Session 2");
+                                }
                             } else {
                                 if(UtilityClass.isNetworkAvailable(requireContext())) {
                                     showDeviationAlert();
@@ -2199,7 +2201,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             JSONArray dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
             JSONArray tpDataArray = new JSONArray();
             if(TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")
-                    || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0"))) {
+                    || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
                 if(HomeDashBoard.selectedDate != null) {
                     try {
                         String monthYear = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, HomeDashBoard.selectedDate.toString());
@@ -2363,7 +2365,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
                         disableSession1();
                         if(TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")
-                                || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0"))) {
+                                || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
                             tpWorkType = FirstSeasonDayPlanObject.optString("TP_worktype");
                             tpCluster = FirstSeasonDayPlanObject.optString("TP_cluster");
                             tpDoctor = FirstSeasonDayPlanObject.optString("TP_Doctor");
@@ -2558,7 +2560,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     obj.put("TP_Doctor", listedDr.toString());
                     obj.put("TP_cluster", clusterCode.toString());
                     obj.put("TP_worktype", modelClass.getSessionList().get(0).getWorkType().getCode());
-                    if(STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                    if(TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
                         obj.put("Others_Code", modelClass.getSTP_Code());
                         obj.put("Others_Name", modelClass.getSTP_Name());
                     }else{
@@ -2597,7 +2599,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         obj2.put("TP_Doctor", listedDr.toString());
                         obj2.put("TP_cluster", clusterCode.toString());
                         obj2.put("TP_worktype", modelClass.getSessionList().get(1).getWorkType().getCode());
-                        if(STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                        if(TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
                             obj.put("Others_Code", modelClass.getSTP_Code());
                             obj.put("Others_Name", modelClass.getSTP_Name());
                         }else{
