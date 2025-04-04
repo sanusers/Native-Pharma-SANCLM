@@ -13,4 +13,9 @@
         android:id="@+id/menuDelete"
         android:title="Delete" />
 
+    <item
+        android:id="@+id/customer"
+        android:visible="false"
+        android:title="Show Customer" />
+
 </menu>

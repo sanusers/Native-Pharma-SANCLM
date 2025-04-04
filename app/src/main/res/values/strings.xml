@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">R.2.3.0</string>
+    <string name="app_version" translatable="false">T.2.3.2</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -296,7 +296,7 @@
     <string name="call_saved_successfully">Call Saved Successfully</string>
     <string name="call_already_exist">Call Already Exist</string>
     <string name="call_failed">Call Failed! Try Again</string>
-    <string name="activity_saved_successfully">Activity Saved Successfully</string>
+    <string name="activity_saved_successfully">Activity Saved</string>
     <string name="activity_already_exist">Activity Already Exist</string>
     <string name="activity_failed">Activity Failed! Try Again</string>
     <string name="call_fail">Call Failed</string>
@@ -410,6 +410,7 @@
     <string name="fakegps_message">Fake Location detected. Your information has been sent to the admin.</string>
     <string name="title_activity_demo_main">DemoMainActivity</string>
     <string name="complete_day">Complete selected date to change date!</string>
+    <string name="no_location_please_try_again">Location not found. Please Try Again !</string>
     <string name="please_try_again">Please Try Again !</string>
     <string name="timezoneon">Turn on Automatic Date and Time in Settings.</string>
     <string name="turn_on_timezone">Turn on Automatic time zone</string>
@@ -470,6 +471,7 @@
     <string name="zip_not_supported">ZIP not Supported</string>
     <string name="file_accepted">File Accepted</string>
     <string name="please_select_correct_path">Sorry Please Select Correct path</string>
+    <string name="no_file_selected">"No File Selected"</string>
     <string name="remaindercalls_added_successfully">Remaindercalls Added Successfully</string>
     <string name="logout_successfully">Logout Successfully</string>
     <string name="data_cleared_successfully">Data Cleared Successfully</string>
@@ -543,6 +545,13 @@
     <string name="pincode">Pincode</string>
     <string name="mobile">Mobile</string>
     <string name="no_quiz_found">No Quiz Found</string>
+    <string name="download_asserts">Download Asserts / View</string>
+    <string name="already_saved_will_be_updated">Are you sure, Already saved will be updated!</string>
+    <string name="no_of_attempts_left">No of Attempts Left :</string>
+    <string name="try_again">Try Again</string>
+    <string name="close">Close</string>
+    <string name="custom_presentation">Custom Presentation</string>
+    <string name="common">Common</string>
     <string name="download_asserts">Download Asserts</string>
     <string name="are_you_sure_you_want_to_exit">Are you sure, you want to exit ?</string>
     <string name="customer_type">Customer Type</string>

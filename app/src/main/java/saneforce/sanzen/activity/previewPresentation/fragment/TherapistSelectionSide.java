@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.previewPresentation.fragment;
 
+import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.from_where;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.previewBinding;
 import static saneforce.sanzen.activity.previewPresentation.fragment.Therapist.getRequiredData;
 import static saneforce.sanzen.activity.previewPresentation.fragment.Therapist.getSelectedTherapist;
@@ -56,7 +57,11 @@ public class TherapistSelectionSide extends Fragment {
             InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(selectTherapistSideBinding.imgClose.getWindowToken(), 0);
             selectTherapistSideBinding.searchList.setText("");
-            previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
+            if(from_where.equalsIgnoreCase("call")) {
+                previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
+            } else {
+                previewBinding.btnFinishDet.setVisibility(View.GONE);
+            }
             previewBinding.fragmentSelectTherapistSide.setVisibility(View.GONE);
         });
 
@@ -84,7 +89,11 @@ public class TherapistSelectionSide extends Fragment {
             } else {
                 getSelectedTherapist(requireContext(), list_code.get(i), list_name.get(i), masterDataDao);
             }
-            previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
+            if(from_where.equalsIgnoreCase("call")) {
+                previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
+            } else {
+                previewBinding.btnFinishDet.setVisibility(View.GONE);
+            }
             previewBinding.fragmentSelectTherapistSide.setVisibility(View.GONE);
         });
         return selectTherapistSideBinding.getRoot();

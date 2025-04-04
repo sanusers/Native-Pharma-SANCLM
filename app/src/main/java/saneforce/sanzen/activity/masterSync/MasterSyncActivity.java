@@ -196,7 +196,28 @@ public class MasterSyncActivity extends AppCompatActivity {
         //Initializing all the data array
         uiInitialization();
         arrayForAdapter.clear();
-        arrayForAdapter.addAll(doctorModelArray);
+        if(SharedPref.getDrNeed(this).equalsIgnoreCase("0")){
+            binding.listedDr.setSelected(true);
+            arrayForAdapter.addAll(doctorModelArray);
+        } else if(SharedPref.getChmNeed(this).equalsIgnoreCase("0")){
+            binding.chemist.setSelected(true);
+            arrayForAdapter.addAll(chemistModelArray);
+        } else if(SharedPref.getStkNeed(this).equalsIgnoreCase("0")){
+            binding.stockiest.setSelected(true);
+            arrayForAdapter.addAll(stockiestModelArray);
+        } else if(SharedPref.getUnlNeed(this).equalsIgnoreCase("0")){
+            binding.unlistedDoctor.setSelected(true);
+            arrayForAdapter.addAll(unlistedDrModelArray);
+        } else if(SharedPref.getCipNeed(this).equalsIgnoreCase("0")){
+            binding.cip.setSelected(true);
+            arrayForAdapter.addAll(cipModelArray);
+        } else if(SharedPref.getHospNeed(this).equalsIgnoreCase("0")){
+            binding.hospital.setSelected(true);
+            arrayForAdapter.addAll(hospitalModelArray);
+        } else {
+            binding.cluster.setSelected(true);
+            arrayForAdapter.addAll(clusterModelArray);
+        }
         populateAdapter(arrayForAdapter);
 
         if (navigateFrom.equalsIgnoreCase("Login")) {
@@ -229,13 +250,14 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         binding.backArrow.setOnClickListener(view -> {
 
-            if (navigateFrom.equalsIgnoreCase("Login")||navigateFrom.equalsIgnoreCase("Slide")) {
+//            if (navigateFrom.equalsIgnoreCase("Login")||navigateFrom.equalsIgnoreCase("Slide")) {
                 Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-            } else {
-                getOnBackPressedDispatcher().onBackPressed();
-            }
+                finish();
+//            } else {
+//                getOnBackPressedDispatcher().onBackPressed();
+//            }
 
         });
 
@@ -581,10 +603,10 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         });
 
-
-
         binding.masterSyncAll.setOnClickListener(v -> {
+            binding.masterSyncAll.setEnabled(false);
             masterSyncAll(false);
+            new Handler().postDelayed(() -> binding.masterSyncAll.setEnabled(true), 3000);
         });
     }
 
@@ -664,7 +686,21 @@ public class MasterSyncActivity extends AppCompatActivity {
         setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
 //        customSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CUSTOM_SETUP);
 
-        binding.listedDr.setSelected(true);
+//        if(SharedPref.getDrNeed(this).equalsIgnoreCase("0")){
+//            binding.listedDr.setSelected(true);
+//        } else if(SharedPref.getChmNeed(this).equalsIgnoreCase("0")){
+//            binding.chemist.setSelected(true);
+//        } else if(SharedPref.getStkNeed(this).equalsIgnoreCase("0")){
+//            binding.stockiest.setSelected(true);
+//        } else if(SharedPref.getUnlNeed(this).equalsIgnoreCase("0")){
+//            binding.unlistedDoctor.setSelected(true);
+//        } else if(SharedPref.getCipNeed(this).equalsIgnoreCase("0")){
+//            binding.cip.setSelected(true);
+//        } else if(SharedPref.getHospNeed(this).equalsIgnoreCase("0")){
+//            binding.hospital.setSelected(true);
+//        } else {
+//            binding.cluster.setSelected(true);
+//        }
         prepareArray(rsf);
 
     }
@@ -948,14 +984,18 @@ public class MasterSyncActivity extends AppCompatActivity {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
                         }
                     } else {
-                        masterSyncItemModels.get(position).setPBarVisibility(false);
+                        if(position < masterSyncItemModels.size()) {
+                            masterSyncItemModels.get(position).setPBarVisibility(false);
+                        }
                         commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.poor_connection));
                         masterSyncAdapter.notifyDataSetChanged();
                     }
                 });
                 networkStatusTask.execute();
             } else {
-                masterSyncItemModels.get(position).setPBarVisibility(false);
+                if(position < masterSyncItemModels.size()) {
+                    masterSyncItemModels.get(position).setPBarVisibility(false);
+                }
                 commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
                 masterSyncAdapter.notifyDataSetChanged();
             }
@@ -1117,22 +1157,27 @@ public class MasterSyncActivity extends AppCompatActivity {
                     jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                     break;
                 }
+                case "getquiz":
                 case "gettodaydcr": {
-                    WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
-                        @Override
-                        public void datesFound() {
-                            try {
-                                jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, SharedPref.getSelectedDateCal(MasterSyncActivity.this)));
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                    if(HomeDashBoard.selectedDate != null) {
+                        jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
+                    } else {
+                        WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
+                            @Override
+                            public void datesFound() {
+                                try {
+                                    jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, SharedPref.getSelectedDateCal(MasterSyncActivity.this)));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void noDatesFound() {
-                            Log.e("Master Sync", "Get MyDayPlan Call and Date Sync failed!" );
-                        }
-                    });
+                            @Override
+                            public void noDatesFound() {
+                                Log.e("Master Sync", "Get MyDayPlan Call and Date Sync failed!");
+                            }
+                        });
+                    }
                 }
             }
 
@@ -1221,6 +1266,30 @@ public class MasterSyncActivity extends AppCompatActivity {
                                             isDateSynced = true;
                                             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC_DUP, jsonArray.toString(), 2));
                                         }
+                                        else if(!rsf.isEmpty() && masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.JOINT_WORK + rsf)) {
+                                            JSONObject jointWorkJsonObject = new JSONObject();
+                                            jointWorkJsonObject.put("Code", SharedPref.getSfCode(MasterSyncActivity.this));
+                                            jointWorkJsonObject.put("Name", "Independent");
+                                            jointWorkJsonObject.put("SfName", "Independent");
+                                            jointWorkJsonObject.put("Reporting_To_SF", "");
+                                            jointWorkJsonObject.put("OwnDiv", "");
+                                            jointWorkJsonObject.put("Division_Code", SharedPref.getDivisionCode(MasterSyncActivity.this));
+                                            jointWorkJsonObject.put("SF_Status", "");
+                                            jointWorkJsonObject.put("ActFlg", "");
+                                            jointWorkJsonObject.put("UsrDfd_UserName", "");
+                                            jointWorkJsonObject.put("DS_name", "");
+                                            jointWorkJsonObject.put("sf_type", SharedPref.getSfType(MasterSyncActivity.this));
+                                            jointWorkJsonObject.put("Desig", SharedPref.getDesig(MasterSyncActivity.this));
+                                            jointWorkJsonObject.put("steps", "");
+
+                                            JSONArray jointWorkJsonArray = new JSONArray();
+                                            jointWorkJsonArray.put(jointWorkJsonObject);
+                                            for (int i = 0; i<jsonArray.length(); i++) {
+                                                jointWorkJsonObject = jsonArray.optJSONObject(i);
+                                                jointWorkJsonArray.put(jointWorkJsonObject);
+                                            }
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.JOINT_WORK + rsf, jointWorkJsonArray.toString(), 2));
+                                        }
                                         if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
                                             if (jsonArray.length() > 0) {
                                                 JSONObject jsonObject1 = jsonArray.getJSONObject(0);
@@ -1273,8 +1342,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                                             stpOfflineDataDao.deleteAllData();
                                             saveSTPDataToLocal();
                                         } else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
-//                                            activityDetailsDataDao.deleteAllData();
-                                            syncIndividualActivityDetails();
+                                            activityDetailsDataDao.deleteAllData();
+//                                            syncIndividualActivityDetails();
                                         }
                                         JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
                                         for (int bean = 0; bean < input.length(); bean++) {
@@ -1417,7 +1486,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         JsonElement jsonElement = response.body();
                                         if(jsonElement != null) {
                                             JSONArray jsonArray1 = new JSONArray(jsonElement.getAsJsonArray().toString());
-                                            activityDetailsDataDao.saveActivityDetailsData(new ActivityDetailsDataTable(id, jsonArray1.toString(), "0"));
+                                            activityDetailsDataDao.saveActivityDetailsData(new ActivityDetailsDataTable(id + "_" + SharedPref.getHqCode(MasterSyncActivity.this), jsonArray1.toString(), "0"));
                                         }
                                     } catch (Exception a) {
                                         Log.e("Error", "----- " + a);

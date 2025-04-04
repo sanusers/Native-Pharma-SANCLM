@@ -158,9 +158,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     CommonUtilsMethods commonUtilsMethods;
     LocationManager locationManager;
     ApiInterface apiInterface;
-   public static boolean isDcrFrom=false;
-
-//    CustomSetupResponse customSetupResponse;
+    public static boolean isDcrFrom=false;
     IntentFilter intentFilter;
     NetworkChangeReceiver receiver;
     Callstatusadapter callstatusadapter;
@@ -202,6 +200,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private InAppUpdate inAppUpdate;
     private static CallsUtil callsUtil;
     private static HomeDashBoard activity;
+    public static boolean isFakeLocationDetected = false;
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -220,29 +219,30 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onResume() {
-        if(isDateSelectionClicked) {
-            setUpCalendar();
-        }
-        timeZoneVerification();
-        accessibility();
-        super.onResume();
-        AppIdentify();
-        Log.d("ACTIVITY_STATUS", "OnResume");
-        commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
-        if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
-            binding.myDrawerLayout.closeDrawer(GravityCompat.START);
-        }
-
-        try {
-            if (Build.VERSION.SDK_INT >= 33) {
-                registerReceiver(receiver, intentFilter, RECEIVER_NOT_EXPORTED);
-            } else {
-                registerReceiver(receiver, intentFilter);
+        if(!isFakeLocationDetected) {
+            if(isDateSelectionClicked) {
+                setUpCalendar();
             }
-        } catch (Exception ignored) {
+            timeZoneVerification();
+            accessibility();
+            super.onResume();
+            AppIdentify();
+            Log.d("ACTIVITY_STATUS", "OnResume");
+            commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
+            if(binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
+                binding.myDrawerLayout.closeDrawer(GravityCompat.START);
+            }
 
-        }
+            try {
+                if(Build.VERSION.SDK_INT>=33) {
+                    registerReceiver(receiver, intentFilter, RECEIVER_NOT_EXPORTED);
+                }else {
+                    registerReceiver(receiver, intentFilter);
+                }
+            } catch (Exception ignored) {
+
+            }
 
         Menu menu = binding.navView.getMenu();
         if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
@@ -253,23 +253,26 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             menu.findItem(R.id.stp).setVisible(SharedPref.getStpNeed(this).equalsIgnoreCase("0"));
         }
 
-        if(SharedPref.getTpdcrMgrappr(this).equalsIgnoreCase("0")) {
-            binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.VISIBLE);
-            binding.viewCalerderLayout.txtTpDeviationRele.setVisibility(View.VISIBLE);
-        }else {
-            binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.GONE);
-            binding.viewCalerderLayout.txtTpDeviationRele.setVisibility(View.GONE);
-        }
+            if(SharedPref.getTpdcrMgrappr(this).equalsIgnoreCase("0")) {
+                binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.VISIBLE);
+                binding.viewCalerderLayout.txtTpDeviationRele.setVisibility(View.VISIBLE);
+            }else {
+                binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.GONE);
+                binding.viewCalerderLayout.txtTpDeviationRele.setVisibility(View.GONE);
+            }
 
-        CommonAlertBox.CheckLocationStatus(HomeDashBoard.this);
-        if(SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2")&& SharedPref.getApprMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0")){
-            CheckingManatoryApprovals();
-        }
-        CheckedTpRange();
-        checkAndSetEntryDate(this, true);
-        if(isDcrFrom){
-            binding.viewPager.setCurrentItem(1);
-            isDcrFrom=false;
+            CommonAlertBox.CheckLocationStatus(HomeDashBoard.this, gpsTrack);
+            if(SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(HomeDashBoard.this).equalsIgnoreCase("0")) {
+                CheckingManatoryApprovals();
+            }
+            CheckedTpRange();
+            checkAndSetEntryDate(this, true);
+            if(isDcrFrom) {
+                binding.viewPager.setCurrentItem(1);
+                isDcrFrom = false;
+            }
+        } else{
+            super.onResume();
         }
 
     }
@@ -1381,7 +1384,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(context, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
             @Override
             public void datesFound() {
-
                 if(callsUtil!= null && callsUtil.getOutboxDates().size() > 2 && !SharedPref.getLastOutboxAlertDate(context).equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_4))) {
                     CommonAlertBox.outboxDataAvailableAlert(activity);
                     SharedPref.setLastOutboxAlertDate(context, CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_4));
@@ -1413,6 +1415,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         SharedPref.setLastCallDate(context, "");
                     }
                     setupLeftViewPager(context, fragmentManager);
+                    if(SharedPref.getQuizNeed(context).equalsIgnoreCase("0")
+                            && SharedPref.getQuizNeedMandt(context).equalsIgnoreCase("0")) {
+                        activity.setUpQuiz();
+                    }
                 }else {
                     isDateSelectionClicked = true;
                 }
@@ -1431,6 +1437,97 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 Log.e("TAG 4", "checkAndSetEntryDate: " + selectedDate);
             }
         });
+    }
+
+    private void setUpQuiz() {
+        if(selectedDate != null && SharedPref.getLastQuizSyncDate(activity).equalsIgnoreCase(selectedDate.toString())) {
+            Log.d("TAG", "setUpQuiz: new sync");
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.QUIZ).getMasterSyncDataJsonArray();
+            if(!jsonArray.toString().equalsIgnoreCase("[]")) {
+                commonUtilsMethods.showToastMessage(activity, "Complete " + SharedPref.getQuizHeading(HomeDashBoard.this));
+                startActivity(new Intent(activity, QuizActivity.class));
+            }
+        } else if(selectedDate != null && !SharedPref.getLastQuizSyncDate(activity).equalsIgnoreCase(selectedDate.toString())) {
+            Log.d("TAG", "setUpQuiz: new sync");
+            CallQuizSyncAPI();
+        }
+    }
+
+    private void CallQuizSyncAPI() {
+        if(activity != null && selectedDate != null) {
+            if(UtilityClass.isNetworkAvailable(activity)) {
+                binding.flSyncQuizProgress.setVisibility(View.VISIBLE);
+                try {
+                    apiInterface = RetrofitClient.getRetrofit(activity, SharedPref.getCallApiUrl(getApplicationContext()));
+                    JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                    jsonObject.put("tableName", "getquiz");
+                    jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                    jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                    jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_22, HomeDashBoard.selectedDate.toString()));
+                    Log.i("QUIZ", "quiz: json -- " + jsonObject);
+                    Map<String, String> qry = new HashMap<>();
+                    qry.put("axn", "table/additionaldcrmasterdata");
+                    Call<JsonElement> quiz = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), qry, jsonObject.toString());
+                    if(quiz != null) {
+                        quiz.enqueue(new Callback<JsonElement>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonElement> quiz, @NonNull Response<JsonElement> response) {
+                                binding.flSyncQuizProgress.setVisibility(View.GONE);
+                                SharedPref.setLastQuizSyncDate(activity, HomeDashBoard.selectedDate.toString());
+                                if(response.isSuccessful()) {
+                                    Log.e("quiz sync", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
+                                    try {
+                                        String responseData = response.body().toString();
+                                        if(!responseData.equalsIgnoreCase("[]") && !responseData.isEmpty()) {
+                                            JSONObject object = new JSONObject(responseData);
+                                            JSONArray jsonArray = new JSONArray();
+                                            jsonArray.put(object);
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.QUIZ, jsonArray.toString(), 2));
+                                            SharedPref.setQuizAvailableDate(activity, HomeDashBoard.selectedDate.toString());
+                                            commonUtilsMethods.showToastMessage(activity, "Complete " + SharedPref.getQuizHeading(HomeDashBoard.this));
+                                            Intent intent = new Intent(HomeDashBoard.this, QuizActivity.class);
+                                            intent.putExtra(QuizActivity.SYNC_NEEDED, false);
+                                            startActivity(intent);
+                                        }else {
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.QUIZ, "[]", 2));
+                                        }
+                                    } catch (Exception e) {
+                                        binding.flSyncQuizProgress.setVisibility(View.GONE);
+                                        Intent intent = new Intent(HomeDashBoard.this, QuizActivity.class);
+                                        intent.putExtra(QuizActivity.SYNC_NEEDED, true);
+                                        startActivity(intent);
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonElement> quiz, @NonNull Throwable t) {
+                                t.printStackTrace();
+                                binding.flSyncQuizProgress.setVisibility(View.GONE);
+                                commonUtilsMethods.showToastMessage(activity, getString(R.string.poor_connection));
+                                Intent intent = new Intent(HomeDashBoard.this, QuizActivity.class);
+                                intent.putExtra(QuizActivity.SYNC_NEEDED, true);
+                                startActivity(intent);
+//                                SharedPref.setLastQuizSyncDate(activity, HomeDashBoard.selectedDate.toString());
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    binding.flSyncQuizProgress.setVisibility(View.GONE);
+                    Intent intent = new Intent(HomeDashBoard.this, QuizActivity.class);
+                    intent.putExtra(QuizActivity.SYNC_NEEDED, true);
+                    startActivity(intent);
+//                    SharedPref.setLastQuizSyncDate(activity, HomeDashBoard.selectedDate.toString());
+                    e.printStackTrace();
+                }
+            }else {
+                commonUtilsMethods.showToastMessage(activity, getString(R.string.no_network));
+                Intent intent = new Intent(HomeDashBoard.this, QuizActivity.class);
+                intent.putExtra(QuizActivity.SYNC_NEEDED, true);
+                startActivity(intent);
+            }
+        }
     }
 
     @SuppressLint({"NonConstantResourceId", "NotifyDataSetChanged"})
@@ -1776,6 +1873,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             menu.findItem(R.id.stp).setVisible(SharedPref.getStpNeed(this).equalsIgnoreCase("0"));
         }
 
+        if (SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+            menu.findItem(R.id.activity).setVisible(true);
+            menu.findItem(R.id.activity).setTitle(SharedPref.getActivityCap(HomeDashBoard.this));
+        }
+        else {
+            menu.findItem(R.id.activity).setVisible(false);
+        }
+
         if (SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.quiz).setVisible(true);
             menu.findItem(R.id.quiz).setTitle(SharedPref.getQuizHeading(HomeDashBoard.this));
@@ -2098,7 +2203,8 @@ private void accessibility(){
                  CommonUtilsMethods.accessDialogBox(this);
              }
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+//            throw new RuntimeException(e);
         }
     }
     if (!SharedPref.getAppAccess(this).equals("1")){

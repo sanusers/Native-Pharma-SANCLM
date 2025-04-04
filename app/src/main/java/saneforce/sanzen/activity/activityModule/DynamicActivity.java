@@ -12,6 +12,8 @@ import static android.view.Gravity.TOP;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.IsFromDCR;
+
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -23,6 +25,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -48,6 +51,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -102,7 +106,9 @@ import saneforce.sanzen.activity.activityModule.adapter.ActivityAdapter;
 import saneforce.sanzen.activity.activityModule.adapter.ActvityList2Adapter;
 import saneforce.sanzen.activity.activityModule.model.ActivityDetailsModelClass;
 import saneforce.sanzen.activity.activityModule.model.ActivityModelClass;
+import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -151,7 +157,7 @@ public class DynamicActivity extends AppCompatActivity {
     private ActivityUploadDataDao activityUploadDataDao;
     public static boolean isEdited = false;
     private ActivityModelClass chosenActivityModelClass;
-    private String activityDate, activityTime;
+    private String activityDate, activityTime, selectedHQ = "", activityCap;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -160,6 +166,9 @@ public class DynamicActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(binding.getRoot());
         gpsTrack = new GPSTrack(this);
+        selectedHQ = SharedPref.getHqCode(this);
+        binding.txthqName.setText(SharedPref.getHqName(DynamicActivity.this));
+        activityCap = SharedPref.getActivityCap(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         activityDetailsDataDao = roomDB.activityDetailsDataDao();
@@ -173,7 +182,7 @@ public class DynamicActivity extends AppCompatActivity {
         binding.listTitle.setText(String.format("List of %s", SharedPref.getActivityCap(this)));
         binding.namechooseActivity.setText(String.format("Choose %s", SharedPref.getActivityCap(this)));
         binding.tvContent.setText(String.format("Select any %s on list  to view content", SharedPref.getActivityCap(DynamicActivity.this)));
-        binding.txthqName.setText(SharedPref.getHqName(DynamicActivity.this));
+//        binding.txthqName.setText(SharedPref.getHqName(DynamicActivity.this));
         binding.btnSubmit.setEnabled(false);
 
         syncProgressDialog = new ProgressDialog(DynamicActivity.this);
@@ -182,7 +191,7 @@ public class DynamicActivity extends AppCompatActivity {
         syncProgressDialog.setIndeterminate(true);
 
         adapter = new ActivityAdapter(DynamicActivity.this, ActivityList, (classGroup, holder, position) -> {
-            if (this.chosenActivityPosition != position && this.chosenActivityPosition != -1) {
+            if (this.chosenActivityPosition != position && this.chosenActivityPosition != -1 && validateActivityData()) {
                 activityChangeAlert(classGroup, position);
             } else {
                 binding.namechooseActivity.setText(classGroup.getActivityName());
@@ -197,7 +206,7 @@ public class DynamicActivity extends AppCompatActivity {
 
 //        getActivity(SharedPref.getHqCode(DynamicActivity.this));
         getActivity();
-//
+
 //        binding.backArrow.setOnClickListener(v -> {
 //            Dialog dialog = new Dialog(DynamicActivity.this);
 //            dialog.setContentView(R.layout.dcr_cancel_alert);
@@ -231,12 +240,22 @@ public class DynamicActivity extends AppCompatActivity {
                 btn_yes.setOnClickListener(view12 -> {
                     dialog.dismiss();
                     getOnBackPressedDispatcher().onBackPressed();
+                    IsFromDCR = true;
+                    HomeDashBoard.isDcrFrom=true;
+                    Intent intent = new Intent(DynamicActivity.this, HomeDashBoard.class);
+                    startActivity(intent);
+                    finish();
                 });
                 btn_no.setOnClickListener(view12 -> {
                     dialog.dismiss();
                 });
             } else {
                 getOnBackPressedDispatcher().onBackPressed();
+                IsFromDCR = true;
+                HomeDashBoard.isDcrFrom=true;
+                Intent intent = new Intent(DynamicActivity.this, HomeDashBoard.class);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -253,6 +272,18 @@ public class DynamicActivity extends AppCompatActivity {
         binding.btnClearall.setOnClickListener(v -> {
             showClearAlert();
         });
+    }
+
+    private boolean validateActivityData() {
+        boolean isDataEntered = false;
+        for (int i = 0; i<ActivityViewItem.size(); i++) {
+            ActivityDetailsModelClass activityDetailsModelClass = ActivityViewItem.get(i);
+            if(activityDetailsModelClass.getAnswerTxt() != null && !activityDetailsModelClass.getAnswerTxt().isEmpty() && !activityDetailsModelClass.getControlId().equalsIgnoreCase("0") && !activityDetailsModelClass.getControlId().equalsIgnoreCase("17")) {
+                isDataEntered = true;
+                break;
+            }
+        }
+        return isDataEntered;
     }
 
     private void activityChangeAlert(ActivityModelClass classGroup, int position) {
@@ -318,7 +349,8 @@ public class DynamicActivity extends AppCompatActivity {
                     binding.rlNoActivity.setVisibility(View.GONE);
                     binding.llMainLayout.setVisibility(View.VISIBLE);
                     binding.rlDetailsMain.setVisibility(View.VISIBLE);
-                    ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available")));
+                    boolean isAvailableOffline = activityDetailsDataDao.isActivityDataAvailable(jsonObject.getString("Activity_SlNo") + "_" + selectedHQ);
+                    ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available"), isAvailableOffline));
                     adapter.notifyDataSetChanged();
                 }
             }
@@ -327,7 +359,7 @@ public class DynamicActivity extends AppCompatActivity {
                 binding.rlDetailsMain.setVisibility(View.GONE);
                 binding.rlNoActivity.setVisibility(View.VISIBLE);
                 binding.llMainLayout.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity");
+                commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap);
             }
             binding.progressMain.setVisibility(View.GONE);
         } catch (Exception e) {
@@ -340,103 +372,181 @@ public class DynamicActivity extends AppCompatActivity {
         binding.progrlessdetail.setVisibility(View.VISIBLE);
         ActivityDetailsList.clear();
         ActivityViewItem.clear();
-        try {
-            ActivityDetailsDataTable activityDetailsDataTable = activityDetailsDataDao.getActivityDetailsByID(activityModelClass.getSlNo());
-            JSONArray jsonArray = activityDetailsDataTable.getActivityDataJSONArray();
-            if (jsonArray.length() > 0) {
-                binding.rlDataLayout.setVisibility(View.VISIBLE);
-                binding.btnSubmit.setVisibility(View.VISIBLE);
-                binding.rlNoData.setVisibility(View.GONE);
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                    String Control_Id = jsonObject1.getString("Control_Id");
-                    String Field_Name = jsonObject1.getString("Field_Name");
-                    String Creation_Id = jsonObject1.getString("Creation_Id");
-                    String input = jsonObject1.getString("input");
-                    String madantaory = jsonObject1.getString("Mandatory");
-                    String Control_Para = jsonObject1.getString("Control_Para");
-                    String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
-                    ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID, activityModelClass.getSlNo()));
-                }
-                int jjj = 0;
-                for (int i = 0; i < ActivityDetailsList.size(); i++) {
-                    switch (ActivityDetailsList.get(i).getControlId()) {
-                        case "0":
-                            CreateLabelView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "1":
-                            CreateNameView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "2":
-                            CreateNumberView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "3":
-                            CreateMultipleLineViewText(ActivityDetailsList.get(i), i);
-                            break;
-                        case "4":
-                            CreateSelectionDateView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "5":
-                            CreateFromAndToDateSelectionView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "6":
-                            CreateSelectionTimeView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "7":
-                            CreateFromAndToTimeSelectionView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "8":
-                        case "12":
-                            CreateSingleListSelection(ActivityDetailsList.get(i), i);
-                            break;
-                        case "9":
-                        case "13":
-                            CreateMultipleListSelection(ActivityDetailsList.get(i), i);
-                            break;
-                        case "10":
-                            adduploadfile(ActivityDetailsList.get(i), i);
-                            break;
-                        case "11":
-                            addedittextnumericcurrency(ActivityDetailsList.get(i), i);
-                            break;
-                        case "14":
-                            TableList(ActivityDetailsList.get(i), i);
-                            break;
-                        case "15":
-                            CreateSelectionDateWithTimeView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "16":
-                            CreateFromAndToDateWithTimeSelectionView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "17":
-                            CreateLocationView(ActivityDetailsList.get(i), i);
-                            break;
-                        case "18":
-                            addeditcurrencyconvertor(ActivityDetailsList.get(i), i);
-                            break;
-                        case "19":
-                            digitalsign(ActivityDetailsList.get(i), i);
-                            break;
-                    }
-                    jjj++;
-                    if (ActivityDetailsList.size() == jjj) {
-                        binding.btnSubmit.setEnabled(true);
-                    }
-                }
-            }
-            if (!ActivityDetailsList.isEmpty()) {
-                binding.progrlessdetail.setVisibility(View.GONE);
-                binding.rlNoData.setVisibility(View.GONE);
-                binding.rlDetailsMain.setVisibility(View.VISIBLE);
+        if(!activityDetailsDataDao.isActivityDataAvailable(activityModelClass.getSlNo() + "_" + selectedHQ)) {
+            if(UtilityClass.isNetworkAvailable(this)) {
+                callActivityDetailsAPI(activityModelClass);
             } else {
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+                chosenActivityModelClass = null;
+                chosenActivityPosition = -1;
+                this.adapter.changeRowIndex(-1);
                 binding.rlNoData.setVisibility(View.VISIBLE);
                 binding.rlDetailsMain.setVisibility(View.GONE);
                 binding.btnSubmit.setVisibility(View.GONE);
                 binding.progrlessdetail.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            try {
+                ActivityDetailsDataTable activityDetailsDataTable = activityDetailsDataDao.getActivityDetailsByID(activityModelClass.getSlNo() + "_" + selectedHQ);
+                JSONArray jsonArray = activityDetailsDataTable.getActivityDataJSONArray();
+                if(jsonArray.length()>0) {
+                    binding.rlDataLayout.setVisibility(View.VISIBLE);
+                    binding.btnSubmit.setVisibility(View.VISIBLE);
+                    binding.rlNoData.setVisibility(View.GONE);
+                    for (int i = 0; i<jsonArray.length(); i++) {
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        String Control_Id = jsonObject1.getString("Control_Id");
+                        String Field_Name = jsonObject1.getString("Field_Name");
+                        String Creation_Id = jsonObject1.getString("Creation_Id");
+                        String input = jsonObject1.getString("input");
+                        String madantaory = jsonObject1.getString("Mandatory");
+                        String Control_Para = jsonObject1.getString("Control_Para");
+                        String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
+                        ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID, activityModelClass.getSlNo()));
+                        String controlParam = Control_Para.toLowerCase();
+                        if(SharedPref.getSfType(DynamicActivity.this).equalsIgnoreCase("2") && selectedHQ.equalsIgnoreCase(SharedPref.getSfCode(DynamicActivity.this)) && (controlParam.contains("doctor") || controlParam.contains("dr")
+                                || controlParam.contains("chemist") || controlParam.contains("chm")
+                                || controlParam.contains("stockist") || controlParam.contains("stock") || controlParam.contains("stk")
+                                || controlParam.contains("unlisted") || controlParam.contains("un") || controlParam.contains("unlst")
+                                || controlParam.contains("cluster")
+                                || controlParam.contains("joint"))) {
+                            chosenActivityModelClass = null;
+                            chosenActivityPosition = -1;
+                            this.adapter.changeRowIndex(-1);
+                            binding.rlNoData.setVisibility(View.VISIBLE);
+                            binding.rlDetailsMain.setVisibility(View.GONE);
+                            binding.btnsumit.setVisibility(View.GONE);
+                            binding.progrlessdetail.setVisibility(View.GONE);
+                            commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.select_headquater));
+                            showHQ();
+                            return;
+                        }
+                    }
+                    int jjj = 0;
+                    for (int i = 0; i<ActivityDetailsList.size(); i++) {
+                        switch (ActivityDetailsList.get(i).getControlId()){
+                            case "0":
+                                CreateLabelView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "1":
+                                CreateNameView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "2":
+                                CreateNumberView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "3":
+                                CreateMultipleLineViewText(ActivityDetailsList.get(i), i);
+                                break;
+                            case "4":
+                                CreateSelectionDateView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "5":
+                                CreateFromAndToDateSelectionView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "6":
+                                CreateSelectionTimeView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "7":
+                                CreateFromAndToTimeSelectionView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "8":
+                            case "12":
+                                CreateSingleListSelection(ActivityDetailsList.get(i), i);
+                                break;
+                            case "9":
+                            case "13":
+                                CreateMultipleListSelection(ActivityDetailsList.get(i), i);
+                                break;
+                            case "10":
+                                adduploadfile(ActivityDetailsList.get(i), i);
+                                break;
+                            case "11":
+                                addedittextnumericcurrency(ActivityDetailsList.get(i), i);
+                                break;
+                            case "14":
+                                TableList(ActivityDetailsList.get(i), i);
+                                break;
+                            case "15":
+                                CreateSelectionDateWithTimeView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "16":
+                                CreateFromAndToDateWithTimeSelectionView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "17":
+                                CreateLocationView(ActivityDetailsList.get(i), i);
+                                break;
+                            case "18":
+                                addeditcurrencyconvertor(ActivityDetailsList.get(i), i);
+                                break;
+                            case "19":
+                                digitalsign(ActivityDetailsList.get(i), i);
+                                break;
+                        }
+                        jjj++;
+                        if(ActivityDetailsList.size() == jjj) {
+                            binding.btnSubmit.setEnabled(true);
+                        }
+                    }
+                }
+                if(!ActivityDetailsList.isEmpty()) {
+                    binding.progrlessdetail.setVisibility(View.GONE);
+                    binding.rlNoData.setVisibility(View.GONE);
+                    binding.rlDetailsMain.setVisibility(View.VISIBLE);
+                }else {
+                    binding.rlNoData.setVisibility(View.VISIBLE);
+                    binding.rlDetailsMain.setVisibility(View.GONE);
+                    binding.btnSubmit.setVisibility(View.GONE);
+                    binding.progrlessdetail.setVisibility(View.GONE);
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap + " Details");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void callActivityDetailsAPI(ActivityModelClass activityModelClass) {
+        binding.progressMain.setVisibility(View.VISIBLE);
+        try {
+            JSONObject object = CommonUtilsMethods.CommonObjectParameter(DynamicActivity.this);
+            object.put("tableName", "getdynactivity_details");
+            object.put("sfcode", SharedPref.getSfCode(this));
+            object.put("division_code", SharedPref.getDivisionCode(this));
+            object.put("Rsf", selectedHQ);
+            object.put("slno", activityModelClass.getSlNo());
+            Log.v("JsonObject  :", object.toString());
+            Map<String, String> QueryParam = new HashMap<>();
+            QueryParam.put("axn", "get/activity");
+
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(DynamicActivity.this), QueryParam, object.toString());
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                    Log.v("Response :", "" + response);
+                    binding.progressMain.setVisibility(View.GONE);
+                    if(response.isSuccessful()) {
+                        try {
+                            JsonElement jsonElement = response.body();
+                            if(jsonElement != null) {
+                                JSONArray jsonArray1 = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                activityDetailsDataDao.saveActivityDetailsData(new ActivityDetailsDataTable(activityModelClass.getSlNo() + "_" + selectedHQ, jsonArray1.toString(), "0"));
+                                activityModelClass.setAvailableOffline(true);
+                                adapter.notifyDataSetChanged();
+                                getActivityDetails(activityModelClass);
+                            }
+                        } catch (Exception a) {
+                            Log.e("Error", "----- " + a);
+                            a.printStackTrace();
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        } catch (Exception a) {
+            a.printStackTrace();
         }
     }
 
@@ -477,7 +587,7 @@ public class DynamicActivity extends AppCompatActivity {
                                             binding.rlNoActivity.setVisibility(View.GONE);
                                             binding.llMainLayout.setVisibility(View.VISIBLE);
                                             binding.rlDetailsMain.setVisibility(View.VISIBLE);
-                                            ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available")));
+                                            ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available"), false));
                                             adapter.notifyDataSetChanged();
                                         }
                                     }
@@ -489,7 +599,7 @@ public class DynamicActivity extends AppCompatActivity {
                                     binding.rlNoActivity.setVisibility(View.VISIBLE);
                                     binding.llMainLayout.setVisibility(View.GONE);
 
-                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity");
+                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap);
                                 }
                             } catch (Exception a) {
                                 a.printStackTrace();
@@ -630,10 +740,10 @@ public class DynamicActivity extends AppCompatActivity {
                                     binding.rlDetailsMain.setVisibility(View.GONE);
                                     binding.btnSubmit.setVisibility(View.GONE);
                                     binding.progrlessdetail.setVisibility(View.GONE);
-                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
+                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap + " Details");
                                 }
                             } catch (Exception a) {
-                                commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
+                                commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap + " Details");
                                 Log.e("Error", "----- " + a);
                             }
                         }
@@ -641,7 +751,7 @@ public class DynamicActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "No Activity Details");
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "No " + activityCap + " Details");
                         binding.rlNoData.setVisibility(View.VISIBLE);
                         binding.rlDetailsMain.setVisibility(View.GONE);
                         binding.btnSubmit.setVisibility(View.GONE);
@@ -690,7 +800,7 @@ public class DynamicActivity extends AppCompatActivity {
 
         TextView txtLabelName = new TextView(this);
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             txtLabelName.setText(Html.fromHtml(firstChar + firstChar2));
@@ -719,12 +829,14 @@ public class DynamicActivity extends AppCompatActivity {
         textLinearLayout1.addView(textcharacter);
         textcharacter.setInputType(InputType.TYPE_CLASS_TEXT);
         textcharacter.setId(k);
-        textcharacter.setHint("Name");
+        textcharacter.setHint("Enter " + List.getFieldName());
         textcharacter.setCursorVisible(true);
         textcharacter.setClickable(true);
-        InputFilter[] fArray = new InputFilter[1];
-        fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
-        textcharacter.setFilters(fArray);
+        if(!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
+            InputFilter[] fArray = new InputFilter[1];
+            fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
+            textcharacter.setFilters(fArray);
+        }
 
         // CreateName
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
@@ -770,7 +882,7 @@ public class DynamicActivity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -797,12 +909,14 @@ public class DynamicActivity extends AppCompatActivity {
         textnumber.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textnumber.setInputType(InputType.TYPE_CLASS_NUMBER);
         textnumber.setId(k);
-        textnumber.setHint("Number");
+        textnumber.setHint("Enter " + List.getFieldName());
         textnumber.setClickable(false);
         textnumber.setCursorVisible(true);
-        InputFilter[] fArray = new InputFilter[1];
-        fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
-        textnumber.setFilters(fArray);
+        if(!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
+            InputFilter[] fArray = new InputFilter[1];
+            fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
+            textnumber.setFilters(fArray);
+        }
         textLinearLayout1.addView(textnumber);
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
         textnumber.addTextChangedListener(new TextWatcher() {
@@ -845,7 +959,7 @@ public class DynamicActivity extends AppCompatActivity {
 
         TextView textviewdata = new TextView(this);
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -879,12 +993,14 @@ public class DynamicActivity extends AppCompatActivity {
         textarea.setMinLines(5);
         textarea.setMaxLines(8);
         textarea.setId(k);
-        textarea.setHint("Multi line Text");
+        textarea.setHint("Enter " + List.getFieldName());
         textarea.setCursorVisible(true);
         textarea.setClickable(true);
-        InputFilter[] fArray = new InputFilter[1];
-        fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
-        textarea.setFilters(fArray);
+        if(!List.getControlPara().isEmpty() && !List.getControlPara().equalsIgnoreCase("0")) {
+            InputFilter[] fArray = new InputFilter[1];
+            fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
+            textarea.setFilters(fArray);
+        }
 
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
@@ -925,7 +1041,7 @@ public class DynamicActivity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -992,7 +1108,7 @@ public class DynamicActivity extends AppCompatActivity {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(DynamicActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        textviewdate1.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        textviewdate1.setText(String.format(Locale.getDefault(), "%02d-%02d-%04d", dayOfMonth, monthOfYear + 1, year));
                         commonFun();
                     }
                 }, year, month, day);
@@ -1010,7 +1126,7 @@ public class DynamicActivity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -1102,7 +1218,7 @@ public class DynamicActivity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -1175,7 +1291,7 @@ public class DynamicActivity extends AppCompatActivity {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(DynamicActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        textviewfromdate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        textviewfromdate.setText(String.format(Locale.getDefault(), "%02d-%02d-%04d", dayOfMonth, monthOfYear + 1, year));
                         commonFun();
                     }
                 }, year, month, day);
@@ -1234,7 +1350,7 @@ public class DynamicActivity extends AppCompatActivity {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(DynamicActivity.this, (view1, year, monthOfYear, dayOfMonth) -> textviewtodate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year), mYear, mMonth, mDay);
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(DynamicActivity.this, (view1, year, monthOfYear, dayOfMonth) -> textviewtodate.setText(String.format(Locale.getDefault(), "%02d-%02d-%04d", dayOfMonth, monthOfYear + 1, year)), mYear, mMonth, mDay);
                     commonFun();
                     datePickerDialog.getDatePicker().setMinDate(dateBefore.getTime());
                     datePickerDialog.show();
@@ -1252,7 +1368,7 @@ public class DynamicActivity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -1436,7 +1552,7 @@ public class DynamicActivity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -1525,7 +1641,7 @@ public class DynamicActivity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -1673,7 +1789,7 @@ public class DynamicActivity extends AppCompatActivity {
 
         TextView textcombosingle = new TextView(this);
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textcombosingle.setText(Html.fromHtml(firstChar + firstChar2));
@@ -1770,7 +1886,7 @@ public class DynamicActivity extends AppCompatActivity {
 
         TextView textcombomultiple = new TextView(this);
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textcombomultiple.setText(Html.fromHtml(firstChar + firstChar2));
@@ -1875,7 +1991,7 @@ public class DynamicActivity extends AppCompatActivity {
 
         TextView textviewdata = new TextView(this);
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -1890,26 +2006,64 @@ public class DynamicActivity extends AppCompatActivity {
         textviewdata.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
         textLinearLayout1.addView(textviewdata);
         LinearLayout textLinearLayout2 = new LinearLayout(this);
+        LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        linearLayoutParams.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
+        textLinearLayout2.setLayoutParams(linearLayoutParams);
         textLinearLayout2.setOrientation(LinearLayout.HORIZONTAL);
         textLinearLayout1.addView(textLinearLayout2);
 
         TextView textfileupload = new TextView(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        Drawable drawable = getDrawable(R.drawable.form);
-        drawable.setBounds(0, 0, (int) getResources().getDimension(R.dimen._10sdp), (int) getResources().getDimension(R.dimen._10sdp));
-        textfileupload.setCompoundDrawables(drawable, null, null, null);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
+//        params.setMargins(1, 1, 1, 1);
+        params.weight = 1;
+        Drawable drawable = getDrawable(R.drawable.form);
+        assert drawable != null;
+        drawable.setBounds(0, 0, (int) getResources().getDimension(R.dimen._10sdp), (int) getResources().getDimension(R.dimen._10sdp));
+        drawable.setTint(getColor(R.color.dark_purple));
+        textfileupload.setCompoundDrawables(drawable, null, null, null);
         textfileupload.setBackgroundColor(Color.WHITE);
         textfileupload.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen._4sdp));
-        textfileupload.setBackgroundResource(R.drawable.background_card_white_plan);
-        textfileupload.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
+//        textfileupload.setBackgroundResource(R.drawable.background_card_white_plan);
+//        textfileupload.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textfileupload.setTextColor(getResources().getColor(R.color.text_dark));
         textfileupload.setTextSize((int) getResources().getDimension(R.dimen._5sdp));
 
         textfileupload.setLayoutParams(params);
-        textLinearLayout2.addView(textfileupload);
+        textfileupload.setHint("Select " + List.getFieldName());
+//        textLinearLayout2.addView(textfileupload);
         textLinearLayout2.setId(k);
-        textfileupload.setHint("File");
+
+        LinearLayout parentLayout = new LinearLayout(context);
+        parentLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        parentLayout.setOrientation(LinearLayout.HORIZONTAL);
+        parentLayout.setBackgroundResource(R.drawable.background_card_white_plan);
+
+        ImageView clearButton = new ImageView(context);
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
+                (int) getResources().getDimension(R.dimen._15sdp),
+                (int) getResources().getDimension(R.dimen._15sdp)
+        );
+        buttonParams.gravity = Gravity.CENTER_VERTICAL;
+        clearButton.setLayoutParams(buttonParams);
+        clearButton.setPadding(0, (int) getResources().getDimension(R.dimen._2sdp), 0, (int) getResources().getDimension(R.dimen._2sdp));
+        clearButton.setImageResource(R.drawable.close_icon);
+        clearButton.setVisibility(View.GONE);
+
+        parentLayout.addView(textfileupload);
+        parentLayout.addView(clearButton);
+
+        clearButton.setOnClickListener(v -> {
+            if(textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
+                removeFile(textfileupload.getText().toString());
+                textfileupload.setText("");
+            }
+        });
+
+        textLinearLayout2.addView(parentLayout);
 
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
 
@@ -1926,6 +2080,13 @@ public class DynamicActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 isEdited = true;
                 ActivityViewItem.get(k).setAnswerTxt(textfileupload.getText().toString());
+                if(textfileupload.getText() != null && !textfileupload.getText().toString().isEmpty()) {
+                    drawable.setTint(getColor(R.color.green_60));
+                    clearButton.setVisibility(View.VISIBLE);
+                } else {
+                    clearButton.setVisibility(View.GONE);
+                    drawable.setTint(getColor(R.color.dark_purple));
+                }
             }
         });
 
@@ -1954,7 +2115,7 @@ public class DynamicActivity extends AppCompatActivity {
 
         TextView textviewdata = new TextView(this);
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -2003,7 +2164,7 @@ public class DynamicActivity extends AppCompatActivity {
         textLinearLayout2.addView(textcurrency);
         textcurrency.setInputType(InputType.TYPE_CLASS_NUMBER);
         textcurrency.setId(k);
-        textcurrency.setHint("Amount");
+        textcurrency.setHint("Enter " + List.getFieldName());
         textcurrency.setCursorVisible(true);
         textcurrency.setClickable(true);
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
@@ -2084,6 +2245,7 @@ public class DynamicActivity extends AppCompatActivity {
         MainLayout.addView(AddressText);
 
         String address;
+        gpsTrack = new GPSTrack(this);
         double latitude = gpsTrack.getLatitude();
         double longitude = gpsTrack.getLongitude();
         if (UtilityClass.isNetworkAvailable(DynamicActivity.this)) {
@@ -2110,6 +2272,7 @@ public class DynamicActivity extends AppCompatActivity {
                     } else {
                         commonUtilsMethods.showToastMessage(DynamicActivity.this, "Wait For Location");
                         String address;
+                        gpsTrack = new GPSTrack(DynamicActivity.this);
                         double latitude = gpsTrack.getLatitude();
                         double longitude = gpsTrack.getLongitude();
                         address = CommonUtilsMethods.gettingAddress(DynamicActivity.this, latitude, longitude, false);
@@ -2153,7 +2316,7 @@ public class DynamicActivity extends AppCompatActivity {
         TextView textviewdata = new TextView(this);
 
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -2212,7 +2375,7 @@ public class DynamicActivity extends AppCompatActivity {
         textLinearLayout2.addView(txtcurconvert1);
         txtcurconvert1.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         txtcurconvert1.setId(k);
-        txtcurconvert1.setHint("Amount");
+        txtcurconvert1.setHint("Enter " + List.getFieldName());
 
         LinearLayout textLinearLayout3 = new LinearLayout(this);
         textLinearLayout3.setOrientation(LinearLayout.HORIZONTAL);
@@ -2245,7 +2408,7 @@ public class DynamicActivity extends AppCompatActivity {
         txtcurconvert2.setClickable(false);
         txtcurconvert2.setEnabled(false);
         txtcurconvert2.setId(k);
-        txtcurconvert2.setHint("Amount");
+        txtcurconvert2.setHint("Enter " + List.getFieldName());
         ActivityViewItem.add(new ActivityDetailsModelClass(k, List.getFieldName(), "", "", List.getControlId(), List.getCreationId(), List.getInput(), List.getMandatory(), List.getControlPara(), List.getGroupCreationId(), " ", List.getSlno()));
     }
 
@@ -2259,7 +2422,7 @@ public class DynamicActivity extends AppCompatActivity {
         TextView textviewdata = new TextView(this);
 
         String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
-        String firstChar2 = "<font color='#EE0000'> ✶</font>";
+        String firstChar2 = "<font color='#EE0000'><small><small><sup> ✶</sup></small></small></font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
             textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
@@ -2323,7 +2486,7 @@ public class DynamicActivity extends AppCompatActivity {
                 if (isMultipleCheck) {
                     mListName.add(activityModelClass.getName());
                     mListId.add(activityModelClass.getCode());
-                    IdView.setText(activityModelClass.getCode());
+//                    IdView.setText(activityModelClass.getCode());
                 } else {
                     binding.mainLayout.closeDrawer(Gravity.RIGHT);
                     NameView.setText(activityModelClass.getName());
@@ -2362,7 +2525,7 @@ public class DynamicActivity extends AppCompatActivity {
                 if (isMultipleCheck) {
                     String lids = "";
                     for (int i = 0; i < mListId.size(); i++) {
-                        lids = lids + "," + mListId.get(i);
+                        lids = lids+ mListId.get(i) + "," ;
                     }
                     NameView.setText(mListName.toString().replaceAll("[\\[\\]]", ""));
                     IdView.setText(lids);
@@ -2425,13 +2588,13 @@ public class DynamicActivity extends AppCompatActivity {
                     ex.printStackTrace();
                 }
             } else {
-                commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_correct_path));
+                commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.no_file_selected));
             }
             commonFun();
         }
     }
 
-    public static void copyFileOrDirectory(String srcDir, String dstDir) {
+    public void copyFileOrDirectory(String srcDir, String dstDir) {
         try {
             File src = new File(srcDir);
             File dst = new File(dstDir, src.getName());
@@ -2452,8 +2615,7 @@ public class DynamicActivity extends AppCompatActivity {
         }
     }
 
-    // @RequiresApi(api = Build.VERSION_CODES.Q)
-    public static void copyFile(File sourceFile, File destFile) throws IOException {
+    public void copyFile(File sourceFile, File destFile) throws IOException {
         if (!destFile.getParentFile().exists()) destFile.getParentFile().mkdirs();
 
         if (!destFile.exists()) {
@@ -2482,6 +2644,24 @@ public class DynamicActivity extends AppCompatActivity {
         }
     }
 
+    public void removeFile(String fileName) {
+        File file = null;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            file = new File(context.getExternalFilesDir(null) + "/ActivityUpload/" + fileName);
+        } else {
+            Log.e("File Deletion", "captureFile: No media mounted");
+        }
+        if (file != null && !file.exists()) {
+            Log.w("File Deletion", "No File Found" + file.getAbsolutePath());
+        } else if(file != null && file.exists()){
+            if (file.delete()) {
+                Log.d("FileDeleter", "File deleted: " + file.getAbsolutePath());
+            } else {
+                Log.e("FileDeleter", "File not deleted: " + file.getAbsolutePath());
+            }
+        }
+    }
+
     public void saveActivity() {
 //        if(UtilityClass.isNetworkAvailable(DynamicActivity.this)) {
         int conut = 0;
@@ -2492,12 +2672,13 @@ public class DynamicActivity extends AppCompatActivity {
                 ActivityDetailsModelClass List = ActivityViewItem.get(i);
                 Date today = new Date();
                 String dateTime = TimeUtils.GetCurrentTimeStamp(TimeUtils.FORMAT_1);
-                String dateToStr = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_1, HomeDashBoard.binding.textDate.getText().toString());
+                String dateToStr = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString());
+                String time = TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_32);
                 SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
                 String dateToStr1 = format1.format(today) + " 00:00:00";
                 jsonObject.put("sfcode", SharedPref.getSfCode(this));
                 jsonObject.put("division_code", SharedPref.getDivisionCode(this));
-                jsonObject.put("act_date", dateToStr);
+                jsonObject.put("act_date", dateToStr + " " + time);
                 jsonObject.put("dcr_date", dateToStr1);
                 jsonObject.put("update_time", dateTime);
                 jsonObject.put("ModTime", "");
@@ -2518,7 +2699,7 @@ public class DynamicActivity extends AppCompatActivity {
                 jsonObject.put("FWFlg", "");
                 jsonObject.put("town_code", "");
                 jsonObject.put("town_name", "");
-                jsonObject.put("Rsf", SharedPref.getHqCode(DynamicActivity.this));
+                jsonObject.put("Rsf", selectedHQ);
                 jsonObject.put("sf_type", SharedPref.getSfType(this));
                 jsonObject.put("Designation", SharedPref.getDesig(this));
                 jsonObject.put("state_code", SharedPref.getStateCode(this));
@@ -2707,7 +2888,7 @@ public class DynamicActivity extends AppCompatActivity {
                 }
 
             }
-            commonUtilsMethods.showToastMessage(DynamicActivity.this, "Activity Saved Successfully");
+            commonUtilsMethods.showToastMessage(DynamicActivity.this, activityCap + " Saved Successfully");
         } catch (Exception a) {
             a.printStackTrace();
         }
@@ -2828,11 +3009,19 @@ public class DynamicActivity extends AppCompatActivity {
 
     void showHQ() {
         try {
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+            JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+            JSONArray newJsonArray = new JSONArray();
+            JSONObject independent = new JSONObject();
+            independent.put("name", "Independent");
+            independent.put("id", SharedPref.getSfCode(DynamicActivity.this));
+            newJsonArray.put(independent);
+            for (int i = 0; i<jsonArray1.length(); i++) {
+                newJsonArray.put(jsonArray1.optJSONObject(i));
+            }
             ArrayList<String> list = new ArrayList<>();
-            if (jsonArray.length() > 0) {
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+            if (newJsonArray.length() > 0) {
+                for (int i = 0; i < newJsonArray.length(); i++) {
+                    JSONObject jsonObject = newJsonArray.getJSONObject(i);
                     list.add(jsonObject.getString("name"));
                 }
             }
@@ -2864,11 +3053,19 @@ public class DynamicActivity extends AppCompatActivity {
             listView.setOnItemClickListener((adapterView, view1, position, l) -> {
                 String selectedHq = listView.getItemAtPosition(position).toString();
                 binding.txthqName.setText(selectedHq);
-                for (int i = 0; i < jsonArray.length(); i++) {
+                for (int i = 0; i < newJsonArray.length(); i++) {
                     try {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
-                            getHQData(jsonObject.getString("id"));
+                        JSONObject jsonObject = newJsonArray.getJSONObject(i);
+                        if (jsonObject.optString("name").equalsIgnoreCase(selectedHq)) {
+                            selectedHQ = jsonObject.optString("id");
+                            binding.rlNoData.setVisibility(View.VISIBLE);
+                            binding.rlDetailsMain.setVisibility(View.GONE);
+                            binding.btnsumit.setVisibility(View.GONE);
+                            chosenActivityModelClass = null;
+                            chosenActivityPosition = -1;
+                            this.adapter.changeRowIndex(-1);
+                            getActivity();
+//                            getHQData(jsonObject.optString("id"));
 //                            getActivity(jsonObject.getString("id"));
                             break;
                         }
@@ -3015,7 +3212,7 @@ public class DynamicActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        CommonAlertBox.CheckLocationStatus(DynamicActivity.this);
+        CommonAlertBox.CheckLocationStatus(DynamicActivity.this, gpsTrack);
     }
 
     @Override

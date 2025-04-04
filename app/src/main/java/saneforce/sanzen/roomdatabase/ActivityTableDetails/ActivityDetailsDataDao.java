@@ -9,6 +9,8 @@ import androidx.room.Update;
 
 import java.util.List;
 
+import saneforce.sanzen.commonClasses.Constants;
+
 @Dao
 public interface ActivityDetailsDataDao {
 
@@ -32,6 +34,9 @@ public interface ActivityDetailsDataDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM `ACTIVITY_DETAILS_TABLE`)")
     boolean isDataAvailable();
+
+    @Query("SELECT EXISTS(SELECT 1 FROM `ACTIVITY_DETAILS_TABLE` WHERE `ID` = :id)")
+    boolean isActivityDataAvailable(String id);
 
     @Query("SELECT * FROM `ACTIVITY_DETAILS_TABLE` WHERE `ID` = :id")
     ActivityDetailsDataTable getActivityDetailsByID(String id);

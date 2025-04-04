@@ -355,7 +355,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialiconsoutlined/cloud_download/outline_cloud_download_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialiconsoutlined/download_for_offline/outline_download_for_offline_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -366,7 +366,7 @@
                         <option name="values">
                           <map>
                             <entry key="color" value="2f2d2d" />
-                            <entry key="outputName" value="outline_cloud_download_24" />
+                            <entry key="outputName" value="outline_download_for_offline_24" />
                             <entry key="sourceFile" value="C:\Users\apps\Downloads\Native-Pharma-SANCLM" />
                           </map>
                         </option>

@@ -56,6 +56,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.homeScreen.fragment.CallsFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
+import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -212,7 +213,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                 }
                             }
                         }
-                        callsUtil.deleteOfflineCalls(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
+                        callsUtil.deleteOfflineCallsWithActivity(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
                         try {
                             if (!outBoxCallLists.get(position).getStatus().equalsIgnoreCase(Constants.DUPLICATE_CALL)) {
                                 JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
@@ -463,6 +464,24 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         outBoxCallLists.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, outBoxCallLists.size());
+        ArrayList<GroupModelClass> listDatesDup = callsUtil.getOutBoxDatesWithData();
+        try {
+            for (int i = 0; i < listDates.size(); i++) {
+                GroupModelClass groupModelClass = listDates.get(i);
+                if (groupModelClass.isExpanded()) {
+                    for (int j = 0; j < listDatesDup.size(); j++) {
+                        GroupModelClass groupModelClass1 = listDatesDup.get(j);
+                        if (groupModelClass1.getGroupName().equalsIgnoreCase(groupModelClass.getGroupName())) {
+                            groupModelClass1.setExpanded(true);
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        listDates = listDatesDup;
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
         commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
         outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);

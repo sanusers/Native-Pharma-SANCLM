@@ -91,7 +91,7 @@ public class QuizActivity extends AppCompatActivity {
     private QuizOfflineDataDao quizOfflineDataDao;
     private QuizAssertsDao quizAssertsDao;
     private int QuestionNumber = 0, noOfCorrectAnswers = 0;
-    private boolean isShuffleAllowed = false, isPaused = false, isStarted = false;
+    private boolean isShuffleAllowed = false, isPaused = false, isStarted = false, isQuizAvailable = false, isSubmitting = false, isBackPressed = false;
     private String noOfAttemptsAllowed = "0", timeLimit = "00:00:00", startTime = "", surveyID = "", quizCap = "", fileName = "", fileType = "";
     private CountDownTimer countDownTimer;
     QuizQuestionAdapter quizQuestionAdapter;
@@ -102,6 +102,8 @@ public class QuizActivity extends AppCompatActivity {
     private ApiInterface apiInterface;
     public static ArrayList<String> assertsNames = new ArrayList<>();
     public static boolean isSingleAssertDownloadingStatus = false;
+    private HashMap<String, String> quizStoredData = new HashMap<>();
+    public static String SYNC_NEEDED = "Sync Needed";
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -126,31 +128,69 @@ public class QuizActivity extends AppCompatActivity {
         binding.tvNoQuiz.setText(String.format("No %s Found", quizCap));
         assertsNames.clear();
         isSingleAssertDownloadingStatus = false;
+        boolean syncNeeded = false;
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){
+            syncNeeded = bundle.getBoolean(SYNC_NEEDED, false);
+        }
 
-        if(SharedPref.getQuizAttempts(QuizActivity.this)>0 && HomeDashBoard.selectedDate != null && SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+        if(syncNeeded) {
+            showSyncPopup();
+        } else {
+//        if(SharedPref.getQuizAttempts(QuizActivity.this)>0 && HomeDashBoard.selectedDate != null && SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
             getData();
-        }else {
-            try {
-                quizAssertsDao.deleteAllData();
-                File file = new File(this.getExternalFilesDir(null) + "/QuizAsserts");
-                if(file.exists()) {
-                    cleanDirectory(file);
+//        }else {
+//            callSyncAPI();
+//        }
+//        SharedPref.setQuizData(this, "");
+
+            if(!SharedPref.getQuizData(this).isEmpty()) {
+                try {
+                    JSONObject jsonObject = new JSONObject(SharedPref.getQuizData(this));
+                    String date = jsonObject.optString("date");
+                    if(HomeDashBoard.selectedDate != null && date.equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+                        String timeRemaining = jsonObject.optString("time_remaining");
+                        long time = Long.parseLong(timeRemaining);
+                        timeLimit = TimeUtils.getMillisToFormattedTime(time, TimeUtils.FORMAT_32);
+                        JSONArray jsonArray = jsonObject.optJSONArray("Quiz_Results");
+                        if(jsonArray != null && jsonArray.length()>0) {
+                            JSONArray quizData = jsonArray.optJSONArray(0);
+                            if(quizData != null && quizData.length()>0) {
+                                quizStoredData = new HashMap<>();
+                                for (int i = 0; i<quizData.length(); i++) {
+                                    JSONObject data = quizData.optJSONObject(i);
+                                    String questionID = data.optString("Question_Id");
+                                    String inputID = data.optString("input_id");
+                                    String inputText = data.optString("Input_Text");
+                                    quizStoredData.put(questionID, inputText);
+                                }
+                            }
+                        }
+
+                        binding.rlStartQuiz.setVisibility(View.GONE);
+                        binding.rlQuizMain.setVisibility(View.VISIBLE);
+                        isStarted = true;
+                        populateData();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-            callSyncAPI();
         }
 
         binding.backArrow.setOnClickListener(v -> {
             if(SharedPref.getQuizNeedMandt(QuizActivity.this).equalsIgnoreCase("0")
-                    && !SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+                    && isQuizAvailable
+                    && (!SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
+                    || SharedPref.getQuizAttempts(QuizActivity.this)>0) ) {
                 noBackAlert();
             }else {
                 if(isStarted) {
                     backAlert();
                 }else {
+                    pauseTimer();
                     isStarted = false;
+                    isBackPressed = true;
                     getOnBackPressedDispatcher().onBackPressed();
                     finish();
                 }
@@ -159,13 +199,17 @@ public class QuizActivity extends AppCompatActivity {
 
         binding.btnskip.setOnClickListener(v -> {
             if(SharedPref.getQuizNeedMandt(QuizActivity.this).equalsIgnoreCase("0")
-                    && !SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+                    && isQuizAvailable
+                    && (!SharedPref.getLastQuizSubmittedDate(QuizActivity.this).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
+                    || SharedPref.getQuizAttempts(QuizActivity.this)>0) ) {
                 noBackAlert();
             }else {
                 if(isStarted) {
                     backAlert();
                 }else {
+                    pauseTimer();
                     isStarted = false;
+                    isBackPressed = true;
                     getOnBackPressedDispatcher().onBackPressed();
                     finish();
                 }
@@ -212,7 +256,6 @@ public class QuizActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("Name", fileName);
             jsonArray.put(jsonObject);
-            insertQuizAsserts(jsonArray);
             QuizAssertsDataTable quizAssertsDataTable = quizAssertsDao.getQuizAssertsDataByName(fileName);
             if(quizAssertsDataTable != null && quizAssertsDataTable.getDownloadingStatus().equalsIgnoreCase("3")) {
                 if(!isFinishing()) {
@@ -220,11 +263,56 @@ public class QuizActivity extends AppCompatActivity {
                     viewDownloadedQuizAssert();
                 }
             }else {
+                try {
+                    quizAssertsDao.deleteAllData();
+                    File file = new File(this.getExternalFilesDir(null) + "/QuizAsserts");
+                    if(file.exists()) {
+                        cleanDirectory(file);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                insertQuizAsserts(jsonArray);
                 quizAssertAlertBox(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void showSyncPopup() {
+        Dialog dialogBackConfirmation = new Dialog(QuizActivity.this);
+        dialogBackConfirmation.setContentView(R.layout.popup_remarks);
+        Objects.requireNonNull(dialogBackConfirmation.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogBackConfirmation.setCancelable(false);
+        ImageView iv_close = dialogBackConfirmation.findViewById(R.id.img_close);
+        EditText ed_remarks = dialogBackConfirmation.findViewById(R.id.ed_remark);
+        TextView heading = dialogBackConfirmation.findViewById(R.id.tv_head);
+        TextView content = dialogBackConfirmation.findViewById(R.id.content);
+        Button btn_clear = dialogBackConfirmation.findViewById(R.id.btn_clear);
+        Button btn_save = dialogBackConfirmation.findViewById(R.id.btn_save);
+        heading.setText(R.string.alert);
+        btn_save.setText(R.string.try_again);
+        btn_clear.setText(getString(R.string.close));
+        iv_close.setVisibility(View.GONE);
+        if(SharedPref.getDcrSequential(QuizActivity.this).equalsIgnoreCase("0")) {
+            btn_clear.setVisibility(View.GONE);
+        }else {
+            btn_clear.setVisibility(View.VISIBLE);
+        }
+        content.setText(String.format("%s is Mandatory.\nKindly Sync by clicking \"%s\"", quizCap, getString(R.string.try_again)));
+        content.setVisibility(View.VISIBLE);
+        ed_remarks.setVisibility(View.INVISIBLE);
+        btn_save.setOnClickListener(view -> {
+            callSyncAPI();
+            dialogBackConfirmation.dismiss();
+        });
+        btn_clear.setOnClickListener(view -> {
+            SharedPref.setSelectedDateCal(QuizActivity.this, "");
+            dialogBackConfirmation.dismiss();
+            finish();
+        });
+        dialogBackConfirmation.show();
     }
 
     public void insertQuizAsserts(JSONArray jsonArray) {
@@ -389,16 +477,18 @@ public class QuizActivity extends AppCompatActivity {
         Button btn_clear = dialogBackConfirmation.findViewById(R.id.btn_clear);
         Button btn_save = dialogBackConfirmation.findViewById(R.id.btn_save);
         heading.setText(R.string.alert);
-        btn_save.setText(getString(R.string.yes));
-        btn_clear.setText(getString(R.string.no));
-        content.setText(String.format("%s want to go back.\n%s will not be resumed", getString(R.string.are_you_sure), quizCap));
+        btn_clear.setVisibility(View.GONE);
+        btn_save.setText(getString(R.string.continuee));
+//        btn_clear.setText(getString(R.string.no));
+        content.setText(String.format("%s started, Cannot go back", quizCap));
         content.setVisibility(View.VISIBLE);
         ed_remarks.setVisibility(View.INVISIBLE);
         btn_save.setOnClickListener(view -> {
+//            pauseTimer();
+//            isStarted = false;
             dialogBackConfirmation.dismiss();
-            isStarted = false;
-            getOnBackPressedDispatcher().onBackPressed();
-            finish();
+//            getOnBackPressedDispatcher().onBackPressed();
+//            finish();
         });
         btn_clear.setOnClickListener(view -> {
             dialogBackConfirmation.dismiss();
@@ -469,17 +559,14 @@ public class QuizActivity extends AppCompatActivity {
 
     private void submitQuiz() {
         if(UtilityClass.isNetworkAvailable(QuizActivity.this)) {
+            isSubmitting = true;
             pauseTimer();
             createJson();
-            int attempts = SharedPref.getQuizAttempts(QuizActivity.this);
-            if(attempts>0) {
-                attempts--;
-            }
-            SharedPref.setQuizAttempts(QuizActivity.this, attempts);
             callSaveAPI();
-            setScoreView();
+//            setScoreView();
         }else {
             commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network));
+            showSubmitPopup();
         }
 //        quizOfflineDataDao.insert(new QuizOfflineDataTable(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32), saveJsonObject.toString(), 0, Constants.WAITING_FOR_SYNC));
     }
@@ -528,6 +615,18 @@ public class QuizActivity extends AppCompatActivity {
         });
 
         iv_close.setOnClickListener(view -> {
+            try {
+                binding.rlStartQuiz.setVisibility(View.VISIBLE);
+                binding.rlQuizMain.setVisibility(View.GONE);
+                masterDataDao.updateData(Constants.QUIZ, "[]");
+                quizAssertsDao.deleteAllData();
+                File file = new File(this.getExternalFilesDir(null) + "/QuizAsserts");
+                if(file.exists()) {
+                    cleanDirectory(file);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             quizResultDialog.dismiss();
             finish();
         });
@@ -597,6 +696,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private void callSyncAPI() {
         if(UtilityClass.isNetworkAvailable(QuizActivity.this)) {
+            binding.tvProgressTitle.setText("Syncing Quiz...");
             binding.flProgress.setVisibility(View.VISIBLE);
             try {
                 apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
@@ -605,7 +705,7 @@ public class QuizActivity extends AppCompatActivity {
                 jsonObject.put("sfcode", SharedPref.getSfCode(this));
                 jsonObject.put("division_code", SharedPref.getDivisionCode(this));
                 jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_22, HomeDashBoard.selectedDate.toString()));
-                Log.i("QUIZ", "callSyncAPI: json -- " + jsonObject);
+                Log.i("QUIZ", "quiz: json -- " + jsonObject);
                 Map<String, String> qry = new HashMap<>();
                 qry.put("axn", "table/additionaldcrmasterdata");
                 Call<JsonElement> quiz = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), qry, jsonObject.toString());
@@ -623,13 +723,15 @@ public class QuizActivity extends AppCompatActivity {
                                         JSONArray jsonArray = new JSONArray();
                                         jsonArray.put(object);
                                         masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.QUIZ, jsonArray.toString(), 2));
+                                        SharedPref.setQuizAvailableDate(QuizActivity.this, HomeDashBoard.selectedDate.toString());
                                     }else {
                                         masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.QUIZ, "[]", 2));
                                     }
+                                    getData();
                                 } catch (Exception e) {
                                     e.printStackTrace();
+                                    showSyncPopup();
                                 }
-                                getData();
                             }
                         }
 
@@ -638,47 +740,101 @@ public class QuizActivity extends AppCompatActivity {
                             t.printStackTrace();
                             binding.flProgress.setVisibility(View.GONE);
                             commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.poor_connection));
+                            showSyncPopup();
                         }
                     });
                 }
             } catch (Exception e) {
                 binding.flProgress.setVisibility(View.GONE);
                 e.printStackTrace();
+                showSyncPopup();
             }
         }else {
             commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network));
+            showSyncPopup();
         }
     }
 
     private void callSaveAPI() {
-        try {
-            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-            Map<String, String> qry = new HashMap<>();
-            qry.put("axn", "result/quiz");
-            Call<JsonElement> quiz = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), qry, saveJsonObject.toString());
-            if(quiz != null) {
-                quiz.enqueue(new Callback<JsonElement>() {
-                    @Override
-                    public void onResponse(@NonNull Call<JsonElement> quiz, @NonNull Response<JsonElement> response) {
-                        if(response.isSuccessful()) {
-                            if(response.body() != null) {
-                                Log.e("test", "response : " + " : " + response.body());
+        if(UtilityClass.isNetworkAvailable(QuizActivity.this)) {
+            binding.tvProgressTitle.setText("Submitting Quiz...");
+            binding.flProgress.setVisibility(View.VISIBLE);
+            try {
+                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+                Map<String, String> qry = new HashMap<>();
+                qry.put("axn", "result/quiz");
+                Call<JsonElement> quiz = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), qry, saveJsonObject.toString());
+                if(quiz != null) {
+                    quiz.enqueue(new Callback<JsonElement>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonElement> quiz, @NonNull Response<JsonElement> response) {
+                            binding.flProgress.setVisibility(View.GONE);
+                            if(response.isSuccessful()) {
+                                if(response.body() != null) {
+                                    Log.e("test", "response : " + " : " + response.body());
+                                }
+                                commonUtilsMethods.showToastMessage(QuizActivity.this, quizCap + " Submitted Successfully");
+                                int attempts = SharedPref.getQuizAttempts(QuizActivity.this);
+//                            if(attempts == 1) {
+                                SharedPref.setLastQuizSubmittedDate(QuizActivity.this, HomeDashBoard.selectedDate.toString());
+//                            }
+                                if(attempts>0) {
+                                    attempts--;
+                                }
+                                SharedPref.setQuizAttempts(QuizActivity.this, attempts);
+                                setScoreView();
+                                SharedPref.setQuizData(QuizActivity.this, "");
                             }
-                            commonUtilsMethods.showToastMessage(QuizActivity.this, quizCap + " Submitted Successfully");
-                            SharedPref.setLastQuizSubmittedDate(QuizActivity.this, HomeDashBoard.selectedDate.toString());
                         }
-                    }
 
-                    @Override
-                    public void onFailure(@NonNull Call<JsonElement> quiz, @NonNull Throwable t) {
-                        commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.poor_connection));
-                    }
-                });
+                        @Override
+                        public void onFailure(@NonNull Call<JsonElement> quiz, @NonNull Throwable t) {
+                            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.poor_connection));
+                            binding.flProgress.setVisibility(View.GONE);
+                            showSubmitPopup();
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                binding.flProgress.setVisibility(View.GONE);
+                commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.poor_connection));
+                showSubmitPopup();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.poor_connection));
+        } else {
+            binding.flProgress.setVisibility(View.GONE);
+            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network));
+            showSubmitPopup();
         }
+    }
+
+    private void showSubmitPopup() {
+        Dialog dialogBackConfirmation = new Dialog(QuizActivity.this);
+        dialogBackConfirmation.setContentView(R.layout.popup_remarks);
+        Objects.requireNonNull(dialogBackConfirmation.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogBackConfirmation.setCancelable(false);
+        ImageView iv_close = dialogBackConfirmation.findViewById(R.id.img_close);
+        EditText ed_remarks = dialogBackConfirmation.findViewById(R.id.ed_remark);
+        TextView heading = dialogBackConfirmation.findViewById(R.id.tv_head);
+        TextView content = dialogBackConfirmation.findViewById(R.id.content);
+        Button btn_clear = dialogBackConfirmation.findViewById(R.id.btn_clear);
+        Button btn_save = dialogBackConfirmation.findViewById(R.id.btn_save);
+        heading.setText(R.string.alert);
+        btn_save.setText(R.string.try_again);
+        btn_clear.setText(getString(R.string.no));
+        iv_close.setVisibility(View.GONE);
+        btn_clear.setVisibility(View.GONE);
+        content.setText(String.format("%s submit failed.\n\"%s\" to submit", quizCap, getString(R.string.try_again)));
+        content.setVisibility(View.VISIBLE);
+        ed_remarks.setVisibility(View.INVISIBLE);
+        btn_save.setOnClickListener(view -> {
+            callSaveAPI();
+            dialogBackConfirmation.dismiss();
+        });
+        btn_clear.setOnClickListener(view -> {
+            dialogBackConfirmation.dismiss();
+        });
+        dialogBackConfirmation.show();
     }
 
     private void getData() {
@@ -688,6 +844,7 @@ public class QuizActivity extends AppCompatActivity {
         try {
             JSONArray quizdata = masterDataDao.getMasterDataTableOrNew(Constants.QUIZ).getMasterSyncDataJsonArray();
             if(quizdata.length()>0) {
+                isQuizAvailable = true;
                 binding.rlStartQuiz.setVisibility(View.VISIBLE);
                 binding.constraintNoData.setVisibility(View.GONE);
                 for (int i = 0; i<quizdata.length(); i++) {
@@ -703,6 +860,7 @@ public class QuizActivity extends AppCompatActivity {
                 }
                 setupQuizWelcome();
             }else {
+                isQuizAvailable = false;
                 quizTitleJsonArray = null;
                 processUserJsonArray = null;
                 QuesttionjsonArray = null;
@@ -730,6 +888,10 @@ public class QuizActivity extends AppCompatActivity {
                     String type = jsonObject.getString("type");
                     isShuffleAllowed = type.equalsIgnoreCase("Suffle");
                     timeLimit = jsonObject.optString("timelimit");
+                    String[] timeSplit = timeLimit.split(":");
+                    if(timeSplit.length == 2) {
+                        timeLimit += ":00";
+                    }
                 }
             }
             if(quizTitleJsonArray != null) {
@@ -746,6 +908,7 @@ public class QuizActivity extends AppCompatActivity {
         int numberOfAttempts = 0;
         try {
             numberOfAttempts = Integer.parseInt(noOfAttemptsAllowed);
+            binding.noOfAttemptsAllowed.setText(String.valueOf(numberOfAttempts));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -755,7 +918,7 @@ public class QuizActivity extends AppCompatActivity {
             noOfAttemptsAllowed = String.valueOf(SharedPref.getQuizAttempts(QuizActivity.this));
         }
         binding.noOfQuestions.setText(String.valueOf(noOfQuestions));
-        binding.noOfAttemptsAllowed.setText(noOfAttemptsAllowed);
+        binding.noOfAttemptsLeft.setText(noOfAttemptsAllowed);
 
         binding.totalTime.setText(timeLimit);
         if(fileName.isEmpty()) {
@@ -790,8 +953,8 @@ public class QuizActivity extends AppCompatActivity {
                     ArrayList<JSONObject> jsonObject1 = optionListMap.get(jsonObject.getString("Question_Id"));
                     if(jsonObject1 != null) {
                         for (JSONObject obj : jsonObject1) {
-                            optionname = optionname + obj.getString("Input_Text") + ",";
-                            optionCode = optionCode + obj.getString("input_id") + ",";
+                            optionname = optionname + obj.getString("Input_Text") + "^^";
+                            optionCode = optionCode + obj.getString("input_id") + "^^";
                             if(obj.getString("Correct_Ans").equalsIgnoreCase("1")) {
                                 answercode = obj.getString("input_id");
                             }
@@ -843,8 +1006,8 @@ public class QuizActivity extends AppCompatActivity {
         if(position<mQuizList.size()) {
             binding.txtQuestonName.setText(mQuizList.get(position).getQuestionName());
             binding.txtQuestonNo.setText("Question : " + (position + 1));
-            String[] optionSplit = mQuizList.get(position).getOption().split(",");
-            String[] optionSplitIds = mQuizList.get(position).getOptionCode().split(",");
+            String[] optionSplit = mQuizList.get(position).getOption().split("\\^\\^");
+            String[] optionSplitIds = mQuizList.get(position).getOptionCode().split("\\^\\^");
 
             quizCountAdapter.setSelected(position);
 
@@ -860,10 +1023,14 @@ public class QuizActivity extends AppCompatActivity {
             }
 
             for (int i = 0; i<optionSplit.length; i++) {
-                String optionName = optionSplit[i], optionCode = optionSplitIds[i];
+                String optionName = optionSplit[i], optionCode = optionSplitIds[i], questionCode = mQuizList.get(position).getQuestionCode();
                 if(!SelctionName.equalsIgnoreCase("") && SelctionName.equalsIgnoreCase(optionName)) {
                     optionList.add(new QuizOptionModelClass(true, optionName, optionCode));
-                }else {
+                } else if(quizStoredData != null && quizStoredData.containsKey(questionCode)
+                        && quizStoredData.get(questionCode) != null && quizStoredData.get(questionCode).equalsIgnoreCase(optionName)) {
+                    optionList.add(new QuizOptionModelClass(true, optionName, optionCode));
+                    sQuizMainAnswerList.add(new QuizOptionModelClass(position, optionSplit, optionSplitIds, optionName, optionCode));
+                } else {
                     optionList.add(new QuizOptionModelClass(false, optionName, optionCode));
                 }
             }
@@ -911,10 +1078,19 @@ public class QuizActivity extends AppCompatActivity {
         binding.btnpreview.setAlpha(0.5f);
         binding.btnNext.setAlpha(1f);
         for (int i = 0; i<mQuizList.size(); i++) {
+            String questionCode = mQuizList.get(i).getQuestionCode();
             if(i == 0) {
-                quesNumberModelList.add(new QuizQuesNoModel(i + 1, true, false));
+                if(quizStoredData != null && quizStoredData.containsKey(questionCode)){
+                    quesNumberModelList.add(new QuizQuesNoModel(i + 1, true, true));
+                }else {
+                    quesNumberModelList.add(new QuizQuesNoModel(i + 1, true, false));
+                }
             }else {
-                quesNumberModelList.add(new QuizQuesNoModel(i + 1, false, false));
+                if(quizStoredData != null && quizStoredData.containsKey(questionCode)){
+                    quesNumberModelList.add(new QuizQuesNoModel(i + 1, false, true));
+                } else {
+                    quesNumberModelList.add(new QuizQuesNoModel(i + 1, false, false));
+                }
             }
         }
         quizCountAdapter = new QuizCountAdapter(quesNumberModelList, this, questionClickListener);
@@ -922,12 +1098,9 @@ public class QuizActivity extends AppCompatActivity {
         binding.skRecylerview.setAdapter(quizCountAdapter);
     }
 
-    private QuizCountAdapter.QuestionClickListener questionClickListener = new QuizCountAdapter.QuestionClickListener() {
-        @Override
-        public void onClick(QuizQuesNoModel quizQuesNoModel) {
-            QuestionNumber = quizQuesNoModel.getQuestionNumber() - 1;
-            setQuestion(quizQuesNoModel.getQuestionNumber() - 1);
-        }
+    private final QuizCountAdapter.QuestionClickListener questionClickListener = quizQuesNoModel -> {
+        QuestionNumber = quizQuesNoModel.getQuestionNumber() - 1;
+        setQuestion(quizQuesNoModel.getQuestionNumber() - 1);
     };
 
     @Override
@@ -940,7 +1113,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private void startTimer() {
         try {
-            countDownTimer = new CountDownTimer(TimeUtils.getMilliSeconds(TimeUtils.FORMAT_29, timeLimit), 1000) {
+            countDownTimer = new CountDownTimer(TimeUtils.getMilliSeconds(TimeUtils.FORMAT_32, timeLimit), 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     String timeLeftFormatted = TimeUtils.getMillisToFormattedTime(millisUntilFinished, TimeUtils.FORMAT_32);
@@ -962,7 +1135,9 @@ public class QuizActivity extends AppCompatActivity {
 
     private void pauseTimer() {
         isPaused = true;
-        countDownTimer.cancel();
+        if(countDownTimer != null) {
+            countDownTimer.cancel();
+        }
     }
 
     private void resumeTimer() {
@@ -992,6 +1167,21 @@ public class QuizActivity extends AppCompatActivity {
         } catch (IOException e) {
             System.err.println("Error cleaning directory: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(!isSubmitting && !isBackPressed && HomeDashBoard.selectedDate != null) {
+            try {
+                createJson();
+                saveJsonObject.put("date", HomeDashBoard.selectedDate.toString());
+                saveJsonObject.put("time_remaining", remainingTime);
+                SharedPref.setQuizData(this, saveJsonObject.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -1,7 +1,9 @@
 package saneforce.sanzen.activity.activityModule.adapter;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.DCRCallActivity;
+import saneforce.sanzen.activity.call.fragments.activity.ActivityFragment;
 import saneforce.sanzen.activity.activityModule.model.ActivityModelClass;
 import saneforce.sanzen.activity.activityModule.ActivityView;
 
@@ -43,6 +47,21 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
     @Override
     public void onBindViewHolder(@NonNull ActivityAdapter.Viewholder holder, int position) {
         holder.activityName.setText(DataList.get(position).getActivityName());
+        if(context instanceof DynamicActivity) {
+            Log.e("ActivityAdapter", "onBindViewHolder: Dynamic Activity");
+        } else if(context instanceof DCRCallActivity) {
+            Log.e("ActivityAdapter", "onBindViewHolder: Activity Fragment");
+            if(ActivityFragment.savedActivityList != null && !ActivityFragment.savedActivityList.isEmpty() && ActivityFragment.savedActivityList.contains(DataList.get(position).getSlNo())) {
+                holder.imgEdit.setVisibility(View.VISIBLE);
+            } else {
+                holder.imgEdit.setVisibility(View.GONE);
+            }
+        }
+        if(DataList.get(position).isAvailableOffline()) {
+            holder.imgOffline.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.green_60)));
+        } else {
+            holder.imgOffline.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.red_60)));
+        }
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,11 +101,14 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             holder.activityName.setTextColor(context.getResources().getColor(R.color.white));
             holder.layout.setBackgroundColor(context.getResources().getColor(R.color.text_dark));
             holder.imageView.setImageResource(R.drawable.greater_than_white);
+//            holder.imgEdit.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.white)));
         } else {
             holder.activityName.setTextColor(context.getResources().getColor(R.color.text_dark));
             holder.layout.setBackgroundColor(Color.WHITE);
             holder.imageView.setImageResource(R.drawable.right_arrow);
+//            holder.imgEdit.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.dark_purple)));
         }
+        holder.imgEdit.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.blue_60)));
     }
 
     public void changeRowIndex(int index) {
@@ -106,17 +128,17 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
     }
 
     public class Viewholder extends RecyclerView.ViewHolder {
-
         TextView activityName;
         RelativeLayout layout;
+        ImageView imageView, imgOffline, imgEdit;
 
-        ImageView imageView;
         public Viewholder(@NonNull View itemView) {
             super(itemView);
             activityName=itemView.findViewById(R.id.txtActivityName);
             layout=itemView.findViewById(R.id.rl_layout);
             imageView=itemView.findViewById(R.id.img_arrow_1);
-
+            imgEdit = itemView.findViewById(R.id.img_edit);
+            imgOffline = itemView.findViewById(R.id.img_available_offline);
         }
     }
 

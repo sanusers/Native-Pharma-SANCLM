@@ -18,22 +18,17 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
-import android.os.AsyncTask;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -41,19 +36,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,6 +52,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -71,6 +64,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.activityModule.ActivityDetailsModelClass;
+import saneforce.sanzen.activity.activityModule.ActivityModelClass;
 import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.call.adapter.DCRCallTabLayoutAdapter;
 import saneforce.sanzen.activity.call.adapter.additionalCalls.AdditionalCusListAdapter;
@@ -104,9 +99,11 @@ import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedCompList;
 import saneforce.sanzen.activity.call.pojo.rcpa.RCPAAddedProdList;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.homeScreen.fragment.CallsFragment;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 
 import saneforce.sanzen.activity.remaindercalls.RemaindercallsActivity;
+import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -115,10 +112,8 @@ import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityDcrcallBinding;
 
 import saneforce.sanzen.commonClasses.CommonAlertBox;
-import saneforce.sanzen.databinding.DialogTimezoneBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
-import saneforce.sanzen.response.CustomSetupResponse;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
@@ -149,7 +144,7 @@ public class DCRCallActivity extends AppCompatActivity {
     GPSTrack gpsTrack;
 
     JSONObject jsonSaveDcr, jsonImage;
-    String GeoChk, capPrd, capInp, capActivity, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, InputNeed, ProductNeed, AdditionalCallNeed;
+    String GeoChk, capPrd, capInp, capActivity, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, InputNeed, ProductNeed, AdditionalCallNeed, ActivityNeed;
     double lat, lng;
     ApiInterface api_interface;
     String ChemName = "", CheCode = "";
@@ -214,6 +209,7 @@ public class DCRCallActivity extends AppCompatActivity {
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
         callsUtil = new CallsUtil(this);
+        gpsTrack = new GPSTrack(this);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
         if(savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
@@ -283,6 +279,7 @@ public class DCRCallActivity extends AppCompatActivity {
         AddAdditionalCallData();
         AddRCPAData();
         AddJWData();
+        AddActivityData();
         dcrCallBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -356,7 +353,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 if(gpsTrack != null && ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0))) {
                     submitCall();
                 }else {
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.please_try_again));
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.no_location_please_try_again));
                     progressDialog.dismiss();
                 }
             }else {
@@ -418,25 +415,27 @@ public class DCRCallActivity extends AppCompatActivity {
                     UpdateInputStock();
                     UpdateSampleStock();
 
+                    storingSlide.clear();
+                    SharedPref.setLastCallDate(this, HomeDashBoard.selectedDate.toString());
+                    SharedPref.setDayPlanStartedDate(this, HomeDashBoard.selectedDate.toString());
+//                    if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
+                    //    progressDialog.dismiss();
+//                        dialogCheckOut.show();
+//                    }else {
+                    progressDialog.dismiss();
+                    IsFromDCR = true;
+                    HomeDashBoard.isDcrFrom = true;
+                    CallsFragment.syncCalls = true;
+                    Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                    startActivity(intent);
+
                     if(!UtilityClass.isNetworkAvailable(getApplicationContext())) {
                         commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_locally));
                     }else {
                         commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_successfully));
                         //progressDialog.dismiss();
                     }
-                    storingSlide.clear();
-                    SharedPref.setLastCallDate(this, HomeDashBoard.selectedDate.toString());
-                    SharedPref.setDayPlanStartedDate(this, HomeDashBoard.selectedDate.toString());
-//                    if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
-                        //    progressDialog.dismiss();
-//                        dialogCheckOut.show();
-//                    }else {
-                        progressDialog.dismiss();
-                        IsFromDCR = true;
-                       HomeDashBoard.isDcrFrom=true;
-                        Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-                        startActivity(intent);
-                        finish();
+                    finish();
 
 //                    }
 
@@ -540,10 +539,10 @@ public class DCRCallActivity extends AppCompatActivity {
                     viewPagerAdapter.add(new RCPAFragment(), "RCPA");
                     pages.add("RCPA");
                 }
-            }
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new ActivityFragment(), capActivity);
-                pages.add(capActivity);
+                if(ActivityNeed.equalsIgnoreCase("0")) {
+                    viewPagerAdapter.add(new ActivityFragment(), capActivity);
+                    pages.add(capActivity);
+                }
             }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
@@ -561,10 +560,10 @@ public class DCRCallActivity extends AppCompatActivity {
                     viewPagerAdapter.add(new RCPAFragment(), "RCPA");
                     pages.add("RCPA");
                 }
-            }
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new ActivityFragment(), capActivity);
-                pages.add(capActivity);
+                if(ActivityNeed.equalsIgnoreCase("0")) {
+                    viewPagerAdapter.add(new ActivityFragment(), capActivity);
+                    pages.add(capActivity);
+                }
             }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
@@ -577,7 +576,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new InputFragment(), capInp);
                 pages.add(capInp);
             }
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+            if(ActivityNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
@@ -592,7 +591,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new InputFragment(), capInp);
                 pages.add(capInp);
             }
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+            if(ActivityNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
@@ -603,7 +602,7 @@ public class DCRCallActivity extends AppCompatActivity {
             pages.add("Product");
             viewPagerAdapter.add(new InputFragment(), "Input");
             pages.add("Input");
-            if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+            if(ActivityNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
@@ -779,6 +778,20 @@ public class DCRCallActivity extends AppCompatActivity {
 
     public boolean CheckRequiredFunctions() {
 
+        if (ActivityNeed.equalsIgnoreCase("0")) {
+            for (String slNo : ActivityFragment.activityAnswerData.keySet()) {
+                LinkedHashMap<String, ActivityDetailsModelClass> activityDetailsModelClassMap = ActivityFragment.activityAnswerData.get(slNo);
+                if (!ActivityFragment.savedActivityList.contains(slNo) && activityDetailsModelClassMap != null) {
+                    for (ActivityDetailsModelClass activityDetailsModelClass : activityDetailsModelClassMap.values()) {
+                        if (!activityDetailsModelClass.getAnswerTxt().isEmpty() && (!activityDetailsModelClass.getControlId().equalsIgnoreCase("0") && !activityDetailsModelClass.getControlId().equalsIgnoreCase("17"))) {
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.save).trim(), capActivity));
+                            moveToPage(capActivity);
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
         switch (CallActivityCustDetails.get(0).getType()) {
             case "1":
                 if(ProductNeed.equalsIgnoreCase("0")) {
@@ -1551,6 +1564,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 }
             }
+            Log.v("jsonExtractOnline", "----" + RCPAFragment.ProductSelectedList.size() + "----" + RCPASelectCompSide.rcpa_comp_list.size());
 
             if (json.has("event_capture") && !json.getString("event_capture").equalsIgnoreCase("[]")) {
                 JSONArray jsonArrayEC = new JSONArray(json.getString("event_capture"));
@@ -1560,13 +1574,74 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
-            Log.v("jsonExtractOnline", "----" + RCPAFragment.ProductSelectedList.size() + "----" + RCPASelectCompSide.rcpa_comp_list.size());
+            if (json.has("Dcr_activity") && !json.getString("Dcr_activity").equalsIgnoreCase("[]")) {
+                JSONArray jsonArrayActivity = new JSONArray(json.getString("Dcr_activity"));
+                ActivityFragment.activityAnswerData = new LinkedHashMap<>();
+                ActivityFragment.savedActivityList = new HashSet<>();
+                if (jsonArrayActivity.length() > 0) {
+                    for (int i = 0; i < jsonArrayActivity.length(); i++) {
+                        JSONObject jsonObject = jsonArrayActivity.optJSONObject(i);
+                        String slNo = jsonObject.getString("Main_id");
+                        String activityName = jsonObject.getString("Main_Name");
+                        String sfCode = jsonObject.getString("Main_id");
+                        String groupID = jsonObject.getString("Main_id");
+                        String status = jsonObject.getString("Main_id");
+                        JSONObject dateObj = jsonObject.optJSONObject("DCR_Date");
+                        if (dateObj != null) {
+                            String date = dateObj.optString("date");
+                        }
+
+                        ActivityFragment.activityAnswerData.put(slNo, new LinkedHashMap<>());
+                        ActivityFragment.savedActivityList.add(slNo);
+
+                        JSONArray jsonArrayActivityData = jsonObject.optJSONArray("Activity_data");
+                        if (jsonArrayActivityData != null && jsonArrayActivityData.length() > 0) {
+                            for (int j = 0; j < jsonArrayActivityData.length() ; j++) {
+                                JSONObject jsonObjectActivityData = jsonArrayActivityData.optJSONObject(j);
+                                String SFCode = jsonObjectActivityData.optString("Sf_Code");
+                                String controlID = jsonObjectActivityData.optString("Ctrl_id");
+                                String creationID = jsonObjectActivityData.optString("Creation_id");
+                                String creationCode = jsonObjectActivityData.optString("Creation_Code");
+                                String creationName = jsonObjectActivityData.optString("Creation_Name");
+
+                                String answer1 = "", answer2 = "";
+                                if(controlID.equalsIgnoreCase("5") || controlID.equalsIgnoreCase("7") || controlID.equalsIgnoreCase("16")) {
+                                    String[] answers = creationName.split(",");
+                                    if(answers.length > 0) {
+                                        answer1 = answers[0];
+                                    }
+                                    if(answers.length > 1) {
+                                        answer2 = answers[1];
+                                    }
+                                } else if(controlID.equalsIgnoreCase("17")) {
+                                    String[] answers = creationName.split("\\$", 2);
+                                    if(answers.length > 0) {
+                                        answer1 = answers[0];
+                                    }
+                                    if(answers.length > 1) {
+                                        answer2 = answers[1];
+                                    }
+                                } else {
+                                    answer1 = creationName;
+                                }
+                                ActivityDetailsModelClass activityDetailsModelClass = new ActivityDetailsModelClass(j, "", answer1, answer2, controlID, creationID, "", "", "", creationID, creationCode, slNo);
+                                if(!ActivityFragment.activityAnswerData.containsKey(slNo)) {
+                                    ActivityFragment.activityAnswerData.put(slNo, new LinkedHashMap<>());
+                                    ActivityFragment.savedActivityList.add(slNo);
+                                }
+                                ActivityFragment.activityAnswerData.get(slNo).put(creationID, activityDetailsModelClass);
+                            }
+                        }
+
+                    }
+                }
+                Log.d("jsonExtractOnline", "----- " + ActivityFragment.activityAnswerData);
+            }
         } catch (Exception e) {
             Log.v("jsonExtractOnline", "----" + e);
             e.printStackTrace();
         }
     }
-
 
     private void jsonExtractLocal(String jsonArray) {
         try {
@@ -1839,10 +1914,77 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 }
             }
+
+            //Activity
+            if(json.has("ActivityDCR") && !json.optString("ActivityDCR").equalsIgnoreCase("[]")) {
+                ActivityFragment.activityAnswerData = new LinkedHashMap<>();
+                ActivityFragment.savedActivityList = new HashSet<>();
+                JSONArray jsonArrayActivity = new JSONArray(json.optString("ActivityDCR"));
+                for (int i = 0; i<jsonArrayActivity.length(); i++) {
+                    JSONArray jsonArrayVal = jsonArrayActivity.optJSONArray(i);
+                    if(jsonArrayVal == null) jsonArrayVal = new JSONArray();
+                    for (int j = 0; j<jsonArrayVal.length(); j++) {
+                        JSONObject jsonObject = jsonArrayVal.getJSONObject(j);
+                        String activityDate = jsonObject.optString("act_date");
+                        String dcrDate = jsonObject.optString("dcr_date");
+                        String updateTime = jsonObject.optString("update_time");
+                        String modTime = jsonObject.optString("ModTime");
+                        String slNo = jsonObject.optString("slno");
+                        String controlID = jsonObject.optString("ctrl_id");
+                        String creationID = jsonObject.optString("creat_id");
+                        String groupCreationID = jsonObject.optString("group_creat_id");
+                        String wt = jsonObject.optString("WT");
+                        String pl = jsonObject.optString("Pl");
+                        String cusCode = jsonObject.optString("cus_code");
+                        String latitude = jsonObject.optString("lat");
+                        String longitude = jsonObject.optString("lng");
+                        String cusName = jsonObject.optString("cusname");
+                        String dataSF = jsonObject.optString("DataSF");
+                        String type = jsonObject.optString("type");
+                        String wtCode = jsonObject.optString("WT_code");
+                        String wtName = jsonObject.optString("WTName");
+                        String fwFlag = jsonObject.optString("FWFlg");
+                        String TownCode = jsonObject.optString("town_code");
+                        String TownName = jsonObject.optString("town_name");
+                        String RSF = jsonObject.optString("Rsf");
+                        String values = jsonObject.optString("values");
+                        String codes = jsonObject.optString("codes");
+                        String answer1 = "", answer2 = "";
+                        if(controlID.equalsIgnoreCase("5") || controlID.equalsIgnoreCase("7") || controlID.equalsIgnoreCase("16")) {
+                            String[] answers = values.split(",");
+                            if(answers.length > 0) {
+                                answer1 = answers[0];
+                            }
+                            if(answers.length > 1) {
+                                answer2 = answers[1];
+                            }
+                        } else if(controlID.equalsIgnoreCase("17")) {
+                            String[] answers = values.split("\\$");
+                            if(answers.length > 0) {
+                                answer1 = answers[0];
+                            }
+                            if(answers.length > 1) {
+                                answer2 = answers[1];
+                            }
+                        }else {
+                            answer1 = values;
+                        }
+                        ActivityDetailsModelClass activityDetailsModelClass = new ActivityDetailsModelClass(j, "", answer1, answer2, controlID, creationID, "", "", "", groupCreationID, codes, slNo);
+                        if(!ActivityFragment.activityAnswerData.containsKey(slNo)) {
+                            ActivityFragment.activityAnswerData.put(slNo, new LinkedHashMap<>());
+                            ActivityFragment.savedActivityList.add(slNo);
+                        }
+                        ActivityFragment.activityAnswerData.get(slNo).put(creationID, activityDetailsModelClass);
+                    }
+                }
+                Log.d("activity", "jsonExtractLocal: " + ActivityFragment.activityAnswerData.keySet().toString());
+            }
+
         } catch (Exception e) {
             Log.v("jsonExtractLocal", "----" + e);
         }
     }
+
     public void Remainder_calls(){
         try{
             String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
@@ -2223,10 +2365,110 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("RCPAEntry", jsonArray);
 
             //Activity
-            if(SharedPref.getActivityNd(DCRCallActivity.this).equalsIgnoreCase("0")) {
+            if(ActivityNeed.equalsIgnoreCase("0")) {
+
+                String wtCode = "", wtName = "", fwFlag = "";
+                JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+                for (int j = 0; j<jsonArrayWt.length(); j++) {
+                    JSONObject workTypeData = jsonArrayWt.getJSONObject(j);
+                    if(workTypeData.getString("FWFlg").equalsIgnoreCase("F")) {
+                        wtCode = workTypeData.getString("Code");
+                        wtName = workTypeData.getString("Name");
+                        fwFlag = workTypeData.getString("FWFlg");
+                    }
+                }
+                Date today = new Date();
+                String dateTime = TimeUtils.GetCurrentTimeStamp(TimeUtils.FORMAT_1);
+                String dateToStr = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_1, HomeDashBoard.binding.textDate.getText().toString());
+                SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+                String dateToStr1 = format1.format(today) + " 00:00:00";
+
+                if(ActivityFragment.activityAnswerData != null && !ActivityFragment.activityAnswerData.isEmpty()) {
+                    for (String slNo : ActivityFragment.activityAnswerData.keySet()) {
+                        if (ActivityFragment.savedActivityList.contains(slNo)) {
+                            try {
+                                JSONArray jsonArrayActivity = new JSONArray();
+                                if (ActivityFragment.activityAnswerData.get(slNo) != null && !ActivityFragment.activityAnswerData.get(slNo).isEmpty()) {
+                                    for (String creationID : ActivityFragment.activityAnswerData.get(slNo).keySet()) {
+                                        ActivityDetailsModelClass List = ActivityFragment.activityAnswerData.get(slNo).get(creationID);
+                                        JSONObject jsonObject = new JSONObject();
+                                        jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                                        jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                                        jsonObject.put("act_date", dateToStr);
+                                        jsonObject.put("dcr_date", dateToStr1);
+                                        jsonObject.put("update_time", dateTime);
+                                        jsonObject.put("ModTime", "");
+                                        jsonObject.put("slno", List.getSlno());
+                                        jsonObject.put("ctrl_id", List.getControlId());
+                                        jsonObject.put("creat_id", List.getCreationId());
+                                        jsonObject.put("group_creat_id", List.getCreationId());
+                                        jsonObject.put("WT", wtCode);
+                                        jsonObject.put("Pl", "0"); // cluster code
+                                        jsonObject.put("cus_code", CallActivityCustDetails.get(0).getCode());
+                                        jsonObject.put("lat", gpsTrack.getLatitude());
+                                        jsonObject.put("lng", gpsTrack.getLongitude());
+                                        jsonObject.put("cusname", CallActivityCustDetails.get(0).getName());
+                                        jsonObject.put("DataSF", SharedPref.getSfCode(this));
+                                        jsonObject.put("type", CallActivityCustDetails.get(0).getType());
+                                        jsonObject.put("WT_code", wtCode);
+                                        jsonObject.put("WTName", wtName);
+                                        jsonObject.put("FWFlg", fwFlag);
+                                        jsonObject.put("town_code", CallActivityCustDetails.get(0).getTown_code());
+                                        jsonObject.put("town_name", CallActivityCustDetails.get(0).getTown_name());
+                                        jsonObject.put("Rsf", SharedPref.getHqCode(this));
+                                        jsonObject.put("sf_type", SharedPref.getSfType(this));
+                                        jsonObject.put("Designation", SharedPref.getDesig(this));
+                                        jsonObject.put("state_code", SharedPref.getStateCode(this));
+                                        jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+
+                                        if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
+                                            if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
+                                                commonUtilsMethods.showToastMessage(this, "Fill The From " + List.getFieldName());
+                                                break;
+                                            } else if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
+                                                commonUtilsMethods.showToastMessage(this, "Fill The To" + List.getFieldName());
+                                                break;
+                                            } else {
+                                                jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
+                                                jsonObject.put("codes", List.getCodes());
+                                                Log.v("codes", List.getCodes());
+                                            }
+                                        } else if (List.getControlId().equalsIgnoreCase("17")) {
+                                            if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
+                                                commonUtilsMethods.showToastMessage(this, "Choose The " + List.getFieldName() + "");
+                                                break;
+                                            } else {
+                                                jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
+                                                jsonObject.put("codes", List.getCodes());
+                                            }
+                                        } else {
+                                            if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
+                                                commonUtilsMethods.showToastMessage(this, "Fill The " + List.getFieldName() + "");
+                                                break;
+                                            } else {
+                                                jsonObject.put("values", List.getAnswerTxt());
+                                                jsonObject.put("codes", List.getCodes());
+                                                Log.v("codes", List.getCodes());
+                                            }
+                                        }
+                                        jsonArrayActivity.put(jsonObject);
+                                    }
+                                    JSONObject MainObject = new JSONObject();
+                                    MainObject.put("val", jsonArrayActivity);
+                                    Log.v("JsonObject  :", MainObject.toString());
+                                    ActivityFragment.activityData.add(MainObject);
+                                }
+                            } catch (Exception a) {
+                                a.printStackTrace();
+                            }
+                        }
+                    }
+                    Log.w("DCRCallActivity", "jsonExtractOnline: " + ActivityFragment.activityData);
+                }
+
                 jsonArray = new JSONArray();
                 for (int i = 0; i<ActivityFragment.activityData.size(); i++) {
-                    jsonArray.put(ActivityFragment.activityData.get(i));
+                    jsonArray.put(ActivityFragment.activityData.get(i).getJSONArray("val"));
                 }
                 jsonSaveDcr.put("ActivityDCR", jsonArray);
             }
@@ -2256,9 +2498,7 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("mappedProds", "");
             jsonSaveDcr.put("mode", "0");
             jsonSaveDcr.put("Appver", getResources().getString(R.string.app_version));
-
-
-
+            jsonSaveDcr.put("activitynd", ActivityNeed);
 
             JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArrayWt.length(); i++) {
@@ -2379,6 +2619,7 @@ public class DCRCallActivity extends AppCompatActivity {
             RcpaCompetitorAdd =  SharedPref.getRcpaCompetitorAdd(this);;
             EventCapMandatory =  SharedPref.getCipEventMd(this);;
             capActivity = SharedPref.getActivityCap(this);
+            ActivityNeed = SharedPref.getActivityNd(this);
 
             switch (CallActivityCustDetails.get(0).getType()) {
                 case "1": //Dr
@@ -2657,6 +2898,12 @@ public class DCRCallActivity extends AppCompatActivity {
         RCPASelectCompSide.rcpa_comp_list = new ArrayList<>();
     }
 
+    private void AddActivityData() {
+        ActivityFragment.activityAnswerData = new LinkedHashMap<>();
+        ActivityFragment.savedActivityList = new HashSet<>();
+        ActivityFragment.activityData = new ArrayList<>();
+    }
+
     private void AddAdditionalCallData() {
         AdditionalCallFragment.custListArrayList = new ArrayList<>();
         AdditionalCallDetailedSide.addInputAdditionalCallArrayList = new ArrayList<>();
@@ -2900,7 +3147,7 @@ public class DCRCallActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        CommonAlertBox.CheckLocationStatus(DCRCallActivity.this);
+        CommonAlertBox.CheckLocationStatus(DCRCallActivity.this, gpsTrack);
         Log.e("TAG", "onResume: ");
         timeZoneVerification();
     }

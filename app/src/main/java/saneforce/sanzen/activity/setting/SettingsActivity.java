@@ -262,10 +262,9 @@ public class SettingsActivity extends AppCompatActivity {
     public void configuration(String enteredUrl) {
         binding.btnSaveSettings.setEnabled(false);
         binding.configurationPB.setVisibility(View.VISIBLE);
-        apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), enteredUrl);
-
 
         try {
+            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), enteredUrl);
             Call<JsonArray> call = apiInterface.configuration("/Apps/ConfigiOS.json");
             call.enqueue(new Callback<JsonArray>() {
                 @Override
@@ -324,8 +323,6 @@ public class SettingsActivity extends AppCompatActivity {
                         binding.configurationPB.setVisibility(View.GONE);
                     }
 
-
-
                 }
 
                 @Override
@@ -344,6 +341,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
         } catch (Exception exception) {
+            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
             exception.printStackTrace();
         }
     }

@@ -66,11 +66,25 @@ public class CallsUtil {
         callOfflineECDataDao.deleteOfflineCalls(cusCode, cusName, date);
     }
 
+    public void deleteOfflineCallsWithActivity(String cusCode, String cusName, String date) {
+        callOfflineDataDao.deleteOfflineCalls(cusCode, cusName, date);
+        callOfflineECDataDao.deleteOfflineCalls(cusCode, cusName, date);
+        deleteOfflineActivityUpload(cusCode, date);
+//        deleteOfflineActivity(cusCode, date);
+    }
+
+    public void deleteOfflineActivityUpload(String cusCode, String date) {
+        activityUploadDataDao.deleteUploadActivity(Integer.parseInt(cusCode), date);
+    }
+
     public void deleteOfflineActivity(String cusCode, String date) {
-        ActivityOfflineDataTable activityOfflineDataTable = activityOfflineDataDao.getActivityOfflineData(date, cusCode);
-        if (activityOfflineDataTable != null) {
-            deleteOfflineActivity(activityOfflineDataTable.getId());
+        List<ActivityOfflineDataTable> activityOfflineDataTableList = activityOfflineDataDao.getActivityOfflineData(date, cusCode);
+        if (activityOfflineDataTableList != null && !activityOfflineDataTableList.isEmpty()) {
+            for (ActivityOfflineDataTable activityOfflineDataTable : activityOfflineDataTableList) {
+                deleteOfflineActivity(activityOfflineDataTable.getId());
+            }
         }
+        deleteOfflineActivityUpload(cusCode, date);
     }
 
     private void deleteOfflineActivity(int id) {

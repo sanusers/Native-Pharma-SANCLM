@@ -353,7 +353,7 @@
             android:id="@+id/rl_btns"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="@dimen/_5sdp"
             android:layout_marginBottom="@dimen/_5sdp"
@@ -364,10 +364,10 @@
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:layout_marginEnd="@dimen/_10sdp"
-                android:layout_toLeftOf="@id/btn_save"
+                android:layout_toStartOf="@id/btn_save"
                 android:background="@drawable/bg_border_with_pink"
                 android:fontFamily="@font/satoshi_bold"
-                android:text="Close"
+                android:text="@string/close"
                 android:textAllCaps="false"
                 android:textColor="@color/dark_purple"
                 android:textSize="@dimen/_7sdp"
@@ -382,7 +382,7 @@
                 android:background="@drawable/backround_button"
                 android:fontFamily="@font/satoshi_bold"
                 android:singleLine="true"
-                android:text="Sumit"
+                android:text="@string/submit"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_7sdp"
@@ -412,6 +412,7 @@
                 android:id="@+id/ll_quiz_center"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:background="@color/white"
                 android:orientation="vertical"
                 android:padding="@dimen/_10sdp">
 
@@ -564,6 +565,36 @@
 
                 <TextView
                     android:id="@+id/no_of_attempts_allowed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="0"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="@string/no_of_attempts_left"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/no_of_attempts_left"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

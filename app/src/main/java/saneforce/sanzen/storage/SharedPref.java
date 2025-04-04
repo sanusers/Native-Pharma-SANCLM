@@ -425,6 +425,8 @@ public class SharedPref {
     public static final String JOININGYEAR = "JOINING_YEAR";
     public static final String SANZEN_EDET = "sanzen_edet";
 
+    public static final String LAST_CALL_SYNC_DATE = "Last Call Sync Date";
+
     public static final String STP_STATUS = "STP_STATUS";
     public static final String STP_NEED = "STP_NEED";
     public static final String STP_APPR_NEED = "STP_APPR_NEED";
@@ -434,8 +436,13 @@ public class SharedPref {
     public static final String ADD_CHM = "addChm";
     public static final String ADD_UNLST = "addDr";
     public static final String QUIZ_DATE = "Quiz Date";
+    public static final String QUIZ_SYNC_DATE = "Quiz Sync Date";
     public static final String QUIZ_ATTEMPTS = "Quiz Attempts";
     public static final String QUIZ_ASSERT_DOWNLOADING_STATUS = "Quiz_assert_downloding_status";
+    public static final String QUIZ_AVAILABLE_DATE = "Quiz Available Date";
+    public static final String QUIZ_DATA = "Quiz Data";
+
+    public static final String TAGGED_DCR_CUSTOMERS = "Tagged DCR Customers";
 
     public static SharedPreferences.Editor editor;
 
@@ -765,7 +772,7 @@ public class SharedPref {
             editor.putString(ADD_CHM, jsonObject.getString("addChm"));
             editor.putString(ADD_UNLST, jsonObject.getString("addDr"));
             editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\", ""));
-            editor.putString(WELCOME_SLIDES_PATH, "Welcomepage_upload/");
+            editor.putString(WELCOME_SLIDES_PATH, "");
             editor.apply();
 
         } catch (Exception ignore) {
@@ -2596,6 +2603,16 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(JOININGYEAR, 0);
     }
 
+    public static void setLastCallSyncDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LAST_CALL_SYNC_DATE, date).apply();
+    }
+
+    public static String getLastCallSyncDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LAST_CALL_SYNC_DATE, "");
+    }
+
     public static void setStpStatus(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2632,6 +2649,46 @@ public class SharedPref {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putInt(QUIZ_ATTEMPTS, attempts).apply();
+    }
+
+    public static String getQuizAvailableDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(QUIZ_AVAILABLE_DATE, "");
+    }
+
+    public static void setQuizAvailableDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(QUIZ_AVAILABLE_DATE, date).apply();
+    }
+
+    public static String getLastQuizSyncDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(QUIZ_SYNC_DATE, "");
+    }
+
+    public static void setLastQuizSyncDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(QUIZ_SYNC_DATE, date).apply();
+    }
+
+    public static String getQuizData(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(QUIZ_DATA, "");
+    }
+
+    public static void setQuizData(Context context, String data) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(QUIZ_DATA, data).apply();
+    }
+
+    public static String getTaggedDcrCustomers(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TAGGED_DCR_CUSTOMERS, "");
+    }
+
+    public static void setTaggedDcrCustomers(Context context, String data) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TAGGED_DCR_CUSTOMERS, data).apply();
     }
 
 }

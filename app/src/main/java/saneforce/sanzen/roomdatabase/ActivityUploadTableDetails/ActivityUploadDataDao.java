@@ -51,6 +51,9 @@ public interface ActivityUploadDataDao {
     @Query("DELETE FROM `ACTIVITY_UPLOAD_TABLE` WHERE `ACTIVITY_ID` = :activityID")
     void deleteUploadActivity(int activityID);
 
+    @Query("DELETE FROM `ACTIVITY_UPLOAD_TABLE` WHERE `ACTIVITY_ID` = :activityID AND `ACTIVITY_DATE` = :activityDate")
+    void deleteUploadActivity(int activityID, String activityDate);
+
     @Query("SELECT * FROM `ACTIVITY_UPLOAD_TABLE` WHERE `ACTIVITY_DATE` = :date")
     List<ActivityUploadDataTable> getOutBoxActivityUploadList(String date);
 

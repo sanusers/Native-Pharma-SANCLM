@@ -164,20 +164,26 @@ public class CustomerProfile extends AppCompatActivity {
         });
 
         btn_start.setOnClickListener(view -> {
-
-            Intent intent = new Intent(CustomerProfile.this, PreviewActivity.class);
-            intent.putExtra("from", "call");
-            intent.putExtra("cus_name", CallActivityCustDetails.get(0).getName());
-            PlaySlideDetailing.SpecialityCodePlay = CallActivityCustDetails.get(0).getSpecialistCode();
-            PlaySlideDetailing.MappedBrandsPlay = CallActivityCustDetails.get(0).getMappedBrands();
-            PlaySlideDetailing.MappedSlidesPlay = CallActivityCustDetails.get(0).getMappedSlides();
-            intent.putExtra("SpecialityCode", CallActivityCustDetails.get(0).getSpecialistCode());
-            intent.putExtra("SpecialityName", CallActivityCustDetails.get(0).getSpecialist());
-            intent.putExtra("MappedProdCode", CallActivityCustDetails.get(0).getMappedBrands());
-            intent.putExtra("MappedSlideCode", CallActivityCustDetails.get(0).getMappedSlides());
-            intent.putExtra("CusType", CallActivityCustDetails.get(0).getType());
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            if(HomeDashBoard.selectedDate != null) {
+                Intent intent = new Intent(CustomerProfile.this, PreviewActivity.class);
+                intent.putExtra("from", "call");
+                intent.putExtra("cus_name", CallActivityCustDetails.get(0).getName());
+                intent.putExtra("cus_code", CallActivityCustDetails.get(0).getCode());
+                PlaySlideDetailing.SpecialityCodePlay = CallActivityCustDetails.get(0).getSpecialistCode();
+                PlaySlideDetailing.MappedBrandsPlay = CallActivityCustDetails.get(0).getMappedBrands();
+                PlaySlideDetailing.MappedSlidesPlay = CallActivityCustDetails.get(0).getMappedSlides();
+                intent.putExtra("SpecialityCode", CallActivityCustDetails.get(0).getSpecialistCode());
+                intent.putExtra("SpecialityName", CallActivityCustDetails.get(0).getSpecialist());
+                intent.putExtra("MappedProdCode", CallActivityCustDetails.get(0).getMappedBrands());
+                intent.putExtra("MappedSlideCode", CallActivityCustDetails.get(0).getMappedSlides());
+                intent.putExtra("CusType", CallActivityCustDetails.get(0).getType());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            } else {
+                startActivity(new Intent(this, HomeDashBoard.class));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_try_again));
+                finish();
+            }
         });
 
         String detailingNeed;

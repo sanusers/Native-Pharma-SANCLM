@@ -50,7 +50,7 @@ import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOffline
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataTable;
 
-@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class, SlidesTableDeatils.class, STPOfflineDataTable.class, WelcomeSlidesDataTable.class, ActivityDetailsDataTable.class, ActivityOfflineDataTable.class, ActivityUploadDataTable.class, QuizOfflineDataTable.class, QuizAssertsDataTable.class}, version = 4, exportSchema = false)
+@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class, SlidesTableDeatils.class, STPOfflineDataTable.class, WelcomeSlidesDataTable.class, ActivityDetailsDataTable.class, ActivityOfflineDataTable.class, ActivityUploadDataTable.class, QuizOfflineDataTable.class, QuizAssertsDataTable.class}, version = 5, exportSchema = false)
 public abstract class RoomDB extends RoomDatabase {
     private static final String DATABASE_NAME = "sanclmroom.dp";
     private static RoomDB database;
@@ -58,12 +58,16 @@ public abstract class RoomDB extends RoomDatabase {
         if (database == null) {
             database = Room.databaseBuilder(context.getApplicationContext(), RoomDB.class, DATABASE_NAME)
                     .allowMainThreadQueries()
+                    .addMigrations(MIGRATION_1_5)
                     .addMigrations(MIGRATION_1_4)
                     .addMigrations(MIGRATION_1_3)
                     .addMigrations(MIGRATION_1_2)
-                    .addMigrations(MIGRATION_2_3)
+                    .addMigrations(MIGRATION_2_5)
                     .addMigrations(MIGRATION_2_4)
+                    .addMigrations(MIGRATION_2_3)
+                    .addMigrations(MIGRATION_3_5)
                     .addMigrations(MIGRATION_3_4)
+                    .addMigrations(MIGRATION_4_5)
                     .fallbackToDestructiveMigration()
                     .build();
         }
@@ -84,6 +88,7 @@ public abstract class RoomDB extends RoomDatabase {
             database.execSQL("CREATE TABLE IF NOT EXISTS `activity_details_table` (`id` TEXT NOT NULL PRIMARY KEY, `json_data` TEXT, `status` TEXT)");
             database.execSQL("CREATE TABLE IF NOT EXISTS `activity_offline_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `activity_date` TEXT, `activity_time` TEXT, `sl_no` TEXT, `name` TEXT, `dr_code` TEXT, `json_data` TEXT, `sync_count` INTEGER NOT NULL, `sync_status` TEXT)");
             database.execSQL("CREATE TABLE IF NOT EXISTS `activity_upload_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `activity_id` INTEGER NOT NULL, `activity_date` TEXT, `activity_time` TEXT, `sl_no` TEXT,  `name` TEXT, `image_name` TEXT,  `file_path` TEXT, `json_data` TEXT, `sync_count` INTEGER NOT NULL, `sync_status` TEXT)");
+//            database.execSQL("CREATE INDEX IF NOT EXISTS `index_activity_upload_table_activity_id` ON `activity_upload_table` (`activity_id`)");
         }
     };
 
@@ -92,6 +97,15 @@ public abstract class RoomDB extends RoomDatabase {
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("CREATE TABLE IF NOT EXISTS `quiz_offline_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `quiz_date` TEXT, `quiz_time` TEXT, `json_data` TEXT, `sync_count` INTEGER NOT NULL, `sync_status` TEXT)");
             database.execSQL("CREATE TABLE IF NOT EXISTS `quiz_asserts_table` (`name` TEXT NOT NULL PRIMARY KEY, `assert_size` TEXT, `downloading_status` TEXT, `progress` TEXT, `background_task` TEXT, `assert_position` TEXT)");
+        }
+    };
+
+    public static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `presentation_table` ADD COLUMN `customer_type` TEXT");
+            database.execSQL("ALTER TABLE `presentation_table` ADD COLUMN `customer_codes` TEXT");
+            database.execSQL("ALTER TABLE `presentation_table` ADD COLUMN `headquarter_code` TEXT");
         }
     };
 
@@ -112,11 +126,38 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    public static final Migration MIGRATION_1_5 = new Migration(1, 5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_1_2.migrate(database);
+            MIGRATION_2_3.migrate(database);
+            MIGRATION_3_4.migrate(database);
+            MIGRATION_4_5.migrate(database);
+        }
+    };
+
     public static final Migration MIGRATION_2_4 = new Migration(2, 4) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             MIGRATION_2_3.migrate(database);
             MIGRATION_3_4.migrate(database);
+        }
+    };
+
+    public static final Migration MIGRATION_2_5 = new Migration(2, 5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_2_3.migrate(database);
+            MIGRATION_3_4.migrate(database);
+            MIGRATION_4_5.migrate(database);
+        }
+    };
+
+    public static final Migration MIGRATION_3_5 = new Migration(3, 5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_3_4.migrate(database);
+            MIGRATION_4_5.migrate(database);
         }
     };
 

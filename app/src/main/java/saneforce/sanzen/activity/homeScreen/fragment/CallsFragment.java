@@ -64,11 +64,19 @@ public class CallsFragment extends Fragment {
     public static ArrayList<CallsModalClass> TodayCallList = new ArrayList<>();
     public static boolean isNeedtoAdd;
     public static ProgressDialog progressDialog;
-    ApiInterface apiInterface;
+    private static ApiInterface apiInterface;
     private RoomDB db;
     private static MasterDataDao masterDataDao;
     CommonUtilsMethods commonUtilsMethods;
-    public static  Context Mcontext;
+    @SuppressLint("StaticFieldLeak")
+    public static Context Mcontext;
+    public static boolean syncCalls = false;
+
+    public static void syncCalls() {
+        if(Mcontext != null && apiInterface != null) {
+            CallTodayCallsAPI(Mcontext, apiInterface, false);
+        }
+    }
 
     public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, boolean isProgressNeed) {
         if(HomeDashBoard.selectedDate != null) {
@@ -175,6 +183,7 @@ public class CallsFragment extends Fragment {
                                             binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
                                             adapter.notifyDataSetChanged();
                                             if(isProgressNeed) progressDialog.dismiss();
+                                            SharedPref.setLastCallSyncDate(context, HomeDashBoard.selectedDate.toString());
                                         } catch (Exception e) {
                                             if(isProgressNeed) progressDialog.dismiss();
                                             Log.v("TodayCalls", "--error--" + e);
@@ -280,7 +289,12 @@ public class CallsFragment extends Fragment {
 
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         getFromLocal(requireContext(), apiInterface);
-        CallTodayCallsAPI(requireContext(), apiInterface, false);
+        if(
+//                syncCalls ||
+                        (HomeDashBoard.selectedDate != null && !(SharedPref.getLastCallSyncDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())))) {
+            syncCalls = false;
+            CallTodayCallsAPI(requireContext(), apiInterface, false);
+        }
         db = RoomDB.getDatabase(requireContext());
         masterDataDao =db.masterDataDao();
 
@@ -315,9 +329,10 @@ public class CallsFragment extends Fragment {
 
         binding.TvAddActivty.setOnClickListener(view -> {
 //            if(UtilityClass.isNetworkAvailable(requireContext())){
-            if(HomeDashBoard.selectedDate == null || (HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().isEmpty())){
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-            }else if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
+//            if(HomeDashBoard.selectedDate == null || (HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().isEmpty())){
+//                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+//            }else
+            if(SharedPref.getApprovalManatoryStatus(requireContext()) && SharedPref.getSfType(requireActivity()).equalsIgnoreCase("2") && SharedPref.getApprMandatoryNeed(requireActivity()).equalsIgnoreCase("0")) {
                 CommonAlertBox.ApprovalAlert(requireActivity());
             }else if(SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                 CommonAlertBox.TpAlert(requireActivity());
