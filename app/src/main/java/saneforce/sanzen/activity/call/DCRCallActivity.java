@@ -442,26 +442,27 @@ public class DCRCallActivity extends AppCompatActivity {
                     UpdateInputStock();
                     UpdateSampleStock();
 
+                    storingSlide.clear();
+                    SharedPref.setLastCallDate(this, HomeDashBoard.selectedDate.toString());
+                    SharedPref.setDayPlanStartedDate(this, HomeDashBoard.selectedDate.toString());
+//                    if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
+                    //    progressDialog.dismiss();
+//                        dialogCheckOut.show();
+//                    }else {
+                    progressDialog.dismiss();
+                    IsFromDCR = true;
+                    HomeDashBoard.isDcrFrom = true;
+                    CallsFragment.syncCalls = true;
+                    Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                    startActivity(intent);
+
                     if(!UtilityClass.isNetworkAvailable(getApplicationContext())) {
                         commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_locally));
                     }else {
                         commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_successfully));
                         //progressDialog.dismiss();
                     }
-                    storingSlide.clear();
-                    SharedPref.setLastCallDate(this, HomeDashBoard.selectedDate.toString());
-                    SharedPref.setDayPlanStartedDate(this, HomeDashBoard.selectedDate.toString());
-//                    if(CusCheckInOutNeed.equalsIgnoreCase("0")) {
-                        //    progressDialog.dismiss();
-//                        dialogCheckOut.show();
-//                    }else {
-                        progressDialog.dismiss();
-                        IsFromDCR = true;
-                        HomeDashBoard.isDcrFrom=true;
-                        CallsFragment.syncCalls = true;
-                        Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-                        startActivity(intent);
-                        finish();
+                    finish();
 
 //                    }
 
@@ -2599,9 +2600,7 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("mappedProds", "");
             jsonSaveDcr.put("mode", "0");
             jsonSaveDcr.put("Appver", getResources().getString(R.string.app_version));
-
-
-
+            jsonSaveDcr.put("activitynd", ActivityNeed);
 
             JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArrayWt.length(); i++) {

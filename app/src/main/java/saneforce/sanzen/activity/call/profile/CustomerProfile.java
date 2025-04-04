@@ -191,6 +191,7 @@ public class CustomerProfile extends AppCompatActivity {
                 Intent intent = new Intent(CustomerProfile.this, PreviewActivity.class);
                 intent.putExtra("from", "call");
                 intent.putExtra("cus_name", CallActivityCustDetails.get(0).getName());
+                intent.putExtra("cus_code", CallActivityCustDetails.get(0).getCode());
                 PlaySlideDetailing.SpecialityCodePlay = CallActivityCustDetails.get(0).getSpecialistCode();
                 PlaySlideDetailing.MappedBrandsPlay = CallActivityCustDetails.get(0).getMappedBrands();
                 PlaySlideDetailing.MappedSlidesPlay = CallActivityCustDetails.get(0).getMappedSlides();

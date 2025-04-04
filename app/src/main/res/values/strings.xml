@@ -11,7 +11,7 @@
     <string name="txt_undr">Unlisted Doctor</string>
     <string name="txt_add_tag">Add Tag</string>
     <string name="txt_visit">Visit</string>
-    <string name="view">View</string>\
+    <string name="view">View</string>
     <string name="search">Search</string>
     <string name="brand_name">Brand Name</string>
     <string name="rating">Rating</string>
@@ -551,6 +551,8 @@
     <string name="no_of_attempts_left">No of Attempts Left :</string>
     <string name="try_again">Try Again</string>
     <string name="close">Close</string>
+    <string name="custom_presentation">Custom Presentation</string>
+    <string name="common">Common</string>
     <string name="no_address_found">No Address Found - No Internet Connection</string>
     <string name="no_address_found2">No Address Found - Poor Internet Connection</string>
 </resources>

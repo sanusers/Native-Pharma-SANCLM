@@ -442,6 +442,8 @@ public class SharedPref {
     public static final String QUIZ_AVAILABLE_DATE = "Quiz Available Date";
     public static final String QUIZ_DATA = "Quiz Data";
 
+    public static final String TAGGED_DCR_CUSTOMERS = "Tagged DCR Customers";
+
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -770,7 +772,7 @@ public class SharedPref {
             editor.putString(ADD_CHM, jsonObject.getString("addChm"));
             editor.putString(ADD_UNLST, jsonObject.getString("addDr"));
             editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\", ""));
-            editor.putString(WELCOME_SLIDES_PATH, "Welcomepage_upload/");
+            editor.putString(WELCOME_SLIDES_PATH, "");
             editor.apply();
 
         } catch (Exception ignore) {
@@ -2677,6 +2679,16 @@ public class SharedPref {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(QUIZ_DATA, data).apply();
+    }
+
+    public static String getTaggedDcrCustomers(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TAGGED_DCR_CUSTOMERS, "");
+    }
+
+    public static void setTaggedDcrCustomers(Context context, String data) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TAGGED_DCR_CUSTOMERS, data).apply();
     }
 
 }

@@ -1,10 +1,8 @@
 package saneforce.sanzen.activity.activityModule;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Objects;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;

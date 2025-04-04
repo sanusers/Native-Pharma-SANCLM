@@ -16,7 +16,7 @@ android {
         minSdk 23
         targetSdk 35
         versionCode 50
-        versionName "2.2.9"
+        versionName "2.3.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -128,7 +128,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
     //Pdf viewer
-    implementation 'com.github.barteksc:AndroidPdfViewer:master-SNAPSHOT'
+    implementation 'com.github.barteksc:AndroidPdfViewer:2.0.2'
 
     //imgCompressor
     implementation 'id.zelory:compressor:2.1.1'

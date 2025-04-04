@@ -17,8 +17,7 @@ import java.util.Comparator;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
-import saneforce.sanzen.activity.presentation.presentation.PresentationAdapter;
-import saneforce.sanzen.activity.previewPresentation.adapter.PreviewAdapter;
+import saneforce.sanzen.activity.presentation.presentation.adapter.PresentationAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.databinding.FragmentHomePreviewBinding;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;

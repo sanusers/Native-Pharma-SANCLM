@@ -41,7 +41,7 @@ public class WelcomeSlideDownloadWorker extends Worker {
     @SuppressLint({"WrongThread", "DefaultLocale"})
     @NonNull
     @Override
-    public ListenableWorker.Result doWork() {
+    public Result doWork() {
 
         File apkStorage = null;
         File outputFile = null;
@@ -54,6 +54,10 @@ public class WelcomeSlideDownloadWorker extends Worker {
 
         String url1 = getInputData().getString("file_url");
         String downloadFileName = getInputData().getString("Slide_name");
+        String fileName = "";
+        if(downloadFileName != null && !downloadFileName.isEmpty()) {
+            fileName = downloadFileName.substring(downloadFileName.indexOf('/') + 1);
+        }
         String Flag = getInputData().getString("Flag");
         String FilePosition = getInputData().getString("FilePosition");
 
@@ -69,7 +73,7 @@ public class WelcomeSlideDownloadWorker extends Worker {
                 if (Flag != null && Flag.equalsIgnoreCase("1")) {
                     servicesRestartMethod();
                 }
-                return ListenableWorker.Result.failure();
+                return Result.failure();
             }
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                 apkStorage = new File(getApplicationContext().getExternalFilesDir(null) + "/Slides/");
@@ -78,7 +82,7 @@ public class WelcomeSlideDownloadWorker extends Worker {
                 if (Flag != null && Flag.equalsIgnoreCase("1")) {
                     servicesRestartMethod();
                 }
-                return ListenableWorker.Result.failure();
+                return Result.failure();
             }
 
             if (!apkStorage.exists()) {
@@ -88,11 +92,11 @@ public class WelcomeSlideDownloadWorker extends Worker {
                     if (Flag != null && Flag.equalsIgnoreCase("1")) {
                         servicesRestartMethod();
                     }
-                    return ListenableWorker.Result.failure();
+                    return Result.failure();
                 }
             }
 
-            outputFile = new File(apkStorage, downloadFileName);
+            outputFile = new File(apkStorage, fileName);
 
             if (outputFile.exists()) {
                 if (outputFile.delete()) {
@@ -108,7 +112,7 @@ public class WelcomeSlideDownloadWorker extends Worker {
                 if (Flag != null && Flag.equalsIgnoreCase("1")) {
                     servicesRestartMethod();
                 }
-                return ListenableWorker.Result.failure();
+                return Result.failure();
             }
 
             FileOutputStream fos = new FileOutputStream(outputFile);
@@ -134,12 +138,12 @@ public class WelcomeSlideDownloadWorker extends Worker {
 
             fos.close();
             is.close();
-            createThumbnail(downloadFileName);
+            createThumbnail(fileName);
             if (Flag != null && Flag.equalsIgnoreCase("1")) {
                 servicesRestartMethod();
             }
 
-            return ListenableWorker.Result.success();
+            return Result.success();
         } catch (Exception e) {
             e.printStackTrace();
             welcomeSlidesDao.saveWelcomeSlideData(new WelcomeSlidesDataTable(downloadFileName, "Downloading Failure", "0", "0", "1", FilePosition));
@@ -147,7 +151,7 @@ public class WelcomeSlideDownloadWorker extends Worker {
                 servicesRestartMethod();
             }
             Log.e(TAG, "Download Error Exception " + e.getMessage());
-            return ListenableWorker.Result.failure();
+            return Result.failure();
         }
     }
 

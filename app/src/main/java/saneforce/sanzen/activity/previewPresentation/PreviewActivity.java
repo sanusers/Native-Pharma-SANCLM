@@ -13,6 +13,9 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -20,9 +23,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import saneforce.sanzen.R;
@@ -31,7 +35,14 @@ import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.pojo.detailing.CallDetailingList;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.presentation.customerSelection.CustomerSelectionActivity;
+import saneforce.sanzen.activity.presentation.customerSelection.model.CustomerDataModel;
+import saneforce.sanzen.activity.presentation.presentation.PresentationActivity;
+import saneforce.sanzen.activity.presentation.presentation.ShowSideScreenListener;
+import saneforce.sanzen.activity.presentation.presentation.adapter.SideScreenAdapter;
 import saneforce.sanzen.activity.previewPresentation.fragment.BrandMatrix;
+import saneforce.sanzen.activity.previewPresentation.fragment.CustomPresentationFragment;
+import saneforce.sanzen.activity.previewPresentation.fragment.CustomPreviewFragment;
 import saneforce.sanzen.activity.previewPresentation.fragment.MyPresentation;
 import saneforce.sanzen.activity.previewPresentation.fragment.HomeBrands;
 import saneforce.sanzen.activity.previewPresentation.fragment.Speciality;
@@ -39,8 +50,11 @@ import saneforce.sanzen.activity.previewPresentation.fragment.Therapist;
 import saneforce.sanzen.activity.previewPresentation.fragment.WelcomePresentation;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
+import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
@@ -48,7 +62,7 @@ import saneforce.sanzen.utility.TimeUtils;
 public class PreviewActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static saneforce.sanzen.databinding.ActivityPreviewBinding previewBinding;
-    public static String SelectedTab = "Matrix", from_where = "", cus_name = "", SpecialityCode = "", SpecialityName = "", BrandCode = "", SlideCode = "", CusType = "";
+    public static String SelectedTab = "Matrix", from_where = "", cus_name = "", cus_code = "", SpecialityCode = "", SpecialityName = "", BrandCode = "", SlideCode = "", CusType = "";
     public static int SelectedPosPlay;
     PreviewTabAdapter viewPagerAdapter;
     String finalPrdNam;
@@ -59,7 +73,9 @@ public class PreviewActivity extends AppCompatActivity {
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private CallOfflineDataDao callOfflineDataDao;
+    private PresentationDataDao presentationDataDao;
     ProgressDialog progressDialog;
+    private SideScreenAdapter sideScreenAdapter;
     private JSONObject checkInJsonObject = new JSONObject();
 
     @SuppressLint("MissingSuperCall")
@@ -85,6 +101,7 @@ public class PreviewActivity extends AppCompatActivity {
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
+        presentationDataDao = roomDB.presentationDataDao();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         callDetailingLists = new ArrayList<>();
@@ -97,6 +114,7 @@ public class PreviewActivity extends AppCompatActivity {
                 assert from_where != null;
                 if (from_where.equalsIgnoreCase("call")) {
                     cus_name = extra.getString("cus_name");
+                    cus_code = extra.getString("cus_code");
                     SpecialityCode = extra.getString("SpecialityCode");
                     SpecialityName = extra.getString("SpecialityName");
                     BrandCode = extra.getString("MappedProdCode");
@@ -114,65 +132,72 @@ public class PreviewActivity extends AppCompatActivity {
                     }
                     previewBinding.tagCustName.setText(cus_name);
                     previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
+                } else {
+                    previewBinding.btnFinishDet.setVisibility(View.GONE);
                 }
             }
             viewPagerAdapter = new PreviewTabAdapter(getSupportFragmentManager());
 
-            if (from_where.equalsIgnoreCase("call")) {
-                headingData.clear();
-                if (CusType.equalsIgnoreCase("1")) {
-                    viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
-                    headingData.add("A");
-                    viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
-                    headingData.add("B");
-                    viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
-                    headingData.add("C");
-                    viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-                    headingData.add("D");
-                    if(therapticNeed.equalsIgnoreCase("0")) {
-                        viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
-                        headingData.add("E");
-                    }
-                    if (presentationNeed.equalsIgnoreCase("0")) {
-                        viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
-                        headingData.add("F");
-                    }
-                } else {
-                    viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
-                    headingData.add("A");
-                    viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
-                    headingData.add("B");
-                    viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-                    headingData.add("D");
-                    if(therapticNeed.equalsIgnoreCase("0")) {
-                        viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
-                        headingData.add("E");
-                    }
-                    if (presentationNeed.equalsIgnoreCase("0")) {
-                        viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
-                        headingData.add("F");
-                    }
-                }
-            } else {
+        if(from_where.equalsIgnoreCase("call")) {
+            headingData.clear();
+            if(CusType.equalsIgnoreCase("1")) {
+                viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
+                headingData.add("A");
                 viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
+                headingData.add("B");
                 viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
+                headingData.add("C");
                 viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+                headingData.add("D");
                 if(therapticNeed.equalsIgnoreCase("0")) {
-                    viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
+                    viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
+                    headingData.add("E");
                 }
-                if (presentationNeed.equalsIgnoreCase("0"))
+                if(presentationNeed.equalsIgnoreCase("0")) {
                     viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
+                    headingData.add("F");
+                }
+                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
+                headingData.add("G");
+            }else {
+                viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
+                headingData.add("A");
+                viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
+                headingData.add("B");
+                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+                headingData.add("D");
+                if(therapticNeed.equalsIgnoreCase("0")) {
+                    viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
+                    headingData.add("E");
+                }
+                if(presentationNeed.equalsIgnoreCase("0")) {
+                    viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
+                    headingData.add("F");
+                }
+                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
+                headingData.add("G");
             }
-            previewBinding.viewPager.setAdapter(viewPagerAdapter);
-            previewBinding.tabLayout.setupWithViewPager(previewBinding.viewPager);
-            previewBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
+        }else {
+            viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
+            viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
+            viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+            if(therapticNeed.equalsIgnoreCase("0")) {
+                viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
+            }
+            if(presentationNeed.equalsIgnoreCase("0"))
+//                viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
+                viewPagerAdapter.add(new CustomPreviewFragment(this::viewSideScreen), getResources().getString(R.string.my_presentation));
+        }
+        previewBinding.viewPager.setAdapter(viewPagerAdapter);
+        previewBinding.tabLayout.setupWithViewPager(previewBinding.viewPager);
+        previewBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
 
-            previewBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        previewBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 SelectedPosPlay = tab.getPosition();
-                if (tab.getPosition() == 1) SelectedTab = "Matrix";
-                if (tab.getPosition() == 2) SelectedTab = "Spec";
+                if(tab.getPosition() == 1) SelectedTab = "Matrix";
+                if(tab.getPosition() == 2) SelectedTab = "Spec";
             }
 
             @Override
@@ -257,6 +282,127 @@ public class PreviewActivity extends AppCompatActivity {
             callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.toString(), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             startActivity(intent1);
         });
+    }
+
+    private void viewSideScreen(String customerType, String presentationName) {
+        previewBinding.getRoot().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        PresentationDataTable presentationDataTable = presentationDataDao.getPresentationData(presentationName);
+
+        previewBinding.navigationView.imgSideClose.setOnClickListener(v -> {
+            closeDrawer();
+        });
+
+        String selectedCap = "";
+        switch (customerType){
+            case Constants.DOCTOR:
+                selectedCap = SharedPref.getDrCap(this);
+                break;
+            case Constants.CHEMIST:
+                selectedCap = SharedPref.getChmCap(this);
+                break;
+            case Constants.STOCKIEST:
+                selectedCap = SharedPref.getStkCap(this);
+                break;
+            case Constants.UNLISTED_DOCTOR:
+                selectedCap = SharedPref.getUNLcap(this);
+                break;
+            case Constants.CIP:
+                selectedCap = SharedPref.getCipCaption(this);
+                break;
+            case Constants.HOSPITAL:
+                selectedCap = SharedPref.getHospCaption(this);
+                break;
+        }
+
+        previewBinding.navigationView.tvSideTitle.setText(String.format("Selected %s", selectedCap));
+        if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+            previewBinding.navigationView.tvSideHq.setText(getHQName(presentationDataTable.getHeadquarterCode()));
+            previewBinding.navigationView.tvSideHq.setVisibility(View.VISIBLE);
+        } else {
+            previewBinding.navigationView.tvSideHq.setVisibility(View.GONE);
+        }
+        previewBinding.navigationView.rvSide.setVisibility(View.VISIBLE);
+        previewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+        previewBinding.drawerLayout.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        ArrayList<CustomerDataModel> customerDataList = new ArrayList<>();
+        JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(customerType + presentationDataTable.getHeadquarterCode()).getMasterSyncDataJsonArray();
+        if(jsonArray.length() == 0) {
+            commonUtilsMethods.showToastMessage(this, this.getString(R.string.no_data_found) + "  " + this.getString(R.string.do_master_sync));
+        }else {
+            try {
+                Set<String> customerCodes1 = new HashSet<>();
+                String code = "";
+                for (int i = 0; i<jsonArray.length(); i++) {
+                    try {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        code = jsonObject.getString("Code");
+                        if(!customerCodes1.contains(code)) {
+                            customerCodes1.add(code);
+                            CustomerDataModel customerDataModel = new CustomerDataModel(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), "", "", "", "", "", "");
+                            if(presentationDataTable.getCustomerCodes() != null && !presentationDataTable.getCustomerCodes().isEmpty() && presentationDataTable.getCustomerCodes().contains(code)) {
+                                customerDataModel.setSelected(true);
+                                customerDataList.add(customerDataModel);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        sideScreenAdapter = new SideScreenAdapter(this, customerDataList);
+        previewBinding.navigationView.rvSide.setAdapter(sideScreenAdapter);
+        previewBinding.navigationView.rvSide.setLayoutManager(new LinearLayoutManager(this));
+        sideScreenAdapter.notifyDataSetChanged();
+
+        previewBinding.navigationView.btnEdit.setVisibility(View.GONE);
+    }
+
+    private String getHQName(String hqCode) {
+        try {
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+            ArrayList<String> list = new ArrayList<>();
+            if(jsonArray.length()>0) {
+                for (int i = 0; i<jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    if(jsonObject.optString("id").equalsIgnoreCase(hqCode)) {
+                        return jsonObject.optString("name");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private void closeDrawer() {
+        previewBinding.drawerLayout.closeDrawer(GravityCompat.END);
+        previewBinding.navigationView.etSearch.getText().clear();
+        UtilityClass.hideKeyboard(this);
     }
 
     private void getRequiredData() {
