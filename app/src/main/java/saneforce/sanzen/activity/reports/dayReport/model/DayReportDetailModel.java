@@ -25,6 +25,14 @@ public class DayReportDetailModel implements Serializable {
 
     private String checkin = "";
 
+    private String cin_loc = "";
+
+    private String Checkin_addrs = "";
+
+    private String cout_loc = "";
+
+    private String Checkout_addrs = "";
+
     private String Dcr_addr = "";
 
     private String name = "";
@@ -38,10 +46,8 @@ public class DayReportDetailModel implements Serializable {
     private String remarks = "";
 
     private String gifts = "";
+
     private String promoted_product = "";
-
-
-
 
     public String getPromoted_product() {
         return promoted_product;
@@ -193,5 +199,37 @@ public class DayReportDetailModel implements Serializable {
 
     public void setGifts(String gifts) {
         this.gifts = gifts;
+    }
+
+    public String getCin_loc() {
+        return cin_loc;
+    }
+
+    public void setCin_loc(String cin_loc) {
+        this.cin_loc = cin_loc;
+    }
+
+    public String getCheckin_addrs() {
+        return Checkin_addrs;
+    }
+
+    public void setCheckin_addrs(String checkin_addrs) {
+        Checkin_addrs = checkin_addrs;
+    }
+
+    public String getCout_loc() {
+        return cout_loc;
+    }
+
+    public void setCout_loc(String cout_loc) {
+        this.cout_loc = cout_loc;
+    }
+
+    public String getCheckout_addrs() {
+        return Checkout_addrs;
+    }
+
+    public void setCheckout_addrs(String checkout_addrs) {
+        Checkout_addrs = checkout_addrs;
     }
 }
