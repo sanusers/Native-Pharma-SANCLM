@@ -76,6 +76,8 @@ public class PreviewActivity extends AppCompatActivity {
     private PresentationDataDao presentationDataDao;
     ProgressDialog progressDialog;
     private SideScreenAdapter sideScreenAdapter;
+    private JSONObject checkInJsonObject = new JSONObject();
+
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
@@ -107,24 +109,34 @@ public class PreviewActivity extends AppCompatActivity {
 
         getRequiredData();
         Bundle extra = getIntent().getExtras();
-        if(extra != null) {
-            from_where = extra.getString("from");
-            assert from_where != null;
-            if(from_where.equalsIgnoreCase("call")) {
-                cus_name = extra.getString("cus_name");
-                cus_code = extra.getString("cus_code");
-                SpecialityCode = extra.getString("SpecialityCode");
-                SpecialityName = extra.getString("SpecialityName");
-                BrandCode = extra.getString("MappedProdCode");
-                SlideCode = extra.getString("MappedSlideCode");
-                CusType = extra.getString("CusType");
-                previewBinding.tagCustName.setText(cus_name);
-                previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
-            } else {
-                previewBinding.btnFinishDet.setVisibility(View.GONE);
+            if (extra != null) {
+                from_where = extra.getString("from");
+                assert from_where != null;
+                if (from_where.equalsIgnoreCase("call")) {
+                    cus_name = extra.getString("cus_name");
+                    cus_code = extra.getString("cus_code");
+                    SpecialityCode = extra.getString("SpecialityCode");
+                    SpecialityName = extra.getString("SpecialityName");
+                    BrandCode = extra.getString("MappedProdCode");
+                    SlideCode = extra.getString("MappedSlideCode");
+                    CusType = extra.getString("CusType");
+                    if(extra.containsKey("CheckInJsonObject")) {
+                        String jsonObject = extra.getString("CheckInJsonObject");
+                        try {
+                            checkInJsonObject = new JSONObject(jsonObject);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        checkInJsonObject = new JSONObject();
+                    }
+                    previewBinding.tagCustName.setText(cus_name);
+                    previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
+                } else {
+                    previewBinding.btnFinishDet.setVisibility(View.GONE);
+                }
             }
-        }
-        viewPagerAdapter = new PreviewTabAdapter(getSupportFragmentManager());
+            viewPagerAdapter = new PreviewTabAdapter(getSupportFragmentManager());
 
         if(from_where.equalsIgnoreCase("call")) {
             headingData.clear();
@@ -263,8 +275,9 @@ public class PreviewActivity extends AppCompatActivity {
             Intent intent1 = new Intent(PreviewActivity.this, DCRCallActivity.class);
             intent1.putExtra(Constants.DETAILING_REQUIRED, "true");
             intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
-            intent1 .putExtra("remainder_save", "0");
+            intent1.putExtra("remainder_save", "0");
             intent1.putExtra("hq_code", "" );
+            intent1.putExtra("CheckInJsonObject", checkInJsonObject.toString());
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.toString(), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             startActivity(intent1);

@@ -1,14 +1,12 @@
 package saneforce.sanzen.activity.homeScreen.fragment.worktype;
 
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -60,14 +58,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.Quiz.QuizActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.fragment.CallsFragment;
 import saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
-import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
+import saneforce.sanzen.commonClasses.CheckInOutManager;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -114,9 +111,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     CommonUtilsMethods commonUtilsMethods;
     double latitude, longitude;
     GPSTrack gpsTrack;
-    Dialog dialogAfterCheckOut;
-    TextView tvDateTimeAfter, tvLat, tvLong, tvAddress, tvHeading;
-    Button btnClose;
+    Dialog dialogAfterCheckOut, dialogCheckInOut;
+    TextView tvDateTimeAfter, tvLat, tvLong, tvAddress, tvHeading, tvName, tvDateTime;
+    ImageView imgClose;
+    Button btnCheckOut, btnCheckIn;
     String address;
     JSONObject jsonCheck;
     JSONObject finalSubmitJSONObject;
@@ -130,8 +128,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
     private ProgressDialog syncProgressDialog;
     private int syncCount = 0;
-    private String STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPBasedDCR, TPDCRDeviation;
+    private String CheckInOutNeed, STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPBasedDCR, TPDCRDeviation;
     private boolean isFromTP = false;
+    @SuppressLint("StaticFieldLeak")
+    private static Context context;
+    private static WorkPlanFragment workPlanFragment;
 
     @Override
     public void onResume() {
@@ -285,6 +286,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        context = requireContext();
+        workPlanFragment = this;
     }
 
     public void ShowWorkTypeAlert(TextView mTxtWorktype, RelativeLayout rlculster, RelativeLayout rlHQ) {
@@ -566,6 +569,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         cluster.clear();
         multiple_cluster_list.clear();
         HQList.clear();
+        CheckInOutNeed = SharedPref.getSrtNd(requireContext());
         STPNeed = SharedPref.getStpNeed(requireContext());
         STPBasedMTP = SharedPref.getStpBasedMtp(requireContext());
         STPBasedDCR = SharedPref.getStpBasedDcr(requireContext());
@@ -758,23 +762,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         CommonAlertBox.ApprovalAlert(requireActivity());
                     }else if(SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                         CommonAlertBox.TpAlert(requireActivity());
+                    }else if(CheckInOutManager.isCheckedId(requireContext())) {
+                        CheckInOutDate(true);
                     }else {
-                        if(((TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
-                                || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")))
-                                && binding.switchButton.isChecked()) {
-                            showDeviationAlert();
-                        } else {
-                            if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
-                                if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
-                                    saveOrUpdateWorkPlan();
-                                }else {
-                                    gpsTrack = new GPSTrack(requireActivity());
-                                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_try_again));
-                                }
-                            }else {
-                                saveOrUpdateWorkPlan();
-                            }
-                        }
+                        onSaveClicked();
                     }
                     break;
 
@@ -877,7 +868,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }else {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need));
                         }
-                    } else {
+                    }else {
                         commonUtilsMethods.showToastMessage(requireContext(), "Please update session 2");
                     }
                     break;
@@ -899,7 +890,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }else {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need));
                         }
-                    } else {
+                    }else {
                         commonUtilsMethods.showToastMessage(requireContext(), "Please update session 1");
                     }
                     break;
@@ -909,6 +900,158 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
 
+    }
+
+    private void onSaveClicked() {
+        if(((TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
+                || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")))
+                && binding.switchButton.isChecked()) {
+            showDeviationAlert();
+        }else {
+            if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
+                if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
+                    saveOrUpdateWorkPlan();
+                }else {
+                    gpsTrack = new GPSTrack(requireActivity());
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_try_again));
+                }
+            }else {
+                saveOrUpdateWorkPlan();
+            }
+        }
+    }
+
+    public static void showCheckInDialog() {
+        if (CheckInOutManager.isCheckedId(context)) {
+            workPlanFragment.CheckInOutDate(false);
+        }
+    }
+
+    private void CheckInOutDate(boolean saveWorkPlan) {
+        try {
+            gpsTrack = new GPSTrack(requireActivity());
+            latitude = gpsTrack.getLatitude();
+            longitude = gpsTrack.getLongitude();
+            if(UtilityClass.isNetworkAvailable(requireContext())) {
+                address = CommonUtilsMethods.gettingAddress(requireActivity(), latitude, longitude, false);
+            }else {
+                address = getString(R.string.no_address_found);
+            }
+        } catch (Exception e) {
+            address = getString(R.string.no_address_found);
+            e.printStackTrace();
+        }
+
+        dialogCheckInOut = new Dialog(requireActivity());
+        dialogCheckInOut.setContentView(R.layout.dialog_day_check_in);
+        dialogCheckInOut.setCancelable(false);
+        if(dialogCheckInOut.getWindow() != null) {
+            dialogCheckInOut.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        tvName = dialogCheckInOut.findViewById(R.id.txt_cus_name);
+        tvName.setText(String.format("%s%s", getResources().getString(R.string.hi), SharedPref.getSfName(requireContext())));
+
+        tvDateTime = dialogCheckInOut.findViewById(R.id.txt_date_time);
+        tvDateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
+
+        tvLat = dialogCheckInOut.findViewById(R.id.txt_lat);
+        tvLat.setText(String.valueOf(latitude));
+
+        tvLong = dialogCheckInOut.findViewById(R.id.txt_long);
+        tvLong.setText(String.valueOf(longitude));
+
+        tvAddress = dialogCheckInOut.findViewById(R.id.txt_address);
+        tvAddress.setText(address);
+
+        imgClose = dialogCheckInOut.findViewById(R.id.img_close);
+
+        imgClose.setOnClickListener(v -> {
+            dialogCheckInOut.dismiss();
+            SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+        });
+
+        btnCheckIn = dialogCheckInOut.findViewById(R.id.btn_checkin);
+        btnCheckIn.setOnClickListener(v -> {
+            SharedPref.setCheckInTime(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+            jsonCheck =CommonUtilsMethods.CommonObjectParameter(requireContext());
+            try {
+                jsonCheck.put("tableName", "savetp_attendance");
+                jsonCheck.put("sfcode", SharedPref.getSfCode(requireContext()));
+                jsonCheck.put("division_code", SharedPref.getDivisionCode(requireContext()).replaceAll(",", ""));
+                jsonCheck.put("lat", latitude);
+                jsonCheck.put("long", longitude);
+                jsonCheck.put("address", address);
+                jsonCheck.put("update", "0");
+                jsonCheck.put("Check_In", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                jsonCheck.put("Check_Out", "");
+                jsonCheck.put("DateTime", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                jsonCheck.put("Activity_Dt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
+                Log.v("CheckInOut", "--json--" + jsonCheck.toString());
+            } catch (JSONException ignored) {
+            }
+
+            if (UtilityClass.isNetworkAvailable(requireContext())) {
+                progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
+                CallCheckInAPI(saveWorkPlan);
+            } else {
+                SharedPref.setCheckTodayCheckInOut(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
+                offlineCheckInOutDataDao.saveCheckIn(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+                SetupOutBoxAdapter(requireActivity(), requireContext());
+                dialogCheckInOut.dismiss();
+                onSaveClicked();
+//                CallDialogAfterCheckIn();
+            }
+        });
+        if(!requireActivity().isFinishing()) {
+            dialogCheckInOut.show();
+        }
+    }
+
+    private void CallCheckInAPI(boolean saveWorkPlan) {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/activity");
+        Call<JsonElement> callCheckInOut = api_interface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonCheck.toString());
+        callCheckInOut.enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                assert response.body() != null;
+                Log.v("CheckInOut", response.body() + "--" + response.isSuccessful());
+                if (response.isSuccessful()) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(response.body().toString());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject obj = jsonArray.getJSONObject(i);
+                            CheckInOutStatus = obj.getString("msg");
+                        }
+
+                        if (CheckInOutStatus.equalsIgnoreCase("1")) {
+                            dialogCheckInOut.dismiss();
+                            SharedPref.setCheckTodayCheckInOut(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
+                            if(saveWorkPlan) {
+                                onSaveClicked();
+                            }
+//                            CallDialogAfterCheckIn();
+                        } else {
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_leave_posted));
+                        }
+                        progressDialog.dismiss();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        progressDialog.dismiss();
+                    }
+                } else {
+                    progressDialog.dismiss();
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.contact_admin_in));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                progressDialog.dismiss();
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+            }
+        });
     }
 
     private void showDeviationAlert() {
@@ -969,12 +1112,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     || !SharedPref.getLastCallDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())))) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.should_have_a_call));
             }else {
-                if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
-                    if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
-                        remarksAlertBox();
-                    }else {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
-                    }
+//                SharedPref.setCheckTodayCheckInOut(requireContext(), HomeDashBoard.selectedDate.toString());
+                if(CheckInOutManager.isCheckInAvailable(requireContext())) {
+                    CallDialogCheckOut();
                 }else {
                     remarksAlertBox();
                 }
@@ -1299,7 +1439,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if(CheckInOutStatus.equalsIgnoreCase("1")) {
                             SharedPref.setCheckInTime(requireContext(), "");
                             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
-                            CallDialogAfterCheckOut();
+                            dialogAfterCheckOut.dismiss();
+                            remarksAlertBox();
                         }else {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_leave_posted));
                         }
@@ -1401,13 +1542,42 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void CallDialogAfterCheckOut() {
-        dialogAfterCheckOut = new Dialog(requireContext());
-        dialogAfterCheckOut.setContentView(R.layout.dialog_checkindata);
-        dialogAfterCheckOut.setCancelable(false);
-        Objects.requireNonNull(dialogAfterCheckOut.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+    private void CallDialogCheckOut() {
+        try {
+            gpsTrack = new GPSTrack(requireActivity());
+            latitude = gpsTrack.getLatitude();
+            longitude = gpsTrack.getLongitude();
+            if(UtilityClass.isNetworkAvailable(requireContext())) {
+                address = CommonUtilsMethods.gettingAddress(requireActivity(), latitude, longitude, false);
+            }else {
+                address = getString(R.string.no_address_found);
+            }
+            jsonCheck = CommonUtilsMethods.CommonObjectParameter(requireContext());
+            jsonCheck.put("tableName", "savetp_attendance");
+            jsonCheck.put("sfcode", SharedPref.getSfCode(requireContext()));
+            jsonCheck.put("division_code", SharedPref.getDivisionCode(requireContext()));
+            jsonCheck.put("lat", latitude);
+            jsonCheck.put("long", longitude);
+            jsonCheck.put("address", address);
+            jsonCheck.put("update", "1");
+            jsonCheck.put("Check_In", SharedPref.getCheckInTime(requireContext()));
+            jsonCheck.put("Check_Out", CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_1));
+            jsonCheck.put("DateTime", CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_1));
+            jsonCheck.put("Activity_Dt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
+            Log.v("CheckInOut", "--json--" + jsonCheck);
+        } catch (Exception e) {
+            address = getString(R.string.no_address_found);
+            e.printStackTrace();
+        }
 
-        btnClose = dialogAfterCheckOut.findViewById(R.id.btn_close);
+        dialogAfterCheckOut = new Dialog(requireContext());
+        dialogAfterCheckOut.setContentView(R.layout.dialog_day_check_out);
+        dialogAfterCheckOut.setCancelable(false);
+        if(dialogAfterCheckOut.getWindow() != null) {
+            dialogAfterCheckOut.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        btnCheckOut = dialogAfterCheckOut.findViewById(R.id.btn_close);
         tvHeading = dialogAfterCheckOut.findViewById(R.id.txt_heading);
         tvDateTimeAfter = dialogAfterCheckOut.findViewById(R.id.txt_date_time);
         tvAddress = dialogAfterCheckOut.findViewById(R.id.txt_address);
@@ -1415,24 +1585,27 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         tvLong = dialogAfterCheckOut.findViewById(R.id.txt_long);
 
         tvHeading.setText(getResources().getString(R.string.check_out));
-
         tvDateTimeAfter.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
         tvLat.setText(String.valueOf(latitude));
         tvLong.setText(String.valueOf(longitude));
         tvAddress.setText(address);
 
-        btnClose.setOnClickListener(v -> {
-            dialogAfterCheckOut.dismiss();
-            try {
-                HomeDashBoard.dialogCheckInOut.show();
-            } catch (Exception ignored) {
-
+        btnCheckOut.setOnClickListener(v -> {
+            if(UtilityClass.isNetworkAvailable(requireContext())) {
+                progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
+                CallCheckOutAPI();
+            }else {
+                SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+                SharedPref.setCheckInTime(requireContext(), "");
+                SharedPref.setCheckDateTodayPlan(requireContext(), "");
+                offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+                dialogAfterCheckOut.dismiss();
+                remarksAlertBox();
             }
         });
 
         dialogAfterCheckOut.show();
     }
-
 
     public void workPlanSubmit(String option) {
         try {
@@ -1789,11 +1962,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         tpApprovalStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
                         String date = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_38, HomeDashBoard.selectedDate.toString());
                         if(tpDataArray.length()>0 && tpApprovalStatus.equalsIgnoreCase("3")) {
-                            for (int i = 0; i < tpDataArray.length(); i++) {
+                            for (int i = 0; i<tpDataArray.length(); i++) {
                                 tpDataObj = tpDataArray.optJSONObject(i);
-                                if(tpDataObj.optString("date").equalsIgnoreCase(date)){
+                                if(tpDataObj.optString("date").equalsIgnoreCase(date)) {
                                     break;
-                                } else {
+                                }else {
                                     tpDataObj = null;
                                 }
                             }
@@ -2070,8 +2243,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 }
-            }
-            else if(tpDataObj != null) {
+            }else if(tpDataObj != null) {
                 Type type = new TypeToken<ModelClass>() {
                 }.getType();
                 ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
@@ -2142,8 +2314,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, jsonArray.toString(), 2));
                     setUpWorkPlan();
                 }
-            }
-            else {
+            }else {
                 SharedPref.setDayPlanStartedDate(requireContext(), "");
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 2));
                 binding.txtWorktype1.setText("");
@@ -2276,24 +2447,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         if(UtilityClass.isNetworkAvailable(requireContext())) {
             address = CommonUtilsMethods.gettingAddress(requireActivity(), latitude, longitude, false);
         }else {
-            address = "No Address Found";
+            address = getString(R.string.no_address_found);
         }
-        jsonCheck = CommonUtilsMethods.CommonObjectParameter(requireContext());
         finalSubmitJSONObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
         try {
-            jsonCheck.put("tableName", "savetp_attendance");
-            jsonCheck.put("sfcode", SharedPref.getSfCode(requireContext()));
-            jsonCheck.put("division_code", SharedPref.getDivisionCode(requireContext()));
-            jsonCheck.put("lat", latitude);
-            jsonCheck.put("long", longitude);
-            jsonCheck.put("address", address);
-            jsonCheck.put("update", "1");
-            jsonCheck.put("Check_In", SharedPref.getCheckInTime(requireContext()));
-            jsonCheck.put("Check_Out", CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
-            jsonCheck.put("DateTime", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd") + " " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
-
-            Log.v("CheckInOut", "--json--" + jsonCheck);
-
             finalSubmitJSONObject.put("tableName", "final_day");
             finalSubmitJSONObject.put("sfcode", SharedPref.getSfCode(requireContext()));
             finalSubmitJSONObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
@@ -2301,6 +2458,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             finalSubmitJSONObject.put("Activity_Dt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
             finalSubmitJSONObject.put("current_Dt", CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_1));
             finalSubmitJSONObject.put("day_remarks", remark);
+            finalSubmitJSONObject.put("location", latitude + ":" + longitude);
+            finalSubmitJSONObject.put("address", address);
 
             Log.v("Final Submit", "--json-- " + finalSubmitJSONObject);
         } catch (JSONException e) {
@@ -2310,11 +2469,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
             CallFinalSubmitAPI();
             tpDataObj = null;
-            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
-                if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
-                    CallCheckOutAPI();
-                }
-            }
+//            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+//                if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
+//                    CallCheckOutAPI();
+//                }
+//            }
         }else {
             updateLocalData();
             if(offlineDaySubmitDao.getDaySubmit(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4))) != null) {
@@ -2323,18 +2482,18 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 offlineDaySubmitDao.insert(new OfflineDaySubmitDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), finalSubmitJSONObject.toString()));
             }
             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.day_submit_saved_locally));
-            SharedPref.setCheckTodayCheckInOut(requireContext(), "");
-            SharedPref.setCheckInTime(requireContext(), "");
-            SharedPref.setCheckDateTodayPlan(requireContext(), "");
+//            SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+//            SharedPref.setCheckInTime(requireContext(), "");
+//            SharedPref.setCheckDateTodayPlan(requireContext(), "");
             SharedPref.setLastCallDate(requireContext(), "");
             SharedPref.setSelectedDateCal(requireContext(), "");
             SetupOutBoxAdapter(requireActivity(), requireContext());
-            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
-                if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
-                    offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
-                    CallDialogAfterCheckOut();
-                }
-            }
+//            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+//                if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
+//                    offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+//                    CallDialogCheckOut();
+//                }
+//            }
             HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
         }
     }
@@ -2342,7 +2501,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private void remarksAlertBox() {
         Dialog dialogRemarks = new Dialog(requireActivity());
         dialogRemarks.setContentView(R.layout.popup_remarks);
-        Objects.requireNonNull(dialogRemarks.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        if(dialogRemarks.getWindow() != null) {
+            dialogRemarks.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
         dialogRemarks.setCancelable(false);
         ImageView iv_close = dialogRemarks.findViewById(R.id.img_close);
         dialogAcknowledge(dialogRemarks);
@@ -2454,13 +2615,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         btn_clear.setText(requireContext().getString(R.string.no));
         if(option.equalsIgnoreCase("Delete")
                 && (
-                    (sessionType.equalsIgnoreCase("1") && mFwFlg1.equalsIgnoreCase("F"))
-                    || (sessionType.equalsIgnoreCase("2") && mFwFlg2.equalsIgnoreCase("F"))
-                )
+                (sessionType.equalsIgnoreCase("1") && mFwFlg1.equalsIgnoreCase("F"))
+                        || (sessionType.equalsIgnoreCase("2") && mFwFlg2.equalsIgnoreCase("F"))
+        )
         ) {
             content.setText(String.format("%s %s %s %s\n%s", getString(R.string.edit_delete_session), option, "session", sessionType, getString(R.string.deleting_field_work_with_calls)));
-        }
-        else {
+        }else {
             content.setText(String.format("%s %s %s %s", getString(R.string.edit_delete_session), option, "session", sessionType));
         }
         content.setVisibility(View.VISIBLE);
@@ -2521,7 +2681,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 }
                                 if(sessionType.equals("1") && mFwFlg1.equalsIgnoreCase("F")) {
                                     CallsFragment.CallTodayCallsAPI(requireContext(), api_interface, false);
-                                } else if(sessionType.equals("2") && mFwFlg2.equalsIgnoreCase("F")) {
+                                }else if(sessionType.equals("2") && mFwFlg2.equalsIgnoreCase("F")) {
                                     CallsFragment.CallTodayCallsAPI(requireContext(), api_interface, false);
                                 }
                             }

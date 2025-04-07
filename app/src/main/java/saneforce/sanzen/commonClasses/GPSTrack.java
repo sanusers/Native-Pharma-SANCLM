@@ -116,10 +116,10 @@ public class GPSTrack implements LocationListener {
 
     }
 
-    public GPSTrack(Context context) {
+    public GPSTrack(Activity context) {
         this.mContext = context;
         try {
-            activity = (Activity) context;
+            activity = context;
         } catch (Exception e) {
             e.printStackTrace();
         }

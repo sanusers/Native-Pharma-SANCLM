@@ -88,11 +88,11 @@ public class CommonUtilsMethods {
 
         Geocoder geocoder;
         List<Address> addresses;
-        String address = "No Address Found";
+        String address = activity.getString(R.string.no_address_found);
         geocoder = new Geocoder(activity, Locale.getDefault());
         try {
             addresses = geocoder.getFromLocation(la, ln, 1);
-            if (Objects.requireNonNull(addresses).size() > 0) {
+            if (addresses != null && !addresses.isEmpty()) {
                 address = addresses.get(0).getAddressLine(0);
                 /*String city = addresses.get(0).getLocality();
                 String state = addresses.get(0).getAdminArea();
@@ -100,7 +100,7 @@ public class CommonUtilsMethods {
                 String postalCode = addresses.get(0).getPostalCode();
                 String knownName = addresses.get(0).getFeatureName();*/
             } else {
-                address = "No Address Found";
+                address = activity.getString(R.string.no_address_found2);
             }
 
             if (toastMsg) {

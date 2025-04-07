@@ -1,13 +1,6 @@
 package saneforce.sanzen.activity.homeScreen.adapters;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
-import static saneforce.sanzen.activity.homeScreen.fragment.CallAnalysisFragment.Chemist_list;
-import static saneforce.sanzen.activity.homeScreen.fragment.CallAnalysisFragment.Doctor_list;
-import static saneforce.sanzen.activity.homeScreen.fragment.CallAnalysisFragment.Stockiest_list;
-import static saneforce.sanzen.activity.homeScreen.fragment.CallAnalysisFragment.callAnalysisBinding;
-import static saneforce.sanzen.activity.homeScreen.fragment.CallAnalysisFragment.cip_list;
-import static saneforce.sanzen.activity.homeScreen.fragment.CallAnalysisFragment.hos_list;
-import static saneforce.sanzen.activity.homeScreen.fragment.CallAnalysisFragment.unlistered_list;
 import static saneforce.sanzen.activity.homeScreen.fragment.CallsFragment.binding;
 
 import android.annotation.SuppressLint;
@@ -38,7 +31,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -50,6 +42,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -126,7 +119,24 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
         holder.menu.setOnClickListener(v -> {
             if (UtilityClass.isNetworkAvailable(context)) {
-
+                final String checkInOutNeed;
+                switch (type) {
+                    case "1":
+                        checkInOutNeed = SharedPref.getCustSrtNd(context);
+                        break;
+                    case "2":
+                        checkInOutNeed = SharedPref.getChmSrtNd(context);
+                        break;
+                    case "4":
+                        checkInOutNeed = SharedPref.getUnlistSrtNd(context);
+                        break;
+                    case "5":
+                        checkInOutNeed = SharedPref.getCipSrtNd(context);
+                        break;
+                    default:
+                        checkInOutNeed = "1";
+                        break;
+                }
                 Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
                 PopupMenu popupMenu = new PopupMenu(wrapper, v, Gravity.END);
                 popupMenu.getMenuInflater().inflate(R.menu.call_online_menu, popupMenu.getMenu());
@@ -135,7 +145,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                 popupMenu.show();
                 popupMenu.setOnMenuItemClickListener(menuItem -> {
                     if (menuItem.getItemId() == R.id.menuEdit) {
-                        CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID());
+                        CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID(), checkInOutNeed);
                     } else if (menuItem.getItemId() == R.id.menuDelete) {
                         Dialog dialog = new Dialog(context);
                         dialog.setContentView(R.layout.dcr_cancel_alert);
@@ -151,7 +161,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                             dialog.dismiss();
                             try {
                                 dialogTransparent.show();
-                                CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode());
+                                CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode(), checkInOutNeed);
                                 String mMdata= masterDataDao.getDataByKey(Constants.CALL_SYNC);
                                 JSONArray jsonArray = new JSONArray(mMdata);
                                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -206,7 +216,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
     @SuppressLint("DefaultLocale")
 
-    private void CallDeleteAPI(String TranslNo, String aDetSLNo, String type, String date, String docCode) {
+    private void CallDeleteAPI(String TranslNo, String aDetSLNo, String type, String date, String docCode, String checkInOutNeed) {
         JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
         try {
             jsonObject.put("sfcode",  SharedPref.getSfCode(context));
@@ -217,13 +227,16 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
             jsonObject.put("sample_validation", SharedPref.getSampleValidation(context));
             jsonObject.put("input_validation",  SharedPref.getInputValidation(context));
             jsonObject.put("activitynd", SharedPref.getActivityNd(context));
+            jsonObject.put("checkinoutneed", checkInOutNeed);
+            if(HomeDashBoard.selectedDate != null) {
+                jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_22, HomeDashBoard.selectedDate.toString()));
+            }
             Log.v("delCall", jsonObject.toString());
         } catch (Exception e) {
             Log.v("delCall", e.toString());
         }
 
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
-
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "delete/dcr");
@@ -277,7 +290,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         });
     }
 
-    private void CallEditAPI(String transSlno, String aDetSLNo, String docName, String docCode, String type) {
+    private void CallEditAPI(String transSlno, String aDetSLNo, String docName, String docCode, String type, String checkInOutNeed) {
         progressBar = CommonUtilsMethods.createProgressDialog(context);
         JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
         try {
@@ -287,9 +300,14 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
             jsonObject.put("division_code",  SharedPref.getDivisionCode(context));
             jsonObject.put("Rsf",  SharedPref.getHqCode(context));
             jsonObject.put("cusname", docName);
+            jsonObject.put("cuscode", docCode);
             jsonObject.put("custype", type);
             jsonObject.put("pob", "1");
             jsonObject.put("activitynd", SharedPref.getActivityNd(context));
+            jsonObject.put("checkinoutneed", checkInOutNeed);
+            if(HomeDashBoard.selectedDate != null) {
+                jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_22, HomeDashBoard.selectedDate.toString()));
+            }
             Log.v("editCall", jsonObject.toString());
 
         } catch (Exception e) {

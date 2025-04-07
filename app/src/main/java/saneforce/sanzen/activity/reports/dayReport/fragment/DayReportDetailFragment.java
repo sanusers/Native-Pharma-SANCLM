@@ -54,7 +54,6 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkStatusTask;
 import saneforce.sanzen.utility.TimeUtils;
 
-
 public class DayReportDetailFragment extends Fragment {
     public static String callCheckInOutNeed;
     FragmentDayReportDetailBinding binding;
@@ -285,6 +284,26 @@ public class DayReportDetailFragment extends Fragment {
             NetworkStatusTask networkStatusTask = new NetworkStatusTask(requireContext(), status -> {
                 if (status) {
                     try {
+                        SharedPref.getCustSrtNd(requireContext());
+                        String checkInOutNeed = "1";
+                        switch (reportOf) {
+                            case Constants.DOCTOR:
+                                checkInOutNeed = SharedPref.getCustSrtNd(requireContext());
+                                break;
+                            case Constants.CHEMIST:
+                                checkInOutNeed = SharedPref.getChmSrtNd(requireContext());
+                                break;
+                            case Constants.UNLISTED_DOCTOR:
+                                checkInOutNeed = SharedPref.getUnlistSrtNd(requireContext());
+                                break;
+                            case Constants.CIP:
+                                checkInOutNeed = SharedPref.getCipSrtNd(requireContext());
+                                break;
+                            default:
+                                checkInOutNeed = "1";
+                                break;
+                        }
+
                         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
                         JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
                         jsonObject.put("tableName", "getvwvstdet");
@@ -293,6 +312,7 @@ public class DayReportDetailFragment extends Fragment {
                         jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
                         jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
                         jsonObject.put("Rsf", dayReportModel.getSF_Code());
+                        jsonObject.put("checkInOutNeed", checkInOutNeed);
                         Log.d("paramObject", jsonObject.toString());
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");

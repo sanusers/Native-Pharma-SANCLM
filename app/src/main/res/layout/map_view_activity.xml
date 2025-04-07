@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/appBar"
-
-         />
+        android:layout_below="@id/ll_check_in_out_details" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
@@ -46,16 +45,149 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_16sdp"
                 android:fontFamily="@font/satoshi_variable"
                 android:text="MapView"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_7sdp" />
+                android:textSize="@dimen/_7ssp" />
 
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_check_in_out_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appBar"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_check_in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="@dimen/_3sdp">
+
+            <TextView
+                android:id="@+id/tv_check_in"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="start|center"
+                android:paddingHorizontal="@dimen/_2sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                android:text="@string/check_in"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_7ssp"
+                android:textStyle="bold"
+                android:visibility="visible"
+                app:drawableStartCompat="@drawable/img_marker_purple"
+                app:drawableTint="@color/green_60"
+                app:layout_constraintBottom_toTopOf="@id/tv_tagged_address"
+                app:layout_constraintEnd_toStartOf="@id/tv_meters"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_in_date_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="start|center"
+                android:padding="@dimen/_1sdp"
+                android:singleLine="false"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:visibility="visible"
+                tools:text="04-04-2025 12:45 PM" />
+
+            <TextView
+                android:id="@+id/tv_in_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="start|center"
+                android:padding="@dimen/_1sdp"
+                android:singleLine="false"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:visibility="visible"
+                tools:text="No. 569, mount road, sathya murthy nagar, Teynampet, Chennai, Tamilnadu 600 018, India" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="@dimen/_5sdp"
+            android:background="@color/dark_purple"/>
+
+        <LinearLayout
+            android:id="@+id/ll_check_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="@dimen/_3sdp">
+
+            <TextView
+                android:id="@+id/tv_check_out"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="start|center"
+                android:paddingHorizontal="@dimen/_2sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                android:text="@string/check_out"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_7ssp"
+                android:textStyle="bold"
+                android:visibility="visible"
+                app:drawableStartCompat="@drawable/img_marker_purple"
+                app:drawableTint="@color/red_60"
+                app:layout_constraintBottom_toTopOf="@id/tv_tagged_address"
+                app:layout_constraintEnd_toStartOf="@id/tv_meters"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_out_date_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="start|center"
+                android:padding="@dimen/_1sdp"
+                android:singleLine="false"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:visibility="visible"
+                tools:text="04-04-2025 12:45 PM" />
+
+            <TextView
+                android:id="@+id/tv_out_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="start|center"
+                android:padding="@dimen/_1sdp"
+                android:singleLine="false"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:visibility="visible"
+                tools:text="No. 569, mount road, sathya murthy nagar, Teynampet, Chennai, Tamilnadu 600 018, India" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

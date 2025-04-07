@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/_140sdp"
+    android:layout_width="@dimen/_200sdp"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/_2sdp">
 
@@ -70,6 +70,18 @@
             app:layout_constraintTop_toBottomOf="@id/view2"
             tools:ignore="ContentDescription" />
 
+        <ImageView
+            android:id="@+id/img_cust"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:src="@drawable/doctor_img"
+            app:layout_constraintVertical_bias="0.06"
+            app:layout_constraintHorizontal_bias="0.51"
+            app:layout_constraintStart_toStartOf="@id/img_cust_check_in"
+            app:layout_constraintEnd_toEndOf="@id/img_cust_check_in"
+            app:layout_constraintTop_toTopOf="@id/img_cust_check_in"
+            app:layout_constraintBottom_toBottomOf="@id/img_cust_check_in"/>
+
         <TextView
             android:id="@+id/txt_content_top"
             android:layout_width="wrap_content"
@@ -122,7 +134,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_cus_name" />
 
-
         <TextView
             android:id="@+id/txt_date_time"
             android:layout_width="match_parent"
@@ -138,11 +149,100 @@
             android:textColor="@color/black"
             android:textSize="@dimen/_7ssp"
             android:textStyle="normal"
-            app:layout_constraintBottom_toTopOf="@id/txt_content"
+            app:layout_constraintBottom_toTopOf="@id/txt_latlong_tag"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view3" />
+
+        <TextView
+            android:id="@+id/txt_latlong_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:drawablePadding="@dimen/_6sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:gravity="start"
+            android:paddingHorizontal="@dimen/_3sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/latitude_longitude"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_7ssp"
+            android:textStyle="bold"
+            app:drawableStartCompat="@drawable/img_loc"
+            app:layout_constraintBottom_toTopOf="@id/txt_lat_lng"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_date_time" />
+
+        <TextView
+            android:id="@+id/txt_lat_lng"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:layout_marginStart="@dimen/_18sdp"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start"
+            android:paddingHorizontal="@dimen/_3sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:singleLine="false"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_7ssp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toTopOf="@id/txt_address_tag"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_latlong_tag" />
+
+        <TextView
+            android:id="@+id/txt_address_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:drawablePadding="@dimen/_6sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:gravity="start"
+            android:paddingHorizontal="@dimen/_3sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/address"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_7ssp"
+            android:textStyle="bold"
+            app:drawableStartCompat="@drawable/btn_marker"
+            app:layout_constraintBottom_toTopOf="@id/txt_address"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_lat_lng" />
+
+        <TextView
+            android:id="@+id/txt_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:layout_marginStart="@dimen/_18sdp"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start"
+            android:paddingHorizontal="@dimen/_3sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:singleLine="false"
+            tools:text="@string/address"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_7ssp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toTopOf="@id/txt_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_address_tag" />
 
         <TextView
             android:id="@+id/txt_content"
@@ -162,7 +262,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_date_time" />
+            app:layout_constraintTop_toBottomOf="@id/txt_address" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_checkIn"

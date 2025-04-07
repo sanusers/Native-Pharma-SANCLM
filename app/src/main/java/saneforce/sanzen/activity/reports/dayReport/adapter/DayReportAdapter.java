@@ -71,14 +71,14 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         holder.submitDate.setText(dayReportModel.getRptdate());
         holder.remarks.setText(dayReportModel.getRemarks());
         if (SharedPref.getSrtNd(context).equalsIgnoreCase("0")){
-            if (dayReportModel.getInaddress().equals("")){
+            if (dayReportModel.getStart_lat() == null || dayReportModel.getStart_lat().isEmpty() || dayReportModel.getStart_lat().equalsIgnoreCase("0.0")){
                 holder.rlCheckIn.setVisibility(View.GONE);
             }else{
                 holder.rlCheckIn.setVisibility(View.VISIBLE);
                 holder.checkInTime.setText(dayReportModel.getIntime());
                 holder.checkInAddress.setText(dayReportModel.getInaddress());
             }
-            if (dayReportModel.getOutaddress().equals("")){
+            if (dayReportModel.getEnd_lat() == null || dayReportModel.getEnd_lat().isEmpty() || dayReportModel.getEnd_lat().equalsIgnoreCase("0.0")){
                 holder.rlCheckOut.setVisibility(View.GONE);
             }else{
                 holder.rlCheckOut.setVisibility(View.VISIBLE);
@@ -202,15 +202,18 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.green_10)));
         }
 
-
         holder.checkInMarker.setOnClickListener(view -> {
             Intent intent = new Intent(context, MapViewActvity.class);
             Bundle bundle = new Bundle();
-
-            bundle.putString("INLat", "12.976810");
-            bundle.putString("INLong", "80.221489");
-            bundle.putString("OUTLat", "13.011760");
-            bundle.putString("OUTLong", "80.221481");
+            bundle.putString("INLat", dayReportModel.getStart_lat());
+            bundle.putString("INLong", dayReportModel.getStart_lang());
+            bundle.putString("OUTLat", dayReportModel.getEnd_lat());
+            bundle.putString("OUTLong", dayReportModel.getEnd_lang());
+            bundle.putString("INDateTime", dayReportModel.getRptdate() + dayReportModel.getIntime());
+            bundle.putString("OUTDateTime", dayReportModel.getRptdate() + dayReportModel.getOuttime());
+            bundle.putString("INAddress", dayReportModel.getInaddress());
+            bundle.putString("OUTAddress", dayReportModel.getOutaddress());
+            bundle.putString("title", context.getString(R.string.day_check_in) + " ( " + dayReportModel.getRptdate() + " )");
             intent.putExtras(bundle);
             context.startActivity(intent);
         });
@@ -218,10 +221,15 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         holder.checkOutMarker.setOnClickListener(view -> {
             Bundle bundle = new Bundle();
             Intent intent = new Intent(context, MapViewActvity.class);
-            bundle.putString("INLat", "12.976810");
-            bundle.putString("INLong", "80.221489");
-            bundle.putString("OUTLat", "13.011760");
-            bundle.putString("OUTLong", "80.221481");
+            bundle.putString("INLat", dayReportModel.getStart_lat());
+            bundle.putString("INLong", dayReportModel.getStart_lang());
+            bundle.putString("OUTLat", dayReportModel.getEnd_lat());
+            bundle.putString("OUTLong", dayReportModel.getEnd_lang());
+            bundle.putString("INDateTime", dayReportModel.getRptdate() + dayReportModel.getIntime());
+            bundle.putString("OUTDateTime", dayReportModel.getRptdate() + dayReportModel.getOuttime());
+            bundle.putString("INAddress", dayReportModel.getInaddress());
+            bundle.putString("OUTAddress", dayReportModel.getOutaddress());
+            bundle.putString("title", context.getString(R.string.day_check_in) + " ( " + dayReportModel.getRptdate() + " )");
             intent.putExtras(bundle);
             context.startActivity(intent);
         });

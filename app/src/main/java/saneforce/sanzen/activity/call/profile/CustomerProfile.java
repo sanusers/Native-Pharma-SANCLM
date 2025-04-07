@@ -20,6 +20,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -51,6 +54,7 @@ public class CustomerProfile extends AppCompatActivity {
     TextView cusName;
     private RoomDB roomDB;
     private CallOfflineDataDao callOfflineDataDao;
+    private JSONObject checkInJsonObject = new JSONObject();
 
     @Override
     public void onBackPressed() {
@@ -75,6 +79,7 @@ public class CustomerProfile extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("call", CallActivityCustDetails);
+        outState.putString("CheckInJsonObject", checkInJsonObject.toString());
         if(HomeDashBoard.selectedDate != null) {
             outState.putString("date", HomeDashBoard.selectedDate.toString());
         }
@@ -96,7 +101,12 @@ public class CustomerProfile extends AppCompatActivity {
         img_back = findViewById(R.id.iv_back);
         cusName = findViewById(R.id.tag_selection);
         if(savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
-            CallActivityCustDetails = savedInstanceState.getParcelableArrayList("call");
+            try {
+                CallActivityCustDetails = savedInstanceState.getParcelableArrayList("call");
+                checkInJsonObject = new JSONObject(savedInstanceState.getString("CheckInJsonObject"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             if(savedInstanceState.getString("date") != null) {
                 HomeDashBoard.selectedDate = LocalDate.parse(savedInstanceState.getString("date"), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
             }
@@ -111,15 +121,27 @@ public class CustomerProfile extends AppCompatActivity {
                 CommonAlertBox.permissionChangeAlert(this);
             }
         }
-        cusName.setText(CallActivityCustDetails.get(0).getName());
         isPreAnalysisCalled = false;
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
+
+        try {
+            Bundle bundle = getIntent().getExtras();
+            if(bundle != null && bundle.containsKey("CheckInJsonObject")) {
+                String jsonObject = bundle.getString("CheckInJsonObject");
+                checkInJsonObject = new JSONObject(jsonObject);
+            } else {
+                checkInJsonObject = new JSONObject();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         viewPagerAdapter = new CustTabLayoutAdapter(getSupportFragmentManager());
         viewPagerAdapter.add(new OverviewFragment(), "Overview");
         viewPagerAdapter.add(new PreCallAnalysisFragment(), "Pre Call Analysis");
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        cusName.setText(CallActivityCustDetails.get(0).getName());
 
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -156,6 +178,7 @@ public class CustomerProfile extends AppCompatActivity {
             intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
             intent1.putExtra("remainder_save", "0");
             intent1.putExtra("hq_code", "" );
+            intent1.putExtra("CheckInJsonObject", checkInJsonObject.toString());
 
             //  intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -177,6 +200,7 @@ public class CustomerProfile extends AppCompatActivity {
                 intent.putExtra("MappedProdCode", CallActivityCustDetails.get(0).getMappedBrands());
                 intent.putExtra("MappedSlideCode", CallActivityCustDetails.get(0).getMappedSlides());
                 intent.putExtra("CusType", CallActivityCustDetails.get(0).getType());
+                intent.putExtra("CheckInJsonObject", checkInJsonObject.toString());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             } else {

@@ -119,6 +119,7 @@ import saneforce.sanzen.activity.reports.ReportsActivity;
 import saneforce.sanzen.activity.reports.dayReport.MapViewActvity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
+import saneforce.sanzen.commonClasses.CheckInOutManager;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -149,7 +150,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static int DeviceWith;
     public static Dialog dialog;
     public static Dialog dialogCheckInOut, dialogAfterCheckIn, dialogPwdChange;
-    public static String CustomPresentationNeed, PresentationNeed, SequentialEntry;
+    public static String CustomPresentationNeed, PresentationNeed, SequentialEntry, CheckInOutNeed;
     public static LocalDate selectedDate;
     final ArrayList<CallStatusModelClass> callStatusList = new ArrayList<>();
     public ActionBarDrawerToggle actionBarDrawerToggle;
@@ -335,7 +336,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         // THIS CODE IS DESIGN
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+        apiInterface = RetrofitClient.getRetrofit(HomeDashBoard.this, SharedPref.getCallApiUrl(HomeDashBoard.this));
         WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
         DeviceWith = displayMetrics.widthPixels;
@@ -363,7 +364,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         inAppUpdate = new InAppUpdate(this);
 
         tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
-        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods = new CommonUtilsMethods(HomeDashBoard.this);
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
         isDateSelectionClicked = false;
@@ -383,7 +384,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             public void onTabSelected(TabLayout.Tab tab) {
 
                 Log.v("BBB",""+tab.getPosition());
-                SharedPref.setSetUpClickedTab(getApplicationContext(),tab.getPosition());
+                SharedPref.setSetUpClickedTab(HomeDashBoard.this,tab.getPosition());
             }
 
             @Override
@@ -414,24 +415,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             binding.llAnalys.setLayoutParams(param1);
         });
 
-
         // THIS CODE IS DEVELOPMENT
         intentFilter = new IntentFilter();
         intentFilter.addAction(CONNECTIVITY_ACTION);
         receiver = new NetworkChangeReceiver();
 
-
         getRequiredData();
         AppIdentify();
         onClickListener();
         accessibility();
-        if (SharedPref.getSrtNd(this).equalsIgnoreCase("0") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
-            SharedPref.setCheckInTime(getApplicationContext(), "");
-            SharedPref.setSkipCheckIn(getApplicationContext(), true);
-            CheckInOutDate();
-        } else {
-            SharedPref.setSkipCheckIn(getApplicationContext(), false);
-        }
 
         gpsTrack = new GPSTrack(this);
         latitude = gpsTrack.getLatitude();
@@ -439,10 +431,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
             address = CommonUtilsMethods.gettingAddress(this, latitude, longitude, false);
         } else {
-            address = "No Address Found";
+            address = getString(R.string.no_address_found);
         }
-
-
         Log.e("addresss"," :"+latitude+"   :"+longitude+" :"+address);
 
         binding.rlDateLayoout.setOnClickListener(this);
@@ -514,113 +504,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.viewPager.setOffscreenPageLimit(leftViewPagerAdapter.getCount());
     }
 
-    private void CheckInOutDate() {
-        dialogCheckInOut = new Dialog(this);
-        dialogCheckInOut.setContentView(R.layout.dialog_daycheckin);
-        dialogCheckInOut.setCancelable(false);
-        Objects.requireNonNull(dialogCheckInOut.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        tvName = dialogCheckInOut.findViewById(R.id.txt_cus_name);
-        tvName.setText(String.format("%s%s", getResources().getString(R.string.hi), SharedPref.getSfName(this)));
-
-        tvDateTime = dialogCheckInOut.findViewById(R.id.txt_date_time);
-        tvDateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
-
-        btnCheckIn = dialogCheckInOut.findViewById(R.id.btn_checkin);
-        imgClose = dialogCheckInOut.findViewById(R.id.img_close);
-
-        imgClose.setOnClickListener(v -> {
-            dialogCheckInOut.dismiss();
-            SharedPref.setSkipCheckIn(getApplicationContext(), true);
-        });
-
-        btnCheckIn.setOnClickListener(v -> {
-            gpsTrack = new GPSTrack(this);
-            latitude = gpsTrack.getLatitude();
-            longitude = gpsTrack.getLongitude();
-            if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                address = CommonUtilsMethods.gettingAddress(this, latitude, longitude, false);
-            } else {
-                address = "No Address Found";
-            }
-            SharedPref.setCheckInTime(getApplicationContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-            jsonCheck =CommonUtilsMethods.CommonObjectParameter(this);
-            try {
-                jsonCheck.put("tableName", "savetp_attendance");
-                jsonCheck.put("sfcode", SharedPref.getSfCode(this));
-                jsonCheck.put("division_code", SharedPref.getDivisionCode(this).replaceAll(",", ""));
-                jsonCheck.put("lat", latitude);
-                jsonCheck.put("long", longitude);
-                jsonCheck.put("address", address);
-                jsonCheck.put("update", "0");
-                jsonCheck.put("Check_In", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-                jsonCheck.put("Check_Out", "");
-                jsonCheck.put("DateTime", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-                Log.v("CheckInOut", "--json--" + jsonCheck.toString());
-            } catch (JSONException ignored) {
-            }
-
-            if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                progressDialog = CommonUtilsMethods.createProgressDialog(getApplicationContext());
-                CallCheckInAPI();
-            } else {
-                SharedPref.setSkipCheckIn(getApplicationContext(), false);
-                SharedPref.setCheckTodayCheckInOut(getApplicationContext(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
-                offlineCheckInOutDataDao.saveCheckIn(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
-                SetupOutBoxAdapter(this, this);
-                CallDialogAfterCheckIn();
-            }
-        });
-
-        dialogCheckInOut.show();
-    }
-
-    private void CallCheckInAPI() {
-        Map<String, String> mapString = new HashMap<>();
-        mapString.put("axn", "save/activity");
-        Call<JsonElement> callCheckInOut = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonCheck.toString());
-        callCheckInOut.enqueue(new Callback<JsonElement>() {
-            @Override
-            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                assert response.body() != null;
-                Log.v("CheckInOut", response.body() + "--" + response.isSuccessful());
-                if (response.isSuccessful()) {
-                    try {
-                        JSONArray jsonArray = new JSONArray(response.body().toString());
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject obj = jsonArray.getJSONObject(i);
-                            CheckInOutStatus = obj.getString("msg");
-                        }
-
-                        if (CheckInOutStatus.equalsIgnoreCase("1")) {
-                            CallDialogAfterCheckIn();
-                        } else {
-                            commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.toast_leave_posted));
-                        }
-                        progressDialog.dismiss();
-                    } catch (Exception ignored) {
-                        progressDialog.dismiss();
-                    }
-                } else {
-                    progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.contact_admin_in));
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
-            }
-        });
-    }
-
     private void CallDialogAfterCheckIn() {
         dialogCheckInOut.dismiss();
         dialogAfterCheckIn = new Dialog(this);
-        dialogAfterCheckIn.setContentView(R.layout.dialog_checkindata);
+        dialogAfterCheckIn.setContentView(R.layout.dialog_day_check_out);
         dialogAfterCheckIn.setCancelable(false);
-        Objects.requireNonNull(dialogAfterCheckIn.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        if(dialogAfterCheckIn.getWindow() != null) {
+            dialogAfterCheckIn.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
 
         btnClose = dialogAfterCheckIn.findViewById(R.id.btn_close);
         tvHeading = dialogAfterCheckIn.findViewById(R.id.txt_heading);
@@ -638,7 +529,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         btnClose.setOnClickListener(v -> dialogAfterCheckIn.dismiss());
 
-        dialogAfterCheckIn.show();
+        if(!HomeDashBoard.this.isFinishing()) {
+            dialogAfterCheckIn.show();
+        }
     }
 
     private void getRequiredData() {
@@ -653,20 +546,21 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //                PresentationNeed = customSetupResponse.getPresentationNeed();
 //                CustomPresentationNeed = customSetupResponse.getCustomizationPrsNeed();
 //            }
+            CheckInOutNeed = SharedPref.getSrtNd(this);
             PresentationNeed = SharedPref.getPresentationNeed(this);
             CustomPresentationNeed = SharedPref.getCustomizationPresentationNeed(this);
+            SequentialEntry = SharedPref.getDcrSequential(this);
             if (PresentationNeed.equalsIgnoreCase("0")) {
 //                if (CustomPresentationNeed.equalsIgnoreCase("0")) {
-                    binding.llPresentation.setVisibility(View.VISIBLE);
-                } else {
-                    binding.llPresentation.setVisibility(View.GONE);
-                }
+                binding.llPresentation.setVisibility(View.VISIBLE);
+            } else {
+                binding.llPresentation.setVisibility(View.GONE);
+            }
 //                binding.llSlide.setVisibility(View.VISIBLE);
 //            } else {
 //                binding.llPresentation.setVisibility(View.GONE);
 //                binding.llSlide.setVisibility(View.GONE);
 //            }
-            SequentialEntry = SharedPref.getDcrSequential(this);
         } catch (Exception e) {
             Log.e("Presentation", "getRequiredData: " + e.getMessage());
             e.printStackTrace();
@@ -1166,7 +1060,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         assert response.body() != null;
                         JSONObject js = new JSONObject(response.body().toString());
                         if (js.getString("success").equalsIgnoreCase("true")) {
-                            SharedPref.saveLoginPwd(getApplicationContext(), confirmPwd);
+                            SharedPref.saveLoginPwd(HomeDashBoard.this, confirmPwd);
                             commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.pwd_changed_successfully));
 //                            startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
                             commonUtilsMethods.loginNavigation(HomeDashBoard.this);
@@ -1218,20 +1112,20 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     && !SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")){
                 commonUtilsMethods.showToastMessage(this, "Standard Tour Plan must be approved to enter Tour Plan");
             } else {
-                Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
+                Intent intent = new Intent(HomeDashBoard.this, TourPlanActivity.class);
                 startActivity(intent);
             }
             return true;
         }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.standard_tour_plan))) {
-            Intent intent=new Intent(getApplicationContext(), StandardTourPlanActivity.class);
+            Intent intent=new Intent(HomeDashBoard.this, StandardTourPlanActivity.class);
             startActivity(intent);
             return true;
         }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.faq))) {
-            Intent intent=new Intent(getApplicationContext(), FAQ.class);
+            Intent intent=new Intent(HomeDashBoard.this, FAQ.class);
             startActivity(intent);
             return true;
         }
@@ -1333,7 +1227,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.near_me))) {
             if (SharedPref.getSrtNd(this).equalsIgnoreCase("0")) {
-                if (SharedPref.getSkipCheckIn(getApplicationContext())) {
+                if (SharedPref.getSkipCheckIn(HomeDashBoard.this)) {
                     goToNearMeActivity();
                 } else {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.submit_checkin));
@@ -1440,25 +1334,25 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
     private void setUpQuiz() {
-        if(selectedDate != null && SharedPref.getLastQuizSyncDate(activity).equalsIgnoreCase(selectedDate.toString())) {
+        if(selectedDate != null && SharedPref.getLastQuizSyncDate(this).equalsIgnoreCase(selectedDate.toString())) {
             Log.d("TAG", "setUpQuiz: new sync");
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.QUIZ).getMasterSyncDataJsonArray();
             if(!jsonArray.toString().equalsIgnoreCase("[]")) {
-                commonUtilsMethods.showToastMessage(activity, "Complete " + SharedPref.getQuizHeading(HomeDashBoard.this));
-                startActivity(new Intent(activity, QuizActivity.class));
+                commonUtilsMethods.showToastMessage(this, "Complete " + SharedPref.getQuizHeading(HomeDashBoard.this));
+                startActivity(new Intent(this, QuizActivity.class));
             }
-        } else if(selectedDate != null && !SharedPref.getLastQuizSyncDate(activity).equalsIgnoreCase(selectedDate.toString())) {
+        } else if(selectedDate != null && !SharedPref.getLastQuizSyncDate(this).equalsIgnoreCase(selectedDate.toString())) {
             Log.d("TAG", "setUpQuiz: new sync");
             CallQuizSyncAPI();
         }
     }
 
     private void CallQuizSyncAPI() {
-        if(activity != null && selectedDate != null) {
-            if(UtilityClass.isNetworkAvailable(activity)) {
+        if(selectedDate != null) {
+            if(UtilityClass.isNetworkAvailable(this)) {
                 binding.flSyncQuizProgress.setVisibility(View.VISIBLE);
                 try {
-                    apiInterface = RetrofitClient.getRetrofit(activity, SharedPref.getCallApiUrl(getApplicationContext()));
+                    apiInterface = RetrofitClient.getRetrofit(HomeDashBoard.this, SharedPref.getCallApiUrl(HomeDashBoard.this));
                     JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
                     jsonObject.put("tableName", "getquiz");
                     jsonObject.put("sfcode", SharedPref.getSfCode(this));
@@ -1467,13 +1361,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     Log.i("QUIZ", "quiz: json -- " + jsonObject);
                     Map<String, String> qry = new HashMap<>();
                     qry.put("axn", "table/additionaldcrmasterdata");
-                    Call<JsonElement> quiz = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), qry, jsonObject.toString());
+                    Call<JsonElement> quiz = apiInterface.getJSONElement(SharedPref.getCallApiUrl(HomeDashBoard.this), qry, jsonObject.toString());
                     if(quiz != null) {
                         quiz.enqueue(new Callback<JsonElement>() {
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> quiz, @NonNull Response<JsonElement> response) {
                                 binding.flSyncQuizProgress.setVisibility(View.GONE);
-                                SharedPref.setLastQuizSyncDate(activity, HomeDashBoard.selectedDate.toString());
+                                SharedPref.setLastQuizSyncDate(HomeDashBoard.this, HomeDashBoard.selectedDate.toString());
                                 if(response.isSuccessful()) {
                                     Log.e("quiz sync", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
                                     try {
@@ -1483,8 +1377,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                             JSONArray jsonArray = new JSONArray();
                                             jsonArray.put(object);
                                             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.QUIZ, jsonArray.toString(), 2));
-                                            SharedPref.setQuizAvailableDate(activity, HomeDashBoard.selectedDate.toString());
-                                            commonUtilsMethods.showToastMessage(activity, "Complete " + SharedPref.getQuizHeading(HomeDashBoard.this));
+                                            SharedPref.setQuizAvailableDate(HomeDashBoard.this, HomeDashBoard.selectedDate.toString());
+                                            commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Complete " + SharedPref.getQuizHeading(HomeDashBoard.this));
                                             Intent intent = new Intent(HomeDashBoard.this, QuizActivity.class);
                                             intent.putExtra(QuizActivity.SYNC_NEEDED, false);
                                             startActivity(intent);
@@ -1505,7 +1399,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             public void onFailure(@NonNull Call<JsonElement> quiz, @NonNull Throwable t) {
                                 t.printStackTrace();
                                 binding.flSyncQuizProgress.setVisibility(View.GONE);
-                                commonUtilsMethods.showToastMessage(activity, getString(R.string.poor_connection));
+                                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.poor_connection));
                                 Intent intent = new Intent(HomeDashBoard.this, QuizActivity.class);
                                 intent.putExtra(QuizActivity.SYNC_NEEDED, true);
                                 startActivity(intent);
@@ -1522,7 +1416,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     e.printStackTrace();
                 }
             }else {
-                commonUtilsMethods.showToastMessage(activity, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
                 Intent intent = new Intent(HomeDashBoard.this, QuizActivity.class);
                 intent.putExtra(QuizActivity.SYNC_NEEDED, true);
                 startActivity(intent);
@@ -1980,7 +1874,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan....");
                     TourplanFlog="0";
                     SharedPref.setTpStatus(HomeDashBoard.this, true);
-                    Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
+                    Intent intent = new Intent(HomeDashBoard.this, TourPlanActivity.class);
                     startActivity(intent);
 
 
@@ -1991,7 +1885,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         } else {
                             SharedPref.setTpStatus(HomeDashBoard.this, false);
                         }
-                        Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
+                        Intent intent = new Intent(HomeDashBoard.this, TourPlanActivity.class);
                         TourplanFlog="1";
                         startActivity(intent);
                 }else {

@@ -2251,7 +2251,7 @@ public class DynamicActivity extends AppCompatActivity {
         if (UtilityClass.isNetworkAvailable(DynamicActivity.this)) {
             address = CommonUtilsMethods.gettingAddress(this, latitude, longitude, false);
         } else {
-            address = "No Address Found";
+            address = getString(R.string.no_address_found);
         }
         AddressText.setText(address);
         LatText.setText("Lat  :" + String.valueOf(latitude));
