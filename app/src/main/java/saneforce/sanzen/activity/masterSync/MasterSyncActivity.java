@@ -882,7 +882,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             otherModelArray.add(Quiz);
         }
         if(SharedPref.getSurveyNd(this).equalsIgnoreCase("0")) {
-            MasterSyncItemModel Survey = new MasterSyncItemModel(Constants.SURVEY, Constants.SURVEY, "getsurvey", Constants.SURVEY, SurveyStatus, false);
+            MasterSyncItemModel Survey = new MasterSyncItemModel(Constants.SURVEY, Constants.SURVEY, "getsurveydetail", Constants.SURVEY, SurveyStatus, false);
             otherModelArray.add(Survey);
         }
 

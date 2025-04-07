@@ -415,7 +415,7 @@ public class DynamicActivity extends AppCompatActivity {
                             this.adapter.changeRowIndex(-1);
                             binding.rlNoData.setVisibility(View.VISIBLE);
                             binding.rlDetailsMain.setVisibility(View.GONE);
-                            binding.btnsumit.setVisibility(View.GONE);
+                            binding.btnSubmit.setVisibility(View.GONE);
                             binding.progrlessdetail.setVisibility(View.GONE);
                             commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.select_headquater));
                             showHQ();
@@ -3060,7 +3060,7 @@ public class DynamicActivity extends AppCompatActivity {
                             selectedHQ = jsonObject.optString("id");
                             binding.rlNoData.setVisibility(View.VISIBLE);
                             binding.rlDetailsMain.setVisibility(View.GONE);
-                            binding.btnsumit.setVisibility(View.GONE);
+                            binding.btnSubmit.setVisibility(View.GONE);
                             chosenActivityModelClass = null;
                             chosenActivityPosition = -1;
                             this.adapter.changeRowIndex(-1);

@@ -27,7 +27,9 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -47,6 +49,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.survey.adapter.SurveyAdapter;
 import saneforce.sanzen.activity.survey.adapter.SurveySideAdapter;
 import saneforce.sanzen.activity.survey.model.SurveyDetailsModelClass;
@@ -63,6 +66,7 @@ import saneforce.sanzen.databinding.ActivitySurveyBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
@@ -96,6 +100,7 @@ public class SurveyActivity extends AppCompatActivity {
     private boolean drNeed = false, chmNeed = false, stkNeed = false, hosNeed = false;
     private HashMap<String, String> answerMap = new HashMap<>();
     private JSONObject saveJsonObject = new JSONObject();
+    List<String> SynqList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,23 +221,32 @@ public class SurveyActivity extends AppCompatActivity {
                 try {
                     if(selectedCustomerType.equalsIgnoreCase(drCap)) {
                         for (DoctorModel doctorModel : doctorModelHashMap.values()) {
-                            mList.add(new SurveyOptionsModelClass(doctorModel.getName(), doctorModel.getCode(), false));
+                            if(chosenSurveyModelClass != null
+                                    && (chosenSurveyModelClass.getDrCat().toLowerCase().contains(doctorModel.getCategoryCode())
+                                    || chosenSurveyModelClass.getDrCls().toLowerCase().contains(doctorModel.getClassCode())
+                                    || chosenSurveyModelClass.getDrSpl().toLowerCase().contains(doctorModel.getSpecialtyCode()))) {
+                                mList.add(new SurveyOptionsModelClass(doctorModel.getName(), doctorModel.getCode(), false));
+                            }
                         }
                     }else if(selectedCustomerType.equalsIgnoreCase(chmCap)) {
                         for (ChemistModel chemistModel : chemistModelHashMap.values()) {
-                            mList.add(new SurveyOptionsModelClass(chemistModel.getName(), chemistModel.getCode(), false));
-                        }
-                    }else if(selectedCustomerType.equalsIgnoreCase(stkCap)) {
-                        for (StockistModel stockistModel : stockistModelHashMap.values()) {
-                            mList.add(new SurveyOptionsModelClass(stockistModel.getName(), stockistModel.getCode(), false));
-                        }
-                    }else if(selectedCustomerType.equalsIgnoreCase(hosCap)) {
-                        for (HospitalModel hospitalModel : hospitalModelHashMap.values()) {
-                            mList.add(new SurveyOptionsModelClass(hospitalModel.getName(), hospitalModel.getCode(), false));
+                            if(chosenSurveyModelClass != null
+                                    && chosenSurveyModelClass.getChmCat().toLowerCase().contains(chemistModel.getCategoryCode())) {
+                                mList.add(new SurveyOptionsModelClass(chemistModel.getName(), chemistModel.getCode(), false));
+                            }
                         }
                     }
+//                    else if(selectedCustomerType.equalsIgnoreCase(stkCap)) {
+//                        for (StockistModel stockistModel : stockistModelHashMap.values()) {
+//                            mList.add(new SurveyOptionsModelClass(stockistModel.getName(), stockistModel.getCode(), false));
+//                        }
+//                    }else if(selectedCustomerType.equalsIgnoreCase(hosCap)) {
+//                        for (HospitalModel hospitalModel : hospitalModelHashMap.values()) {
+//                            mList.add(new SurveyOptionsModelClass(hospitalModel.getName(), hospitalModel.getCode(), false));
+//                        }
+//                    }
                     Collections.sort(mList, Comparator.comparing(SurveyOptionsModelClass::getName));
-                    ShowMasterListPopup(surveyBinding.tvCustomer, mList, getString(R.string.customer));
+                    ShowMasterListPopup(surveyBinding.tvCustomer, mList, selectedCustomerType);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -451,27 +465,27 @@ public class SurveyActivity extends AppCompatActivity {
                 chemistModelHashMap.put(code, chemistModel);
             }
         }
-        if(stkNeed) {
-            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + selectedHQ).getMasterSyncDataJsonArray();
-            for (int i = 0; i<jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.optJSONObject(i);
-                String code = jsonObject.optString("Code");
-                String name = jsonObject.optString("Name");
-                StockistModel stockistModel = new StockistModel(code, name);
-                stockistModelHashMap.put(code, stockistModel);
-            }
-        }
-        if(hosNeed) {
-            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + selectedHQ).getMasterSyncDataJsonArray();
-            for (int i = 0; i<jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.optJSONObject(i);
-                String code = jsonObject.optString("Code");
-                String name = jsonObject.optString("Name");
-                String categoryCode = jsonObject.optString("CategoryCode");
-                HospitalModel hospitalModel = new HospitalModel(code, name, categoryCode);
-                hospitalModelHashMap.put(code, hospitalModel);
-            }
-        }
+//        if(stkNeed) {
+//            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + selectedHQ).getMasterSyncDataJsonArray();
+//            for (int i = 0; i<jsonArray.length(); i++) {
+//                JSONObject jsonObject = jsonArray.optJSONObject(i);
+//                String code = jsonObject.optString("Code");
+//                String name = jsonObject.optString("Name");
+//                StockistModel stockistModel = new StockistModel(code, name);
+//                stockistModelHashMap.put(code, stockistModel);
+//            }
+//        }
+//        if(hosNeed) {
+//            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + selectedHQ).getMasterSyncDataJsonArray();
+//            for (int i = 0; i<jsonArray.length(); i++) {
+//                JSONObject jsonObject = jsonArray.optJSONObject(i);
+//                String code = jsonObject.optString("Code");
+//                String name = jsonObject.optString("Name");
+//                String categoryCode = jsonObject.optString("CategoryCode");
+//                HospitalModel hospitalModel = new HospitalModel(code, name, categoryCode);
+//                hospitalModelHashMap.put(code, hospitalModel);
+//            }
+//        }
     }
 
     private void getSurveyDetails(SurveyModelClass surveyModelClass) {
@@ -488,20 +502,22 @@ public class SurveyActivity extends AppCompatActivity {
                 boolean isSurveyAvailable = false;
                 for (int i = 0; i<surveyDetailsList.size(); i++) {
                     SurveyDetailsModelClass surveyDetailsModelClass = surveyDetailsList.get(i);
-                    boolean isToView = false;
-                    if(selectedCustomerType.equalsIgnoreCase(drCap)
-                            && surveyDetailsModelClass.getSurveyType().toLowerCase().contains("d")
-                            && (surveyDetailsModelClass.getDrCat().toLowerCase().contains(selectedDoctorModel.getCategoryCode())
-                            || surveyDetailsModelClass.getDrCls().toLowerCase().contains(selectedDoctorModel.getClassCode())
-                            || surveyDetailsModelClass.getDrSpl().toLowerCase().contains(selectedDoctorModel.getSpecialtyCode()))) {
-                        isToView = true;
-                        isSurveyAvailable = true;
-                    }else if(selectedCustomerType.equalsIgnoreCase(chmCap)
-                            && surveyDetailsModelClass.getSurveyType().toLowerCase().contains("c")
-                            && surveyDetailsModelClass.getChmCat().toLowerCase().contains(selectedChemistModel.getCategoryCode())) {
-                        isToView = true;
-                        isSurveyAvailable = true;
-                    }
+//                    boolean isToView = false;
+//                    if(selectedCustomerType.equalsIgnoreCase(drCap)
+//                            && surveyDetailsModelClass.getSurveyType().toLowerCase().contains("d")
+//                            && (surveyDetailsModelClass.getDrCat().toLowerCase().contains(selectedDoctorModel.getCategoryCode())
+//                            || surveyDetailsModelClass.getDrCls().toLowerCase().contains(selectedDoctorModel.getClassCode())
+//                            || surveyDetailsModelClass.getDrSpl().toLowerCase().contains(selectedDoctorModel.getSpecialtyCode()))
+//                    ) {
+//                        isToView = true;
+                    isSurveyAvailable = true;
+//                    }else if(selectedCustomerType.equalsIgnoreCase(chmCap)
+//                            && surveyDetailsModelClass.getSurveyType().toLowerCase().contains("c")
+//                            && surveyDetailsModelClass.getChmCat().toLowerCase().contains(selectedChemistModel.getCategoryCode())
+//                    ) {
+//                        isToView = true;
+//                        isSurveyAvailable = true;
+//                    }
 //                    else if(selectedCustomerType.equalsIgnoreCase(stkCap)) {
 //                        StockistModel stockistModel = stockistModelHashMap.get(selectedCustomerCode);
 //
@@ -509,22 +525,22 @@ public class SurveyActivity extends AppCompatActivity {
 //                        HospitalModel hospitalModel = hospitalModelHashMap.get(selectedCustomerCode);
 //
 //                    }
-                    if(isToView) {
-                        switch (surveyDetailsModelClass.getQuestionCodeID()){
-                            case "1":
-                                CreateNameView(surveyDetailsModelClass, i);
-                                break;
-                            case "2":
-                                CreateNumberView(surveyDetailsModelClass, i);
-                                break;
-                            case "3":
-                                CreateSingleListSelection(surveyDetailsModelClass, i);
-                                break;
-                            case "4":
-                                CreateMultipleListSelection(surveyDetailsModelClass, i);
-                                break;
-                        }
+//                    if(isToView) {
+                    switch (surveyDetailsModelClass.getQuestionCodeID()){
+                        case "1":
+                            CreateNameView(surveyDetailsModelClass, i);
+                            break;
+                        case "2":
+                            CreateNumberView(surveyDetailsModelClass, i);
+                            break;
+                        case "3":
+                            CreateSingleListSelection(surveyDetailsModelClass, i);
+                            break;
+                        case "4":
+                            CreateMultipleListSelection(surveyDetailsModelClass, i);
+                            break;
                     }
+//                    }
                     if(i + 1 == surveyDetailsList.size()) {
                         surveyBinding.btnSubmit.setVisibility(View.VISIBLE);
                     }
@@ -564,11 +580,19 @@ public class SurveyActivity extends AppCompatActivity {
                         String surveyName = jsonObject.optString("name");
                         String fromDate = jsonObject.optString("from_date");
                         String toDate = jsonObject.optString("to_date");
+                        String drCat = jsonObject.optString("DrCat");
+                        String drSpl = jsonObject.optString("DrSpl");
+                        String drCls = jsonObject.optString("DrCls");
+                        String hosCls = jsonObject.optString("HosCls");
+                        String chmCat = jsonObject.optString("ChmCat");
+                        String stkState = jsonObject.optString("Stkstate");
+                        String stkHQ = jsonObject.optString("StkHQ");
                         String todayDate = TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4);
                         LocalDate to = LocalDate.parse(toDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                         LocalDate today = LocalDate.parse(todayDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                         if(!to.isBefore(today)) {
-                            SurveyModelClass surveyModelClass = new SurveyModelClass(surveyID, surveyName, fromDate, toDate);
+//                            SurveyModelClass surveyModelClass = new SurveyModelClass(surveyID, surveyName, fromDate, toDate);
+                            SurveyModelClass surveyModelClass = new SurveyModelClass(surveyID, surveyName, drCat, drSpl, drCls, hosCls, chmCat, stkState, stkHQ, fromDate, toDate);
                             surveyDataList.add(surveyModelClass);
                             JSONArray surveyDetailsJsonArray = jsonObject.optJSONArray("survey_for");
                             if(surveyDetailsJsonArray != null && surveyDetailsJsonArray.length()>0) {
@@ -576,13 +600,13 @@ public class SurveyActivity extends AppCompatActivity {
                                     JSONObject surveyDetailsJsonObject = surveyDetailsJsonArray.optJSONObject(j);
                                     String questionID = surveyDetailsJsonObject.optString("id");
                                     String surveyId = surveyDetailsJsonObject.optString("Survey");
-                                    String drCat = surveyDetailsJsonObject.optString("DrCat");
-                                    String drSpl = surveyDetailsJsonObject.optString("DrSpl");
-                                    String drCls = surveyDetailsJsonObject.optString("DrCls");
-                                    String hosCls = surveyDetailsJsonObject.optString("HosCls");
-                                    String chmCat = surveyDetailsJsonObject.optString("ChmCat");
-                                    String stkState = surveyDetailsJsonObject.optString("Stkstate");
-                                    String stkHQ = surveyDetailsJsonObject.optString("StkHQ");
+//                                    String drCat = surveyDetailsJsonObject.optString("DrCat");
+//                                    String drSpl = surveyDetailsJsonObject.optString("DrSpl");
+//                                    String drCls = surveyDetailsJsonObject.optString("DrCls");
+//                                    String hosCls = surveyDetailsJsonObject.optString("HosCls");
+//                                    String chmCat = surveyDetailsJsonObject.optString("ChmCat");
+//                                    String stkState = surveyDetailsJsonObject.optString("Stkstate");
+//                                    String stkHQ = surveyDetailsJsonObject.optString("StkHQ");
                                     String surveyType = surveyDetailsJsonObject.optString("Stype");
                                     String questionCodeID = surveyDetailsJsonObject.optString("Qc_id");
                                     String questionType = surveyDetailsJsonObject.optString("Qtype");
@@ -591,7 +615,8 @@ public class SurveyActivity extends AppCompatActivity {
                                     String question = surveyDetailsJsonObject.optString("Qname");
                                     String answer = surveyDetailsJsonObject.optString("Qanswer");
                                     String activeFlag = surveyDetailsJsonObject.optString("Active_Flag");
-                                    SurveyDetailsModelClass surveyDetailsModelClass = new SurveyDetailsModelClass(questionID, surveyId, drCat, drSpl, drCls, hosCls, chmCat, stkState, stkHQ, surveyType, questionCodeID, questionType, answerLength, mandatory, question, answer, activeFlag);
+//                                    SurveyDetailsModelClass surveyDetailsModelClass = new SurveyDetailsModelClass(questionID, surveyId, drCat, drSpl, drCls, hosCls, chmCat, stkState, stkHQ, surveyType, questionCodeID, questionType, answerLength, mandatory, question, answer, activeFlag);
+                                    SurveyDetailsModelClass surveyDetailsModelClass = new SurveyDetailsModelClass(questionID, surveyId, surveyType, questionCodeID, questionType, answerLength, mandatory, question, answer, activeFlag);
                                     if(!surveyDetailsMap.containsKey(surveyId)) {
                                         surveyDetailsMap.put(surveyId, new ArrayList<>());
                                     }
@@ -945,15 +970,15 @@ public class SurveyActivity extends AppCompatActivity {
         multicomboeditext.setOnClickListener(view -> {
             ArrayList<SurveyOptionsModelClass> mList = new ArrayList<>();
             try {
-                String[] selectedIds = TextCode.getText().toString().split(",");
+                String[] selectedIds = CommonUtilsMethods.removeFirstComma(CommonUtilsMethods.removeLastComma(TextCode.getText().toString())).split(",");
                 List<String> selectedIDList = Arrays.asList(selectedIds);
-                String[] answers = CommonUtilsMethods.removeLastComma(surveyDetailsModelClass.getAnswer()).split(",");
+                String[] answers = CommonUtilsMethods.removeFirstComma(CommonUtilsMethods.removeLastComma(surveyDetailsModelClass.getAnswer())).split(",");
                 if(answers.length>0) {
                     for (int i = 0; i<answers.length; i++) {
-                        if(selectedIDList.contains(answers[i])) {
-                            mList.add(new SurveyOptionsModelClass(answers[i], String.valueOf(i + 1), true));
+                        if(selectedIDList.contains(String.valueOf(i))) {
+                            mList.add(new SurveyOptionsModelClass(answers[i], String.valueOf(i), true));
                         }else {
-                            mList.add(new SurveyOptionsModelClass(answers[i], String.valueOf(i + 1), false));
+                            mList.add(new SurveyOptionsModelClass(answers[i], String.valueOf(i), false));
                         }
                     }
                     ShowListPopup(multicomboeditext, TextCode, mList, "Options", true);
@@ -973,68 +998,80 @@ public class SurveyActivity extends AppCompatActivity {
         surveyBinding.mainLayout.openDrawer(GravityCompat.END);
         surveyBinding.slideScreen.etSearch.setText("");
         surveyBinding.slideScreen.tvSearchheader.setText("Select " + name);
-        surveyBinding.slideScreen.etSearch.setHint("Search " + name);
-        surveySideAdapter = new SurveySideAdapter(this, optionsList, false, new SurveySideAdapter.CheckBoxClickListener() {
-            @Override
-            public void onChecked(SurveyOptionsModelClass surveyOptionsModelClass) {
-                surveyBinding.mainLayout.closeDrawer(GravityCompat.END);
-                hideKeyboard(surveyBinding.getRoot());
-                NameView.setText(surveyOptionsModelClass.getName());
 
-                surveyBinding.llSurveyDetailsView.removeAllViews();
-                surveyBinding.rlNoData.setVisibility(View.GONE);
-                surveyBinding.rlDetailsMain.setVisibility(View.VISIBLE);
-                surveyBinding.rlSurveyMain.setVisibility(View.GONE);
-                surveyBinding.rlNoSurveyFound.setVisibility(View.VISIBLE);
+        if(optionsList != null && !optionsList.isEmpty()) {
+            surveyBinding.slideScreen.acRecyelerView.setVisibility(View.VISIBLE);
+            surveyBinding.slideScreen.llSearchLayout.setVisibility(View.VISIBLE);
+            surveyBinding.slideScreen.txtNoData.setVisibility(View.GONE);
+            surveyBinding.slideScreen.etSearch.setHint("Search " + name);
+            surveySideAdapter = new SurveySideAdapter(this, optionsList, false, new SurveySideAdapter.CheckBoxClickListener() {
+                @Override
+                public void onChecked(SurveyOptionsModelClass surveyOptionsModelClass) {
+                    surveyBinding.mainLayout.closeDrawer(GravityCompat.END);
+                    hideKeyboard(surveyBinding.getRoot());
+                    NameView.setText(surveyOptionsModelClass.getName());
 
-                if(name.equalsIgnoreCase(getString(R.string.customer_type))) {
-                    selectedCustomerType = surveyOptionsModelClass.getName();
-                    surveyBinding.tvCustomer.setText("");
-                    surveyBinding.tvNoSurveyFound.setText(getString(R.string.select_customer));
-                }else if(name.equalsIgnoreCase(getString(R.string.customer))) {
-                    selectedCustomerCode = surveyOptionsModelClass.getId();
-                    if(selectedCustomerType.equalsIgnoreCase(drCap)) {
-                        selectedDoctorModel = doctorModelHashMap.get(selectedCustomerCode);
-                    }else if(selectedCustomerType.equalsIgnoreCase(chmCap)) {
-                        selectedChemistModel = chemistModelHashMap.get(selectedCustomerCode);
-                    }else if(selectedCustomerType.equalsIgnoreCase(stkCap)) {
-                        selectedStockistModel = stockistModelHashMap.get(selectedCustomerCode);
-                    }else if(selectedCustomerType.equalsIgnoreCase(hosCap)) {
-                        selectedHospitalModel = hospitalModelHashMap.get(selectedCustomerCode);
+                    surveyBinding.llSurveyDetailsView.removeAllViews();
+                    surveyBinding.rlNoData.setVisibility(View.GONE);
+                    surveyBinding.rlDetailsMain.setVisibility(View.VISIBLE);
+                    surveyBinding.rlSurveyMain.setVisibility(View.GONE);
+                    surveyBinding.rlNoSurveyFound.setVisibility(View.VISIBLE);
+
+                    if(name.equalsIgnoreCase(getString(R.string.customer_type))) {
+                        selectedCustomerType = surveyOptionsModelClass.getName();
+                        surveyBinding.tvCustomer.setText("");
+                        surveyBinding.tvNoSurveyFound.setText(getString(R.string.select_customer));
+                    }else if(name.equalsIgnoreCase(selectedCustomerType)) {
+                        selectedCustomerCode = surveyOptionsModelClass.getId();
+                        if(selectedCustomerType.equalsIgnoreCase(drCap)) {
+                            selectedDoctorModel = doctorModelHashMap.get(selectedCustomerCode);
+                        }else if(selectedCustomerType.equalsIgnoreCase(chmCap)) {
+                            selectedChemistModel = chemistModelHashMap.get(selectedCustomerCode);
+                        }else if(selectedCustomerType.equalsIgnoreCase(stkCap)) {
+                            selectedStockistModel = stockistModelHashMap.get(selectedCustomerCode);
+                        }else if(selectedCustomerType.equalsIgnoreCase(hosCap)) {
+                            selectedHospitalModel = hospitalModelHashMap.get(selectedCustomerCode);
+                        }
+                        getSurveyDetails(chosenSurveyModelClass);
+                    }else if(name.equalsIgnoreCase(getString(R.string.head_quarter))) {
+                        selectedHQ = surveyOptionsModelClass.getId();
+                        surveyBinding.tvCustomerType.setText("");
+                        surveyBinding.tvCustomer.setText("");
+                        surveyBinding.tvNoSurveyFound.setText(getString(R.string.select_customer_type));
+                        getHQData(surveyOptionsModelClass.getId());
                     }
-                    getSurveyDetails(chosenSurveyModelClass);
-                }else if(name.equalsIgnoreCase(getString(R.string.head_quarter))) {
-                    selectedHQ = surveyOptionsModelClass.getName();
-                    surveyBinding.tvCustomerType.setText("");
-                    surveyBinding.tvCustomer.setText("");
-                    surveyBinding.tvNoSurveyFound.setText(getString(R.string.select_customer_type));
                 }
-            }
 
-            @Override
-            public void onUnchecked(SurveyOptionsModelClass surveyOptionsModelClass) {
-                mListOptions.remove(surveyOptionsModelClass.getName());
-                mListId.remove(surveyOptionsModelClass.getId());
-            }
-        });
-        surveyBinding.slideScreen.acRecyelerView.setLayoutManager(new LinearLayoutManager(this));
-        surveyBinding.slideScreen.acRecyelerView.setAdapter(surveySideAdapter);
+                @Override
+                public void onUnchecked(SurveyOptionsModelClass surveyOptionsModelClass) {
+                    mListOptions.remove(surveyOptionsModelClass.getName());
+                    mListId.remove(surveyOptionsModelClass.getId());
+                }
+            });
+            surveyBinding.slideScreen.acRecyelerView.setLayoutManager(new LinearLayoutManager(this));
+            surveyBinding.slideScreen.acRecyelerView.setAdapter(surveySideAdapter);
 
-        surveyBinding.slideScreen.etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+            surveyBinding.slideScreen.etSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String searchString = charSequence.toString();
-                surveySideAdapter.getFilter().filter(searchString);
-            }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    String searchString = charSequence.toString();
+                    surveySideAdapter.getFilter().filter(searchString);
+                }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
+                @Override
+                public void afterTextChanged(Editable editable) {
+                }
+            });
+        } else {
+            surveyBinding.slideScreen.acRecyelerView.setVisibility(View.GONE);
+            surveyBinding.slideScreen.llSearchLayout.setVisibility(View.GONE);
+            surveyBinding.slideScreen.txtNoData.setVisibility(View.VISIBLE);
+            surveyBinding.slideScreen.txtNoData.setText(String.format("No %s available", selectedCustomerType));
+        }
 
         surveyBinding.slideScreen.cancelImg.setOnClickListener(view -> {
             surveyBinding.mainLayout.closeDrawer(GravityCompat.END);
@@ -1113,6 +1150,126 @@ public class SurveyActivity extends AppCompatActivity {
             surveyBinding.mainLayout.closeDrawer(GravityCompat.END);
             hideKeyboard(surveyBinding.getRoot());
         });
+    }
+
+    private void getHQData(String hqCode) {
+        try {
+            Log.d("SurveyActivity", "showHQ: " + hqCode);
+            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR + hqCode),
+                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST + hqCode),
+                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST + hqCode),
+                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR + hqCode),
+//                        hosAvailability = masterDataDao.isDataAvailable(Constants.HOSPITAL + hqCode),
+//                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
+                    clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode),
+                    subordinateAvailability = masterDataDao.isDataAvailable(Constants.SUBORDINATE + hqCode);
+            Log.e("SurveyActivity", "showHQ: " + docAvailability + " " + chemAvailability + " " + stkAvailability + " " + ulDocAvailability + " " + clusterAvailability + " " + subordinateAvailability);
+//                if(docAvailability && chemAvailability && stkAvailability && ulDocAvailability && hosAvailability && cipAvailability && clusterAvailability){
+            if(docAvailability && chemAvailability && stkAvailability && ulDocAvailability && clusterAvailability) {
+                Log.d("SurveyActivity", "getHQData: Data Available");
+                getMasterData();
+            }else if(UtilityClass.isNetworkAvailable(SurveyActivity.this)) {
+                getData(hqCode);
+            }else {
+                commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.no_network));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getData(String hqCode) {
+        SynqList = SharedPref.getsyn_hqcode(SurveyActivity.this);
+        SynqList.add(hqCode);
+        SharedPref.setSyncHQ(SurveyActivity.this, SynqList);
+        syncProgressDialog.show();
+        List<MasterSyncItemModel> list = new ArrayList<>();
+        list.add(new MasterSyncItemModel("Doctor", "Doctor", "getdoctors", Constants.DOCTOR + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Chemist", "Doctor", "getchemist", Constants.CHEMIST + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Stockiest", "Doctor", "getstockist", Constants.STOCKIEST + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Unlisted Doctor", "Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("Hospital", 0, "Doctor", "gethospital", Constants.HOSPITAL + hqCode, 0, false));
+//        list.add(new MasterSyncItemModel("CIP", 0, "Doctor", "getcip", Constants.CIP + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Cluster", "Doctor", "getterritory", Constants.CLUSTER + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Joint Work", Constants.SUBORDINATE, "getjointwork", Constants.JOINT_WORK + hqCode, 0, false));
+
+        for (int i = 0; i<list.size(); i++) {
+            syncMaster(list.get(i).getMasterOf(), list.get(i).getRemoteTableName(), list.get(i).getLocalTableKeyName(), hqCode);
+        }
+    }
+
+    public void syncMaster(String masterFor, String remoteTableName, String LocalTableKeyName, String hqCode) {
+        if(UtilityClass.isNetworkAvailable(SurveyActivity.this)) {
+            try {
+                String baseUrl = SharedPref.getBaseWebUrl(SurveyActivity.this);
+                String pathUrl = SharedPref.getPhpPathUrl(SurveyActivity.this);
+                String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
+                apiInterface = RetrofitClient.getRetrofit(SurveyActivity.this, baseUrl + replacedUrl);
+
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(SurveyActivity.this);
+                jsonObject.put("tableName", remoteTableName);
+                jsonObject.put("sfcode", SharedPref.getSfCode(SurveyActivity.this));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(SurveyActivity.this));
+                jsonObject.put("Rsf", hqCode);
+
+                Map<String, String> mapString = new HashMap<>();
+                mapString.put("axn", "table/dcrmasterdata");
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(SurveyActivity.this), mapString, jsonObject.toString());
+
+                if(call != null) {
+                    call.enqueue(new Callback<JsonElement>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                            boolean success = false;
+                            JSONArray jsonArray = new JSONArray();
+
+                            if(response.isSuccessful()) {
+                                Log.e("test", "response : " + masterFor + " -- " + remoteTableName + " : " + Objects.requireNonNull(response.body()));
+                                try {
+                                    JsonElement jsonElement = response.body();
+                                    if(!jsonElement.isJsonNull()) {
+                                        if(jsonElement.isJsonArray()) {
+                                            JsonArray jsonArray1 = jsonElement.getAsJsonArray();
+                                            jsonArray = new JSONArray(jsonArray1.toString());
+                                            success = true;
+                                        }else if(jsonElement.isJsonObject()) {
+                                            JsonObject jsonObject1 = jsonElement.getAsJsonObject();
+                                            JSONObject jsonObject2 = new JSONObject(jsonObject1.toString());
+                                            if(!jsonObject2.has("success")) {
+                                                jsonArray.put(jsonObject2);
+                                                success = true;
+                                            }else if(jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                                masterDataDao.saveMasterSyncStatus(LocalTableKeyName, 1);
+                                            }
+                                        }
+
+                                        if(success) {
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(LocalTableKeyName, jsonArray.toString(), 2));
+                                            getMasterData();
+                                        }
+                                    }
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            syncProgressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                            syncProgressDialog.dismiss();
+                            t.printStackTrace();
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                syncProgressDialog.dismiss();
+                e.printStackTrace();
+            }
+        }else {
+            commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.no_network));
+        }
     }
 
     public void hideKeyboard(View view) {

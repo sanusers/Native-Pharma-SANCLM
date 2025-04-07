@@ -455,6 +455,13 @@ public class CommonUtilsMethods {
         return string;
     }
 
+    public static String removeFirstComma(String string) {
+        if (string.startsWith(",")) {
+            string = string.substring(1);
+        }
+        return string;
+    }
+
     public boolean isAutoTimeEnabled(Context context) {
         ContentResolver resolver = context.getContentResolver();
         try {
