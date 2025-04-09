@@ -360,30 +360,34 @@ public class CreatePresentationActivity extends AppCompatActivity {
             presentation.setPresentationName(name);
             presentation.setProducts(selectedSlideArrayList);
             JSONObject jsonObject = new JSONObject(new Gson().toJson(presentation));
-            if(customerType != null && customerType.isEmpty()) {
+            if(customerType == null || customerType.isEmpty()) {
                 presentationDataDao.savePresentation(oldName, name, "", "", "", jsonObject.toString());
             } else {
-                if(customerType != null) {
-                    switch (customerType) {
-                        case Constants.DOCTOR:
-                            presentationDataDao.savePresentation(oldName, name, "1", customerCodes, headquarterCode, jsonObject.toString());
-                            break;
-                        case Constants.CHEMIST:
-                            presentationDataDao.savePresentation(oldName, name, "2", customerCodes, headquarterCode, jsonObject.toString());
-                            break;
-                        case Constants.STOCKIEST:
-                            presentationDataDao.savePresentation(oldName, name, "3", customerCodes, headquarterCode, jsonObject.toString());
-                            break;
-                        case Constants.UNLISTED_DOCTOR:
-                            presentationDataDao.savePresentation(oldName, name, "4", customerCodes, headquarterCode, jsonObject.toString());
-                            break;
-                        case Constants.CIP:
-                            presentationDataDao.savePresentation(oldName, name, "5", customerCodes, headquarterCode, jsonObject.toString());
-                            break;
-                        case Constants.HOSPITAL:
-                            presentationDataDao.savePresentation(oldName, name, "6", customerCodes, headquarterCode, jsonObject.toString());
-                            break;
-                    }
+                switch (customerType){
+                    case Constants.DOCTOR:
+                    case "1":
+                        presentationDataDao.savePresentation(oldName, name, "1", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
+                    case Constants.CHEMIST:
+                    case "2":
+                        presentationDataDao.savePresentation(oldName, name, "2", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
+                    case Constants.STOCKIEST:
+                    case "3":
+                        presentationDataDao.savePresentation(oldName, name, "3", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
+                    case Constants.UNLISTED_DOCTOR:
+                    case "4":
+                        presentationDataDao.savePresentation(oldName, name, "4", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
+                    case Constants.CIP:
+                    case "5":
+                        presentationDataDao.savePresentation(oldName, name, "5", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
+                    case Constants.HOSPITAL:
+                    case "6":
+                        presentationDataDao.savePresentation(oldName, name, "6", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
                 }
             }
             Intent intent = new Intent(CreatePresentationActivity.this, PresentationActivity.class);

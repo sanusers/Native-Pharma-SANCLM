@@ -123,7 +123,8 @@ public class CustomerSelectionActivity extends AppCompatActivity {
             commonUtilsMethods = new CommonUtilsMethods(this);
             customerDataList.clear();
             selectedHQ = SharedPref.getHqCode(this);
-            binding.txthqName.setText(SharedPref.getHqName(this));
+            String hqName = getHQName(SharedPref.getHqCode(this));
+            binding.txthqName.setText(hqName);
             selectedCustomerCodes = new HashSet<>();
 
             if(!SharedPref.getSfType(this).equalsIgnoreCase("1")) {
@@ -472,12 +473,14 @@ public class CustomerSelectionActivity extends AppCompatActivity {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         if(jsonObject.optString("name").equalsIgnoreCase(selectedHq)) {
                             selectedHQ = jsonObject.optString("id");
+                            UtilityClass.hideKeyboard(this);
                             break;
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
+                UtilityClass.hideKeyboard(this);
                 getHQData(selectedHQ);
                 dialog.dismiss();
             });

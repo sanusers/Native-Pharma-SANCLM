@@ -18,6 +18,7 @@ import java.util.List;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.presentation.customerSelection.model.CustomerDataModel;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.databinding.CustomerDataItemBinding;
 
 public class SideScreenAdapter extends RecyclerView.Adapter<SideScreenAdapter.ViewHolder> {
@@ -54,26 +55,34 @@ public class SideScreenAdapter extends RecyclerView.Adapter<SideScreenAdapter.Vi
         CustomerDataModel customerDataModel = customerDataList.get(position);
         holder.binding.tvName.setText(customerDataModel.getName());
         holder.binding.checkBox.setChecked(customerDataModel.isSelected());
-        List<String> customerDetailsList = getCustomerDetailsList(customerDataModel);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.item_textview, customerDetailsList) {
-            @NonNull
-            @Override
-            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView textView = view.findViewById(R.id.tv_single);
-                if(textView != null) {
-                    textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-                    textView.setMaxLines(1);
-                    textView.setEllipsize(TextUtils.TruncateAt.END);
-                }
-                return view;
-            }
-        };
-        holder.binding.gvCustomerData.setAdapter(adapter);
-        holder.binding.gvCustomerData.setNumColumns(2);
-        if(customerDetailsList.size() > 1) {
-            setGridViewHeightBasedOnChildren(holder.binding.gvCustomerData);
-        }
+        holder.binding.tvCluster.setText(customerDataModel.getClusterName());
+        holder.binding.tvName.setOnClickListener(view -> {
+            new CommonUtilsMethods(context).displayPopupWindow(context, view, customerDataModel.getName());
+        });
+        holder.binding.tvCluster.setOnClickListener(view -> {
+            new CommonUtilsMethods(context).displayPopupWindow(context, view, customerDataModel.getClusterName());
+        });
+//        List<String> customerDetailsList = getCustomerDetailsList(customerDataModel);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.item_textview, customerDetailsList) {
+//            @NonNull
+//            @Override
+//            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+//                View view = super.getView(position, convertView, parent);
+//                TextView textView = view.findViewById(R.id.tv_single);
+//                textView.setOnClickListener(view2 -> {
+//                    new CommonUtilsMethods(context).displayPopupWindow(context, textView, customerDetailsList.get(position));
+//                });
+//                textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+//                textView.setMaxLines(1);
+//                textView.setEllipsize(TextUtils.TruncateAt.END);
+//                return view;
+//            }
+//        };
+//        holder.binding.gvCustomerData.setAdapter(adapter);
+//        holder.binding.gvCustomerData.setNumColumns(2);
+//        if(customerDetailsList.size() > 1) {
+//            setGridViewHeightBasedOnChildren(holder.binding.gvCustomerData);
+//        }
 
 //        holder.binding.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
 //            if(isChecked) {

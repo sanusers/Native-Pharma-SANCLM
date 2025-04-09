@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
@@ -36,6 +37,7 @@ import saneforce.sanzen.activity.presentation.createPresentation.CreatePresentat
 import saneforce.sanzen.activity.presentation.playPreview.PlaySlidePreviewActivity;
 import saneforce.sanzen.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
+import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
 public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapter.MyViewHolder> {
@@ -186,6 +188,12 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
                     bundle.putString("position", String.valueOf(0));
                     bundle.putString("presentationName", presentation.getPresentationName());
                     intent.putExtra("bundle", bundle);
+                    if(isClickedFrom.equalsIgnoreCase("custom")) {
+                        PresentationDataTable presentationDataTable = presentationDataDao.getPresentationData(presentation.getPresentationName());
+                        intent.putExtra("customerType", presentationDataTable.getCustomerType());
+                        intent.putExtra("headquarterCode", presentationDataTable.getHeadquarterCode());
+                        intent.putExtra("customerCodes", presentationDataTable.getCustomerCodes());
+                    }
                     context.startActivity(intent);
                 }else if(menuItem.getItemId() == R.id.menuDelete) {
                     popup.dismiss();

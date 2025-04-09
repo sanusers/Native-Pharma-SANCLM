@@ -32,17 +32,29 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/satoshi_medium"
             android:padding="@dimen/_2sdp"
-            android:textColor="#282A3C"
+            android:textColor="@color/dark_purple"
             android:textSize="@dimen/_6ssp"
             android:textStyle="bold"
             tools:text="AA Chauhan" />
 
-        <GridView
-            android:id="@+id/gv_customer_data"
+        <TextView
+            android:id="@+id/tv_cluster"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:numColumns="2"
-            tools:listitem="@layout/item_textview"/>
+            android:fontFamily="@font/satoshi_medium"
+            android:padding="@dimen/_2sdp"
+            android:textColor="@color/gray_45"
+            android:textSize="@dimen/_6ssp"
+            android:textStyle="bold"
+            tools:text="Chennai" />
+
+<!--        <GridView-->
+<!--            android:id="@+id/gv_customer_data"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:numColumns="1"-->
+<!--            android:visibility="gone"-->
+<!--            tools:listitem="@layout/item_textview"/>-->
 
 <!--        <LinearLayout-->
 <!--            android:id="@+id/ll_table_1"-->
