@@ -45,7 +45,8 @@ public class SurveyAdapter extends RecyclerView.Adapter<SurveyAdapter.ViewHolder
         String formatedDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, surveyModelClass.getToDate());
 
         holder.surveyName.setText(surveyModelClass.getSurveyName());
-        holder.surveyExpireDate.setText(formatedDate);
+//        holder.surveyExpireDate.setText(formatedDate);
+        holder.surveyExpireDate.setVisibility(View.GONE);
         holder.layout.setOnClickListener(view -> {
             selectedPosition = position;
             notifyDataSetChanged();
