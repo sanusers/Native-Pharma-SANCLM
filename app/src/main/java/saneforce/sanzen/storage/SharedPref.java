@@ -446,6 +446,9 @@ public class SharedPref {
     public static final String LONGITUDE = "longi";
     public static final String ADD_CHM = "addChm";
     public static final String ADD_UNLST = "addDr";
+
+    public static final String HOLIDAY_AUTOPOST_NEED = "Holiday_AutoPost_Need";
+    public static final String WEEKOFF_AUTOPOST_NEED = "Weekoff_AutoPost_Need";
 //    public static final String TAGGED_ADDRESS = "tggedaddress";
 
     public static SharedPreferences.Editor editor;
@@ -772,6 +775,8 @@ public class SharedPref {
         editor.putString(DCR_APPROVAL_NEED, jsonObject.optString("DcrapprvNd"));
         editor.putString(ADD_CHM, jsonObject.getString("addChm"));
         editor.putString(ADD_UNLST, jsonObject.getString("addDr"));
+        editor.putString(HOLIDAY_AUTOPOST_NEED, jsonObject.getString("Holiday_AutoPost_Need"));
+        editor.putString(WEEKOFF_AUTOPOST_NEED, jsonObject.getString("Weekoff_AutoPost_Need"));
         editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\",""));
         editor.apply();
 
@@ -2638,6 +2643,14 @@ public class SharedPref {
 
     public static String getUnlistAddition(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ADD_UNLST, "");
+    }
+
+    public static String getHolidayAutoPostNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(HOLIDAY_AUTOPOST_NEED, "");
+    }
+
+    public static String getWeekoffAutoPostNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(WEEKOFF_AUTOPOST_NEED, "");
     }
 
 }
