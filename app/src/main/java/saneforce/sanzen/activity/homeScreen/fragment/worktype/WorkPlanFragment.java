@@ -976,7 +976,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             SharedPref.setCheckInTime(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
             jsonCheck =CommonUtilsMethods.CommonObjectParameter(requireContext());
             try {
-                jsonCheck.put("tableName", "savetp_attendance");
+                jsonCheck.put("tableName", "saveCheckin_out");
                 jsonCheck.put("sfcode", SharedPref.getSfCode(requireContext()));
                 jsonCheck.put("division_code", SharedPref.getDivisionCode(requireContext()).replaceAll(",", ""));
                 jsonCheck.put("lat", latitude);
@@ -1553,7 +1553,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 address = getString(R.string.no_address_found);
             }
             jsonCheck = CommonUtilsMethods.CommonObjectParameter(requireContext());
-            jsonCheck.put("tableName", "savetp_attendance");
+            jsonCheck.put("tableName", "saveCheckin_out");
             jsonCheck.put("sfcode", SharedPref.getSfCode(requireContext()));
             jsonCheck.put("division_code", SharedPref.getDivisionCode(requireContext()));
             jsonCheck.put("lat", latitude);

@@ -2288,10 +2288,10 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TodayDayPlanClusterCode, "");
     }
 
-    public static void setCheckTodayCheckInOut(Context context, String status) {
+    public static void setCheckTodayCheckInOut(Context context, String date) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(CHECK_TODAY_DATE_CHECKINOUT, status).apply();
+        editor.putString(CHECK_TODAY_DATE_CHECKINOUT, date).apply();
     }
 
     public static String getCheckTodayCheckInOut(Context context) {

@@ -71,18 +71,43 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         holder.submitDate.setText(dayReportModel.getRptdate());
         holder.remarks.setText(dayReportModel.getRemarks());
         if (SharedPref.getSrtNd(context).equalsIgnoreCase("0")){
-            if (dayReportModel.getStart_lat() == null || dayReportModel.getStart_lat().isEmpty() || dayReportModel.getStart_lat().equalsIgnoreCase("0.0")){
+            if (dayReportModel.getInaddress() == null || dayReportModel.getInaddress().isEmpty() || dayReportModel.getInaddress().equalsIgnoreCase(":$")){
                 holder.rlCheckIn.setVisibility(View.GONE);
             }else{
                 holder.rlCheckIn.setVisibility(View.VISIBLE);
                 holder.checkInTime.setText(dayReportModel.getIntime());
+                String[] locationData = dayReportModel.getInaddress().split("\\$");
+                if(locationData.length > 1) {
+                    String address = locationData[1];
+                    String[] latLong = locationData[0].split(":");
+                    dayReportModel.setInaddress(address);
+                    if(latLong.length > 1) {
+                        String latitude = latLong[0],
+                                longitude = latLong[1];
+                        dayReportModel.setStart_lat(latitude);
+                        dayReportModel.setStart_lang(longitude);
+                    }
+                }
                 holder.checkInAddress.setText(dayReportModel.getInaddress());
             }
-            if (dayReportModel.getEnd_lat() == null || dayReportModel.getEnd_lat().isEmpty() || dayReportModel.getEnd_lat().equalsIgnoreCase("0.0")){
+            if (dayReportModel.getOutaddress() == null || dayReportModel.getOutaddress().isEmpty() || dayReportModel.getOutaddress().equalsIgnoreCase(":$")){
                 holder.rlCheckOut.setVisibility(View.GONE);
+                dayReportModel.setOutaddress("");
             }else{
                 holder.rlCheckOut.setVisibility(View.VISIBLE);
                 holder.checkOutTime.setText(dayReportModel.getOuttime());
+                String[] locationData = dayReportModel.getOutaddress().split("\\$");
+                if(locationData.length > 1) {
+                    String address = locationData[1];
+                    String[] latLong = locationData[0].split(":");
+                    if(latLong.length > 1) {
+                        String latitude = latLong[0],
+                                longitude = latLong[1];
+                        dayReportModel.setOutaddress(address);
+                        dayReportModel.setEnd_lat(latitude);
+                        dayReportModel.setEnd_lang(longitude);
+                    }
+                }
                 holder.checkOutAddress.setText(dayReportModel.getOutaddress());
             }
         } else{

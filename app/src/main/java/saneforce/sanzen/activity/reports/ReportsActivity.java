@@ -137,7 +137,7 @@ public class ReportsActivity extends AppCompatActivity {
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(ReportsActivity.this, "Network UnAvailable");
+                    commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.poor_connection));
                 }
 
             });

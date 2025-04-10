@@ -127,9 +127,21 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 outDateTime = String.format(Locale.getDefault(), "%s %s", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, dataModel.getDcr_dt()), dataModel.getCheckout());
         holder.checkInTime.setText(inDateTime);
         holder.checkOutTime.setText(outDateTime);
+        holder.checkInAddress.setText(dataModel.getCheckin_addrs());
+        holder.checkOutAddress.setText(dataModel.getCheckin_addrs());
 
         if(checkInOutNeed) {
-            holder.checkInOutLayout.setVisibility(View.VISIBLE);
+            if(dataModel.getCheckin() != null && !dataModel.getCheckin().isEmpty()
+                    && dataModel.getCheckout() != null && !dataModel.getCheckout().isEmpty()
+                    && dataModel.getCheckin_addrs() != null && !dataModel.getCheckin_addrs().isEmpty()
+                    && dataModel.getCheckout_addrs() != null && !dataModel.getCheckout_addrs().isEmpty()
+                    && dataModel.getCin_loc() != null && !dataModel.getCin_loc().isEmpty() && !dataModel.getCin_loc().equalsIgnoreCase(":")
+                    && dataModel.getCout_loc() != null && !dataModel.getCout_loc().isEmpty() && !dataModel.getCout_loc().equalsIgnoreCase(":")
+            ) {
+                holder.checkInOutLayout.setVisibility(View.VISIBLE);
+            } else {
+                holder.checkInOutLayout.setVisibility(View.GONE);
+            }
         }else {
             holder.checkInOutLayout.setVisibility(View.GONE);
         }
@@ -384,11 +396,16 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         holder.checkInMarker.setOnClickListener(view -> {
             Intent intent = new Intent(context, MapViewActvity.class);
             Bundle bundle = new Bundle();
-            String[] inLatLng = dataModel.getCin_loc().split(":"), outLatLng = dataModel.getCin_loc().split(":");
-            bundle.putString("INLat", inLatLng[0]);
-            bundle.putString("INLong", inLatLng[1]);
-            bundle.putString("OUTLat", outLatLng[0]);
-            bundle.putString("OUTLong", outLatLng[1]);
+            if(dataModel.getCin_loc() != null && !dataModel.getCin_loc().isEmpty()) {
+                String[] inLatLng = dataModel.getCin_loc().split(":");
+                bundle.putString("INLat", inLatLng[0]);
+                bundle.putString("INLong", inLatLng[1]);
+            }
+            if(dataModel.getCout_loc() != null && !dataModel.getCout_loc().isEmpty()) {
+                String[] outLatLng = dataModel.getCout_loc().split(":");
+                bundle.putString("OUTLat", outLatLng[0]);
+                bundle.putString("OUTLong", outLatLng[1]);
+            }
             bundle.putString("INDateTime", inDateTime);
             bundle.putString("OUTDateTime", outDateTime);
             bundle.putString("INAddress", dataModel.getCheckin_addrs());
@@ -401,11 +418,16 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         holder.checkOutMarker.setOnClickListener(view -> {
             Intent intent = new Intent(context, MapViewActvity.class);
             Bundle bundle = new Bundle();
-            String[] inLatLng = dataModel.getCin_loc().split(":"), outLatLng = dataModel.getCin_loc().split(":");
-            bundle.putString("INLat", inLatLng[0]);
-            bundle.putString("INLong", inLatLng[1]);
-            bundle.putString("OUTLat", outLatLng[0]);
-            bundle.putString("OUTLong", outLatLng[1]);
+            if(dataModel.getCin_loc() != null && !dataModel.getCin_loc().isEmpty()) {
+                String[] inLatLng = dataModel.getCin_loc().split(":");
+                bundle.putString("INLat", inLatLng[0]);
+                bundle.putString("INLong", inLatLng[1]);
+            }
+            if(dataModel.getCout_loc() != null && !dataModel.getCout_loc().isEmpty()) {
+                String[] outLatLng = dataModel.getCout_loc().split(":");
+                bundle.putString("OUTLat", outLatLng[0]);
+                bundle.putString("OUTLong", outLatLng[1]);
+            }
             bundle.putString("INDateTime", inDateTime);
             bundle.putString("OUTDateTime", outDateTime);
             bundle.putString("INAddress", dataModel.getCheckin_addrs());

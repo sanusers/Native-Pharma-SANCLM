@@ -66,8 +66,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31"
-        tools:replace="android:label">
+        tools:targetApi="31">
         <activity
             android:name=".activity.presentation.customerSelection.CustomerSelectionActivity"
             android:exported="false"
