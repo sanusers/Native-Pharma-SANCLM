@@ -542,7 +542,7 @@
                                     android:background="@drawable/border_shape_spinner"
                                     android:clickable="true"
                                     android:focusable="false"
-                                    android:hint="@string/choose_dob"
+                                    android:hint="@string/choose_dow"
                                     android:padding="5dp"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/light_grey"
@@ -677,7 +677,24 @@
                                         android:textSize="@dimen/_6ssp" />
                                 </LinearLayout>
                             </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/notagdr"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:visibility="gone"
+                                android:orientation="vertical">
 
+                                <TextView
+                                    android:id="@+id/notagaddress"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="25dp"
+                                    android:text="@string/No_Tagging"
+                                    android:textColor="@color/red_60"
+                                    android:textSize="@dimen/_8ssp" />
+                            </LinearLayout>
                             <!-- Column 2 -->
                             <LinearLayout
                                 android:id="@+id/geotwo"
@@ -1234,7 +1251,7 @@
                                     android:background="@drawable/border_shape_spinner"
                                     android:clickable="true"
                                     android:focusable="false"
-                                    android:hint="@string/choose_dob"
+                                    android:hint="@string/choose_dow"
                                     android:padding="5dp"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/light_grey"
@@ -1372,6 +1389,24 @@
                                         android:textColor="@color/black"
                                         android:textSize="@dimen/_6ssp" />
                                 </LinearLayout>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/notagchm"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:visibility="gone"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/notagchmaddress"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="25dp"
+                                    android:text="@string/No_Tagging"
+                                    android:textColor="@color/red_60"
+                                    android:textSize="@dimen/_8ssp" />
                             </LinearLayout>
                             <LinearLayout
                                 android:id="@+id/geochmtwo"
@@ -1614,26 +1649,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        app:layout="@layout/fragment_category"
+        app:layout="@layout/fragment_category_resource"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_category" />
+        tools:layout="@layout/fragment_category_resource" />
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_select_speciality"
         android:name="saneforce.sanzen.activity.myresource.SpecialityFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        app:layout="@layout/fragment_speciality"
+        app:layout="@layout/fragment_speciality_resource"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_speciality" />
+        tools:layout="@layout/fragment_speciality_resource" />
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_select_quali"
         android:name="saneforce.sanzen.activity.myresource.QualificationFragment"
@@ -1653,13 +1688,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        app:layout="@layout/fragment_chemistcategory"
+        app:layout="@layout/fragment_chemistcategory_resource"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_chemistcategory" />
+        tools:layout="@layout/fragment_chemistcategory_resource" />
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_select_gender"
         android:name="saneforce.sanzen.activity.myresource.GenderFragment"

@@ -193,32 +193,34 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             if (extra.getString("DOB").equalsIgnoreCase("") || extra.getString("DOB").equalsIgnoreCase("null")) {
                 dob = "";
             } else {
-                String inputDate = extra.getString("DOB");
-                String fullInput = inputDate + "-1900 00:00:00"; // Assuming 2025 and midnight
-                SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.ENGLISH);
-                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-                try {
-                    Date date = inputFormat.parse(fullInput);
-                    String formattedDate = outputFormat.format(date);
-                    dob=formattedDate;
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                dob = extra.getString("DOB");
+//                String inputDate = extra.getString("DOB");
+//                String fullInput = inputDate ; // Assuming 2025 and midnight
+//                SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.ENGLISH);
+//                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+//                try {
+//                    Date date = inputFormat.parse(fullInput);
+//                    String formattedDate = outputFormat.format(date);
+//                    dob=formattedDate;
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
             }
             if (extra.getString("DOW").equalsIgnoreCase("") || extra.getString("DOW").equalsIgnoreCase("null")) {
                 dow = "";
             } else {
-                String inputDate = extra.getString("DOW");
-                String fullInput = inputDate + "-1900 00:00:00"; // Assuming 2025 and midnight
-                SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.ENGLISH);
-                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-                try {
-                    Date date = inputFormat.parse(fullInput);
-                    String formattedDate = outputFormat.format(date);
-                    dow=formattedDate;
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                dow = extra.getString("DOW");
+//                String inputDate = extra.getString("DOW");
+//                String fullInput = inputDate ; // Assuming 2025 and midnight
+//                SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.ENGLISH);
+//                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+//                try {
+//                    Date date = inputFormat.parse(fullInput);
+//                    String formattedDate = outputFormat.format(date);
+//                    dow=formattedDate;
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
             }
 //            dob = extra.getString("DOB");
 //            dow = extra.getString("DOW");
@@ -281,6 +283,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     activityProfilingBinding.tagaddress3.setText(TagAddress2);
                 }
             } else {
+                activityProfilingBinding.notagdr.setVisibility(View.VISIBLE);
                 activityProfilingBinding.geotwo.setVisibility(View.GONE);
                 activityProfilingBinding.geothree.setVisibility(View.GONE);
                 activityProfilingBinding.geofour.setVisibility(View.GONE);
@@ -336,6 +339,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     activityProfilingBinding.chmaddress3.setText(TagAddress2);
                 }
             } else {
+                activityProfilingBinding.notagchm.setVisibility(View.VISIBLE);
                 activityProfilingBinding.geochmtwo.setVisibility(View.GONE);
                 activityProfilingBinding.geochmthree.setVisibility(View.GONE);
                 activityProfilingBinding.geochmfour.setVisibility(View.GONE);
@@ -390,6 +394,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     activityProfilingBinding.geochmfour.setVisibility(View.VISIBLE);
                 }
             } else {
+                activityProfilingBinding.notagchm.setVisibility(View.VISIBLE);
                 activityProfilingBinding.geochmtwo.setVisibility(View.GONE);
                 activityProfilingBinding.geochmthree.setVisibility(View.GONE);
                 activityProfilingBinding.geochmfour.setVisibility(View.GONE);
@@ -448,6 +453,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     activityProfilingBinding.geofour.setVisibility(View.VISIBLE);
                 }
             } else {
+                activityProfilingBinding.notagdr.setVisibility(View.VISIBLE);
                 activityProfilingBinding.geotwo.setVisibility(View.GONE);
                 activityProfilingBinding.geothree.setVisibility(View.GONE);
                 activityProfilingBinding.geofour.setVisibility(View.GONE);
@@ -732,17 +738,17 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 json.put("DrAddr", activityProfilingBinding.edtAddr.getText().toString());
                 json.put("key", SharedPref.getSaveLicenseSetting(context));
                 json.put("DrType", CustType);
-                if(activityProfilingBinding.edtDob.getText().toString().equalsIgnoreCase("")) {
+                if(!activityProfilingBinding.edtDob.getText().toString().equalsIgnoreCase(dob)) {
                     json.put("DrDOB", activityProfilingBinding.edtDob.getText().toString()+ " 00:00:00");
                 }
                 else{
-                    json.put("DrDOB", activityProfilingBinding.edtDob.getText().toString());
+                   // json.put("DrDOB", "");
                 }
-                if(activityProfilingBinding.edtDow.getText().toString().equalsIgnoreCase("")) {
+                if(!activityProfilingBinding.edtDow.getText().toString().equalsIgnoreCase(dow)) {
                     json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString()+ " 00:00:00");
                 }
                 else{
-                    json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString());
+                    //json.put("DrDOW", "");
                 }
                 json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString());
                 json.put("DrPhone", activityProfilingBinding.edtPhone.getText().toString());
