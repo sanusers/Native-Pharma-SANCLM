@@ -1,6 +1,5 @@
 package saneforce.sanzen.commonClasses;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -13,7 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -23,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -31,7 +28,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -60,7 +56,7 @@ public class WorkPlanEntriesNeeded {
 //        if(shouldSync) {
 //            syncCallAndDate(context);
 //        }else {
-            setupMyDayPlanEntriesNeeded(context);
+        setupMyDayPlanEntriesNeeded(context);
 //        }
     }
 
@@ -147,8 +143,85 @@ public class WorkPlanEntriesNeeded {
             String SFDCR_Date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_4, obj.getString("date"));
 
 //            if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
-                pastDates = getAllDatesForPastThreeMonths();
+            pastDates = getAllDatesForPastThreeMonths();
 //            }
+
+            JSONArray holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray();
+            for (int i = 0; i<holidayJSONArray.length(); i++) {
+                JSONObject jsonObject = holidayJSONArray.getJSONObject(i);
+                String holidayDate = "";
+                if(jsonObject.has("holiday_date")) {
+                    holidayDate = jsonObject.optString("holiday_date");
+                }else {
+                    holidayDate = jsonObject.optString("Holiday_Date");
+                }
+                if(SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
+                    if(datesNeeded != null && !datesNeeded.isEmpty()) {
+                        datesNeeded.remove(holidayDate);
+                    }
+                    if(!pastDates.isEmpty()) {
+                        pastDates.remove(holidayDate);
+                    }
+                }
+            }
+
+            JSONArray weeklyOff = masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray();
+            String holidayMode = "";
+            for (int i = 0; i<weeklyOff.length(); i++) {
+                JSONObject jsonObject = weeklyOff.getJSONObject(i);
+                holidayMode = jsonObject.getString("Holiday_Mode");
+            }
+            String[] holidayModeArray = holidayMode.split(",");
+            ArrayList<String> weeklyOffDays = new ArrayList<>();
+            for (String str : holidayModeArray) {
+                switch (str){
+                    case "0":{
+                        weeklyOffDays.add("Sunday");
+                        break;
+                    }
+                    case "1":{
+                        weeklyOffDays.add("Monday");
+                        break;
+                    }
+                    case "2":{
+                        weeklyOffDays.add("Tuesday");
+                        break;
+                    }
+                    case "3":{
+                        weeklyOffDays.add("Wednesday");
+                        break;
+                    }
+                    case "4":{
+                        weeklyOffDays.add("Thursday");
+                        break;
+                    }
+                    case "5":{
+                        weeklyOffDays.add("Friday");
+                        break;
+                    }
+                    case "6":{
+                        weeklyOffDays.add("Saturday");
+                        break;
+                    }
+                }
+            }
+
+            TreeSet<String> datesNeededDup = new TreeSet<>(pastDates);
+            for (String date : datesNeededDup) {
+                String dayName = LocalDate.parse(date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)).getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
+//                if(weeklyOffDays.contains(dayName) && SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
+//                    datesNeeded.remove(date);
+//                    pastDates.remove(date);
+//                }
+                if(SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
+                    if(datesNeeded != null && !datesNeeded.isEmpty() && weeklyOffDays.contains(dayName)) {
+                        datesNeeded.remove(date);
+                    }
+                    if(!pastDates.isEmpty() && weeklyOffDays.contains(dayName)) {
+                        pastDates.remove(date);
+                    }
+                }
+            }
 
             JSONArray dcrdatas = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
             if(dcrdatas.length()>0) {
@@ -159,7 +232,7 @@ public class WorkPlanEntriesNeeded {
                     String dayStatus = jsonObject.optString("day_status");
                     String date = jsonObject.optString("Dcr_dt");
 //                    if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
-                        pastDates.remove(date);
+                    pastDates.remove(date);
 //                    }
                     if(cusType.equalsIgnoreCase("0")) {
                         dayFlagMap.put(date, dayStatus);
@@ -186,13 +259,13 @@ public class WorkPlanEntriesNeeded {
                     String tbName = jsonObject.optString("tbname");
                     String date = jsonObject.getJSONObject("dt").getString("date").substring(0, 10);
 //                    if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
-                        pastDates.remove(date);
+                    pastDates.remove(date);
 //                    }
                     dayFlagMap.put(date, flag);
                     if(tbName.equalsIgnoreCase("missed") ||
                             (tbName.equalsIgnoreCase("dcr") && (flag.equalsIgnoreCase("2") || (flag.equalsIgnoreCase("3")))) ||
                             flag.equalsIgnoreCase("0")) {
-                        if(flag.equalsIgnoreCase("0")){
+                        if(flag.equalsIgnoreCase("0")) {
                             Log.v("status 0 ", "setupMyDayPlanEntriesNeeded: " + date);
                             if(!isPlanningDateFound) {
                                 isPlanningDateFound = true;
@@ -219,75 +292,10 @@ public class WorkPlanEntriesNeeded {
                 Log.v("TAG 4", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }
 
-            JSONArray holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray();
-            for (int i = 0; i < holidayJSONArray.length(); i++) {
-                JSONObject jsonObject = holidayJSONArray.getJSONObject(i);
-                String holidayDate = "";
-                if(jsonObject.has("holiday_date")) {
-                    holidayDate = jsonObject.optString("holiday_date");
-                } else {
-                    holidayDate = jsonObject.optString("Holiday_Date");
-                }
-                if(datesNeeded != null && !datesNeeded.isEmpty()) {
-                    datesNeeded.remove(holidayDate);
-                    pastDates.remove(holidayDate);
-                }
-            }
-
-            JSONArray weeklyOff = masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray();
-            String holidayMode = "";
-            for (int i = 0; i < weeklyOff.length(); i++) {
-                JSONObject jsonObject = weeklyOff.getJSONObject(i);
-                holidayMode = jsonObject.getString("Holiday_Mode");
-            }
-            String[] holidayModeArray = holidayMode.split(",");
-            ArrayList<String> weeklyOffDays = new ArrayList<>();
-            for (String str : holidayModeArray) {
-                switch (str) {
-                    case "0": {
-                        weeklyOffDays.add("Sunday");
-                        break;
-                    }
-                    case "1": {
-                        weeklyOffDays.add("Monday");
-                        break;
-                    }
-                    case "2": {
-                        weeklyOffDays.add("Tuesday");
-                        break;
-                    }
-                    case "3": {
-                        weeklyOffDays.add("Wednesday");
-                        break;
-                    }
-                    case "4": {
-                        weeklyOffDays.add("Thursday");
-                        break;
-                    }
-                    case "5": {
-                        weeklyOffDays.add("Friday");
-                        break;
-                    }
-                    case "6": {
-                        weeklyOffDays.add("Saturday");
-                        break;
-                    }
-                }
-            }
-
-            TreeSet<String> datesNeededDup = new TreeSet<>(pastDates);
-            for (String date : datesNeededDup) {
-                String dayName = LocalDate.parse(date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)).getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
-                if(weeklyOffDays.contains(dayName)) {
-                    datesNeeded.remove(date);
-                    pastDates.remove(date);
-                }
-            }
-
 //            if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
-                pastDates.addAll(datesNeeded);
-                datesNeeded = pastDates;
-                Log.i("past dates", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(pastDates.toArray()));
+            pastDates.addAll(datesNeeded);
+            datesNeeded = pastDates;
+            Log.i("past dates", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(pastDates.toArray()));
 //            }
 
             datesNeededDup = new TreeSet<>(datesNeeded);
@@ -296,7 +304,7 @@ public class WorkPlanEntriesNeeded {
                 LocalDate joiningDate = LocalDate.parse(SFDCR_Date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                 if(date.isBefore(joiningDate)) {
                     datesNeeded.remove(dt);
-                } else if(date.isEqual(joiningDate)) {
+                }else if(date.isEqual(joiningDate)) {
                     break;
                 }
             }
@@ -308,38 +316,32 @@ public class WorkPlanEntriesNeeded {
         String date = null;
         Log.i("TAG", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
         if(!SharedPref.getDayPlanStartedDate(context).isEmpty()
-                && datesNeeded.contains(SharedPref.getDayPlanStartedDate(context)))  {
+                && datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {
             Log.e("set date switched1 ", "setupMyDayPlanEntriesNeeded: " + SharedPref.getDayPlanStartedDate(context));
             date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, SharedPref.getDayPlanStartedDate(context));
-        }
-        else if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")
+        }else if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")
                 && !datesNeeded.isEmpty()) {
             Log.e("set date sequential", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
             date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, datesNeeded.first());
-        }
-        else if(!SharedPref.getSelectedDateCal(context).isEmpty()
+        }else if(!SharedPref.getSelectedDateCal(context).isEmpty()
                 && datesNeeded.contains(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)))) {
             Log.e("set date switched2 ", "setupMyDayPlanEntriesNeeded: " + SharedPref.getSelectedDateCal(context));
             date = SharedPref.getSelectedDateCal(context);
-        }
-        else if(SharedPref.getSelectedDateCal(context).isEmpty()
+        }else if(SharedPref.getSelectedDateCal(context).isEmpty()
                 && !datesNeeded.isEmpty()
-                && isCallDataAvailable){
+                && isCallDataAvailable) {
             Log.e("set date first", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
             date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, datesNeeded.first());
-        }
-        else if(SharedPref.getSelectedDateCal(context).isEmpty()
+        }else if(SharedPref.getSelectedDateCal(context).isEmpty()
                 && !datesNeeded.isEmpty()
-                && !isCallDataAvailable){
+                && !isCallDataAvailable) {
             Log.e("not set date first", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
-        }
-        else if(dates.containsKey(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))
+        }else if(dates.containsKey(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))
                 && dates.get(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)) != null
                 && dates.get(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)).equalsIgnoreCase("01")
                 && datesNeeded.isEmpty()) {
             Log.e("set date today finished", "setupMyDayPlanEntriesNeeded: dates empty");
-        }
-        else if(!datesNeeded.isEmpty()) {
+        }else if(!datesNeeded.isEmpty()) {
             Log.e("set date", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
             date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, datesNeeded.first());
         }else {
@@ -351,16 +353,16 @@ public class WorkPlanEntriesNeeded {
             SharedPref.setSelectedDateCal(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, planningDate));
             WorkPlanFragment.dayStatus = dayFlagMap.get(planningDate);
             syncTaskStatus.datesFound();
-        } else if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+        }else if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
             if(date != null && !date.isEmpty()) {
                 SharedPref.setSelectedDateCal(context, date);
                 WorkPlanFragment.dayStatus = dayFlagMap.get(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, date));
                 syncTaskStatus.datesFound();
-            } else {
+            }else {
                 SharedPref.setSelectedDateCal(context, null);
                 syncTaskStatus.noDatesFound();
             }
-        } else {
+        }else {
             if(!SharedPref.getSelectedDateCal(context).isEmpty()) {
                 WorkPlanFragment.dayStatus = dayFlagMap.get(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)));
                 syncTaskStatus.datesFound();
@@ -373,6 +375,7 @@ public class WorkPlanEntriesNeeded {
 
     public interface SyncTaskStatus {
         void datesFound();
+
         void noDatesFound();
     }
 
@@ -383,15 +386,15 @@ public class WorkPlanEntriesNeeded {
 
         // Get dates for current month up to current date
         int currentDay = currentDate.getDayOfMonth();
-        for (int day =1; day <= currentDay; day++) {
+        for (int day = 1; day<=currentDay; day++) {
             LocalDate date = currentDate.withDayOfMonth(day);
             dates.add(date.format(formatter));
         }
 
         // Get dates for past two months
-        for (int i = 1; i <= 2; i++) {
+        for (int i = 1; i<=2; i++) {
             LocalDate pastMonth = currentDate.minusMonths(i);
-            for (int day = 1; day <= pastMonth.lengthOfMonth(); day++) {
+            for (int day = 1; day<=pastMonth.lengthOfMonth(); day++) {
                 LocalDate date = pastMonth.withDayOfMonth(day);
                 dates.add(date.format(formatter));
             }
