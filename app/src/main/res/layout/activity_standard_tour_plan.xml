@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_grey_normal"
+    tools:context=".activity.standardTourPlan.calendarScreen.StandardTourPlanActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/text_dark"
+            android:backgroundTint="@color/text_dark"
+            android:minHeight="?attr/actionBarSize"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp">
+
+            <LinearLayout
+                android:id="@+id/backArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/_6sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:src="@drawable/arrow_back_white"
+                    tools:ignore="ContentDescription" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_16sdp"
+                android:fontFamily="@font/satoshi_variable"
+                android:text="@string/standard_tour_plan"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_7sdp"
+                tools:ignore="SpUsage" />
+
+            <TextView
+                android:id="@+id/tv_sync"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_6sdp"
+                android:background="@drawable/bg_light_pink_2"
+                android:drawablePadding="@dimen/_1sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="start|center"
+                android:paddingHorizontal="@dimen/_3sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                android:text="@string/sync"
+                android:layout_gravity="end|center_vertical"
+                android:textAllCaps="false"
+                android:textColor="@color/pink"
+                android:textSize="@dimen/_6ssp"
+                app:drawableStartCompat="@drawable/baseline_sync_24" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_rejection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/sendToApproval"
+        android:layout_alignBottom="@id/sendToApproval"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_toStartOf="@id/sendToApproval"
+        android:layout_toEndOf="@id/ll_stp_status"
+        android:background="@color/pink_10"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/_2sdp">
+
+            <View
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="wrap_content"
+                android:background="@color/pink" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_light"
+                android:paddingStart="@dimen/_5sdp"
+                android:paddingEnd="0dp"
+                android:text="Rejected Reason"
+                android:textColor="@color/pink"
+                android:textSize="@dimen/_6ssp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_reject_reason"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_medium"
+                android:paddingStart="@dimen/_5sdp"
+                android:paddingEnd="0dp"
+                android:text="Reason"
+                android:textColor="@color/text_dark"
+                android:textSize="@dimen/_6ssp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/sendToApproval"
+        android:layout_below="@id/appBar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginHorizontal="@dimen/_3sdp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_grey_normal"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/left_pane"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:layout_weight="1.8">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/check_unplanned_visits"
+                android:fillViewport="true"
+                android:scrollIndicators="none"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/plan_for"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        app:cardCornerRadius="@dimen/_3sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_white_border_purple"
+                            android:orientation="vertical"
+                            android:padding="@dimen/_5sdp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tag_plan_for"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/satoshi_bold"
+                                    android:text="@string/plan_for"
+                                    android:textColor="@color/dark_purple"
+                                    android:textSize="@dimen/_6ssp" />
+
+                                <TextView
+                                    android:id="@+id/tag_total"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/satoshi_bold"
+                                    android:text="@string/total"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/dark_purple"
+                                    android:textSize="@dimen/_6ssp" />
+
+                                <TextView
+                                    android:id="@+id/tag_selected"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/satoshi_bold"
+                                    android:text="@string/selected"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/dark_purple"
+                                    android:textSize="@dimen/_6ssp" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginVertical="@dimen/_3sdp"
+                                android:background="@color/dark_purple" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rv_plan_for"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                tools:listitem="@layout/item_plan_for_stp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/visit_details"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:backgroundTint="@color/white"
+                        app:cardCornerRadius="@dimen/_3sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_white_border_purple"
+                            android:orientation="vertical"
+                            android:padding="@dimen/_5sdp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tv_doc_category"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/satoshi_bold"
+                                    android:text="@string/doctor_category"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/dark_purple"
+                                    android:textSize="@dimen/_6ssp" />
+
+                                <TextView
+                                    android:id="@+id/tv_visit_frequency"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/satoshi_bold"
+                                    android:text="@string/visit_frequency"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/dark_purple"
+                                    android:textSize="@dimen/_6ssp" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginVertical="@dimen/_3sdp"
+                                android:background="@color/dark_purple" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rv_doc_cat_x_visit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                tools:listitem="@layout/item_doc_cat_x_visit_stp" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/category_data"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:backgroundTint="@color/white"
+                        app:cardCornerRadius="@dimen/_3sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_white_border_purple"
+                            android:orientation="vertical"
+                            android:padding="@dimen/_5sdp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tv_dd_doc_category"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/satoshi_bold"
+                                    android:text="Doctor\nCategory"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/dark_purple"
+                                    android:textSize="@dimen/_6ssp" />
+
+                                <TextView
+                                    android:id="@+id/tv_dd_total_doctors"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/satoshi_bold"
+                                    android:text="Total\nDoctors"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/dark_purple"
+                                    android:textSize="@dimen/_6ssp" />
+
+                                <TextView
+                                    android:id="@+id/tv_dd_total_visits"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/satoshi_bold"
+                                    android:text="Total\nVisits"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/dark_purple"
+                                    android:textSize="@dimen/_6ssp" />
+
+                                <TextView
+                                    android:id="@+id/tv_dd_planned_doctors"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/satoshi_bold"
+                                    android:text="Planned\nDoctors"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/dark_purple"
+                                    android:textSize="@dimen/_6ssp" />
+
+                                <TextView
+                                    android:id="@+id/tv_dd_planned_visits"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/satoshi_bold"
+                                    android:text="Planned\nVisits"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/dark_purple"
+                                    android:textSize="@dimen/_6ssp" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginVertical="@dimen/_3sdp"
+                                android:background="@color/dark_purple" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rv_doc_data"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                tools:listitem="@layout/item_doc_data_stp" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/check_unplanned_visits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginVertical="@dimen/_3sdp"
+                android:background="@drawable/bg_button_pink"
+                android:foregroundTint="@color/pink"
+                android:text="@string/check_unplanned_visits"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingHorizontal="@dimen/_3sdp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="1"
+            tools:itemCount="7"
+            tools:listitem="@layout/stp_calendar_row" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_stp_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/sendToApproval"
+        android:layout_alignBottom="@id/sendToApproval"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/satoshi_bold"
+            android:text="Status: "
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_6ssp" />
+
+        <TextView
+            android:id="@+id/tv_stp_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/satoshi_bold"
+            android:text="Planning..."
+            android:textColor="@color/green_2"
+            android:textSize="@dimen/_6ssp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/sendToApproval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="@dimen/_7sdp"
+        android:layout_marginVertical="@dimen/_5sdp"
+        android:layout_marginEnd="17dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/tp_btn_select_state"
+        android:fontFamily="@font/satoshi_variable"
+        android:paddingHorizontal="@dimen/_5sdp"
+        android:text="@string/send_to_approval"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_6sdp"
+        tools:ignore="SpUsage" />
+
+    <FrameLayout
+        android:id="@+id/fl_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#AA000000"
+        android:elevation="@dimen/_5sdp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/ll_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="@dimen/_5sdp"
+            android:visibility="visible">
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/pink" />
+
+            <TextView
+                android:id="@+id/tv_progress_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:text="Syncing Offline Data..."
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp" />
+        </LinearLayout>
+    </FrameLayout>
+
+</RelativeLayout>

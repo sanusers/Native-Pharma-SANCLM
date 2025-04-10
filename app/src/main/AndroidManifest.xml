@@ -66,27 +66,54 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        tools:replace="android:label">
+        <activity
+            android:name=".activity.presentation.customerSelection.CustomerSelectionActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"/>
+        <activity
+            android:name=".activity.survey.SurveyActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".activity.Quiz.QuizAssertViewActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.approvals.stp.STPApprovalActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.standardTourPlan.unplannedVisitScreen.UnplannedVisitActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.standardTourPlan.addListScreen.AddListActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.standardTourPlan.calendarScreen.StandardTourPlanActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.myresource.Categoryview.DateSyncActivity"
-            android:screenOrientation="landscape"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.reports.dayReport.MapViewActvity"
             android:exported="false"
-            android:screenOrientation="landscape" >
-        </activity>
-
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.FAQ.FAQ"
             android:exported="false"
-            android:screenOrientation="landscape" >
-        </activity>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.PrivacyPolicyActvity.PrivacyPolicyActivity"
             android:exported="false"
-            android:screenOrientation="landscape" >
-        </activity>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.camera.CameraActivity"
             android:exported="false"
@@ -95,7 +122,8 @@
             android:name=".activity.activityModule.DynamicActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:theme="@style/CustomTheme" />
+            android:theme="@style/CustomTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.Quiz.QuizActivity"
             android:exported="false"
@@ -337,7 +365,15 @@
         <service
             android:name=".activity.slideDownloaderAlertBox.SlideServices"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false" />
+        <service
+            android:name=".activity.slideDownloaderAlertBox.WelcomeSlideService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".activity.Quiz.AssertDownloadAlert.AssertDownloadService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

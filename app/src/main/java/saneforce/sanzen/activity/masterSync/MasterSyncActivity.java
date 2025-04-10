@@ -55,6 +55,9 @@ import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideServices;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.SlidesViewModel;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.Slide_adapter;
+import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideAdapter;
+import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideService;
+import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlidesViewModel;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -64,12 +67,18 @@ import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityMasterSyncBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
+import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataDao;
+import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataTable;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
+import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesDao;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesTableDeatils;
+import saneforce.sanzen.roomdatabase.SlideTable.WelcomeSlidesDao;
+import saneforce.sanzen.roomdatabase.SlideTable.WelcomeSlidesDataTable;
 import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
 import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataTable;
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
@@ -88,7 +97,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     boolean retrystatus=false;
     //  Api call status  ======> 2 - sucesss, 1- failure ,  0- Notsync yet
-    int doctorStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, setupStatus = 0;
+    int doctorStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0;
     int apiSuccessCount = 0, itemCount = 0;
     String navigateFrom = "";
     boolean mgrInitialSync = false;
@@ -105,6 +114,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> clusterModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> leaveModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> dcrModelArray = new ArrayList<>();
+    ArrayList<MasterSyncItemModel> activityModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> workTypeModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> tpModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> slideModelArray = new ArrayList<>();
@@ -113,6 +123,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
     public  List<String> HQCODE_SYN = new ArrayList<>();
     public static ArrayList<String> SlideIds = new ArrayList<>();
+    public static ArrayList<String> welcomeSlideNames = new ArrayList<>();
     SharedPreferences sharedpreferences;
     LocalDate localDate;
     ArrayList<String> weeklyOffDays = new ArrayList<>();
@@ -125,16 +136,17 @@ public class MasterSyncActivity extends AppCompatActivity {
     private RoomDB db;
     private static Context context;
     private MasterDataDao masterDataDao;
+    private ActivityDetailsDataDao activityDetailsDataDao;
     private TourPlanOfflineDataDao tourPlanOfflineDataDao;
     private TourPlanOnlineDataDao tourPlanOnlineDataDao;
+    private STPOfflineDataDao stpOfflineDataDao;
     private SlidesDao SlidesDao;
-    public static boolean isSingleSlideDowloaingStaus;
+    private WelcomeSlidesDao welcomeSlidesDao;
+    public static boolean isSingleSlideDowloaingStaus, isSingleWelcomeSlideDownloadingStatus ;
     private boolean isCallSynced = false, isDateSynced = false;
     private int dayPlanDelayCount = 0;
-    public    String SFTP_Date_sp="",SFTP_Date="";
-    public   int JoningDate,JoiningMonth, JoinYear;
-
-
+    public String SFTP_Date_sp="",SFTP_Date="";
+    public int JoningDate,JoiningMonth, JoinYear;
 
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
         return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
@@ -157,10 +169,13 @@ public class MasterSyncActivity extends AppCompatActivity {
             navigateFrom = getIntent().getExtras().getString(Constants.NAVIGATE_FROM);
         }
         db = RoomDB.getDatabase(this);
-        masterDataDao=db.masterDataDao();
+        masterDataDao = db.masterDataDao();
+        activityDetailsDataDao = db.activityDetailsDataDao();
         tourPlanOfflineDataDao = db.tourPlanOfflineDataDao();
         tourPlanOnlineDataDao = db.tourPlanOnlineDataDao();
+        stpOfflineDataDao = db.stpOfflineDataDao();
         SlidesDao = db.slidesDao();
+        welcomeSlidesDao = db.welcomeSlidesDao();
 
         try {
             SFTP_Date_sp = SharedPref.getSftpDate(MasterSyncActivity.this);
@@ -235,9 +250,10 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         binding.backArrow.setOnClickListener(view -> {
 //            if (navigateFrom.equalsIgnoreCase("Login")||navigateFrom.equalsIgnoreCase("Slide")) {
-                Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+            Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
 //            } else {
 //                getOnBackPressedDispatcher().onBackPressed();
 //            }
@@ -247,6 +263,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SlideAlertbox(false);
+                welcomeSlideAlertBox(false);
             }
         });
 
@@ -442,6 +459,16 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         });
 
+        binding.activity.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.activity);
+                binding.childSync.setText("Sync Activity");
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(activityModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
         binding.workType.setOnClickListener(view -> {
             if (!view.isSelected()) {
                 listItemClicked(binding.workType);
@@ -540,6 +567,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                             arrayList.addAll(leaveModelArray);
                         } else if (binding.dcr.isSelected()) {
                             arrayList.addAll(dcrModelArray);
+                        } else if (binding.activity.isSelected()) {
+                            arrayList.addAll(activityModelArray);
                         } else if (binding.workType.isSelected()) {
                             arrayList.addAll(workTypeModelArray);
                         } else if (binding.tourPlan.isSelected()) {
@@ -628,11 +657,14 @@ public class MasterSyncActivity extends AppCompatActivity {
         stockBalanceStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
         calenderEventStaus=masterDataDao.getMasterSyncStatusByKey(Constants.CALENDER_EVENT_STATUS);
 
+        activityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.ACTIVITY);
         workTypeStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_TYPE);
         holidayStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOLIDAY);
         weeklyOfStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WEEKLY_OFF);
         tpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TP_SETUP);
         tourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TOUR_PLAN);
+        stpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STP_SETUP);
+        standardTourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STANDARD_TOUR_PLAN);
         productStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT);
         proCatStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
         brandStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND);
@@ -643,14 +675,30 @@ public class MasterSyncActivity extends AppCompatActivity {
         proSpeSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPL_SLIDE);
         brandSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND_SLIDE);
         therapticStatus = masterDataDao.getMasterSyncStatusByKey(Constants.THERAPTIC_SLIDE);
+        welcomeStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WELCOME_SLIDE);
         subordinateStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SUBORDINATE);
         subMgrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SUBORDINATE_MGR);
         jWorkStatus = masterDataDao.getMasterSyncStatusByKey(Constants.JOINT_WORK + rsf);
         QuizStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUIZ);
+        SurveyStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SURVEY);
         setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
 //        customSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CUSTOM_SETUP);
 
-//        binding.listedDr.setSelected(true);
+//        if(SharedPref.getDrNeed(this).equalsIgnoreCase("0")){
+//            binding.listedDr.setSelected(true);
+//        } else if(SharedPref.getChmNeed(this).equalsIgnoreCase("0")){
+//            binding.chemist.setSelected(true);
+//        } else if(SharedPref.getStkNeed(this).equalsIgnoreCase("0")){
+//            binding.stockiest.setSelected(true);
+//        } else if(SharedPref.getUnlNeed(this).equalsIgnoreCase("0")){
+//            binding.unlistedDoctor.setSelected(true);
+//        } else if(SharedPref.getCipNeed(this).equalsIgnoreCase("0")){
+//            binding.cip.setSelected(true);
+//        } else if(SharedPref.getHospNeed(this).equalsIgnoreCase("0")){
+//            binding.hospital.setSelected(true);
+//        } else {
+//            binding.cluster.setSelected(true);
+//        }
         prepareArray(rsf);
 
     }
@@ -745,8 +793,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             leaveModelArray.add(leaveStatusModel);
         }
 
-
-
         //DCR
         dcrModelArray.clear();
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC,  "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
@@ -768,6 +814,11 @@ public class MasterSyncActivity extends AppCompatActivity {
             dcrModelArray.add(visitControlModel);
         }
 
+        //Activity
+        activityModelArray.clear();
+        MasterSyncItemModel activity = new MasterSyncItemModel(Constants.ACTIVITY, Constants.ACTIVITY, "getdynactivity", Constants.ACTIVITY, activityStatus, false);
+        activityModelArray.add(activity);
+
         //Work Type
         workTypeModelArray.clear();
         MasterSyncItemModel workType = new MasterSyncItemModel(Constants.WORK_TYPE, Constants.DOCTOR, "getworktype", Constants.WORK_TYPE, workTypeStatus, false);
@@ -779,12 +830,22 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Tour Plan
         tpModelArray.clear();
-        if (SharedPref.getTpNeed(this).equalsIgnoreCase("0")) {
+        boolean tpNeed = SharedPref.getTpNeed(this).equalsIgnoreCase("0"), stpNeed = SharedPref.getStpNeed(this).equalsIgnoreCase("0") && !SharedPref.getSfType(this).equalsIgnoreCase("2");
+        if (tpNeed) {
             MasterSyncItemModel tpSetup = new MasterSyncItemModel(Constants.TP_SETUP, Constants.SETUP, "gettpsetup", Constants.TP_SETUP, tpSetupStatus, false);
             MasterSyncItemModel tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN,  Constants.TOUR_PLAN, "getall_tp", Constants.TOUR_PLAN, tourPLanStatus, false);
             tpModelArray.add(tpSetup);
             tpModelArray.add(tPlan);
-        } else binding.tourPlan.setVisibility(View.GONE);
+        }
+        if(stpNeed) {
+            MasterSyncItemModel STPSetup = new MasterSyncItemModel(Constants.STP_SETUP, Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP, stpSetupStatus, false);
+            MasterSyncItemModel STPPlan = new MasterSyncItemModel(Constants.STANDARD_TOUR_PLAN,  Constants.STANDARD_TOUR_PLAN, "getstp_details", Constants.STANDARD_TOUR_PLAN, standardTourPLanStatus, false);
+            tpModelArray.add(STPSetup);
+            tpModelArray.add(STPPlan);
+        }
+        if(!tpNeed && !stpNeed) {
+            binding.tourPlan.setVisibility(View.GONE);
+        }
 
         //Slide
         slideModelArray.clear();
@@ -792,6 +853,8 @@ public class MasterSyncActivity extends AppCompatActivity {
         MasterSyncItemModel splSlideModel = new MasterSyncItemModel(Constants.SPL_SLIDE, "Slide", "getslidespeciality", Constants.SPL_SLIDE, proSpeSlideStatus, false);
         MasterSyncItemModel brandSlideModel = new MasterSyncItemModel(Constants.BRAND_SLIDE,"Slide", "getslidebrand", Constants.BRAND_SLIDE, brandSlideStatus, false);
         MasterSyncItemModel therapticSlideModel = new MasterSyncItemModel(Constants.THERAPTIC_SLIDE,  "Slide", "gettheraptic", Constants.THERAPTIC_SLIDE, therapticStatus, false);
+        MasterSyncItemModel welcomeSlideModel = new MasterSyncItemModel(Constants.WELCOME_SLIDE,  "Slide", "getwelcomepage", Constants.WELCOME_SLIDE, welcomeStatus, false);
+        slideModelArray.add(welcomeSlideModel);
         slideModelArray.add(proSlideModel);
         slideModelArray.add(splSlideModel);
         slideModelArray.add(brandSlideModel);
@@ -813,8 +876,12 @@ public class MasterSyncActivity extends AppCompatActivity {
         MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, Constants.DOCTOR, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
         otherModelArray.add(feedback);
         if(SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
-            MasterSyncItemModel Quiz = new MasterSyncItemModel("Quiz","AdditionalDcr", "getquiz", Constants.QUIZ, QuizStatus, false);
+            MasterSyncItemModel Quiz = new MasterSyncItemModel(Constants.QUIZ,"AdditionalDcr", "getquiz", Constants.QUIZ, QuizStatus, false);
             otherModelArray.add(Quiz);
+        }
+        if(SharedPref.getSurveyNd(this).equalsIgnoreCase("0")) {
+            MasterSyncItemModel Survey = new MasterSyncItemModel(Constants.SURVEY, Constants.SURVEY, "getsurveydetail", Constants.SURVEY, SurveyStatus, false);
+            otherModelArray.add(Survey);
         }
 
         //Setup
@@ -840,6 +907,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.cluster.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.leave.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.dcr.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
+        binding.activity.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.workType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.tourPlan.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.slide.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
@@ -858,6 +926,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.cluster.setSelected(false);
         binding.leave.setSelected(false);
         binding.dcr.setSelected(false);
+        binding.activity.setSelected(false);
         binding.workType.setSelected(false);
         binding.tourPlan.setSelected(false);
         binding.slide.setSelected(false);
@@ -897,6 +966,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), leaveModelArray, position);
                         } else if (binding.dcr.isSelected()) {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), dcrModelArray, position);
+                        } else if (binding.activity.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), activityModelArray, position);
                         } else if (binding.workType.isSelected()) {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), workTypeModelArray, position);
                         } else if (binding.tourPlan.isSelected()) {
@@ -956,6 +1027,8 @@ public class MasterSyncActivity extends AppCompatActivity {
             populateAdapter(leaveModelArray);
         } else if (binding.dcr.isSelected()) {
             populateAdapter(dcrModelArray);
+        } else if (binding.activity.isSelected()) {
+            populateAdapter(activityModelArray);
         } else if (binding.workType.isSelected()) {
             populateAdapter(workTypeModelArray);
         } else if (binding.tourPlan.isSelected()) {
@@ -996,6 +1069,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                         String dateAndTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_16);
                         binding.lastSyncTime.setText(dateAndTime);
                         SharedPref.saveMasterLastSync(getApplicationContext(), dateAndTime);
+                        masterSyncAllModel.add(activityModelArray);
                         masterSyncAllModel.add(workTypeModelArray);
                         masterSyncAllModel.add(inputModelArray);
                         masterSyncAllModel.add(productModelArray);
@@ -1081,22 +1155,27 @@ public class MasterSyncActivity extends AppCompatActivity {
                     jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                     break;
                 }
+                case "getquiz":
                 case "gettodaydcr": {
-                    WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
-                        @Override
-                        public void datesFound() {
-                            try {
-                                jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, SharedPref.getSelectedDateCal(MasterSyncActivity.this)));
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                    if(HomeDashBoard.selectedDate != null) {
+                        jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
+                    } else {
+                        WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
+                            @Override
+                            public void datesFound() {
+                                try {
+                                    jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, SharedPref.getSelectedDateCal(MasterSyncActivity.this)));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void noDatesFound() {
-                            Log.e("Master Sync", "Get MyDayPlan Call and Date Sync failed!" );
-                        }
-                    });
+                            @Override
+                            public void noDatesFound() {
+                                Log.e("Master Sync", "Get MyDayPlan Call and Date Sync failed!");
+                            }
+                        });
+                    }
                 }
             }
 
@@ -1129,6 +1208,15 @@ public class MasterSyncActivity extends AppCompatActivity {
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
             } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN)) {
                 mapString.put("axn", "get/tp");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
+                mapString.put("axn", "get/stp");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase(Constants.ACTIVITY)) {
+                mapString.put("axn", "get/activity");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase(Constants.SURVEY)) {
+                mapString.put("axn", "get/survey");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
             }
 
@@ -1226,7 +1314,15 @@ public class MasterSyncActivity extends AppCompatActivity {
                                             if (jsonArray.length() > 0){
                                                 insertSlide(jsonArray);
                                                 if (!navigateFrom.equalsIgnoreCase("Login")) {
-                                                    SlideAlertbox(true);}
+                                                    SlideAlertbox(true);
+                                                }
+                                            }
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.WELCOME_SLIDE)) {
+                                            if (jsonArray.length() > 0){
+                                                insertWelcomeSlide(jsonArray);
+                                                if (!navigateFrom.equalsIgnoreCase("Login")) {
+                                                    welcomeSlideAlertBox(true);
+                                                }
                                             }
                                         } else  if(!navigateFrom.equalsIgnoreCase("Login") && masterOf.equalsIgnoreCase(Constants.SETUP) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
                                             if (jsonArray.length() > 0){
@@ -1240,6 +1336,12 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                    startActivity(intent);
                                                }
                                             }
+                                        } else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
+                                            stpOfflineDataDao.deleteAllData();
+                                            saveSTPDataToLocal();
+                                        } else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
+                                            activityDetailsDataDao.deleteAllData();
+//                                            syncIndividualActivityDetails();
                                         }
                                         JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
                                         for (int bean = 0; bean < input.length(); bean++) {
@@ -1261,9 +1363,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         masterSyncAll(false);
                                         }
                                     }
-
-
-
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -1283,6 +1382,12 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
                                 SlideAlertbox(true);
+                            } else if (masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
+//                                SharedPref.putAutomassync(getApplicationContext(), true);
+                            //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                                binding.backArrow.setVisibility(View.VISIBLE);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+                                welcomeSlideAlertBox(true);
                             } else {
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
                                 binding.backArrow.setVisibility(View.VISIBLE);
@@ -1320,6 +1425,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
                                 SlideAlertbox(true);
+                            } else if (masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
+                                binding.backArrow.setVisibility(View.VISIBLE);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+                                welcomeSlideAlertBox(true);
                             } else {
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
@@ -1339,6 +1448,115 @@ public class MasterSyncActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    private void syncIndividualActivityDetails() {
+        try {
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.ACTIVITY).getMasterSyncDataJsonArray();
+            List<String> existingIDs = activityDetailsDataDao.getAllActivityDetailsID();
+            List<String> newIDs = new ArrayList<>();
+            if(jsonArray.length()>0) {
+                for (int i = 0; i<jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String id = jsonObject.getString("Activity_SlNo");
+                    newIDs.add(id);
+                    if(activityDetailsDataDao.getActivityDetailsByID(id) != null) {
+                        activityDetailsDataDao.updateStatusByID(id, "1");
+                    }
+                    try {
+                        JSONObject object = CommonUtilsMethods.CommonObjectParameter(MasterSyncActivity.this);
+                        object.put("tableName", "getdynactivity_details");
+                        object.put("sfcode", SharedPref.getSfCode(this));
+                        object.put("division_code", SharedPref.getDivisionCode(this));
+                        object.put("Rsf", SharedPref.getHqCode(this));
+                        object.put("slno", id);
+                        Log.v("JsonObject  :", object.toString());
+                        Map<String, String> QueryParam = new HashMap<>();
+                        QueryParam.put("axn", "get/activity");
+
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(MasterSyncActivity.this), QueryParam, object.toString());
+                        call.enqueue(new Callback<JsonElement>() {
+                            @Override
+                            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                                Log.v("Response :", "" + response);
+                                if(response.isSuccessful()) {
+                                    try {
+                                        JsonElement jsonElement = response.body();
+                                        if(jsonElement != null) {
+                                            JSONArray jsonArray1 = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                            activityDetailsDataDao.saveActivityDetailsData(new ActivityDetailsDataTable(id + "_" + SharedPref.getHqCode(MasterSyncActivity.this), jsonArray1.toString(), "0"));
+                                        }
+                                    } catch (Exception a) {
+                                        Log.e("Error", "----- " + a);
+                                        a.printStackTrace();
+                                    }
+                                }
+                            }
+                            @Override
+                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                t.printStackTrace();
+                            }
+                        });
+                    } catch (Exception a) {
+                        a.printStackTrace();
+                    }
+                }
+                if(!newIDs.isEmpty()) {
+                    for (String id: existingIDs) {
+                        if(!newIDs.contains(id)) {
+                            activityDetailsDataDao.deleteByID(id);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveSTPDataToLocal() {
+        try {
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
+            if(jsonArray.length()>0) {
+                for (int i = 0; i<jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String dayID = jsonObject.optString("Day_Plan_ShortName");
+                    String dayCaption = jsonObject.optString("Day_Plan_Name");
+                    String dayPlanCode = jsonObject.optString("Day_Plan_Code");
+                    String clusterCode = jsonObject.optString("Patch_Code");
+                    String clusterName = jsonObject.optString("Patch_Name");
+                    String doctorCode = jsonObject.optString("Dr_Code");
+                    String doctorName = jsonObject.optString("Dr_Name");
+                    String chemistCode = jsonObject.optString("Chem_Code");
+                    String chemistName = jsonObject.optString("Chem_Name");
+                    String dateTime = jsonObject.optString("Created_Date");
+                    String activeFlag = jsonObject.optString("Active_Flag");
+                    Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+
+                    JSONObject jsonSave = new JSONObject();
+                    jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
+                    jsonSave.put("sfcode", SharedPref.getSfCode(this));
+                    jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
+                    jsonSave.put("Rsf", SharedPref.getHqCode(this));
+                    jsonSave.put("town_code", clusterCode);
+                    jsonSave.put("town_name", clusterName);
+                    jsonSave.put("Doctor_Id", doctorCode);
+                    jsonSave.put("Doctor_Name", doctorName);
+                    jsonSave.put("Chemist_Id", chemistCode);
+                    jsonSave.put("Chemist_Name", chemistName);
+                    jsonSave.put("Plan_Name", dayCaption);
+                    jsonSave.put("Plan_SName", dayID);
+                    jsonSave.put("Plan_Code", dayPlanCode);
+                    jsonSave.put("StpFlag", activeFlag);
+                    jsonSave.put("tableName", "save_stp");
+                    jsonSave.put("ReqDt", dateTime);
+                    Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
+                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), "0"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void InitializeTpNeededData() {
@@ -1868,7 +2086,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         sessionLists.add(sessionList);
         if (session2) sessionLists.add(sessionList2);
         if (session3) sessionLists.add(sessionList3);
-        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
+        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists, receiveModel.getSTP_Code(), receiveModel.getSTP_Name());
         modelClass.setSubmittedTime(submittedTime);
         modelClasses.add(modelClass);
         saveTpLocal(modelClasses, day, monthName, "0");
@@ -1941,8 +2159,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
-
-
 
     public  void insertSlide(JSONArray jsonArray){
         try {
@@ -2035,13 +2251,118 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
 
                 if(navigateFrom.equalsIgnoreCase("Login")) {
+                    if (welcomeSlidesDao.getTotalSlideCount() > 0) {
+                        welcomeSlideAlertBox(true);
+                    } else {
+                        Intent intent = new Intent(context, HomeDashBoard.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+            }else {
+                SharedPref.putSlidestatus(MasterSyncActivity.this, false);
+            }
+        });
+    }
+
+    public void insertWelcomeSlide(JSONArray jsonArray){
+        try {
+            List<String> mList = new ArrayList<>();
+            List<String> nList = welcomeSlidesDao.getAllSlideNames();
+            if(jsonArray.length() > 0){
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String FilePath = jsonObject.optString("Name");
+                    String name = jsonObject.optString("Name");
+                    mList.add(name);
+                    if(welcomeSlidesDao.getSlideName(name) != null && welcomeSlidesDao.getSlideName(name).equalsIgnoreCase(FilePath)) {
+                        welcomeSlidesDao.insert(new WelcomeSlidesDataTable(FilePath, "", "1", "0", "1", String.valueOf(i)));
+                    }else {
+                        welcomeSlidesDao.saveWelcomeSlideData(new WelcomeSlidesDataTable(FilePath, "", "1", "0", "1", String.valueOf(i)));
+                    }
+                }
+                if(!nList.isEmpty()) {
+                    for (int j = 0; j<nList.size(); j++) {
+                        if(!mList.contains(nList.get(j))) {
+                            welcomeSlidesDao.deleteSlideByName(nList.get(j));
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            Log.e("MasterSync Slides", "insertSlide: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
+    public void welcomeSlideAlertBox(boolean servesFlag) {
+        welcomeSlidesDao.setChangeStatus("1", "0");
+        MasterSyncActivity.welcomeSlideNames.clear();
+        if(servesFlag) {
+            SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, false);
+            Intent intent = new Intent(MasterSyncActivity.this, WelcomeSlideService.class);
+            stopService(intent);
+
+            Intent startIntent = new Intent(getApplicationContext(), WelcomeSlideService.class);
+            startService(startIntent);
+        }
+        isSingleWelcomeSlideDownloadingStatus = false;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.slide_downloader_alert_box, null);
+        RecyclerView recyclerView = dialogView.findViewById(R.id.recyelerview123);
+        TextView txt_alert_title = dialogView.findViewById(R.id.alert_title);
+        TextView txt_downloadCount = dialogView.findViewById(R.id.txt_downloadcount);
+        TextView txt_total = dialogView.findViewById(R.id.txt_totaldownloadcount);
+        ImageView cancel_img = dialogView.findViewById(R.id.cancel_img);
+        txt_alert_title.setText("Welcome Slide Downloader");
+        WelcomeSlideAdapter adapter = new WelcomeSlideAdapter(this);
+        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(adapter);
+        builder.setView(dialogView);
+        Dialog dialog = builder.create();
+        dialog.setCancelable(false);
+        if(!isFinishing()) {
+            dialog.show();
+        }
+
+        cancel_img.setOnClickListener(view -> {
+            dialog.dismiss();
+            navigateFrom = "Slide";
+        });
+
+        WelcomeSlidesViewModel slidesViewModel = new ViewModelProvider(this).get(WelcomeSlidesViewModel.class);
+        slidesViewModel.getAllSlides().observe(this, slides -> {
+            Collections.sort(slides, Comparator.comparingInt(s -> Integer.parseInt(s.getListSlidePosition())));
+            adapter.setSlides(slides);
+        });
+
+        slidesViewModel.getDownloadingCount().observe(this, integer -> txt_downloadCount.setText(integer + " / "));
+
+        txt_total.setText(String.valueOf(welcomeSlidesDao.getTotalSlideCount()));
+
+        slidesViewModel.getCountOfDownloadingProcessDone().observe(this, integer -> {
+            if(integer == welcomeSlidesDao.getTotalSlideCount()) {
+                SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, true);
+                if(isSingleWelcomeSlideDownloadingStatus) {
+                    isSingleWelcomeSlideDownloadingStatus = false;
+                    commonUtilsMethods.showToastMessage(this, "Slide Updated ");
+                }else {
+                    commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
+                }
+
+                if(navigateFrom.equalsIgnoreCase("Login")) {
                     Intent intent = new Intent(context, HomeDashBoard.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
                 }
             }else {
-                SharedPref.putSlidestatus(MasterSyncActivity.this, false);
+                SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, false);
             }
         });
     }

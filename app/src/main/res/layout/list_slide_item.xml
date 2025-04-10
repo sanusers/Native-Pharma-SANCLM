@@ -2,22 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    >
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:padding="@dimen/_5sdp"
         android:layout_height="wrap_content">
 
-
         <RelativeLayout
             android:id="@+id/rl_calender_syn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/txt_imagename"
@@ -28,23 +25,23 @@
                 android:fontFamily="@font/satoshi_medium"
                 android:gravity="left"
                 android:text="Slide downloader"
+                android:layout_marginEnd="@dimen/_2sdp"
                 android:textColor="@color/black_45"
                 android:textSize="@dimen/_8sdp"
+                android:layout_toStartOf="@id/reload_img"
+                tools:text = "this is a dummy text to check long range text does not overlap the re-download image option and others in this layout"
                 android:textStyle="bold" />
-
 
             <ImageView
                 android:id="@+id/reload_img"
                 android:layout_width="@dimen/_10sdp"
                 android:layout_marginRight="@dimen/_3sdp"
-                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
                 android:src="@drawable/reload"
                 android:layout_alignParentEnd="true"
                 android:layout_height="@dimen/_10sdp"/>
 
-
         </RelativeLayout>
-
 
         <ProgressBar
             android:id="@+id/img_download_progress"
@@ -53,16 +50,12 @@
             android:max="100"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_3sdp"
-            android:layout_marginTop="@dimen/_3sdp"
-            />
-
+            android:layout_marginTop="@dimen/_3sdp" />
 
         <TextView
             android:id="@+id/txt_download_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:layout_marginTop="@dimen/_3sdp"
             android:fontFamily="@font/satoshi_medium"
             android:gravity="center"
@@ -75,9 +68,8 @@
         android:id="@+id/view_dummy"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_above="@id/btnsumit"
+        android:layout_above="@id/btn_submit"
         android:layout_marginBottom="@dimen/_2sdp"
-        android:background="#9e9ea5"
-        />
+        android:background="#9e9ea5" />
 
 </LinearLayout>

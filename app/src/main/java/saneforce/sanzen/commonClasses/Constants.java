@@ -45,6 +45,9 @@ public class Constants {
 
     public static final String CALENDER_EVENT_STATUS = "Calender Event Status";
 
+    //Activity
+    public static final String ACTIVITY = "Activity";
+
     //WorkType
     public static final String WORK_TYPE = "Work Type";
     public static final String HOLIDAY = "Holiday";
@@ -54,9 +57,14 @@ public class Constants {
     public static final String TOUR_PLAN = "Tour Plan";
     public static final String TP_SETUP = "Tour Plan Setup";
 
+    //Quiz
+    public static final String QUIZ = "Quiz";
+
+    //Survey
+    public static final String SURVEY = "Survey";
+
     //Subordinate
     public static final String SUBORDINATE = "Subordinate";
-    public static final String QUIZ = "Quiz";
     public static final String SUBORDINATE_MGR = "Subordinate Mgr";
     public static final String JOINT_WORK = "Joint_Work_";
 
@@ -77,6 +85,7 @@ public class Constants {
     public static final String SPL_SLIDE = "Speciality Slide";
     public static final String BRAND_SLIDE = "Brand Slide";
     public static final String THERAPTIC_SLIDE = "Theraptic Slide";
+    public static final String WELCOME_SLIDE = "Welcome Slide";
 
     //Setup
     public static final String SETUP = "Setup";
@@ -95,7 +104,6 @@ public class Constants {
     public static final String STATUS_3 = "TP approved";
     public static final String STATUS_4 = "TP planned/Submission pending";
 
-
     //NetWork
     public static final String CONNECT_TO_WIFI = "WIFI";
     public static final String CONNECT_TO_MOBILE = "MOBILE";
@@ -106,9 +114,15 @@ public class Constants {
     public static final String WAITING_FOR_SYNC = "Waiting for Sync";
     public static final String DUPLICATE_CALL = "Duplicate Call";
     public static final String CALL_FAILED = "Call Failed";
+    public static final String FAILED = "Failed";
     public static final String EXCEPTION_ERROR = "Exception Error";
     public static final String DCR_FROM_ACTIVITY = "dcr_from_activity";
     public static final String DETAILING_REQUIRED = "isDetailingRequired";
 
+    //TP
+    public static final String STANDARD_TOUR_PLAN = "Standard Tour Plan";
+    public static final String STP_SETUP = "Standard Tour Plan Setup";
+
+    public static final String WORK_DAY = "WORK DAY";
 
 }

@@ -17,6 +17,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanzen.activity.approvals.geotagging.GeoTaggingActivity;
 import saneforce.sanzen.activity.approvals.leave.LeaveApprovalActivity;
+import saneforce.sanzen.activity.approvals.stp.STPApprovalActivity;
 import saneforce.sanzen.activity.approvals.tp.TpApprovalActivity;
 import saneforce.sanzen.activity.approvals.tpdeviation.TpDeviationApprovalActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -79,6 +80,13 @@ public class AdapterApprovals extends RecyclerView.Adapter<AdapterApprovals.View
                     context.startActivity(new Intent(context, GeoTaggingActivity.class));
                 } else {
                     commonUtilsMethods.showToastMessage(context,  context.getString(R.string.geoTagging_ap_not_available));
+                }
+
+            } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.standard_tour_plan))) {
+                if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
+                    context.startActivity(new Intent(context, STPApprovalActivity.class));
+                } else {
+                    commonUtilsMethods.showToastMessage(context,  context.getString(R.string.stp_ap_not_available));
                 }
 
             }

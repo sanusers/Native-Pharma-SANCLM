@@ -43,6 +43,7 @@ import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DcrDetailModelList;
+import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
 import saneforce.sanzen.activity.approvals.tp.adapter.TpApprovalAdapter;
 import saneforce.sanzen.activity.approvals.tp.adapter.TpApprovalDetailedAdapter;
 import saneforce.sanzen.activity.approvals.tp.pojo.TpDetailedModel;
@@ -399,6 +400,11 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         SelectedYear = tpModelLists.getYear();
         SelectedPosition = pos;
         GetDetailsApi();
+    }
+
+    @Override
+    public void onSTPItemClick(STPModelList stpModelList, int position) {
+
     }
 
     private void GetDetailsApi() {

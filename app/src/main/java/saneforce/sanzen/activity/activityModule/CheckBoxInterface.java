@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.activityModule;
 
+import saneforce.sanzen.activity.activityModule.model.ActivityModelClass;
+
 public interface CheckBoxInterface {
 
 

@@ -138,7 +138,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         //dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(viewPagerAdapter.getCount());
         dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(7);
 
-        if (SharedPref.getGeotagNeed(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+        if (SharedPref.getGeotagNeed(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
             dcrSelectionBinding.imgLocation.setVisibility(View.VISIBLE);
         } else {
             dcrSelectionBinding.imgLocation.setVisibility(View.GONE);

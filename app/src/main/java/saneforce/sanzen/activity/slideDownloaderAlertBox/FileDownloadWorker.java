@@ -69,7 +69,7 @@ public class FileDownloadWorker extends Worker {
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 Log.e(TAG, "Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage());
-                slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downlaoding Failure","0","0","1",FilePosition));
+                slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downloading Failure","0","0","1",FilePosition));
                 if(Flag.equalsIgnoreCase("1")){
                     ServicesRestarmehtod();
                 }
@@ -78,7 +78,7 @@ public class FileDownloadWorker extends Worker {
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                 apkStorage = new File(getApplicationContext().getExternalFilesDir(null) + "/Slides/");
             } else {
-                slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downlaoding Failure","0","0","1",FilePosition));
+                slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downloading Failure","0","0","1",FilePosition));
                 if(Flag.equalsIgnoreCase("1")){
                     ServicesRestarmehtod();
                 }
@@ -88,7 +88,7 @@ public class FileDownloadWorker extends Worker {
             if (!apkStorage.exists()) {
                 if (!apkStorage.mkdirs()) {
                     Log.e(TAG, "Directory Creation Failed.");
-                    slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downlaoding Failure","0","0","1",FilePosition));
+                    slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downloading Failure","0","0","1",FilePosition));
                     if(Flag.equalsIgnoreCase("1")){
                         ServicesRestarmehtod();
                     }
@@ -108,7 +108,7 @@ public class FileDownloadWorker extends Worker {
 
             if (!outputFile.createNewFile()) {
                 Log.e(TAG, "File Creation Failed.");
-                slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downlaoding Failure","0","0","1",FilePosition));
+                slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downloading Failure","0","0","1",FilePosition));
                 if(Flag.equalsIgnoreCase("1")){
                     ServicesRestarmehtod();
                 }

@@ -2,15 +2,20 @@ package saneforce.sanzen.activity.homeScreen.modelClass;
 
 import java.util.ArrayList;
 
+import saneforce.sanzen.roomdatabase.QuizOfflineTableDetails.QuizOfflineDataTable;
+
 public class ChildListModelClass {
     private String childName;
     private String groupName;
     private int childId;
     private ArrayList<OutBoxCallList> outBoxCallLists;
     private ArrayList<EcModelClass> ecModelClasses;
+    private ArrayList<ActivityModelClass> activityModelClasses;
+    private ArrayList<ActivityUploadModelClass> activityUploadModelClasses;
     private ArrayList<CheckInOutModelClass> checkInOutModelClasses;
     private WorkPlanModelClass workPlanModelClass;
     private DaySubmitModelClass daySubmitModelClass;
+    private QuizModelClass quizModelClass;
     private boolean isAvailableList;
     private boolean isExpanded;
     private int Counts;
@@ -30,6 +35,22 @@ public class ChildListModelClass {
         this.isExpanded = isExpanded;
         this.isAvailableList = isAvailableList;
         this.ecModelClasses = ecModelClasses;
+    }
+
+    public ChildListModelClass(String childName, int childId, boolean isExpanded, boolean isAvailableList, ArrayList<ActivityModelClass> activityModelClasses, ActivityModelClass activityModelClass) {
+        this.childName = childName;
+        this.childId = childId;
+        this.isExpanded = isExpanded;
+        this.isAvailableList = isAvailableList;
+        this.activityModelClasses = activityModelClasses;
+    }
+
+    public ChildListModelClass(String childName, int childId, boolean isExpanded, boolean isAvailableList, ArrayList<ActivityUploadModelClass> activityUploadModelClasses, ActivityUploadModelClass activityUploadModelClass) {
+        this.childName = childName;
+        this.childId = childId;
+        this.isExpanded = isExpanded;
+        this.isAvailableList = isAvailableList;
+        this.activityUploadModelClasses = activityUploadModelClasses;
     }
 
     public ChildListModelClass(String childName, int childId, boolean isExpanded,boolean isAvailableList, ArrayList<CheckInOutModelClass> checkInOutModelClasses,String dummy,String dummmy2) {
@@ -57,6 +78,13 @@ public class ChildListModelClass {
     public ChildListModelClass(String childName, int childId) {
         this.childName = childName;
         this.childId = childId;
+    }
+
+    public ChildListModelClass(String childName, int childId, boolean isAvailableList, QuizModelClass quizModelClass) {
+        this.childName = childName;
+        this.childId = childId;
+        this.isAvailableList = isAvailableList;
+        this.quizModelClass = quizModelClass;
     }
 
     public ArrayList<CheckInOutModelClass> getCheckInOutModelClasses() {
@@ -153,5 +181,29 @@ public class ChildListModelClass {
 
     public void setDaySubmitModelClass(DaySubmitModelClass daySubmitModelClass) {
         this.daySubmitModelClass = daySubmitModelClass;
+    }
+
+    public ArrayList<ActivityModelClass> getActivityModelClasses() {
+        return activityModelClasses;
+    }
+
+    public void setActivityModelClasses(ArrayList<ActivityModelClass> activityModelClasses) {
+        this.activityModelClasses = activityModelClasses;
+    }
+
+    public ArrayList<ActivityUploadModelClass> getActivityUploadModelClasses() {
+        return activityUploadModelClasses;
+    }
+
+    public void setActivityUploadModelClasses(ArrayList<ActivityUploadModelClass> activityUploadModelClasses) {
+        this.activityUploadModelClasses = activityUploadModelClasses;
+    }
+
+    public QuizModelClass getQuizModelClass() {
+        return quizModelClass;
+    }
+
+    public void setQuizModelClass(QuizModelClass quizModelClass) {
+        this.quizModelClass = quizModelClass;
     }
 }

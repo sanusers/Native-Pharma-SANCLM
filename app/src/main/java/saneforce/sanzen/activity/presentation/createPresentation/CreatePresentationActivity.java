@@ -53,7 +53,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
     ArrayList<String> brandCodeList = new ArrayList<>();
     ImageSelectionInterface imageSelectionInterface;
     ItemTouchHelper itemTouchHelper;
-    String oldName = "";
+    String oldName = "", customerType = "", customerCodes = "", headquarterCode = "";
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private PresentationDataDao presentationDataDao;
@@ -85,6 +85,15 @@ public class CreatePresentationActivity extends AppCompatActivity {
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         presentationDataDao = roomDB.presentationDataDao();
+
+        Bundle bundleExtras = getIntent().getExtras();
+        if(bundleExtras != null) {
+            customerType = bundleExtras.getString("customerType");
+            customerCodes = bundleExtras.getString("customerCodes");
+            headquarterCode = bundleExtras.getString("headquarterCode");
+            Log.e("test", "onCreate: " + customerType + " :-> " + customerCodes);
+        }
+
         uiInitialisation();
 
         binding.backArrow.setOnClickListener(view -> {
@@ -95,7 +104,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
         });
 
         binding.playBtn.setOnClickListener(view -> {
-            if (selectedSlideArrayList.size() > 0) {
+            if (!selectedSlideArrayList.isEmpty()) {
                 Intent intent = new Intent(CreatePresentationActivity.this, PlaySlidePreviewActivity.class);
                 String data = new Gson().toJson(selectedSlideArrayList);
                 Bundle bundle = new Bundle();
@@ -332,8 +341,6 @@ public class CreatePresentationActivity extends AppCompatActivity {
     }
 
     public void populateSelectedSlideAdapter(ArrayList<BrandModelClass.Product> arrayList) {
-
-        /// Collections.sort(arrayList);
         selectedSlidesAdapter = new SelectedSlidesAdapter(CreatePresentationActivity.this, arrayList, imageSelectionInterface, viewHolder -> itemTouchHelper.startDrag(viewHolder));
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(CreatePresentationActivity.this);
         binding.slidesRecView.setLayoutManager(layoutManager);
@@ -353,11 +360,40 @@ public class CreatePresentationActivity extends AppCompatActivity {
             presentation.setPresentationName(name);
             presentation.setProducts(selectedSlideArrayList);
             JSONObject jsonObject = new JSONObject(new Gson().toJson(presentation));
-
-            presentationDataDao.savePresentation(oldName, name, jsonObject.toString());
+            if(customerType == null || customerType.isEmpty()) {
+                presentationDataDao.savePresentation(oldName, name, "", "", "", jsonObject.toString());
+            } else {
+                switch (customerType){
+                    case Constants.DOCTOR:
+                    case "1":
+                        presentationDataDao.savePresentation(oldName, name, "1", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
+                    case Constants.CHEMIST:
+                    case "2":
+                        presentationDataDao.savePresentation(oldName, name, "2", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
+                    case Constants.STOCKIEST:
+                    case "3":
+                        presentationDataDao.savePresentation(oldName, name, "3", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
+                    case Constants.UNLISTED_DOCTOR:
+                    case "4":
+                        presentationDataDao.savePresentation(oldName, name, "4", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
+                    case Constants.CIP:
+                    case "5":
+                        presentationDataDao.savePresentation(oldName, name, "5", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
+                    case Constants.HOSPITAL:
+                    case "6":
+                        presentationDataDao.savePresentation(oldName, name, "6", customerCodes, headquarterCode, jsonObject.toString());
+                        break;
+                }
+            }
             Intent intent = new Intent(CreatePresentationActivity.this, PresentationActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+            finish();
         } catch (JSONException e) {
             e.printStackTrace();
         }

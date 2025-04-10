@@ -137,6 +137,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
                         leaveBinding.rvLeaveList.setLayoutManager(mLayoutManager);
                         leaveBinding.rvLeaveList.setAdapter(leaveApprovalAdapter);
                     } catch (Exception e) {
+                        e.printStackTrace();
                         progressDialog.dismiss();
                     }
                 } else {
@@ -147,6 +148,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                t.printStackTrace();
                 progressDialog.dismiss();
                 commonUtilsMethods.showToastMessage(getApplicationContext(),getString(R.string.no_network));
             }

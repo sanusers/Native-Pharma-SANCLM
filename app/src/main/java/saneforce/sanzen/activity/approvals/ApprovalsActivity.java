@@ -44,7 +44,7 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class ApprovalsActivity extends AppCompatActivity {
-    public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0, GeoTagCount = 0;
+    public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0, GeoTagCount = 0, STPCount = 0;
     ActivityApprovalsBinding approvalsBinding;
     JSONObject jsonGetCount = new JSONObject();
     ApiInterface api_interface;
@@ -149,6 +149,7 @@ public class ApprovalsActivity extends AppCompatActivity {
             jsonGetCount.put("Tp_need", SharedPref.getTpNeed(this));
             jsonGetCount.put("geotag_need", SharedPref.getGeotagNeed(this));
             jsonGetCount.put("TPdev_need", SharedPref.getTpdcrMgrappr(this));
+            jsonGetCount.put("STP_Need", SharedPref.getStpNeed(this));
 
 
             Log.v("json_get_full_dcr_list", jsonGetCount.toString());
@@ -184,6 +185,8 @@ public class ApprovalsActivity extends AppCompatActivity {
                                 DeviationCount = jsonCounts.getInt("devappr_count");
                             if (jsonCounts.has("geotag_count"))
                                 GeoTagCount = jsonCounts.getInt("geotag_count");
+                            if (jsonCounts.has("stp_count"))
+                                STPCount = jsonCounts.getInt("stp_count");
                         }
                         AssignCountValues();
                     } catch (Exception e) {
@@ -215,6 +218,9 @@ public class ApprovalsActivity extends AppCompatActivity {
         }
         if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
             list_approvals.add(new AdapterModel(getResources().getString(R.string.geo_tagging), String.valueOf(GeoTagCount)));
+        }
+        if (SharedPref.getStpApprNeed(context).equalsIgnoreCase("0")) {
+            list_approvals.add(new AdapterModel(getResources().getString(R.string.standard_tour_plan), String.valueOf(STPCount)));
         }
 
         adapterApprovals = new AdapterApprovals(ApprovalsActivity.this, list_approvals);

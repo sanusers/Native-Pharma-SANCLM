@@ -81,13 +81,54 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/workDayLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/workTypeLayout">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:background="@color/text_dark_25" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:text="Work Day"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:textColor="@color/text_dark_65"
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold"
+                    tools:ignore="SpUsage" />
+
+                <TextView
+                    android:id="@+id/workDayField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    tools:ignore="SpUsage" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/hqLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@id/workTypeLayout"
+                android:layout_below="@id/workDayLayout"
                 android:layout_marginTop="@dimen/_5sdp">
 
                 <View

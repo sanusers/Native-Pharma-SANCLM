@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -40,11 +40,12 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/quiz_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_16sdp"
                 android:fontFamily="@font/satoshi_variable"
-                android:text="Quiz"
+                android:text="@string/quiz"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_7sdp" />
 
@@ -53,9 +54,12 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_quiz_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/backround_graey">
+        android:layout_below="@id/appBar"
+        android:background="@color/backround_graey"
+        android:visibility="gone">
 
 
         <LinearLayout
@@ -108,13 +112,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@id/view_dummy"
-                    android:visibility="gone"
-                    android:layout_below="@id/txt_queston_name">
+                    android:layout_below="@id/txt_queston_name"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:orientation="horizontal"
                         android:visibility="visible">
 
@@ -122,7 +125,7 @@
                             android:id="@+id/radio_group"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginStart="@dimen/_5sdp"
                             android:layout_weight="1"
                             android:gravity="left">
 
@@ -216,9 +219,10 @@
                     android:id="@+id/recyelerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
                     android:layout_below="@id/txt_queston_name"
-                    android:layout_marginTop="@dimen/_1sdp">
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_marginTop="@dimen/_1sdp"
+                    android:visibility="visible">
 
                 </androidx.recyclerview.widget.RecyclerView>
 
@@ -286,17 +290,29 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:padding="@dimen/_3sdp">
 
                     <ImageView
-                        android:layout_gravity="start|center_vertical"
                         android:layout_width="@dimen/_9sdp"
-                        android:src="@drawable/clock"
-                        android:layout_height="@dimen/_9sdp">
+                        android:layout_height="@dimen/_9sdp"
+                        android:layout_gravity="start|center_vertical"
+                        android:src="@drawable/clock">
 
                     </ImageView>
+
+                    <TextView
+                        android:id="@+id/txt_remainigtime_cap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_2sdp"
+                        android:text="RemainingTime: "
+                        android:textColor="@color/black_45"
+                        android:textSize="@dimen/_8sdp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/txt_remainigtime"
@@ -305,7 +321,7 @@
                         android:layout_marginLeft="@dimen/_2sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_2sdp"
-                        android:text="RemainingTime:  24:05:24"
+                        android:text="24:05:24"
                         android:textColor="@color/black_45"
                         android:textSize="@dimen/_8sdp"
                         android:textStyle="bold" />
@@ -314,20 +330,20 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:background="@drawable/custom_backround_layout"
+                    android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
-                    android:backgroundTint="#e1f2fd"
-                    android:layout_height="match_parent">
+                    android:background="@drawable/custom_backround_layout"
+                    android:backgroundTint="#e1f2fd">
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/sk_recylerview"
                         android:layout_width="match_parent"
-                        android:background="#e1f2fd"
-                        android:orientation="vertical"
+                        android:layout_height="wrap_content"
                         android:layout_margin="@dimen/_5sdp"
-                        android:layout_height="wrap_content"/>
+                        android:background="#e1f2fd"
+                        android:orientation="vertical" />
 
                 </LinearLayout>
-
 
 
             </LinearLayout>
@@ -337,7 +353,7 @@
             android:id="@+id/rl_btns"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="@dimen/_5sdp"
             android:layout_marginBottom="@dimen/_5sdp"
@@ -348,10 +364,10 @@
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:layout_marginEnd="@dimen/_10sdp"
-                android:layout_toLeftOf="@id/btn_save"
+                android:layout_toStartOf="@id/btn_save"
                 android:background="@drawable/bg_border_with_pink"
                 android:fontFamily="@font/satoshi_bold"
-                android:text="Close"
+                android:text="@string/close"
                 android:textAllCaps="false"
                 android:textColor="@color/dark_purple"
                 android:textSize="@dimen/_7sdp"
@@ -366,7 +382,7 @@
                 android:background="@drawable/backround_button"
                 android:fontFamily="@font/satoshi_bold"
                 android:singleLine="true"
-                android:text="Sumit"
+                android:text="@string/submit"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_7sdp"
@@ -376,5 +392,374 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/rl_start_quiz"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appBar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:visibility="visible">
 
-</LinearLayout>
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:id="@+id/ll_quiz_center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:padding="@dimen/_10sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:src="@drawable/bulb" />
+
+                <TextView
+                    android:id="@+id/welcome_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="@dimen/_5sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="@string/welcome_to_quiz_session"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_10ssp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/ll_download_asserts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="@dimen/_5sdp"
+                    android:background="@drawable/bg_green_border"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_5sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/outline_cloud_download_24"
+                        app:tint="@color/green_60" />
+
+                    <TextView
+                        android:id="@+id/download_asserts_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="@string/download_asserts"
+                        android:textColor="@color/green_60"
+                        android:textSize="@dimen/_6ssp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="@dimen/_5sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="@string/general_instructions"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_instructions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="1.  Download and Read asserts given before starting the session.\n2. Should Attend all questions without fail"
+                    android:textColor="@color/text_grey"
+                    android:textSize="@dimen/_6ssp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/start_quiz_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/backround_button"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:paddingHorizontal="@dimen/_20sdp"
+                    android:paddingVertical="@dimen/_5sdp"
+                    android:text="@string/start_quiz"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/_5sdp"
+            android:background="@color/bg_grey"
+            android:orientation="vertical"
+            android:padding="@dimen/_10sdp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="@string/no_of_questions"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/no_of_questions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="0"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="@string/no_of_attempts_allowed"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/no_of_attempts_allowed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="0"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="@string/no_of_attempts_left"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/no_of_attempts_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="0"
+                    android:textColor="@color/black_45"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/clock"
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/clock" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="@string/total_time"
+                    android:textColor="@color/text_grey"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/total_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="00:00:00"
+                    android:textColor="@color/text_grey"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_score"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appBar"
+        android:visibility="gone">
+
+        <saneforce.sanzen.commonClasses.GifView
+            android:id="@+id/completed_anim"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_60sdp"
+            android:layout_above="@id/score"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="@dimen/_10sdp" />
+
+        <TextView
+            android:id="@+id/score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/satoshi_variable"
+            android:text="0 out of 0"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_7sdp" />
+
+        <TextView
+            android:id="@+id/thank_you"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/score"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:fontFamily="@font/satoshi_variable"
+            android:text="Thank you for attending the challenge"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_7sdp" />
+
+    </RelativeLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_no_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:windowSoftInputMode="adjustResize|adjustPan">
+
+        <ImageView
+            android:id="@+id/img_not_found"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_marginHorizontal="@dimen/_1sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:src="@drawable/no_data_folder"
+            android:windowSoftInputMode="adjustResize|adjustPan"
+            app:layout_constraintBottom_toTopOf="@id/tv_no_quiz"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_no_quiz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:padding="@dimen/_2sdp"
+            android:text="@string/no_quiz_found"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_7ssp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_not_found" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#AA000000"
+        android:elevation="@dimen/_5sdp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/ll_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="@dimen/_5sdp"
+            android:visibility="visible">
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/pink" />
+
+            <TextView
+                android:id="@+id/tv_progress_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:text="Syncing Quiz..."
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp" />
+        </LinearLayout>
+    </FrameLayout>
+
+</RelativeLayout>

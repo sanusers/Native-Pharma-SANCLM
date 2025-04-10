@@ -4,7 +4,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -29,7 +28,9 @@ public class SharedPref {
     public static final String PHP_PATH_URL = "php_path_url";
     public static final String REPORTS_URL = "reports_url";
     public static final String SLIDES_PATH = "SLIDES_PATH";
+    public static final String WELCOME_SLIDES_PATH = "WELCOME_SLIDES_PATH";
     public static final String LOGO_URL = "logo_url";
+    public static final String OPTION_FILES_URL = "logo_url";
     public static final String CALL_API_URL = "call_api_url";
     public static final String LOGI_SITE = "log_site";
     public static final String SAVE_URL_SETTING = "save_url_setting";
@@ -43,7 +44,6 @@ public class SharedPref {
 
     public static final String TAG_IMAGE_URL = "tag_image_url";
     public static final String TAG_API_IMAGE_URL = "tag_api_image_url";
-
 
 
 // LogIN Data
@@ -345,7 +345,7 @@ public class SharedPref {
     public static final String RCPA_COMPETITOR_ADD = "RCPA_competitor_add";
     public static final String GEOTAGGING = "GeoTagging";
     public static final String DCR_APPROVAL_NEED = "DcrapprvNd";
-   //myresource
+    //myresource
     public static final String SETSYNHQ = "SETSYNHQ";
     public static final String SETSYN_HQCODE = "SETSYN_HQCODE";
 
@@ -384,9 +384,8 @@ public class SharedPref {
     public static final String IS_FEILD = "IS_FEILD";
 
 
-    public static final String JWKCODE= "JWKCODE";
+    public static final String JWKCODE = "JWKCODE";
     public static final String JWKDATE = "JWKDATE";
-
 
 
     public static final String TP_MANATORY_STATUS = "TP_MANATORY_STATUS";
@@ -412,6 +411,7 @@ public class SharedPref {
     public static final String ADDITIONAL_CALL_NEED = "Additional_Call";
 
     public static final String SLIDE_DOWNLOADING_STATUS = "Slide_downloding_status";
+    public static final String WELCOME_SLIDE_DOWNLOADING_STATUS = "Welcome_slide_downloding_status";
     public static final String LAST_CALL_DATE = "Last_Call_Date";
     public static final String LAST_OUTBOX_ALERT_DATE = "Last_Outbox_Alert_Date";
 
@@ -429,17 +429,11 @@ public class SharedPref {
     public static final String LAST_CALL_SYNC_DATE = "Last Call Sync Date";
 
     public static final String SELECTED_QUALIFICATION = "selectedqualification";
-
     public static final String SELECTED_CATEGORY = "selectedcategory";
-
     public static final String SELECTED_SPECIALITY = "selectedspeciality";
-
     public static final String SELECTED_CLUSTER = "selcectedcluster";
-
     public static final String SELECT_HQ = "selectedhq";
-
     public static final String TAGGED_ADDRESS = "tggedaddress";
-
     public static final String SELECTED_CLASS = "selectedclass";
 
     public static final String LATITUDE = "lati";
@@ -450,7 +444,22 @@ public class SharedPref {
     public static final String HOLIDAY_AUTOPOST_NEED = "Holiday_AutoPost_Need";
     public static final String WEEKOFF_AUTOPOST_NEED = "Weekoff_AutoPost_Need";
 //    public static final String TAGGED_ADDRESS = "tggedaddress";
-public static final String PROFILING_NEED = "DrProfile";
+    public static final String PROFILING_NEED = "DrProfile";
+
+    public static final String STP_STATUS = "STP_STATUS";
+    public static final String STP_NEED = "STP_NEED";
+    public static final String STP_APPR_NEED = "STP_APPR_NEED";
+    public static final String STP_BASED_MTP = "STP_BASED_MTP";
+    public static final String STP_BASED_DCR = "STP_BASED_DCR";
+
+    public static final String QUIZ_DATE = "Quiz Date";
+    public static final String QUIZ_SYNC_DATE = "Quiz Sync Date";
+    public static final String QUIZ_ATTEMPTS = "Quiz Attempts";
+    public static final String QUIZ_ASSERT_DOWNLOADING_STATUS = "Quiz_assert_downloding_status";
+    public static final String QUIZ_AVAILABLE_DATE = "Quiz Available Date";
+    public static final String QUIZ_DATA = "Quiz Data";
+
+    public static final String TAGGED_DCR_CUSTOMERS = "Tagged DCR Customers";
 
     public static SharedPreferences.Editor editor;
 
@@ -460,8 +469,8 @@ public static final String PROFILING_NEED = "DrProfile";
         editor.clear().apply();
     }
 
-    public static void InsertLogInData(Context context, JSONObject jsonObject){
-        try{
+    public static void InsertLogInData(Context context, JSONObject jsonObject) {
+        try {
 
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -780,10 +789,15 @@ public static final String PROFILING_NEED = "DrProfile";
         editor.putString(WEEKOFF_AUTOPOST_NEED, jsonObject.getString("Weekoff_AutoPost_Need"));
         editor.putString(SLIDES_PATH, jsonObject.getString("slide_folder").replaceAll("\\\\",""));
         editor.putString(PROFILING_NEED, jsonObject.getString("DrProfile"));
+        editor.putString(STP_NEED, jsonObject.getString("STP_Need"));
+        editor.putString(STP_APPR_NEED, jsonObject.getString("STP_Appr_Need"));
+        editor.putString(STP_BASED_MTP, jsonObject.getString("STP_Based_MTP"));
+        editor.putString(STP_BASED_DCR, jsonObject.getString("STP_Based_DCR"));
+        editor.putString(WELCOME_SLIDES_PATH, "");
         editor.apply();
 
-    }catch (Exception ignore){
-       ignore.printStackTrace();
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
         }
 
     }
@@ -807,6 +821,7 @@ public static final String PROFILING_NEED = "DrProfile";
     public static String getDesig(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(DESIG, "");
     }
+
     public static String getSfStat(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SF_STAT, "");
     }
@@ -1235,6 +1250,7 @@ public static final String PROFILING_NEED = "DrProfile";
     public static String getNfNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(NF_NEED, "");
     }
+
     public static String getHfNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(HF_NEED, "");
     }
@@ -1504,7 +1520,6 @@ public static final String PROFILING_NEED = "DrProfile";
     }
 
 
-
     public static String getCipPobCaption(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(CIP_POB_CAPTION, "");
     }
@@ -1624,6 +1639,7 @@ public static final String PROFILING_NEED = "DrProfile";
     public static String getGeotagNeedStock(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(GEOTAG_NEED_STOCK, "");
     }
+
     public static String getGeotagNeedCip(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(GEOTAG_NEED_CIP, "");
     }
@@ -1966,6 +1982,22 @@ public static final String PROFILING_NEED = "DrProfile";
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DCR_APPROVAL_NEED, "");
     }
 
+    public static String getStpNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_NEED, "");
+    }
+
+    public static String getStpApprNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_APPR_NEED, "");
+    }
+
+    public static String getStpBasedMtp(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_BASED_MTP, "");
+    }
+
+    public static String getStpBasedDcr(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_BASED_DCR, "");
+    }
+
     public static void setDrAddCallNeed(Context context, String drAddCallNeed) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -1989,14 +2021,13 @@ public static final String PROFILING_NEED = "DrProfile";
         return context.getSharedPreferences(SP_NAME_NOT_DELETE, MODE_PRIVATE).getString(SELECTED_LANGUAGE, "");
     }
 
-
     public static void Loginsite(Context context, String site) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(LOGI_SITE, site).apply();
     }
 
-    public static void saveUrls(Context context, String baseUrl, String licenseKey, String baseWebUrl, String PhpPathUrl, String reportsUrl, String logoUrl, boolean settingState) {
+    public static void saveUrls(Context context, String baseUrl, String licenseKey, String baseWebUrl, String PhpPathUrl, String reportsUrl, String logoUrl, String optionFiles, boolean settingState) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(BASE_URL, baseUrl);
@@ -2005,6 +2036,7 @@ public static final String PROFILING_NEED = "DrProfile";
         editor.putString(PHP_PATH_URL, PhpPathUrl);
         editor.putString(REPORTS_URL, reportsUrl);
         editor.putString(LOGO_URL, logoUrl);
+        editor.putString(OPTION_FILES_URL, optionFiles);
         editor.putBoolean(SETTING_STATE, settingState);
         editor.apply();
     }
@@ -2035,6 +2067,14 @@ public static final String PROFILING_NEED = "DrProfile";
 
     public static String getSlideUrl(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDES_PATH, "");
+    }
+
+    public static String getWelcomeSlideUrl(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(WELCOME_SLIDES_PATH, "");
+    }
+
+    public static String getOptionFilesUrl(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(OPTION_FILES_URL, "");
     }
 
     public static String getLogoUrl(Context context) {
@@ -2194,13 +2234,14 @@ public static final String PROFILING_NEED = "DrProfile";
         editor.putString(HQ_NAME, name);
         editor.putString(HQ_CODE, code).apply();
     }
-    public static void saveHqMain(Context context, String name){
+
+    public static void saveHqMain(Context context, String name) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(HQ_NAMEMAIN, name).apply();
     }
 
-    public static void MydayPlanStausAndFeildWorkStatus(Context context, boolean MydayplanStatus, boolean FeildWorkStatus){
+    public static void MydayPlanStausAndFeildWorkStatus(Context context, boolean MydayplanStatus, boolean FeildWorkStatus) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putBoolean(IS_MYDAYPLAN, MydayplanStatus);
@@ -2210,12 +2251,15 @@ public static final String PROFILING_NEED = "DrProfile";
     public static boolean getFeildWorkStatus(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(IS_FEILD, false);
     }
+
     public static boolean getMydayPlanStatus(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(IS_MYDAYPLAN, false);
     }
+
     public static String getHqName(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(HQ_NAME, "");
     }
+
     public static String getHqNameMain(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(HQ_NAMEMAIN, "");
     }
@@ -2340,6 +2384,26 @@ public static final String PROFILING_NEED = "DrProfile";
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(SLIDE_DOWNLOADING_STATUS, false);
     }
 
+    public static void putWelcomeSlideStatus(Context context, boolean status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(WELCOME_SLIDE_DOWNLOADING_STATUS, status).apply();
+    }
+
+    public static boolean getWelcomeSlideDownloadingStatus(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(WELCOME_SLIDE_DOWNLOADING_STATUS, false);
+    }
+
+    public static void putQuizAssertDownloadingStatus(Context context, boolean status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(QUIZ_ASSERT_DOWNLOADING_STATUS, status).apply();
+    }
+
+    public static boolean getQuizAssertDownloadingStatus(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(QUIZ_ASSERT_DOWNLOADING_STATUS, false);
+    }
+
     public static boolean getAutomassyncFromSP(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(SYNC_STATUS, false);
     }
@@ -2348,10 +2412,10 @@ public static final String PROFILING_NEED = "DrProfile";
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getInt(SP_CALL_ClEAR_MONTH, 15);
     }
 
-    public static void putMonth(Context context,int Month) {
+    public static void putMonth(Context context, int Month) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putInt( SP_CALL_ClEAR_MONTH, Month).apply();
+        editor.putInt(SP_CALL_ClEAR_MONTH, Month).apply();
     }
 
     public static void setDcr_dochqcode(Context context, String status) {//SETHQCODE,SETHQ_DETAILS
@@ -2365,7 +2429,7 @@ public static final String PROFILING_NEED = "DrProfile";
     }
 
     public static void setJWKCODE(Context context, List<String> Jwkcode, String JwkDate) {
-        Gson  gson = new Gson();
+        Gson gson = new Gson();
         String json = gson.toJson(Jwkcode);
         sharedPreferences = context.getSharedPreferences(SETHQ_DETAILS, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2380,19 +2444,23 @@ public static final String PROFILING_NEED = "DrProfile";
     public static String getJWKDATE(Context context) {
         return context.getSharedPreferences(SETHQ_DETAILS, MODE_PRIVATE).getString(JWKDATE, "");
     }
+
     public static void setSyncHQ(Context context, List<String> List) {
-        Gson  gson = new Gson();
+        Gson gson = new Gson();
         String json = gson.toJson(List);
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(SETSYN_HQCODE, json).apply();
     }
+
     public static List<String> getsyn_hqcode(Context context) {
-        Gson  gson = new Gson();
-        String json =  context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SETSYN_HQCODE, null);
+        Gson gson = new Gson();
+        String json = context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SETSYN_HQCODE, null);
         if (json == null) {
             return new ArrayList<>();
-        }Type type = new TypeToken<List<String>>() {}.getType();
+        }
+        Type type = new TypeToken<List<String>>() {
+        }.getType();
         return gson.fromJson(json, type);
     }
 
@@ -2534,10 +2602,12 @@ public static final String PROFILING_NEED = "DrProfile";
     public static String getActivityCap(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ACTIVITY_CAP, "");
     }
+
     public static String getAppAccess(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SANZEN_EDET, "");
     }
-    public static void setJointDate(Context context, int date,int month,int year) {
+
+    public static void setJointDate(Context context, int date, int month, int year) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putInt(JOININGDATE, date);
@@ -2549,9 +2619,11 @@ public static final String PROFILING_NEED = "DrProfile";
     public static int getJoiningDate(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(JOININGDATE, 0);
     }
+
     public static int getJoiningMonth(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(JOINGMONTH, 0);
     }
+
     public static int getJoiningYear(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(JOININGYEAR, 0);
     }
@@ -2662,6 +2734,76 @@ public static final String PROFILING_NEED = "DrProfile";
 
     public static String getWeekoffAutoPostNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(WEEKOFF_AUTOPOST_NEED, "");
+    }
+
+    public static void setStpStatus(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(STP_STATUS, status).apply();
+    }
+
+    public static String getStpStatus(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_STATUS, "");
+    }
+
+    public static String getLastQuizSubmittedDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(QUIZ_DATE, "");
+    }
+
+    public static void setLastQuizSubmittedDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(QUIZ_DATE, date).apply();
+    }
+
+    public static int getQuizAttempts(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(QUIZ_ATTEMPTS, 0);
+    }
+
+    public static void setQuizAttempts(Context context, int attempts) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putInt(QUIZ_ATTEMPTS, attempts).apply();
+    }
+
+    public static String getQuizAvailableDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(QUIZ_AVAILABLE_DATE, "");
+    }
+
+    public static void setQuizAvailableDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(QUIZ_AVAILABLE_DATE, date).apply();
+    }
+
+    public static String getLastQuizSyncDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(QUIZ_SYNC_DATE, "");
+    }
+
+    public static void setLastQuizSyncDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(QUIZ_SYNC_DATE, date).apply();
+    }
+
+    public static String getQuizData(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(QUIZ_DATA, "");
+    }
+
+    public static void setQuizData(Context context, String data) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(QUIZ_DATA, data).apply();
+    }
+
+    public static String getTaggedDcrCustomers(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TAGGED_DCR_CUSTOMERS, "");
+    }
+
+    public static void setTaggedDcrCustomers(Context context, String data) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TAGGED_DCR_CUSTOMERS, data).apply();
     }
 
 }

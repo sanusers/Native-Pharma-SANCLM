@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tv_single"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fontFamily="@font/satoshi_regular"
+    android:textAlignment="center"
+    android:padding="@dimen/_2sdp"
+    android:textColor="@color/dark_purple"
+    android:textSize="@dimen/_6ssp"
+    tools:text="A" />

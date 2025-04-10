@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_doc_cat_x_visit"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/satoshi_regular"
+        android:padding="@dimen/_2sdp"
+        android:textAlignment="center"
+        android:textColor="@color/dark_purple"
+        android:textSize="@dimen/_6ssp"
+        tools:text="A" />
+
+    <TextView
+        android:id="@+id/tv_visit_frequency"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/satoshi_regular"
+        android:padding="@dimen/_2sdp"
+        android:textAlignment="center"
+        android:textColor="@color/dark_purple"
+        android:textSize="@dimen/_6ssp"
+        tools:text="A" />
+
+</LinearLayout>

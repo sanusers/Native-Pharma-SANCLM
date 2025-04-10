@@ -235,7 +235,8 @@ public class BrandMatrix extends Fragment {
             }
 
         } catch (Exception e) {
-            Log.v("Brand", "----" + e);
+            Log.v("Brand", "----" + e.getMessage());
+            e.printStackTrace();
         }
     }
 

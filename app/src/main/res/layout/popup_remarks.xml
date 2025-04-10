@@ -107,7 +107,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_clear"
-                android:layout_width="@dimen/_40sdp"
+                android:layout_width="@dimen/_50sdp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_toStartOf="@id/btn_save"
@@ -124,7 +124,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_save"
-                android:layout_width="@dimen/_40sdp"
+                android:layout_width="@dimen/_50sdp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"

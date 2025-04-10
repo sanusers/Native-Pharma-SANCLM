@@ -14,6 +14,8 @@ public class ModelClass implements Serializable {
   private Boolean onEdit = false;
   private String submittedTime = "";
   private String syncStatus = ""; // 0 - Success(Data successfully sent to Remote data base), 1 - Failed(failed to send Remote data base for any reason like no internet or api called failed)
+  private String STP_Code = "";
+  private String STP_Name = "";
   private ArrayList<SessionList> sessionList;
 
   public ModelClass () {
@@ -30,6 +32,19 @@ public class ModelClass implements Serializable {
   }
 
 
+  public ModelClass (String dayNo, String date, String day, String month, String year, Boolean onEdit, ArrayList<ModelClass.SessionList> sessionList, String STP_Code, String STP_Name) {
+    this.dayNo = dayNo;
+    this.date = date;
+    this.day = day;
+    this.month = month;
+    this.year = year;
+    this.onEdit = onEdit;
+    this.sessionList = sessionList;
+    this.STP_Code = STP_Code;
+    this.STP_Name = STP_Name;
+  }
+
+
 
   public ModelClass (ModelClass modelClass) {
     this.dayNo = modelClass.getDayNo();
@@ -38,6 +53,8 @@ public class ModelClass implements Serializable {
     this.month = modelClass.getMonth();
     this.year = modelClass.getYear();
     this.onEdit = modelClass.getOnEdit();
+    this.STP_Name = modelClass.getSTP_Name();
+    this.STP_Code = modelClass.getSTP_Code();
 
     this.sessionList = new ArrayList<ModelClass.SessionList>();
     for (ModelClass.SessionList session : modelClass.sessionList) {
@@ -120,8 +137,21 @@ public class ModelClass implements Serializable {
     this.sessionList = sessionList;
   }
 
+  public String getSTP_Code() {
+    return STP_Code;
+  }
 
+  public String getSTP_Name() {
+    return STP_Name;
+  }
 
+  public void setSTP_Code(String STP_Code) {
+    this.STP_Code = STP_Code;
+  }
+
+  public void setSTP_Name(String STP_Name) {
+    this.STP_Name = STP_Name;
+  }
 
   public static class SessionList implements Serializable {
     private String layoutVisible = "";

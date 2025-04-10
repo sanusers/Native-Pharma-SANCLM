@@ -25,18 +25,23 @@
                     android:id="@+id/ll_deviation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
                     android:layout_marginStart="@dimen/_7sdp"
                     android:layout_marginTop="@dimen/_5sdp"
-
-                    android:layout_centerVertical="true"
                     android:orientation="horizontal"
                     android:visibility="gone">
 
-                    <Switch
+                    <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/switchButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:thumb="@drawable/custom_thumb"
+                        app:track="@drawable/custom_switch_bg"
+                        android:layout_marginHorizontal="@dimen/_5sdp"
+                        android:checked="false"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
+                        app:trackTint="@color/dark_purple"
+                        app:thumbTint="@color/white"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -646,7 +651,7 @@
             android:id="@+id/view_dummy"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_above="@id/btnsumit"
+            android:layout_above="@id/btn_submit"
             android:layout_marginStart="@dimen/_2sdp"
             android:layout_marginTop="@dimen/_2sdp"
             android:layout_marginEnd="@dimen/_2sdp"
@@ -656,7 +661,7 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnsumit"
+            android:id="@+id/btn_submit"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_23sdp"
             android:layout_alignParentBottom="true"

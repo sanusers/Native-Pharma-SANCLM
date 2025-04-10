@@ -74,7 +74,6 @@ public class UnlistedDoctorFragment extends Fragment {
     ConstraintLayout constraintLayout ;
     ListView lv_spec, lv_cate, lv_terr,lv_class;
 
-
     String specialityCode = "", categoryCode = "", territoryCode = "", classCode = "";
     String specialityName = "", categoryName = "", territoryName = "", className = "";
     TextView tv_hqName, tv_add_condition, tv_filterCount;

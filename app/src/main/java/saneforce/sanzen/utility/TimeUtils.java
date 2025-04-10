@@ -40,7 +40,6 @@ public class TimeUtils {
     public static final String FORMAT_22 = "yyyy-MM-dd HH:mm:ss.SSSS";
     public static final String FORMAT_23 = "MMMM yyyy";
     public static final String FORMAT_24 = "yyyy-MM";
-
     public static final String FORMAT_25 = "MMMM";
     public static final String FORMAT_26 = "yyyy";
     public static final String FORMAT_27 = "MMMM d, yyyy";
@@ -54,6 +53,7 @@ public class TimeUtils {
     public static final String FORMAT_35 = "d-MMM";
     public static final String FORMAT_36 = "yyyy-MM-dd hh:mm a";
     public static final String FORMAT_37 = "yyyy-MM-dd HH:mm:ss.SSS";
+    public static final String FORMAT_38 = "d MMMM yyyy";
 
 
     public static String getCurrentDateTime(String format) {
@@ -184,4 +184,59 @@ public class TimeUtils {
             return null;
         }
     }
+
+    public static String multiplyTime(String time, String format, int noOfTimes) {
+        try {
+            SimpleDateFormat timeFormat = new SimpleDateFormat(format);
+            Date dateTime = timeFormat.parse(time);
+
+            if(dateTime != null) {
+                long totalSeconds = dateTime.getTime() / 1000;
+                long multipliedSeconds = totalSeconds * noOfTimes;
+
+                Date multipliedTime = new Date(multipliedSeconds * 1000);
+
+                return timeFormat.format(multipliedTime);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static long getMilliSeconds(String format, String time) {
+        long millis = 0L;
+        try {
+            SimpleDateFormat timeFormat = new SimpleDateFormat(format);
+            Date dateTime = timeFormat.parse(time);
+
+            if(dateTime != null) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(dateTime);
+
+                int hours = calendar.get(Calendar.HOUR_OF_DAY);
+                int minutes = calendar.get(Calendar.MINUTE);
+                int seconds = calendar.get(Calendar.SECOND);
+
+                millis = ((hours * 3600) + (minutes * 60) + seconds) * 1000;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return millis;
+    }
+
+    public static String getMillisToFormattedTime(long millis, String format) {
+        String time = "";
+        int hours = (int) (millis / 1000) / 3600;
+        int minutes = (int) (millis / 1000) / 60;
+        int seconds = (int) (millis / 1000) % 60;
+        if(format.equalsIgnoreCase(FORMAT_32)) {
+            time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        } else if(format.equalsIgnoreCase(FORMAT_29)) {
+            time = String.format("%02d:%02d", hours, minutes);
+        }
+        return time;
+    }
+
 }

@@ -1,76 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/custom_backround_layout">
- <RelativeLayout
-     android:layout_width="match_parent"
-     android:id="@+id/rl_calender_syn"
-     android:padding="@dimen/_5sdp"
-     android:gravity="center"
-     android:layout_height="@dimen/_30sdp">
-     <TextView
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentStart="true"
-         android:layout_alignParentTop="true"
-         android:textSize="@dimen/_9sdp"
-         android:fontFamily="@font/satoshi_medium"
-         android:gravity="center"
-         android:layout_marginTop="@dimen/_5sdp"
-         android:text="Slide downloader"
-         android:textColor="@color/black_45"
-         android:textStyle="bold" />
 
-     <LinearLayout
-         android:layout_width="wrap_content"
-         android:orientation="horizontal"
-         android:layout_centerHorizontal="true"
-         android:layout_toLeftOf="@id/cancel_img"
-         android:layout_height="wrap_content">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rl_calender_syn"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_30sdp"
+        android:padding="@dimen/_5sdp">
 
-         <TextView
-             android:id="@+id/txt_downloadcount"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_marginTop="@dimen/_5sdp"
-             android:gravity="center"
-             android:textSize="@dimen/_9sdp"
-             android:text="0 /"
-             android:textColor="@color/black_45"
-             android:textStyle="bold">
-         </TextView>
+        <TextView
+            android:id="@+id/alert_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/satoshi_medium"
+            android:text="Slide downloader"
+            android:textColor="@color/black_45"
+            android:textSize="@dimen/_9sdp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/cancel_img"
+            app:layout_constraintTop_toTopOf="parent">
 
-         <TextView
-             android:id="@+id/txt_totaldownloadcount"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_marginTop="@dimen/_5sdp"
-             android:gravity="center"
-             android:textSize="@dimen/_9sdp"
-             android:text="0"
-             android:textColor="@color/black_45"
-             android:textStyle="bold">
-         </TextView>
+            <TextView
+                android:id="@+id/txt_downloadcount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="0 /"
+                android:textColor="@color/black_45"
+                android:textSize="@dimen/_9sdp"
+                android:textStyle="bold" />
 
-     </LinearLayout>
+            <TextView
+                android:id="@+id/txt_totaldownloadcount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text=" 0"
+                android:textColor="@color/black_45"
+                android:textSize="@dimen/_9sdp"
+                android:textStyle="bold" />
 
->
+        </LinearLayout>
 
-     <ImageView
-         android:id="@+id/cancel_img"
-         android:layout_width="@dimen/_25sdp"
-         android:layout_height="@dimen/_25sdp"
-         android:layout_marginTop="@dimen/_2sdp"
-         android:layout_marginEnd="@dimen/_5sdp"
-         android:visibility="visible"
-         android:background="@color/white"
-         android:layout_alignParentTop="true"
-         android:layout_alignParentEnd="true"
-         android:src="@drawable/close_icon" />
+        <ImageView
+            android:id="@+id/cancel_img"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:background="@color/white"
+            android:src="@drawable/close_icon"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
- </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <View

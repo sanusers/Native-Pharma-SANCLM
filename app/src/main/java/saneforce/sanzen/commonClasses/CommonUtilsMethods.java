@@ -73,6 +73,7 @@ public class CommonUtilsMethods {
     Context context;
     Activity activity;
     public static boolean isLocationFounded = false;
+    public static Toast toast;
 
     public CommonUtilsMethods(Activity activity) {
         this.activity = activity;
@@ -88,11 +89,11 @@ public class CommonUtilsMethods {
 
         Geocoder geocoder;
         List<Address> addresses;
-        String address = "No Address Found";
+        String address = activity.getString(R.string.no_address_found);
         geocoder = new Geocoder(activity, Locale.getDefault());
         try {
             addresses = geocoder.getFromLocation(la, ln, 1);
-            if (Objects.requireNonNull(addresses).size() > 0) {
+            if (addresses != null && !addresses.isEmpty()) {
                 address = addresses.get(0).getAddressLine(0);
                 /*String city = addresses.get(0).getLocality();
                 String state = addresses.get(0).getAdminArea();
@@ -100,7 +101,7 @@ public class CommonUtilsMethods {
                 String postalCode = addresses.get(0).getPostalCode();
                 String knownName = addresses.get(0).getFeatureName();*/
             } else {
-                address = "No Address Found";
+                address = activity.getString(R.string.no_address_found2);
             }
 
             if (toastMsg) {
@@ -287,15 +288,20 @@ public class CommonUtilsMethods {
 
     @SuppressLint("SimpleDateFormat")
     public static String setConvertDate(String currentFormat, String requiredFormat, String date) {
-        SimpleDateFormat spf = new SimpleDateFormat(currentFormat);
-        Date newDate = null;
         try {
-            newDate = spf.parse(date);
-        } catch (ParseException ignored) {
+            SimpleDateFormat spf = new SimpleDateFormat(currentFormat);
+            Date newDate = null;
+            try {
+                newDate = spf.parse(date);
+            } catch (ParseException ignored) {
+            }
+            spf = new SimpleDateFormat(requiredFormat);
+            assert newDate != null;
+            return spf.format(newDate);
+        }catch (Exception e) {
+            e.printStackTrace();
         }
-        spf = new SimpleDateFormat(requiredFormat);
-        assert newDate != null;
-        return spf.format(newDate);
+        return "";
     }
 
 
@@ -322,7 +328,10 @@ public class CommonUtilsMethods {
         TextView text = layout.findViewById(R.id.text);
         text.setText(message);
 
-        Toast toast = new Toast(activity.getApplicationContext());
+        if(toast != null) {
+            toast.cancel();
+        }
+        toast = new Toast(activity.getApplicationContext());
 //        Toast toast = Toast.makeText(activity.getApplicationContext(), message, Toast.LENGTH_LONG);
         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.setDuration(Toast.LENGTH_LONG);
@@ -340,7 +349,10 @@ public class CommonUtilsMethods {
         TextView text = layout.findViewById(R.id.text);
         text.setText(message);
 
-        Toast toast = new Toast(context);
+        if(toast != null) {
+            toast.cancel();
+        }
+        toast = new Toast(context);
         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
@@ -446,6 +458,13 @@ public class CommonUtilsMethods {
     public static String removeLastComma(String string) {
         if (string.endsWith(",")) {
             string = string.substring(0, string.length() - 1);
+        }
+        return string;
+    }
+
+    public static String removeFirstComma(String string) {
+        if (string.startsWith(",")) {
+            string = string.substring(1);
         }
         return string;
     }

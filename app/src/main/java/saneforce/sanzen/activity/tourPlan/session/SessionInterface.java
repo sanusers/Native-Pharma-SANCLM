@@ -12,5 +12,6 @@ public interface SessionInterface {
 
     void clusterChanged(ModelClass modelClass,int position);
 
+    void workDayChanged(ModelClass modelClass, int position);
 
 }

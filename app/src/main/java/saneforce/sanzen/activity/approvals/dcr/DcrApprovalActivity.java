@@ -66,6 +66,7 @@ import saneforce.sanzen.activity.approvals.dcr.adapter.AdapterDcrApprovalList;
 import saneforce.sanzen.activity.approvals.dcr.adapter.AdapterSelectionList;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DcrDetailModelList;
+import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
 import saneforce.sanzen.activity.approvals.tp.pojo.TpModelList;
 import saneforce.sanzen.activity.call.pojo.input.SaveCallInputList;
 import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
@@ -701,6 +702,11 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
     @Override
     public void onItemClick(TpModelList tpModelLists, int pos) {
+
+    }
+
+    @Override
+    public void onSTPItemClick(STPModelList stpModelList, int position) {
 
     }
 
