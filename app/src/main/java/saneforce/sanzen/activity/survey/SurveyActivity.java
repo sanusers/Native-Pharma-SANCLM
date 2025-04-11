@@ -159,10 +159,20 @@ public class SurveyActivity extends AppCompatActivity {
                 chosenSurveyModelClass = surveyModelClass;
                 chosenSurveyPosition = position;
                 clearAll();
+                surveyBinding.rlSurveyDetails.setVisibility(View.VISIBLE);
+                surveyBinding.tvSurveyName.setText(chosenSurveyModelClass.getSurveyName());
+                surveyBinding.tvFromDate.setText(String.format("%s : %s", getString(R.string.from), chosenSurveyModelClass.getFromDate()));
+                surveyBinding.tvToDate.setText(String.format("%s : %s", getString(R.string.to), chosenSurveyModelClass.getToDate()));
             }
         });
         surveyBinding.rvSurveyList.setLayoutManager(new LinearLayoutManager(this));
         surveyBinding.rvSurveyList.setAdapter(surveyAdapter);
+
+        surveyBinding.tvSurveyName.setOnClickListener(view -> {
+            if (chosenSurveyModelClass != null && chosenSurveyModelClass.getSurveyName() != null && !chosenSurveyModelClass.getSurveyName().isEmpty()) {
+                commonUtilsMethods.displayPopupWindow(this, view, chosenSurveyModelClass.getSurveyName());
+            }
+        });
 
         getSurveyData();
         getRequiredData();
@@ -290,6 +300,10 @@ public class SurveyActivity extends AppCompatActivity {
             chosenSurveyModelClass = classGroup;
             chosenSurveyPosition = position;
             clearAll();
+            surveyBinding.rlSurveyDetails.setVisibility(View.VISIBLE);
+            surveyBinding.tvSurveyName.setText(chosenSurveyModelClass.getSurveyName());
+            surveyBinding.tvFromDate.setText(String.format("%s : %s", getString(R.string.from), chosenSurveyModelClass.getFromDate()));
+            surveyBinding.tvToDate.setText(String.format("%s : %s", getString(R.string.to), chosenSurveyModelClass.getToDate()));
             dialog.dismiss();
         });
         btn_no.setOnClickListener(view12 -> {
@@ -309,7 +323,8 @@ public class SurveyActivity extends AppCompatActivity {
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         alertText.setText(SurveyActivity.this.getString(R.string.are_you_sure_you_want_to_clear));
         btn_yes.setOnClickListener(view12 -> {
-            getSurveyDetails(chosenSurveyModelClass);
+//            getSurveyDetails(chosenSurveyModelClass);
+            clearAll();
             dialog.dismiss();
         });
         btn_no.setOnClickListener(view12 -> {
@@ -318,6 +333,7 @@ public class SurveyActivity extends AppCompatActivity {
     }
 
     private void clearAll() {
+        isEdited = false;
         surveyBinding.llSurveyDetailsView.removeAllViews();
         surveyBinding.tvHeadquarters.setText("");
         surveyBinding.tvCustomerType.setText("");
@@ -588,9 +604,10 @@ public class SurveyActivity extends AppCompatActivity {
                         String stkState = jsonObject.optString("Stkstate");
                         String stkHQ = jsonObject.optString("StkHQ");
                         String todayDate = TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4);
+                        LocalDate from = LocalDate.parse(fromDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                         LocalDate to = LocalDate.parse(toDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                         LocalDate today = LocalDate.parse(todayDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
-                        if(!to.isBefore(today)) {
+                        if(!to.isBefore(today) && !from.isAfter(today)) {
 //                            SurveyModelClass surveyModelClass = new SurveyModelClass(surveyID, surveyName, fromDate, toDate);
                             SurveyModelClass surveyModelClass = new SurveyModelClass(surveyID, surveyName, drCat, drSpl, drCls, hosCls, chmCat, stkState, stkHQ, fromDate, toDate);
                             surveyDataList.add(surveyModelClass);
