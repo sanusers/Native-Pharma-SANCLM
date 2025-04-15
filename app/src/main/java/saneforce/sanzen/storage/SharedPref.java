@@ -447,12 +447,6 @@ public class SharedPref {
 //    public static final String TAGGED_ADDRESS = "tggedaddress";
     public static final String PROFILING_NEED = "DrProfile";
 
-    public static final String STP_STATUS = "STP_STATUS";
-    public static final String STP_NEED = "STP_NEED";
-    public static final String STP_APPR_NEED = "STP_APPR_NEED";
-    public static final String STP_BASED_MTP = "STP_BASED_MTP";
-    public static final String STP_BASED_DCR = "STP_BASED_DCR";
-
     public static final String QUIZ_DATE = "Quiz Date";
     public static final String QUIZ_SYNC_DATE = "Quiz Sync Date";
     public static final String QUIZ_ATTEMPTS = "Quiz Attempts";
@@ -2007,22 +2001,6 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DCR_APPROVAL_NEED, "");
     }
 
-    public static String getStpNeed(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_NEED, "");
-    }
-
-    public static String getStpApprNeed(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_APPR_NEED, "");
-    }
-
-    public static String getStpBasedMtp(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_BASED_MTP, "");
-    }
-
-    public static String getStpBasedDcr(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_BASED_DCR, "");
-    }
-
     public static void setDrAddCallNeed(Context context, String drAddCallNeed) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2775,16 +2753,6 @@ public class SharedPref {
 
     public static String getWeekoffAutoPostNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(WEEKOFF_AUTOPOST_NEED, "");
-    }
-
-    public static void setStpStatus(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(STP_STATUS, status).apply();
-    }
-
-    public static String getStpStatus(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_STATUS, "");
     }
 
     public static String getLastQuizSubmittedDate(Context context) {

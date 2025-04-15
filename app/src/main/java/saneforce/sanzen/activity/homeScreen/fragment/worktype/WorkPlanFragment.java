@@ -1,6 +1,5 @@
 package saneforce.sanzen.activity.homeScreen.fragment.worktype;
 
-
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
 
 import android.annotation.SuppressLint;
@@ -136,7 +135,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private ProgressDialog syncProgressDialog;
     private int syncCount = 0;
     private String CheckInOutNeed, STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPBasedDCR, TPDCRDeviation, TPDCRMGRApprNeed;
-    private boolean isFromTP = false;
+    public static boolean isFromTP = false;
     @SuppressLint("StaticFieldLeak")
     private static Context context;
     private static WorkPlanFragment workPlanFragment;
@@ -1496,49 +1495,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
             }
         });
-    }
-
-    private void showDeviationAlert() {
-        Dialog dialogRemarks = new Dialog(requireActivity());
-        dialogRemarks.setContentView(R.layout.popup_remarks);
-        Objects.requireNonNull(dialogRemarks.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialogRemarks.setCancelable(false);
-        ImageView iv_close = dialogRemarks.findViewById(R.id.img_close);
-        EditText ed_remarks = dialogRemarks.findViewById(R.id.ed_remark);
-        ed_remarks.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remarks, 300)});
-        TextView heading = dialogRemarks.findViewById(R.id.tv_head);
-        TextView content = dialogRemarks.findViewById(R.id.content);
-        Button btn_clear = dialogRemarks.findViewById(R.id.btn_clear);
-        Button btn_save = dialogRemarks.findViewById(R.id.btn_save);
-        heading.setText(R.string.deviation_remarks);
-        btn_save.setText(requireContext().getString(R.string.yes));
-        btn_clear.setText(requireContext().getString(R.string.no));
-        content.setVisibility(View.INVISIBLE);
-        ed_remarks.setVisibility(View.VISIBLE);
-
-        btn_save.setOnClickListener(view -> {
-            remarks = ed_remarks.getText().toString().trim();
-            if(!remarks.isEmpty() && remarks.length()>2) {
-                dialogRemarks.dismiss();
-                remarks = remarks.replaceAll("'", "");
-                Log.e("Deviation Remarks", "Deviation remark : " + remarks);
-                saveOrUpdateWorkPlan();
-            }else if(remarks.isEmpty()) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_enter_the_remarks));
-            }else {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.remarks_must_contain_at_least_3_characters));
-            }
-        });
-
-        btn_clear.setOnClickListener(view -> {
-            dialogRemarks.dismiss();
-        });
-
-        iv_close.setOnClickListener(view -> {
-            dialogRemarks.dismiss();
-        });
-
-        dialogRemarks.show();
     }
 
     private void submitMyDayPlan() {
