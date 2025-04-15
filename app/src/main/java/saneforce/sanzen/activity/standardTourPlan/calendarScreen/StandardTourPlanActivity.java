@@ -118,10 +118,22 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 //        super.onBackPressed();
     }
 
+    //To Hide the bottomNavigation When popup
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            activityStandardTourPlanBinding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() == totalDaysCount));
+        if(stpFlag == null || stpFlag.isEmpty()) {
+            stpFlag = "3";
+        }
+        checkApprovalButtonStatus();
 
         if(stpFlag != null && !stpFlag.isEmpty()) {
             if(stpFlag.equalsIgnoreCase("1")) {
@@ -148,7 +160,19 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
                 }
             }
+        } else {
+            stpFlag = "3";
+            SharedPref.setStpStatus(StandardTourPlanActivity.this, "Planning...");
+            activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.planning));
+            activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.dark_purple));
         }
+
+        String stpStatus = SharedPref.getStpStatus(StandardTourPlanActivity.this);
+        activityStandardTourPlanBinding.tvStpStatus.setText(stpStatus.isEmpty() ? "Planning..." : stpStatus);
+    }
+
+    private void checkApprovalButtonStatus() {
+        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() == totalDaysCount) && (stpFlag.equalsIgnoreCase("1") || stpFlag.equalsIgnoreCase("3")));
     }
 
     @Override
@@ -182,7 +206,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         String stpStatus = SharedPref.getStpStatus(StandardTourPlanActivity.this);
         activityStandardTourPlanBinding.tvStpStatus.setText(stpStatus.isEmpty() ? "Planning..." : stpStatus);
 
-        activityStandardTourPlanBinding.tvSync.setOnClickListener( v -> {
+        activityStandardTourPlanBinding.tvSync.setOnClickListener(v -> {
             syncSTP();
         });
     }
@@ -202,7 +226,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         unDrNeed = SharedPref.getUnlNeed(this);
         cipNeed = SharedPref.getCipNeed(this);
         hosNeed = SharedPref.getHospNeed(this);
-//        stpCap = SharedPref.getSTPCap(this);
+        stpCap = SharedPref.getStpCaption(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         stpOfflineDataDao = roomDB.stpOfflineDataDao();
@@ -221,6 +245,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         allSelectedDocXCatMap = new HashMap<>();
         allSelectedDocList = new ArrayList<>();
 
+        if(!stpCap.isEmpty()) {
+            activityStandardTourPlanBinding.title.setText(stpCap);
+        }
         getData();
 
         String stpStatus = SharedPref.getStpStatus(StandardTourPlanActivity.this);
@@ -364,12 +391,20 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 String doctorCode = stpOfflineDataTable.getDoctorCode();
                 String chemistCode = stpOfflineDataTable.getChemistCode();
                 JSONObject jsonObject = new JSONObject(stpOfflineDataTable.getStpData());
-                stpFlag = jsonObject.optString("Active_Flag", "");
+                stpFlag = jsonObject.optString("Active_Flag", "3");
                 rejectReason = jsonObject.optString("Stp_Reject_Reason", "");
                 selectedClusterCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(clusterCode)).split(",")));
                 selectedDocCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
                 allSelectedDocList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(doctorCode)).split(",")));
                 selectedChmCodeList.addAll(Arrays.asList((CommonUtilsMethods.removeLastComma(chemistCode)).split(",")));
+                selectedClusterCodeList.remove("");
+                selectedDocCodeList.remove("");
+                allSelectedDocList.remove("");
+                selectedChmCodeList.remove("");
+                selectedClusterCodeList.remove(null);
+                selectedDocCodeList.remove(null);
+                allSelectedDocList.remove(null);
+                selectedChmCodeList.remove(null);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -578,10 +613,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 JSONObject jsonObject = jsonArray.optJSONObject(0);
                 dayCaptions = jsonObject.optString("Plan_Name", "");
                 dayIDs = jsonObject.optString("Plan_SName", "");
-                stpCap = jsonObject.optString("STP_Name", StandardTourPlanActivity.this.getString(R.string.standard_tour_plan));
-                if(!stpCap.isEmpty()) {
-                    activityStandardTourPlanBinding.title.setText(stpCap);
-                }
+//                stpCap = jsonObject.optString("STP_Name", StandardTourPlanActivity.this.getString(R.string.standard_tour_plan));
+//                if(!stpCap.isEmpty()) {
+//                    activityStandardTourPlanBinding.title.setText(stpCap);
+//                }
             }
             if(dayIDs == null || dayIDs.isEmpty()) {
                 commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Kindly sync Standard Tour Plan Setup!");
@@ -648,8 +683,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 
     private void populateCalendarAdapter() {
         if(dayIDs != null && !dayIDs.isEmpty()) {
+            totalDaysCount = 0;
             String[] dayIDValues = dayIDs.split("/");
             String[] dayCaptionValues = dayCaptions.split("/");
+//            String[] dayIDValues = (dayIDs + "FR1/FR2/FR3/FR4/").split("/");
+//            String[] dayCaptionValues = (dayCaptions + "Friday 1/Friday 2/Friday 3/Friday 4/").split("/");
             calendarMap = new LinkedHashMap<>();
 
             for (int index = 0; index<dayIDValues.length; index++) {
@@ -988,15 +1026,22 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            checkApprovalButtonStatus();
         }
     });
 
     private final CalendarAdapter.CalendarDayClickListener calendarDayClickListener = (calendarModel, mode) -> {
-        Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
-        intent.putExtra("MODE", String.valueOf(mode));
-        intent.putExtra("DAY_ID", calendarModel.getId());
-        intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
-        activityResultLauncher.launch(intent);
+//        if(!stpFlag.equalsIgnoreCase("0") && !stpFlag.equalsIgnoreCase("2")) {
+            Intent intent = new Intent(StandardTourPlanActivity.this, AddListActivity.class);
+            intent.putExtra("MODE", String.valueOf(mode));
+            intent.putExtra("DAY_ID", calendarModel.getId());
+            intent.putExtra("DAY_CAPTION", calendarModel.getCaption());
+            activityResultLauncher.launch(intent);
+//        }else if (stpFlag.equalsIgnoreCase("0")){
+//            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
+//        }else if (stpFlag.equalsIgnoreCase("2")){
+//            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+//        }
     };
 
     private final CalendarAdapter.CalendarDayMenuClickListener calendarDayMenuClickListener = (calendarModel, menuItem) -> {
@@ -1015,8 +1060,10 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 Log.d("STP Item", "Swap");
                 showSwapDialog(calendarModel.getId(), calendarModel.getCaption());
             }
-        } else {
+        }else if (stpFlag.equalsIgnoreCase("0")){
             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
+        }else if (stpFlag.equalsIgnoreCase("2")){
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
         }
     };
 
@@ -1051,7 +1098,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     lv_to.setVisibility(View.GONE);
                     constraintLayout.setVisibility(View.VISIBLE);
                 }else {
-                    getSTPData();
+                    getSTPData(id);
                     FillteredAdapter arrayAdapter = new FillteredAdapter(this, stpDataModels, clickedItem -> {
                         swapCode = clickedItem.getCode();
                         swapName = clickedItem.getName();
@@ -1164,7 +1211,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             Log.v("STP", "--json-- " + jsonObject);
 
             Map<String, String> mapString = new HashMap<>();
-            mapString.put("axn",  "get/stp");
+            mapString.put("axn", "get/stp");
             Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
             call.enqueue(new Callback<JsonElement>() {
                 @Override
@@ -1201,11 +1248,11 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        stpOfflineDataDao.deleteAllData();
+                        stpOfflineDataDao.deleteAllData("0");
                         saveSTPDataToLocal();
                         getRequiredData();
                         populateAdapters();
-                        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() == totalDaysCount));
+                        checkApprovalButtonStatus();
                     }
                 }
 
@@ -1272,12 +1319,14 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         }
     }
 
-    private void getSTPData() {
+    private void getSTPData(String id) {
         try {
             List<STPOfflineDataTable> stpData = stpOfflineDataDao.getAllSTPData();
             stpDataModels.clear();
             for (STPOfflineDataTable stpOfflineDataTable : stpData) {
-                stpDataModels.add(new DCRFillteredModelClass(stpOfflineDataTable.getDayCaption(), stpOfflineDataTable.getDayID()));
+                if(!stpOfflineDataTable.getDayID().equals(id)) {
+                    stpDataModels.add(new DCRFillteredModelClass(stpOfflineDataTable.getDayCaption(), stpOfflineDataTable.getDayID()));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1335,7 +1384,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         try {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
                             if(json.getString("success").equalsIgnoreCase("true")) {
-                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, caption + "Deleted Successfully");
+                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, caption + " Deleted Successfully");
                             }
                         } catch (Exception e) {
                             Log.e("STP Delete", "onResponse: " + e.getMessage());
@@ -1479,6 +1528,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                     SharedPref.setStpStatus(StandardTourPlanActivity.this, "Waiting for approval");
                                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
                                     activityStandardTourPlanBinding.tvStpStatus.setText(getString(R.string.waiting_for_approval));
+                                    activityStandardTourPlanBinding.llRejection.setVisibility(View.GONE);
+                                    stpFlag = "2";
+                                    syncSTP();
                                 }else {
                                     commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
                                 }

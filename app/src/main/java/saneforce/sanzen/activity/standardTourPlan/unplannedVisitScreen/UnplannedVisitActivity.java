@@ -12,10 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.adapter.DCRSelectionAdapter;
@@ -238,7 +241,10 @@ public class UnplannedVisitActivity extends AppCompatActivity {
                 if(dcrModels == null) {
                     dcrModels = new ArrayList<>();
                 }
-                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && dcrModel.getVisitFrequency() != CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",").length) {
+                Set<String> plannedFor = new HashSet<>(Arrays.asList(CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",")));
+                plannedFor.remove("");
+                plannedFor.remove(null);
+                if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && dcrModel.getVisitFrequency() != plannedFor.size()) {
                     dcrModels.add(dcrModel);
                 } else if(selectedDCR.equalsIgnoreCase(Constants.CHEMIST) && (dcrModel.getPlannedForCode().equalsIgnoreCase("") || dcrModel.getPlannedForCode().equalsIgnoreCase("-"))){
                     dcrModels.add(dcrModel);

@@ -55,6 +55,8 @@ import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideServices;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.SlidesViewModel;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.Slide_adapter;
+import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
+import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideAdapter;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideService;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlidesViewModel;
@@ -838,8 +840,14 @@ public class MasterSyncActivity extends AppCompatActivity {
             tpModelArray.add(tPlan);
         }
         if(stpNeed) {
-            MasterSyncItemModel STPSetup = new MasterSyncItemModel(Constants.STP_SETUP, Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP, stpSetupStatus, false);
-            MasterSyncItemModel STPPlan = new MasterSyncItemModel(Constants.STANDARD_TOUR_PLAN,  Constants.STANDARD_TOUR_PLAN, "getstp_details", Constants.STANDARD_TOUR_PLAN, standardTourPLanStatus, false);
+            String stpCaption = SharedPref.getStpCaption(this), stpSetupCaption = Constants.STP_SETUP;
+            if(!stpCaption.isEmpty()) {
+                stpSetupCaption = stpCaption + " Setup";
+            } else {
+                stpCaption = Constants.STANDARD_TOUR_PLAN;
+            }
+            MasterSyncItemModel STPSetup = new MasterSyncItemModel(stpSetupCaption, Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP, stpSetupStatus, false);
+            MasterSyncItemModel STPPlan = new MasterSyncItemModel(stpCaption,  Constants.STANDARD_TOUR_PLAN, "getstp_details", Constants.STANDARD_TOUR_PLAN, standardTourPLanStatus, false);
             tpModelArray.add(STPSetup);
             tpModelArray.add(STPPlan);
         }
@@ -1337,7 +1345,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                }
                                             }
                                         } else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
-                                            stpOfflineDataDao.deleteAllData();
+                                            stpOfflineDataDao.deleteAllData("0");
                                             saveSTPDataToLocal();
                                         } else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
                                             activityDetailsDataDao.deleteAllData();
@@ -1532,6 +1540,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                     String dateTime = jsonObject.optString("Created_Date");
                     String activeFlag = jsonObject.optString("Active_Flag");
                     Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
+
+                    if(activeFlag.equalsIgnoreCase("0")) {
+                        SharedPref.setStpStatus(MasterSyncActivity.this, "Approved");
+                    }
 
                     JSONObject jsonSave = new JSONObject();
                     jsonSave = CommonUtilsMethods.CommonObjectParameter(this);

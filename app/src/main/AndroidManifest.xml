@@ -98,6 +98,22 @@
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
+            android:name=".activity.approvals.stp.STPApprovalActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.standardTourPlan.unplannedVisitScreen.UnplannedVisitActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.standardTourPlan.addListScreen.AddListActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.standardTourPlan.calendarScreen.StandardTourPlanActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".activity.myresource.Categoryview.DateSyncActivity"
             android:exported="false"
             android:screenOrientation="landscape" />

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import saneforce.sanzen.activity.standardTourPlan.calendarScreen.adapter.Calenda
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.storage.SharedPref;
 
 public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -136,6 +138,7 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             if(dcrModel.getPlannedForName().toLowerCase().contains((dayCaption + ",").toLowerCase())) {
                                 plannedForName = dcrModel.getPlannedForName().replaceAll(dayCaption + ",", "");
                             }
+                            plannedForName = CommonUtilsMethods.removeLastComma(String.format("%s%s,", plannedForName, dayCaption));
                             commonUtilsMethods.displayPopupWindow(context, view, CommonUtilsMethods.removeLastComma(plannedForName.isEmpty() ? "-" : plannedForName));
                         }
                     });
@@ -171,15 +174,23 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             dcrViewHolder.checkBox.setOnClickListener(buttonView -> {
                 Log.d("Adapter", "onBindViewHolder: position -> " + position + " binding position -> " + dcrViewHolder.getBindingAdapterPosition() + " absolute position -> " + dcrViewHolder.getAbsoluteAdapterPosition());
-                String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
-                docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
-                if(docList.length<dcrModel.getVisitFrequency() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
-                    updateDcrModelAndViews(dcrModel, dcrViewHolder, position);
-                }else if(selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && docList.length>=dcrModel.getVisitFrequency()) {
-                    commonUtilsMethods.showToastMessage(context, "Visit Frequency already met");
-                    dcrViewHolder.checkBox.setChecked(false);
-                }else {
-                    updateDcrModelAndViews(dcrModel, dcrViewHolder, position);
+                if (SharedPref.getStpStatus(context).equalsIgnoreCase("Approved")) {
+                    commonUtilsMethods.showToastMessage(context, "Cannot Edit, Already Approved");
+                    dcrViewHolder.checkBox.setChecked(!dcrViewHolder.checkBox.isChecked());
+                }else if (SharedPref.getStpStatus(context).equalsIgnoreCase("Waiting For Approval")) {
+                    commonUtilsMethods.showToastMessage(context, "Cannot Edit, Waiting For Approval");
+                    dcrViewHolder.checkBox.setChecked(!dcrViewHolder.checkBox.isChecked());
+                } else {
+                    String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
+                    docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
+                    if (docList.length < dcrModel.getVisitFrequency() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
+                        updateDcrModelAndViews(dcrModel, dcrViewHolder, position);
+                    } else if (selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && docList.length >= dcrModel.getVisitFrequency()) {
+                        commonUtilsMethods.showToastMessage(context, "Visit Frequency already met");
+                        dcrViewHolder.checkBox.setChecked(false);
+                    } else {
+                        updateDcrModelAndViews(dcrModel, dcrViewHolder, position);
+                    }
                 }
             });
 

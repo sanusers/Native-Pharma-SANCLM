@@ -1,6 +1,6 @@
 <resources>
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">T.3.0.0</string>
+    <string name="app_version" translatable="false">V.1.0.2</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -222,7 +222,7 @@
     <string name="report">Report</string>
     <string name="analysis">Analysis</string>
     <string name="all_brands">All Brands</string>
-    <string name="refresh">Refresh Location</string>
+    <string name="refresh_location">Refresh Location</string>
     <string name="tour_plan">Tour Plan</string>
     <string name="faq">FAQ</string>
     <string name="leave_application">Leave Application</string>
@@ -495,6 +495,28 @@
     <string name="add_plan">Add Plan</string>
     <string name="rejection_re_entry_need">Should only be Rejection/Re-entry to edit or delete WorkPlan</string>
     <string name="deleting_field_work_with_calls">Deleting Field work will also delete all calls</string>
+    <string name="triple_dot">...</string>
+    <string name="standard_tour_plan">Standard Tour Plan</string>
+    <string name="send_to_approval">Send to approval</string>
+    <string name="check_unplanned_visits">Check Unplanned Visits</string>
+    <string name="cip">CIP</string>
+    <string name="selected">Selected</string>
+    <string name="plan_for">Plan for</string>
+    <string name="visit_frequency">Visit Frequency</string>
+    <string name="doctor_category">Doctor Category</string>
+    <string name="please_select_cluster">Please Select Cluster</string>
+    <string name="stp_saved_locally">No Internet. Plan Saved Locally</string>
+    <string name="unplanned_visits">Unplanned Visits</string>
+    <string name="saved_successfully">Saved Successfully</string>
+    <string name="swap">Swap</string>
+    <string name="waiting_for_approval">Waiting for approval</string>
+    <string name="planning">Planning...</string>
+    <string name="already_approved">Already Approved</string>
+    <string name="stp_ap_not_available">Standard Tour Plan approvals not available</string>
+    <string name="standard_tour_plan_approvals">Standard Tour Plan Approvals</string>
+    <string name="standard_tour_planned_for">Standard Tour Planned for</string>
+    <string name="select_workday">Select WorkDay</string>
+    <string name="refresh">Refresh</string>
     <string name="Signature">Signature</string>
     <string name="fill">Please fill </string>
     <string name="select_headquater">SELECT HEADQUARTER</string>

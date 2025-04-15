@@ -439,7 +439,7 @@
             android:layout_gravity="center"
             android:fontFamily="@font/satoshi_bold"
             android:text="Planning..."
-            android:textColor="@color/green_2"
+            android:textColor="@color/dark_purple"
             android:textSize="@dimen/_6ssp" />
     </LinearLayout>
 

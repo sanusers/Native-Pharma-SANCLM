@@ -14,7 +14,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class SharedPref {
 
     public static final String SP_NAME = "e_detail";
@@ -44,7 +43,6 @@ public class SharedPref {
 
     public static final String TAG_IMAGE_URL = "tag_image_url";
     public static final String TAG_API_IMAGE_URL = "tag_api_image_url";
-
 
 // LogIN Data
 
@@ -379,14 +377,11 @@ public class SharedPref {
     public static final String SETHQCODE = "SETHQCODE";
     public static final String SETHQ_DETAILS = "SETHQ_DETAILS";
 
-
     public static final String IS_MYDAYPLAN = "IS_MYDAYPLAN";
     public static final String IS_FEILD = "IS_FEILD";
 
-
     public static final String JWKCODE = "JWKCODE";
     public static final String JWKDATE = "JWKDATE";
-
 
     public static final String TP_MANATORY_STATUS = "TP_MANATORY_STATUS";
     public static final String APPROVAL_MANATORY_STATUS = "APPROVAL_MANATORY_STATUS";
@@ -395,7 +390,6 @@ public class SharedPref {
 
     public static final String POLICY_STAUS = "POLICYSTATUS";
     public static final String TPSYNC_STAUS = "TPSYNC_STAUS";
-
 
     public static final String DR_ADD_CALL_NEED = "DrAdditionalCallNeed";
     public static final String POB_STOCKIST_NEED = "Pob_Stockist_Nd";
@@ -425,6 +419,13 @@ public class SharedPref {
     public static final String JOININGDATE = "JOINING_DATE";
     public static final String JOININGYEAR = "JOINING_YEAR";
     public static final String SANZEN_EDET = "sanzen_edet";
+
+    public static final String STP_STATUS = "STP_STATUS";
+    public static final String STP_NEED = "STP_NEED";
+    public static final String STP_APPR_NEED = "STP_APPR_NEED";
+    public static final String STP_BASED_MTP = "STP_BASED_MTP";
+    public static final String STP_BASED_DCR = "STP_BASED_DCR";
+    public static final String STP_CAPTION = "Stp_Caption";
 
     public static final String LAST_CALL_SYNC_DATE = "Last Call Sync Date";
 
@@ -782,6 +783,11 @@ public class SharedPref {
         editor.putString(EDIT_CALL_DEL_NEED, jsonObject.getString("EditCallDelNeed"));
         editor.putString(SANZEN_EDET, jsonObject.getString("sanzen_edet"));
         editor.putString(ACTIVITY_CAP, jsonObject.getString("ActivityCap"));
+        editor.putString(STP_NEED, jsonObject.getString("STP_Need"));
+        editor.putString(STP_APPR_NEED, jsonObject.getString("STP_Appr_Need"));
+        editor.putString(STP_BASED_MTP, jsonObject.getString("STP_Based_MTP"));
+        editor.putString(STP_BASED_DCR, jsonObject.getString("STP_Based_DCR"));
+        editor.putString(STP_CAPTION, jsonObject.getString("Stp_Caption"));
         editor.putString(DCR_APPROVAL_NEED, jsonObject.optString("DcrapprvNd"));
         editor.putString(ADD_CHM, jsonObject.getString("addChm"));
         editor.putString(ADD_UNLST, jsonObject.getString("addDr"));
@@ -1519,7 +1525,6 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(ULDOC_POB_CAPTION, "");
     }
 
-
     public static String getCipPobCaption(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(CIP_POB_CAPTION, "");
     }
@@ -1976,6 +1981,26 @@ public class SharedPref {
 
     public static String getDrAddCallNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DR_ADD_CALL_NEED, "");
+    }
+
+    public static String getStpNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_NEED, "");
+    }
+
+    public static String getStpApprNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_APPR_NEED, "");
+    }
+
+    public static String getStpBasedMtp(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_BASED_MTP, "");
+    }
+
+    public static String getStpBasedDcr(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_BASED_DCR, "");
+    }
+
+    public static String getStpCaption(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_CAPTION, "");
     }
 
     public static String getDcrApprovalNeed(Context context) {
@@ -2626,6 +2651,22 @@ public class SharedPref {
 
     public static int getJoiningYear(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(JOININGYEAR, 0);
+    }
+
+    public static void setStpStatus(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(STP_STATUS, status).apply();
+    }
+
+    public static String getStpStatus(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(STP_STATUS, "");
+    }
+
+    public static void setTpDcrDeviationApprStatus(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TPDCR_DEVIATION_APPR_STATUS, status).apply();
     }
 
     public static void setLastCallSyncDate(Context context, String date) {
