@@ -1,6 +1,6 @@
 <resources>
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">V.1.0.2</string>
+    <string name="app_version" translatable="false">T.3.0.0</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -527,7 +527,7 @@
     <string name="enter_valid_Mobile">Mobile number must be at least 7 digits</string>
     <string name="Photo_mand">Photo Capture Mandatory</string>
     <string name="select_class">Select Class</string>
-    <string name="syncing_calls">Syncing calls. </string>
+    <string name="syncing_calls">Syncing Calls </string>
     <string name="customer_Profiling">Customer Profiling</string>
     <string name="doctor_details">Doctor Details</string>
     <string name="personal_details">Personal Details</string>

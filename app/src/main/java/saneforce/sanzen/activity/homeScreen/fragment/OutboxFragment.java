@@ -335,7 +335,7 @@ public class OutboxFragment extends Fragment {
             isCallAvailable = false;
         }
 
-        if (!isCallAvailable) {
+        if (!isCallAvailable && !requireActivity().isFinishing()) {
             SetupOutBoxAdapter(requireActivity(), requireContext());
         }
     }

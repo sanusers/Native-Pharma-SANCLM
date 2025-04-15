@@ -6,6 +6,10 @@ import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailed
 import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment.JWKCodeList;
 import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment.callCaptureImageLists;
 import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment.jwOthersBinding;
+//import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.callSignCaptureImageLists;
+//import saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1;
+
+//import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.signatureBinding;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.IsFromDCR;
 
 import android.Manifest;
@@ -30,6 +34,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -93,6 +98,7 @@ import saneforce.sanzen.activity.call.fragments.product.ProductFragment;
 import saneforce.sanzen.activity.call.fragments.rcpa.RCPAFragment;
 import saneforce.sanzen.activity.call.fragments.rcpa.RCPASelectCompSide;
 import saneforce.sanzen.activity.call.fragments.rcpa.RCPASelectPrdSide;
+//import saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1;
 import saneforce.sanzen.activity.call.pojo.CallCaptureImageList;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.activity.call.pojo.additionalCalls.AddInputAdditionalCall;
@@ -121,6 +127,7 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
+//import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -316,6 +323,12 @@ public class DCRCallActivity extends AppCompatActivity {
         AddActivityData();
         AddSignData();
 
+//        SignatureFragment1 signatureFragment = new SignatureFragment1();
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(signatureFragment1.signatureBinding, signatureFragment, "SignatureFragment1");
+//        fragmentTransaction.commit();
+
         dcrCallBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -438,6 +451,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 CreateJsonFileCall();
                 if(isCreateJsonSuccess) {
+                    Log.d("CreateJsonFileCall", "submitCall: "+"JSON FIle call is successful");
 
                     if(isFromActivity.equalsIgnoreCase("new") || isFromActivity.equalsIgnoreCase("edit_online")) {
                         InsertVisitControl();
@@ -482,9 +496,13 @@ public class DCRCallActivity extends AppCompatActivity {
                     startActivity(intent);
 
                     if(!UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_locally));
+//                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_locally));
+                        Toast.makeText(DCRCallActivity.this, getString(R.string.call_saved_locally), Toast.LENGTH_LONG).show();
+//
                     }else {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_successfully));
+//                        commonUtilsMethods.showToastMessage(this, getString(R.string.call_saved_successfully));
+
+                        Toast.makeText(DCRCallActivity.this, getString(R.string.call_saved_successfully), Toast.LENGTH_LONG).show();
                         //progressDialog.dismiss();
                     }
                     finish();
@@ -1451,96 +1469,97 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
             JSONArray jsonPrdArray = new JSONArray(json.getString("DCRDetail"));
-            JSONObject js = jsonPrdArray.getJSONObject(0);
+            if(jsonPrdArray.length()>0) {
+                JSONObject js = jsonPrdArray.getJSONObject(0);
 
-            latEdit = js.getString("lati");
-            lngEdit = js.getString("long");
+                latEdit = js.getString("lati");
+                lngEdit = js.getString("long");
 
-            if(!isFromActivity.equalsIgnoreCase("new ") && GeoChk.equalsIgnoreCase("0") && (latEdit.isEmpty() || lngEdit.isEmpty())){
-                gpsTrack = new GPSTrack(this);
-                latEdit = String.valueOf(gpsTrack.getLatitude());
-                lngEdit = String.valueOf(gpsTrack.getLongitude());
-            }
+                if (!isFromActivity.equalsIgnoreCase("new ") && GeoChk.equalsIgnoreCase("0") && (latEdit.isEmpty() || lngEdit.isEmpty())) {
+                    gpsTrack = new GPSTrack(this);
+                    latEdit = String.valueOf(gpsTrack.getLatitude());
+                    lngEdit = String.valueOf(gpsTrack.getLongitude());
+                }
 
 
-            if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1") || CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
-                if (js.has("Product_Detail")) {
-                    String time =js.getString("tm");
-                    JSONArray jsonmain = new JSONArray(json.getString("DCRMain"));
-                    JSONObject js1 = jsonmain.getJSONObject(0);
-                    JSONObject activityDateObject = js1.getJSONObject("Activity_Date");
-                    String activityDate = activityDateObject.getString("date").substring(0,10);
-                    VistTime =activityDate+" "+time;
+                if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1") || CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
+                    if (js.has("Product_Detail")) {
+                        String time = js.getString("tm");
+                        JSONArray jsonmain = new JSONArray(json.getString("DCRMain"));
+                        JSONObject js1 = jsonmain.getJSONObject(0);
+                        JSONObject activityDateObject = js1.getJSONObject("Activity_Date");
+                        String activityDate = activityDateObject.getString("date").substring(0, 10);
+                        VistTime = activityDate + " " + time;
 
-                    Log.v("jsonExtractOnline", "----" + "0000");
-                    if (!js.getString("Product_Detail").isEmpty() && !js.getString("Product_Detail").equalsIgnoreCase("#")) {
-                        Log.v("jsonExtractOnline", "----" + "1111");
-                        String prd_names = extractValues(js.getString("Product_Detail"), "names");
-                        getValues(prd_names, prdNameList);
+                        Log.v("jsonExtractOnline", "----" + "0000");
+                        if (!js.getString("Product_Detail").isEmpty() && !js.getString("Product_Detail").equalsIgnoreCase("#")) {
+                            Log.v("jsonExtractOnline", "----" + "1111");
+                            String prd_names = extractValues(js.getString("Product_Detail"), "names");
+                            getValues(prd_names, prdNameList);
 
-                        String prd_codes = extractValues(js.getString("Product_Code"), "codes");
-                        getValues(prd_codes, prdCodeList);
+                            String prd_codes = extractValues(js.getString("Product_Code"), "codes");
+                            getValues(prd_codes, prdCodeList);
 
-                        String sam_qty = extractValues(js.getString("Product_Detail"), "Sample");
-                        getValues(sam_qty, prdSamQtyList);
+                            String sam_qty = extractValues(js.getString("Product_Detail"), "Sample");
+                            getValues(sam_qty, prdSamQtyList);
 
-                        String rx_qty = extractValues(js.getString("Product_Detail"), "Rx");
-                        getValues(rx_qty, prdRxQtyList);
-                        String Rcpa_qty = extractValues(js.getString("Product_Detail"), "Rcpa");
-                        getValues(Rcpa_qty, prdRcpaQtyList);
+                            String rx_qty = extractValues(js.getString("Product_Detail"), "Rx");
+                            getValues(rx_qty, prdRxQtyList);
+                            String Rcpa_qty = extractValues(js.getString("Product_Detail"), "Rcpa");
+                            getValues(Rcpa_qty, prdRcpaQtyList);
+                        }
+                    }
+                } else {
+                    JSONObject js1 = jsonPrdArray.getJSONObject(0);
+                    JSONObject vstTime = js1.getJSONObject("vstTime");
+                    VistTime = vstTime.getString("date");
+
+                    if (js.has("Additional_Prod_Dtls")) {
+                        if (!js.getString("Additional_Prod_Dtls").isEmpty()) {
+                            String prd_names = extractValues(js.getString("Additional_Prod_Dtls"), "names");
+                            getValues(prd_names, prdNameList);
+
+                            String prd_codes = extractValues(js.getString("Additional_Prod_Code"), "codes");
+                            getValues(prd_codes, prdCodeList);
+
+                            String sam_qty = extractValues(js.getString("Additional_Prod_Dtls"), "Sample");
+                            getValues(sam_qty, prdSamQtyList);
+
+                            String rx_qty = extractValues(js.getString("Additional_Prod_Dtls"), "Rx");
+                            getValues(rx_qty, prdRxQtyList);
+
+                            String Rcpa_qty = extractValues(js.getString("Additional_Prod_Dtls"), "Rcpa");
+                            getValues(Rcpa_qty, prdRcpaQtyList);
+                        }
                     }
                 }
-            } else {
-                JSONObject js1 = jsonPrdArray.getJSONObject(0);
-                JSONObject vstTime = js1.getJSONObject("vstTime");
-                VistTime = vstTime.getString("date");
 
-                if (js.has("Additional_Prod_Dtls")) {
-                    if (!js.getString("Additional_Prod_Dtls").isEmpty()) {
-                        String prd_names = extractValues(js.getString("Additional_Prod_Dtls"), "names");
-                        getValues(prd_names, prdNameList);
-
-                        String prd_codes = extractValues(js.getString("Additional_Prod_Code"), "codes");
-                        getValues(prd_codes, prdCodeList);
-
-                        String sam_qty = extractValues(js.getString("Additional_Prod_Dtls"), "Sample");
-                        getValues(sam_qty, prdSamQtyList);
-
-                        String rx_qty = extractValues(js.getString("Additional_Prod_Dtls"), "Rx");
-                        getValues(rx_qty, prdRxQtyList);
-
-                        String Rcpa_qty = extractValues(js.getString("Additional_Prod_Dtls"), "Rcpa");
-                        getValues(Rcpa_qty, prdRcpaQtyList);
+                if (js.has("promoted_product")) {
+                    if (!js.getString("promoted_product").isEmpty()) {
+                        productPromoted = filterPromoted(js.getString("promoted_product"));
                     }
                 }
-            }
 
-            if (js.has("promoted_product")) {
-                if (!js.getString("promoted_product").isEmpty()) {
-                    productPromoted = filterPromoted(js.getString("promoted_product"));
+                if (js.has("Gift_Name")) {
+                    if (!js.getString("Gift_Name").isEmpty()) {
+                        input.add(js.getString("Gift_Name"));
+                        inputQty.add(js.getString("Gift_Qty"));
+                        inputCode.add(js.getString("Gift_Code"));
+                    }
                 }
-            }
 
-            if (js.has("Gift_Name")) {
-                if (!js.getString("Gift_Name").isEmpty()) {
-                    input.add(js.getString("Gift_Name"));
-                    inputQty.add(js.getString("Gift_Qty"));
-                    inputCode.add(js.getString("Gift_Code"));
+                if (js.has("Additional_Gift_Dtl")) {
+                    if (!js.getString("Additional_Gift_Dtl").isEmpty()) {
+                        String input_names = extractValues(js.getString("Additional_Gift_Dtl"), "names");
+                        getValues(input_names, input);
+
+                        String input_Codes = extractValues(js.getString("Additional_Gift_Code"), "codes");
+                        getValues(input_Codes, inputCode);
+
+                        String inp_qty = extractValues(js.getString("Additional_Gift_Dtl"), "input");
+                        getValues(inp_qty, inputQty);
+                    }
                 }
-            }
-
-            if (js.has("Additional_Gift_Dtl")) {
-                if (!js.getString("Additional_Gift_Dtl").isEmpty()) {
-                    String input_names = extractValues(js.getString("Additional_Gift_Dtl"), "names");
-                    getValues(input_names, input);
-
-                    String input_Codes = extractValues(js.getString("Additional_Gift_Code"), "codes");
-                    getValues(input_Codes, inputCode);
-
-                    String inp_qty = extractValues(js.getString("Additional_Gift_Dtl"), "input");
-                    getValues(inp_qty, inputQty);
-                }
-            }
 
         /*    if (js.has("Product_Stockist")) {
                 if (!js.getString("Product_Stockist").isEmpty()) {
@@ -1552,76 +1571,83 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }*/
 
-            if (js.has("Worked_with_Name")) {
-                if (!js.getString("Worked_with_Name").isEmpty()) {
-                    String[] separatedjoints = js.getString("Worked_with_Name").split(",");
-                    String[] separatedjointscode = js.getString("Worked_with_Code").split("\\$\\$");
-                    for (int index = 0; index < separatedjoints.length; index++) {
-                        JWOthersFragment.callAddedJointList.add(new CallCommonCheckedList(separatedjoints[index], separatedjointscode[index]));
-                    }
-                }
-            }
-
-            Log.e("TAG1", "jsonExtractOnline: " + JWOthersFragment.editRemarks);
-            //Remarks
-            JWOthersFragment.editRemarks = "";
-            JWOthersFragment.editPob = "";
-            if (funStringValidation(js.getString("Activity_Remarks"))) {
-                JWOthersFragment.editRemarks = js.getString("Activity_Remarks");
-            }
-            Log.e("TAG2", "jsonExtractOnline: " + JWOthersFragment.editRemarks);
-
-            //POB
-            if (js.has("POB")) {
-                JWOthersFragment.editPob = js.getString("POB");
-            }
-
-            //FeedBack
-            FeedbackSelectionSide.feedbackCode = "";
-            FeedbackSelectionSide.feedbackName = "";
-            if (js.has("Drcallfeedbackcode") && js.has("Call_Fdback")) {
-                FeedbackSelectionSide.feedbackCode = js.getString("Drcallfeedbackcode");
-                FeedbackSelectionSide.feedbackName = js.getString("Call_Fdback");
-                JWOthersFragment.editFeedback = js.getString("Call_Fdback");
-            }
-            Log.v("jsonExtractOnline", "product--size--" + prdNameList.size());
-            Log.v("jsonExtractOnline", "product-sam-size--" + prdSamQtyList.size());
-            Log.v("jsonExtractOnline", "product-rx-size--" + prdRxQtyList.size());
-            Log.v("jsonExtractOnline", "product-rRCpa-size--" + prdRcpaQtyList.size());
-            Log.v("jsonExtractOnline", "product-promoted--" + productPromoted);
-
-            for (int m = 0; m < prdNameList.size(); m++) {
-                for (int j = 0; j < ProductFragment.checkedPrdList.size(); j++) {
-                    CallCommonCheckedList PrdList = ProductFragment.checkedPrdList.get(j);
-                    if (PrdList.getCode().equalsIgnoreCase(prdCodeList.get(m))) {
-                        int lastStock = Integer.parseInt(PrdList.getStock_balance()) + Integer.parseInt(prdSamQtyList.get(m));
-                        if (productPromoted.toString().contains(prdNameList.get(m))) {
-                            CheckProductListAdapter.saveCallProductListArrayList.add(new SaveCallProductList(prdNameList.get(m), prdCodeList.get(m), PrdList.getCategory(), PrdList.getStock_balance(), String.valueOf(lastStock), prdSamQtyList.get(m), prdRxQtyList.get(m), prdRcpaQtyList.get(m), "0", true));
-                        } else {
-                            CheckProductListAdapter.saveCallProductListArrayList.add(new SaveCallProductList(prdNameList.get(m), prdCodeList.get(m), PrdList.getCategory(), PrdList.getStock_balance(), String.valueOf(lastStock), prdSamQtyList.get(m), prdRxQtyList.get(m), prdRcpaQtyList.get(m), "1", true));
+                if (js.has("Worked_with_Name")) {
+                    if (!js.getString("Worked_with_Name").isEmpty()) {
+                        String[] separatedjoints = js.getString("Worked_with_Name").split(",");
+                        String[] separatedjointscode = js.getString("Worked_with_Code").split("\\$\\$");
+                        for (int index = 0; index < separatedjoints.length; index++) {
+                            JWOthersFragment.callAddedJointList.add(new CallCommonCheckedList(separatedjoints[index], separatedjointscode[index]));
                         }
-                        PrdList.setCheckedItem(true);
-                        break;
                     }
                 }
-            }
 
-            Log.v("jsonExtractOnline", "inputs--size--" + input.size());
-            Log.v("jsonExtractOnline", "inputs-code-size--" + inputCode.size());
-            Log.v("jsonExtractOnline", "inputs-qty-size--" + inputQty.size());
+                Log.e("TAG1", "jsonExtractOnline: " + JWOthersFragment.editRemarks);
+                //Remarks
+                JWOthersFragment.editRemarks = "";
+                JWOthersFragment.editPob = "";
+                if (funStringValidation(js.getString("Activity_Remarks"))) {
+                    JWOthersFragment.editRemarks = js.getString("Activity_Remarks");
+                }
+                Log.e("TAG2", "jsonExtractOnline: " + JWOthersFragment.editRemarks);
 
-            for (int n = 0; n < input.size(); n++) {
-                for (int j = 0; j < InputFragment.checkedInputList.size(); j++) {
-                    CallCommonCheckedList InpList = InputFragment.checkedInputList.get(j);
-                    if (inputCode.get(n).equalsIgnoreCase(InpList.getCode())) {
-                        int lastStock = Integer.parseInt(InpList.getStock_balance()) + Integer.parseInt(inputQty.get(n));
-                        CheckInputListAdapter.saveCallInputListArrayList.add(new SaveCallInputList(input.get(n), inputCode.get(n), inputQty.get(n), InpList.getStock_balance(), String.valueOf(lastStock)));
-                        InpList.setCheckedItem(true);
-                        break;
+                //POB
+                if (js.has("POB")) {
+                    JWOthersFragment.editPob = js.getString("POB");
+                }
+
+                //FeedBack
+                FeedbackSelectionSide.feedbackCode = "";
+                FeedbackSelectionSide.feedbackName = "";
+                if (js.has("Drcallfeedbackcode") && js.has("Call_Fdback")) {
+                    FeedbackSelectionSide.feedbackCode = js.getString("Drcallfeedbackcode");
+                    FeedbackSelectionSide.feedbackName = js.getString("Call_Fdback");
+                    JWOthersFragment.editFeedback = js.getString("Call_Fdback");
+                }
+                Log.v("jsonExtractOnline", "product--size--" + prdNameList.size());
+                Log.v("jsonExtractOnline", "product-sam-size--" + prdSamQtyList.size());
+                Log.v("jsonExtractOnline", "product-rx-size--" + prdRxQtyList.size());
+                Log.v("jsonExtractOnline", "product-rRCpa-size--" + prdRcpaQtyList.size());
+                Log.v("jsonExtractOnline", "product-promoted--" + productPromoted);
+
+                for (int m = 0; m < prdNameList.size(); m++) {
+                    for (int j = 0; j < ProductFragment.checkedPrdList.size(); j++) {
+                        CallCommonCheckedList PrdList = ProductFragment.checkedPrdList.get(j);
+                        if (PrdList.getCode().equalsIgnoreCase(prdCodeList.get(m))) {
+                            int lastStock = Integer.parseInt(PrdList.getStock_balance()) + Integer.parseInt(prdSamQtyList.get(m));
+                            if (productPromoted.toString().contains(prdNameList.get(m))) {
+                                CheckProductListAdapter.saveCallProductListArrayList.add(new SaveCallProductList(prdNameList.get(m), prdCodeList.get(m), PrdList.getCategory(), PrdList.getStock_balance(), String.valueOf(lastStock), prdSamQtyList.get(m), prdRxQtyList.get(m), prdRcpaQtyList.get(m), "0", true));
+                            } else {
+                                CheckProductListAdapter.saveCallProductListArrayList.add(new SaveCallProductList(prdNameList.get(m), prdCodeList.get(m), PrdList.getCategory(), PrdList.getStock_balance(), String.valueOf(lastStock), prdSamQtyList.get(m), prdRxQtyList.get(m), prdRcpaQtyList.get(m), "1", true));
+                            }
+                            PrdList.setCheckedItem(true);
+                            break;
+                        }
                     }
                 }
-            }
 
+                Log.v("jsonExtractOnline", "inputs--size--" + input.size());
+                Log.v("jsonExtractOnline", "inputs-code-size--" + inputCode.size());
+                Log.v("jsonExtractOnline", "inputs-qty-size--" + inputQty.size());
+
+                for (int n = 0; n < input.size(); n++) {
+                    for (int j = 0; j < InputFragment.checkedInputList.size(); j++) {
+                        CallCommonCheckedList InpList = InputFragment.checkedInputList.get(j);
+                        if (inputCode.get(n).equalsIgnoreCase(InpList.getCode())) {
+                            int lastStock = Integer.parseInt(InpList.getStock_balance()) + Integer.parseInt(inputQty.get(n));
+                            CheckInputListAdapter.saveCallInputListArrayList.add(new SaveCallInputList(input.get(n), inputCode.get(n), inputQty.get(n), InpList.getStock_balance(), String.valueOf(lastStock)));
+                            InpList.setCheckedItem(true);
+                            break;
+                        }
+                    }
+                }
+            }else{
+                commonUtilsMethods.showToastMessage(this,getString(R.string.syncing_calls)+getString(R.string.please_try_again));
+                CallsFragment.syncCalls();
+                IsFromDCR = true;
+                HomeDashBoard.isDcrFrom = true;
+                startActivity(new Intent(this, HomeDashBoard.class));
+                finish();
+            }
             //RCPA
             if (json.has("RCPAHead") && !json.getString("RCPAHead").equalsIgnoreCase("[]")) {
                 JSONArray jsonArrayRcpa = new JSONArray(json.getString("RCPAHead"));
@@ -1992,7 +2018,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 if (jsonArrayEc.length() > 0) {
                     for (int j = 0; j < jsonArrayEc.length(); j++) {
                         JSONObject jsEC = jsonArrayEc.getJSONObject(j);
-                        callCaptureImageLists.add(new CallCaptureImageList(jsEC.getString("EventImageTitle"), jsEC.getString("EventImageDescription"), null, jsEC.getString("Eventfilepath"), jsEC.getString("EventImageName"), true));
+                        callCaptureImageLists.add(new CallCaptureImageList(jsEC.getString("EventImageTitle"), jsEC.getString("EventImageDescription"), null, jsEC.getString("EventFilePath"), jsEC.getString("EventImageName"), true));
                     }
                 }
             }
@@ -2268,7 +2294,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     lng = gpsTrack.getLongitude();
                     address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
                 }else {
-                    address = CommonUtilsMethods.gettingAddress(this, Double.parseDouble(latEdit), Double.parseDouble(lngEdit), false);
+                        address = CommonUtilsMethods.gettingAddress(this, Double.parseDouble(latEdit), Double.parseDouble(lngEdit), false);
                 }
             }else {
                 gpsTrack = new GPSTrack(this);
@@ -2742,22 +2768,22 @@ public class DCRCallActivity extends AppCompatActivity {
                     json_Eve_cap.put("EventImageName", callCaptureImageLists.get(i).getSystemImgName());
                     json_Eve_cap.put("EventImageTitle", callCaptureImageLists.get(i).getImg_name());
                     json_Eve_cap.put("EventImageDescription", callCaptureImageLists.get(i).getImg_description());
-                    json_Eve_cap.put("Eventfilepath", callCaptureImageLists.get(i).getFilePath());
+                    json_Eve_cap.put("EventFilePath", callCaptureImageLists.get(i).getFilePath());
                     jsonArray.put(json_Eve_cap);
                 }
                 jsonSaveDcr.put("EventCapture", jsonArray);
             }
 
             //Signature
-            jsonArray = new JSONArray();
+//            jsonArray = new JSONArray();
 //            if(!callSignCaptureImageLists.isEmpty()){
 //                Log.d("Json", "CreateJsonFileCall: "+"json is not null");
 //                jsonImage = CommonUtilsMethods.CommonObjectParameter(DCRCallActivity.this);
 //                try{
 //                    jsonImage.put("table name","sign upload");
 //                    jsonImage.put("Sf code",SfCode);
-////                    jsonImage.put("sign_path",callSignCaptureImageLists.get(0).getFilepath());
-////                    jsonImage.put("SignImageName",callSignCaptureImageLists.get(0).getImg_Name());
+//                    jsonImage.put("sign_path",callSignCaptureImageLists.get(0).getFilepath());
+//                    jsonImage.put("SignImageName",callSignCaptureImageLists.get(0).getImg_Name());
 //                }catch (Exception e){
 //                    e.printStackTrace();
 //                }

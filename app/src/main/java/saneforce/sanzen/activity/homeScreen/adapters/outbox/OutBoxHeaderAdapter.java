@@ -346,10 +346,10 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 if (ecModelClass.getSynced() == 0) {
                     isCallAvailable = true;
                     Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getImg_name());
+                    Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getFilePath());
                     Log.v("SendOutboxCall_______", "--image--" + ecModelClass.getJson_values());
                     CallSendAPIImage(ecModelClass, childPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()), groupModelClass);
-//                    CallSendAPIImage(groupModelClass, ecModelClass, childPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
-                    break;
+                        break;
                 }
             }
         } else {
@@ -657,85 +657,87 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             AmazonS3Client s3Client = new AmazonS3Client(credentialsProvider);
             s3Client.setRegion(Region.getRegion(Regions.AP_SOUTH_1));
 
+     if(!filePath.isEmpty()) {
+    File fileToUpload = new File(filePath);
+    Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
+    if (!fileToUpload.exists()) {
+        Log.d("fileToUpload", "not exists: " + filePath);
+    } else {
 
-            File fileToUpload = new File(filePath);
-            Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
-            if (!fileToUpload.exists()) {
-                Log.d("fileToUpload", "not exists: " + filePath);
-            } else {
+        String bucketName = "san.one";
+        String s3Key = "uploads/" + fileToUpload.getName();
+        Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
-                String bucketName = "san.one";
-                String s3Key = "uploads/" + fileToUpload.getName();
-                Log.d("TAG", "CallSendAPIImage: " + s3Key);
+        String UploadUrl = "https://" + "s3." + "ap-south-1." + "amazonaws.com/" + bucketName + "/" + s3Key;
+        Log.d("S3UploadUrl", "CallSendAPIImage: " + UploadUrl);
 
-                String UploadUrl = "https://" + "s3." + "ap-south-1." + "amazonaws.com/" + bucketName + "/" + s3Key;
-                Log.d("S3UploadUrl", "CallSendAPIImage: " + UploadUrl);
+        TransferNetworkLossHandler.getInstance(context);
 
-                TransferNetworkLossHandler.getInstance(context);
+        TransferUtility transferUtility = TransferUtility.builder()
+                .context(context)
+                .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                .s3Client(s3Client)
+                .defaultBucket(bucketName)
+                .build();
 
-                TransferUtility transferUtility = TransferUtility.builder()
-                        .context(context)
-                        .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
-                        .s3Client(s3Client)
-                        .defaultBucket(bucketName)
-                        .build();
-
-                TransferObserver uploadObserver = transferUtility.upload(
-                        bucketName,
-                        s3Key,
-                        fileToUpload);
-                uploadObserver.setTransferListener(new TransferListener() {
-                    @Override
-                    public void onStateChanged(int idInt, TransferState state) {
-                        if (state == TransferState.COMPLETED) {
-                            Log.d("TAG", "ecModelClass: " + filePath);
-                            InsertImage(ecModelClass.getFilePath(), context);
-                            DeleteCacheFile(filePath, id, CurrentPos, childPos, modelClass);
-                            Log.d("S3 Upload", "Upload Successful: " + s3Key);
-                            try {
-                                modelClass.getChildItems().get(childPos).getEcModelClasses().remove(CurrentPos);
-                                CallAPIListImage(modelClass, childPos);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        } else if (state == TransferState.FAILED) {
-
-                            Log.e("S3 Upload", "Upload Failed");
-                            InsertImage(ecModelClass.getFilePath(), context);
-
-                            ecModelClass.setSynced(1);
-                            ecModelClass.setSync_status(Constants.CALL_FAILED);
-                            try {
-                                callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
-                                CallAPIListImage(modelClass, childPos);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
+        TransferObserver uploadObserver = transferUtility.upload(
+                bucketName,
+                s3Key,
+                fileToUpload);
+        uploadObserver.setTransferListener(new TransferListener() {
+            @Override
+            public void onStateChanged(int idInt, TransferState state) {
+                if (state == TransferState.COMPLETED) {
+                    Log.d("TAG", "ecModelClass: " + filePath);
+                    InsertImage(ecModelClass.getFilePath(), context);
+                    DeleteCacheFile(filePath, id, CurrentPos, childPos, modelClass);
+                    Log.d("S3 Upload", "Upload Successful: " + s3Key);
+                    try {
+                        modelClass.getChildItems().get(childPos).getEcModelClasses().remove(CurrentPos);
+                        CallAPIListImage(modelClass, childPos);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                } else if (state == TransferState.FAILED) {
 
-                    @Override
-                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                        double progress = (bytesCurrent * 100.0) / bytesTotal;
-                        Log.d("S3 Upload", "Upload Progress: " + progress + "%");
+                    Log.e("S3 Upload", "Upload Failed");
+                    InsertImage(ecModelClass.getFilePath(), context);
+                    ecModelClass.setSynced(1);
+                    ecModelClass.setSync_status(Constants.CALL_FAILED);
+                    try {
+                        callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
+                        CallAPIListImage(modelClass, childPos);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
-                    @Override
-                    public void onError(int idInt, Exception ex) {
-                        Log.e("S3 Upload", "Error: " + ex.getMessage());
-                        ecModelClass.setSynced(1);
-                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-                        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
-                        try {
-                            CallAPIListImage(modelClass, childPos);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                }
 
             }
+
+            @Override
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                double progress = (bytesCurrent * 100.0) / bytesTotal;
+                Log.d("S3 Upload", "Upload Progress: " + progress + "%");
+            }
+
+            @Override
+            public void onError(int idInt, Exception ex) {
+                Log.e("S3 Upload", "Error: " + ex.getMessage());
+                ecModelClass.setSynced(1);
+                ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+                try {
+                    CallAPIListImage(modelClass, childPos);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+}else{
+    Log.d("Filepath", "CallSendAPIImage: "+"file path in adap is empty");
+}
         } catch(Exception e){
             Log.v("img_tag", e.toString());
             ecModelClass.setSynced(1);
