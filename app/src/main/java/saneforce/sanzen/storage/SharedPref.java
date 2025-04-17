@@ -454,6 +454,10 @@ public class SharedPref {
     public static final String QUIZ_AVAILABLE_DATE = "Quiz Available Date";
     public static final String QUIZ_DATA = "Quiz Data";
 
+    public static final String SEQ_DLY_CTRL = "Seq_dly_ctrl";
+    public static final String SEQ_DCR_LOCK_DAYS = "SeqDcrLockDays";
+    public static final String DELAY_HW_NEED = "Delay_HW_Need";
+
     public static final String TAGGED_DCR_CUSTOMERS = "Tagged DCR Customers";
 
     public static SharedPreferences.Editor editor;
@@ -793,6 +797,9 @@ public class SharedPref {
         editor.putString(STP_APPR_NEED, jsonObject.getString("STP_Appr_Need"));
         editor.putString(STP_BASED_MTP, jsonObject.getString("STP_Based_MTP"));
         editor.putString(STP_BASED_DCR, jsonObject.getString("STP_Based_DCR"));
+        editor.putString(SEQ_DLY_CTRL, jsonObject.getString("Seq_dly_ctrl"));
+        editor.putString(SEQ_DCR_LOCK_DAYS, jsonObject.getString("SeqDcrLockDays"));
+        editor.putString(DELAY_HW_NEED, jsonObject.getString("Delay_HW_Need"));
         editor.putString(WELCOME_SLIDES_PATH, "");
         editor.apply();
 
@@ -2813,6 +2820,24 @@ public class SharedPref {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(TAGGED_DCR_CUSTOMERS, data).apply();
+    }
+
+    public static void setSeqDcrLockDays(Context context, String days) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SEQ_DCR_LOCK_DAYS, days).apply();
+    }
+
+    public static String getSeqDlyCtrl(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SEQ_DLY_CTRL, "");
+    }
+
+    public static String getSeqDcrLockDays(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SEQ_DCR_LOCK_DAYS, "");
+    }
+
+    public static String getDelayHwNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DELAY_HW_NEED, "");
     }
 
 }

@@ -46,7 +46,6 @@ public class WorkPlanEntriesNeeded {
     private static ApiInterface apiInterface;
     private static int callSyncSuccess = 0, dateSyncSuccess = 0;
     private static SyncTaskStatus syncTaskStatus;
-    public static boolean isPlanningDateFound = false;
 
     public static void updateMyDayPlanEntryDates(Context context, boolean shouldSync, SyncTaskStatus syncTaskStatus) {
         masterDataDao = RoomDB.getDatabase(context).masterDataDao();
@@ -128,9 +127,9 @@ public class WorkPlanEntriesNeeded {
         datesNeeded.clear();
         TreeMap<String, String> dates = new TreeMap<>();
         boolean isCallDataAvailable = false;
+        boolean isPlanningDateFound = false;
         String planningDate = "";
         TreeSet<String> pastDates = new TreeSet<>();
-        isPlanningDateFound = false;
         HashMap<String, String> dayFlagMap = new HashMap<>();
 
         try {
@@ -251,6 +250,29 @@ public class WorkPlanEntriesNeeded {
                 }
                 Log.v("TAG 1", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }
+            if(SharedPref.getSeqDlyCtrl(context).equalsIgnoreCase("1")
+                    && SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+                if(SharedPref.getSeqDcrLockDays(context).equalsIgnoreCase("0")) {
+                    datesNeeded.clear();
+                    pastDates.clear();
+                } else {
+                    int numberOfDaysLock = Integer.parseInt(SharedPref.getSeqDcrLockDays(context));
+                    datesNeededDup = new TreeSet<>(pastDates);
+                    for (String dt : datesNeededDup) {
+                        LocalDate date = LocalDate.parse(dt, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                        LocalDate joiningDate = LocalDate.parse(SFDCR_Date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                        if(date.isBefore(joiningDate)) {
+                            datesNeededDup.remove(dt);
+                        }else if(date.isEqual(joiningDate)) {
+                            break;
+                        }
+                    }
+                    if(datesNeededDup.size() > numberOfDaysLock) {
+                        datesNeeded.clear();
+                        pastDates.clear();
+                    }
+                }
+            }
             JSONArray dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
             if(dateSync.length()>0) {
                 for (int i = 0; i<dateSync.length(); i++) {
@@ -284,6 +306,7 @@ public class WorkPlanEntriesNeeded {
             if(!offlineDaySubmitDates.isEmpty()) {
                 for (String date : offlineDaySubmitDates) {
                     datesNeeded.remove(date);
+                    pastDates.remove(date);
                 }
                 Log.v("TAG 3", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }
@@ -375,7 +398,6 @@ public class WorkPlanEntriesNeeded {
 
     public interface SyncTaskStatus {
         void datesFound();
-
         void noDatesFound();
     }
 
