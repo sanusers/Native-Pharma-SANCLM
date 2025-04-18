@@ -1024,9 +1024,38 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 } else {
                     jsonObject.put("cust_status", "0");
                 }
-                jsonObject.put("Lat", latitude);
-                jsonObject.put("Long", longitude);
-                jsonObject.put("Addrs", address);
+                switch (selectedTab) {
+                    case "D":
+                        jsonObject.put("Lat", latitude);
+                        jsonObject.put("Long", longitude);
+                        jsonObject.put("Addrs", address);
+                        break;
+                    case "C":
+                        jsonObject.put("lat", latitude);
+                        jsonObject.put("long", longitude);
+                        jsonObject.put("addrs", address);
+                        break;
+                    case "S":
+                        jsonObject.put("lat", latitude);
+                        jsonObject.put("long", longitude);
+                        jsonObject.put("addrs", address);
+                        break;
+                    case "U":
+                        jsonObject.put("lat", latitude);
+                        jsonObject.put("long", longitude);
+                        jsonObject.put("addr", address);
+                        break;
+                    case "H":
+                        jsonObject.put("Lat", latitude);
+                        jsonObject.put("Long", longitude);
+                        jsonObject.put("Addrs", address);
+                        break;
+                    case "CIP":
+                        jsonObject.put("Lat", latitude);
+                        jsonObject.put("Long", longitude);
+                        jsonObject.put("Addrs", address);
+                        break;
+                }
                 if(!imageName.isEmpty()) {
                     jsonObject.put("img_name", imageName);
                 } else {
