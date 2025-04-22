@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.tourPlan.session;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.tourPlan.model.EditModelClass;
+import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.storage.SharedPref;
 
 public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.MyViewHolder> implements Filterable {
 
@@ -24,6 +27,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     private boolean checkBoxVisibility = false;
     private ValueFilter valueFilter;
     SessionItemInterface sessionItemInterface;
+    private int independentPosition = -1;
     public SessionItemAdapter (){
 
     }
@@ -45,7 +49,9 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     @Override
     public void onBindViewHolder (@NonNull SessionItemAdapter.MyViewHolder holder, int position) {
         EditModelClass editModelClass = arrayList.get(holder.getAbsoluteAdapterPosition());
-
+        if(editModelClass.getName().equalsIgnoreCase(Constants.INDEPENDENT)) {
+            independentPosition = position;
+        }
         if (!checkBoxVisibility){
             holder.checkBox.setVisibility(View.GONE);
         }
@@ -55,15 +61,32 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-
                 if (!holder.checkBox.isChecked()){
                     holder.checkBox.setChecked(true);
                     arrayList.get(holder.getAbsoluteAdapterPosition()).setChecked(true);
+                    if(independentPosition != -1) {
+                        if(editModelClass.getName().equalsIgnoreCase(Constants.INDEPENDENT)) {
+                            editModelClass.setChecked(true);
+                            arrayList.set(position, editModelClass);
+                            for (int index = 0; index<arrayList.size(); index++) {
+                                EditModelClass editModelClass1 = arrayList.get(index);
+                                if(!editModelClass1.getName().equalsIgnoreCase(Constants.INDEPENDENT)) {
+                                    editModelClass1.setChecked(false);
+                                    arrayList.set(index, editModelClass1);
+                                }
+                            }
+                        } else {
+                            EditModelClass editModelClass1 = arrayList.get(independentPosition);
+                            editModelClass1.setChecked(false);
+                            arrayList.set(independentPosition, editModelClass1);
+                        }
+                    }
                 }else{
                     holder.checkBox.setChecked(false);
                     arrayList.get(holder.getAbsoluteAdapterPosition()).setChecked(false);
                 }
                 sessionItemInterface.itemClicked(arrayList, arrayList.get(holder.getAbsoluteAdapterPosition()));
+                notifyDataSetChanged();
             }
         });
 

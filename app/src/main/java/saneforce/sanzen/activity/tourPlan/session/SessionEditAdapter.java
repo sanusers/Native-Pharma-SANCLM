@@ -1209,8 +1209,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                             if(masterSyncItemModel.getLocalTableKeyName().equalsIgnoreCase(Constants.JOINT_WORK + hqCode)) {
                                                 JSONObject jointWorkJsonObject = new JSONObject();
                                                 jointWorkJsonObject.put("Code", SharedPref.getSfCode(context));
-                                                jointWorkJsonObject.put("Name", "Independent");
-                                                jointWorkJsonObject.put("SfName", "Independent");
+                                                jointWorkJsonObject.put("Name", Constants.INDEPENDENT);
+                                                jointWorkJsonObject.put("SfName", Constants.INDEPENDENT);
                                                 jointWorkJsonObject.put("Reporting_To_SF", "");
                                                 jointWorkJsonObject.put("OwnDiv", "");
                                                 jointWorkJsonObject.put("Division_Code", SharedPref.getDivisionCode(context));
@@ -1278,10 +1278,12 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public void populateSessionItemAdapter(MyViewHolder holder, boolean checkBoxNeed, boolean isSortNeeded) {
 
-        if (isSortNeeded) {
+        if(isSortNeeded) {
             Collections.sort(holder.sessionItemAdapterArray, new Comparator<EditModelClass>() {
                 @Override
                 public int compare(EditModelClass editModelClass, EditModelClass t1) {
+                    if (editModelClass.getName().equals(Constants.INDEPENDENT)) return -1;
+                    if (t1.getName().equals(Constants.INDEPENDENT)) return 1;
                     return editModelClass.getName().compareTo(t1.getName());
                 }
             });

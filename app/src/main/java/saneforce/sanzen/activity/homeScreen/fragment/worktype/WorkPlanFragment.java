@@ -2243,6 +2243,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "table/dcrmasterdata");
                 Call<JsonElement> call = api_interface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
+                if (masterFor.equalsIgnoreCase(Constants.SUBORDINATE)) {
+                    mapString.put("axn", "table/subordinates");
+                    call = api_interface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
+                }
 
                 if(call != null) {
                     call.enqueue(new Callback<JsonElement>() {
@@ -2285,8 +2289,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                             if(LocalTableKeyName.equalsIgnoreCase(Constants.JOINT_WORK + hqCode)) {
                                                 JSONObject jointWorkJsonObject = new JSONObject();
                                                 jointWorkJsonObject.put("Code", SharedPref.getSfCode(requireContext()));
-                                                jointWorkJsonObject.put("Name", "Independent");
-                                                jointWorkJsonObject.put("SfName", "Independent");
+                                                jointWorkJsonObject.put("Name", Constants.INDEPENDENT);
+                                                jointWorkJsonObject.put("SfName", Constants.INDEPENDENT);
                                                 jointWorkJsonObject.put("Reporting_To_SF", "");
                                                 jointWorkJsonObject.put("OwnDiv", "");
                                                 jointWorkJsonObject.put("Division_Code", SharedPref.getDivisionCode(requireContext()));

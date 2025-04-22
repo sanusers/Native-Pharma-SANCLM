@@ -21,12 +21,13 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment;
 import saneforce.sanzen.activity.call.fragments.jwOthers.JointWorkSelectionSide;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
+import saneforce.sanzen.storage.SharedPref;
 
 
 public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
     ArrayList<CallCommonCheckedList> jwLists;
     Context context;
-
+    private int independentPosition;
 
     public JwAdapter(Context context, ArrayList<CallCommonCheckedList> jwLists) {
         this.context = context;
@@ -42,6 +43,9 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        if(jwLists.get(position).getCode().equalsIgnoreCase(SharedPref.getSfCode(context))) {
+            independentPosition = position;
+        }
 
         if(JWKCodeList.contains(jwLists.get(position).getCode())){
             holder.checkBox.setChecked(true);
@@ -74,11 +78,16 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
                     holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
                     jwLists.get(position).setCheckedItem(true);
                     JointWorkSelectionSide.JwList.get(position).setCheckedItem(true);
-
-
+                    if(jwLists.get(position).getCode().equalsIgnoreCase(SharedPref.getSfCode(context))) {
+                        removeOtherSelections();
+                        notifyDataSetChanged();
+                    } else {
+                        CallCommonCheckedList callCommonCheckedList = jwLists.get(independentPosition);
+                        callCommonCheckedList.setCheckedItem(false);
+                        jwLists.set(independentPosition, callCommonCheckedList);
+                        notifyDataSetChanged();
+                    }
                 } else {
-
-
                     holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
                     holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
                     jwLists.get(position).setCheckedItem(false);
@@ -93,6 +102,25 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
                 }
             }
         });
+    }
+
+    private void removeOtherSelections() {
+        for (int i = 0; i < jwLists.size(); i++) {
+            CallCommonCheckedList callCommonCheckedList = jwLists.get(i);
+            if(callCommonCheckedList.isCheckedItem() && !callCommonCheckedList.getCode().equalsIgnoreCase(SharedPref.getSfCode(context))) {
+                callCommonCheckedList.setCheckedItem(false);
+                jwLists.set(i, callCommonCheckedList);
+            }
+        }
+    }
+
+    private boolean checkAnyJWSelected() {
+        for (CallCommonCheckedList callCommonCheckedList : jwLists) {
+            if(callCommonCheckedList.isCheckedItem() && !callCommonCheckedList.getCode().equalsIgnoreCase(SharedPref.getSfCode(context))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

@@ -59,6 +59,7 @@ android {
 }
 
 dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
@@ -133,7 +134,8 @@ dependencies {
 
     //Pdf viewer
 //    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
-    implementation 'com.github.barteksc:AndroidPdfViewer:master-SNAPSHOT'
+//    implementation 'com.github.barteksc:AndroidPdfViewer:master-SNAPSHOT'
+//    implementation(name: 'android-pdf-viewer-2.8.2', ext: 'aar')
 
     //imgCompressor
     implementation 'id.zelory:compressor:2.1.1'
