@@ -16,7 +16,7 @@ android {
         minSdk 23
         targetSdk 35
         versionCode 55
-        versionName "1.0.2"
+        versionName "1.0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -61,6 +61,7 @@ android {
 }
 
 dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -134,7 +135,8 @@ dependencies {
 
     //Pdf viewer
 //    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
-    implementation 'com.github.barteksc:AndroidPdfViewer:master-SNAPSHOT'
+//    implementation 'com.github.barteksc:AndroidPdfViewer:master-SNAPSHOT'
+//    implementation(name: 'android-pdf-viewer-2.8.2', ext: 'aar')
 
     //imgCompressor
     implementation 'id.zelory:compressor:2.1.1'

@@ -587,7 +587,8 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
         if(SharedPref.getSfType(this).equalsIgnoreCase("2")){
             binding.hqName.setText(SharedPref.getHqName(MasterSyncActivity.this));
-        rsf = SharedPref.getHqCode(MasterSyncActivity.this);}
+            rsf = SharedPref.getHqCode(MasterSyncActivity.this);
+        }
         else {
             binding.hqName.setText(SharedPref.getHqNameMain(MasterSyncActivity.this));
             rsf = SharedPref.getSfCode(MasterSyncActivity.this);
@@ -1179,8 +1180,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         else if(!rsf.isEmpty() && masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.JOINT_WORK + rsf)) {
                                             JSONObject jointWorkJsonObject = new JSONObject();
                                             jointWorkJsonObject.put("Code", SharedPref.getSfCode(MasterSyncActivity.this));
-                                            jointWorkJsonObject.put("Name", "Independent");
-                                            jointWorkJsonObject.put("SfName", "Independent");
+                                            jointWorkJsonObject.put("Name", Constants.INDEPENDENT);
+                                            jointWorkJsonObject.put("SfName", Constants.INDEPENDENT);
                                             jointWorkJsonObject.put("Reporting_To_SF", "");
                                             jointWorkJsonObject.put("OwnDiv", "");
                                             jointWorkJsonObject.put("Division_Code", SharedPref.getDivisionCode(MasterSyncActivity.this));

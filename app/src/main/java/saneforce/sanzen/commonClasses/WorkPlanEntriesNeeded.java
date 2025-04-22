@@ -150,6 +150,71 @@ public class WorkPlanEntriesNeeded {
                 pastDates = getAllDatesForPastThreeMonths();
 //            }
 
+            JSONArray holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray();
+            for (int i = 0; i < holidayJSONArray.length(); i++) {
+                JSONObject jsonObject = holidayJSONArray.getJSONObject(i);
+                String holidayDate = "";
+                if(jsonObject.has("holiday_date")) {
+                    holidayDate = jsonObject.optString("holiday_date");
+                } else {
+                    holidayDate = jsonObject.optString("Holiday_Date");
+                }
+                if(datesNeeded != null && !datesNeeded.isEmpty()) {
+                    datesNeeded.remove(holidayDate);
+                    pastDates.remove(holidayDate);
+                }
+            }
+
+            JSONArray weeklyOff = masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray();
+            String holidayMode = "";
+            for (int i = 0; i < weeklyOff.length(); i++) {
+                JSONObject jsonObject = weeklyOff.getJSONObject(i);
+                holidayMode = jsonObject.getString("Holiday_Mode");
+            }
+            String[] holidayModeArray = holidayMode.split(",");
+            ArrayList<String> weeklyOffDays = new ArrayList<>();
+            for (String str : holidayModeArray) {
+                switch (str) {
+                    case "0": {
+                        weeklyOffDays.add("Sunday");
+                        break;
+                    }
+                    case "1": {
+                        weeklyOffDays.add("Monday");
+                        break;
+                    }
+                    case "2": {
+                        weeklyOffDays.add("Tuesday");
+                        break;
+                    }
+                    case "3": {
+                        weeklyOffDays.add("Wednesday");
+                        break;
+                    }
+                    case "4": {
+                        weeklyOffDays.add("Thursday");
+                        break;
+                    }
+                    case "5": {
+                        weeklyOffDays.add("Friday");
+                        break;
+                    }
+                    case "6": {
+                        weeklyOffDays.add("Saturday");
+                        break;
+                    }
+                }
+            }
+
+            TreeSet<String> datesNeededDup = new TreeSet<>(pastDates);
+            for (String date : datesNeededDup) {
+                String dayName = LocalDate.parse(date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)).getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
+                if(weeklyOffDays.contains(dayName)) {
+                    datesNeeded.remove(date);
+                    pastDates.remove(date);
+                }
+            }
+
             JSONArray dcrdatas = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
             if(dcrdatas.length()>0) {
                 isCallDataAvailable = true;
@@ -217,71 +282,6 @@ public class WorkPlanEntriesNeeded {
             if(!isTodayPresent || isTodayNotFinished) {
                 datesNeeded.add(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
                 Log.v("TAG 4", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
-            }
-
-            JSONArray holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray();
-            for (int i = 0; i < holidayJSONArray.length(); i++) {
-                JSONObject jsonObject = holidayJSONArray.getJSONObject(i);
-                String holidayDate = "";
-                if(jsonObject.has("holiday_date")) {
-                    holidayDate = jsonObject.optString("holiday_date");
-                } else {
-                    holidayDate = jsonObject.optString("Holiday_Date");
-                }
-                if(datesNeeded != null && !datesNeeded.isEmpty()) {
-                    datesNeeded.remove(holidayDate);
-                    pastDates.remove(holidayDate);
-                }
-            }
-
-            JSONArray weeklyOff = masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray();
-            String holidayMode = "";
-            for (int i = 0; i < weeklyOff.length(); i++) {
-                JSONObject jsonObject = weeklyOff.getJSONObject(i);
-                holidayMode = jsonObject.getString("Holiday_Mode");
-            }
-            String[] holidayModeArray = holidayMode.split(",");
-            ArrayList<String> weeklyOffDays = new ArrayList<>();
-            for (String str : holidayModeArray) {
-                switch (str) {
-                    case "0": {
-                        weeklyOffDays.add("Sunday");
-                        break;
-                    }
-                    case "1": {
-                        weeklyOffDays.add("Monday");
-                        break;
-                    }
-                    case "2": {
-                        weeklyOffDays.add("Tuesday");
-                        break;
-                    }
-                    case "3": {
-                        weeklyOffDays.add("Wednesday");
-                        break;
-                    }
-                    case "4": {
-                        weeklyOffDays.add("Thursday");
-                        break;
-                    }
-                    case "5": {
-                        weeklyOffDays.add("Friday");
-                        break;
-                    }
-                    case "6": {
-                        weeklyOffDays.add("Saturday");
-                        break;
-                    }
-                }
-            }
-
-            TreeSet<String> datesNeededDup = new TreeSet<>(pastDates);
-            for (String date : datesNeededDup) {
-                String dayName = LocalDate.parse(date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)).getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
-                if(weeklyOffDays.contains(dayName)) {
-                    datesNeeded.remove(date);
-                    pastDates.remove(date);
-                }
             }
 
 //            if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {

@@ -110,5 +110,6 @@ public class Constants {
     public static final String DCR_FROM_ACTIVITY = "dcr_from_activity";
     public static final String DETAILING_REQUIRED = "isDetailingRequired";
 
+    public static final String INDEPENDENT = "Independent";
 
 }
