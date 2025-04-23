@@ -355,7 +355,6 @@ public class MyResource_Activity extends AppCompatActivity {
                     appAdapter = new Res_sidescreenAdapter(MyResource_Activity.this, resourcelis, split_val, Hqcode, new SidelistViewInterface() {
                         @Override
                         public void OnCilckItem(String HQ_CODE, String DCR_CODE, String CUST_FLAG) {
-
                             if(!CheckLocPermission()){
                                 RequestLocationPermission();
                             }else {
@@ -365,23 +364,17 @@ public class MyResource_Activity extends AppCompatActivity {
                                 click.putExtra("CUST_FLAG", CUST_FLAG);
                                 startActivity(click);
                             }
-
                         }
-
-
                     });
                     appRecyclerView.setAdapter(appAdapter);
                     appRecyclerView.setLayoutManager(new LinearLayoutManager(MyResource_Activity.this));
                     appAdapter.notifyDataSetChanged();
-
                 }
-            });//13
+            });
             binding.resourceId.setItemAnimator(new DefaultItemAnimator());
             binding.resourceId.setLayoutManager(new GridLayoutManager(MyResource_Activity.this, 4, GridLayoutManager.VERTICAL, false));
             binding.resourceId.setAdapter(resourceAdapter);
             resourceAdapter.notifyDataSetChanged();
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }

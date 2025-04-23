@@ -24,6 +24,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
@@ -35,13 +36,14 @@ import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment;
 import saneforce.sanzen.activity.call.pojo.CallCaptureImageList;
+import saneforce.sanzen.activity.map.MapsActivity;
+import saneforce.sanzen.activity.reports.dayReport.model.EventCaptureModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
 import saneforce.sanzen.storage.SharedPref;
-
 
 public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCaptureImage.ViewHolder> {
     Context context;
@@ -70,26 +72,21 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         holder.ed_img_desc.setText(callCaptureImageList.getImg_description());
         switch (isFromActivity) {
             case "new":
-                if(callCaptureImageList.getImg_view() == null){
-                    try {
-                        Bitmap photo = BitmapFactory.decodeFile(callCaptureImageList.getFilePath());
-                        holder.img_view.setImageBitmap(photo);
-                           CallCaptureImageList callCaptureImageList1 = JWOthersFragment.callCaptureImageLists.get(position);
-                        callCaptureImageList1.setImg_view(photo);
-                        JWOthersFragment.callCaptureImageLists.set(position, callCaptureImageList1);
-                        // Added S3 buckets upload
-                        File imageFile = new File(callCaptureImageList.getFilePath());
-                        String fileName = callCaptureImageList.getSystemImgName();
-
-                        new AWSBuckets(context, fileName, imageFile, "");
-                    } catch (Exception e) {
-                        Log.e("EC", "onBindViewHolder: " + e.getMessage());
-                        e.printStackTrace();
-                    }
-                } else {
-                    holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
+            if(callCaptureImageList.getImg_view() == null){
+                try {
+                    Bitmap photo = BitmapFactory.decodeFile(callCaptureImageList.getFilePath());
+                    holder.img_view.setImageBitmap(photo);
+                    CallCaptureImageList callCaptureImageList1 = JWOthersFragment.callCaptureImageLists.get(position);
+                    callCaptureImageList1.setImg_view(photo);
+                    JWOthersFragment.callCaptureImageLists.set(position, callCaptureImageList1);
+                } catch (Exception e) {
+                    Log.e("EC", "onBindViewHolder: " + e.getMessage());
+                    e.printStackTrace();
                 }
-                break;
+            } else {
+               holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
+            }
+            break;
             case "edit_local":
                 File imgFile = new File(callCaptureImageList.getFilePath());
                 if (imgFile.exists()) {
@@ -99,27 +96,15 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                 break;
             case "edit_online":
                 if(callCaptureImageList.isShowPreview()) {
-                    if(callCaptureImageList.isNewlyAdded()) {
+                    if (callCaptureImageList.isNewlyAdded()) {
                         holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
-                    } else {
-                        // Added S3 buckets downloa
-                        String fileName = callCaptureImageList.getSystemImgName();
-                        File file = new File(context.getFilesDir(),fileName);
-                        Log.d("TAG", "onBindViewHolder: " + file.getAbsolutePath());
-                        new AWSBuckets(context, fileName, file, 0, "", new S3DownloadFiles() {
-                            @Override
-                            public void fileDataAdd(int pos, Bitmap bitmap) {
-                                if (bitmap != null) {
-                                    Log.d("bitmap image", "Image successfully loaded.");
-                                    holder.img_view.setImageBitmap(bitmap);
-                                    holder.img_view.setVisibility(View.VISIBLE);
-                                } else {
-                                    Log.d("bitmap image", "Failed to load image, bitmap is null.");
-                                    holder.img_view.setVisibility(View.GONE);
-                                }
-                            }
-                        });
-//                        Glide.with(context).load(SharedPref.getTagImageUrl(context) + "uploads/" + callCaptureImageList.getSystemImgName()).fitCenter().into(holder.img_view);
+                    } if(callCaptureImageList.getImg_view() == null){
+
+                        Bitmap photo = BitmapFactory.decodeFile(callCaptureImageList.getFilePath());
+                        holder.img_view.setImageBitmap(photo);
+                        CallCaptureImageList callCaptureImageList1 = JWOthersFragment.callCaptureImageLists.get(position);
+                        callCaptureImageList1.setImg_view(photo);
+                        JWOthersFragment.callCaptureImageLists.set(position, callCaptureImageList1);
                     }
                 }
                 break;
@@ -158,20 +143,20 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         holder.img_view.setOnClickListener(v -> {
             switch (isFromActivity) {
                 case "new":
-                    showImage(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view());
+                        showImage(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view());
                     break;
                 case "edit_local":
                     showImageLocal(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath());
                     break;
                 case "edit_online":
                     if(UtilityClass.isNetworkAvailable(context)) {
-                        if(!callCaptureImageList.isShowPreview()) {
-                            callCaptureImageList.setShowPreview(true);
-                            notifyItemChanged(position);
-                        }
+//                        if(!callCaptureImageList.isShowPreview()) {
+//                            callCaptureImageList.setShowPreview(true);
+//                            notifyItemChanged(position);
+//                        }
                         if(callCaptureImageList.isNewlyAdded())
                             showImage(callCaptureImageList.getImg_view());
-                        else ShowImageEdit(callCaptureImageList.getSystemImgName(),holder);
+                        else  ShowImageEdit(callCaptureImageList.getSystemImgName(),holder,position);
                     } else new CommonUtilsMethods(context).showToastMessage(context, "No network available!");
                     break;
             }
@@ -190,7 +175,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
             @Override
             public void afterTextChanged(Editable editable) {
-                callCaptureImageLists.set(holder.getBindingAdapterPosition(), new CallCaptureImageList(editable.toString(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_description(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getSystemImgName(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).isNewlyAdded()));
+                callCaptureImageLists.set(holder.getBindingAdapterPosition(), new CallCaptureImageList(editable.toString(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_description(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getSystemImgName(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).isNewlyAdded(),callCaptureImageLists.get(holder.getBindingAdapterPosition()).isShowPreview()));
             }
         });
 
@@ -207,7 +192,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
             @Override
             public void afterTextChanged(Editable editable) {
-                callCaptureImageLists.set(holder.getBindingAdapterPosition(), new CallCaptureImageList(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_name(), editable.toString(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getSystemImgName(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).isNewlyAdded()));
+                callCaptureImageLists.set(holder.getBindingAdapterPosition(), new CallCaptureImageList(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_name(), editable.toString(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getSystemImgName(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).isNewlyAdded(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).isShowPreview()));
             }
         });
     }
@@ -228,35 +213,30 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         }
     }
 
-    private void ShowImageEdit(String systemImgName,@NonNull ViewHolder holder) {
+    private void ShowImageEdit(String systemImageName,@NonNull ViewHolder holder , int position){
+        CallCaptureImageList callCaptureImageList = callCaptureImageLists.get(position);
         Dialog builder = new Dialog(context);
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         builder.setCancelable(true);
         Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
-        ImageView imageView = new ImageView(context);
-        String fileName = systemImgName;
+      ;
+        String fileName = callCaptureImageList.getSystemImgName();
         File file = new File(context.getFilesDir(),fileName);
-        Log.d("TAG", "onBindViewHolder: " + file.getAbsolutePath());
+        Log.d("TAG_acci", "onBindViewHolder: " + file.getAbsolutePath());
         new AWSBuckets(context, fileName, file, 0, "", new S3DownloadFiles() {
             @Override
             public void fileDataAdd(int pos, Bitmap bitmap) {
                 if (bitmap != null) {
-                    Log.d("bitmap image", "Image successfully loaded.");
+                    Log.d("bitmap image edit", "Image successfully loaded.");
                     holder.img_view.setImageBitmap(bitmap);
                     holder.img_view.setVisibility(View.VISIBLE);
                     showImage(bitmap);
-
-
                 } else {
                     Log.d("bitmap image", "Failed to load image, bitmap is null.");
                     holder.img_view.setVisibility(View.GONE);
                 }
             }
         });
-//        Glide.with(context).load(SharedPref.getTagImageUrl(context) + "photos/" + systemImgName).fitCenter().into(imageView);
-//        builder.addContentView(imageView, new RelativeLayout.LayoutParams((int)context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
-//        builder.show();
     }
 
     @Override
@@ -265,14 +245,14 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
     }
 
     public void showImage(Bitmap img_view) {
-        Dialog builder = new Dialog(context);
-        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        builder.setCancelable(true);
-        Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        ImageView imageView = new ImageView(context);
-        imageView.setImageBitmap(img_view);
-        builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
-        builder.show();
+            Dialog builder = new Dialog(context);
+            builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            builder.setCancelable(true);
+            Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            ImageView imageView = new ImageView(context);
+            imageView.setImageBitmap(img_view);
+            builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
+            builder.show();
     }
 
     public void removeAt(int position) {

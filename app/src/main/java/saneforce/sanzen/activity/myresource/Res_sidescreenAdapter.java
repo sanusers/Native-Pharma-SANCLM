@@ -40,7 +40,6 @@ import saneforce.sanzen.utility.TimeUtils;
 
 public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAdapter.ViewHolder> {
 
-
     ArrayList<Resourcemodel_class> resList;
     ArrayList<Resourcemodel_class> FillteredList;
     ArrayList<String> resList1 = new ArrayList<>();
@@ -55,7 +54,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
     HashSet<String> uniqueValues = new HashSet<>();
     ArrayList<String> duplicateValues = new ArrayList<>();
-
 
     private RoomDB roomDB;
     private LoginDataDao loginDataDao;
@@ -138,27 +136,29 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
             if (!app_adapt.getRes_custname().equals("") && !app_adapt.getRes_custname().equals("null")) {
                 holder.Res_culter.setText(app_adapt.getRes_custname());
+                holder.Res_culter.setVisibility(View.VISIBLE);
             } else {
                 holder.Res_culter.setVisibility(View.GONE);
             }
-
 
             if (!app_adapt.getRes_custname().equals("") && !app_adapt.getRes_custname().equals("null")) {
                 holder.Res_culter.setText(app_adapt.getRes_custname());
+                holder.Res_culter.setVisibility(View.VISIBLE);
             } else {
                 holder.Res_culter.setVisibility(View.GONE);
             }
 
-            if (!app_adapt.getRes_Category().equals("") && !app_adapt.getRes_Category().equals("null")) {
+            if (app_adapt.getRes_Category() != null && !app_adapt.getRes_Category().isEmpty() && !app_adapt.getRes_Category().equals("null")) {
                 holder.Res_category.setText(app_adapt.getRes_Category());
+                holder.Res_category.setVisibility(View.VISIBLE);
             } else {
                 holder.Res_category.setVisibility(View.GONE);
             }
 
 
             if (!app_adapt.getRes_Specialty().equals("") && !app_adapt.getRes_Specialty().equals("null")) {
-
                 holder.Res_specialty.setText(app_adapt.getRes_Specialty());
+                holder.Res_specialty.setVisibility(View.VISIBLE);
             } else {
                 holder.Res_specialty.setVisibility(View.GONE);
             }
@@ -172,7 +172,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 holder.Res_rx.setText("");
             }
 
-
             if (app_adapt.getRes_Category().equals("") && app_adapt.getRes_rx().equals("") && app_adapt.getRes_Specialty().equals("")) {
                 holder.Res_Table1.setVisibility(View.GONE);
                 if (split_val.equals("1") || split_val.equals("2")) {
@@ -185,6 +184,8 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     holder.Res_View.setVisibility(View.GONE);
                     holder.Res_Table2.setVisibility(View.GONE);
                 }
+            } else {
+                holder.Res_Table1.setVisibility(View.VISIBLE);
             }
 
             if (split_val.equals("1") || split_val.equals("2")) {
@@ -316,7 +317,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 }
             });
 
-
             holder.Res_View.setOnClickListener(v -> {
                 Log.d("latlong", app_adapt.Latitude + "--" + app_adapt.Latitude + "--" + app_adapt.getRes_id() + "--" + app_adapt.getCustoum_name());
                 if (app_adapt.Latitude.equals("") || app_adapt.Latitude.equals("null")) {
@@ -325,7 +325,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     sidelistViewInterface.OnCilckItem(hqcode, app_adapt.getDcr_code(), Resource_adapter.rec_val);
                 }
             });
-
 
         } else {
             if (split_val.equals("2")) {
@@ -418,7 +417,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         public TextView visit_dt, available;  //cutom_name1,date_visit,cutom_name2,date_visit2,cutom_name3,date_visit3
         public RecyclerView tertry_list;
 
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -429,7 +427,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
             Res_rx = itemView.findViewById(R.id.Res_rx);
             Res_culter = itemView.findViewById(R.id.Res_culter);
             listcount = itemView.findViewById(R.id.listcount);
-
 
             Res_Edit = itemView.findViewById(R.id.Res_Edit);
             Res_View = itemView.findViewById(R.id.Res_View);
@@ -445,7 +442,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
             visit_dt = itemView.findViewById(R.id.visit_dt);
             Res_visitcntl = itemView.findViewById(R.id.Res_visitcntl);
             available = itemView.findViewById(R.id.textAvailablity);
-
 
         }
     }

@@ -2,7 +2,9 @@ package saneforce.sanzen.activity.call.dcrCallSelection.fragments;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.deviation;
 import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.tpDataObj;
+import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.workDayCode;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -62,6 +64,8 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
+import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
 import saneforce.sanzen.storage.SharedPref;
 
 
@@ -88,6 +92,7 @@ public class ChemistFragment extends Fragment {
     ArrayList<CustList> FilltercustArraList = new ArrayList<>();
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+    private STPOfflineDataDao stpOfflineDataDao;
     private String STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPBasedDCR, TPDCRDeviation;
 
     @Override
@@ -106,6 +111,7 @@ public class ChemistFragment extends Fragment {
         commonUtilsMethods.setUpLanguage(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
+        stpOfflineDataDao = roomDB.stpOfflineDataDao();
         getRequiredData();
 
         SetupAdapter();
@@ -252,8 +258,9 @@ public class ChemistFragment extends Fragment {
 
     private ArrayList<CustList> SaveData(JSONObject jsonObject, int i) {
         try {
-            if(((TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
-                    || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")))) {
+            if((((TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
+                    || (TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
+                    && !deviation.equalsIgnoreCase("1")) {
                 List<String> chmList = new ArrayList<>();
                 if(tpDataObj != null) {
                     Type type = new TypeToken<ModelClass>() {
@@ -263,15 +270,20 @@ public class ChemistFragment extends Fragment {
                         chmList.add(subClass.getCode());
                     }
                     Log.i("TP chm LIST", "SaveData: " + Arrays.toString(chmList.toArray()));
-                    if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!chmList.isEmpty() && chmList.contains(jsonObject.getString("Code")))) {
-                        cusListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "2", getChemistCategory(jsonObject.getString("Chm_cat")), jsonObject.getString("Chm_cat"), "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), "", "", jsonObject.getString("Chemists_Email"), jsonObject.getString("Chemists_Mobile"), jsonObject.getString("Chemists_Phone"), "", "", "","",false));
-                    }
-                } else {
-                    if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
-                        cusListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "2", getChemistCategory(jsonObject.getString("Chm_cat")), jsonObject.getString("Chm_cat"), "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), "", "", jsonObject.getString("Chemists_Email"), jsonObject.getString("Chemists_Mobile"), jsonObject.getString("Chemists_Phone"), "", "", "","",false));
-                    }
                 }
-            } else if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+                if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!chmList.isEmpty() && chmList.contains(jsonObject.getString("Code")))) {
+                    cusListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "2", getChemistCategory(jsonObject.getString("Chm_cat")), jsonObject.getString("Chm_cat"), "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), "", "", jsonObject.getString("Chemists_Email"), jsonObject.getString("Chemists_Mobile"), jsonObject.getString("Chemists_Phone"), "", "", "","",false));
+                }
+            }  else if((((TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
+                    && (TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
+                    && deviation.equalsIgnoreCase("1")) {
+                STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(workDayCode);
+                List<String> chmList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getChemistCode()).split(","));
+                Log.i("STP DR LIST", "SaveData: " + Arrays.toString(chmList.toArray()));
+                if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!chmList.isEmpty() && chmList.contains(jsonObject.getString("Code")))) {
+                    cusListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "2", getChemistCategory(jsonObject.getString("Chm_cat")), jsonObject.getString("Chm_cat"), "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), "", "", jsonObject.getString("Chemists_Email"), jsonObject.getString("Chemists_Mobile"), jsonObject.getString("Chemists_Phone"), "", "", "","",false));
+                }
+            }else if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
                 cusListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "2", getChemistCategory(jsonObject.getString("Chm_cat")), jsonObject.getString("Chm_cat"), "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), "", "", jsonObject.getString("Chemists_Email"), jsonObject.getString("Chemists_Mobile"), jsonObject.getString("Chemists_Phone"), "", "", "","",false));
             } else {
                 cusListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "2", getChemistCategory(jsonObject.getString("Chm_cat")), jsonObject.getString("Chm_cat"), "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), "", "", jsonObject.getString("Chemists_Email"), jsonObject.getString("Chemists_Mobile"), jsonObject.getString("Chemists_Phone"), "", "","","", true));

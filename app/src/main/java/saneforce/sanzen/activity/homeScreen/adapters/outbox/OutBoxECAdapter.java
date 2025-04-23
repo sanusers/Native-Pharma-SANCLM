@@ -110,16 +110,18 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
             popup.inflate(R.menu.ec_call_menu);
             MenuItem deleteMenu = popup.getMenu().findItem(R.id.menuDelete);
-            if(offlineDaySubmitDao.getDaySubmit(ecModelClasses.get(position).getDates()) != null) {
+//            if(offlineDaySubmitDao.getDaySubmit(ecModelClasses.get(position).getDates()) != null) {
                 deleteMenu.setVisible(false);
-            } else {
-                deleteMenu.setVisible(true);
-            }
+//            } else {
+//                deleteMenu.setVisible(true);
+//            }
             popup.setOnMenuItemClickListener(menuItem -> {
                 if (menuItem.getItemId() == R.id.menuSync) {
-                    CallImageApi(ecModelClasses.get(position));
+                    EcModelClass ecModelClass = ecModelClasses.get(position);
+                    CallImageApi(ecModelClass,ecModelClass.getJson_values(),ecModelClass.getFilePath(),String.valueOf(ecModelClass.getId()));
+
                     if (UtilityClass.isNetworkAvailable(context)) {
-                        CallImageApi(ecModelClasses.get(position));
+                        CallImageApi(ecModelClass,ecModelClass.getJson_values(),ecModelClass.getFilePath(),String.valueOf(ecModelClass.getId()));
                     } else {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                     }
@@ -195,8 +197,8 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         });
     }
 
-    private void CallImageApi(/*int parentPos,*/ EcModelClass ecModelClass /*int childPos, int CurrentPos,*/
-                              /*String jsonValues,*/ /*String filePath *//*, String id, GroupModelClass modelClass*/) {
+    private void CallImageApi(EcModelClass ecModelClass,String jsonValues, String filePath, String id) {
+        Log.d("CallImageApi", "filePath received: " + filePath);
         try {
 
             CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
@@ -208,10 +210,10 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             s3Client.setRegion(Region.getRegion(Regions.AP_SOUTH_1));
 
 
-            File fileToUpload = new File(ecModelClass.getFilePath());
+            File fileToUpload = new File(filePath);
             Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
             if (!fileToUpload.exists()) {
-                Log.d("fileToUpload", "not exists: " + ecModelClass.getFilePath());
+                Log.d("fileToUpload", "not exists: " + filePath);
             } else {
 
                 String bucketName = "san.one";
@@ -236,13 +238,12 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                         fileToUpload);
                 uploadObserver.setTransferListener(new TransferListener() {
                     @Override
-                    public void onStateChanged(int id, TransferState state) {
+                    public void onStateChanged(int idInt, TransferState state) {
                         if (state == TransferState.COMPLETED) {
-                            Log.d("TAG", "ecModelClass: " + ecModelClass.getFilePath());
+                            Log.d("TAG", "ecModelClass: " + filePath);
                             InsertImage(ecModelClass.getFilePath(), context);
-                            /*DeleteCacheFile(filePath, "", CurrentPos, parentPos, childPos, modelClass);*/
+//                            DeleteCacheFile(filePath, id);
                             Log.d("S3 Upload", "Upload Successful: " + s3Key);
-
 
                         } else if (state == TransferState.FAILED) {
 
@@ -251,8 +252,11 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
 
                             ecModelClass.setSynced(1);
                             ecModelClass.setSync_status(Constants.CALL_FAILED);
-                            callOfflineECDataDao.updateECStatus("", Constants.CALL_FAILED, 1);
-//                            CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                            try {
+                                callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
                     }
@@ -264,24 +268,49 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                     }
 
                     @Override
-                    public void onError(int id, Exception ex) {
+                    public void onError(int idInt, Exception ex) {
                         Log.e("S3 Upload", "Error: " + ex.getMessage());
                         ecModelClass.setSynced(1);
                         ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-                        callOfflineECDataDao.updateECStatus("", Constants.EXCEPTION_ERROR, 1);
+                        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+
                     }
                 });
 
             }
         } catch(Exception e){
             Log.v("img_tag", e.toString());
+            ecModelClass.setSynced(1);
+            ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+            callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+
         }
+
     }
-   private void InsertImage(final String ImageUrl, Context context) {
+
+    private void InsertImage(final String ImageUrl, Context context) {
         File imageFile = new File(ImageUrl);
         Log.d("AWS_s3", "fileToUpload" + "--" + imageFile);
         String fileName = new File(ImageUrl).getName();
         new AWSBuckets(context,fileName,imageFile,"");
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void DeleteCacheFile(String filePath, String id) {
+        try {
+            File fileDelete = new File(filePath);
+            if(fileDelete.exists()) {
+                if(fileDelete.delete()) {
+//                System.out.println("file Deleted :" + filePath);
+                }else {
+//                System.out.println("file not Deleted :" + filePath);
+                }
+            }
+            callOfflineECDataDao.deleteOfflineEC(id);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

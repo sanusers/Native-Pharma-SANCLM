@@ -2,7 +2,9 @@ package saneforce.sanzen.activity.call.dcrCallSelection.fragments;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.deviation;
 import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.tpDataObj;
+import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.workDayCode;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -58,6 +60,8 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
+import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
@@ -94,6 +98,7 @@ public class ListedDoctorFragment extends Fragment {
     int count = 0;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+    private STPOfflineDataDao stpOfflineDataDao;
     private String STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPBasedDCR, TPDCRDeviation;
 
 
@@ -118,6 +123,7 @@ public class ListedDoctorFragment extends Fragment {
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
+        stpOfflineDataDao = roomDB.stpOfflineDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         getRequiredData();
@@ -506,8 +512,9 @@ public class ListedDoctorFragment extends Fragment {
 
         try {
             String brands = getBrands(jsonObject.getString("MappProds"));
-            if(((TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
-                    || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0")))) {
+            if((((TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
+                    || (TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
+                    && !deviation.equalsIgnoreCase("1")) {
                 List<String> drList = new ArrayList<>();
                 if(tpDataObj != null) {
                     Type type = new TypeToken<ModelClass>() {
@@ -531,6 +538,19 @@ public class ListedDoctorFragment extends Fragment {
                         } else {
                             custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("HosAddr"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), "", brands, jsonObject.getString("MProd"), jsonObject.getString("Tlvst") ,jsonObject.getString("Doc_Class_ShortName"),jsonObject.getString("Doc_ClsCode"),false));
                         }
+                    }
+                }
+            } else if((((TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
+                    && (TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
+                    && deviation.equalsIgnoreCase("1")) {
+                STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(workDayCode);
+                List<String> drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
+                Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
+                if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+                    if (jsonObject.has("Product_Code")) {
+                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("HosAddr"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), jsonObject.getString("Product_Code"), brands, jsonObject.getString("MProd"), jsonObject.getString("Tlvst"),jsonObject.getString("Doc_Class_ShortName") ,jsonObject.getString("Doc_ClsCode"),false));
+                    } else {
+                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("HosAddr"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), "", brands, jsonObject.getString("MProd"), jsonObject.getString("Tlvst") ,jsonObject.getString("Doc_Class_ShortName"),jsonObject.getString("Doc_ClsCode"),false));
                     }
                 }
             } else if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {

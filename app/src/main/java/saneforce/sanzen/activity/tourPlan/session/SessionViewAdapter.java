@@ -59,8 +59,12 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
            holder.remarksLayout.setVisibility(View.GONE);
        }
 
-       if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
-           holder.workDayLayout.setVisibility(View.VISIBLE);
+       if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && SharedPref.getSfType(context).equalsIgnoreCase("1")) {
+           if(holder.data.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+               holder.workDayLayout.setVisibility(View.VISIBLE);
+           }else {
+               holder.workDayLayout.setVisibility(View.GONE);
+           }
            holder.hqLayout.setVisibility(View.GONE);
            if(inputDataModel.getSTP_Code().isEmpty()) {
                holder.workDayTV.setText("Select");
@@ -80,6 +84,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
 
        //Cluster
        if (holder.data.getCluster().size() > 0){
+           holder.clusterLayout.setVisibility(View.VISIBLE);
            StringBuilder clusterName = new StringBuilder();
            for (int i=0;i<holder.clusterModelArray.size();i++){
                if (clusterName.length() == 0){

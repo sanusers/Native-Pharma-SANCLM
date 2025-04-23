@@ -107,7 +107,6 @@ public class CallCaptureImageList implements Parcelable {
     public boolean isShowPreview() {
         return showPreview;
     }
-
     public void setShowPreview(boolean showPreview) {
         this.showPreview = showPreview;
     }

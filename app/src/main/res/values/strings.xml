@@ -1,6 +1,6 @@
 <resources>
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">V.1.0.2</string>
+    <string name="app_version" translatable="false">T.3.0.0</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -222,7 +222,7 @@
     <string name="report">Report</string>
     <string name="analysis">Analysis</string>
     <string name="all_brands">All Brands</string>
-    <string name="refresh">Refresh Location</string>
+    <string name="refresh_location">Refresh Location</string>
     <string name="tour_plan">Tour Plan</string>
     <string name="faq">FAQ</string>
     <string name="leave_application">Leave Application</string>
@@ -495,6 +495,8 @@
     <string name="add_plan">Add Plan</string>
     <string name="rejection_re_entry_need">Should only be Rejection/Re-entry to edit or delete WorkPlan</string>
     <string name="deleting_field_work_with_calls">Deleting Field work will also delete all calls</string>
+    <string name="select_workday">Select WorkDay</string>
+    <string name="refresh">Refresh</string>
     <string name="Signature">Signature</string>
     <string name="fill">Please fill </string>
     <string name="select_headquater">SELECT HEADQUARTER</string>
@@ -527,7 +529,7 @@
     <string name="enter_valid_Mobile">Mobile number must be at least 7 digits</string>
     <string name="Photo_mand">Photo Capture Mandatory</string>
     <string name="select_class">Select Class</string>
-    <string name="syncing_calls">Syncing calls. </string>
+    <string name="syncing_calls">Syncing Calls </string>
     <string name="customer_Profiling">Customer Profiling</string>
     <string name="doctor_details">Doctor Details</string>
     <string name="personal_details">Personal Details</string>

@@ -24,6 +24,9 @@ public interface STPOfflineDataDao {
     @Query("DELETE FROM `STP_OFFLINE_TABLE`")
     void deleteAllData();
 
+    @Query("DELETE FROM `STP_OFFLINE_TABLE` WHERE `SYNC_STATUS` = :status")
+    void deleteAllData(String status);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void saveSTPData(STPOfflineDataTable stpOfflineDataTable);
 
