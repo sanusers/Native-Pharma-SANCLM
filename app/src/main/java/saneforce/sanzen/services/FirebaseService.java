@@ -16,18 +16,15 @@ import java.util.Random;
 
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.storage.SharedPref;
-
+import saneforce.sanzen.utility.TimeUtils;
 
 public class FirebaseService extends FirebaseMessagingService {
-
     LocalBroadcastManager broadcastManager;
     NotificationManager notificationManager;
     Random random;
-    String imageUrl = "", title = "", body = "";
+    String imageUrl = "", title = "", body = "", time = "";
     int notificationId = 0;
     public static int badgeCount = 0;
-
-
 
     @Override
     public void onCreate () {
@@ -48,18 +45,26 @@ public class FirebaseService extends FirebaseMessagingService {
     public void onMessageReceived (@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 //        System.out.println("message--->"+ remoteMessage.getNotification().getBody());
-        imageUrl = String.valueOf(remoteMessage.getNotification().getImageUrl());
-        title = remoteMessage.getNotification().getTitle();
-        body = remoteMessage.getNotification().getBody();
-        notificationId = random.nextInt(1000);
-        createNotification();
+        if(remoteMessage.getNotification() != null) {
+            imageUrl = String.valueOf(remoteMessage.getNotification().getImageUrl());
+            title = remoteMessage.getNotification().getTitle();
+            body = remoteMessage.getNotification().getBody();
+            Long timeStamp =remoteMessage.getNotification().getEventTime();
+            if(timeStamp != null) {
+                time = TimeUtils.getMillisToFormattedTime(timeStamp, TimeUtils.FORMAT_2);
+            }
+            notificationId = random.nextInt(1000);
+            createNotification();
+        }
     }
 
     public void createNotification(){
-        Intent intent = new Intent(this, HomeDashBoard.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationClass notificationClass = new NotificationClass(this,title, body, imageUrl, pendingIntent);
+        Intent intent = new Intent(this, NotificationClickReceiver.class);
+        intent.setAction("saneforce.sanzen.NOTIFICATION_CLICK");
+//        Intent intent = new Intent(this, HomeDashBoard.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationClass notificationClass = new NotificationClass(this,title, body, imageUrl, time, pendingIntent);
         notificationClass.createNotification();
     }
 

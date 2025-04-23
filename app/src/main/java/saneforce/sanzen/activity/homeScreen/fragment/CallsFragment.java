@@ -387,13 +387,18 @@ public class CallsFragment extends Fragment {
                 CommonAlertBox.ApprovalAlert(requireActivity());
             }else if(SharedPref.getTpmanatoryStatus(requireContext()) && SharedPref.getTpMandatoryNeed(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpNeed(requireContext()).equalsIgnoreCase("0")) {
                 CommonAlertBox.TpAlert(requireActivity());
-            }else if(CheckInOutManager.isCheckedId(requireContext())) {
-                WorkPlanFragment.showCheckInDialog();
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
-            }else {
+            }
+//            else if(CheckInOutManager.isCheckedId(requireContext())) {
+//                WorkPlanFragment.showCheckInDialog();
+//                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
+//            }
+            else {
                 if(SharedPref.getSfCode(requireContext()).equalsIgnoreCase("0")) {
                     if(SharedPref.getHqCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getHqCode(requireContext()).isEmpty()) {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                    }else if(CheckInOutManager.isCheckedId(requireContext())) {
+//                        WorkPlanFragment.showCheckInDialog();
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
                     }else if(WorkPlanFragment.isFromTP) {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                     }else if(WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(requireContext()).equalsIgnoreCase("3")) {
@@ -405,7 +410,10 @@ public class CallsFragment extends Fragment {
                     JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                     try {
-                        if(WorkPlanFragment.isFromTP) {
+                        if(CheckInOutManager.isCheckedId(requireContext())) {
+//                            WorkPlanFragment.showCheckInDialog();
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
+                        }else if(WorkPlanFragment.isFromTP) {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                         }else if(WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(requireContext()).equalsIgnoreCase("3")) {
                             commonUtilsMethods.showToastMessage(requireContext(), "Get Deviation Approval");

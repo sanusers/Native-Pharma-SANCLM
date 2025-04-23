@@ -203,6 +203,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private static CallsUtil callsUtil;
     private static HomeDashBoard activity;
     public static boolean isFakeLocationDetected = false;
+    private static final int NOTIFICATION_PERMISSION_CODE = 101;
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -375,6 +376,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 RequestLocationPermission();
             }
         }
+        requestNotificationPermission();
 
         binding.imgNotofication.setOnClickListener(view -> {
             ContinuousLogCollector.stopLogging(getApplicationContext());
@@ -494,6 +496,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
             }
         });
+    }
+
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_CODE);
+            }
+        }
     }
 
     private static void setupLeftViewPager(Context context, FragmentManager fragmentManager) {
