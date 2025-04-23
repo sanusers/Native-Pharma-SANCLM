@@ -118,11 +118,15 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String cluster = (jsonObject.getString("Town_Name"));
                                     String Lat = (jsonObject.getString("Lat"));
                                     String Long = (jsonObject.getString("Long"));
-                                    String Addrs = (jsonObject.getString("Addrs"));
+                                    String Addrs = (jsonObject.getString("ResAddr"));
                                     String Mobile = (jsonObject.getString("Mobile"));
                                     String Phone = (jsonObject.getString("Phone"));
-                                    String DOB = (jsonObject.getString("DOB"));
-                                    String DOW = (jsonObject.getString("DOW"));
+                                    JSONObject dobObject = jsonObject.getJSONObject("DctrDOB");
+                                    String DOBDate = (dobObject.getString("date"));
+                                    String DOB = DOBDate.split(" ")[0];
+                                    JSONObject dowObject = jsonObject.getJSONObject("DctrDOW");
+                                    String DOWDate = (dowObject.getString("date"));
+                                    String DOW = DOWDate.split(" ")[0];
                                     String DrEmail = (jsonObject.getString("DrEmail"));
                                     String Qual = (jsonObject.getString("DrDesig"));
                                     String Qual_code = (jsonObject.getString("DocQuacode"));
@@ -159,6 +163,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String custom_name = (jsonObject.getString("Name"));
                                     String Code = (jsonObject.getString("Code"));
                                     String cluster = (jsonObject.getString("Town_Name"));
+                                    String Catcode=(jsonObject.getString("Chm_cat"));
                                     String Lat = (jsonObject.getString("lat"));
                                     String Long = (jsonObject.getString("long"));
                                     String Tag_count = (jsonObject.getString("GEOTagCnt"));
@@ -166,10 +171,10 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String Chemists_Mobile = (jsonObject.getString("Chemists_Mobile"));
                                     String Chemists_Phone = (jsonObject.getString("Chemists_Phone"));
                                     String Chemists_Email = (jsonObject.getString("Chemists_Email"));
-                                    String addrs = (jsonObject.getString("addrs"));
+                                    String addrs = (jsonObject.getString("Addr"));
 
 
-                                    listresource.add(new Resourcemodel_class(Code, custom_name, cluster, "", "", "", "", "", Lat, Long, chmval, MyResource_Activity.Key, "", addrs, "", "", Chemists_Mobile, Chemists_Phone, Chemists_Email, "", "", cluster, "C", "", "", "", "", "", "", "",Tag_count,Max_count,""));
+                                    listresource.add(new Resourcemodel_class(Code, custom_name, cluster, "", Catcode, "", "", "", Lat, Long, chmval, MyResource_Activity.Key, "", addrs, "", "", Chemists_Mobile, Chemists_Phone, Chemists_Email, "", "", cluster, "C", "", "", "", "", "", "", "",Tag_count,Max_count,""));
 
                                 }
                             }
@@ -235,7 +240,14 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String Lat = (jsonObject.getString("lat"));
                                     String Long = (jsonObject.getString("long"));
                                     String quacode = (jsonObject.getString("Qual"));
-
+//                                    String DOB = (jsonObject.getString("DOB"));
+//                                    String DOW = (jsonObject.getString("DOW"));
+                                    JSONObject dobObject = jsonObject.getJSONObject("UnlstDOB");
+                                    String DOBDate = (dobObject.getString("date"));
+                                    String DOB = DOBDate.split(" ")[0];
+                                    JSONObject dowObject = jsonObject.getJSONObject("UnlstDOW");
+                                    String DOWDate = (dowObject.getString("date"));
+                                    String DOW = DOWDate.split(" ")[0];
                                     String Category = (jsonObject.getString("Category"));
                                     String Tag_count = (jsonObject.getString("GEOTagCnt"));
                                     String Max_count = (jsonObject.getString("MaxGeoMap"));
@@ -245,9 +257,9 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String Email = (jsonObject.getString("Email"));
                                     String Mobile = (jsonObject.getString("Mobile"));
                                     String Phone = (jsonObject.getString("Phone"));
-                                    String addr = (jsonObject.getString("addr"));
+                                    String addr = (jsonObject.getString("Addrs"));
 
-                                    listresource.add(new Resourcemodel_class(Code, custom_name, cluster, category, Category, "", Specialty, specialty, Lat, Long, unlist_val, MyResource_Activity.Key, Qual, addr, "", "", Mobile, Phone, Email, "", "", cluster, "U", "", "", "", "", "", "", "", Tag_count,Max_count,quacode));
+                                    listresource.add(new Resourcemodel_class(Code, custom_name, cluster, category, Category, "", Specialty, specialty, Lat, Long, unlist_val, MyResource_Activity.Key, Qual, addr, DOB, DOW, Mobile, Phone, Email, "", "", cluster, "U", "", "", "", "", "", "", "", Tag_count,Max_count,quacode));
                                 }
                             }
                         }

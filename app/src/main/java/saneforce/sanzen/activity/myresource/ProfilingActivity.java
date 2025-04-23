@@ -19,7 +19,9 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -185,6 +187,15 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 Qual_code= extra.getString("Qual_code");
                 gender = extra.getString("ListedDrSex");
             }
+            else{
+                if (CustType.equalsIgnoreCase("C")){
+                    cate_code = extra.getString("cate_code");
+                    if(!cate_code.equalsIgnoreCase("")) {
+                        cate=getChemistCategory(cate_code);
+                    }
+                   // cate = extra.getString("cate_values");
+                }
+            }
             if (extra.getString("PHN").equalsIgnoreCase("") || extra.getString("PHN").equalsIgnoreCase("null")) {
                 phone = "";
             } else {
@@ -194,36 +205,12 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 dob = "";
             } else {
                 dob = extra.getString("DOB");
-//                String inputDate = extra.getString("DOB");
-//                String fullInput = inputDate ; // Assuming 2025 and midnight
-//                SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.ENGLISH);
-//                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-//                try {
-//                    Date date = inputFormat.parse(fullInput);
-//                    String formattedDate = outputFormat.format(date);
-//                    dob=formattedDate;
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
             }
             if (extra.getString("DOW").equalsIgnoreCase("") || extra.getString("DOW").equalsIgnoreCase("null")) {
                 dow = "";
             } else {
                 dow = extra.getString("DOW");
-//                String inputDate = extra.getString("DOW");
-//                String fullInput = inputDate ; // Assuming 2025 and midnight
-//                SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.ENGLISH);
-//                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-//                try {
-//                    Date date = inputFormat.parse(fullInput);
-//                    String formattedDate = outputFormat.format(date);
-//                    dow=formattedDate;
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
             }
-//            dob = extra.getString("DOB");
-//            dow = extra.getString("DOW");
             address = extra.getString("ADDRESS");
             geotagcount = extra.getString("tagcount");
             maxcount = extra.getString("maxcount");
@@ -402,6 +389,16 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         } else if (CustType.equalsIgnoreCase("U")) {
             activityProfilingBinding.layScroll.setVisibility(View.VISIBLE);
             activityProfilingBinding.layScroll1.setVisibility(View.GONE);
+            activityProfilingBinding.three.setVisibility(View.GONE);
+            // Adjust weights of layoutOne and layoutTwo
+            //LinearLayout.LayoutParams paramsOne = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1.5f);
+            //LinearLayout.LayoutParams paramsTwo = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1.5f);
+            LinearLayout.LayoutParams paramsOne = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.5f);
+            LinearLayout.LayoutParams paramsTwo = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.5f);
+            paramsOne.setMargins(15, 0, 0, 0);
+            paramsTwo.setMargins(15, 0, 15, 0);
+            activityProfilingBinding.one.setLayoutParams(paramsOne);
+            activityProfilingBinding.two.setLayoutParams(paramsTwo);
             if (SharedPref.getUNLcap(this).isEmpty() || SharedPref.getUNLcap(this) == null) {
                 activityProfilingBinding.drtagname.setText(getResources().getString(R.string.txt_undr) + " " + "Details");
             } else {
@@ -502,7 +499,72 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
+        activityProfilingBinding.edtPhone.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)}); // Max length 15
 
+        activityProfilingBinding.edtPhone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0 && s.length() < 7) {
+                    // Show error only if input is between 1 and 6 characters
+                    activityProfilingBinding.edtPhone.setError(getResources().getString(R.string.enter_valid_phone));
+                } else {
+                    // Remove error when field is empty or valid
+                    activityProfilingBinding.edtPhone.setError(null);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+        activityProfilingBinding.edtChmmob.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)}); // Max length 15
+
+        activityProfilingBinding.edtChmmob.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0 && s.length() < 7) {
+                    // Show error only if input is between 1 and 6 characters
+                    activityProfilingBinding.edtChmmob.setError(getResources().getString(R.string.enter_valid_Mobile));
+                } else {
+                    // Remove error when field is empty or valid
+                    activityProfilingBinding.edtChmmob.setError(null);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+        activityProfilingBinding.edtChmphone.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)}); // Max length 15
+
+        activityProfilingBinding.edtChmphone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0 && s.length() < 7) {
+                    // Show error only if input is between 1 and 6 characters
+                    activityProfilingBinding.edtChmphone.setError(getResources().getString(R.string.enter_valid_phone));
+                } else {
+                    // Remove error when field is empty or valid
+                    activityProfilingBinding.edtChmphone.setError(null);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
         activityProfilingBinding.edtDow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -513,6 +575,28 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 showDatePickerDialogforDOW();
             }
         });
+        activityProfilingBinding.edtChmdob.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(activityProfilingBinding.edtChmdob.getWindowToken(), 0);
+                }
+                showDatePickerDialogforChmDOB();
+            }
+        });
+
+        activityProfilingBinding.edtChmdow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(activityProfilingBinding.edtChmdow.getWindowToken(), 0);
+                }
+                showDatePickerDialogforChmDOW();
+            }
+        });
+
 
         activityProfilingBinding.txtViewonmap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -735,26 +819,50 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 json.put("DrSpcNm", activityProfilingBinding.txtSelectSpec.getText().toString());
                 json.put("DrCatCd", cate_code);
                 json.put("DrCatNm", activityProfilingBinding.txtSelectCategory.getText().toString());
-                json.put("DrAddr", activityProfilingBinding.edtAddr.getText().toString());
+               if(CustType.equalsIgnoreCase("D")||CustType.equalsIgnoreCase("U")) {
+                   json.put("DrAddr", activityProfilingBinding.edtAddr.getText().toString());
+                   json.put("DrCatNm", activityProfilingBinding.txtSelectCategory.getText().toString());
+                   json.put("DrPhone", activityProfilingBinding.edtPhone.getText().toString());
+                   json.put("DrMob", activityProfilingBinding.edtMob.getText().toString());
+                   json.put("DrEmail", activityProfilingBinding.edtEmail.getText().toString());
+//                   if(!activityProfilingBinding.edtDob.getText().toString().equalsIgnoreCase(dob)) {
+//                       json.put("DrDOB", activityProfilingBinding.edtDob.getText().toString()+ " 00:00:00");
+//                   }
+//                   else{
+//                        json.put("DrDOB", "");
+//                   }
+//                   if(!activityProfilingBinding.edtDow.getText().toString().equalsIgnoreCase(dow)) {
+//                       json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString()+ " 00:00:00");
+//                   }
+//                   else{
+//                       json.put("DrDOW", "");
+//                   }
+                   json.put("DrDOB", activityProfilingBinding.edtDob.getText().toString()+ " 00:00:00");
+                   json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString()+ " 00:00:00");
+               }
+               else{
+                   json.put("DrAddr", activityProfilingBinding.edtChmaddr.getText().toString());
+                   json.put("DrCatNm", activityProfilingBinding.txtSelectChmcat.getText().toString());
+                   json.put("DrPhone", activityProfilingBinding.edtChmphone.getText().toString());
+                   json.put("DrMob", activityProfilingBinding.edtChmmob.getText().toString());
+                   json.put("DrEmail", activityProfilingBinding.edtChmemail.getText().toString());
+
+                   if(!activityProfilingBinding.edtChmdob.getText().toString().equalsIgnoreCase(dob)) {
+                       json.put("DrDOB", activityProfilingBinding.edtChmdob.getText().toString()+ " 00:00:00");
+                   }
+                   else{
+                       // json.put("DrDOB", "");
+                   }
+                   if(!activityProfilingBinding.edtChmdow.getText().toString().equalsIgnoreCase(dow)) {
+                       json.put("DrDOW", activityProfilingBinding.edtChmdow.getText().toString()+ " 00:00:00");
+                   }
+                   else{
+                       //json.put("DrDOW", "");
+                   }
+               }
                 json.put("key", SharedPref.getSaveLicenseSetting(context));
                 json.put("DrType", CustType);
-                if(!activityProfilingBinding.edtDob.getText().toString().equalsIgnoreCase(dob)) {
-                    json.put("DrDOB", activityProfilingBinding.edtDob.getText().toString()+ " 00:00:00");
-                }
-                else{
-                   // json.put("DrDOB", "");
-                }
-                if(!activityProfilingBinding.edtDow.getText().toString().equalsIgnoreCase(dow)) {
-                    json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString()+ " 00:00:00");
-                }
-                else{
-                    //json.put("DrDOW", "");
-                }
-                json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString());
-                json.put("DrPhone", activityProfilingBinding.edtPhone.getText().toString());
-                json.put("DrMob", activityProfilingBinding.edtMob.getText().toString());
-                json.put("DrEmail", activityProfilingBinding.edtEmail.getText().toString());
-
+                //json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString());
                 Log.v("printing_add_dr", json.toString());
                 activityProfilingBinding.btnSave.setEnabled(false);
                 UpdateMaster(json.toString(),CustType);
@@ -1073,4 +1181,73 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             populateAdapter(arrayForAdapter);
         }
     }
+    private void showDatePickerDialogforChmDOB() {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    // Set the selected date in the calendar
+                    calendar.set(selectedYear, selectedMonth, selectedDay);
+
+                    // Format the date as "1970-01-01 00:00:00"
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    String formattedDate = formatter.format(calendar.getTime());
+
+                    // Set the formatted date to the TextView
+                    activityProfilingBinding.edtChmdob.setText(formattedDate);
+                },
+                year, month, day
+        );
+
+        // Restrict future date selection
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        datePickerDialog.show();
+    }
+    private void showDatePickerDialogforChmDOW() {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    // Set the selected date in the calendar
+                    calendar.set(selectedYear, selectedMonth, selectedDay);
+
+                    // Format the date as "1970-01-01 00:00:00"
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    String formattedDate = formatter.format(calendar.getTime());
+
+                    // Set the formatted date to the TextView
+                    activityProfilingBinding.edtChmdow.setText(formattedDate);
+                },
+                year, month, day
+        );
+
+        // Restrict future date selection
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        datePickerDialog.show();
+    }
+    private String getChemistCategory(String chmCode) {
+        try {
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
+            for (int i = 0; i<jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String name = jsonObject.getString("Name");
+                String code = jsonObject.getString("Code");
+                if(code.equalsIgnoreCase(chmCode))
+                    return name;
+            }
+        } catch (Exception e) {
+            Log.e("Chemist Call", "getChemistCategory: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return "";
+    }
+
 }

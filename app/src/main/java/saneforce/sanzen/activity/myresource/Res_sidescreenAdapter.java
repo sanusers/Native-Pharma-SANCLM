@@ -116,7 +116,8 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 //        }
         if (!split_val.equals("2")) {
 
-            if (SharedPref.getProfilingNeed(context).equalsIgnoreCase("0")) {
+            if (SharedPref.getProfilingNeed(context).equalsIgnoreCase("0")
+                    &&!app_adapt.getPos_name().equalsIgnoreCase("S")) {
                 holder.Res_Edit.setVisibility(View.VISIBLE);
             } else {
                 holder.Res_Edit.setVisibility(View.GONE);

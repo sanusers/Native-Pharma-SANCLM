@@ -95,6 +95,7 @@ public class ChemistCategoryFragment extends Fragment {
             sel_categorycode= Integer.parseInt(list_code.get(i));
             selectchmcatSideBinding.searchList.setText("");
             SharedPref.setSelectedCategory(requireContext(),sel_categorycode);
+            ProfilingActivity.cate_code= String.valueOf(sel_categorycode);
             activityProfilingBinding.txtSelectChmcat.setText(selectchmcatSideBinding.selectListView.getItemAtPosition(i).toString());
             activityProfilingBinding.fragmentSelectChmcat.setVisibility(View.GONE);
         });

@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -241,7 +242,6 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
     public static double milesToMeters(double miles) {
         return miles * 1609.344;
     }
-
     private void showImagePopup() {
         ImageName = loclist.get(0).getImageName();
         String fileName = ImageName;
@@ -249,16 +249,17 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        Dialog dialog = new Dialog(this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_fullscreen_image, null);
         ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
         ImageButton closeButton = dialogView.findViewById(R.id.close_button);
-        dialog.setContentView(R.layout.map_img_layout);
+        ProgressBar progressBar = dialogView.findViewById(R.id.loading_progress);
 //        ImageView popupImageView = dialog.findViewById(R.id.img_dr_content);
         fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
         builder.setView(dialogView);
         AlertDialog dialog_fullScreen = builder.create();
+        fullScreenImage.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
         dialog_fullScreen.show();
         dialog_fullScreen.getWindow().setLayout(
                 (int) (getResources().getDisplayMetrics().widthPixels * 0.5),
@@ -277,8 +278,10 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                         Log.d("bitmap image", "image: " + "bitmap map is not null");
                         fullScreenImage.setImageBitmap(bitmap);
                         fullScreenImage.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
                     } else {
                         Log.d("bitmap image", "image: " + "bitmap image is null");
+                        fullScreenImage.setVisibility(View.VISIBLE);
                     }
                 }
             });
@@ -286,6 +289,50 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         closeButton.setOnClickListener(v -> dialog_fullScreen.dismiss());
 
     }
+//    private void showImagePopup() {
+//        ImageName = loclist.get(0).getImageName();
+//        String fileName = ImageName;
+//        if (fileName.isEmpty()) {
+//            return;
+//        }
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        Dialog dialog = new Dialog(this);
+//        LayoutInflater inflater = getLayoutInflater();
+//        View dialogView = inflater.inflate(R.layout.dialog_fullscreen_image, null);
+//        ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
+//        ImageButton closeButton = dialogView.findViewById(R.id.close_button);
+//        dialog.setContentView(R.layout.map_img_layout);
+////        ImageView popupImageView = dialog.findViewById(R.id.img_dr_content);
+//        fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
+//        builder.setView(dialogView);
+//        AlertDialog dialog_fullScreen = builder.create();
+//        dialog_fullScreen.show();
+//        dialog_fullScreen.getWindow().setLayout(
+//                (int) (getResources().getDisplayMetrics().widthPixels * 0.5),
+//                (int) (getResources().getDisplayMetrics().heightPixels * 0.9)
+//        );
+//        if (ImageName == null || ImageName.isEmpty() || ImageName.contains("noimage") || ImageName.endsWith(".jpg")) {
+//            Log.d("Image Name", "showImagePopup: "+"no image Found");
+//        } else {
+//            TransferNetworkLossHandler.getInstance(getApplicationContext());
+//            File MapView = new File(MyResource_mapview.this.getFilesDir(), fileName);
+//            Log.d("TAG", "AddTaggedDetails: " + MapView.getAbsolutePath());
+//            new AWSBuckets(MyResource_mapview.this, fileName, MapView, 0, "", new S3DownloadFiles() {
+//                @Override
+//                public void fileDataAdd(int pos, Bitmap bitmap) {
+//                    if (bitmap != null) {
+//                        Log.d("bitmap image", "image: " + "bitmap map is not null");
+//                        fullScreenImage.setImageBitmap(bitmap);
+//                        fullScreenImage.setVisibility(View.VISIBLE);
+//                    } else {
+//                        Log.d("bitmap image", "image: " + "bitmap image is null");
+//                    }
+//                }
+//            });
+//        }
+//        closeButton.setOnClickListener(v -> dialog_fullScreen.dismiss());
+//
+//    }
 
 
 
