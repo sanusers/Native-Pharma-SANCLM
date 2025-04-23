@@ -29,20 +29,21 @@ import saneforce.sanzen.R;
 public class NotificationClass extends ContextWrapper {
 
     private static final String CHANNEL_ID = "10001";
-    private static final String CHANNEL_NAME = "SANCLM Notification";
+    private static final String CHANNEL_NAME = "SAN ZEN Notification";
     NotificationManager notificationManager;
     NotificationCompat.Builder notificationBuilder;
-    String imageUrl = "", title = "", body = "";
+    String imageUrl = "", title = "", body = "", time = "";
     PendingIntent pendingIntent;
     int notificationId = 0;
     Uri soundUri;
 
 
-    public NotificationClass (Context base, String title, String body, String imageUrl, PendingIntent pendingIntent) {
+    public NotificationClass (Context base, String title, String body, String imageUrl, String time, PendingIntent pendingIntent) {
         super(base);
         this.title = title;
         this.body = body;
         this.imageUrl = imageUrl;
+        this.time = time;
         this.pendingIntent = pendingIntent;
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -60,7 +61,7 @@ public class NotificationClass extends ContextWrapper {
                     .build();
 
             channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
-            channel.setDescription("SANCLM Notification Description");
+            channel.setDescription("SAN ZEN Notification Description");
             channel.enableLights(true);
             channel.setLightColor(Color.RED);
             channel.enableVibration(true);
@@ -74,47 +75,92 @@ public class NotificationClass extends ContextWrapper {
 
     }
 
-
     public void createNotification () {
         notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setAutoCancel(true)
                 .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
-                .setDefaults(Notification.DEFAULT_ALL)
+                .setDefaults(Notification.DEFAULT_SOUND) // Changed from DEFAULT_ALL to avoid vibration/lights happening immediately before potentially updating
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.zen_logo)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.zen_logo))
                 .setContentTitle(title)
                 .setContentText(body)
-                .setContentIntent(pendingIntent)
-                .setSound(soundUri);
+                .setContentIntent(pendingIntent);
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
+            notificationManager.notify(notificationId, notificationBuilder.build());
             getImageFromUrl(imageUrl);
         } else {
+            notificationBuilder.setSound(soundUri);
             notificationManager.notify(notificationId, notificationBuilder.build());
         }
     }
 
     public void getImageFromUrl (String url) {
-        final Bitmap[] bitmap = new Bitmap[1];
-
         Glide.with(this).asBitmap().load(url).into(new CustomTarget<Bitmap>() {
             @Override
             public void onResourceReady (@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                bitmap[0] = resource;
                 NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
-                bigPictureStyle.bigPicture(bitmap[0]);
+                bigPictureStyle.bigPicture(resource);
                 notificationBuilder.setStyle(bigPictureStyle);
+                notificationBuilder.setSound(soundUri);
                 notificationManager.notify(notificationId, notificationBuilder.build());
             }
 
             @Override
             public void onLoadCleared (@Nullable Drawable placeholder) {
+                notificationBuilder.setSound(soundUri);
+                notificationManager.notify(notificationId, notificationBuilder.build());
+            }
 
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                notificationBuilder.setSound(soundUri);
+                notificationManager.notify(notificationId, notificationBuilder.build());
             }
         });
-
     }
+
+//    public void createNotification () {
+//        notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+//                .setAutoCancel(true)
+//                .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
+//                .setDefaults(Notification.DEFAULT_ALL)
+//                .setWhen(System.currentTimeMillis())
+//                .setSmallIcon(R.drawable.zen_logo)
+//                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.zen_logo))
+//                .setContentTitle(title)
+//                .setContentText(body)
+//                .setContentIntent(pendingIntent)
+//                .setSound(soundUri);
+//
+//        if (imageUrl != null && !imageUrl.isEmpty()) {
+//            getImageFromUrl(imageUrl);
+//        } else {
+//            notificationManager.notify(notificationId, notificationBuilder.build());
+//        }
+//    }
+//
+//    public void getImageFromUrl (String url) {
+//        final Bitmap[] bitmap = new Bitmap[1];
+//
+//        Glide.with(this).asBitmap().load(url).into(new CustomTarget<Bitmap>() {
+//            @Override
+//            public void onResourceReady (@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+//                bitmap[0] = resource;
+//                NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
+//                bigPictureStyle.bigPicture(bitmap[0]);
+//                notificationBuilder.setStyle(bigPictureStyle);
+//                notificationManager.notify(notificationId, notificationBuilder.build());
+//            }
+//
+//            @Override
+//            public void onLoadCleared (@Nullable Drawable placeholder) {
+//
+//            }
+//        });
+//
+//    }
 
 
 }

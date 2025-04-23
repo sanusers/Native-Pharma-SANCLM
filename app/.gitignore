@@ -10,7 +10,6 @@ local.properties
 .DS_Store
 *.iml
 *.apk
-*.aar
 
 # Temporary files
 *.tmp

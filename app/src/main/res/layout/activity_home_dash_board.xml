@@ -541,7 +541,7 @@
                         android:layout_gravity="center"
                         android:layout_margin="@dimen/_5sdp"
                         android:fontFamily="@font/satoshi_bold"
-                        android:text="Syncing Quiz..."
+                        android:text="Checking Quiz Mandatory..."
                         android:textColor="@color/dark_purple"
                         android:textSize="@dimen/_6ssp" />
                 </LinearLayout>

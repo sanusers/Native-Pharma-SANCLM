@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,6 +29,7 @@ import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 
 public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.CalendarViewHolder> {
@@ -81,11 +82,11 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         if(list.getYear().equalsIgnoreCase(String.valueOf(HomeDashBoard.JoiningYear))
                 && list.getMonth().equalsIgnoreCase(String.valueOf(HomeDashBoard.JoiningMonth))
                 && !list.getDateID().isEmpty() && Integer.parseInt(list.getDateID())<HomeDashBoard.JoiningDate) {
-            holder.linearLayout.setAlpha(0.5f);
-            holder.linearLayout.setEnabled(false);
+            holder.relativeLayout.setAlpha(0.5f);
+            holder.relativeLayout.setEnabled(false);
         } else {
-            holder.linearLayout.setAlpha(1f);
-            holder.linearLayout.setEnabled(true);
+            holder.relativeLayout.setAlpha(1f);
+            holder.relativeLayout.setEnabled(true);
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM", Locale.ENGLISH);
@@ -95,6 +96,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
 
         // set Event
         GradientDrawable drawable = (GradientDrawable) context.getResources().getDrawable(R.drawable.event_point_background);
+        holder.slashImageView.setVisibility(View.GONE);
         if (list.getWorkTypeFlag().equalsIgnoreCase("F")) {
             drawable.setColor(context.getResources().getColor(R.color.green_60));
             holder.imageView.setVisibility(View.VISIBLE);
@@ -121,29 +123,40 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
             holder.imageView.setVisibility(View.VISIBLE);
         } else {
             holder.imageView.setVisibility(View.GONE);
+            try {
+                if(!list.getDateID().isEmpty() && !list.getMonth().isEmpty()
+                        && SharedPref.getSeqDlyCtrl(context).equalsIgnoreCase("1")
+                        && SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+                    if(!(list.getMonth().equalsIgnoreCase(TimeUtils.getCurrentDateTime("M"))
+                            && (Integer.parseInt(list.getDateID()) >= Integer.parseInt(TimeUtils.getCurrentDateTime("d"))))) {
+                        holder.slashImageView.setVisibility(View.VISIBLE);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         holder.imageView.setImageDrawable(drawable);
 
-
         // set SquareBox for background
         if (position == 0) {
-            holder.linearLayout.setBackgroundResource(R.drawable.calender_background_a);
+            holder.relativeLayout.setBackgroundResource(R.drawable.calender_background_a);
         } else if (position <= 6) {
-            holder.linearLayout.setBackgroundResource(R.drawable.calender_background_b);
-
+            holder.relativeLayout.setBackgroundResource(R.drawable.calender_background_b);
         } else if (position == 7 || position == 14 || position == 21 || position == 28 || position == 35) {
-            holder.linearLayout.setBackgroundResource(R.drawable.calender_background_c);
+            holder.relativeLayout.setBackgroundResource(R.drawable.calender_background_c);
         } else {
-            holder.linearLayout.setBackgroundResource(R.drawable.calender_background_d);
+            holder.relativeLayout.setBackgroundResource(R.drawable.calender_background_d);
         }
 
         if (selectedDate.equalsIgnoreCase(String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()))) {
-            holder.linearLayout.setBackgroundColor(Color.parseColor("#282A3C"));
+            holder.relativeLayout.setBackgroundColor(Color.parseColor("#282A3C"));
             holder.dayTextView.setTextColor(context.getColor(R.color.white));
-            holder.imageView.setVisibility(View.GONE);
+            holder.slashImageView.setVisibility(View.GONE);
+//            holder.imageView.setVisibility(View.GONE);
         }
 
-        holder.linearLayout.setOnClickListener(v -> {
+        holder.relativeLayout.setOnClickListener(v -> {
             if (!list.getDateID().equalsIgnoreCase("")) {
                 if(list.getWorkTypeFlag().equalsIgnoreCase("W") && SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + "Weekly off auto post is enabled");
@@ -246,14 +259,15 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
 
     public static class CalendarViewHolder extends RecyclerView.ViewHolder {
         TextView dayTextView;
-        ImageView imageView;
-        LinearLayout linearLayout;
+        ImageView imageView, slashImageView;
+        RelativeLayout relativeLayout;
 
         public CalendarViewHolder(View itemView) {
             super(itemView);
             dayTextView = itemView.findViewById(R.id.cellDayText);
             imageView = itemView.findViewById(R.id.img_event_point);
-            linearLayout = itemView.findViewById(R.id.day_bgd);
+            relativeLayout = itemView.findViewById(R.id.day_bgd);
+            slashImageView = itemView.findViewById(R.id.slash_img);
         }
     }
 }

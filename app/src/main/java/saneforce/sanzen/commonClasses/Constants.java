@@ -124,5 +124,6 @@ public class Constants {
     public static final String STP_SETUP = "Standard Tour Plan Setup";
 
     public static final String WORK_DAY = "WORK DAY";
+    public static final String INDEPENDENT = "Independent";
 
 }

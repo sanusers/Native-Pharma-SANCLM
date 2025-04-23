@@ -13,9 +13,11 @@ dependencyResolutionManagement {
         jcenter()
         mavenCentral()
         maven { url "https://jitpack.io" }
+        flatDir {
+            dirs 'app/libs'
+        }
     }
 }
 
 rootProject.name = "SAN ZEN"
 include ':app'
-//include ':libs:jetified-android-pdf-viewer-2.8.2'

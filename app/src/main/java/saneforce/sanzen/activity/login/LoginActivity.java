@@ -108,6 +108,7 @@ public class LoginActivity extends AppCompatActivity {
         if (fcmToken.isEmpty()) {
             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(LoginActivity.this, s -> {
                 fcmToken = s;
+                Log.i("FCM", "onCreate: " + s);
                 SharedPref.saveFcmToken(getApplicationContext(), s);
             });
         }
