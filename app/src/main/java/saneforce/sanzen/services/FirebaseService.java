@@ -15,6 +15,9 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Random;
 
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataDao;
+import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
+import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
@@ -25,6 +28,7 @@ public class FirebaseService extends FirebaseMessagingService {
     String imageUrl = "", title = "", body = "", time = "";
     int notificationId = 0;
     public static int badgeCount = 0;
+    private NotificationDataDao notificationDataDao;
 
     @Override
     public void onCreate () {
@@ -32,6 +36,8 @@ public class FirebaseService extends FirebaseMessagingService {
         broadcastManager = LocalBroadcastManager.getInstance(this);
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         random = new Random();
+        RoomDB roomDB = RoomDB.getDatabase(this);
+        notificationDataDao = roomDB.notificationDataDao();
     }
 
     @Override
@@ -49,9 +55,11 @@ public class FirebaseService extends FirebaseMessagingService {
             imageUrl = String.valueOf(remoteMessage.getNotification().getImageUrl());
             title = remoteMessage.getNotification().getTitle();
             body = remoteMessage.getNotification().getBody();
-            Long timeStamp =remoteMessage.getNotification().getEventTime();
-            if(timeStamp != null) {
-                time = TimeUtils.getMillisToFormattedTime(timeStamp, TimeUtils.FORMAT_2);
+            time = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2);
+            try {
+                notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             notificationId = random.nextInt(1000);
             createNotification();

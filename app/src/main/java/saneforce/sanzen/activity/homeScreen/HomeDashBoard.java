@@ -62,7 +62,11 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -82,6 +86,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -92,6 +97,8 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.FAQ.FAQ;
 import saneforce.sanzen.activity.Quiz.QuizActivity;
+import saneforce.sanzen.activity.homeScreen.notification.NotificationViewModel;
+import saneforce.sanzen.activity.homeScreen.notification.NotificationsAdapter;
 import saneforce.sanzen.activity.survey.SurveyActivity;
 import saneforce.sanzen.activity.ViewModel.LeaveViewModel;
 import saneforce.sanzen.activity.activityModule.DynamicActivity;
@@ -136,6 +143,7 @@ import saneforce.sanzen.activity.remaindercalls.RemaindercallsActivity;
 import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.roomdatabase.SlideTable.SlidesDao;
@@ -204,6 +212,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private static HomeDashBoard activity;
     public static boolean isFakeLocationDetected = false;
     private static final int NOTIFICATION_PERMISSION_CODE = 101;
+    private NotificationViewModel notificationViewModel;
+    private PopupWindow notificationPopupWindow;
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -329,6 +339,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         activity = this;
+        notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
         if (savedInstanceState != null && savedInstanceState.getBoolean("isSaved")) {
             if(savedInstanceState.getString("date") != null) {
                 binding.textDate.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_27, savedInstanceState.getString("date")));
@@ -377,10 +388,21 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         }
         requestNotificationPermission();
+        notificationViewModel.getUnreadNotificationCount().observe(this, count -> {
+            if (count != null && count > 0) {
+                binding.notificationRedDot.setVisibility(View.VISIBLE);
+            } else {
+                binding.notificationRedDot.setVisibility(View.GONE);
+            }
+        });
 
-        binding.imgNotofication.setOnClickListener(view -> {
+        binding.imgChat.setOnClickListener(view -> {
             ContinuousLogCollector.stopLogging(getApplicationContext());
 //            startActivity(new Intent(HomeDashBoard.this, MapViewActvity.class));
+        });
+
+        binding.imgNotification.setOnClickListener(view -> {
+            showNotificationPopup();
         });
 
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -496,6 +518,78 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
             }
         });
+    }
+
+    private void showNotificationPopup() {
+        LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        @SuppressLint("InflateParams") View popupView = layoutInflater.inflate(R.layout.notification_popup_view, null);
+        notificationPopupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, true);
+        int y = (getResources().getDimensionPixelSize(R.dimen._26sdp));
+        int x = (getResources().getDimensionPixelSize(R.dimen._13sdp));
+        notificationPopupWindow.showAtLocation(binding.imgNotification, Gravity.END|Gravity.TOP, x, y);
+        notificationPopupWindow.setOutsideTouchable(true);
+
+        ImageView ivClearAll = popupView.findViewById(R.id.iv_clear_all);
+        ivClearAll.setOnClickListener(view -> notificationViewModel.clearAll());
+
+        TextView tvNoNewNotification = popupView.findViewById(R.id.tv_no_notification);
+        RecyclerView rvNotification = popupView.findViewById(R.id.rv_notification);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvNotification.setLayoutManager(layoutManager);
+        final NotificationsAdapter adapter = new NotificationsAdapter(HomeDashBoard.this, notificationDataTable -> notificationViewModel.deleteNotification(notificationDataTable.getId()));
+        rvNotification.setAdapter(adapter);
+
+        rvNotification.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    markVisibleItemsAsRead(recyclerView, layoutManager, adapter);
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
+        notificationViewModel.getAllNotifications().observe(this, notificationDataTables -> {
+            if(notificationDataTables.isEmpty()) {
+                tvNoNewNotification.setVisibility(View.VISIBLE);
+                rvNotification.setVisibility(View.GONE);
+            } else {
+                tvNoNewNotification.setVisibility(View.GONE);
+                rvNotification.setVisibility(View.VISIBLE);
+                adapter.setNotifications(notificationDataTables);
+                rvNotification.post(() -> markVisibleItemsAsRead(rvNotification, layoutManager, adapter));
+            }
+        });
+        notificationPopupWindow.update();
+    }
+
+    private void markVisibleItemsAsRead(RecyclerView recyclerView, LinearLayoutManager layoutManager, NotificationsAdapter adapter) {
+        int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+        int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+
+        if (firstVisibleItemPosition == RecyclerView.NO_POSITION || lastVisibleItemPosition == RecyclerView.NO_POSITION) {
+            return;
+        }
+
+        List<NotificationDataTable> notifications = adapter.getNotifications();
+
+        if (notifications == null || notifications.isEmpty()) {
+            return;
+        }
+
+        for (int i = firstVisibleItemPosition; i <= lastVisibleItemPosition; i++) {
+            if (i < notifications.size()) {
+                NotificationDataTable notification = notifications.get(i);
+                if (notification.getIsRead() == 0) {
+                    notificationViewModel.markAsRead(notification.getId());
+                }
+            }
+        }
     }
 
     private void requestNotificationPermission() {
@@ -1943,6 +2037,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         super.onDestroy();
         slidesDao.Changestatus("0", "1");
 
+        if (notificationPopupWindow != null && notificationPopupWindow.isShowing()) {
+            notificationPopupWindow.dismiss();
+        }
     }
 
     private void deleteRecursive(File fileOrDirectory) {

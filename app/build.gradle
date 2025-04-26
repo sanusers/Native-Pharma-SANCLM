@@ -85,7 +85,7 @@ dependencies {
     implementation 'com.google.android.play:review:2.0.2'
     implementation 'com.google.android.play:app-update:2.1.0'
 
-    implementation "androidx.work:work-runtime:2.10.0"
+    implementation "androidx.work:work-runtime:2.10.1"
 
 
 //    //Nav Graph
@@ -105,7 +105,7 @@ dependencies {
     implementation "com.google.firebase:firebase-analytics"
     implementation "com.google.firebase:firebase-crashlytics"
 //    implementation "com.google.firebase:firebase-auth:22.1.2"
-    implementation platform("com.google.firebase:firebase-bom:33.12.0")
+    implementation platform("com.google.firebase:firebase-bom:33.13.0")
 
     //To use java Local(Date) library below api level 26
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
@@ -144,8 +144,13 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     //room
-    implementation "androidx.room:room-runtime:2.7.0"
-    annotationProcessor "androidx.room:room-compiler:2.7.0"
+    implementation "androidx.room:room-runtime:2.7.1"
+    annotationProcessor "androidx.room:room-compiler:2.7.1"
+
+    // Lifecycle components
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.8.7"
+    implementation "androidx.lifecycle:lifecycle-livedata:2.8.7"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.8.7"
 
     //camera
     implementation "androidx.camera:camera-camera2:1.4.2"

@@ -610,4 +610,6 @@
     <string name="no_address_found">No Address Found - No Internet Connection</string>
     <string name="no_address_found2">No Address Found - Poor Internet Connection</string>
     <string name="No_Tagging">No Tagging</string>
+    <string name="notifications">Notifications</string>
+    <string name="no_new_notifications">No new notifications</string>
 </resources>
