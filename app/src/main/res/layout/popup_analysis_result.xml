@@ -4,31 +4,44 @@
     android:layout_height="match_parent"
     android:background="@drawable/popup_background"
     android:elevation="16dp"
-    android:padding="16dp">
+    android:scrollbars="none"
+    android:padding="@dimen/popup_padding">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <TextView
             android:id="@+id/aiGreetingTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Greetings!"
             android:textColor="@android:color/black"
-            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/closePopup_button"
+            android:textSize="@dimen/text_size_greeting"
             android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="@dimen/card_margin_bottom"/>
 
+            <ImageView
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="@dimen/_10sdp"
+                android:src="@drawable/img_close"
+                android:id="@+id/closePopup_button"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
         <LinearLayout
             android:id="@+id/dailyRecommendationOverallCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
+            android:padding="@dimen/card_padding"
+            android:layout_marginBottom="@dimen/card_margin_bottom"
             android:background="@drawable/card_background_blue">
 
             <TextView
@@ -36,27 +49,30 @@
                 android:layout_height="wrap_content"
                 android:text="Overall Daily Visit Recommendation"
                 android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp"/>
+                android:textSize="@dimen/text_size_card_title"
+                android:layout_marginBottom="@dimen/title_margin_bottom"/>
 
             <TextView
                 android:id="@+id/totalCustomersTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Total customers: "/>
+                android:text="Total customers: "
+                android:textSize="@dimen/text_size_list_item"/>
 
             <TextView
                 android:id="@+id/estimatedWorkingDaysTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Estimated working days this month: "/>
+                android:text="Estimated working days this month: "
+                android:textSize="@dimen/text_size_list_item"/>
 
             <TextView
                 android:id="@+id/recommendedVisitsOverallTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Recommended visits per day (Overall): "
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size_list_item"/>
 
         </LinearLayout>
 
@@ -65,15 +81,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/card_background_light_blue"> <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Recommended Visits Per Customer Type"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp"/>
+            android:padding="@dimen/card_padding"
+            android:layout_marginBottom="@dimen/card_margin_bottom"
+            android:background="@drawable/card_background_light_blue">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Recommended Visits Per Customer Type"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size_card_title"
+                android:layout_marginBottom="@dimen/title_margin_bottom"/>
         </LinearLayout>
 
 
@@ -82,17 +99,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
+            android:padding="@dimen/card_padding"
+            android:layout_marginBottom="@dimen/card_margin_bottom"
             android:background="@drawable/card_background_green">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Recent Customer Visits"
+                android:text="Last Customer Visits"
                 android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp"/>
+                android:textSize="@dimen/text_size_card_title"
+                android:layout_marginBottom="@dimen/title_margin_bottom"/>
 
             <LinearLayout
                 android:id="@+id/recentVisitsContent"
@@ -108,8 +125,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
+            android:padding="@dimen/card_padding"
+            android:layout_marginBottom="@dimen/card_margin_bottom"
             android:background="@drawable/card_background_orange">
 
             <TextView
@@ -117,8 +134,16 @@
                 android:layout_height="wrap_content"
                 android:text="Unvisited Customers (Type 1, 10-90 Days Ago)"
                 android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp"/>
+                android:textSize="@dimen/text_size_card_title"
+                android:layout_marginBottom="@dimen/title_margin_bottom"/>
+
+            <LinearLayout
+                android:id="@+id/unvisitedType1ChartContainer"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/chart_height"
+                android:orientation="vertical"
+                android:layout_marginBottom="@dimen/title_margin_bottom">
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/unvisitedType1Content"
@@ -134,8 +159,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
+            android:padding="@dimen/card_padding"
+            android:layout_marginBottom="@dimen/card_margin_bottom"
             android:background="@drawable/card_background_purple">
 
             <TextView
@@ -143,8 +168,8 @@
                 android:layout_height="wrap_content"
                 android:text="Nearest Customers (Within 1 km)"
                 android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp"/>
+                android:textSize="@dimen/text_size_card_title"
+                android:layout_marginBottom="@dimen/title_margin_bottom"/>
 
             <LinearLayout
                 android:id="@+id/nearestCustomersContent"
@@ -160,8 +185,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
+            android:padding="@dimen/card_padding"
+            android:layout_marginBottom="@dimen/card_margin_bottom"
             android:background="@drawable/card_background_pink">
 
             <TextView
@@ -169,8 +194,8 @@
                 android:layout_height="wrap_content"
                 android:text="Upcoming Birthdays / Anniversaries"
                 android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp"/>
+                android:textSize="@dimen/text_size_card_title"
+                android:layout_marginBottom="@dimen/title_margin_bottom"/>
 
             <LinearLayout
                 android:id="@+id/specialDatesContent"
@@ -187,15 +212,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
+            android:padding="@dimen/card_padding"
+            android:layout_marginBottom="@dimen/card_margin_bottom"
             android:background="@drawable/card_background"> <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Other Unvisited Customers"
             android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp"/>
+            android:textSize="@dimen/text_size_card_title"
+            android:layout_marginBottom="@dimen/title_margin_bottom"/>
 
             <LinearLayout
                 android:id="@+id/fallbackUnvisitedCustomersContent"
@@ -212,7 +237,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp"
+            android:padding="@dimen/card_padding"
+            android:layout_marginBottom="@dimen/card_margin_bottom"
             android:background="@drawable/card_background_red">
 
             <TextView
@@ -220,24 +246,25 @@
                 android:layout_height="wrap_content"
                 android:text="Error"
                 android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp"/>
+                android:textSize="@dimen/text_size_card_title"
+                android:layout_marginBottom="@dimen/title_margin_bottom"/>
 
             <TextView
                 android:id="@+id/errorMessageTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_error"/>
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/closePopup_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Close"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"/>
+<!--        <Button-->
+<!--            android:id="@+id/closePopup_button"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Close"-->
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            android:layout_marginTop="@dimen/close_button_margin_top"/>-->
 
     </LinearLayout>
 </ScrollView>

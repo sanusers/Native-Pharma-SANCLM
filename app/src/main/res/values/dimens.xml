@@ -3,5 +3,20 @@
     <dimen name="popup_arrow_width">10dp</dimen>
     <dimen name="customer_type_icon_size">24dp</dimen>
     <dimen name="direction_icon_size">24dp</dimen>
-    <dimen name="text_margin_small">8dp</dimen>
+    <dimen name="card_padding">12dp</dimen>
+    <dimen name="card_margin_bottom">16dp</dimen>
+    <dimen name="popup_padding">16dp</dimen>
+    <dimen name="popup_corner_radius">16dp</dimen>
+    <dimen name="icon_margin_end">8dp</dimen>
+    <dimen name="list_item_padding_vertical">4dp</dimen>
+    <dimen name="list_item_padding_left">16dp</dimen>
+    <dimen name="title_margin_bottom">8dp</dimen>
+    <dimen name="close_button_margin_top">16dp</dimen>
+    <dimen name="vertical_margin_small">8dp</dimen>
+    <dimen name="text_size_greeting">10sp</dimen>
+    <dimen name="text_size_card_title">10sp</dimen>
+    <dimen name="text_size_list_item">8sp</dimen>
+    <dimen name="text_size_error">8sp</dimen>
+    <dimen name="text_margin_small">4sp</dimen>
+    <dimen name="chart_height">200dp</dimen>
 </resources>

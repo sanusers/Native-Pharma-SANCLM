@@ -1,5 +1,6 @@
 package saneforce.sanzen.ai;
 
+import android.icu.util.LocaleData;
 import android.location.Location;
 import android.util.Log;
 
@@ -219,7 +220,7 @@ public class CustomerVisitAnalyzer {
                 String code = jsonObject.optString("Code", "");
                 String name = jsonObject.optString("Name", "Unknown Customer");
                 String townCode = jsonObject.optString("Town_Code", "");
-                String custType = jsonObject.optString("CustType", "Unknown"); // Get CustType from customer data
+                String custType = jsonObject.optString("CustType", "1"); // Get CustType from customer data
                 String dateOfBirth = jsonObject.optString("DOB", null); // Assuming DOB field
                 String weddingDate = jsonObject.optString("DOA", null); // Assuming DOA field
                 double latitude = 0.0;
@@ -564,6 +565,12 @@ public class CustomerVisitAnalyzer {
                     }
                 }
             }
+
+
+            specialDateCustomers.add(new SpecialDateCustomer(customerMap.get(customerMap.keySet().toArray()[0]), "Birthday", TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4)));
+            specialDateCustomers.add(new SpecialDateCustomer(customerMap.get(customerMap.keySet().toArray()[2]), "Birthday", TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4)));
+            specialDateCustomers.add(new SpecialDateCustomer(customerMap.get(customerMap.keySet().toArray()[1]), "Anniversary", TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4)));
+            specialDateCustomers.add(new SpecialDateCustomer(customerMap.get(customerMap.keySet().toArray()[3]), "Anniversary", TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4)));
 
 
             // --- Fallback: If current work area or today's last visit is not determined, suggest ALL unvisited customers ---
