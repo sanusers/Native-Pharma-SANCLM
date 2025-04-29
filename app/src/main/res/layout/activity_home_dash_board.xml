@@ -146,7 +146,11 @@
 
             tools:context=".activity.DashBoard.HomeDashBoard">
 
-            <LinearLayout
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:baselineAligned="false"
@@ -538,6 +542,23 @@
 
             </LinearLayout>
 
+                <ImageView
+                    android:id="@+id/aiImageView"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"
+                    android:layout_marginVertical="@dimen/_40sdp"
+                    android:layout_marginHorizontal="@dimen/_1sdp"
+                    android:background="@drawable/circle_idle_bg"
+                    android:elevation="@dimen/_3sdp"
+                    android:src="@drawable/ai_bot"
+                    tools:ignore="ContentDescription" />
+
+            </RelativeLayout>
+
             <FrameLayout
                 android:id="@+id/fl_sync_quiz_progress"
                 android:layout_width="match_parent"
@@ -722,6 +743,7 @@
                     </LinearLayout>
                 </RelativeLayout>
             </com.google.android.material.navigation.NavigationView>
+
         </androidx.drawerlayout.widget.DrawerLayout>
 
     </RelativeLayout>

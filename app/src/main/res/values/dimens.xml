@@ -1,3 +1,7 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="popup_arrow_width">10dp</dimen>
+    <dimen name="customer_type_icon_size">24dp</dimen>
+    <dimen name="direction_icon_size">24dp</dimen>
+    <dimen name="text_margin_small">8dp</dimen>
 </resources>

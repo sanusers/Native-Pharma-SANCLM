@@ -10,6 +10,8 @@ import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.Setup
 import static saneforce.sanzen.commonClasses.Constants.CONNECTIVITY_ACTION;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -21,6 +23,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,6 +40,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -48,6 +52,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,12 +83,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -126,6 +134,8 @@ import saneforce.sanzen.activity.reports.ReportsActivity;
 import saneforce.sanzen.activity.reports.dayReport.MapViewActvity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
+import saneforce.sanzen.ai.CustomerVisitAnalyzer;
+import saneforce.sanzen.ai.CustomerVisitAnalyzer.*;
 import saneforce.sanzen.commonClasses.CheckInOutManager;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -214,6 +224,23 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private static final int NOTIFICATION_PERMISSION_CODE = 101;
     private NotificationViewModel notificationViewModel;
     private PopupWindow notificationPopupWindow;
+
+    private int lastX, lastY;
+    private float initialTouchX, initialTouchY;
+    private float initialViewX, initialViewY;
+    private int initialMargin;
+    private int viewHalfWidth;
+
+    private static final int CLICK_THRESHOLD = 10;
+    private static final String TAG = "MainActivity";
+
+    private PopupWindow aiGreetingPopupWindow;
+    private PopupWindow analysisPopupWindow;
+    private Handler handler = new Handler();
+
+    private boolean isClickDetected = false;
+    private boolean isTouchHandled = false;
+    private static final long TOUCH_COOLDOWN_MILLIS = 500;
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -328,7 +355,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -393,6 +420,87 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.notificationRedDot.setVisibility(View.VISIBLE);
             } else {
                 binding.notificationRedDot.setVisibility(View.GONE);
+            }
+        });
+
+        binding.aiImageView.post(() -> {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) binding.aiImageView.getLayoutParams();
+            initialMargin = params.rightMargin; // Or params.leftMargin
+            viewHalfWidth = binding.aiImageView.getWidth() / 2;
+            binding.aiImageView.setX(getRightAttachedX(binding.aiImageView.getWidth()));
+        });
+
+        binding.aiImageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int X = (int) event.getRawX();
+                final int Y = (int) event.getRawY();
+
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        initialTouchX = event.getRawX();
+                        initialTouchY = event.getRawY();
+                        initialViewX = v.getX();
+                        initialViewY = v.getY();
+                        lastX = X;
+                        lastY = Y;
+
+                        v.animate()
+                                .x(getFullyOnScreenX(v.getWidth(), v.getX(), ((View)v.getParent()).getWidth()))
+                                .setDuration(100)
+                                .start();
+                        v.setBackgroundResource(R.drawable.circle_active_bg);
+                        return true;
+
+                    case MotionEvent.ACTION_UP:
+                        float deltaX = event.getRawX() - initialTouchX;
+                        float deltaY = event.getRawY() - initialTouchY;
+                        double moveDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+                        if (moveDistance < CLICK_THRESHOLD) {
+                            // It was a click - trigger popup logic
+                            showAnalysisPopup(v); // Pass the AI ImageView as the anchor view
+                            // AI view stays full circle while popup is open
+                        } else {
+                            View parentUp = (View) v.getParent();
+                            int parentWidth = parentUp.getWidth();
+                            int viewWidth = v.getWidth();
+                            float currentCenterX = v.getX() + (viewWidth / 2f);
+
+                            float targetX;
+                            if (currentCenterX < parentWidth / 2f) {
+                                targetX = getLeftAttachedX(viewWidth);
+                            } else {
+                                targetX = getRightAttachedX(viewWidth);
+                            }
+                            v.animate().x(targetX).setDuration(200).start();
+                            v.setBackgroundResource(R.drawable.circle_idle_bg);
+                        }
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        int deltaXMove = X - lastX;
+                        int deltaYMove = Y - lastY;
+                        float newX = v.getX() + deltaXMove;
+                        float newY = v.getY() + deltaYMove;
+
+                        View parentMove = (View) v.getParent();
+                        int parentWidthMove = parentMove.getWidth();
+                        int parentHeightMove = parentMove.getHeight();
+                        int viewWidthMove = v.getWidth();
+                        int viewHeightMove = v.getHeight();
+
+                        newX = Math.max(0, Math.min(newX, parentWidthMove - viewWidthMove));
+                        newY = Math.max(0, Math.min(newY, parentHeightMove - viewHeightMove));
+
+                        v.setX(newX);
+                        v.setY(newY);
+
+                        lastX = X;
+                        lastY = Y;
+                        break;
+                }
+                return false;
             }
         });
 
@@ -519,6 +627,692 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
     }
+
+    private float getLeftAttachedX(int viewWidth) {
+        return -viewWidth / 2f + initialMargin;
+    }
+
+    private float getRightAttachedX(int viewWidth) {
+        View parent = (View) binding.aiImageView.getParent();
+        if (parent == null) return 0;
+        return parent.getWidth() - viewWidth / 2f - initialMargin;
+    }
+
+    private float getFullyOnScreenX(int viewWidth, float currentX, int parentWidth) {
+        if (currentX < parentWidth / 2f) {
+            return initialMargin;
+        } else {
+            return parentWidth - viewWidth - initialMargin;
+        }
+    }
+
+    private int getCustomerTypeIcon(String customerType) {
+        switch (customerType) {
+            case "1":
+                return R.drawable.doctor_img; // Replace with your drawable resource ID
+            case "2":
+                return R.drawable.chemist_img; // Replace with your drawable resource ID
+            case "3":
+                return R.drawable.tp_stockiest_icon; // Replace with your drawable resource ID
+            case "4":
+                return R.drawable.tp_unlist_dr_icon; // Replace with your drawable resource ID
+            default:
+                return R.drawable.bg_dark_purple_round; // Replace with a default icon
+        }
+    }
+
+    // Method for showing the Analysis popup
+    private void showAnalysisPopup(View anchorView) {
+        // Dismiss any existing popup first
+        if (analysisPopupWindow != null && analysisPopupWindow.isShowing()) {
+            analysisPopupWindow.dismiss();
+        }
+
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        @SuppressLint("InflateParams") View popupView = layoutInflater.inflate(R.layout.popup_analysis_result, null); // Use the full layout
+
+        // Calculate popup width and height (approx 80% of screen)
+        int displayWidth = getResources().getDisplayMetrics().widthPixels;
+        int displayHeight = getResources().getDisplayMetrics().heightPixels;
+
+        int popupWidth = (int) (displayWidth * 0.8); // 80% of screen width
+        int popupHeight = (int) (displayHeight * 0.8); // 80% of screen height
+
+
+        analysisPopupWindow = new PopupWindow(
+                popupView,
+                popupWidth,
+                popupHeight,
+                true // Focusable
+        );
+
+        // Set a background drawable to make it dismissible by tapping outside
+        analysisPopupWindow.setBackgroundDrawable(getResources().getDrawable(android.R.color.transparent));
+
+
+        // --- Call the Analyzer and Populate the Popup ---
+        int recentDaysThreshold = 90; // Set the threshold to 90 for unvisited Type 1 grouping
+
+        // TODO: Replace with actual current location fetching logic
+        double currentLatitude = gpsTrack.getLatitude(); // Placeholder Latitude for Chennai
+        double currentLongitude = gpsTrack.getLongitude(); // Placeholder Longitude for Chennai
+
+
+        String visitJsonData = masterDataDao.getDataByKey(Constants.CALL_SYNC);
+        String customerJsonData = masterDataDao.getDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
+        VisitAnalysisResult analysisResult = CustomerVisitAnalyzer.analyzeRecentCustomerVisits(visitJsonData, customerJsonData, recentDaysThreshold, currentLatitude, currentLongitude);
+
+        // Find the UI elements from popup_analysis_result_full.xml
+        TextView aiGreetingTextView = popupView.findViewById(R.id.aiGreetingTextView);
+        LinearLayout dailyRecommendationOverallCard = popupView.findViewById(R.id.dailyRecommendationOverallCard);
+        TextView totalCustomersTextView = dailyRecommendationOverallCard.findViewById(R.id.totalCustomersTextView);
+        TextView estimatedWorkingDaysTextView = dailyRecommendationOverallCard.findViewById(R.id.estimatedWorkingDaysTextView);
+        TextView recommendedVisitsOverallTextView = dailyRecommendationOverallCard.findViewById(R.id.recommendedVisitsOverallTextView);
+        LinearLayout dailyRecommendationPerTypeContainer = popupView.findViewById(R.id.dailyRecommendationPerTypeContainer);
+
+        LinearLayout recentVisitsCard = popupView.findViewById(R.id.recentVisitsCard);
+        LinearLayout recentVisitsContent = recentVisitsCard.findViewById(R.id.recentVisitsContent);
+
+        LinearLayout unvisitedType1Card = popupView.findViewById(R.id.unvisitedType1Card);
+        LinearLayout unvisitedType1Content = unvisitedType1Card.findViewById(R.id.unvisitedType1Content);
+
+        LinearLayout nearestCustomersCard = popupView.findViewById(R.id.nearestCustomersCard);
+        LinearLayout nearestCustomersContent = nearestCustomersCard.findViewById(R.id.nearestCustomersContent);
+
+        LinearLayout specialDatesCard = popupView.findViewById(R.id.specialDatesCard);
+        LinearLayout specialDatesContent = specialDatesCard.findViewById(R.id.specialDatesContent);
+
+        LinearLayout fallbackUnvisitedCustomersCard = popupView.findViewById(R.id.fallbackUnvisitedCustomersCard);
+        LinearLayout fallbackUnvisitedCustomersContent = fallbackUnvisitedCustomersCard.findViewById(R.id.fallbackUnvisitedCustomersContent);
+
+        LinearLayout errorCard = popupView.findViewById(R.id.errorCard);
+        TextView errorMessageTextView = errorCard.findViewById(R.id.errorMessageTextView);
+        Button closeButton = popupView.findViewById(R.id.closePopup_button);
+
+
+        // --- Populate AI Greeting ---
+        String userName = "User"; // Replace with actual user name fetching logic
+        Calendar calendar = Calendar.getInstance();
+        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        String timeOfDay;
+        if (hourOfDay >= 5 && hourOfDay < 12) {
+            timeOfDay = "Good morning";
+        } else if (hourOfDay >= 12 && hourOfDay < 17) {
+            timeOfDay = "Good afternoon";
+        } else {
+            timeOfDay = "Good evening";
+        }
+        String greetingMessage = String.format("Hi %s, %s!\nI am your AI companion, ready to assist you on your journey.", userName, timeOfDay);
+        aiGreetingTextView.setText(greetingMessage);
+
+
+        // --- Populate Daily Visit Recommendation (Overall and Per Type) ---
+        DailyVisitRecommendation recommendation = analysisResult.getDailyRecommendation();
+        if (recommendation != null) {
+            totalCustomersTextView.setText("Total customers: " + recommendation.getTotalCustomers());
+            estimatedWorkingDaysTextView.setText("Estimated working days this month: " + recommendation.getEstimatedWorkingDays());
+            recommendedVisitsOverallTextView.setText("Recommended visits per day (Overall): " + recommendation.getRecommendedVisitsPerDayOverall());
+            dailyRecommendationOverallCard.setVisibility(View.VISIBLE);
+
+            // Populate Per Customer Type Recommendation
+            Map<String, Integer> recommendedPerType = recommendation.getRecommendedVisitsPerDayPerType();
+            Map<String, Integer> totalPerType = recommendation.getTotalCustomersPerType();
+
+            if (recommendedPerType != null && !recommendedPerType.isEmpty()) {
+                dailyRecommendationPerTypeContainer.removeAllViews(); // Clear previous content
+                // Sort types for consistent display (e.g., alphabetically)
+                List<String> sortedTypes = new ArrayList<>(recommendedPerType.keySet());
+                Collections.sort(sortedTypes);
+
+                for (String type : sortedTypes) {
+                    int recommendedCount = recommendedPerType.getOrDefault(type, 0);
+                    int totalCount = totalPerType.getOrDefault(type, 0);
+
+                    LinearLayout typeLayout = new LinearLayout(this);
+                    typeLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                    typeLayout.setOrientation(LinearLayout.HORIZONTAL);
+                    typeLayout.setGravity(Gravity.CENTER_VERTICAL);
+                    typeLayout.setPadding(0, 4, 0, 4);
+
+                    // Add Customer Type Image
+                    ImageView typeIcon = new ImageView(this);
+                    LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(
+                            getResources().getDimensionPixelSize(R.dimen.customer_type_icon_size), // Define dimension in dimens.xml
+                            getResources().getDimensionPixelSize(R.dimen.customer_type_icon_size));
+                    iconParams.setMarginEnd(getResources().getDimensionPixelSize(R.dimen.text_margin_small)); // Define margin in dimens.xml
+                    typeIcon.setLayoutParams(iconParams);
+                    typeIcon.setImageResource(getCustomerTypeIcon(type)); // Set the appropriate drawable based on customer type
+                    typeLayout.addView(typeIcon);
+
+
+                    TextView typeRecommendationTextView = new TextView(this);
+                    typeRecommendationTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                    typeRecommendationTextView.setText(String.format("Type %s: %d/%d (Recommended: %d/day)", type, totalCount, totalCount, recommendedCount));
+                    typeLayout.addView(typeRecommendationTextView);
+
+                    dailyRecommendationPerTypeContainer.addView(typeLayout);
+                }
+                dailyRecommendationPerTypeContainer.setVisibility(View.VISIBLE);
+            } else {
+                dailyRecommendationPerTypeContainer.setVisibility(View.GONE);
+            }
+
+
+        } else {
+            dailyRecommendationOverallCard.setVisibility(View.GONE);
+            dailyRecommendationPerTypeContainer.setVisibility(View.GONE);
+        }
+
+
+        // --- Populate Recent Customer Visits ---
+        Map<String, List<String>> recentVisitsGrouped = analysisResult.getRecentVisitsGrouped();
+        if (recentVisitsGrouped != null && !recentVisitsGrouped.isEmpty()) {
+            recentVisitsContent.removeAllViews(); // Clear previous content
+            // Sort keys for consistent order (Max days ago to Min days ago)
+            List<String> sortedKeys = new ArrayList<>(recentVisitsGrouped.keySet());
+            Collections.sort(sortedKeys, new Comparator<String>() {
+                @Override
+                public int compare(String key1, String key2) {
+                    // Handle Today and Yesterday to place them at the end
+                    if (key1.equals("Today")) return 1;
+                    if (key2.equals("Today")) return -1;
+                    if (key1.equals("Yesterday")) return 1;
+                    if (key2.equals("Yesterday")) return -1;
+
+                    // Extract the start day from the interval key (e.g., "Days Ago: 2 - 11" -> 2)
+                    try {
+                        String[] parts1 = key1.split(" ")[2].split("-");
+                        int startDay1 = Integer.parseInt(parts1[0]);
+                        String[] parts2 = key2.split(" ")[2].split("-");
+                        int startDay2 = Integer.parseInt(parts2[0]);
+                        // Compare in descending order
+                        return Integer.compare(startDay2, startDay1);
+                    } catch (Exception e) {
+                        return key2.compareTo(key1); // Fallback to reverse alphabetical if parsing fails
+                    }
+                }
+            });
+
+
+            for (String groupKey : sortedKeys) {
+                List<String> customers = recentVisitsGrouped.get(groupKey);
+                if (customers != null && !customers.isEmpty()) {
+                    TextView groupTitle = new TextView(this);
+                    groupTitle.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                    groupTitle.setText(groupKey);
+//                    groupTitle.setTextStyle(android.graphics.Typeface.BOLD);
+                    groupTitle.setPadding(0, 8, 0, 4);
+                    recentVisitsContent.addView(groupTitle);
+
+                    for (String customerInfo : customers) {
+                        TextView customerTextView = new TextView(this);
+                        customerTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        customerTextView.setText("- " + customerInfo);
+                        customerTextView.setPadding(16, 4, 0, 4); // Add some left padding
+                        recentVisitsContent.addView(customerTextView);
+                    }
+                }
+            }
+            recentVisitsCard.setVisibility(View.VISIBLE);
+        } else {
+            recentVisitsCard.setVisibility(View.GONE);
+        }
+
+
+        // --- Populate Not Visited Customers (Type 1) ---
+        Map<String, List<String>> unvisitedType1Grouped = analysisResult.getUnvisitedType1Grouped();
+        if (unvisitedType1Grouped != null && !unvisitedType1Grouped.isEmpty()) {
+            unvisitedType1Content.removeAllViews(); // Clear previous content
+
+            // TODO: Implement bar chart visualization here.
+            // You would need a charting library (e.g., MPAndroidChart) or custom drawing logic.
+            // For now, the data is presented as grouped lists, matching the text part of your request.
+            // Example of how you might prepare data for a chart:
+            // List<BarEntry> entries = new ArrayList<>();
+            // List<String> labels = new ArrayList<>();
+            // int index = 0;
+            // for (Map.Entry<String, List<String>> entry : unvisitedType1Grouped.entrySet()) {
+            //     entries.add(new BarEntry(index, entry.getValue().size()));
+            //     labels.add(entry.getKey()); // Use the group key as the label
+            //     index++;
+            // }
+            // Then use a charting library to render the bar chart using 'entries' and 'labels'.
+
+
+            // Sort keys for consistent order (Max days ago to Min days ago)
+            List<String> sortedKeys = new ArrayList<>(unvisitedType1Grouped.keySet());
+            Collections.sort(sortedKeys, new Comparator<String>() {
+                @Override
+                public int compare(String key1, String key2) {
+                    // Extract the start day from the interval key (e.g., "Days Ago: 10 - 19" -> 10)
+                    try {
+                        String[] parts1 = key1.split(" ")[2].split("-");
+                        int startDay1 = Integer.parseInt(parts1[0]);
+                        String[] parts2 = key2.split(" ")[2].split("-");
+                        int startDay2 = Integer.parseInt(parts2[0]);
+                        // Compare in descending order
+                        return Integer.compare(startDay2, startDay1);
+                    } catch (Exception e) {
+                        return key2.compareTo(key1); // Fallback to reverse alphabetical if parsing fails
+                    }
+                }
+            });
+
+
+            for (String groupKey : sortedKeys) {
+                List<String> customers = unvisitedType1Grouped.get(groupKey);
+                if (customers != null && !customers.isEmpty()) {
+                    TextView groupTitle = new TextView(this);
+                    groupTitle.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                    groupTitle.setText(groupKey + " (" + customers.size() + ")"); // Add count to title
+//                    groupTitle.setTextStyle(android.graphics.Typeface.BOLD);
+                    groupTitle.setPadding(0, 8, 0, 4);
+                    unvisitedType1Content.addView(groupTitle);
+
+                    for (String customerInfo : customers) {
+                        TextView customerTextView = new TextView(this);
+                        customerTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        customerTextView.setText("- " + customerInfo);
+                        customerTextView.setPadding(16, 4, 0, 4); // Add some left padding
+                        unvisitedType1Content.addView(customerTextView);
+                    }
+                }
+            }
+            unvisitedType1Card.setVisibility(View.VISIBLE);
+
+
+        } else {
+            unvisitedType1Card.setVisibility(View.GONE);
+        }
+
+
+        // --- Populate Nearest Customers ---
+        List<NearestCustomer> nearestCustomers = analysisResult.getNearestCustomers();
+        if (nearestCustomers != null && !nearestCustomers.isEmpty()) {
+            nearestCustomersContent.removeAllViews(); // Clear previous content
+            nearestCustomersCard.setVisibility(View.VISIBLE);
+
+            for (NearestCustomer nearest : nearestCustomers) {
+                LinearLayout customerLayout = new LinearLayout(this);
+                customerLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                customerLayout.setOrientation(LinearLayout.HORIZONTAL);
+                customerLayout.setGravity(Gravity.CENTER_VERTICAL);
+                customerLayout.setPadding(0, 4, 0, 4);
+
+                TextView customerInfoTextView = new TextView(this);
+                LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+                        0, // 0 width with weight allows it to take remaining space
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        1.0f); // Weight 1.0
+                customerInfoTextView.setLayoutParams(textParams);
+                String distanceString;
+                if (nearest.getDistance() < 1000) {
+                    distanceString = String.format(Locale.US, "%.0f meters away", nearest.getDistance());
+                } else {
+                    distanceString = String.format(Locale.US, "%.2f km away", nearest.getDistance() / 1000);
+                }
+                customerInfoTextView.setText("- " + nearest.getCustomer().getName() + " (" + distanceString + ")");
+                customerLayout.addView(customerInfoTextView);
+
+                // Add Direction Icon
+                ImageView directionIcon = new ImageView(this);
+                LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(
+                        getResources().getDimensionPixelSize(R.dimen.direction_icon_size), // Define dimension
+                        getResources().getDimensionPixelSize(R.dimen.direction_icon_size));
+                iconParams.setMarginStart(getResources().getDimensionPixelSize(R.dimen.text_margin_small)); // Define margin
+                directionIcon.setLayoutParams(iconParams);
+                directionIcon.setImageResource(R.drawable.ic_direction); // Replace with your direction icon drawable
+                directionIcon.setClickable(true); // Make it clickable
+                directionIcon.setFocusable(true); // Make it focusable
+
+                // Set click listener to open maps
+                directionIcon.setOnClickListener(v -> {
+                    // Use the customer's coordinates for the destination
+                    String uri = String.format(Locale.US, "geo:%f,%f?q=%f,%f(%s)",
+                                               currentLatitude, currentLongitude, // Start from current location
+                                               nearest.getCustomer().getLatitude(), nearest.getCustomer().getLongitude(),
+                                               nearest.getCustomer().getName());
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    // Check if there's an app to handle the intent
+                    if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(mapIntent);
+                    } else {
+                        Toast.makeText(this, "No map application found.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                customerLayout.addView(directionIcon);
+                nearestCustomersContent.addView(customerLayout);
+            }
+
+        } else {
+            nearestCustomersCard.setVisibility(View.GONE);
+        }
+
+
+        // --- Populate Birthdays / Anniversaries ---
+        List<SpecialDateCustomer> specialDateCustomers = analysisResult.getSpecialDateCustomers();
+        if (specialDateCustomers != null && !specialDateCustomers.isEmpty()) {
+            specialDatesContent.removeAllViews(); // Clear previous content
+            specialDatesCard.setVisibility(View.VISIBLE);
+
+            // Sort by date (earliest first)
+            Collections.sort(specialDateCustomers, new Comparator<SpecialDateCustomer>() {
+                @Override
+                public int compare(SpecialDateCustomer s1, SpecialDateCustomer s2) {
+                    // Assuming date format is yyyy-MM-dd for parsing
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                    try {
+                        Date date1 = dateFormat.parse(s1.getDate());
+                        Date date2 = dateFormat.parse(s2.getDate());
+                        // For comparing upcoming dates ignoring year, we can set them to the current year
+                        Calendar cal1 = Calendar.getInstance();
+                        cal1.setTime(date1);
+                        cal1.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
+
+                        Calendar cal2 = Calendar.getInstance();
+                        cal2.setTime(date2);
+                        cal2.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
+
+                        return cal1.getTime().compareTo(cal2.getTime());
+
+                    } catch (ParseException e) {
+                        Log.e("VisitAnalyzer", "Error parsing date for sorting special dates", e);
+                        return 0; // Cannot sort if dates are unparseable
+                    }
+                }
+            });
+
+
+            for (SpecialDateCustomer specialDate : specialDateCustomers) {
+                TextView specialDateTextView = new TextView(this);
+                specialDateTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                // Format the date for display (e.g., "MMM dd")
+                SimpleDateFormat displayDateFormat = new SimpleDateFormat("MMM dd", Locale.US);
+                String formattedDate;
+                try {
+                    Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(specialDate.getDate());
+                    formattedDate = displayDateFormat.format(date);
+                } catch (ParseException e) {
+                    formattedDate = specialDate.getDate(); // Use original string if parsing fails
+                }
+
+                specialDateTextView.setText(String.format("- %s's %s on %s", specialDate.getCustomer().getName(), specialDate.getDateType(), formattedDate));
+                specialDateTextView.setPadding(0, 4, 0, 4);
+                specialDatesContent.addView(specialDateTextView);
+            }
+
+        } else {
+            specialDatesCard.setVisibility(View.GONE);
+        }
+
+
+        // --- Fallback: If specific suggestion cards were NOT shown, suggest ALL unvisited customers ---
+        List<String> fallbackUnvisitedCustomers = analysisResult.getFallbackUnvisitedCustomers();
+        if ((nearestCustomers == null || nearestCustomers.isEmpty()) && (unvisitedType1Grouped == null || unvisitedType1Grouped.isEmpty()) && fallbackUnvisitedCustomers != null && !fallbackUnvisitedCustomers.isEmpty()) {
+
+            fallbackUnvisitedCustomersContent.removeAllViews(); // Clear previous content
+            fallbackUnvisitedCustomersCard.setVisibility(View.VISIBLE);
+
+            TextView groupTitle = new TextView(this);
+            groupTitle.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            groupTitle.setText("Other Unvisited Customers (Not visited in last " + recentDaysThreshold + " days)");
+//            groupTitle.setTextStyle(android.graphics.Typeface.ITALIC);
+            groupTitle.setPadding(0, 8, 0, 4);
+            fallbackUnvisitedCustomersContent.addView(groupTitle);
+
+
+            for (String customerName : fallbackUnvisitedCustomers) {
+                TextView customerTextView = new TextView(this);
+                customerTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                customerTextView.setText("- " + customerName);
+                customerTextView.setPadding(16, 4, 0, 4); // Add some left padding
+                fallbackUnvisitedCustomersContent.addView(customerTextView);
+            }
+
+        } else {
+            fallbackUnvisitedCustomersCard.setVisibility(View.GONE);
+        }
+
+
+        // --- Display Error Message if any ---
+        String errorMessage = analysisResult.getErrorMessage();
+        if (errorMessage != null && !errorMessage.isEmpty()) {
+            errorMessageTextView.setText(errorMessage);
+            errorCard.setVisibility(View.VISIBLE);
+        } else {
+            errorCard.setVisibility(View.GONE);
+        }
+
+
+        // Set Close button listener
+        if (closeButton != null) {
+            closeButton.setOnClickListener(v -> {
+                if (analysisPopupWindow != null && analysisPopupWindow.isShowing()) {
+                    analysisPopupWindow.dismiss();
+                }
+            });
+        }
+
+        // Set dismiss listener for the popup to reset AI view state
+        analysisPopupWindow.setOnDismissListener(() -> {
+            View parent = (View) binding.aiImageView.getParent();
+            if (parent != null) {
+                float targetX;
+                if (initialViewX + (binding.aiImageView.getWidth() / 2f) < parent.getWidth() / 2f) {
+                    targetX = getLeftAttachedX(binding.aiImageView.getWidth());
+                } else {
+                    targetX = getRightAttachedX(binding.aiImageView.getWidth());
+                }
+                binding.aiImageView.animate().x(targetX).setDuration(200).start();
+                binding.aiImageView.setBackgroundResource(R.drawable.circle_idle_bg);
+            }
+        });
+
+
+        // --- Positioning the popup adjacent to the AI ImageView ---
+        // Determine which side the AI view is currently on
+        View parent = (View) anchorView.getParent();
+        if (parent != null) {
+            float currentCenterX = anchorView.getX() + (anchorView.getWidth() / 2f);
+            int parentWidth = parent.getWidth();
+
+            int xOffset;
+            int yOffset = (int) (anchorView.getY() + anchorView.getHeight() / 2 - popupHeight / 2); // Vertically center popup with AI view
+
+            // Define popup arrow width (you'll need this dimension resource)
+            int popupArrowWidth = getResources().getDimensionPixelSize(R.dimen.popup_arrow_width);
+
+
+            if (currentCenterX < parentWidth / 2f) {
+                // AI view is on the left side, show popup to the right of it
+                xOffset = (int) (anchorView.getX() + anchorView.getWidth() + popupArrowWidth); // Position to the right, considering arrow width
+                // Ensure it doesn't go off screen
+                if (xOffset + popupWidth > parentWidth) {
+                    xOffset = parentWidth - popupWidth - popupArrowWidth; // Adjust if too far right
+                }
+            } else {
+                // AI view is on the right side, show popup to the left of it
+                xOffset = (int) (anchorView.getX() - popupWidth - popupArrowWidth); // Position to the left, considering arrow width
+                // Ensure it doesn't go off screen
+                if (xOffset < 0) {
+                    xOffset = popupArrowWidth; // Adjust if too far left
+                }
+            }
+
+            // Ensure the popup is within vertical bounds
+            int verticalMargin = getResources().getDimensionPixelSize(R.dimen.text_margin_small); // Use a small margin
+            if (yOffset < verticalMargin) {
+                yOffset = verticalMargin;
+            } else if (yOffset + popupHeight > parent.getHeight() - verticalMargin) {
+                yOffset = parent.getHeight() - popupHeight - verticalMargin;
+            }
+
+
+            // Use showAtLocation to position relative to the parent view
+            analysisPopupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, xOffset, yOffset);
+
+            // You might need to adjust the arrow drawable based on which side the popup is shown
+            // ImageView popupArrow = popupView.findViewById(R.id.popupArrowImageView); // Assuming you add this in popup_analysis_result_full.xml
+            // if (popupArrow != null) {
+            //     // Adjust arrow position or visibility based on xOffset
+            // }
+
+
+        } else {
+            // Fallback: Show in center if parent is null
+            analysisPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(), Gravity.CENTER, 0, 0);
+            // Hide arrow if showing in center
+            // ImageView popupArrow = popupView.findViewById(R.id.popupArrowImageView);
+            // if (popupArrow != null) {
+            //     popupArrow.setVisibility(View.GONE);
+            // }
+        }
+    }
+
+//    private void showAiGreetingPopup(View anchorView) {
+//        Log.d(TAG, "showAiGreetingPopup called");
+//        if (aiGreetingPopupWindow != null && aiGreetingPopupWindow.isShowing()) {
+//            aiGreetingPopupWindow.dismiss();
+//        }
+//
+//        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+//        @SuppressLint("InflateParams") View popupView = layoutInflater.inflate(R.layout.popup_ai_greeting, null);
+//
+//        int displayWidth = getResources().getDisplayMetrics().widthPixels;
+//        int displayHeight = getResources().getDisplayMetrics().heightPixels;
+//
+//        int popupWidth = (int) (displayWidth * 0.75);
+//        int popupHeight = (int) (displayHeight * 0.75);
+//
+//        Log.d(TAG, "Popup dimensions: " + popupWidth + "x" + popupHeight);
+//
+//        aiGreetingPopupWindow = new PopupWindow(
+//                popupView,
+//                popupWidth,
+//                popupHeight,
+//                true
+//        );
+//
+//        // --- Set the background drawable based on the AI view's side ---
+//        View parent = (View) anchorView.getParent();
+////        if (parent != null) {
+////            float currentCenterX = anchorView.getX() + (anchorView.getWidth() / 2f);
+////            int parentWidth = parent.getWidth();
+////
+////            if (currentCenterX < parentWidth / 2f) {
+////                Log.d(TAG, "AI view on left, setting right arrow background");
+////                // AI view is on the left side, use background with arrow pointing right
+////                aiGreetingPopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_with_arrow_right)); // *** Ensure popup_with_arrow_right.xml exists ***
+////            } else {
+////                Log.d(TAG, "AI view on right, setting left arrow background");
+////                // AI view is on the right side, use background with arrow pointing left
+////                aiGreetingPopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_with_arrow_left)); // *** Ensure popup_with_arrow_left.xml exists ***
+////            }
+////        } else {
+//        Log.d(TAG, "Parent is null, setting basic background");
+//        // Fallback: Use basic background if parent is null
+//        aiGreetingPopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_background)); // *** Ensure popup_background.xml exists ***
+////        }
+//
+//        TextView greetingTextView = popupView.findViewById(R.id.ai_greeting_text_view);
+//        TextView aiTextView = popupView.findViewById(R.id.ai_text_view);
+//        // *** Call the CustomerVisitAnalyzer and set the text ***
+//        // You need to get your actual JSON data strings here
+//        String visitJsonData = masterDataDao.getDataByKey(Constants.CALL_SYNC); // *** Implement this method to get your visit JSON ***
+//        String customerJsonData = masterDataDao.getDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this)); // *** Implement this method to get your customer details JSON ***
+//        int recentDays = 90; // Define your desired timeframe
+//
+//        String visitSummary = CustomerVisitAnalyzer.analyzeRecentCustomerVisits(visitJsonData, customerJsonData, recentDays);
+//        aiTextView.setText(visitSummary);
+//        // *****************************************************
+//
+//
+//        ImageView closeButton = popupView.findViewById(R.id.close_popup_button);
+//        if (closeButton != null) {
+//            closeButton.setOnClickListener(v -> {
+//                Log.d(TAG, "Close button clicked");
+//                if (aiGreetingPopupWindow != null && aiGreetingPopupWindow.isShowing()) {
+//                    aiGreetingPopupWindow.dismiss();
+//                }
+//            });
+//        }
+//
+//        aiGreetingPopupWindow.setOnDismissListener(() -> {
+//            Log.d(TAG, "Popup dismissed");
+//            View parentDismiss = (View) binding.aiImageView.getParent();
+//            if (parentDismiss != null) {
+//                float targetX;
+//                if (initialViewX + (binding.aiImageView.getWidth() / 2f) < parentDismiss.getWidth() / 2f) {
+//                    targetX = getLeftAttachedX(binding.aiImageView.getWidth());
+//                } else {
+//                    targetX = getRightAttachedX(binding.aiImageView.getWidth());
+//                }
+//                Log.d(TAG, "Animating AI view back to X: " + targetX);
+//                binding.aiImageView.animate().x(targetX).setDuration(200).start();
+//                binding.aiImageView.setBackgroundResource(R.drawable.circle_idle_bg);
+//            }
+//        });
+//
+//        // --- Positioning the popup adjacent to the AI ImageView using showAtLocation ---
+//        if (parent != null) {
+//            float currentCenterX = anchorView.getX() + (anchorView.getWidth() / 2f);
+//            int parentWidth = parent.getWidth();
+//            int parentHeight = parent.getHeight();
+//
+//            int xOffset;
+//            int targetPopupY = (int) (anchorView.getY() + anchorView.getHeight() / 2 - popupHeight / 2);
+//
+//            targetPopupY = Math.max(initialMargin, targetPopupY);
+//            targetPopupY = Math.min(parentHeight - popupHeight - initialMargin, targetPopupY);
+//
+//            int yOffset = targetPopupY;
+//
+//            int arrowWidth = 10;
+//            if (currentCenterX < parentWidth / 2f) {
+//                xOffset = (int) (anchorView.getX() + anchorView.getWidth() + initialMargin - arrowWidth);
+//                if (xOffset + popupWidth > parentWidth) {
+//                    xOffset = parentWidth - popupWidth - initialMargin;
+//                }
+//            } else {
+//                xOffset = (int) (anchorView.getX() - popupWidth - initialMargin + arrowWidth);
+//                if (xOffset < 0) {
+//                    xOffset = initialMargin;
+//                }
+//            }
+//
+//            if (yOffset < 0) {
+//                yOffset = initialMargin;
+//            } else if (yOffset + popupHeight > parentHeight) {
+//                yOffset = parentHeight - popupHeight - initialMargin;
+//            }
+//
+//            aiGreetingPopupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, xOffset, yOffset);
+//
+//        } else {
+//            aiGreetingPopupWindow.showAtLocation(getWindow().getDecorView().getRootView(), Gravity.CENTER, 0, 0);
+//        }
+//    }
 
     private void showNotificationPopup() {
         LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
