@@ -207,9 +207,9 @@ public class CustomerVisitAnalyzer {
         final float MAX_SUGGESTION_DISTANCE_METERS = 20 * 1000; // Still used for overall suggestions if fallback
         final float NEAREST_CUSTOMER_DISTANCE_METERS = 1000; // 1 km for nearest customer
         final int ESTIMATED_WORKING_DAYS_PER_MONTH = 25; // As per user's suggestion
-        final int DAYS_GROUP_INTERVAL = 10; // Interval for grouping days ago
+        final int DAYS_GROUP_INTERVAL = 30; // Interval for grouping days ago
         final int UNVISITED_TYPE1_MAX_DAYS_AGO = 90; // Max days ago for unvisited Type 1
-        final int UNVISITED_TYPE1_MIN_DAYS_AGO = 10; // Min days ago for unvisited Type 1
+        final int UNVISITED_TYPE1_MIN_DAYS_AGO = 30; // Min days ago for unvisited Type 1
         final int SPECIAL_DATE_LOOKAHEAD_DAYS = 7; // Look ahead for birthdays/anniversaries
 
 
@@ -400,7 +400,7 @@ public class CustomerVisitAnalyzer {
                     groupKey = "Yesterday";
                 }else {
                     // Calculate the start of the 10-day interval
-                    int intervalStart = ((int) diffInDays - 2) / DAYS_GROUP_INTERVAL * DAYS_GROUP_INTERVAL + 2;
+                    int intervalStart = ((int) diffInDays - 2) / DAYS_GROUP_INTERVAL * DAYS_GROUP_INTERVAL + 1;
                     int intervalEnd = intervalStart + DAYS_GROUP_INTERVAL - 1;
                     if(intervalEnd>recentDaysThreshold) {
                         intervalEnd = recentDaysThreshold; // Cap at the threshold

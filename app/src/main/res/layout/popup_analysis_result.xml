@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/popup_background"
+    android:background="@android:color/transparent"
     android:elevation="16dp"
-    android:scrollbars="none"
-    android:padding="@dimen/popup_padding">
+    android:padding="@dimen/popup_padding"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,108 +16,324 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/aiGreetingTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Greetings!"
-            android:textColor="@android:color/black"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@id/closePopup_button"
-            android:textSize="@dimen/text_size_greeting"
-            android:textStyle="bold"
-            android:layout_marginBottom="@dimen/card_margin_bottom"/>
+
+            <LinearLayout
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/card_margin_bottom"
+                android:layout_toStartOf="@id/closePopup_button"
+                android:background="@drawable/card_background_red"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <TextView
+                    android:id="@+id/aiGreetingTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/title_margin_bottom"
+                    android:fontFamily="@font/satoshi_regular"
+                    android:text="Greetings!"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_6ssp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <ImageView
+                android:id="@+id/closePopup_button"
                 android:layout_width="@dimen/_10sdp"
                 android:layout_height="@dimen/_10sdp"
+                android:layout_alignParentEnd="true"
                 android:src="@drawable/img_close"
-                android:id="@+id/closePopup_button"
-                android:layout_alignParentEnd="true"/>
+                android:visibility="gone" />
         </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/dailyRecommendationOverallCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/card_padding"
             android:layout_marginBottom="@dimen/card_margin_bottom"
-            android:background="@drawable/card_background_blue">
+            android:background="@drawable/card_background_blue"
+            android:orientation="vertical"
+            android:padding="@dimen/card_padding">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Overall Daily Visit Recommendation"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_size_card_title"
-                android:layout_marginBottom="@dimen/title_margin_bottom"/>
+                android:layout_marginBottom="@dimen/title_margin_bottom"
+                android:fontFamily="@font/satoshi_regular"
+                android:text="Daily Visit Recommendation"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/totalCustomersTextView"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dark_purple" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Total customers: "
-                android:textSize="@dimen/text_size_list_item"/>
+                android:layout_marginTop="@dimen/_5sdp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_2sdp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:src="@drawable/square_box"
+                        app:tint="@color/green_60" />
+
+                    <TextView
+                        android:id="@+id/recommendedDocVisitsTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_regular"
+                        android:text="6 - Listed Doctor"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_6ssp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_2sdp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:src="@drawable/square_box"
+                        app:tint="@color/blue_60" />
+
+                    <TextView
+                        android:id="@+id/recommendedChmVisitsTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_regular"
+                        android:text="6"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_6ssp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_2sdp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:src="@drawable/square_box"
+                        app:tint="@color/red_60" />
+
+                    <TextView
+                        android:id="@+id/recommendedStkVisitsTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_regular"
+                        android:text="6"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_6ssp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_2sdp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:src="@drawable/square_box"
+                        app:tint="@color/gray_45" />
+
+                    <TextView
+                        android:id="@+id/recommendedUnLDrVisitsTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_regular"
+                        android:text="6"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_6ssp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!--                <LinearLayout-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:orientation="vertical">-->
+
+                <!--                    <ImageView-->
+                <!--                        android:layout_width="@dimen/_10sdp"-->
+                <!--                        android:layout_height="@dimen/_10sdp"-->
+                <!--                        android:layout_gravity="center"-->
+                <!--                        android:src="@drawable/doctor_img" />-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/recommendedDocVisitsTextView"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_gravity="center"-->
+                <!--                        android:layout_margin="@dimen/_2sdp"-->
+                <!--                        android:text="6"-->
+                <!--                        android:textSize="@dimen/_6ssp"-->
+                <!--                        android:textStyle="bold"
+                android:fontFamily="@font/satoshi_regular"
+                android:textColor="@color/dark_purple" />-->
+                <!--                </LinearLayout>-->
+
+                <!--                <LinearLayout-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:orientation="vertical">-->
+
+                <!--                    <ImageView-->
+                <!--                        android:layout_width="@dimen/_10sdp"-->
+                <!--                        android:layout_height="@dimen/_10sdp"-->
+                <!--                        android:layout_gravity="center"-->
+                <!--                        android:src="@drawable/chemist_img" />-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/recommendedChmVisitsTextView"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_gravity="center"-->
+                <!--                        android:layout_margin="@dimen/_2sdp"-->
+                <!--                        android:text="6"-->
+                <!--                        android:textSize="@dimen/_6ssp"-->
+                <!--                        android:textStyle="bold"
+                android:fontFamily="@font/satoshi_regular"
+                android:textColor="@color/dark_purple" />-->
+
+                <!--                </LinearLayout>-->
+
+                <!--                <LinearLayout-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:orientation="vertical">-->
+
+                <!--                    <ImageView-->
+                <!--                        android:layout_width="@dimen/_10sdp"-->
+                <!--                        android:layout_height="@dimen/_10sdp"-->
+                <!--                        android:layout_gravity="center"-->
+                <!--                        android:src="@drawable/tp_stockiest_icon" />-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/recommendedStkVisitsTextView"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_gravity="center"-->
+                <!--                        android:layout_margin="@dimen/_2sdp"-->
+                <!--                        android:text="6"-->
+                <!--                        android:textSize="@dimen/_6ssp"-->
+                <!--                        android:textStyle="bold"
+                android:fontFamily="@font/satoshi_regular"
+                android:textColor="@color/dark_purple" />-->
+                <!--                </LinearLayout>-->
+
+                <!--                <LinearLayout-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:orientation="vertical">-->
+
+                <!--                    <ImageView-->
+                <!--                        android:layout_width="@dimen/_10sdp"-->
+                <!--                        android:layout_height="@dimen/_10sdp"-->
+                <!--                        android:layout_gravity="center"-->
+                <!--                        android:src="@drawable/tp_unlist_dr_icon" />-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/recommendedUnLDrVisitsTextView"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_gravity="center"-->
+                <!--                        android:layout_margin="@dimen/_2sdp"-->
+                <!--                        android:text="6"-->
+                <!--                        android:textSize="@dimen/_6ssp"-->
+                <!--                        android:textStyle="bold"
+                android:fontFamily="@font/satoshi_regular"
+                android:textColor="@color/dark_purple" />-->
+                <!--                </LinearLayout>-->
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/analyzing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/card_margin_bottom"
+            android:background="@drawable/card_background_light_blue"
+            android:orientation="vertical"
+            android:padding="@dimen/card_padding">
 
             <TextView
-                android:id="@+id/estimatedWorkingDaysTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Estimated working days this month: "
-                android:textSize="@dimen/text_size_list_item"/>
-
-            <TextView
-                android:id="@+id/recommendedVisitsOverallTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Recommended visits per day (Overall): "
-                android:textStyle="bold"
-                android:textSize="@dimen/text_size_list_item"/>
-
+                android:layout_marginBottom="@dimen/title_margin_bottom"
+                android:fontFamily="@font/satoshi_regular"
+                android:text="Analyzing ..."
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/dailyRecommendationPerTypeContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/card_padding"
             android:layout_marginBottom="@dimen/card_margin_bottom"
-            android:background="@drawable/card_background_light_blue">
+            android:background="@drawable/card_background_light_blue"
+            android:orientation="vertical"
+            android:padding="@dimen/card_padding">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/title_margin_bottom"
+                android:fontFamily="@font/satoshi_regular"
                 android:text="Recommended Visits Per Customer Type"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_size_card_title"
-                android:layout_marginBottom="@dimen/title_margin_bottom"/>
-        </LinearLayout>
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:textStyle="bold" />
 
-
-        <LinearLayout
-            android:id="@+id/recentVisitsCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/card_padding"
-            android:layout_marginBottom="@dimen/card_margin_bottom"
-            android:background="@drawable/card_background_green">
-
-            <TextView
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Last Customer Visits"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_size_card_title"
-                android:layout_marginBottom="@dimen/title_margin_bottom"/>
-
-            <LinearLayout
-                android:id="@+id/recentVisitsContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-            </LinearLayout>
+                android:layout_height="1dp"
+                android:background="@color/dark_purple" />
 
         </LinearLayout>
 
@@ -124,33 +341,86 @@
             android:id="@+id/unvisitedType1Card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/card_padding"
             android:layout_marginBottom="@dimen/card_margin_bottom"
-            android:background="@drawable/card_background_orange">
+            android:background="@drawable/card_background_orange"
+            android:orientation="vertical"
+            android:padding="@dimen/card_padding">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Unvisited Customers (Type 1, 10-90 Days Ago)"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_size_card_title"
-                android:layout_marginBottom="@dimen/title_margin_bottom"/>
+                android:layout_marginBottom="@dimen/title_margin_bottom"
+                android:fontFamily="@font/satoshi_regular"
+                android:text="Unvisited Customers (Listed Doctor, 10-90 Days Ago)"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dark_purple" />
 
             <LinearLayout
                 android:id="@+id/unvisitedType1ChartContainer"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/chart_height"
-                android:orientation="vertical"
-                android:layout_marginBottom="@dimen/title_margin_bottom">
-            </LinearLayout>
+                android:layout_marginVertical="@dimen/title_margin_bottom"
+                android:orientation="vertical"></LinearLayout>
 
             <LinearLayout
                 android:id="@+id/unvisitedType1Content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"></LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/recentVisitsCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/card_margin_bottom"
+            android:background="@drawable/card_background_green"
+            android:orientation="vertical"
+            android:padding="@dimen/card_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/title_margin_bottom"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/satoshi_regular"
+                    android:text="Pending Visits"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_6ssp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/down_arrow"
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:padding="@dimen/_2sdp"
+                    android:src="@drawable/down_arrow" />
+
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dark_purple" />
+
+            <LinearLayout
+                android:id="@+id/recentVisitsContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"></LinearLayout>
 
         </LinearLayout>
 
@@ -158,25 +428,31 @@
             android:id="@+id/nearestCustomersCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/card_padding"
             android:layout_marginBottom="@dimen/card_margin_bottom"
-            android:background="@drawable/card_background_purple">
+            android:background="@drawable/card_background_purple"
+            android:orientation="vertical"
+            android:padding="@dimen/card_padding">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nearest Customers (Within 1 km)"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_size_card_title"
-                android:layout_marginBottom="@dimen/title_margin_bottom"/>
+                android:layout_marginVertical="@dimen/title_margin_bottom"
+                android:fontFamily="@font/satoshi_regular"
+                android:text="Your Nearest Customers (Within 1 km)"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dark_purple" />
 
             <LinearLayout
                 android:id="@+id/nearestCustomersContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
         </LinearLayout>
 
@@ -184,49 +460,64 @@
             android:id="@+id/specialDatesCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/card_padding"
             android:layout_marginBottom="@dimen/card_margin_bottom"
-            android:background="@drawable/card_background_pink">
+            android:background="@drawable/card_background_pink"
+            android:orientation="vertical"
+            android:padding="@dimen/card_padding">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/title_margin_bottom"
+                android:fontFamily="@font/satoshi_regular"
                 android:text="Upcoming Birthdays / Anniversaries"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_size_card_title"
-                android:layout_marginBottom="@dimen/title_margin_bottom"/>
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dark_purple" />
 
             <LinearLayout
                 android:id="@+id/specialDatesContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
         </LinearLayout>
-
 
         <LinearLayout
             android:id="@+id/fallbackUnvisitedCustomersCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/card_padding"
             android:layout_marginBottom="@dimen/card_margin_bottom"
-            android:background="@drawable/card_background"> <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Other Unvisited Customers"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_size_card_title"
-            android:layout_marginBottom="@dimen/title_margin_bottom"/>
+            android:background="@drawable/card_background"
+            android:orientation="vertical"
+            android:padding="@dimen/card_padding">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/title_margin_bottom"
+                android:fontFamily="@font/satoshi_regular"
+                android:text="Number of visits available"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dark_purple" />
 
             <LinearLayout
                 android:id="@+id/fallbackUnvisitedCustomersContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
             </LinearLayout>
 
         </LinearLayout>
@@ -236,35 +527,42 @@
             android:id="@+id/errorCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/card_padding"
             android:layout_marginBottom="@dimen/card_margin_bottom"
-            android:background="@drawable/card_background_red">
+            android:background="@drawable/card_background_red"
+            android:orientation="vertical"
+            android:padding="@dimen/card_padding">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/title_margin_bottom"
+                android:fontFamily="@font/satoshi_regular"
                 android:text="Error"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_size_card_title"
-                android:layout_marginBottom="@dimen/title_margin_bottom"/>
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dark_purple" />
 
             <TextView
                 android:id="@+id/errorMessageTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_error"/>
+                android:textSize="@dimen/text_size_error" />
 
         </LinearLayout>
 
-<!--        <Button-->
-<!--            android:id="@+id/closePopup_button"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Close"-->
-<!--            android:layout_gravity="center_horizontal"-->
-<!--            android:layout_marginTop="@dimen/close_button_margin_top"/>-->
+        <!--        <Button-->
+        <!--            android:id="@+id/closePopup_button"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="Close"-->
+        <!--            android:layout_gravity="center_horizontal"-->
+        <!--            android:layout_marginTop="@dimen/close_button_margin_top"/>-->
 
     </LinearLayout>
 </ScrollView>

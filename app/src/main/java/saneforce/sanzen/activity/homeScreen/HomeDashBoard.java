@@ -74,11 +74,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonArray;
@@ -681,7 +684,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         int displayWidth = getResources().getDisplayMetrics().widthPixels;
         int displayHeight = getResources().getDisplayMetrics().heightPixels;
 
-        int popupWidth = (int) (displayWidth * 0.8); // 80% of screen width
+        int popupWidth = (int) (displayWidth * 0.5); // 80% of screen width
         int popupHeight = (int) (displayHeight * 0.8); // 80% of screen height
 
 
@@ -712,13 +715,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         // Find the UI elements from popup_analysis_result_full.xml
         TextView aiGreetingTextView = popupView.findViewById(R.id.aiGreetingTextView);
         LinearLayout dailyRecommendationOverallCard = popupView.findViewById(R.id.dailyRecommendationOverallCard);
-        TextView totalCustomersTextView = dailyRecommendationOverallCard.findViewById(R.id.totalCustomersTextView);
-        TextView estimatedWorkingDaysTextView = dailyRecommendationOverallCard.findViewById(R.id.estimatedWorkingDaysTextView);
-        TextView recommendedVisitsOverallTextView = dailyRecommendationOverallCard.findViewById(R.id.recommendedVisitsOverallTextView);
+        TextView recommendadDocVisitTextView = dailyRecommendationOverallCard.findViewById(R.id.recommendedDocVisitsTextView);
+        TextView recommendadChmVisitTextView = dailyRecommendationOverallCard.findViewById(R.id.recommendedChmVisitsTextView);
+        TextView recommendadStkVisitTextView = dailyRecommendationOverallCard.findViewById(R.id.recommendedStkVisitsTextView);
+        TextView recommendadUnLDrVisitTextView = dailyRecommendationOverallCard.findViewById(R.id.recommendedUnLDrVisitsTextView);
+        LinearLayout analyzing = popupView.findViewById(R.id.analyzing);
         LinearLayout dailyRecommendationPerTypeContainer = popupView.findViewById(R.id.dailyRecommendationPerTypeContainer);
 
         LinearLayout recentVisitsCard = popupView.findViewById(R.id.recentVisitsCard);
         LinearLayout recentVisitsContent = recentVisitsCard.findViewById(R.id.recentVisitsContent);
+        ImageView recentVisitDownArrow = recentVisitsCard.findViewById(R.id.down_arrow);
 
         LinearLayout unvisitedType1Card = popupView.findViewById(R.id.unvisitedType1Card);
         LinearLayout unvisitedType1ChartContainer = unvisitedType1Card.findViewById(R.id.unvisitedType1ChartContainer); // Container for the chart
@@ -754,20 +760,23 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         aiGreetingTextView.setText(greetingMessage);
         aiGreetingTextView.setTextSize(getResources().getDimension(R.dimen.text_size_greeting)); // Use ssp dimension
 
+        analyzing.setVisibility(View.VISIBLE);
 
         // --- Populate Daily Visit Recommendation (Overall and Per Type) ---
         DailyVisitRecommendation recommendation = analysisResult.getDailyRecommendation();
         if (recommendation != null) {
-            totalCustomersTextView.setText("Total customers: " + recommendation.getTotalCustomers());
-            estimatedWorkingDaysTextView.setText("Estimated working days this month: " + recommendation.getEstimatedWorkingDays());
-            recommendedVisitsOverallTextView.setText("Recommended visits per day (Overall): " + recommendation.getRecommendedVisitsPerDayOverall());
+            recommendadDocVisitTextView.setText("6 - Listed Doctor");
+            recommendadChmVisitTextView.setText("8 - Chemist");
+            recommendadStkVisitTextView.setText("1 - Stockist");
+            recommendadUnLDrVisitTextView.setText("1 to 2 - Unlisted Doctor");
 
-            totalCustomersTextView.setTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
-            estimatedWorkingDaysTextView.setTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
-            recommendedVisitsOverallTextView.setTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
+//            recommendadDocVisitTextView.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
+//            recommendadChmVisitTextView.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
+//            recommendadStkVisitTextView.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
+//            recommendadUnLDrVisitTextView.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
 
-
-            dailyRecommendationOverallCard.setVisibility(View.VISIBLE);
+            dailyRecommendationOverallCard.setVisibility(View.GONE);
+            new Handler().postDelayed(() -> dailyRecommendationOverallCard.setVisibility(View.VISIBLE), 1500);
 
             // Populate Per Customer Type Recommendation
             Map<String, Integer> recommendedPerType = recommendation.getRecommendedVisitsPerDayPerType();
@@ -783,7 +792,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         LinearLayout.LayoutParams.WRAP_CONTENT));
                 typeRecTitle.setText("Recommended Visits Per Customer Type");
 //                typeRecTitle.setTextStyle(android.graphics.Typeface.BOLD);
-                typeRecTitle.setTextSize(getResources().getDimension(R.dimen.text_size_card_title)); // Use ssp
+                typeRecTitle.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
                 typeRecTitle.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.title_margin_bottom));
                 dailyRecommendationPerTypeContainer.addView(typeRecTitle);
 
@@ -820,19 +829,23 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             LinearLayout.LayoutParams.WRAP_CONTENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT));
                     typeRecommendationTextView.setText(String.format("Type %s: %s/%d (Recommended: %d/day)", type, type, totalCount, totalCount, recommendedCount));
-                    typeRecommendationTextView.setTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
+                    typeRecommendationTextView.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
                     typeLayout.addView(typeRecommendationTextView);
 
                     dailyRecommendationPerTypeContainer.addView(typeLayout);
                 }
-                dailyRecommendationPerTypeContainer.setVisibility(View.VISIBLE);
+                dailyRecommendationPerTypeContainer.setVisibility(View.GONE);
+                new Handler().postDelayed(() -> {
+                    dailyRecommendationPerTypeContainer.setVisibility(View.VISIBLE);
+                    analyzing.setVisibility(View.GONE);
+                }, 5000);
             } else {
                 dailyRecommendationPerTypeContainer.setVisibility(View.GONE);
             }
 
 
         } else {
-            dailyRecommendationOverallCard.setVisibility(View.GONE);
+//            dailyRecommendationOverallCard.setVisibility(View.GONE);
             dailyRecommendationPerTypeContainer.setVisibility(View.GONE);
         }
 
@@ -876,7 +889,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             LinearLayout.LayoutParams.WRAP_CONTENT));
                     groupTitle.setText(groupKey);
 //                    groupTitle.setTextStyle(android.graphics.Typeface.BOLD);
-                    groupTitle.setTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
+                    groupTitle.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
                     groupTitle.setPadding(0, getResources().getDimensionPixelSize(R.dimen.title_margin_bottom), 0, getResources().getDimensionPixelSize(R.dimen.text_margin_small));
                     recentVisitsContent.addView(groupTitle);
 
@@ -886,24 +899,41 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT));
                         customerTextView.setText("- " + customerInfo);
-                        customerTextView.setTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
+                        customerTextView.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
                         customerTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.list_item_padding_left), getResources().getDimensionPixelSize(R.dimen.list_item_padding_vertical), 0, getResources().getDimensionPixelSize(R.dimen.list_item_padding_vertical)); // Add some left padding
                         recentVisitsContent.addView(customerTextView);
                     }
                 }
             }
-            recentVisitsCard.setVisibility(View.VISIBLE);
+            recentVisitsCard.setVisibility(View.GONE);
+            new Handler().postDelayed(() -> {
+                recentVisitsCard.setVisibility(View.VISIBLE);
+                analyzing.setVisibility(View.GONE);
+            }, 3000);
+            final boolean[] showDetails = {false};
+            recentVisitDownArrow.setOnClickListener(view -> {
+                showDetails[0] = !showDetails[0];
+                if(showDetails[0]) {
+                    recentVisitsContent.setVisibility(View.VISIBLE);
+                    recentVisitDownArrow.setImageResource(R.drawable.up_arrow);
+                } else {
+                    recentVisitsContent.setVisibility(View.GONE);
+                    recentVisitDownArrow.setImageResource(R.drawable.down_arrow);
+                }
+            });
         } else {
             recentVisitsCard.setVisibility(View.GONE);
         }
 
-
         // --- Populate Not Visited Customers (Type 1) with Bar Chart ---
-        Map<String, List<String>> unvisitedType1Grouped = analysisResult.getUnvisitedType1Grouped();
+        Map<String, List<String>> unvisitedType1Grouped = analysisResult.getRecentVisitsGrouped();
         if (unvisitedType1Grouped != null && !unvisitedType1Grouped.isEmpty()) {
             unvisitedType1Content.removeAllViews(); // Clear previous list content
             unvisitedType1ChartContainer.removeAllViews(); // Clear previous chart content
             unvisitedType1Card.setVisibility(View.VISIBLE);
+
+            unvisitedType1Card.setVisibility(View.GONE);
+            new Handler().postDelayed(() -> unvisitedType1Card.setVisibility(View.VISIBLE), 4000);
 
             // --- Prepare data for the Bar Chart ---
             List<BarEntry> entries = new ArrayList<>();
@@ -945,7 +975,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
 
             // --- Create and configure the Bar Chart ---
-            BarChart barChart = new BarChart(this);
+//            BarChart barChart = new BarChart(this);
+            // --- Create and configure the Horizontal Bar Chart ---
+            HorizontalBarChart barChart = new HorizontalBarChart(this);
             barChart.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     getResources().getDimensionPixelSize(R.dimen.chart_height))); // Use sdp dimension
@@ -954,28 +986,60 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //            dataSet.setColors(ColorTemplate.MATERIAL_COLORS); // Use predefined colors
             dataSet.setValueTextColor(getResources().getColor(android.R.color.black)); // Set value text color
             dataSet.setValueTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
-
+            dataSet.setColor(getResources().getColor(R.color.green_2));
+// Custom ValueFormatter to show "X doctors"
+            dataSet.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getBarLabel(BarEntry barEntry) {
+                    return ((int) barEntry.getY()) + " Listed doctors";
+                }
+            });
 
             BarData barData = new BarData(dataSet);
-            barData.setBarWidth(0.9f); // Set custom bar width
+            barData.setBarWidth(0.3f);
 
+            barChart.setExtraRightOffset(100f);
+            barChart.setViewPortOffsets(50f, 20f, 60f, 20f);
             barChart.setData(barData);
+            barChart.setTouchEnabled(false);
+            barChart.setPinchZoom(false);
+            barChart.setScaleEnabled(false);
+            barChart.setDrawValueAboveBar(true);
 
-            // Configure X-axis
+//            // Configure X-axis
+//            XAxis xAxis = barChart.getXAxis();
+//            xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+//            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+//            xAxis.setGranularity(1f); // Minimum interval between axis values
+//            xAxis.setDrawGridLines(false); // Do not draw vertical grid lines
+//            xAxis.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
+//            xAxis.setTextColor(getResources().getColor(android.R.color.black)); // Set text color
+//            xAxis.setLabelRotationAngle(45); // Rotate labels if needed
+//
+//            // Configure Y-axis (left)
+//            barChart.getAxisLeft().setGranularity(1f); // Minimum interval
+//            barChart.getAxisLeft().setAxisMinimum(0f); // Start from zero
+//            barChart.getAxisLeft().setDrawGridLines(false);
+//            barChart.getAxisLeft().setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
+//            barChart.getAxisLeft().setTextColor(getResources().getColor(android.R.color.black)); // Set text color
+
+            // Configure Y-axis (X-axis in vertical chart)
+            YAxis leftAxis = barChart.getAxisLeft();
+            leftAxis.setDrawGridLines(false);
+            leftAxis.setGranularity(1f);
+            leftAxis.setAxisMinimum(0f);
+            leftAxis.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp));
+            leftAxis.setTextColor(getResources().getColor(android.R.color.black));
+
+            // Configure X-axis (Y-axis in vertical chart)
             XAxis xAxis = barChart.getXAxis();
             xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
-            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-            xAxis.setGranularity(1f); // Minimum interval between axis values
-            xAxis.setDrawGridLines(false); // Do not draw vertical grid lines
-            xAxis.setTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
-            xAxis.setTextColor(getResources().getColor(android.R.color.black)); // Set text color
-            xAxis.setLabelRotationAngle(45); // Rotate labels if needed
-
-            // Configure Y-axis (left)
-            barChart.getAxisLeft().setGranularity(1f); // Minimum interval
-            barChart.getAxisLeft().setAxisMinimum(0f); // Start from zero
-            barChart.getAxisLeft().setTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
-            barChart.getAxisLeft().setTextColor(getResources().getColor(android.R.color.black)); // Set text color
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // Shows on left in horizontal chart
+            xAxis.setGranularity(1f);
+            xAxis.setDrawGridLines(false);
+            xAxis.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp));
+            xAxis.setTextColor(getResources().getColor(android.R.color.black));
+            xAxis.setLabelRotationAngle(0); // Avoid rotation in horizontal
 
 
             // Configure Y-axis (right) - disable it
@@ -994,8 +1058,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             unvisitedType1ChartContainer.addView(barChart);
 
 
-            // Display as grouped lists below the chart:
-            // Sort keys for consistent order (Max days ago to Min days ago) for the list
             List<String> sortedKeysForList = new ArrayList<>(unvisitedType1Grouped.keySet());
             Collections.sort(sortedKeysForList, new Comparator<String>() {
                 @Override
@@ -1024,9 +1086,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             LinearLayout.LayoutParams.WRAP_CONTENT));
                     groupTitle.setText(groupKey + " (" + customers.size() + ")"); // Add count to title
 //                    groupTitle.setTextStyle(android.graphics.Typeface.BOLD);
-                    groupTitle.setTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
+                    groupTitle.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
                     groupTitle.setPadding(0, getResources().getDimensionPixelSize(R.dimen.title_margin_bottom), 0, getResources().getDimensionPixelSize(R.dimen.text_margin_small));
-                    unvisitedType1Content.addView(groupTitle);
+//                    unvisitedType1Content.addView(groupTitle);
 
                     for (String customerInfo : customers) {
                         TextView customerTextView = new TextView(this);
@@ -1034,9 +1096,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT));
                         customerTextView.setText("- " + customerInfo);
-                        customerTextView.setTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
+                        customerTextView.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
                         customerTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.list_item_padding_left), getResources().getDimensionPixelSize(R.dimen.list_item_padding_vertical), 0, getResources().getDimensionPixelSize(R.dimen.list_item_padding_vertical)); // Add some left padding
-                        unvisitedType1Content.addView(customerTextView);
+//                        unvisitedType1Content.addView(customerTextView);
                     }
                 }
             }
@@ -1051,9 +1113,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         List<NearestCustomer> nearestCustomers = analysisResult.getNearestCustomers();
         if (nearestCustomers != null && !nearestCustomers.isEmpty()) {
             nearestCustomersContent.removeAllViews(); // Clear previous content
-            nearestCustomersCard.setVisibility(View.VISIBLE);
 
+            nearestCustomersCard.setVisibility(View.GONE);
+            new Handler().postDelayed(() -> nearestCustomersCard.setVisibility(View.VISIBLE), 2000);
+            int count = 0;
             for (NearestCustomer nearest : nearestCustomers) {
+                if(count == 5) {
+                    break;
+                }
                 LinearLayout customerLayout = new LinearLayout(this);
                 customerLayout.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -1064,20 +1131,30 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
                 TextView customerInfoTextView = new TextView(this);
+                TextView customerDistanceTextView = new TextView(this);
                 LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
                         0, // 0 width with weight allows it to take remaining space
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         1.0f); // Weight 1.0
                 customerInfoTextView.setLayoutParams(textParams);
+                LinearLayout.LayoutParams distanceTextParams = new LinearLayout.LayoutParams(
+                        0, // 0 width with weight allows it to take remaining space
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        0.3f);
+                customerDistanceTextView.setLayoutParams(distanceTextParams);
                 String distanceString;
                 if (nearest.getDistance() < 1000) {
-                    distanceString = String.format(Locale.US, "%.0f meters away", nearest.getDistance());
+                    distanceString = String.format(Locale.US, "%.0f meters", nearest.getDistance());
                 } else {
-                    distanceString = String.format(Locale.US, "%.2f km away", nearest.getDistance() / 1000);
+                    distanceString = String.format(Locale.US, "%.2f km", nearest.getDistance() / 1000);
                 }
-                customerInfoTextView.setText("- " + nearest.getCustomer().getName() + " (" + distanceString + ")");
-                customerInfoTextView.setTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
+                customerInfoTextView.setText("- " + nearest.getCustomer().getName());
+                customerInfoTextView.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
                 customerLayout.addView(customerInfoTextView);
+
+                customerDistanceTextView.setText(distanceString);
+                customerDistanceTextView.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
+                customerLayout.addView(customerDistanceTextView);
 
                 // Add Direction Icon
                 ImageView directionIcon = new ImageView(this);
@@ -1108,6 +1185,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
                 customerLayout.addView(directionIcon);
                 nearestCustomersContent.addView(customerLayout);
+                count++;
             }
 
         } else {
@@ -1165,7 +1243,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 }
 
                 specialDateTextView.setText(String.format("- %s's %s on %s", specialDate.getCustomer().getName(), specialDate.getDateType(), formattedDate));
-                specialDateTextView.setTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
+                specialDateTextView.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
                 specialDateTextView.setPadding(0, getResources().getDimensionPixelSize(R.dimen.list_item_padding_vertical), 0, getResources().getDimensionPixelSize(R.dimen.list_item_padding_vertical));
 
                 LinearLayout customerLayout = new LinearLayout(this);
@@ -1209,7 +1287,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     LinearLayout.LayoutParams.WRAP_CONTENT));
             groupTitle.setText("Other Unvisited Customers (Not visited in last " + recentDaysThreshold + " days)");
 //            groupTitle.setTextStyle(android.graphics.Typeface.ITALIC);
-            groupTitle.setTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
+            groupTitle.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
             groupTitle.setPadding(0, getResources().getDimensionPixelSize(R.dimen.title_margin_bottom), 0, getResources().getDimensionPixelSize(R.dimen.text_margin_small));
             fallbackUnvisitedCustomersContent.addView(groupTitle);
 
@@ -1220,7 +1298,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
                 customerTextView.setText("- " + customerName);
-                customerTextView.setTextSize(getResources().getDimension(R.dimen.text_size_list_item)); // Use ssp
+                customerTextView.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
                 customerTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.list_item_padding_left), getResources().getDimensionPixelSize(R.dimen.list_item_padding_vertical), 0, getResources().getDimensionPixelSize(R.dimen.list_item_padding_vertical)); // Add some left padding
                 fallbackUnvisitedCustomersContent.addView(customerTextView);
             }
