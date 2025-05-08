@@ -1,6 +1,10 @@
 package saneforce.sanzen.activity.standardTourPlan.addListScreen;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +38,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.call.dcrCallSelection.MapsAddition;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.MultiClusterAdapter;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.OnClusterClicklistener;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
@@ -106,14 +113,14 @@ public class AddListActivity extends AppCompatActivity {
             strClusterID = "";
             strClusterName = "";
             clusterChangeClearDCRSelection();
-            super.onBackPressed();
+            finish();
         });
 
         activityAddListBinding.btnCancel.setOnClickListener(v -> {
             strClusterID = "";
             strClusterName = "";
             clusterChangeClearDCRSelection();
-            super.onBackPressed();
+            finish();
         });
 
         activityAddListBinding.btnSave.setOnClickListener(v -> {
@@ -956,5 +963,28 @@ public class AddListActivity extends AppCompatActivity {
             commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, new IntentFilter("com.saneforce.SYNC_COMPLETED"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
+    }
+
+    private final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String type = intent.getStringExtra("type");
+            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|TM")) {
+                startActivity(new Intent(AddListActivity.this, StandardTourPlanActivity.class));
+                finish();
+            }
+        }
+    };
 
 }

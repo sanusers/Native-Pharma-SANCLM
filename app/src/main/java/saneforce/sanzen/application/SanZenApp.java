@@ -26,43 +26,45 @@ public class SanZenApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+        AppActivityTracker.init(this);
+
         // Set up a custom UncaughtExceptionHandler
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            private final Thread.UncaughtExceptionHandler defaultUEH =
-                    Thread.getDefaultUncaughtExceptionHandler();
-
-            @Override
-            public void uncaughtException(@NonNull Thread thread, @NonNull Throwable throwable) {
-                try {
-                    Log.e(TAG, "App crashed!", throwable);
-
-                    // Get the latest log file
-                    File logFile = getLatestLogFile(getApplicationContext());
-
-                    if (logFile != null) {
-                        // Send the log file (you'll need to implement this method)
-//                        sendCrashLog(logFile, throwable);
-                        StringWriter sw = new StringWriter();
-                        PrintWriter pw = new PrintWriter(sw);
-                        throwable.printStackTrace(pw);
-                        String stackTrace = sw.toString();
-
-//                        new EmailSender().sendCrashLog(getApplicationContext(), logFile, stackTrace);
-                    }
-
-                } catch (Exception e) {
-                    Log.e(TAG, "Error while handling uncaught exception", e);
-                } finally {
-                    // Let the default exception handler finish processing
-                    if (defaultUEH != null) {
-                        defaultUEH.uncaughtException(thread, throwable);
-                    } else {
-                        // If default handler is null, which should not happen, force termination
-                        System.exit(1);
-                    }
-                }
-            }
-        });
+//        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+//            private final Thread.UncaughtExceptionHandler defaultUEH =
+//                    Thread.getDefaultUncaughtExceptionHandler();
+//
+//            @Override
+//            public void uncaughtException(@NonNull Thread thread, @NonNull Throwable throwable) {
+//                try {
+//                    Log.e(TAG, "App crashed!", throwable);
+//
+//                    // Get the latest log file
+//                    File logFile = getLatestLogFile(getApplicationContext());
+//
+//                    if (logFile != null) {
+//                        // Send the log file (you'll need to implement this method)
+////                        sendCrashLog(logFile, throwable);
+//                        StringWriter sw = new StringWriter();
+//                        PrintWriter pw = new PrintWriter(sw);
+//                        throwable.printStackTrace(pw);
+//                        String stackTrace = sw.toString();
+//
+////                        new EmailSender().sendCrashLog(getApplicationContext(), logFile, stackTrace);
+//                    }
+//
+//                } catch (Exception e) {
+//                    Log.e(TAG, "Error while handling uncaught exception", e);
+//                } finally {
+//                    // Let the default exception handler finish processing
+//                    if (defaultUEH != null) {
+//                        defaultUEH.uncaughtException(thread, throwable);
+//                    } else {
+//                        // If default handler is null, which should not happen, force termination
+//                        System.exit(1);
+//                    }
+//                }
+//            }
+//        });
     }
 
     // Helper method to get the latest log file (assuming your naming convention)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:screenOrientation="landscape" >
+    android:screenOrientation="landscape">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -50,6 +50,7 @@
         android:xlargeScreens="true" />
 
     <application
+        android:name=".application.SanZenApp"
         android:allowBackup="true"
         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -276,7 +277,7 @@
         <activity
             android:name=".activity.splash.SplashScreen"
             android:exported="true"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -290,7 +291,7 @@
 
         <service
             android:name=".services.FirebaseService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -301,7 +302,7 @@
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".activity.forms.weekoff.weekoff_viewscreen"
+            android:name=".activity.forms.weekoff.WeekOffViewScreen"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
@@ -364,7 +365,7 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="saneforce.sanzen.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true" >
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />

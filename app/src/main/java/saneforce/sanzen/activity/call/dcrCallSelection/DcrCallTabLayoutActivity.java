@@ -3,7 +3,10 @@ package saneforce.sanzen.activity.call.dcrCallSelection;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
@@ -14,6 +17,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -206,7 +210,11 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             }
         });
 
-        dcrSelectionBinding.ivBack.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
+        dcrSelectionBinding.ivBack.setOnClickListener(view -> {
+//            getOnBackPressedDispatcher().onBackPressed()
+            startActivity(new Intent(this, HomeDashBoard.class));
+            finishAffinity();
+        });
 
     }
 
@@ -261,10 +269,27 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         CommonAlertBox.CheckLocationStatus(DcrCallTabLayoutActivity.this, gpsTrack);
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, new IntentFilter("com.saneforce.SYNC_COMPLETED"));
+    }
+
+    private final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String type = intent.getStringExtra("type");
+            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|PR|GIF|TM")) {
+                startActivity(new Intent(DcrCallTabLayoutActivity.this, DcrCallTabLayoutActivity.class));
+                finish();
+            }
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
     }
 }

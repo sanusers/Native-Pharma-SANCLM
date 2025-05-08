@@ -1,10 +1,15 @@
 package saneforce.sanzen.activity.forms.weekoff;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.badge.BadgeDrawable;
@@ -13,8 +18,9 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.myresource.MyResource_Activity;
 
-public class weekoff_viewscreen extends AppCompatActivity {
+public class WeekOffViewScreen extends AppCompatActivity {
 
     ImageView back_btn;
     TabLayout tabLayout;
@@ -31,15 +37,12 @@ public class weekoff_viewscreen extends AppCompatActivity {
         viewPager = findViewById(R.id.view_pager);
         back_btn = findViewById(R.id.iv_back);
 
-
         back_btn.setOnClickListener(v -> {
             finish();
         });
 
         Holiday_fragment holidayfragment = new Holiday_fragment();
         weekoff_fragment weekofffragment = new weekoff_fragment();
-
-
 
         tabLayout.setupWithViewPager(viewPager);
         //create viewpager adapter
@@ -53,9 +56,26 @@ public class weekoff_viewscreen extends AppCompatActivity {
         BadgeDrawable badgeDrawable = Objects.requireNonNull(tabLayout.getTabAt(0)).getOrCreateBadge();
         badgeDrawable.setVisible(false);
 
-
-
-
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, new IntentFilter("com.saneforce.SYNC_COMPLETED"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
+    }
+
+    private final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            startActivity(new Intent(WeekOffViewScreen.this, MyResource_Activity.class));
+            finishAffinity();
+        }
+    };
 
 }

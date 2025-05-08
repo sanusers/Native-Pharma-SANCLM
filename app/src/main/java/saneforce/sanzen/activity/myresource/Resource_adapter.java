@@ -1,7 +1,6 @@
 package saneforce.sanzen.activity.myresource;
 
 import static saneforce.sanzen.activity.myresource.MyResource_Activity.Valcount;
-import static saneforce.sanzen.activity.myresource.MyResource_Activity.appRecyclerView;
 import static saneforce.sanzen.activity.myresource.MyResource_Activity.et_Custsearch;
 import static saneforce.sanzen.activity.myresource.MyResource_Activity.listresource;
 import static saneforce.sanzen.activity.myresource.MyResource_Activity.search_list;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
@@ -30,7 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.forms.weekoff.weekoff_viewscreen;
+import saneforce.sanzen.activity.forms.weekoff.WeekOffViewScreen;
 import saneforce.sanzen.activity.myresource.Categoryview.Cate_viewscreen;
 import saneforce.sanzen.activity.myresource.Categoryview.DateSyncActivity;
 import saneforce.sanzen.activity.myresource.callstatusview.Callsstatus_screenview;
@@ -39,7 +37,6 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
-import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.ViewHolder> {
@@ -357,7 +354,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                     case ("10"):
 
                         MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
-                        Intent l = new Intent(context, weekoff_viewscreen.class);
+                        Intent l = new Intent(context, WeekOffViewScreen.class);
                         context.startActivity(l);
                         MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
                         MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);

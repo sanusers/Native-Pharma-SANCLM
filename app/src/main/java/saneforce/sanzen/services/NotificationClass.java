@@ -37,8 +37,7 @@ public class NotificationClass extends ContextWrapper {
     int notificationId = 0;
     Uri soundUri;
 
-
-    public NotificationClass (Context base, String title, String body, String imageUrl, String time, PendingIntent pendingIntent) {
+    public NotificationClass(Context base, String title, String body, String imageUrl, String time, PendingIntent pendingIntent) {
         super(base);
         this.title = title;
         this.body = body;
@@ -52,9 +51,9 @@ public class NotificationClass extends ContextWrapper {
 
     }
 
-    private void createNotificationChannel () {
+    private void createNotificationChannel() {
         NotificationChannel channel = null;
-        if (android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.O) {
+        if(android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.O) {
             AudioAttributes audioAttributes = new AudioAttributes.Builder()
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                     .setUsage(AudioAttributes.USAGE_ALARM)
@@ -75,7 +74,7 @@ public class NotificationClass extends ContextWrapper {
 
     }
 
-    public void createNotification () {
+    public void createNotification() {
         notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setAutoCancel(true)
                 .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
@@ -87,19 +86,19 @@ public class NotificationClass extends ContextWrapper {
                 .setContentText(body)
                 .setContentIntent(pendingIntent);
 
-        if (imageUrl != null && !imageUrl.isEmpty()) {
-            notificationManager.notify(notificationId, notificationBuilder.build());
-            getImageFromUrl(imageUrl);
-        } else {
-            notificationBuilder.setSound(soundUri);
-            notificationManager.notify(notificationId, notificationBuilder.build());
-        }
+//        if (imageUrl != null && !imageUrl.isEmpty()) {
+//            notificationManager.notify(notificationId, notificationBuilder.build());
+//            getImageFromUrl(imageUrl);
+//        } else {
+        notificationBuilder.setSound(soundUri);
+        notificationManager.notify(notificationId, notificationBuilder.build());
+//        }
     }
 
-    public void getImageFromUrl (String url) {
+    public void getImageFromUrl(String url) {
         Glide.with(this).asBitmap().load(url).into(new CustomTarget<Bitmap>() {
             @Override
-            public void onResourceReady (@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
                 bigPictureStyle.bigPicture(resource);
                 notificationBuilder.setStyle(bigPictureStyle);
@@ -108,7 +107,7 @@ public class NotificationClass extends ContextWrapper {
             }
 
             @Override
-            public void onLoadCleared (@Nullable Drawable placeholder) {
+            public void onLoadCleared(@Nullable Drawable placeholder) {
                 notificationBuilder.setSound(soundUri);
                 notificationManager.notify(notificationId, notificationBuilder.build());
             }

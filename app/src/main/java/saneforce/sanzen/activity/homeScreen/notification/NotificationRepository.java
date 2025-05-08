@@ -13,13 +13,17 @@ public class NotificationRepository {
 
     private final NotificationDataDao notificationDataDao;
     private final LiveData<List<NotificationDataTable>> allNotifications;
+    private final LiveData<List<NotificationDataTable>> allUnsyncedNotifications;
     private final LiveData<Integer> unreadNotificationCount;
+    private final LiveData<Integer> unsyncedNotificationCount;
 
     public NotificationRepository(Application application) {
         RoomDB database = RoomDB.getDatabase(application);
         notificationDataDao = database.notificationDataDao();
         allNotifications = notificationDataDao.getAllNotifications();
+        allUnsyncedNotifications = notificationDataDao.getAllUnsyncedNotifications();
         unreadNotificationCount = notificationDataDao.getUnreadNotificationCount();
+        unsyncedNotificationCount = notificationDataDao.getUnsyncedNotificationCount();
     }
 
     public void insert(NotificationDataTable notification) {
@@ -28,6 +32,10 @@ public class NotificationRepository {
 
     public LiveData<List<NotificationDataTable>> getAllNotifications() {
         return allNotifications;
+    }
+
+    public LiveData<List<NotificationDataTable>> getAllUnsyncedNotifications() {
+        return allUnsyncedNotifications;
     }
 
     public LiveData<Integer> getUnreadNotificationCount() {
@@ -44,5 +52,9 @@ public class NotificationRepository {
 
     public void clearAll() {
         RoomDB.databaseWriteExecutor.execute(notificationDataDao::deleteAllData);
+    }
+
+    public LiveData<Integer> getUnsyncedNotificationCount() {
+        return unsyncedNotificationCount;
     }
 }

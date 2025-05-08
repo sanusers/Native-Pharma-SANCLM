@@ -16,8 +16,10 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -42,6 +44,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonArray;
@@ -3374,12 +3377,26 @@ public class DCRCallActivity extends AppCompatActivity {
         CommonAlertBox.CheckLocationStatus(DCRCallActivity.this, gpsTrack);
         Log.e("TAG", "onResume: ");
         timeZoneVerification();
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, new IntentFilter("com.saneforce.SYNC_COMPLETED"));
     }
     @Override
     protected void onPause() {
         super.onPause();
         handler1.postDelayed(runnable, delay);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
     }
+
+    private final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String type = intent.getStringExtra("type");
+            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|PR|GIF|TM")) {
+                startActivity(new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class));
+                finish();
+            }
+        }
+    };
+
     private void timeZoneVerification() {
         boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context) && commonUtilsMethods.isTimeZoneAutomatic(context);
         if (!isAutoTimeZoneEnabled) {

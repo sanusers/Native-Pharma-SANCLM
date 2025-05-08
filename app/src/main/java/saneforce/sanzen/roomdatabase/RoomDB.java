@@ -126,7 +126,7 @@ public abstract class RoomDB extends RoomDatabase {
     public static final Migration MIGRATION_5_6 = new Migration(5, 6) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("CREATE TABLE IF NOT EXISTS `notification_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT, `message` TEXT, `date_time` TEXT, `is_read`  INTEGER  NOT NULL DEFAULT 0)");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `notification_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT, `message` TEXT, `date_time` TEXT, `is_read` INTEGER NOT NULL DEFAULT 0, `sync_status` INTEGER NOT NULL DEFAULT 0)");
         }
     };
 

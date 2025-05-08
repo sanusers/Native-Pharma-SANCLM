@@ -1,9 +1,12 @@
 package saneforce.sanzen.services;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -14,7 +17,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Random;
 
-import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.application.AppActivityTracker;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataDao;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -25,13 +28,13 @@ public class FirebaseService extends FirebaseMessagingService {
     LocalBroadcastManager broadcastManager;
     NotificationManager notificationManager;
     Random random;
-    String imageUrl = "", title = "", body = "", time = "";
-    int notificationId = 0;
-    public static int badgeCount = 0;
+    String imageUrl = "", title = "", body = "", time = "", type = "", hqCode = "";
+    //    int notificationId = 0;
+    long id = 0;
     private NotificationDataDao notificationDataDao;
 
     @Override
-    public void onCreate () {
+    public void onCreate() {
         super.onCreate();
         broadcastManager = LocalBroadcastManager.getInstance(this);
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -41,40 +44,79 @@ public class FirebaseService extends FirebaseMessagingService {
     }
 
     @Override
-    public void onNewToken (@NonNull String s) {
+    public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
         Log.e("fcm_token", "onNewToken method : " + s);
         SharedPref.saveFcmToken(getApplicationContext(), s);
     }
 
     @Override
-    public void onMessageReceived (@NonNull RemoteMessage remoteMessage) {
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 //        System.out.println("message--->"+ remoteMessage.getNotification().getBody());
-        if(remoteMessage.getNotification() != null) {
-            imageUrl = String.valueOf(remoteMessage.getNotification().getImageUrl());
-            title = remoteMessage.getNotification().getTitle();
-            body = remoteMessage.getNotification().getBody();
-            time = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2);
-            try {
-                notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
-            } catch (Exception e) {
-                e.printStackTrace();
+
+        if(SharedPref.getSettingState(getApplicationContext())) {
+            if(SharedPref.getLoginState(getApplicationContext())) {
+                if(remoteMessage.getNotification() != null) {
+                    imageUrl = String.valueOf(remoteMessage.getNotification().getImageUrl());
+                    title = remoteMessage.getNotification().getTitle();
+                    body = remoteMessage.getNotification().getBody();
+                    time = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2);
+//                    notificationId = random.nextInt(1000);
+
+                    hqCode = SharedPref.getHqCode(this);
+                    if(hqCode == null || hqCode.isEmpty()) {
+                        hqCode = SharedPref.getSfCode(this);
+                    }
+                    if(body.contains("$")) {
+                        try {
+                            id = notificationDataDao.saveNotification(new NotificationDataTable(title, body, time, 1, 1));
+                            if(body.contains("-MR")) {
+                                type = body.substring(body.lastIndexOf("$") + 1, body.lastIndexOf("-MR"));
+                                hqCode = body.substring(body.lastIndexOf("-MR") + 1);
+                            }else {
+                                type = body.substring(body.lastIndexOf("$") + 1);
+                            }
+                            body = body.substring(0, body.lastIndexOf("$"));
+                            showNotificationDialog();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }else {
+                        try {
+                            notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    createNotification();
+                }
             }
-            notificationId = random.nextInt(1000);
-            createNotification();
         }
     }
 
-    public void createNotification(){
+    private void createNotification() {
         Intent intent = new Intent(this, NotificationClickReceiver.class);
         intent.setAction("saneforce.sanzen.NOTIFICATION_CLICK");
 //        Intent intent = new Intent(this, HomeDashBoard.class);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationClass notificationClass = new NotificationClass(this,title, body, imageUrl, time, pendingIntent);
+        NotificationClass notificationClass = new NotificationClass(this, title, body, imageUrl, time, pendingIntent);
         notificationClass.createNotification();
     }
 
+    private void showNotificationDialog() {
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        mainHandler.post(() -> {
+            Activity currentActivity = AppActivityTracker.getInstance().getCurrentActivity();
+            if(currentActivity != null) {
+                currentActivity.runOnUiThread(() -> {
+                    NotificationDialog.showDialog(currentActivity, title, body, type, hqCode, id);
+                });
+            }
+        });
+
+    }
 
 }

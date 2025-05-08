@@ -4,8 +4,10 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,9 +23,11 @@ import android.widget.Filter;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -650,5 +654,29 @@ public class TagCustSelectionList extends AppCompatActivity {
             AddCustList(SharedPref.getSfCode(this));}else {
             AddCustList(SelectedHqCode);
         }
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, new IntentFilter("com.saneforce.SYNC_COMPLETED"));
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
+    }
+
+    private final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String type = intent.getStringExtra("type");
+            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|AMS|FSD|SE|TM")) {
+                Intent intent1 = new Intent(TagCustSelectionList.this, MapsActivity.class);
+                Bundle bundle = MapsActivity.bundle;
+                if(bundle != null) {
+                    intent1.putExtras(bundle);
+                }
+                startActivity(intent1);
+                finish();
+            }
+        }
+    };
+
 }

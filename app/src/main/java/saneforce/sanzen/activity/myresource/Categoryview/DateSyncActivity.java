@@ -1,8 +1,14 @@
 package saneforce.sanzen.activity.myresource.Categoryview;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.icu.util.LocaleData;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.myresource.MyResource_Activity;
 import saneforce.sanzen.activity.myresource.callstatusview.call_statusadapter;
 import saneforce.sanzen.activity.myresource.callstatusview.callstatus_model;
 import saneforce.sanzen.activity.myresource.myresourceadapter.DateSyncAdapter;
@@ -80,4 +87,28 @@ public class DateSyncActivity extends AppCompatActivity {
         dateSyncAdapter = new DateSyncAdapter(this,dateSyncModel);
         dateSyncBinding.dateSyncRecyclerView.setAdapter(dateSyncAdapter);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, new IntentFilter("com.saneforce.SYNC_COMPLETED"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
+    }
+
+    private final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String type = intent.getStringExtra("type");
+            if(type != null && type.matches("(?i)MI|AMS|SE")) {
+                startActivity(new Intent(DateSyncActivity.this, MyResource_Activity.class));
+                finishAffinity();
+            }
+        }
+    };
+
 }
