@@ -75,6 +75,7 @@ public class SyncManager {
         RoomDB db = RoomDB.getDatabase(context);
         masterDataDao = db.masterDataDao();
         notificationDataDao = db.notificationDataDao();
+        notificationDataDao.changeNotificationSyncStatus((int)id, 2);
         getRequiredData();
         prepareArray();
     }

@@ -64,7 +64,7 @@ public interface NotificationDataDao {
     @Query("SELECT * FROM `NOTIFICATION_TABLE` ORDER BY `DATE_TIME` DESC")
     LiveData<List<NotificationDataTable>> getAllNotifications();
 
-    @Query("SELECT * FROM `NOTIFICATION_TABLE` WHERE `SYNC_STATUS` != 0 ORDER BY `DATE_TIME` DESC")
+    @Query("SELECT * FROM `NOTIFICATION_TABLE` WHERE `SYNC_STATUS` != 0 AND `SYNC_STATUS` != 2 ORDER BY `DATE_TIME` DESC")
     LiveData<List<NotificationDataTable>> getAllUnsyncedNotifications();
 
     @Query("SELECT COUNT(*) FROM `NOTIFICATION_TABLE` WHERE `IS_READ` = 0")

@@ -89,10 +89,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -219,6 +221,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private static final int NOTIFICATION_PERMISSION_CODE = 101;
     private NotificationViewModel notificationViewModel;
     private PopupWindow notificationPopupWindow;
+    private final Set<Integer> syncingIds = new HashSet<>();
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -406,6 +409,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         notificationViewModel.getAllUnsyncedNotifications().observe(this, list -> {
             if(!list.isEmpty()) {
                 for (NotificationDataTable notificationData: list) {
+                    if(syncingIds.contains(notificationData.getId())) continue;
+                    syncingIds.add(notificationData.getId());
                     String title = notificationData.getTitle(), body = notificationData.getMessage(), time = notificationData.getDateTime(), type = "", hqCode = "";
                     int id = notificationData.getId();
                     hqCode = SharedPref.getHqCode(this);
