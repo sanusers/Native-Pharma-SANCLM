@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -23,8 +22,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobile.client.AWSMobileClient;
+
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
@@ -56,6 +55,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.AWS.AWSBuckets;
+import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
 //import saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1;
 //import saneforce.sanzen.activity.call.pojo.Signature.CallSignCaptureImageList;
@@ -72,6 +72,7 @@ import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.sanzen.activity.homeScreen.modelClass.WorkPlanModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.Keys;
 import saneforce.sanzen.databinding.OutboxFragmentBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -117,8 +118,9 @@ public class OutboxFragment extends Fragment {
     private ActivityUploadDataDao activityUploadDataDao;
     private static CallsUtil callsUtil;
     private int callSyncCount = 0;
+
+    Util util;
     ProgressDialog progressDialog = null;
-    String baseUrl = "http://sanffa.info/iOSServer/db_api.php/";
 
     private android.graphics.Bitmap Bitmap;
 
@@ -166,6 +168,7 @@ public class OutboxFragment extends Fragment {
         activityOfflineDataDao = db.activityOfflineDataDao();
         activityUploadDataDao = db.activityUploadDataDao();
         callsUtil = new CallsUtil(requireContext());
+        util = new Util();
         callSyncCount = 0;
         SetupOutBoxAdapter(requireActivity(), requireContext());
 
@@ -483,28 +486,6 @@ public class OutboxFragment extends Fragment {
         }
     }
 
-    // something wrong!!!! the size is 0 rectify it
-//    private void CallOfflineSignImg(int ParentPos, int ChildPos, ArrayList<SignModelClass> signModelClasses, GroupModelClass modelClass){
-//         if(signModelClasses.size()>0){                                       // the size should be 1
-//             Log.d("SignModelClass", "CallOfflineSignImg: "+signModelClasses.size());
-//            isCallAvailable = false;                                          // value should be false
-//            for (int i = 0; i<signModelClasses.size(); i++){                  // value is 1
-//                SignModelClass signModelClass = signModelClasses.get(i);      // should give all the det of model class
-//                if (signModelClass.getSynced() == 0){
-//                    isCallAvailable = true;
-//                    CallSendSignImage(ParentPos, signModelClass, ChildPos, i, signModelClass.getFilePath(),signModelClass.getJson_values(),String.valueOf(signModelClass.getId()), modelClass);
-//                    break;
-//                }
-//            }
-//        }else{
-//            isCallAvailable = false;
-//            Log.d("MC", "CallOfflineSignImg: "+"is absent");
-//        }
-//        if (!isCallAvailable){
-//            CallAPIDaySubmit(ParentPos, 5, listDates.get(ParentPos).getChildItems().get(5).getDaySubmitModelClass(), modelClass);
-//        }
-//    }
-
     private void CallAPIDaySubmit(int ParentPos, int ChildPos, DaySubmitModelClass daySubmitModelClass, GroupModelClass modelClass) {
         if(daySubmitModelClass != null) {
             isCallAvailable = false;
@@ -582,42 +563,41 @@ public class OutboxFragment extends Fragment {
     private void CallSendAPIImage(int parentPos, EcModelClass ecModelClass, int childPos, int CurrentPos,
                                   String jsonValues, String filePath, String id, GroupModelClass modelClass) {
         try {
+//            String accessKey = Keys.ACCESS_KEY;
+//            String secretKey = Keys.SECRET_KEY;
+//             Regions region = Regions.EU_NORTH_1;
+//
+//            BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey,secretKey);
+//
+//            AmazonS3Client s3Client = new AmazonS3Client(credentials);
+//            s3Client.setRegion(Region.getRegion(region));
 
-            CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                    context,
-                    "ap-south-1:c4c0fc81-118d-43e3-84cf-051f1bd831b9",
-                    Regions.AP_SOUTH_1);
-
-            AmazonS3Client s3Client = new AmazonS3Client(credentialsProvider);
-            s3Client.setRegion(Region.getRegion(Regions.AP_SOUTH_1));
-
-
+            util.getS3Client(context);
+            String bucketName = "san-edet";
             File fileToUpload = new File(filePath);
             Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
             if (!fileToUpload.exists()) {
                 Log.d("fileToUpload", "not exists: " + filePath);
             } else {
 
-                String bucketName = "san.one";
-                String s3Key = "uploads/" + fileToUpload.getName();
+
+                String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/"+ fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
-                String UploadUrl = "https://" + "s3." + "ap-south-1." + "amazonaws.com/" + bucketName + "/" + s3Key;
-                Log.d("S3UploadUrl", "CallSendAPIImage: " + UploadUrl);
+
 
                 TransferNetworkLossHandler.getInstance(context);
 
                 TransferUtility transferUtility = TransferUtility.builder()
                         .context(context)
-                        .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
-                        .s3Client(s3Client)
-                        .defaultBucket(bucketName)
+                        .s3Client(util.getS3Client(context))
                         .build();
 
                 TransferObserver uploadObserver = transferUtility.upload(
                         bucketName,
                         s3Key,
                         fileToUpload);
+                Log.d("uploadObserver", "CallSendAPIImage: "+uploadObserver);
                 uploadObserver.setTransferListener(new TransferListener() {
                     @Override
                     public void onStateChanged(int idInt, TransferState state) {
@@ -639,7 +619,6 @@ public class OutboxFragment extends Fragment {
 
                             Log.e("S3 Upload", "Upload Failed");
                             InsertImage(ecModelClass.getFilePath(), context);
-
                             ecModelClass.setSynced(1);
                             ecModelClass.setSync_status(Constants.CALL_FAILED);
                             try {
@@ -1288,6 +1267,7 @@ public class OutboxFragment extends Fragment {
         Log.d("AWS_s3", "fileToUpload" + "--" + imageFile);
         String fileName = new File(ImageUrl).getName();
         new AWSBuckets(context,fileName,imageFile,"");
+        //here imageFile is the filePath & fileName is the image Name
     }
 /*
     private void CallSendAPIImage(ArrayList<EcModelClass> ecModelClasses, int position, String id, String jsonValues, String filePath) {

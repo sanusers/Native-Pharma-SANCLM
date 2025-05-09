@@ -16,7 +16,7 @@ import java.io.File;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.storage.SharedPref;
 
-public class AWSBuckets {
+public class AWSBucketsTag {
     private static final String TAG = "Upload Task";
     TransferUtility transferUtility;
     Util util;
@@ -27,9 +27,7 @@ public class AWSBuckets {
     S3DownloadFiles S3DownloadFiles;
     CommonUtilsMethods commonUtilsMethods;
 
-
-
-    public AWSBuckets(Context context, String Filename, File File, String filestored_name) {  // for upload
+    public AWSBucketsTag(Context context, String Filename, File File, String filestored_name) {  // for upload
         this.context = context;
         this.filename = Filename;
         this.file = File;
@@ -37,11 +35,10 @@ public class AWSBuckets {
         util = new Util();
         transferUtility = util.getTransferUtility(context);
         commonUtilsMethods =  new CommonUtilsMethods(context);
-        new AWSbucketsclass().execute();
+        new AWSbucketsclassTag().execute();
     }
 
-    // download
-    public AWSBuckets(Context context, String Filename, File File, int filepos, String filestored_name,S3DownloadFiles s3Download_Files) {  // for download/ retrival
+    public AWSBucketsTag(Context context, String Filename, File File, int filepos, String filestored_name, S3DownloadFiles s3Download_Files) {
         this.context = context;
         this.filename = Filename;
         this.file = File;
@@ -51,55 +48,15 @@ public class AWSBuckets {
         util = new Util();
         transferUtility = util.getTransferUtility(context);
         commonUtilsMethods = new CommonUtilsMethods(context);
-        new AWSbucketsDownload().execute();
+        new AWSbucketsDownloadTag().execute();
     }
 
-
-    private class AWSbucketsDownload extends AsyncTask<Void, Void, Boolean> {
+    private class AWSbucketsclassTag extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                TransferObserver downloadObserver = transferUtility.download("san-edet",SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/"+ filestored_name+filename, file);
-                downloadObserver.setTransferListener(new TransferListener() {
+                TransferObserver image_upload = transferUtility.upload("san-edet", SharedPref.getDivisionCode(context).replace(",","/")+"Tagging"+"/"+filestored_name+filename, file);
 
-                    @Override
-                    public void onStateChanged(int id, TransferState state) {
-                        if (TransferState.COMPLETED == state) {
-                            Bitmap bmp = BitmapFactory.decodeFile(file.getAbsolutePath());
-                            System.out.println("CHk_Data-->>" + bmp);
-                            S3DownloadFiles.fileDataAdd(pos, bmp);
-                        } else if (TransferState.FAILED == state) {
-                            Log.d("S3 Transfer" , "onStateChanged: "+"S3 Transfer state FAILED");
-                        }
-                    }
-
-                    @Override
-                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                    }
-
-                    @Override
-                    public void onError(int id, Exception ex) {
-                        ex.printStackTrace();
-                    }
-                });
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e(TAG, "Download Error Exception " + e.getMessage());
-                return false;
-            }
-        }
-    }
-
-    private class AWSbucketsclass extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Void... arg0) {
-            try {
-                TransferObserver image_upload = transferUtility.upload("san-edet",SharedPref.getDivisionCode(context).replace(",","/")+ "Event_Capture"+"/"+filestored_name+filename, file);
-                if (image_upload == null) {
-                    Log.e("AWSUpload", "TransferObserver is null - upload() may have failed silently.");
-                    return false;
-                }
                 image_upload.setTransferListener(new TransferListener() {
                     @Override
                     public void onStateChanged(int id, TransferState state) {
@@ -132,6 +89,42 @@ public class AWSBuckets {
         }
 
     }
+
+    private class AWSbucketsDownloadTag extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... arg0) {
+            try {
+
+                TransferObserver downloadObserver = transferUtility.download("san-edet",SharedPref.getDivisionCode(context).replace(",","/")+"Tagging"+"/"+ filestored_name+filename, file);
+                downloadObserver.setTransferListener(new TransferListener() {
+
+                    @Override
+                    public void onStateChanged(int id, TransferState state) {
+                        if (TransferState.COMPLETED == state) {
+                            Bitmap bmp = BitmapFactory.decodeFile(file.getAbsolutePath());
+                            System.out.println("CHk_Data-->>" + bmp);
+                            S3DownloadFiles.fileDataAdd(pos, bmp);
+                        } else if (TransferState.FAILED == state) {
+                            Log.d("S3 Transfer" , "onStateChanged: "+"S3 Transfer state FAILED");
+                        }
+                    }
+
+                    @Override
+                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                    }
+
+                    @Override
+                    public void onError(int id, Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(TAG, "Download Error Exception " + e.getMessage());
+                return false;
+            }
+        }
+    }
+
 }
-
-

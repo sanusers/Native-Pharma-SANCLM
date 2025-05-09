@@ -7,7 +7,6 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static java.lang.Double.parseDouble;
 import static java.lang.Double.valueOf;
 import static saneforce.sanzen.activity.approvals.geotagging.GeoTaggingAdapter.geoTagViewList;
-import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.IsFromDCR;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -55,12 +54,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Region;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
@@ -110,10 +110,10 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import saneforce.sanzen.AWS.AWSBuckets;
+import saneforce.sanzen.AWS.AWSBucketsTag;
 import saneforce.sanzen.AWS.S3DownloadFiles;
+import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.camera.CameraActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustListAdapter;
@@ -122,6 +122,7 @@ import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
+import saneforce.sanzen.commonClasses.Keys;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityMapsBinding;
 import saneforce.sanzen.databinding.DialogMasterSyncUpdateBinding;
@@ -170,6 +171,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
+    Util util;
 
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @SuppressLint("SuspiciousIndentation")
@@ -247,6 +249,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         commonUtilsMethods.setUpLanguage(MapsActivity.this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
+        util = new Util();
         Bundle extra = getIntent().getExtras();
         Log.v("MapActvity","Oncreate");
 
@@ -1308,11 +1311,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             progressBar.setVisibility(View.VISIBLE);
 
             if(jsonImage != null) {
-                CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                        getApplicationContext(),
-                        "ap-south-1:c4c0fc81-118d-43e3-84cf-051f1bd831b9", Regions.AP_SOUTH_1);
-
-                AmazonS3Client S3Client = new AmazonS3Client(credentialsProvider);
+//                String accessKey = Keys.ACCESS_KEY;
+//                String secretKey = Keys.SECRET_KEY;
+//                Regions region = Regions.EU_NORTH_1;
+//                String bucketName = "san-edet";
+//
+//                BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey,secretKey);
+//
+//                AmazonS3Client s3Client = new AmazonS3Client(credentials);
+//                s3Client.setRegion(Region.getRegion(region));
+                util.getS3Client(context);
+                String bucketName = "san-edet";
                 File fileToUpload = new File(destinationFilePath);
                 Log.d("destfilepath", "CallImageAPI: "+destinationFilePath);
                 Log.d("fileToUpload", "CallImageAPI: "+ fileToUpload.getAbsolutePath());
@@ -1322,15 +1331,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     commonUtilsMethods.showToastMessage(MapsActivity.this, "File does not exist.");
                     return;
                 }
-                String bucketName = "san.one";
-                String fileKey = "uploads/" + fileToUpload.getName();
-                String upload_url = "https://"+"s3."+"ap-south-1."+"amazonaws.com/"+bucketName+"/"+fileKey ;
-                Log.i("s3url", "Uploading to S3: " + upload_url);
 
+                String fileKey = SharedPref.getDivisionCode(context).replace(",","/")+"Tagging"+"/"+ fileToUpload.getName();
                 TransferUtility transferUtility = TransferUtility.builder()
                         .context(getApplicationContext())
                         .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
-                        .s3Client(S3Client)
+                        .s3Client(util.getS3Client(context))
                         .build();
 
                 TransferObserver uploadObserver = transferUtility.upload(
@@ -1341,7 +1347,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onStateChanged(int id, TransferState state) {
                         if (state == TransferState.COMPLETED) {
-                            Log.v("S3Upload", "Upload successful"+upload_url);
                             CallAPIGeo(jsonTag, progressBar);
                         } else if (state == TransferState.FAILED) {
                             Log.e("S3Upload", "Upload failed");
@@ -1376,7 +1381,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }else {
             Log.d("tag_Image", "imageFile: "+"the file do not exist");
         }
-        new AWSBuckets(MapsActivity.this, imageName, imageFile,"");
+        new AWSBucketsTag(MapsActivity.this, imageName, imageFile,"");
         Log.d("tag_Image", "image" + imageFile);
     }
 
@@ -1653,10 +1658,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
                         ImageButton closeButton = dialogView.findViewById(R.id.close_button);
+                        ProgressBar progressBar = dialogView.findViewById(R.id.loading_progress);
 
                         fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
                         builder.setView(dialogView);
                         AlertDialog dialog = builder.create();
+                        fullScreenImage.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.VISIBLE);
                         dialog.show();
                         dialog.getWindow().setLayout(
                                 (int) (getResources().getDisplayMetrics().widthPixels * 0.5),
@@ -1670,15 +1678,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             TransferNetworkLossHandler.getInstance(getApplicationContext());
                             File MapView = new File(MapsActivity.this.getFilesDir(), fileName);
                             Log.d("TAG", "AddTaggedDetails: " + MapView.getAbsolutePath());
-                            new AWSBuckets(MapsActivity.this, fileName, MapView, 0, "", new S3DownloadFiles() {
+                            new AWSBucketsTag(MapsActivity.this, fileName, MapView, 0, "", new S3DownloadFiles() {
                                 @Override
                                 public void fileDataAdd(int pos, Bitmap bitmap) {
                                     if(bitmap != null) {
                                         fullScreenImage.setImageBitmap(bitmap);
                                         fullScreenImage.setVisibility(View.VISIBLE);
-                                        dialog.show();
+                                        progressBar.setVisibility(View.GONE);
                                     }else {
                                         Log.d("bitmap image", "image: " + "bitmap image is null");
+                                        fullScreenImage.setVisibility(View.VISIBLE);
                                     }
                                 }
                             });

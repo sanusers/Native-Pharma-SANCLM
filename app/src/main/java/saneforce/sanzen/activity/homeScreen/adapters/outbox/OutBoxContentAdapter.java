@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.homeScreen.adapters.outbox;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.listDates;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
 
@@ -22,7 +23,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
@@ -52,6 +53,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.AWS.AWSBuckets;
+import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityUploadModelClass;
@@ -59,12 +61,12 @@ import saneforce.sanzen.activity.homeScreen.modelClass.CheckInOutModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.ChildListModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.DaySubmitModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
-import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
 //import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.WorkPlanModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.Keys;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -107,7 +109,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     private final ActivityOfflineDataDao activityOfflineDataDao;
     private final ActivityUploadDataDao activityUploadDataDao;
     private final CallsUtil callsUtil;
-    String baseUrl = "http://sanffa.info/iOSServer/db_api.php/";
+    Util util;
 
     public OutBoxContentAdapter(Activity activity, Context context, ArrayList<ChildListModelClass> groupModelClasses) {
         this.activity = activity;
@@ -126,6 +128,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         activityOfflineDataDao = roomDB.activityOfflineDataDao();
         activityUploadDataDao = roomDB.activityUploadDataDao();
         callsUtil = new CallsUtil(context);
+        util = new Util();
     }
 
     @NonNull
@@ -630,42 +633,44 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     }*/
 private void CallSendAPIImage(int position,int i,EcModelClass ecModelClass,String jsonValues, String filePath, String id) {
     try {
+        /*String accessKey = Keys.ACCESS_KEY;
+        String secretKey = Keys.SECRET_KEY;
+        Regions region = Regions.EU_NORTH_1;
+        String bucketName = "san-edet";
 
-        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                context,
-                "ap-south-1:c4c0fc81-118d-43e3-84cf-051f1bd831b9",
-                Regions.AP_SOUTH_1);
+        BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey,secretKey);
 
-        AmazonS3Client s3Client = new AmazonS3Client(credentialsProvider);
-        s3Client.setRegion(Region.getRegion(Regions.AP_SOUTH_1));
-
-
+        AmazonS3Client s3Client = new AmazonS3Client(credentials);
+        s3Client.setRegion(Region.getRegion(region));*/
+        util.getS3Client(context);
+        String bucketName = "san-edet";
         File fileToUpload = new File(filePath);
         Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
         if (!fileToUpload.exists()) {
             Log.d("fileToUpload", "not exists: " + filePath);
         } else {
 
-            String bucketName = "san.one";
-            String s3Key = "uploads/" + fileToUpload.getName();
+
+            String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/"+ fileToUpload.getName();
             Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
-            String UploadUrl = "https://" + "s3." + "ap-south-1." + "amazonaws.com/" + bucketName + "/" + s3Key;
-            Log.d("S3UploadUrl", "CallSendAPIImage: " + UploadUrl);
+            /*String UploadUrl = "https://" + "s3." +"eu-north-1." + "amazonaws.com/" + bucketName + "/" + s3Key;
+            Log.d("S3UploadUrl", "CallSendAPIImage: " + UploadUrl);*/
 
             TransferNetworkLossHandler.getInstance(context);
 
             TransferUtility transferUtility = TransferUtility.builder()
                     .context(context)
                     .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
-                    .s3Client(s3Client)
-                    .defaultBucket(bucketName)
+                    .s3Client(util.getS3Client(context))
                     .build();
 
             TransferObserver uploadObserver = transferUtility.upload(
                     bucketName,
                     s3Key,
                     fileToUpload);
+            Log.d("uploadObserver", "CallSendAPIImage: "+uploadObserver);
+
             uploadObserver.setTransferListener(new TransferListener() {
                 @Override
                 public void onStateChanged(int idInt, TransferState state) {
@@ -675,7 +680,6 @@ private void CallSendAPIImage(int position,int i,EcModelClass ecModelClass,Strin
                         DeleteCacheFile(filePath, id, i, position);
                         Log.d("S3 Upload", "Upload Successful: " + s3Key);
                         try {
-
                             CallAPIListImage(position);
                         } catch (Exception e) {
                             e.printStackTrace();

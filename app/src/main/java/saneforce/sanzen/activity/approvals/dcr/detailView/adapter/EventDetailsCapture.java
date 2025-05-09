@@ -58,7 +58,7 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
              tiitle1.setVisibility(View.GONE);
              ImageView imageView=view1.findViewById(R.id.image);
              AlertDialog dialog1=dialog.create();
-             dialog1.show();
+//             dialog1.show();
              String imageName = List.get(position).getEventimg().replace("photos/","");
              String fileName  = imageName;
 
@@ -67,12 +67,6 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
              if (Objects.requireNonNull(fileName).isEmpty()) {
 
              }else {
-                 String bucketName = "san.one";
-                 String region = "ap-south-1";
-                 String s3Key = "uploads/"+fileName;
-                 String imageUrl = "https://s3." + region + ".amazonaws.com/" + bucketName + "/" + s3Key;
-                 Log.d("Image URL", "Fetching image from: " + imageUrl);
-
                  File file = new File(context.getFilesDir(),fileName);
                  Log.d("TAG", "onBindViewHolder: " + file.getAbsolutePath());
 
@@ -84,6 +78,9 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
                              Log.d("bitmap image", "Image successfully loaded.");
                              holder.Imageview.setImageBitmap(bitmap);
                              holder.Imageview.setVisibility(View.VISIBLE);
+                             imageView.setImageBitmap(bitmap);
+                             dialog.show();
+
                          } else {
                              Log.d("bitmap image", "Failed to load image, bitmap is null.");
                              holder.Imageview.setVisibility(View.GONE);

@@ -221,7 +221,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
       ;
         String fileName = callCaptureImageList.getSystemImgName();
-        File file = new File(context.getFilesDir(),fileName);
+        File file = new File(context.getExternalFilesDir("JWOthersImages"),fileName);
         Log.d("TAG_acci", "onBindViewHolder: " + file.getAbsolutePath());
         new AWSBuckets(context, fileName, file, 0, "", new S3DownloadFiles() {
             @Override
