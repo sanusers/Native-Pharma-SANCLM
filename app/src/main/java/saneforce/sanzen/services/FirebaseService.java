@@ -56,13 +56,13 @@ public class FirebaseService extends FirebaseMessagingService {
             title = remoteMessage.getNotification().getTitle();
             body = remoteMessage.getNotification().getBody();
             time = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2);
-            try {
-                notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            notificationId = random.nextInt(1000);
-            createNotification();
+//            try {
+//                notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            notificationId = random.nextInt(1000);
+//            createNotification();
         }
     }
 
