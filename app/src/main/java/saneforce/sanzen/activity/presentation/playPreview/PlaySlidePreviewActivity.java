@@ -120,6 +120,16 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
             binding.upArrow.setVisibility(View.VISIBLE);
         });
 
+        binding.ivPlayPauseTimer.setOnClickListener(view -> {
+            if(timer != null) {
+                binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_play_arrow_24);
+                stopTimer();
+            } else {
+                binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_pause_24);
+                startTimer();
+            }
+        });
+
         binding.exitBtn.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
         binding.playBtn.setOnClickListener(view -> {
@@ -193,6 +203,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                 binding.videoView.setVisibility(View.GONE);
                 binding.webView.setVisibility(View.GONE);
                 binding.upArrow.setVisibility(View.VISIBLE);
+                binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_pause_24);
                 startTimer();
             }
         });
@@ -200,6 +211,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     }
 
     public void initialisation() {
+        binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_pause_24);
         startTimer();
         mediaController = new MediaController(this);
         mediaController.setAnchorView(binding.videoView);
@@ -246,11 +258,13 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
         binding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_pause_24);
                 startTimer();
             }
 
             @Override
             public void onPageSelected(int position) {
+                binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_pause_24);
                 startTimer();
             }
 
@@ -273,6 +287,11 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
         timer.schedule(new SlideTimer(), 2000, 5000);
     }
 
+    public void stopTimer() {
+        if(timer != null) timer.cancel();
+        timer = null;
+    }
+
     public void loadPdf(String fileName) {
         binding.pdfView.fromFile(new File(fileName)).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();
     }
@@ -280,7 +299,9 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        timer.cancel();
+        if(timer != null) {
+            timer.cancel();
+        }
     }
 
     public class SlideTimer extends TimerTask {

@@ -237,7 +237,7 @@
             android:paddingTop="@dimen/_5sdp"
             android:paddingEnd="@dimen/_10sdp"
             android:paddingBottom="@dimen/_5sdp"
-            android:text="Close Preview"
+            android:text="Hide"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="@dimen/_6sdp"
@@ -246,6 +246,19 @@
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="spUsage" />
+
+        <ImageView
+            android:id="@+id/iv_play_pause_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/dark_purple"
+            android:padding="@dimen/_8sdp"
+            android:src="@drawable/baseline_pause_24"
+            app:layout_constraintBottom_toBottomOf="@id/exitBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/exitBtn"
+            app:tint="@color/white" />
 
         <View
             android:layout_width="match_parent"
