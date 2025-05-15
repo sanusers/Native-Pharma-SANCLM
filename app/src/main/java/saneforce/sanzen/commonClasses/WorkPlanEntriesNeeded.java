@@ -262,7 +262,8 @@ public class WorkPlanEntriesNeeded {
                         LocalDate date = LocalDate.parse(dt, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                         LocalDate joiningDate = LocalDate.parse(SFDCR_Date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                         if(date.isBefore(joiningDate)) {
-                            datesNeededDup.remove(dt);
+                            pastDates.remove(dt);
+                            datesNeeded.remove(dt);
                         }else if(date.isEqual(joiningDate)) {
                             break;
                         }
