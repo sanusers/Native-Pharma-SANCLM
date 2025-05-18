@@ -17,6 +17,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -62,6 +64,7 @@ import saneforce.sanzen.activity.call.pojo.detailing.LoadBitmap;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
+import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -91,6 +94,8 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     String defaultTime = "00:00:00";
     int scribblePos;
     CommonUtilsMethods commonUtilsMethods;
+    private Handler handler;
+    private Runnable runnable;
 
     public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList) {
         this.context = context;
@@ -129,7 +134,30 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             String fileFormat = SupportClass.getFileExtension(productArrayList.get(position).getSlideName());
             popupScribbling(productArrayList.get(position).getSlideName(), productArrayList.get(position).getSlideId(), file.toString(), fileFormat);
         });
-
+        Log.i("TAG", "instantiateItem: " + productArrayList.get(position).getSlideName());
+        if (handler == null) {
+            handler = new Handler(Looper.getMainLooper());
+        }
+        if (runnable != null) {
+            handler.removeCallbacks(runnable);
+        }
+        String timeLimit = SharedPref.getDetailingIdleDuration(context);
+        Log.d("TAG", "instantiateItem: " + timeLimit);
+        if (!timeLimit.isEmpty()) {
+            try {
+                runnable = () -> {
+                    Log.e("TAG", "PlaySlideDetailedAdapter: time up - " + timeLimit);
+                    if (context instanceof PlaySlideDetailing) {
+                        PreviewActivity.isTimerEnd = true;
+                        handleStopDetailing();
+                    }
+                };
+                long minutes = Long.parseLong(timeLimit);
+                handler.postDelayed(runnable, minutes * 50 * 60);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return sliderLayout;
     }
 
@@ -473,108 +501,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         });
 
         rl_stop.setOnClickListener(v -> {
-            if(arrayStore != null) {
-                arrayStore.clear();
-            }
-            act.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            if (PlaySlideDetailedAdapter.preVal) {
-                int timecount = 0;
-
-                for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
-                    int ll = 0;
-                    if (i != 0) {
-                        ll = i - 1;
-                        if (PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() == PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
-                            PlaySlideDetailedAdapter.storingSlide.remove(ll);
-                        }
-                    }
-                }
-
-                for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
-                    Log.v("total_printing", PlaySlideDetailedAdapter.storingSlide.get(i).getSlideName() + "size" + PlaySlideDetailedAdapter.storingSlide.size() + "slide" + PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal());
-                }
-
-                for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
-                    int ll = 0;
-                    if (i != 0) ll = i - 1;
-                    if (i == 0 || PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() != PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
-                        if(!PlaySlideDetailedAdapter.storingSlide.get(i).getBrandName().equalsIgnoreCase("Welcome")) {
-                            mCommonSharedPreference.setValueToPreferenceFeed("timeVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getTiming());
-                            mCommonSharedPreference.setValueToPreferenceFeed("dateVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getDateVal());
-                            mCommonSharedPreference.setValueToPreferenceFeed("brd_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandName());
-                            mCommonSharedPreference.setValueToPreferenceFeed("brd_code" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandCode());
-                            mCommonSharedPreference.setValueToPreferenceFeed("slide_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideName());
-                            mCommonSharedPreference.setValueToPreferenceFeed("slide_typ" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideType());
-                            mCommonSharedPreference.setValueToPreferenceFeed("slide_url" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideUrl());
-                            mCommonSharedPreference.setValueToPreferenceFeed("timeCount", ++timecount);
-                        }
-                    }
-                }
-
-                val = mCommonSharedPreference.getValueFromPreferenceFeed("timeCount", 0);
-                Log.v("slideData", String.valueOf(val));
-                for (int i = 0; i < val; i++) {
-                    String timevalue = mCommonSharedPreference.getValueFromPreferenceFeed("timeVal" + i);
-                    String SlideName = mCommonSharedPreference.getValueFromPreferenceFeed("slide_nam" + i);
-                    String BrandName = mCommonSharedPreference.getValueFromPreferenceFeed("brd_nam" + i);
-                    String BrandCode = mCommonSharedPreference.getValueFromPreferenceFeed("brd_code" + i);
-                    String slidetyp = mCommonSharedPreference.getValueFromPreferenceFeed("slide_typ" + i);
-                    String slideur = mCommonSharedPreference.getValueFromPreferenceFeed("slide_url" + i);
-
-                    if(!BrandName.equalsIgnoreCase("Welcome")) {
-                        String eTime;
-                        if(arrayStore != null && !arrayStore.isEmpty() && arrayStore.contains(new StoreImageTypeUrl(SlideName))) {
-                            eTime = findingEndTime(i);
-                            int index = checkForProduct(SlideName);
-                            StoreImageTypeUrl mmm = arrayStore.get(index);
-
-                            try {
-                                JSONArray jj = new JSONArray(mmm.getRemTime());
-                                JSONArray jk = new JSONArray();
-                                JSONObject js = null;
-                                for (int k = 0; k<jj.length(); k++) {
-                                    js = jj.getJSONObject(k);
-                                    jk.put(js);
-                                }
-                                js = new JSONObject();
-                                js.put("sT", timevalue);
-                                js.put("eT", eTime);
-                                jk.put(js);
-                                mmm.setRemTime(jk.toString());
-                            } catch (Exception ignored) {
-                            }
-                        }else if(!SlideName.isEmpty()) {
-                            eTime = findingEndTime(i);
-                            JSONObject jsonObject = new JSONObject();
-                            JSONArray jsonArray = new JSONArray();
-                            try {
-                                jsonObject.put("sT", timevalue);
-                                jsonObject.put("eT", eTime);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            jsonArray.put(jsonObject);
-                            Log.v("slideData", "----" + BrandName + "----" + SlideName);
-                            boolean isAvailableScrib = false;
-                            scribblePos = 0;
-                            for (int j = 0; j<slideScribble.size(); j++) {
-                                if(slideScribble.get(j).getSlideNam().equalsIgnoreCase(SlideName)) {
-                                    isAvailableScrib = true;
-                                    scribblePos = j;
-                                    break;
-                                }
-                            }
-                            if(isAvailableScrib) {
-                                arrayStore.add(new StoreImageTypeUrl(slideScribble.get(scribblePos).getScribble(), SlideName, slidetyp, slideur, "0", slideScribble.get(scribblePos).getSlideComments(), jsonArray.toString(), BrandName, BrandCode, false));
-                            }else {
-                                arrayStore.add(new StoreImageTypeUrl("", SlideName, slidetyp, slideur, "0", "", jsonArray.toString(), BrandName, BrandCode, false));
-                            }
-                        }
-                    }
-                }
-            }
-            slideScribble.clear();
-            act.getOnBackPressedDispatcher().onBackPressed();
+            handleStopDetailing();
         });
 
 
@@ -584,6 +511,111 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         window.setAttributes(wlp);
         dialogPopUp.show();
         act.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
+    private void handleStopDetailing() {
+        if(arrayStore != null) {
+            arrayStore.clear();
+        }
+        act.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        if (PlaySlideDetailedAdapter.preVal) {
+            int timecount = 0;
+
+            for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
+                int ll = 0;
+                if (i != 0) {
+                    ll = i - 1;
+                    if (PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() == PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
+                        PlaySlideDetailedAdapter.storingSlide.remove(ll);
+                    }
+                }
+            }
+
+            for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
+                Log.v("total_printing", PlaySlideDetailedAdapter.storingSlide.get(i).getSlideName() + "size" + PlaySlideDetailedAdapter.storingSlide.size() + "slide" + PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal());
+            }
+
+            for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
+                int ll = 0;
+                if (i != 0) ll = i - 1;
+                if (i == 0 || PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() != PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
+                    if(!PlaySlideDetailedAdapter.storingSlide.get(i).getBrandName().equalsIgnoreCase("Welcome")) {
+                        mCommonSharedPreference.setValueToPreferenceFeed("timeVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getTiming());
+                        mCommonSharedPreference.setValueToPreferenceFeed("dateVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getDateVal());
+                        mCommonSharedPreference.setValueToPreferenceFeed("brd_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandName());
+                        mCommonSharedPreference.setValueToPreferenceFeed("brd_code" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandCode());
+                        mCommonSharedPreference.setValueToPreferenceFeed("slide_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideName());
+                        mCommonSharedPreference.setValueToPreferenceFeed("slide_typ" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideType());
+                        mCommonSharedPreference.setValueToPreferenceFeed("slide_url" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideUrl());
+                        mCommonSharedPreference.setValueToPreferenceFeed("timeCount", ++timecount);
+                    }
+                }
+            }
+
+            val = mCommonSharedPreference.getValueFromPreferenceFeed("timeCount", 0);
+            Log.v("slideData", String.valueOf(val));
+            for (int i = 0; i < val; i++) {
+                String timevalue = mCommonSharedPreference.getValueFromPreferenceFeed("timeVal" + i);
+                String SlideName = mCommonSharedPreference.getValueFromPreferenceFeed("slide_nam" + i);
+                String BrandName = mCommonSharedPreference.getValueFromPreferenceFeed("brd_nam" + i);
+                String BrandCode = mCommonSharedPreference.getValueFromPreferenceFeed("brd_code" + i);
+                String slidetyp = mCommonSharedPreference.getValueFromPreferenceFeed("slide_typ" + i);
+                String slideur = mCommonSharedPreference.getValueFromPreferenceFeed("slide_url" + i);
+
+                if(!BrandName.equalsIgnoreCase("Welcome")) {
+                    String eTime;
+                    if(arrayStore != null && !arrayStore.isEmpty() && arrayStore.contains(new StoreImageTypeUrl(SlideName))) {
+                        eTime = findingEndTime(i);
+                        int index = checkForProduct(SlideName);
+                        StoreImageTypeUrl mmm = arrayStore.get(index);
+
+                        try {
+                            JSONArray jj = new JSONArray(mmm.getRemTime());
+                            JSONArray jk = new JSONArray();
+                            JSONObject js = null;
+                            for (int k = 0; k<jj.length(); k++) {
+                                js = jj.getJSONObject(k);
+                                jk.put(js);
+                            }
+                            js = new JSONObject();
+                            js.put("sT", timevalue);
+                            js.put("eT", eTime);
+                            jk.put(js);
+                            mmm.setRemTime(jk.toString());
+                        } catch (Exception ignored) {
+                        }
+                    }else if(!SlideName.isEmpty()) {
+                        eTime = findingEndTime(i);
+                        JSONObject jsonObject = new JSONObject();
+                        JSONArray jsonArray = new JSONArray();
+                        try {
+                            jsonObject.put("sT", timevalue);
+                            jsonObject.put("eT", eTime);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        jsonArray.put(jsonObject);
+                        Log.v("slideData", "----" + BrandName + "----" + SlideName);
+                        boolean isAvailableScrib = false;
+                        scribblePos = 0;
+                        for (int j = 0; j<slideScribble.size(); j++) {
+                            if(slideScribble.get(j).getSlideNam().equalsIgnoreCase(SlideName)) {
+                                isAvailableScrib = true;
+                                scribblePos = j;
+                                break;
+                            }
+                        }
+                        if(isAvailableScrib) {
+                            arrayStore.add(new StoreImageTypeUrl(slideScribble.get(scribblePos).getScribble(), SlideName, slidetyp, slideur, "0", slideScribble.get(scribblePos).getSlideComments(), jsonArray.toString(), BrandName, BrandCode, false));
+                        }else {
+                            arrayStore.add(new StoreImageTypeUrl("", SlideName, slidetyp, slideur, "0", "", jsonArray.toString(), BrandName, BrandCode, false));
+                        }
+                    }
+                }
+            }
+        }
+        slideScribble.clear();
+        act.getOnBackPressedDispatcher().onBackPressed();
     }
 
     public int checkForProduct(String slidename) {

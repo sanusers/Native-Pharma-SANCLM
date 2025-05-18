@@ -6,11 +6,15 @@ import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailin
 import static saneforce.sanzen.activity.call.fragments.detailing.DetailedFragment.callDetailingLists;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -26,6 +30,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -69,7 +74,7 @@ public class PreviewActivity extends AppCompatActivity {
     ArrayList<StoreImageTypeUrl> dummyArr = new ArrayList<>();
     String startT, endT, presentationNeed, therapticNeed;
     CommonUtilsMethods commonUtilsMethods;
-//    CustomSetupResponse customSetupResponse;
+    //    CustomSetupResponse customSetupResponse;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private CallOfflineDataDao callOfflineDataDao;
@@ -77,10 +82,39 @@ public class PreviewActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     private SideScreenAdapter sideScreenAdapter;
     private JSONObject checkInJsonObject = new JSONObject();
+    public static boolean isTimerEnd = false;
 
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (isTimerEnd) {
+            Log.e("TAG", "onResume: timer end");
+            showDetailingTimeExceededAlert();
+            isTimerEnd = false;
+        }
+    }
+
+    private void showDetailingTimeExceededAlert() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dcr_cancel_alert);
+        dialog.setCancelable(false);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+        TextView btn_yes=dialog.findViewById(R.id.btn_yes);
+        TextView btn_no=dialog.findViewById(R.id.btn_no);
+        TextView titte=dialog.findViewById(R.id.ed_alert_msg);
+        titte.setText("Idle Time " + SharedPref.getDetailingIdleDuration(this) + " minutes for detailing has been exceeded.");
+        btn_no.setVisibility(View.GONE);
+        btn_yes.setText(getString(R.string.ok));
+        btn_yes.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
     }
 
     //To Hide the bottomNavigation When popup
@@ -109,38 +143,38 @@ public class PreviewActivity extends AppCompatActivity {
 
         getRequiredData();
         Bundle extra = getIntent().getExtras();
-            if (extra != null) {
-                from_where = extra.getString("from");
-                assert from_where != null;
-                if (from_where.equalsIgnoreCase("call")) {
-                    cus_name = extra.getString("cus_name");
-                    cus_code = extra.getString("cus_code");
-                    SpecialityCode = extra.getString("SpecialityCode");
-                    SpecialityName = extra.getString("SpecialityName");
-                    BrandCode = extra.getString("MappedProdCode");
-                    SlideCode = extra.getString("MappedSlideCode");
-                    CusType = extra.getString("CusType");
-                    if(extra.containsKey("CheckInJsonObject")) {
-                        String jsonObject = extra.getString("CheckInJsonObject");
-                        try {
-                            checkInJsonObject = new JSONObject(jsonObject);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        checkInJsonObject = new JSONObject();
+        if (extra != null) {
+            from_where = extra.getString("from");
+            assert from_where != null;
+            if (from_where.equalsIgnoreCase("call")) {
+                cus_name = extra.getString("cus_name");
+                cus_code = extra.getString("cus_code");
+                SpecialityCode = extra.getString("SpecialityCode");
+                SpecialityName = extra.getString("SpecialityName");
+                BrandCode = extra.getString("MappedProdCode");
+                SlideCode = extra.getString("MappedSlideCode");
+                CusType = extra.getString("CusType");
+                if (extra.containsKey("CheckInJsonObject")) {
+                    String jsonObject = extra.getString("CheckInJsonObject");
+                    try {
+                        checkInJsonObject = new JSONObject(jsonObject);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                    previewBinding.tagCustName.setText(cus_name);
-                    previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
                 } else {
-                    previewBinding.btnFinishDet.setVisibility(View.GONE);
+                    checkInJsonObject = new JSONObject();
                 }
+                previewBinding.tagCustName.setText(cus_name);
+                previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
+            } else {
+                previewBinding.btnFinishDet.setVisibility(View.GONE);
             }
-            viewPagerAdapter = new PreviewTabAdapter(getSupportFragmentManager());
+        }
+        viewPagerAdapter = new PreviewTabAdapter(getSupportFragmentManager());
 
-        if(from_where.equalsIgnoreCase("call")) {
+        if (from_where.equalsIgnoreCase("call")) {
             headingData.clear();
-            if(CusType.equalsIgnoreCase("1")) {
+            if (CusType.equalsIgnoreCase("1")) {
                 viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
                 headingData.add("A");
                 viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
@@ -149,42 +183,42 @@ public class PreviewActivity extends AppCompatActivity {
                 headingData.add("C");
                 viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                 headingData.add("D");
-                if(therapticNeed.equalsIgnoreCase("0")) {
+                if (therapticNeed.equalsIgnoreCase("0")) {
                     viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
                     headingData.add("E");
                 }
-                if(presentationNeed.equalsIgnoreCase("0")) {
+                if (presentationNeed.equalsIgnoreCase("0")) {
                     viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                     headingData.add("F");
                 }
                 viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
                 headingData.add("G");
-            }else {
+            } else {
                 viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
                 headingData.add("A");
                 viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
                 headingData.add("B");
                 viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                 headingData.add("D");
-                if(therapticNeed.equalsIgnoreCase("0")) {
+                if (therapticNeed.equalsIgnoreCase("0")) {
                     viewPagerAdapter.add(new Therapist(), getResources().getString(R.string.therapist));
                     headingData.add("E");
                 }
-                if(presentationNeed.equalsIgnoreCase("0")) {
+                if (presentationNeed.equalsIgnoreCase("0")) {
                     viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                     headingData.add("F");
                 }
                 viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
                 headingData.add("G");
             }
-        }else {
+        } else {
             viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
             viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
             viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-            if(therapticNeed.equalsIgnoreCase("0")) {
+            if (therapticNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new Therapist(), getString(R.string.therapist));
             }
-            if(presentationNeed.equalsIgnoreCase("0"))
+            if (presentationNeed.equalsIgnoreCase("0"))
 //                viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                 viewPagerAdapter.add(new CustomPreviewFragment(this::viewSideScreen), getResources().getString(R.string.my_presentation));
         }
@@ -196,8 +230,8 @@ public class PreviewActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 SelectedPosPlay = tab.getPosition();
-                if(tab.getPosition() == 1) SelectedTab = "Matrix";
-                if(tab.getPosition() == 2) SelectedTab = "Spec";
+                if (tab.getPosition() == 1) SelectedTab = "Matrix";
+                if (tab.getPosition() == 2) SelectedTab = "Spec";
             }
 
             @Override
@@ -230,8 +264,8 @@ public class PreviewActivity extends AppCompatActivity {
                     finalPrdNam = arrayStore.get(j).getBrdName();
                 } else if (finalPrdNam.equalsIgnoreCase(arrayStore.get(j).getBrdName())) {
                     try {
-                        JSONArray jsonArray = new JSONArray(arrayStore.get(j-1).getRemTime());
-                        for (int i = 0; i<jsonArray.length(); i++) {
+                        JSONArray jsonArray = new JSONArray(arrayStore.get(j - 1).getRemTime());
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).getString("sT"), jsonArray.getJSONObject(i).getString("eT"));
                             totalDuration = TimeUtils.addTime(totalDuration, duration);
                         }
@@ -245,8 +279,8 @@ public class PreviewActivity extends AppCompatActivity {
                     }
                     Log.v("printing_all_time", time);
                     try {
-                        JSONArray jsonArray = new JSONArray(arrayStore.get(j-1).getRemTime());
-                        for (int i = 0; i<jsonArray.length(); i++) {
+                        JSONArray jsonArray = new JSONArray(arrayStore.get(j - 1).getRemTime());
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).getString("sT"), jsonArray.getJSONObject(i).getString("eT"));
                             totalDuration = TimeUtils.addTime(totalDuration, duration);
                         }
@@ -261,8 +295,8 @@ public class PreviewActivity extends AppCompatActivity {
 
             if (!arrayStore.isEmpty()) {
                 try {
-                    JSONArray jsonArray = new JSONArray(arrayStore.get(arrayStore.size()-1).getRemTime());
-                    for (int i = 0; i<jsonArray.length(); i++) {
+                    JSONArray jsonArray = new JSONArray(arrayStore.get(arrayStore.size() - 1).getRemTime());
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).getString("sT"), jsonArray.getJSONObject(i).getString("eT"));
                         totalDuration = TimeUtils.addTime(totalDuration, duration);
                     }
@@ -276,7 +310,7 @@ public class PreviewActivity extends AppCompatActivity {
             intent1.putExtra(Constants.DETAILING_REQUIRED, "true");
             intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
             intent1.putExtra("remainder_save", "0");
-            intent1.putExtra("hq_code", "" );
+            intent1.putExtra("hq_code", "");
             intent1.putExtra("CheckInJsonObject", checkInJsonObject.toString());
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.toString(), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
@@ -300,7 +334,7 @@ public class PreviewActivity extends AppCompatActivity {
         });
 
         String selectedCap = "";
-        switch (customerType){
+        switch (customerType) {
             case Constants.DOCTOR:
                 selectedCap = SharedPref.getDrCap(this);
                 break;
@@ -322,7 +356,7 @@ public class PreviewActivity extends AppCompatActivity {
         }
 
         previewBinding.navigationView.tvSideTitle.setText(String.format("Selected %s", selectedCap));
-        if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
             previewBinding.navigationView.tvSideHq.setText(getHQName(presentationDataTable.getHeadquarterCode()));
             previewBinding.navigationView.tvSideHq.setVisibility(View.VISIBLE);
         } else {
@@ -347,20 +381,20 @@ public class PreviewActivity extends AppCompatActivity {
 
         ArrayList<CustomerDataModel> customerDataList = new ArrayList<>();
         JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(customerType + presentationDataTable.getHeadquarterCode()).getMasterSyncDataJsonArray();
-        if(jsonArray.length() == 0) {
+        if (jsonArray.length() == 0) {
             commonUtilsMethods.showToastMessage(this, this.getString(R.string.no_data_found) + "  " + this.getString(R.string.do_master_sync));
-        }else {
+        } else {
             try {
                 Set<String> customerCodes1 = new HashSet<>();
                 String code = "";
-                for (int i = 0; i<jsonArray.length(); i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     try {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         code = jsonObject.getString("Code");
-                        if(!customerCodes1.contains(code)) {
+                        if (!customerCodes1.contains(code)) {
                             customerCodes1.add(code);
                             CustomerDataModel customerDataModel = new CustomerDataModel(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), "", "", "", "", "", "");
-                            if(presentationDataTable.getCustomerCodes() != null && !presentationDataTable.getCustomerCodes().isEmpty() && presentationDataTable.getCustomerCodes().contains(code)) {
+                            if (presentationDataTable.getCustomerCodes() != null && !presentationDataTable.getCustomerCodes().isEmpty() && presentationDataTable.getCustomerCodes().contains(code)) {
                                 customerDataModel.setSelected(true);
                                 customerDataList.add(customerDataModel);
                             }
@@ -385,10 +419,10 @@ public class PreviewActivity extends AppCompatActivity {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
             ArrayList<String> list = new ArrayList<>();
-            if(jsonArray.length()>0) {
-                for (int i = 0; i<jsonArray.length(); i++) {
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if(jsonObject.optString("id").equalsIgnoreCase(hqCode)) {
+                    if (jsonObject.optString("id").equalsIgnoreCase(hqCode)) {
                         return jsonObject.optString("name");
                     }
                 }

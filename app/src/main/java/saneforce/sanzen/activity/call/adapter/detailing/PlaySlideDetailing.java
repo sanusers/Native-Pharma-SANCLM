@@ -96,7 +96,6 @@ public class PlaySlideDetailing extends AppCompatActivity {
     Dialog dialogPopUp;
     String defaultTime = "00:00:00";
 
-
     public static void populateViewPagerAdapterNew(ArrayList<BrandModelClass.Product> productsList) {
         itemsPagerAdapter = new PlaySlideDetailedAdapter((PlaySlideDetailing) context, productsList);
         binding.viewPager.setAdapter(itemsPagerAdapter);
@@ -532,7 +531,6 @@ public class PlaySlideDetailing extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
-
 
     public static class BottomLayoutHeadAdapter extends RecyclerView.Adapter<BottomLayoutHeadAdapter.MyViewHolder> {
         Context context;

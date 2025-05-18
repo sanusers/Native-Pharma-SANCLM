@@ -460,6 +460,8 @@ public class SharedPref {
 
     public static final String TAGGED_DCR_CUSTOMERS = "Tagged DCR Customers";
 
+    public static final String DETAILING_IDLE_DURATION = "detailing_idle_duration";
+
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -800,6 +802,7 @@ public class SharedPref {
         editor.putString(SEQ_DLY_CTRL, jsonObject.optString("Seq_dly_ctrl"));
         editor.putString(SEQ_DCR_LOCK_DAYS, jsonObject.optString("SeqDcrLockDays"));
         editor.putString(DELAY_HW_NEED, jsonObject.optString("Delay_HW_Need"));
+        editor.putString(DETAILING_IDLE_DURATION, jsonObject.optString("detailing_idle_duration"));
         editor.putString(WELCOME_SLIDES_PATH, "");
         editor.apply();
 
@@ -2838,6 +2841,10 @@ public class SharedPref {
 
     public static String getDelayHwNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DELAY_HW_NEED, "");
+    }
+
+    public static String getDetailingIdleDuration(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DETAILING_IDLE_DURATION, "");
     }
 
 }
