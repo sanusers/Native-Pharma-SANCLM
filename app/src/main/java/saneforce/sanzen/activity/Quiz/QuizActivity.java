@@ -892,6 +892,7 @@ public class QuizActivity extends AppCompatActivity {
                     if(timeSplit.length == 2) {
                         timeLimit += ":00";
                     }
+                    remainingTime = TimeUtils.getMilliSeconds(TimeUtils.FORMAT_32, timeLimit);
                 }
             }
             if(quizTitleJsonArray != null) {
@@ -1173,7 +1174,7 @@ public class QuizActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if(!isSubmitting && !isBackPressed && HomeDashBoard.selectedDate != null) {
+        if(!isSubmitting && !isBackPressed && isStarted && HomeDashBoard.selectedDate != null) {
             try {
                 createJson();
                 saveJsonObject.put("date", HomeDashBoard.selectedDate.toString());

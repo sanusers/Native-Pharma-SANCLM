@@ -107,7 +107,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_clear"
-                android:layout_width="@dimen/_50sdp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_toStartOf="@id/btn_save"
@@ -115,7 +115,7 @@
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:background="@drawable/bg_border_with_pink"
                 android:fontFamily="@font/satoshi_bold"
-                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingHorizontal="@dimen/_3sdp"
                 android:text="@string/clear"
                 android:textAllCaps="false"
                 android:textColor="@color/dark_purple"
@@ -124,7 +124,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_save"
-                android:layout_width="@dimen/_50sdp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
@@ -133,7 +133,7 @@
                 android:layout_toEndOf="@id/btn_skip"
                 android:background="@drawable/bg_purple"
                 android:fontFamily="@font/satoshi_bold"
-                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingHorizontal="@dimen/_3sdp"
                 android:singleLine="true"
                 android:text="@string/save"
                 android:textAllCaps="false"
