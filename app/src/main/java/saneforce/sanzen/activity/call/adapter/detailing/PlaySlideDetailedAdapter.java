@@ -2,7 +2,6 @@ package saneforce.sanzen.activity.call.adapter.detailing;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.arrayStore;
 
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ContentResolver;
@@ -10,12 +9,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -52,7 +48,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -65,13 +63,12 @@ import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
-import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class PlaySlideDetailedAdapter extends PagerAdapter {
 
@@ -96,6 +93,9 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     CommonUtilsMethods commonUtilsMethods;
     private Handler handler;
     private Runnable runnable;
+    public static HashMap<String, ArrayList<String>> timer = new HashMap<>();
+    private int currentPage = -1;
+    private String pageStartTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
 
     public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList) {
         this.context = context;
@@ -104,16 +104,24 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         act = context;
         mCommonSharedPreference = new CommonSharedPreference(context);
         commonUtilsMethods = new CommonUtilsMethods(context);
-        for (int i = 0; i < productArrayList.size(); i++) {
+        for (int i = 0; i<productArrayList.size(); i++) {
             File file = new File(context.getExternalFilesDir(null) + "/Slides/", productArrayList.get(i).getSlideName());
-            if (file.exists()) {
+            if(file.exists()) {
                 String fileFormat = SupportClass.getFileExtension(productArrayList.get(i).getSlideName());
                 slideDescribe.add(new StoreImageTypeUrl("", productArrayList.get(i).getSlideName(), fileFormat, file.toString(), "", productArrayList.get(i).getSlideId(), productArrayList.get(i).getBrandName(), productArrayList.get(i).getBrandCode()));
-            } else {
+            }else {
                 slideDescribe.add(new StoreImageTypeUrl("", productArrayList.get(i).getSlideName(), "", "", "", productArrayList.get(i).getSlideId(), productArrayList.get(i).getBrandName(), productArrayList.get(i).getBrandCode()));
             }
         }
     }
+
+    public String getSlideNameAt(int position) {
+        if(position>=0 && position<productArrayList.size()) {
+            return productArrayList.get(position).getSlideName();
+        }
+        return "";
+    }
+
 
     @SuppressLint("ClickableViewAccessibility")
     @NonNull
@@ -134,31 +142,79 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             String fileFormat = SupportClass.getFileExtension(productArrayList.get(position).getSlideName());
             popupScribbling(productArrayList.get(position).getSlideName(), productArrayList.get(position).getSlideId(), file.toString(), fileFormat);
         });
-        Log.i("TAG", "instantiateItem: " + productArrayList.get(position).getSlideName());
-        if (handler == null) {
-            handler = new Handler(Looper.getMainLooper());
+        resetTimer();
+        sliderLayout.setOnTouchListener((view, event) -> {
+            resetTimer();
+            return false;
+        });
+        return sliderLayout;
+    }
+
+    public void logCurrentPageEndIfNeeded() {
+        if(currentPage != -1 && !pageStartTime.isEmpty()) {
+            String now = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
+            String slideName = getSlideNameAt(currentPage);
+            ArrayList<String> list = new ArrayList<>();
+            if(timer.containsKey(slideName)) {
+                list = timer.get(slideName);
+            }
+            list.add(pageStartTime + " $ " + now);
+            timer.put(slideName, list);
+            Log.d("SlideTiming", "Final slide " + slideName + "started at " + pageStartTime + " ended after " + now);
+            currentPage = -1;
+            pageStartTime = now;
         }
-        if (runnable != null) {
-            handler.removeCallbacks(runnable);
+    }
+
+    public void onPageChanged(int newPosition) {
+        String now = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32);
+
+        if(currentPage != -1 && !pageStartTime.isEmpty()) {
+            String slideName = getSlideNameAt(currentPage);
+            ArrayList<String> list = new ArrayList<>();
+            if(timer.containsKey(slideName)) {
+                list = timer.get(slideName);
+            }
+            list.add(pageStartTime + " $ " + now);
+            timer.put(slideName, list);
+            Log.d("SlideTiming", "Slide " + slideName + "started at " + pageStartTime + " ended after " + now);
         }
-        String timeLimit = SharedPref.getDetailingIdleDuration(context);
-        Log.d("TAG", "instantiateItem: " + timeLimit);
-        if (!timeLimit.isEmpty()) {
-            try {
-                runnable = () -> {
-                    Log.e("TAG", "PlaySlideDetailedAdapter: time up - " + timeLimit);
-                    if (context instanceof PlaySlideDetailing) {
+
+        pageStartTime = now;
+        currentPage = newPosition;
+
+    }
+
+    public void resetTimer() {
+        try {
+            if(handler == null) {
+                handler = new Handler(Looper.getMainLooper());
+            }
+            removeTimer();
+            String timeLimit = SharedPref.getDetailingIdleDuration(context);
+            if(!timeLimit.isEmpty()) {
+                try {
+                    runnable = () -> {
                         PreviewActivity.isTimerEnd = true;
                         handleStopDetailing();
+                    };
+                    long minutes = Long.parseLong(timeLimit);
+                    if(minutes>0) {
+                        handler.postDelayed(runnable, minutes * 1000 * 60);
                     }
-                };
-                long minutes = Long.parseLong(timeLimit);
-                handler.postDelayed(runnable, minutes * 50 * 60);
-            } catch (Exception e) {
-                e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return sliderLayout;
+    }
+
+    private void removeTimer() {
+        if(runnable != null) {
+            handler.removeCallbacks(runnable);
+        }
     }
 
     public void popupPaint(String slideName, final String path) {
@@ -226,7 +282,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         Bitmap bitmap = layBg.getDrawingCache();
         String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
         File file = new File(path, "EDetails/Pictures");
-        if (!file.exists()) {
+        if(!file.exists()) {
             file.mkdirs();
         }
         String file_path = file + "/" + "paint_" + System.currentTimeMillis() + ".png";
@@ -246,7 +302,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 
     public MultipartBody.Part convertImg(String tag, String path) {
         MultipartBody.Part yy = null;
-        if (!TextUtils.isEmpty(path)) {
+        if(!TextUtils.isEmpty(path)) {
             File file = new File(path);
             RequestBody requestBody = RequestBody.create(MultipartBody.FORM, file);
             yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
@@ -289,11 +345,11 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 assert response.body() != null;
                 Log.v("scribbleUpload", "---res---" + response.body());
-                if (response.isSuccessful()) {
+                if(response.isSuccessful()) {
                     try {
                         JSONObject jsonImgRes;
                         jsonImgRes = new JSONObject(response.body().toString());
-                        if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
+                        if(jsonImgRes.getString("success").equalsIgnoreCase("true")) {
                             commonUtilsMethods.showToastMessage(context, context.getString(R.string.scribble_upload));
                             slideScribble.set(scribblePos, new StoreImageTypeUrl(slideScribble.get(scribblePos).getSlideNam(), slideScribble.get(scribblePos).getSlideid(), slideScribble.get(scribblePos).isLike(), slideScribble.get(scribblePos).isDisLike(), slideScribble.get(scribblePos).getSlideComments(), scribbleFileName));
                             dialog.dismiss();
@@ -301,7 +357,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     } catch (Exception e) {
                         dialog.dismiss();
                     }
-                } else {
+                }else {
                     dialog.dismiss();
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.something_wrong));
                 }
@@ -318,29 +374,29 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 
     private void shareImage(File path, String fileFormat) {
         Uri contentUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider", path);
-        if (contentUri != null) {
+        if(contentUri != null) {
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             shareIntent.setDataAndType(contentUri, context.getContentResolver().getType(contentUri));
             shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-            switch (fileFormat) {
+            switch (fileFormat){
                 case "jpg":
                 case "png":
                 case "gif":
-                case "jpeg": {
+                case "jpeg":{
                     shareIntent.setType("image/png");
                     return;
                 }
-                case "mp4": {
+                case "mp4":{
                     shareIntent.setType("video/mp4");
                     return;
                 }
-                case "pdf": {
+                case "pdf":{
                     shareIntent.setType("application/pdf");
                     return;
                 }
-                case "zip": {
+                case "zip":{
                     shareIntent.setType("application/zip");
                     return;
                 }
@@ -398,23 +454,23 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         RelativeLayout rl_stop = dialogPopUp.findViewById(R.id.rl_stop);
 
         boolean isAvailable = false;
-        if (!slideScribble.isEmpty()) {
-            for (int i = 0; i < slideScribble.size(); i++) {
-                if (slideScribble.get(i).getSlideNam().equalsIgnoreCase(slideName)) {
+        if(!slideScribble.isEmpty()) {
+            for (int i = 0; i<slideScribble.size(); i++) {
+                if(slideScribble.get(i).getSlideNam().equalsIgnoreCase(slideName)) {
                     scribblePos = i;
                     isAvailable = true;
                     break;
-                } else {
+                }else {
                     scribblePos = slideScribble.size();
                 }
             }
-        } else {
+        }else {
             scribblePos = 0;
         }
 
-        if (isAvailable) {
+        if(isAvailable) {
             slideScribble.set(scribblePos, new StoreImageTypeUrl(slideName, slideId, false, false, slideScribble.get(scribblePos).getSlideComments(), slideScribble.get(scribblePos).getScribble()));
-        } else {
+        }else {
             slideScribble.add(scribblePos, new StoreImageTypeUrl(slideName, slideId, false, false, "", ""));
         }
 
@@ -422,21 +478,21 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         rl_paint.setOnClickListener(view -> popupPaint(slideName, path));
 
         rl_like.setOnClickListener(v -> {
-            if (Objects.equals(rl_like.getBackground().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.outline_green)).getConstantState())) {
+            if(Objects.equals(rl_like.getBackground().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.outline_green)).getConstantState())) {
                 rl_like.setBackground(ContextCompat.getDrawable(context, R.drawable.green_full));
                 rl_dislike.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_pink));
                 slideScribble.set(scribblePos, new StoreImageTypeUrl(slideName, slideId, true, false, slideScribble.get(scribblePos).getSlideComments(), slideScribble.get(scribblePos).getScribble()));
-            } else {
+            }else {
                 rl_like.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_green));
             }
         });
 
         rl_dislike.setOnClickListener(v -> {
-            if (Objects.equals(rl_dislike.getBackground().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.outline_pink)).getConstantState())) {
+            if(Objects.equals(rl_dislike.getBackground().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.outline_pink)).getConstantState())) {
                 rl_dislike.setBackground(ContextCompat.getDrawable(context, R.drawable.pink_full));
                 rl_like.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_green));
                 slideScribble.set(scribblePos, new StoreImageTypeUrl(slideName, slideId, false, true, slideScribble.get(scribblePos).getSlideComments(), slideScribble.get(scribblePos).getScribble()));
-            } else {
+            }else {
                 rl_dislike.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_pink));
             }
         });
@@ -446,11 +502,11 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         rl_share.setOnClickListener(v -> {
             final Intent shareIntent = new Intent(Intent.ACTION_SEND);
             final File photoFile = new File(String.valueOf(path));
-            switch (fileFormat) {
+            switch (fileFormat){
                 case "jpg":
                 case "png":
                 case "gif":
-                case "jpeg": {
+                case "jpeg":{
                     try {
                         shareIntent.setType("image/jpg");
                         shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
@@ -460,7 +516,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     }
                     return;
                 }
-                case "mp4": {
+                case "mp4":{
                     try {
                         ContentValues content = new ContentValues(4);
                         content.put(MediaStore.Video.VideoColumns.DATE_ADDED, System.currentTimeMillis() / 1000);
@@ -478,7 +534,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     }
                     return;
                 }
-                case "pdf": {
+                case "pdf":{
                     try {
                         shareIntent.setType("application/pdf");
                         shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
@@ -488,7 +544,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     }
                     return;
                 }
-                case "zip": {
+                case "zip":{
                     try {
                         shareIntent.setType("application/zip");
                         shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(path)));
@@ -517,28 +573,30 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         if(arrayStore != null) {
             arrayStore.clear();
         }
+        logCurrentPageEndIfNeeded();
+        removeTimer();
         act.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        if (PlaySlideDetailedAdapter.preVal) {
+        if(PlaySlideDetailedAdapter.preVal) {
             int timecount = 0;
 
-            for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
+            for (int i = 0; i<PlaySlideDetailedAdapter.storingSlide.size(); i++) {
                 int ll = 0;
-                if (i != 0) {
+                if(i != 0) {
                     ll = i - 1;
-                    if (PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() == PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
+                    if(PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() == PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
                         PlaySlideDetailedAdapter.storingSlide.remove(ll);
                     }
                 }
             }
 
-            for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
+            for (int i = 0; i<PlaySlideDetailedAdapter.storingSlide.size(); i++) {
                 Log.v("total_printing", PlaySlideDetailedAdapter.storingSlide.get(i).getSlideName() + "size" + PlaySlideDetailedAdapter.storingSlide.size() + "slide" + PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal());
             }
 
-            for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
+            for (int i = 0; i<PlaySlideDetailedAdapter.storingSlide.size(); i++) {
                 int ll = 0;
-                if (i != 0) ll = i - 1;
-                if (i == 0 || PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() != PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
+                if(i != 0) ll = i - 1;
+                if(i == 0 || PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() != PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
                     if(!PlaySlideDetailedAdapter.storingSlide.get(i).getBrandName().equalsIgnoreCase("Welcome")) {
                         mCommonSharedPreference.setValueToPreferenceFeed("timeVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getTiming());
                         mCommonSharedPreference.setValueToPreferenceFeed("dateVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getDateVal());
@@ -554,7 +612,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 
             val = mCommonSharedPreference.getValueFromPreferenceFeed("timeCount", 0);
             Log.v("slideData", String.valueOf(val));
-            for (int i = 0; i < val; i++) {
+            for (int i = 0; i<val; i++) {
                 String timevalue = mCommonSharedPreference.getValueFromPreferenceFeed("timeVal" + i);
                 String SlideName = mCommonSharedPreference.getValueFromPreferenceFeed("slide_nam" + i);
                 String BrandName = mCommonSharedPreference.getValueFromPreferenceFeed("brd_nam" + i);
@@ -570,18 +628,18 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                         StoreImageTypeUrl mmm = arrayStore.get(index);
 
                         try {
-                            JSONArray jj = new JSONArray(mmm.getRemTime());
-                            JSONArray jk = new JSONArray();
-                            JSONObject js = null;
-                            for (int k = 0; k<jj.length(); k++) {
-                                js = jj.getJSONObject(k);
-                                jk.put(js);
-                            }
-                            js = new JSONObject();
-                            js.put("sT", timevalue);
-                            js.put("eT", eTime);
-                            jk.put(js);
-                            mmm.setRemTime(jk.toString());
+//                            JSONArray jj = new JSONArray(mmm.getRemTime());
+//                            JSONArray jk = new JSONArray();
+//                            JSONObject js = null;
+//                            for (int k = 0; k<jj.length(); k++) {
+//                                js = jj.getJSONObject(k);
+//                                jk.put(js);
+//                            }
+//                            js = new JSONObject();
+//                            js.put("sT", timevalue);
+//                            js.put("eT", eTime);
+//                            jk.put(js);
+//                            mmm.setRemTime(jk.toString());
                         } catch (Exception ignored) {
                         }
                     }else if(!SlideName.isEmpty()) {
@@ -594,8 +652,23 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        jsonArray.put(jsonObject);
-                        Log.v("slideData", "----" + BrandName + "----" + SlideName);
+//                        jsonArray.put(jsonObject);
+                        Set<String> timing = new LinkedHashSet<>(timer.get(SlideName));
+                        if(!timing.isEmpty()) {
+                            for (String time : timing) {
+                                try {
+                                    Log.v("SlideTiming", "handleStopDetailing => " + SlideName + " -> " + time);
+                                    jsonObject = new JSONObject();
+                                    String[] timeSplit = time.split(" \\$ ");
+                                    jsonObject.put("sT", timeSplit[0]);
+                                    jsonObject.put("eT", timeSplit[1]);
+                                    jsonArray.put(jsonObject);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        Log.v("slideData", "----" + BrandName + "----" + SlideName + " -> " + jsonArray);
                         boolean isAvailableScrib = false;
                         scribblePos = 0;
                         for (int j = 0; j<slideScribble.size(); j++) {
@@ -619,8 +692,8 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     }
 
     public int checkForProduct(String slidename) {
-        for (int i = 0; i < arrayStore.size(); i++) {
-            if (arrayStore.get(i).getSlideNam().equals(slidename)) {
+        for (int i = 0; i<arrayStore.size(); i++) {
+            if(arrayStore.get(i).getSlideNam().equals(slidename)) {
                 return i;
             }
         }
@@ -629,9 +702,9 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 
 
     public String findingEndTime(int k) {
-        if (checkForLastSlide(k)) {
+        if(checkForLastSlide(k)) {
             return CommonUtilsMethods.getCurrentInstance("HH:mm:ss");
-        } else {
+        }else {
             int j = k + 1;
             return mCommonSharedPreference.getValueFromPreferenceFeed("timeVal" + j);
         }

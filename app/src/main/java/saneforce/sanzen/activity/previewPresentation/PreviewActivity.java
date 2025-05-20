@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -36,6 +37,7 @@ import java.util.stream.Stream;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;
+import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.pojo.detailing.CallDetailingList;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
@@ -109,7 +111,7 @@ public class PreviewActivity extends AppCompatActivity {
         TextView btn_yes=dialog.findViewById(R.id.btn_yes);
         TextView btn_no=dialog.findViewById(R.id.btn_no);
         TextView titte=dialog.findViewById(R.id.ed_alert_msg);
-        titte.setText("Idle Time " + SharedPref.getDetailingIdleDuration(this) + " minutes for detailing has been exceeded.");
+        titte.setText("Idle Time (" + SharedPref.getDetailingIdleDuration(this) + " minutes) for detailing has been exceeded.");
         btn_no.setVisibility(View.GONE);
         btn_yes.setText(getString(R.string.ok));
         btn_yes.setOnClickListener(view -> {
@@ -164,6 +166,7 @@ public class PreviewActivity extends AppCompatActivity {
                 } else {
                     checkInJsonObject = new JSONObject();
                 }
+                PlaySlideDetailedAdapter.timer = new HashMap<>();
                 previewBinding.tagCustName.setText(cus_name);
                 previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
             } else {
