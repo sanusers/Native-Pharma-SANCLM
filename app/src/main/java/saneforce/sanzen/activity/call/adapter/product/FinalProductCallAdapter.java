@@ -268,7 +268,6 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
             }
         });
 
-
         holder.ed_samplesQty.setOnTouchListener((v, event) -> {
             if (SampleValidation.equalsIgnoreCase("1")) {
                 if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample") || productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
@@ -315,11 +314,21 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                             holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", finalValue)});
                             if (!editable.toString().isEmpty()) {
                                 int final_value = Integer.parseInt(productListArrayList.get(position).getLast_stock()) - Integer.parseInt(editable.toString());
-                                holder.tv_stocks.setText(String.valueOf(final_value));
-                                productListArrayList.set(holder.getBindingAdapterPosition(), new SaveCallProductList(productListArrayList.get(holder.getBindingAdapterPosition()).getName(), productListArrayList.get(holder.getBindingAdapterPosition()).getCode(), productListArrayList.get(holder.getBindingAdapterPosition()).getCategory(), String.valueOf(final_value), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), editable.toString(), productListArrayList.get(holder.getBindingAdapterPosition()).getRx_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRcpa_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getPromoted(), productListArrayList.get(holder.getBindingAdapterPosition()).isClicked()));
-                                for (int i = 0; i < StockSample.size(); i++) {
-                                    if (StockSample.get(i).getStockCode().equalsIgnoreCase(productListArrayList.get(position).getCode())) {
-                                        StockSample.set(i, new CallCommonCheckedList(StockSample.get(i).getStockCode(), StockSample.get(i).getActualStock(), String.valueOf(final_value)));
+                                if(final_value > 0) {
+                                    holder.tv_stocks.setText(String.valueOf(final_value));
+                                    productListArrayList.set(holder.getBindingAdapterPosition(), new SaveCallProductList(productListArrayList.get(holder.getBindingAdapterPosition()).getName(), productListArrayList.get(holder.getBindingAdapterPosition()).getCode(), productListArrayList.get(holder.getBindingAdapterPosition()).getCategory(), String.valueOf(final_value), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), editable.toString(), productListArrayList.get(holder.getBindingAdapterPosition()).getRx_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRcpa_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getPromoted(), productListArrayList.get(holder.getBindingAdapterPosition()).isClicked()));
+                                    for (int i = 0; i<StockSample.size(); i++) {
+                                        if(StockSample.get(i).getStockCode().equalsIgnoreCase(productListArrayList.get(position).getCode())) {
+                                            StockSample.set(i, new CallCommonCheckedList(StockSample.get(i).getStockCode(), StockSample.get(i).getActualStock(), String.valueOf(final_value)));
+                                        }
+                                    }
+                                } else {
+                                    String data = editable.toString();
+                                    if(data.length() > 1) {
+                                        data = data.substring(1);
+                                        holder.ed_samplesQty.setText(data);
+                                    } else {
+                                        holder.ed_samplesQty.setText("");
                                     }
                                 }
                             } else {
