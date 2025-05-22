@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.JsonArray;
@@ -122,6 +123,7 @@ public class SurveyActivity extends AppCompatActivity {
         }
         selectedHQ = SharedPref.getHqCode(this);
         surveyBinding.tvHeadquarters.setText(SharedPref.getHqName(this));
+        answerMap = new HashMap<>();
 
         syncProgressDialog = new ProgressDialog(this);
         syncProgressDialog.setMessage(this.getString(R.string.head_quarters_syncing));
@@ -129,7 +131,7 @@ public class SurveyActivity extends AppCompatActivity {
         syncProgressDialog.setIndeterminate(true);
 
         surveyBinding.backArrow.setOnClickListener(v -> {
-            if(isEdited) {
+            if(validateAnswerMap()) {
                 Dialog dialog = new Dialog(this);
                 dialog.setContentView(R.layout.dcr_cancel_alert);
                 dialog.setCancelable(false);
@@ -154,23 +156,39 @@ public class SurveyActivity extends AppCompatActivity {
         surveyAdapter = new SurveyAdapter(this, surveyDataList, (surveyModelClass, position) -> {
             if(this.chosenSurveyPosition != position && this.chosenSurveyPosition != -1 && validateAnswerMap()) {
                 activityChangeAlert(surveyModelClass, position);
-            }else {
+            }else if(this.chosenSurveyPosition != position) {
                 surveyBinding.nameChooseSurvey.setText(surveyModelClass.getSurveyName());
                 chosenSurveyModelClass = surveyModelClass;
                 chosenSurveyPosition = position;
                 clearAll();
+                answerMap.clear();
                 surveyBinding.rlSurveyDetails.setVisibility(View.VISIBLE);
                 surveyBinding.tvSurveyName.setText(chosenSurveyModelClass.getSurveyName());
-                surveyBinding.tvFromDate.setText(String.format("%s : %s", getString(R.string.from), chosenSurveyModelClass.getFromDate()));
-                surveyBinding.tvToDate.setText(String.format("%s : %s", getString(R.string.to), chosenSurveyModelClass.getToDate()));
+                surveyBinding.tvFromDate.setText(String.format("%s : %s", getString(R.string.from), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, chosenSurveyModelClass.getFromDate())));
+                surveyBinding.tvToDate.setText(String.format("%s : %s", getString(R.string.to), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, chosenSurveyModelClass.getToDate())));
             }
         });
         surveyBinding.rvSurveyList.setLayoutManager(new LinearLayoutManager(this));
         surveyBinding.rvSurveyList.setAdapter(surveyAdapter);
 
         surveyBinding.tvSurveyName.setOnClickListener(view -> {
-            if (chosenSurveyModelClass != null && chosenSurveyModelClass.getSurveyName() != null && !chosenSurveyModelClass.getSurveyName().isEmpty()) {
+            if(chosenSurveyModelClass != null && chosenSurveyModelClass.getSurveyName() != null && !chosenSurveyModelClass.getSurveyName().isEmpty()) {
                 commonUtilsMethods.displayPopupWindow(this, view, chosenSurveyModelClass.getSurveyName());
+            }
+        });
+
+        surveyBinding.mainLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        surveyBinding.mainLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                surveyBinding.mainLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                UtilityClass.hideKeyboard(SurveyActivity.this);
             }
         });
 
@@ -264,12 +282,16 @@ public class SurveyActivity extends AppCompatActivity {
         });
 
         surveyBinding.btnSubmit.setOnClickListener(view -> {
-            if(UtilityClass.isNetworkAvailable(this)) {
-                if(validateAndCreateJSON()) {
-                    callSaveAPI();
+            if(validateAnswerMap()) {
+                if(UtilityClass.isNetworkAvailable(this)) {
+                    if(validateAndCreateJSON()) {
+                        callSaveAPI();
+                    }
+                }else {
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.please_check_your_internet_connection));
                 }
-            }else {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_check_your_internet_connection));
+            } else {
+                commonUtilsMethods.showToastMessage(this, "Please fill at-least any one question");
             }
         });
 
@@ -279,7 +301,7 @@ public class SurveyActivity extends AppCompatActivity {
 
     private boolean validateAnswerMap() {
         for (String answer : answerMap.values()) {
-            if(!answer.isEmpty()) {
+            if(answer != null && !answer.isEmpty()) {
                 return true;
             }
         }
@@ -300,10 +322,11 @@ public class SurveyActivity extends AppCompatActivity {
             chosenSurveyModelClass = classGroup;
             chosenSurveyPosition = position;
             clearAll();
+            answerMap.clear();
             surveyBinding.rlSurveyDetails.setVisibility(View.VISIBLE);
             surveyBinding.tvSurveyName.setText(chosenSurveyModelClass.getSurveyName());
-            surveyBinding.tvFromDate.setText(String.format("%s : %s", getString(R.string.from), chosenSurveyModelClass.getFromDate()));
-            surveyBinding.tvToDate.setText(String.format("%s : %s", getString(R.string.to), chosenSurveyModelClass.getToDate()));
+            surveyBinding.tvFromDate.setText(String.format("%s : %s", getString(R.string.from), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, chosenSurveyModelClass.getFromDate())));
+            surveyBinding.tvToDate.setText(String.format("%s : %s", getString(R.string.to), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, chosenSurveyModelClass.getToDate())));
             dialog.dismiss();
         });
         btn_no.setOnClickListener(view12 -> {
@@ -363,6 +386,7 @@ public class SurveyActivity extends AppCompatActivity {
                                     Log.e("test", "response : " + " : " + response.body());
                                 }
                                 clearAll();
+                                answerMap.clear();
                                 commonUtilsMethods.showToastMessage(SurveyActivity.this, "Survey Submitted Successfully");
                             }
                             surveyBinding.progressSubmit.setVisibility(View.GONE);
@@ -518,22 +542,22 @@ public class SurveyActivity extends AppCompatActivity {
                 boolean isSurveyAvailable = false;
                 for (int i = 0; i<surveyDetailsList.size(); i++) {
                     SurveyDetailsModelClass surveyDetailsModelClass = surveyDetailsList.get(i);
-//                    boolean isToView = false;
-//                    if(selectedCustomerType.equalsIgnoreCase(drCap)
-//                            && surveyDetailsModelClass.getSurveyType().toLowerCase().contains("d")
+                    boolean isToView = false;
+                    if(selectedCustomerType.equalsIgnoreCase(drCap)
+                            && surveyDetailsModelClass.getSurveyType().toLowerCase().contains("d")
 //                            && (surveyDetailsModelClass.getDrCat().toLowerCase().contains(selectedDoctorModel.getCategoryCode())
 //                            || surveyDetailsModelClass.getDrCls().toLowerCase().contains(selectedDoctorModel.getClassCode())
 //                            || surveyDetailsModelClass.getDrSpl().toLowerCase().contains(selectedDoctorModel.getSpecialtyCode()))
-//                    ) {
-//                        isToView = true;
-                    isSurveyAvailable = true;
-//                    }else if(selectedCustomerType.equalsIgnoreCase(chmCap)
-//                            && surveyDetailsModelClass.getSurveyType().toLowerCase().contains("c")
+                    ) {
+                        isToView = true;
+                        isSurveyAvailable = true;
+                    }else if(selectedCustomerType.equalsIgnoreCase(chmCap)
+                            && surveyDetailsModelClass.getSurveyType().toLowerCase().contains("c")
 //                            && surveyDetailsModelClass.getChmCat().toLowerCase().contains(selectedChemistModel.getCategoryCode())
-//                    ) {
-//                        isToView = true;
-//                        isSurveyAvailable = true;
-//                    }
+                    ) {
+                        isToView = true;
+                        isSurveyAvailable = true;
+                    }
 //                    else if(selectedCustomerType.equalsIgnoreCase(stkCap)) {
 //                        StockistModel stockistModel = stockistModelHashMap.get(selectedCustomerCode);
 //
@@ -541,22 +565,22 @@ public class SurveyActivity extends AppCompatActivity {
 //                        HospitalModel hospitalModel = hospitalModelHashMap.get(selectedCustomerCode);
 //
 //                    }
-//                    if(isToView) {
-                    switch (surveyDetailsModelClass.getQuestionCodeID()){
-                        case "1":
-                            CreateNameView(surveyDetailsModelClass, i);
-                            break;
-                        case "2":
-                            CreateNumberView(surveyDetailsModelClass, i);
-                            break;
-                        case "3":
-                            CreateSingleListSelection(surveyDetailsModelClass, i);
-                            break;
-                        case "4":
-                            CreateMultipleListSelection(surveyDetailsModelClass, i);
-                            break;
+                    if(isToView) {
+                        switch (surveyDetailsModelClass.getQuestionCodeID()){
+                            case "1":
+                                CreateNameView(surveyDetailsModelClass, i);
+                                break;
+                            case "2":
+                                CreateNumberView(surveyDetailsModelClass, i);
+                                break;
+                            case "3":
+                                CreateSingleListSelection(surveyDetailsModelClass, i);
+                                break;
+                            case "4":
+                                CreateMultipleListSelection(surveyDetailsModelClass, i);
+                                break;
+                        }
                     }
-//                    }
                     if(i + 1 == surveyDetailsList.size()) {
                         surveyBinding.btnSubmit.setVisibility(View.VISIBLE);
                     }
@@ -895,6 +919,7 @@ public class SurveyActivity extends AppCompatActivity {
             }
         });
         singlecomboedittext.setOnClickListener(view -> {
+            UtilityClass.hideKeyboard(SurveyActivity.this);
             ArrayList<SurveyOptionsModelClass> mList = new ArrayList<>();
             try {
                 String[] answers = CommonUtilsMethods.removeLastComma(surveyDetailsModelClass.getAnswer()).split(",");
@@ -985,6 +1010,7 @@ public class SurveyActivity extends AppCompatActivity {
         });
 
         multicomboeditext.setOnClickListener(view -> {
+            UtilityClass.hideKeyboard(SurveyActivity.this);
             ArrayList<SurveyOptionsModelClass> mList = new ArrayList<>();
             try {
                 String[] selectedIds = CommonUtilsMethods.removeFirstComma(CommonUtilsMethods.removeLastComma(TextCode.getText().toString())).split(",");
@@ -1015,6 +1041,7 @@ public class SurveyActivity extends AppCompatActivity {
         surveyBinding.mainLayout.openDrawer(GravityCompat.END);
         surveyBinding.slideScreen.etSearch.setText("");
         surveyBinding.slideScreen.tvSearchheader.setText("Select " + name);
+        UtilityClass.hideKeyboard(SurveyActivity.this);
 
         if(optionsList != null && !optionsList.isEmpty()) {
             surveyBinding.slideScreen.acRecyelerView.setVisibility(View.VISIBLE);
@@ -1037,7 +1064,9 @@ public class SurveyActivity extends AppCompatActivity {
                     if(name.equalsIgnoreCase(getString(R.string.customer_type))) {
                         selectedCustomerType = surveyOptionsModelClass.getName();
                         surveyBinding.tvCustomer.setText("");
-                        surveyBinding.tvNoSurveyFound.setText(getString(R.string.select_customer));
+                        surveyBinding.customerCaption.setText(selectedCustomerType);
+                        surveyBinding.tvCustomer.setHint(getString(R.string.select) + " " + selectedCustomerType);
+                        surveyBinding.tvNoSurveyFound.setText(getString(R.string.select) + " " + selectedCustomerType);
                     }else if(name.equalsIgnoreCase(selectedCustomerType)) {
                         selectedCustomerCode = surveyOptionsModelClass.getId();
                         if(selectedCustomerType.equalsIgnoreCase(drCap)) {
@@ -1083,7 +1112,7 @@ public class SurveyActivity extends AppCompatActivity {
                 public void afterTextChanged(Editable editable) {
                 }
             });
-        } else {
+        }else {
             surveyBinding.slideScreen.acRecyelerView.setVisibility(View.GONE);
             surveyBinding.slideScreen.llSearchLayout.setVisibility(View.GONE);
             surveyBinding.slideScreen.txtNoData.setVisibility(View.VISIBLE);

@@ -84,7 +84,8 @@
             android:name=".activity.survey.SurveyActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+<!--            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />-->
         <activity
             android:name=".activity.Quiz.QuizAssertViewActivity"
             android:exported="false"
