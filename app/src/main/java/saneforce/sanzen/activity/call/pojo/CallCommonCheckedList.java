@@ -100,7 +100,161 @@ public class CallCommonCheckedList implements Parcelable {
         this.stock_balance = stock_balance;
     }
 
-    String town_code,town_name;
+    String town_code;
+    String town_name;
+    public String pack;
+    String NSR_Price,Sample_Price,Target_Price,Distributor_Price,Product_Detail_Name,value;
+
+    public String getNSR_Price() {
+        return NSR_Price;
+    }
+
+    public void setNSR_Price(String NSR_Price) {
+        this.NSR_Price = NSR_Price;
+    }
+
+    public String getSample_Price() {
+        return Sample_Price;
+    }
+
+    public void setSample_Price(String sample_Price) {
+        Sample_Price = sample_Price;
+    }
+
+    public String getTarget_Price() {
+        return Target_Price;
+    }
+
+    public void setTarget_Price(String target_Price) {
+        Target_Price = target_Price;
+    }
+
+    public String getDistributor_Price() {
+        return Distributor_Price;
+    }
+
+    public void setDistributor_Price(String distributor_Price) {
+        Distributor_Price = distributor_Price;
+    }
+
+    public String getProduct_Detail_Name() {
+        return Product_Detail_Name;
+    }
+
+    public void setProduct_Detail_Name(String product_Detail_Name) {
+        Product_Detail_Name = product_Detail_Name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getRetailor_Price() {
+        return Retailor_Price;
+    }
+
+    public void setRetailor_Price(String retailor_Price) {
+        Retailor_Price = retailor_Price;
+    }
+
+    public String getProduct_Sale_Unit() {
+        return Product_Sale_Unit;
+    }
+
+    public void setProduct_Sale_Unit(String product_Sale_Unit) {
+        Product_Sale_Unit = product_Sale_Unit;
+    }
+
+    public String getMRP_Price() {
+        return MRP_Price;
+    }
+
+    public void setMRP_Price(String MRP_Price) {
+        this.MRP_Price = MRP_Price;
+    }
+
+    String Retailor_Price,Product_Sale_Unit,MRP_Price;
+
+    public String getDetailcode() {
+        return detailcode;
+    }
+
+    public void setDetailcode(String detailcode) {
+        this.detailcode = detailcode;
+    }
+
+    public String detailcode;
+    // Doctor-specific prefilled data
+    public boolean isSelected = false;
+    public double selectedMRP = 0;
+
+    public double getSelectedValue() {
+        return selectedValue;
+    }
+
+    public void setSelectedValue(double selectedValue) {
+        this.selectedValue = selectedValue;
+    }
+
+    public double selectedValue = 0;
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
+
+    public int qty;
+    // Optional: fields for autofill from doctor product data
+    public double selectedQty = 0;
+
+    public double getSelectedMRP() {
+        return selectedMRP;
+    }
+
+    public void setSelectedMRP(double selectedMRP) {
+        this.selectedMRP = selectedMRP;
+    }
+
+    public double getSelectedQty() {
+        return selectedQty;
+    }
+
+    public void setSelectedQty(double selectedQty) {
+        this.selectedQty = selectedQty;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
+    }
+
+    public String getPack() {
+        return pack;
+    }
+
+    public void setPack(String pack) {
+        this.pack = pack;
+    }
+
+    public String rate;
 
     public String getTown_code() {
         return town_code;
@@ -135,6 +289,24 @@ public class CallCommonCheckedList implements Parcelable {
         this.stock_balance = stock_balance;
         this.category = category;
         this.categoryExtra = categoryExtra;
+    }
+    public CallCommonCheckedList(String name, String pack, String rate,String code,String detailcode,int qty,String prdsale,String mrp,String retailor,String distributor,
+                                 String nsr,String Sample,String target,String value) {
+        this.name = name;
+        this.pack = pack;
+        this.rate = rate;
+        this.code = code;
+        this.detailcode=detailcode;
+        this.qty=qty;
+        this.Product_Sale_Unit=prdsale;
+        this.MRP_Price=mrp;
+        this.Retailor_Price=retailor;
+        this.Distributor_Price=distributor;
+        this.NSR_Price=nsr;
+        this.Sample_Price=Sample;
+        this.Target_Price=target;
+        this.value=value;
+
     }
 
     public CallCommonCheckedList(String name, String code,boolean checkedItem) {

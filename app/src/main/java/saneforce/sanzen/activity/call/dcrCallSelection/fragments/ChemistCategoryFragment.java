@@ -89,14 +89,27 @@ public class ChemistCategoryFragment extends Fragment {
             }
         });
 
+//        selectchmcatSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+//            categoryCode = list_code.get(i);
+//            categoryName = list_name.get(i);
+//            sel_categorycode= Integer.parseInt(list_code.get(i));
+//            selectchmcatSideBinding.searchList.setText("");
+//            SharedPref.setSelectedCategory(requireContext(),sel_categorycode);
+//            chemistadditionbinding.txtSelectCategory.setText(selectchmcatSideBinding.selectListView.getItemAtPosition(i).toString());
+//            chemistadditionbinding.fragmentSelectChmcat.setVisibility(View.GONE);
+//        });
         selectchmcatSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            categoryCode = list_code.get(i);
-            categoryName = list_name.get(i);
-            sel_categorycode= Integer.parseInt(list_code.get(i));
-            selectchmcatSideBinding.searchList.setText("");
-            SharedPref.setSelectedCategory(requireContext(),sel_categorycode);
-            chemistadditionbinding.txtSelectCategory.setText(selectchmcatSideBinding.selectListView.getItemAtPosition(i).toString());
-            chemistadditionbinding.fragmentSelectChmcat.setVisibility(View.GONE);
+            String selectedName = adapterView.getItemAtPosition(i).toString();
+            int originalIndex = list_name.indexOf(selectedName);
+            if (originalIndex != -1) {
+                categoryCode = list_code.get(originalIndex);
+                categoryName = selectedName;
+                sel_categorycode = Integer.parseInt(categoryCode);
+                selectchmcatSideBinding.searchList.setText("");
+                SharedPref.setSelectedCategory(requireContext(), sel_categorycode);
+                chemistadditionbinding.txtSelectCategory.setText(categoryName);
+                chemistadditionbinding.fragmentSelectChmcat.setVisibility(View.GONE);
+            }
         });
         return v;
     }

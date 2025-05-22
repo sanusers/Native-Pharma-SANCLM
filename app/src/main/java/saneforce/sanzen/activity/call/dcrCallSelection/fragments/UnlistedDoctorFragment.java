@@ -225,8 +225,8 @@ public class UnlistedDoctorFragment extends Fragment {
                 qualificationMap.put(jsonObject1.getString("Code"), jsonObject1.getString("Name"));
             }
 
-            jsonObjectDob = new JSONObject(jsonObject.getString("DOB"));
-            jsonObjectDow = new JSONObject(jsonObject.getString("DOW"));
+            jsonObjectDob = new JSONObject(jsonObject.getString("UnlstDOB"));
+            jsonObjectDow = new JSONObject(jsonObject.getString("UnlstDOW"));
             String dob = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_35, jsonObjectDob.getString("date"));
             String dow = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_35, jsonObjectDow.getString("date"));
             String qualification = qualificationMap.get(jsonObject.getString("Qual"));

@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.call.dcrCallSelection.fragments;
 
 import static saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddition.chemistadditionbinding;
+import static saneforce.sanzen.activity.call.dcrCallSelection.UnlistedDoctorAddition.unlistedadditionbinding;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -88,14 +89,27 @@ public class ChemistSpecilaityFragment extends Fragment {
             }
         });
 
+//        selectchmspecSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+//            specCode = list_code.get(i);
+//            specName = list_name.get(i);
+//            sel_speccode = Integer.parseInt(list_code.get(i));
+//            selectchmspecSideBinding.searchList.setText("");
+//                SharedPref.setSelectedSpeciality(requireContext(),sel_speccode);
+//            chemistadditionbinding.txtSelectSpec.setText(selectchmspecSideBinding.selectListView.getItemAtPosition(i).toString());
+//            chemistadditionbinding.fragmentSelectChmspeciality.setVisibility(View.GONE);
+//        });
         selectchmspecSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            specCode = list_code.get(i);
-            specName = list_name.get(i);
-            sel_speccode = Integer.parseInt(list_code.get(i));
-            selectchmspecSideBinding.searchList.setText("");
-                SharedPref.setSelectedSpeciality(requireContext(),sel_speccode);
-            chemistadditionbinding.txtSelectSpec.setText(selectchmspecSideBinding.selectListView.getItemAtPosition(i).toString());
-            chemistadditionbinding.fragmentSelectChmspeciality.setVisibility(View.GONE);
+            String selectedName = adapterView.getItemAtPosition(i).toString();
+            int originalIndex = list_name.indexOf(selectedName);
+            if (originalIndex != -1) {
+                specCode = list_code.get(originalIndex);
+                specName = selectedName;
+                sel_speccode = Integer.parseInt(specCode);
+                selectchmspecSideBinding.searchList.setText("");
+                SharedPref.setSelectedSpeciality(requireContext(), sel_speccode);
+                chemistadditionbinding.txtSelectSpec.setText(specName);
+                chemistadditionbinding.fragmentSelectChmspeciality.setVisibility(View.GONE);
+            }
         });
         return v;
     }

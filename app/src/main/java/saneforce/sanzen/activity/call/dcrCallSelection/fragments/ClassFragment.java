@@ -89,14 +89,27 @@ public class ClassFragment extends Fragment {
             }
         });
 
+//        selectclassSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+//            classCode = list_code.get(i);
+//            className = list_name.get(i);
+//            sel_classcode= Integer.parseInt(list_code.get(i));
+//            selectclassSideBinding.searchList.setText("");
+//            SharedPref.setSelectedClass(requireContext(),sel_classcode);
+//            unlistedadditionbinding.txtSelectClass.setText(selectclassSideBinding.selectListView.getItemAtPosition(i).toString());
+//            unlistedadditionbinding.fragmentSelectClass.setVisibility(View.GONE);
+//        });
         selectclassSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            classCode = list_code.get(i);
-            className = list_name.get(i);
-            sel_classcode= Integer.parseInt(list_code.get(i));
-            selectclassSideBinding.searchList.setText("");
-            SharedPref.setSelectedClass(requireContext(),sel_classcode);
-            unlistedadditionbinding.txtSelectClass.setText(selectclassSideBinding.selectListView.getItemAtPosition(i).toString());
-            unlistedadditionbinding.fragmentSelectClass.setVisibility(View.GONE);
+            String selectedName = adapterView.getItemAtPosition(i).toString();
+            int originalIndex = list_name.indexOf(selectedName);
+            if (originalIndex != -1) {
+                classCode = list_code.get(originalIndex);
+                className = selectedName;
+                sel_classcode = Integer.parseInt(classCode);
+                selectclassSideBinding.searchList.setText("");
+                SharedPref.setSelectedClass(requireContext(), sel_classcode);
+                unlistedadditionbinding.txtSelectClass.setText(className);
+                unlistedadditionbinding.fragmentSelectClass.setVisibility(View.GONE);
+            }
         });
         return v;
     }

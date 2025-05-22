@@ -224,6 +224,8 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
             jsonObject.put("Rsf",  SharedPref.getHqCode(context));
             jsonObject.put("amc", aDetSLNo);
             jsonObject.put("CusType", type);
+            jsonObject.put("headerno",  TranslNo);
+            jsonObject.put("detno", aDetSLNo);
             jsonObject.put("sample_validation", SharedPref.getSampleValidation(context));
             jsonObject.put("input_validation",  SharedPref.getInputValidation(context));
             jsonObject.put("activitynd", SharedPref.getActivityNd(context));

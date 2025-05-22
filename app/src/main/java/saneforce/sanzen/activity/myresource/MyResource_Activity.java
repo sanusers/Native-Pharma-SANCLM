@@ -66,6 +66,8 @@ public class MyResource_Activity extends AppCompatActivity {
 
     ArrayList<String> inputcount = new ArrayList<>();
     ArrayList<String> productcount = new ArrayList<>();
+    ArrayList<String> stkprdbalnce_count = new ArrayList<>();
+    ArrayList<String> stkinput_count = new ArrayList<>();
     public static String Valcount = "";
     public ArrayList<Resourcemodel_class> listed_data = new ArrayList<>();
     Resource_adapter resourceAdapter;
@@ -320,6 +322,23 @@ public class MyResource_Activity extends AppCompatActivity {
                     inputCount++;
                 }
             }
+            try{
+                stkprdbalnce_count.clear();
+                stkinput_count.clear();
+                JSONArray stockbalance=masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray();
+                for (int i = 0; i < stockbalance.length(); i++) {
+                    JSONObject jsonObject = stockbalance.getJSONObject(i);
+                    stkprdbalnce_count.add(jsonObject.getString("Code"));
+                }
+                JSONArray inputbalance=masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray();
+                for (int i = 0; i < inputbalance.length(); i++) {
+                    JSONObject jsonObject = inputbalance.getJSONObject(i);
+                    stkinput_count.add(jsonObject.getString("Code"));
+                }
+            }
+            catch (Exception e){
+
+            }
             if (isInputRequested) {
                 listed_data.add(new Resourcemodel_class("Input", String.valueOf(inputCount), "7"));
             }
@@ -346,6 +365,14 @@ public class MyResource_Activity extends AppCompatActivity {
 //            listed_data.add(new Resourcemodel_class("Calls Status",  String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray().length()), "12"));
             listed_data.add(new Resourcemodel_class("Calls Summary", "", "15"));
             listed_data.add(new Resourcemodel_class("Date Summary", "", "16"));
+            if(SharedPref.getSampleValidation(this).equalsIgnoreCase("1") && SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
+                listed_data.add(new Resourcemodel_class("Stock Balance", String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray().length()), "17"));
+            } else if(SharedPref.getSampleValidation(this).equalsIgnoreCase("1")){
+                listed_data.add(new Resourcemodel_class("Stock Balance", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray().length()), "17"));
+            } else if(SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
+                listed_data.add(new Resourcemodel_class("Stock Balance", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray().length()), "17"));
+            }
+
             Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count);
 
             resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1, new MyResourceInterface() {

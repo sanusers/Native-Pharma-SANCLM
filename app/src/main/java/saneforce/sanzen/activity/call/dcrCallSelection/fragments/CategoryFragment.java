@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.call.dcrCallSelection.fragments;
 
 
+import static saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddition.chemistadditionbinding;
 import static saneforce.sanzen.activity.call.dcrCallSelection.UnlistedDoctorAddition.unlistedadditionbinding;
 
 import android.annotation.SuppressLint;
@@ -89,14 +90,27 @@ public class CategoryFragment extends Fragment {
             }
         });
 
+//        selectcatSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+//            categoryCode = list_code.get(i);
+//            categoryName = list_name.get(i);
+//            sel_categorycode= Integer.parseInt(list_code.get(i));
+//            selectcatSideBinding.searchList.setText("");
+//            SharedPref.setSelectedCategory(requireContext(),sel_categorycode);
+//            unlistedadditionbinding.txtSelectCategory.setText(selectcatSideBinding.selectListView.getItemAtPosition(i).toString());
+//            unlistedadditionbinding.fragmentSelectCat.setVisibility(View.GONE);
+//        });
         selectcatSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            categoryCode = list_code.get(i);
-            categoryName = list_name.get(i);
-            sel_categorycode= Integer.parseInt(list_code.get(i));
-            selectcatSideBinding.searchList.setText("");
-            SharedPref.setSelectedCategory(requireContext(),sel_categorycode);
-            unlistedadditionbinding.txtSelectCategory.setText(selectcatSideBinding.selectListView.getItemAtPosition(i).toString());
-            unlistedadditionbinding.fragmentSelectCat.setVisibility(View.GONE);
+            String selectedName = adapterView.getItemAtPosition(i).toString();
+            int originalIndex = list_name.indexOf(selectedName);
+            if (originalIndex != -1) {
+                categoryCode = list_code.get(originalIndex);
+                categoryName = selectedName;
+                sel_categorycode = Integer.parseInt(categoryCode);
+                selectcatSideBinding.searchList.setText("");
+                SharedPref.setSelectedCategory(requireContext(), sel_categorycode);
+                unlistedadditionbinding.txtSelectCategory.setText(categoryName);
+                unlistedadditionbinding.fragmentSelectCat.setVisibility(View.GONE);
+            }
         });
         return v;
     }

@@ -88,14 +88,27 @@ public class ChemistQualificationFragment extends Fragment {
             }
         });
 
+//        selectchmqualiSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+//            qualiCode = list_code.get(i);
+//            qualiName = list_name.get(i);
+//            sel_qualicode= Integer.parseInt(list_code.get(i));
+//            selectchmqualiSideBinding.searchList.setText("");
+//            SharedPref.setSelectedQualification(requireContext(),sel_qualicode);
+//            chemistadditionbinding.txtSelectQua.setText(selectchmqualiSideBinding.selectListView.getItemAtPosition(i).toString());
+//            chemistadditionbinding.fragmentSelectChmquali.setVisibility(View.GONE);
+//        });
         selectchmqualiSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            qualiCode = list_code.get(i);
-            qualiName = list_name.get(i);
-            sel_qualicode= Integer.parseInt(list_code.get(i));
-            selectchmqualiSideBinding.searchList.setText("");
-            SharedPref.setSelectedQualification(requireContext(),sel_qualicode);
-            chemistadditionbinding.txtSelectQua.setText(selectchmqualiSideBinding.selectListView.getItemAtPosition(i).toString());
-            chemistadditionbinding.fragmentSelectChmquali.setVisibility(View.GONE);
+            String selectedName = adapterView.getItemAtPosition(i).toString();
+            int originalIndex = list_name.indexOf(selectedName);
+            if (originalIndex != -1) {
+                qualiCode = list_code.get(originalIndex);
+                qualiName = selectedName;
+                sel_qualicode = Integer.parseInt(qualiCode);
+                selectchmqualiSideBinding.searchList.setText("");
+                SharedPref.setSelectedQualification(requireContext(), sel_qualicode);
+                chemistadditionbinding.txtSelectQua.setText(qualiName);
+                chemistadditionbinding.fragmentSelectChmquali.setVisibility(View.GONE);
+            }
         });
         return v;
     }

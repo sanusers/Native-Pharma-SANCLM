@@ -99,9 +99,7 @@ public class HQFragment extends Fragment {
             unlistedadditionbinding.fragmentSelectHq.setVisibility(View.GONE);
         });*/
         selectHQSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
-// Get selected item from the filtered list
             String selectedItem = (String) adapterView.getItemAtPosition(i);
-// Find the correct index in the original list
             int originalIndex = list_name.indexOf(selectedItem);
             if(originalIndex != -1) {
                 hqCode = list_code.get(originalIndex);
@@ -114,6 +112,7 @@ public class HQFragment extends Fragment {
             unlistedadditionbinding.txtSelectTerritory.setText("");
             unlistedadditionbinding.fragmentSelectHq.setVisibility(View.GONE);
         });
+
         return v;
     }
 

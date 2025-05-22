@@ -89,14 +89,27 @@ public class QualificationFragment extends Fragment {
             }
         });
 
+//        selectqualiSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+//            qualiCode = list_code.get(i);
+//            qualiName = list_name.get(i);
+//            sel_qualicode= Integer.parseInt(list_code.get(i));
+//            selectqualiSideBinding.searchList.setText("");
+//            SharedPref.setSelectedQualification(requireContext(),sel_qualicode);
+//            unlistedadditionbinding.txtSelectQua.setText(selectqualiSideBinding.selectListView.getItemAtPosition(i).toString());
+//            unlistedadditionbinding.fragmentSelectQuali.setVisibility(View.GONE);
+//        });
         selectqualiSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            qualiCode = list_code.get(i);
-            qualiName = list_name.get(i);
-            sel_qualicode= Integer.parseInt(list_code.get(i));
-            selectqualiSideBinding.searchList.setText("");
-            SharedPref.setSelectedQualification(requireContext(),sel_qualicode);
-            unlistedadditionbinding.txtSelectQua.setText(selectqualiSideBinding.selectListView.getItemAtPosition(i).toString());
-            unlistedadditionbinding.fragmentSelectQuali.setVisibility(View.GONE);
+            String selectedName = adapterView.getItemAtPosition(i).toString();
+            int originalIndex = list_name.indexOf(selectedName);
+            if (originalIndex != -1) {
+                qualiCode = list_code.get(originalIndex);
+                qualiName = selectedName;
+                sel_qualicode = Integer.parseInt(qualiCode);
+                selectqualiSideBinding.searchList.setText("");
+                SharedPref.setSelectedQualification(requireContext(), sel_qualicode);
+                unlistedadditionbinding.txtSelectQua.setText(qualiName);
+                unlistedadditionbinding.fragmentSelectQuali.setVisibility(View.GONE);
+            }
         });
         return v;
     }

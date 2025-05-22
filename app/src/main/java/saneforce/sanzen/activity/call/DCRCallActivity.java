@@ -2733,6 +2733,9 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("Remarks", jwOthersBinding.edRemarks.getText());
             if (isFromActivity.equalsIgnoreCase("edit_online")) {
                 jsonSaveDcr.put("amc", CallActivityCustDetails.get(0).getADetSlNo());
+                jsonSaveDcr.put("headerno",  CallActivityCustDetails.get(0).getTransNo());
+                jsonSaveDcr.put("detno",  CallActivityCustDetails.get(0).getADetSlNo());
+
             } else {
                 jsonSaveDcr.put("amc", "");
             }
@@ -3290,29 +3293,105 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
 
+//            if (SampleValidation.equalsIgnoreCase("1")) {
+//                for (int i = 0; i < ProductFragment.checkedPrdList.size(); i++) {
+//                    for (int j = 0; j < jsonArrayPrdStk.length(); j++) {
+//                        JSONObject jsonObjectSample = jsonArrayPrdStk.getJSONObject(j);
+//                        if (!ProductFragment.checkedPrdList.get(i).getCategory().equalsIgnoreCase("Sale") && jsonObjectSample.getString("Code").equalsIgnoreCase(ProductFragment.checkedPrdList.get(i).getCode())) {
+//                            ProductFragment.checkedPrdList.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getName(), ProductFragment.checkedPrdList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), ProductFragment.checkedPrdList.get(i).isCheckedItem(), ProductFragment.checkedPrdList.get(i).getCategory(), ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
+//                            StockSample.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), jsonObjectSample.getString("Balance_Stock")));
+//                            break;
+//                        } else {
+//                            ProductFragment.checkedPrdList.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getName(), ProductFragment.checkedPrdList.get(i).getCode(), ProductFragment.checkedPrdList.get(i).getStock_balance(), ProductFragment.checkedPrdList.get(i).isCheckedItem(), ProductFragment.checkedPrdList.get(i).getCategory(), ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
+//                            StockSample.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getCode(), ProductFragment.checkedPrdList.get(i).getStock_balance(), ProductFragment.checkedPrdList.get(i).getStock_balance()));
+//                        }
+//                    }
+//                }
+//
+//                for (int i = 0; i < AddCallSelectPrdSide.callSampleList.size(); i++) {
+//                    for (int j = 0; j < jsonArrayPrdStk.length(); j++) {
+//                        JSONObject jsonObjectSample = jsonArrayPrdStk.getJSONObject(j);
+//                        if (jsonObjectSample.getString("Code").equalsIgnoreCase(AddCallSelectPrdSide.callSampleList.get(i).getCode())) {
+//                            AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(AddCallSelectPrdSide.callSampleList.get(i).getName(), AddCallSelectPrdSide.callSampleList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), AddCallSelectPrdSide.callSampleList.get(i).isCheckedItem(), AddCallSelectPrdSide.callSampleList.get(i).getCategory(), AddCallSelectPrdSide.callSampleList.get(i).getCategoryExtra()));
+//                            break;
+//                        } else {
+//                            AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(AddCallSelectPrdSide.callSampleList.get(i).getName(), AddCallSelectPrdSide.callSampleList.get(i).getCode(), AddCallSelectPrdSide.callSampleList.get(i).getStock_balance(), AddCallSelectPrdSide.callSampleList.get(i).isCheckedItem(), AddCallSelectPrdSide.callSampleList.get(i).getCategory(), AddCallSelectPrdSide.callSampleList.get(i).getCategoryExtra()));
+//                        }
+//                    }
+//                }
+//            }
             if (SampleValidation.equalsIgnoreCase("1")) {
                 for (int i = 0; i < ProductFragment.checkedPrdList.size(); i++) {
                     for (int j = 0; j < jsonArrayPrdStk.length(); j++) {
                         JSONObject jsonObjectSample = jsonArrayPrdStk.getJSONObject(j);
-                        if (!ProductFragment.checkedPrdList.get(i).getCategory().equalsIgnoreCase("Sale") && jsonObjectSample.getString("Code").equalsIgnoreCase(ProductFragment.checkedPrdList.get(i).getCode())) {
-                            ProductFragment.checkedPrdList.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getName(), ProductFragment.checkedPrdList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), ProductFragment.checkedPrdList.get(i).isCheckedItem(), ProductFragment.checkedPrdList.get(i).getCategory(), ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
-                            StockSample.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), jsonObjectSample.getString("Balance_Stock")));
+                        if (!ProductFragment.checkedPrdList.get(i).getCategory().equalsIgnoreCase("Sale")
+                                && jsonObjectSample.getString("Code").equalsIgnoreCase(ProductFragment.checkedPrdList.get(i).getCode())) {
+
+                            ProductFragment.checkedPrdList.set(i, new CallCommonCheckedList(
+                                    ProductFragment.checkedPrdList.get(i).getName(),
+                                    ProductFragment.checkedPrdList.get(i).getCode(),
+                                    jsonObjectSample.getString("Balance_Stock"),
+                                    ProductFragment.checkedPrdList.get(i).isCheckedItem(),
+                                    ProductFragment.checkedPrdList.get(i).getCategory(),
+                                    ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
+
+                            CallCommonCheckedList stockItem = new CallCommonCheckedList(
+                                    ProductFragment.checkedPrdList.get(i).getCode(),
+                                    jsonObjectSample.getString("Balance_Stock"),
+                                    jsonObjectSample.getString("Balance_Stock"));
+
+                            if (i < StockSample.size()) {
+                                StockSample.set(i, stockItem);
+                            } else {
+                                StockSample.add(stockItem);
+                            }
+
                             break;
+
                         } else {
-                            ProductFragment.checkedPrdList.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getName(), ProductFragment.checkedPrdList.get(i).getCode(), ProductFragment.checkedPrdList.get(i).getStock_balance(), ProductFragment.checkedPrdList.get(i).isCheckedItem(), ProductFragment.checkedPrdList.get(i).getCategory(), ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
-                            StockSample.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getCode(), ProductFragment.checkedPrdList.get(i).getStock_balance(), ProductFragment.checkedPrdList.get(i).getStock_balance()));
+                            ProductFragment.checkedPrdList.set(i, new CallCommonCheckedList(
+                                    ProductFragment.checkedPrdList.get(i).getName(),
+                                    ProductFragment.checkedPrdList.get(i).getCode(),
+                                    ProductFragment.checkedPrdList.get(i).getStock_balance(),
+                                    ProductFragment.checkedPrdList.get(i).isCheckedItem(),
+                                    ProductFragment.checkedPrdList.get(i).getCategory(),
+                                    ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
+
+                            CallCommonCheckedList stockItem = new CallCommonCheckedList(
+                                    ProductFragment.checkedPrdList.get(i).getCode(),
+                                    ProductFragment.checkedPrdList.get(i).getStock_balance(),
+                                    ProductFragment.checkedPrdList.get(i).getStock_balance());
+
+                            if (i < StockSample.size()) {
+                                StockSample.set(i, stockItem);
+                            } else {
+                                StockSample.add(stockItem);
+                            }
                         }
                     }
                 }
 
+                // The same kind of safe update logic applies to this loop too:
                 for (int i = 0; i < AddCallSelectPrdSide.callSampleList.size(); i++) {
                     for (int j = 0; j < jsonArrayPrdStk.length(); j++) {
                         JSONObject jsonObjectSample = jsonArrayPrdStk.getJSONObject(j);
                         if (jsonObjectSample.getString("Code").equalsIgnoreCase(AddCallSelectPrdSide.callSampleList.get(i).getCode())) {
-                            AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(AddCallSelectPrdSide.callSampleList.get(i).getName(), AddCallSelectPrdSide.callSampleList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), AddCallSelectPrdSide.callSampleList.get(i).isCheckedItem(), AddCallSelectPrdSide.callSampleList.get(i).getCategory(), AddCallSelectPrdSide.callSampleList.get(i).getCategoryExtra()));
+                            AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(
+                                    AddCallSelectPrdSide.callSampleList.get(i).getName(),
+                                    AddCallSelectPrdSide.callSampleList.get(i).getCode(),
+                                    jsonObjectSample.getString("Balance_Stock"),
+                                    AddCallSelectPrdSide.callSampleList.get(i).isCheckedItem(),
+                                    AddCallSelectPrdSide.callSampleList.get(i).getCategory(),
+                                    AddCallSelectPrdSide.callSampleList.get(i).getCategoryExtra()));
                             break;
                         } else {
-                            AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(AddCallSelectPrdSide.callSampleList.get(i).getName(), AddCallSelectPrdSide.callSampleList.get(i).getCode(), AddCallSelectPrdSide.callSampleList.get(i).getStock_balance(), AddCallSelectPrdSide.callSampleList.get(i).isCheckedItem(), AddCallSelectPrdSide.callSampleList.get(i).getCategory(), AddCallSelectPrdSide.callSampleList.get(i).getCategoryExtra()));
+                            AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(
+                                    AddCallSelectPrdSide.callSampleList.get(i).getName(),
+                                    AddCallSelectPrdSide.callSampleList.get(i).getCode(),
+                                    AddCallSelectPrdSide.callSampleList.get(i).getStock_balance(),
+                                    AddCallSelectPrdSide.callSampleList.get(i).isCheckedItem(),
+                                    AddCallSelectPrdSide.callSampleList.get(i).getCategory(),
+                                    AddCallSelectPrdSide.callSampleList.get(i).getCategoryExtra()));
                         }
                     }
                 }

@@ -55,8 +55,5 @@ public class Cate_viewscreen extends AppCompatActivity {
         tabLayout.getTabAt(1);
         BadgeDrawable badgeDrawable = Objects.requireNonNull(tabLayout.getTabAt(0)).getOrCreateBadge();
         badgeDrawable.setVisible(false);
-
-
-
     }
 }
