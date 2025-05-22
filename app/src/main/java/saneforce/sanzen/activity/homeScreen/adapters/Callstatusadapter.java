@@ -127,9 +127,18 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                 if(!list.getDateID().isEmpty() && !list.getMonth().isEmpty()
                         && SharedPref.getSeqDlyCtrl(context).equalsIgnoreCase("1")
                         && SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
-                    if(!(list.getMonth().equalsIgnoreCase(TimeUtils.getCurrentDateTime("M"))
-                            && (Integer.parseInt(list.getDateID()) >= Integer.parseInt(TimeUtils.getCurrentDateTime("d"))))) {
-                        holder.slashImageView.setVisibility(View.VISIBLE);
+                    try {
+                        int dcrLockDays = Integer.parseInt(SharedPref.getSeqDcrLockDays(context));
+                        String dateStr = list.getDateID() + "-" + list.getMonth() + "-" + list.getYear();
+                        LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
+                        LocalDate checkDate = LocalDate.now().minusDays(dcrLockDays);
+//                        if(!(list.getMonth().equalsIgnoreCase(TimeUtils.getCurrentDateTime("M"))
+//                                && (Integer.parseInt(list.getDateID())>=Integer.parseInt(TimeUtils.getCurrentDateTime("d"))))) {
+                        if(date.isBefore(checkDate)) {
+                            holder.slashImageView.setVisibility(View.VISIBLE);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             } catch (Exception e) {

@@ -18,9 +18,12 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -131,6 +134,7 @@ public class WorkPlanEntriesNeeded {
         String planningDate = "";
         TreeSet<String> pastDates = new TreeSet<>();
         HashMap<String, String> dayFlagMap = new HashMap<>();
+        Set<String> HWDates = new HashSet<>();
 
         try {
             LocalDate dateBefore;
@@ -155,6 +159,7 @@ public class WorkPlanEntriesNeeded {
                     holidayDate = jsonObject.optString("Holiday_Date");
                 }
                 if(SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
+                    HWDates.add(holidayDate);
                     if(datesNeeded != null && !datesNeeded.isEmpty()) {
                         datesNeeded.remove(holidayDate);
                     }
@@ -212,6 +217,7 @@ public class WorkPlanEntriesNeeded {
 //                    datesNeeded.remove(date);
 //                    pastDates.remove(date);
 //                }
+                HWDates.add(date);
                 if(SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
                     if(datesNeeded != null && !datesNeeded.isEmpty() && weeklyOffDays.contains(dayName)) {
                         datesNeeded.remove(date);
@@ -268,9 +274,14 @@ public class WorkPlanEntriesNeeded {
                             break;
                         }
                     }
-                    if(datesNeededDup.size() > numberOfDaysLock) {
-                        datesNeeded.clear();
-                        pastDates.clear();
+                    datesNeededDup = new TreeSet<>(pastDates);
+                    for (String dt : datesNeededDup) {
+                        LocalDate date = LocalDate.parse(dt, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                        LocalDate checkDate = LocalDate.now().minusDays(numberOfDaysLock);
+                        if(date.isBefore(checkDate)) {
+                            pastDates.remove(dt);
+                            datesNeeded.remove(dt);
+                        }
                     }
                 }
             }
