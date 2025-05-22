@@ -99,10 +99,9 @@ public class ChemistHQFragment extends Fragment {
             chemistadditionbinding.txtSelectHq.setText(selectchmHQSideBinding.selectListView.getItemAtPosition(i).toString());
             chemistadditionbinding.fragmentSelectChemisthq.setVisibility(View.GONE);
         });*/
+
         selectchmHQSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
-// Get selected item from the filtered list
             String selectedItem = (String) adapterView.getItemAtPosition(i);
-// Find the correct index in the original list
             int originalIndex = list_name.indexOf(selectedItem);
             if(originalIndex != -1) {
                 hqCode = list_code.get(originalIndex);

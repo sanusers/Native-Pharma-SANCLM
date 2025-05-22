@@ -812,7 +812,15 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
                 json.put("DeviceID", SharedPref.getDeviceId(context));
                 json.put("DrCode", Code);
-                json.put("DrGender", activityProfilingBinding.txtSelectGender.getText().toString());
+                if(activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Male")) {
+                    json.put("DrGender", "M");
+                }
+                if(activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Female")) {
+                    json.put("DrGender", "F");
+                }
+                else{
+                    json.put("DrGender", activityProfilingBinding.txtSelectGender.getText().toString());
+                }
                 json.put("DrQulCd", Qual_code);
                 json.put("DrqulNm", activityProfilingBinding.txtSelectQua.getText().toString());
                 json.put("DrSpcCd", spec_code);

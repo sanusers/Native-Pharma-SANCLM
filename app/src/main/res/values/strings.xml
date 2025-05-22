@@ -612,4 +612,19 @@
     <string name="No_Tagging">No Tagging</string>
     <string name="notifications">Notifications</string>
     <string name="no_new_notifications">No new notifications</string>
+    <string name="doctor_business">Doctor Business Entry</string>
+    <string name="fieldforce_name">Field Force Name</string>
+    <string name="mnth_yr">Month &amp; Year</string>
+    <string name="start_entry">Start Entry</string>
+    <string name="Count">Count :</string>
+    <string name="Value">Value :</string>
+    <string name="select_fieldforce">Select FieldForce</string>
+    <string name="select_month">Select Month</string>
+    <string name="pack">Pack</string>
+    <string name="target">Target Qty</string>
+    <string name="potential">Potential Qty</string>
+    <string name="Business">Business Qty</string>
+    <string name="Business_value">Business Value</string>
+    <string name="no_of_product">No of Products:</string>
+    <string name="Available">Available:</string>
 </resources>

@@ -90,14 +90,27 @@ public class ClusterFragment extends Fragment {
             }
         });
 
+//        selectclusterSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+//            clusterCode = list_code.get(i);
+//            clusterName = list_name.get(i);
+//            selectclusterSideBinding.searchList.setText("");
+//            sel_clustercode = Integer.parseInt(list_code.get(i));
+//            SharedPref.setSelectedCluster(requireContext(),sel_clustercode);
+//            unlistedadditionbinding.txtSelectTerritory.setText(selectclusterSideBinding.selectListView.getItemAtPosition(i).toString());
+//            unlistedadditionbinding.fragmentSelectCluster.setVisibility(View.GONE);
+//        });
         selectclusterSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            clusterCode = list_code.get(i);
-            clusterName = list_name.get(i);
-            selectclusterSideBinding.searchList.setText("");
-            sel_clustercode = Integer.parseInt(list_code.get(i));
-            SharedPref.setSelectedCluster(requireContext(),sel_clustercode);
-            unlistedadditionbinding.txtSelectTerritory.setText(selectclusterSideBinding.selectListView.getItemAtPosition(i).toString());
-            unlistedadditionbinding.fragmentSelectCluster.setVisibility(View.GONE);
+            String selectedName = adapterView.getItemAtPosition(i).toString();
+            int originalIndex = list_name.indexOf(selectedName);
+            if (originalIndex != -1) {
+                clusterCode = list_code.get(originalIndex);
+                clusterName = selectedName;
+                sel_clustercode = Integer.parseInt(clusterCode);
+                selectclusterSideBinding.searchList.setText("");
+                SharedPref.setSelectedCluster(requireContext(), sel_clustercode);
+                unlistedadditionbinding.txtSelectTerritory.setText(clusterName);
+                unlistedadditionbinding.fragmentSelectCluster.setVisibility(View.GONE);
+            }
         });
         return v;
     }

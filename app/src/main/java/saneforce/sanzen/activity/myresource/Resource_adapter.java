@@ -33,6 +33,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.forms.weekoff.weekoff_viewscreen;
 import saneforce.sanzen.activity.myresource.Categoryview.Cate_viewscreen;
 import saneforce.sanzen.activity.myresource.Categoryview.DateSyncActivity;
+import saneforce.sanzen.activity.myresource.StockBalanceview.StockBalanceScreen;
 import saneforce.sanzen.activity.myresource.callstatusview.Callsstatus_screenview;
 import saneforce.sanzen.activity.myresource.myresourcemodel.MyResourceInterface;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -135,10 +136,10 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String Town_Name = (jsonObject.getString("Town_Name"));
                                     String Tag_count = (jsonObject.getString("GEOTagCnt"));
                                     String Max_count = (jsonObject.getString("MaxGeoMap"));
-
+                                    String Class=(jsonObject.getString("Doc_Class_ShortName"));
                                     Log.e("dcr_doctorTown_Name", Town_Name);
 
-                                    listresource.add(new Resourcemodel_class(docval, custom_name, cluster, category, CategoryCode, "Rx", SpecialtyCode, specialty, Lat, Long, docval, MyResource_Activity.Key, Qual, Addrs, DOB, DOW, Mobile, Phone, DrEmail, ListedDr_Sex, Town_Code, Town_Name, "D", "", "", "", "", "", "", "",Tag_count,Max_count,Qual_code));
+                                    listresource.add(new Resourcemodel_class(docval, custom_name, cluster, category, CategoryCode, Class, SpecialtyCode, specialty, Lat, Long, docval, MyResource_Activity.Key, Qual, Addrs, DOB, DOW, Mobile, Phone, DrEmail, ListedDr_Sex, Town_Code, Town_Name, "D", "", "", "", "", "", "", "",Tag_count,Max_count,Qual_code));
 
 
                                 }
@@ -483,7 +484,13 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
                         MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                         break;
+                    case ("17")://Stock Balance
 
+                        Intent l3 = new Intent(context, StockBalanceScreen.class);
+                        context.startActivity(l3);
+                        MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
+                        MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                        break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + app_adapt.getListed_data());
                 }

@@ -88,15 +88,30 @@ public class SpecilaityFragment extends Fragment {
             }
         });
 
+//        selectspecSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+//            specCode = list_code.get(i);
+//            specName = list_name.get(i);
+//            sel_speccode = Integer.parseInt(list_code.get(i));
+//            selectspecSideBinding.searchList.setText("");
+//            SharedPref.setSelectedSpeciality(requireContext(),sel_speccode);
+//            unlistedadditionbinding.txtSelectSpec.setText(selectspecSideBinding.selectListView.getItemAtPosition(i).toString());
+//            unlistedadditionbinding.fragmentSelectSpeciality.setVisibility(View.GONE);
+//        });
+
         selectspecSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            specCode = list_code.get(i);
-            specName = list_name.get(i);
-            sel_speccode = Integer.parseInt(list_code.get(i));
-            selectspecSideBinding.searchList.setText("");
-            SharedPref.setSelectedSpeciality(requireContext(),sel_speccode);
-            unlistedadditionbinding.txtSelectSpec.setText(selectspecSideBinding.selectListView.getItemAtPosition(i).toString());
-            unlistedadditionbinding.fragmentSelectSpeciality.setVisibility(View.GONE);
+            String selectedName = adapterView.getItemAtPosition(i).toString();
+            int originalIndex = list_name.indexOf(selectedName);
+            if (originalIndex != -1) {
+                specCode = list_code.get(originalIndex);
+                specName = selectedName;
+                sel_speccode = Integer.parseInt(specCode);
+                selectspecSideBinding.searchList.setText("");
+                SharedPref.setSelectedSpeciality(requireContext(), sel_speccode);
+                unlistedadditionbinding.txtSelectSpec.setText(specName);
+                unlistedadditionbinding.fragmentSelectSpeciality.setVisibility(View.GONE);
+            }
         });
+
         return v;
     }
 

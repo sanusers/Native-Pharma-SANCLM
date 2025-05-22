@@ -14,36 +14,6 @@
         android:layout_alignParentTop="true"
         android:background="#DDDADA">
 
-        <!--        <RelativeLayout-->
-        <!--            android:id="@+id/rlay_tool"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="80dp"-->
-        <!--            android:layout_alignParentTop="true"-->
-        <!--            android:background="@color/black">-->
-
-        <!--            <ImageView-->
-        <!--                android:id="@+id/adddr_close"-->
-        <!--                android:layout_width="30dp"-->
-        <!--                android:layout_height="30dp"-->
-        <!--                android:layout_centerVertical="true"-->
-        <!--                android:layout_marginLeft="12dp"-->
-        <!--                android:src="@drawable/arrow_back_white" />-->
-
-        <!--            <TextView-->
-        <!--                android:id="@+id/drtagname"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_centerVertical="true"-->
-        <!--                android:layout_marginLeft="10dp"-->
-        <!--                android:layout_toRightOf="@+id/adddr_close"-->
-        <!--                android:fontFamily="@font/satoshi_bold"-->
-        <!--                android:padding="12dp"-->
-        <!--                android:text="@string/additional_doctor"-->
-        <!--                android:textColor="#ffffff"-->
-        <!--                android:textSize="18sp"-->
-        <!--                android:textStyle="bold" />-->
-
-        <!--        </RelativeLayout>-->
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/rlay_tool"
             android:layout_width="0dp"
@@ -76,12 +46,12 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/drtagname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_16sdp"
                     android:fontFamily="@font/satoshi_variable"
                     android:text="@string/additional_doctor"
-                    android:id="@+id/drtagname"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_7sdp"
                     tools:ignore="SpUsage" />

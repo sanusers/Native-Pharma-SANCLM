@@ -247,8 +247,18 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         }
                         json.put("key", SharedPref.getSaveLicenseSetting(UnlistedDoctorAddition.this));
                         json.put("DrType", "U");
-                        json.put("DrDOB", unlistedadditionbinding.edtDob.getText().toString() + " 00:00:00");
-                        json.put("DrDOW", unlistedadditionbinding.edtDow.getText().toString() + " 00:00:00");
+                        if(!unlistedadditionbinding.edtDob.getText().toString().equalsIgnoreCase("")){
+                            json.put("DrDOB", unlistedadditionbinding.edtDob.getText().toString() + " 00:00:00");
+                        }
+                        else{
+                            json.put("DrDOB","-");
+                        }
+                        if(!unlistedadditionbinding.edtDob.getText().toString().equalsIgnoreCase("")){
+                            json.put("DrDOW", unlistedadditionbinding.edtDow.getText().toString() + " 00:00:00");
+                        }
+                        else{
+                            json.put("DrDOW","-");
+                        }
                         json.put("DrPhone", unlistedadditionbinding.edtPhone.getText().toString());
                         json.put("DrMob", unlistedadditionbinding.edtMob.getText().toString());
                         json.put("imagePath", destinationFilePath);
@@ -340,8 +350,18 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     }
                     json.put("key", SharedPref.getSaveLicenseSetting(UnlistedDoctorAddition.this));
                     json.put("DrType", "U");
-                    json.put("DrDOB", unlistedadditionbinding.edtDob.getText().toString() + " 00:00:00");
-                    json.put("DrDOW", unlistedadditionbinding.edtDow.getText().toString() + " 00:00:00");
+                    if(!unlistedadditionbinding.edtDob.getText().toString().equalsIgnoreCase("")){
+                        json.put("DrDOB", unlistedadditionbinding.edtDob.getText().toString() + " 00:00:00");
+                    }
+                    else{
+                        json.put("DrDOB","");
+                    }
+                    if(!unlistedadditionbinding.edtDob.getText().toString().equalsIgnoreCase("")){
+                        json.put("DrDOW", unlistedadditionbinding.edtDow.getText().toString() + " 00:00:00");
+                    }
+                    else{
+                        json.put("DrDOW","");
+                    }
                     json.put("DrPhone", unlistedadditionbinding.edtPhone.getText().toString());
                     json.put("DrMob", unlistedadditionbinding.edtMob.getText().toString());
                     json.put("imagePaths", destinationFilePath);

@@ -90,14 +90,27 @@ public class ChemistClusterFragment extends Fragment {
             }
         });
 
+//        selectchmclusterSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
+//            clusterCode = list_code.get(i);
+//            clusterName = list_name.get(i);
+//            selectchmclusterSideBinding.searchList.setText("");
+//            sel_clustercode = Integer.parseInt(list_code.get(i));
+//            SharedPref.setSelectedCluster(requireContext(),sel_clustercode);
+//            chemistadditionbinding.txtSelectTerritory.setText(selectchmclusterSideBinding.selectListView.getItemAtPosition(i).toString());
+//            chemistadditionbinding.fragmentSelectChmcluster.setVisibility(View.GONE);
+//        });
         selectchmclusterSideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            clusterCode = list_code.get(i);
-            clusterName = list_name.get(i);
-            selectchmclusterSideBinding.searchList.setText("");
-            sel_clustercode = Integer.parseInt(list_code.get(i));
-            SharedPref.setSelectedCluster(requireContext(),sel_clustercode);
-            chemistadditionbinding.txtSelectTerritory.setText(selectchmclusterSideBinding.selectListView.getItemAtPosition(i).toString());
-            chemistadditionbinding.fragmentSelectChmcluster.setVisibility(View.GONE);
+            String selectedName = adapterView.getItemAtPosition(i).toString();
+            int originalIndex = list_name.indexOf(selectedName);
+            if (originalIndex != -1) {
+                clusterCode = list_code.get(originalIndex);
+                clusterName = selectedName;
+                sel_clustercode = Integer.parseInt(clusterCode);
+                selectchmclusterSideBinding.searchList.setText("");
+                SharedPref.setSelectedCluster(requireContext(), sel_clustercode);
+                chemistadditionbinding.txtSelectTerritory.setText(clusterName);
+                chemistadditionbinding.fragmentSelectChmcluster.setVisibility(View.GONE);
+            }
         });
         return v;
     }
