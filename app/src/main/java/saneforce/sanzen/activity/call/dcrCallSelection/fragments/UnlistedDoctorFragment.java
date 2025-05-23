@@ -227,8 +227,19 @@ public class UnlistedDoctorFragment extends Fragment {
 
             jsonObjectDob = new JSONObject(jsonObject.getString("UnlstDOB"));
             jsonObjectDow = new JSONObject(jsonObject.getString("UnlstDOW"));
-            String dob = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_35, jsonObjectDob.getString("date"));
-            String dow = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_35, jsonObjectDow.getString("date"));
+            String dob="",dow="";
+            if(jsonObjectDob.getString("date").equalsIgnoreCase("1900-01-01 00:00:00")){
+                dob="";
+            }
+            else{
+                 dob = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_35, jsonObjectDob.getString("date"));
+            }
+            if(jsonObjectDow.getString("date").equalsIgnoreCase("1900-01-01 00:00:00")){
+                dow="";
+            }
+            else {
+                 dow = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_35, jsonObjectDow.getString("date"));
+            }
             String qualification = qualificationMap.get(jsonObject.getString("Qual"));
             if(qualification == null) qualification = "";
             if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {

@@ -122,6 +122,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
             }
             if (!app_adapt.getDcr_name().equals("") && !app_adapt.getDcr_name().equals("null")) {
                 holder.Res_Name.setText(app_adapt.getDcr_name());
+                holder.Res_rx.setText(app_adapt.getRes_rx());
             }
 
             holder.Res_Name.setOnClickListener(view -> {
@@ -166,7 +167,12 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 if (split_val.equals("2")) {
                     holder.Res_rx.setText(app_adapt.getRes_rx());
                 } else {
-                    holder.Res_rx.setText("-");
+                    if (app_adapt.getPos_name().equalsIgnoreCase("D")) {
+                        holder.Res_rx.setText(app_adapt.getRes_rx());
+                    }
+                    else {
+                        holder.Res_rx.setText("-");
+                    }
                 }
             } else {
                 holder.Res_rx.setText("");

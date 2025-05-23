@@ -1189,6 +1189,7 @@
                             android:layout_below="@+id/layoutchm3"
                             android:orientation="horizontal"
                             android:background="@color/white"
+                            android:visibility="gone"
                             android:weightSum="2">
 
                             <LinearLayout
