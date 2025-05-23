@@ -1,6 +1,9 @@
 package saneforce.sanzen.commonClasses;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -49,12 +52,22 @@ public class WorkPlanEntriesNeeded {
     private static ApiInterface apiInterface;
     private static int callSyncSuccess = 0, dateSyncSuccess = 0;
     private static SyncTaskStatus syncTaskStatus;
+    public static int lockDays = 0;
 
     public static void updateMyDayPlanEntryDates(Context context, boolean shouldSync, SyncTaskStatus syncTaskStatus) {
         masterDataDao = RoomDB.getDatabase(context).masterDataDao();
         offlineDaySubmitDao = RoomDB.getDatabase(context).offlineDaySubmitDao();
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
         WorkPlanEntriesNeeded.syncTaskStatus = syncTaskStatus;
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SharedPref.SP_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("dcr_sequential", "0");
+        editor.putString("Seq_dly_ctrl", "1");
+        editor.putString("Delay_HW_Need", "1");
+        editor.putString("TP_Mandatory_Need", "1");
+        editor.putString("Holiday_AutoPost_Need", "1");
+        editor.putString("Weekoff_AutoPost_Need", "1");
+        editor.apply();
 //        if(shouldSync) {
 //            syncCallAndDate(context);
 //        }else {
@@ -128,13 +141,14 @@ public class WorkPlanEntriesNeeded {
 
     private static void setupMyDayPlanEntriesNeeded(Context context) {
         datesNeeded.clear();
+        lockDays = 0;
         TreeMap<String, String> dates = new TreeMap<>();
         boolean isCallDataAvailable = false;
         boolean isPlanningDateFound = false;
         String planningDate = "";
         TreeSet<String> pastDates = new TreeSet<>();
         HashMap<String, String> dayFlagMap = new HashMap<>();
-        Set<String> HWDates = new HashSet<>();
+        TreeSet<String> HWDates = new TreeSet<>();
 
         try {
             LocalDate dateBefore;
@@ -158,8 +172,8 @@ public class WorkPlanEntriesNeeded {
                 }else {
                     holidayDate = jsonObject.optString("Holiday_Date");
                 }
+                HWDates.add(holidayDate);
                 if(SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
-                    HWDates.add(holidayDate);
                     if(datesNeeded != null && !datesNeeded.isEmpty()) {
                         datesNeeded.remove(holidayDate);
                     }
@@ -217,13 +231,58 @@ public class WorkPlanEntriesNeeded {
 //                    datesNeeded.remove(date);
 //                    pastDates.remove(date);
 //                }
-                HWDates.add(date);
+                if(weeklyOffDays.contains(dayName)) {
+                    HWDates.add(date);
+                }
                 if(SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
                     if(datesNeeded != null && !datesNeeded.isEmpty() && weeklyOffDays.contains(dayName)) {
                         datesNeeded.remove(date);
                     }
                     if(!pastDates.isEmpty() && weeklyOffDays.contains(dayName)) {
                         pastDates.remove(date);
+                    }
+                }
+            }
+
+            if(SharedPref.getSeqDlyCtrl(context).equalsIgnoreCase("1")
+                    && SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+                if(SharedPref.getSeqDcrLockDays(context).equalsIgnoreCase("0")) {
+                    datesNeeded.clear();
+                    pastDates.clear();
+                } else if(!SharedPref.getSeqDcrLockDays(context).isEmpty()) {
+                    int numberOfDaysLock = Integer.parseInt(SharedPref.getSeqDcrLockDays(context));
+                    datesNeededDup = new TreeSet<>(pastDates);
+                    for (String dt : datesNeededDup) {
+                        LocalDate date = LocalDate.parse(dt, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                        LocalDate joiningDate = LocalDate.parse(SFDCR_Date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                        if(date.isBefore(joiningDate)) {
+                            pastDates.remove(dt);
+                            datesNeeded.remove(dt);
+                        }else if(date.isEqual(joiningDate)) {
+                            break;
+                        }
+                    }
+                    if(SharedPref.getDelayHwNeed(context).equalsIgnoreCase("1")) {
+                        int i = numberOfDaysLock;
+                        lockDays = 1;
+                        while(i > 1) {
+                            String date = LocalDate.now().minusDays(lockDays).toString();
+                            Log.e("TAG", "setupMyDayPlanEntriesNeeded: " + date );
+                            if(!HWDates.contains(date)) {
+                                i--;
+                            }
+                            lockDays++;
+                        }
+                        Log.d("TAG", "setupMyDayPlanEntriesNeeded: " + lockDays + " -> " + numberOfDaysLock);
+                    }
+                    datesNeededDup = new TreeSet<>(pastDates);
+                    for (String dt : datesNeededDup) {
+                        LocalDate date = LocalDate.parse(dt, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                        LocalDate checkDate = LocalDate.now().minusDays(lockDays);
+                        if(date.isBefore(checkDate) && (SharedPref.getDelayHwNeed(context).equalsIgnoreCase("1") && !HWDates.contains(dt))) {
+                            pastDates.remove(dt);
+                            datesNeeded.remove(dt);
+                        }
                     }
                 }
             }
@@ -256,35 +315,7 @@ public class WorkPlanEntriesNeeded {
                 }
                 Log.v("TAG 1", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }
-            if(SharedPref.getSeqDlyCtrl(context).equalsIgnoreCase("1")
-                    && SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
-                if(SharedPref.getSeqDcrLockDays(context).equalsIgnoreCase("0")) {
-                    datesNeeded.clear();
-                    pastDates.clear();
-                } else {
-                    int numberOfDaysLock = Integer.parseInt(SharedPref.getSeqDcrLockDays(context));
-                    datesNeededDup = new TreeSet<>(pastDates);
-                    for (String dt : datesNeededDup) {
-                        LocalDate date = LocalDate.parse(dt, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
-                        LocalDate joiningDate = LocalDate.parse(SFDCR_Date, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
-                        if(date.isBefore(joiningDate)) {
-                            pastDates.remove(dt);
-                            datesNeeded.remove(dt);
-                        }else if(date.isEqual(joiningDate)) {
-                            break;
-                        }
-                    }
-                    datesNeededDup = new TreeSet<>(pastDates);
-                    for (String dt : datesNeededDup) {
-                        LocalDate date = LocalDate.parse(dt, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
-                        LocalDate checkDate = LocalDate.now().minusDays(numberOfDaysLock);
-                        if(date.isBefore(checkDate)) {
-                            pastDates.remove(dt);
-                            datesNeeded.remove(dt);
-                        }
-                    }
-                }
-            }
+
             JSONArray dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
             if(dateSync.length()>0) {
                 for (int i = 0; i<dateSync.length(); i++) {

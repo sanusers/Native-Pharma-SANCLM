@@ -15,3 +15,6 @@ local.properties
 *.tmp
 *.swp
 *~
+
+# Java files
+Keys.java

@@ -880,15 +880,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         }
                     }
                 }
-
-                for (EventCalenderModelClass list : callsatuslist) {
-                    int index = ListID.indexOf(list.getDateID());
-                    if (index != -1) {
+            }
+            for (EventCalenderModelClass list : callsatuslist) {
+                int index = ListID.indexOf(list.getDateID());
+                if (index != -1) {
+                    if(daysInMonthArray.size() > index && daysInMonthArray.get(index) != null) {
                         daysInMonthArray.get(index).setWorkTypeFlag(list.getWorkTypeFlag());
                     }
                 }
             }
-
         } catch (JSONException ignored) {
         }
         return daysInMonthArray;

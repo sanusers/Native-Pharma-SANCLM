@@ -128,14 +128,16 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                         && SharedPref.getSeqDlyCtrl(context).equalsIgnoreCase("1")
                         && SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
                     try {
-                        int dcrLockDays = Integer.parseInt(SharedPref.getSeqDcrLockDays(context));
-                        String dateStr = list.getDateID() + "-" + list.getMonth() + "-" + list.getYear();
-                        LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
-                        LocalDate checkDate = LocalDate.now().minusDays(dcrLockDays);
+                        if(!SharedPref.getSeqDcrLockDays(context).isEmpty()) {
+//                            int dcrLockDays = Integer.parseInt(SharedPref.getSeqDcrLockDays(context));
+                            @SuppressLint("DefaultLocale") String dateStr = String.format("%04d-%02d-%02d", Integer.parseInt(list.getYear()), Integer.parseInt(list.getMonth()), Integer.parseInt(list.getDateID()));
+                            LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                            LocalDate checkDate = LocalDate.now().minusDays(WorkPlanEntriesNeeded.lockDays);
 //                        if(!(list.getMonth().equalsIgnoreCase(TimeUtils.getCurrentDateTime("M"))
 //                                && (Integer.parseInt(list.getDateID())>=Integer.parseInt(TimeUtils.getCurrentDateTime("d"))))) {
-                        if(date.isBefore(checkDate)) {
-                            holder.slashImageView.setVisibility(View.VISIBLE);
+                            if(!WorkPlanEntriesNeeded.datesNeeded.contains(dateStr) && date.isBefore(checkDate)) {
+                                holder.slashImageView.setVisibility(View.VISIBLE);
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
