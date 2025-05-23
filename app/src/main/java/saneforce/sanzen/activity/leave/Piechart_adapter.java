@@ -21,7 +21,6 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.PercentFormatter;
 
 import java.util.ArrayList;
 
@@ -89,7 +88,6 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
         clrs.add(ContextCompat.getColor(context, R.color.teal_200));
         colors.add(clrs);
 
-
         notifyDataSetChanged();
     }
 
@@ -110,9 +108,8 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
 
         Log.d("chart", pie_value + "---" + L_Taken + "--" + L_Elgable + "--" + L_Avalable);
 
-
         Chartview(holder.pieChart, pie_value.getL_type(), pie_value.getEligable(), pie_value.getAvaolable(), pie_value.getTakenleave(), holder.c_val, holder.c_val_tol, holder.ltype_name, pie_value.getLtype(),
-                holder.LOP, holder.chartview_value, colors.get(position % 9));
+                  holder.LOP, holder.chartview_value, colors.get(position % 9));
 //pie_value.getEligable(),pie_value.getTakenleave()
 
     }
@@ -128,7 +125,6 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
         RelativeLayout chartview_value, chartview1, chartview2, chartview3;
         TextView c_val, c_val_tol, ltype_name, ltype, LOP;
 
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             pieChart = itemView.findViewById(R.id.piechart);
@@ -140,7 +136,6 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
         }
     }
 
-
     @SuppressLint("SetTextI18n")
     public void Chartview(PieChart chart, String L_Available, String L_Elgable, String L_taken, String taken, TextView c_val, TextView c_val_tol, TextView ltype_name, String pie_value,
                           TextView Ltype, RelativeLayout chartview_value, ArrayList<Integer> colors) {
@@ -148,43 +143,45 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
 //        if(L_Available.equals("LOP")){
 //            chartview_value.setVisibility(View.GONE);
 //            Ltype.setVisibility(View.VISIBLE);
-//
 //        }
-
 
 ////        if(L_Available.equals("CL")){
 //            colors.clear();
-//
 //            colors.add(Color.rgb(217, 217, 217));
 //            colors.add(Color.rgb(0, 198, 137));
-
 
         int Total_dates = Integer.parseInt(L_Elgable);
         int Apply_dates = Integer.parseInt(taken);
         int Balance_date = Total_dates - Apply_dates;
-        if (Balance_date < 0) {
+        if(Balance_date<0) {
             Balance_date = 0;
         }
+        if(Apply_dates == 0 && Balance_date == 0) {
+            Apply_dates = 1;
+        }
+
         ArrayList<PieEntry> lve_list = new ArrayList<PieEntry>();
         PieEntry pieEntry = new PieEntry(Apply_dates, "");
         lve_list.add(pieEntry);
         PieEntry pieEntry1 = new PieEntry(Balance_date, "");
         lve_list.add(pieEntry1);
+
         pieDataSet = new PieDataSet(lve_list, "");
         pieDataSet.setColors(colors);
+
         pieData = new PieData(pieDataSet);
         pieData.setValueTextSize(0f);
         pieData.setValueTextColor(Color.WHITE);
+
         chart.setData(pieData);
         chart.setUsePercentValues(false);
         chart.setDrawHoleEnabled(true);
-
-
         chart.setCenterTextSize(15f);
         chart.setCenterTextColor(Color.rgb(0, 0, 0));
         chart.setTransparentCircleRadius(40f);
         chart.setHoleRadius(89f);
         chart.animateXY(1400, 1400);
+
         String bal_val = String.valueOf(Balance_date);
         c_val.setText(bal_val);
         c_val_tol.setText("/" + Total_dates);

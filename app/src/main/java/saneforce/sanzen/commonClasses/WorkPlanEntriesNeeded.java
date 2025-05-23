@@ -59,15 +59,6 @@ public class WorkPlanEntriesNeeded {
         offlineDaySubmitDao = RoomDB.getDatabase(context).offlineDaySubmitDao();
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
         WorkPlanEntriesNeeded.syncTaskStatus = syncTaskStatus;
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SharedPref.SP_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("dcr_sequential", "0");
-        editor.putString("Seq_dly_ctrl", "1");
-        editor.putString("Delay_HW_Need", "1");
-        editor.putString("TP_Mandatory_Need", "1");
-        editor.putString("Holiday_AutoPost_Need", "1");
-        editor.putString("Weekoff_AutoPost_Need", "1");
-        editor.apply();
 //        if(shouldSync) {
 //            syncCallAndDate(context);
 //        }else {

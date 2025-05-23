@@ -107,7 +107,7 @@ public class Leave_Application extends AppCompatActivity {
 
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
+        if(hasFocus) {
             leavebinding.chartLayout.setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -176,25 +176,25 @@ public class Leave_Application extends AppCompatActivity {
 
 
         leavebinding.etToDate.setOnClickListener(v -> {
-            if (!leavebinding.etFromDate.getText().toString().equals("")) {
+            if(!leavebinding.etFromDate.getText().toString().equals("")) {
                 Intent tp = new Intent(Leave_Application.this, CalendarActivity.class);
                 tp.putExtra("selectefromdDate", "2");
                 startActivity(tp);
-            } else {
+            }else {
                 commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.select_from_date));
             }
         });
 
 
         leavebinding.LeaveType.setOnClickListener(v -> {
-            if (leavebinding.etFromDate.getText().toString().equals("")) {
+            if(leavebinding.etFromDate.getText().toString().equals("")) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.select_from_date));
-            } else if (leavebinding.etToDate.getText().toString().equals("")) {
+            }else if(leavebinding.etToDate.getText().toString().equals("")) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.select_to_date));
-            } else {
-                if (UtilityClass.isNetworkAvailable(this)) {
+            }else {
+                if(UtilityClass.isNetworkAvailable(this)) {
                     showalert_leavetype();
-                } else {
+                }else {
                     commonUtilsMethods.showToastMessage(this, "Please Check Your Internet Connection");
                 }
             }
@@ -202,15 +202,15 @@ public class Leave_Application extends AppCompatActivity {
         });
 
         leavebinding.submitLeave.setOnClickListener(v -> {
-            if (leavebinding.etFromDate.getText().toString().equals("")) {
+            if(leavebinding.etFromDate.getText().toString().equals("")) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.select_from_date));
-            } else if (leavebinding.etToDate.getText().toString().equals("")) {
+            }else if(leavebinding.etToDate.getText().toString().equals("")) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.select_to_date));
-            } else if (leavebinding.LeaveType.getText().toString().equals("")) {
+            }else if(leavebinding.LeaveType.getText().toString().equals("")) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.select_leave_type));
-            } else if (leavebinding.edReason.getText().toString().isEmpty()||leavebinding.edReason.getText().toString().equalsIgnoreCase("")) {
+            }else if(leavebinding.edReason.getText().toString().isEmpty() || leavebinding.edReason.getText().toString().equalsIgnoreCase("")) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.enter_reason_for_leave));
-            } else {
+            }else {
                 Submit();
 
             }
@@ -226,12 +226,12 @@ public class Leave_Application extends AppCompatActivity {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray();
             String days = "";
-            if (jsonArray.length() > 0) {
-                for (int i = 0; i < jsonArray.length(); i++) {
+            if(jsonArray.length()>0) {
+                for (int i = 0; i<jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String dates = jsonObject.getString("Created_Date");
                     JSONObject jsonval = new JSONObject(dates);
-                    if (days.equals("")) {
+                    if(days.equals("")) {
                         days = (jsonval.getString("date"));
                         String dval = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_22, TimeUtils.FORMAT_4, days);
                         ltypecount.add(dval);
@@ -260,8 +260,8 @@ public class Leave_Application extends AppCompatActivity {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray();
             Log.d("L-type", String.valueOf(jsonArray));
             String days = "";
-            if (jsonArray.length() > 0) {
-                for (int i = 0; i < jsonArray.length(); i++) {
+            if(jsonArray.length()>0) {
+                for (int i = 0; i<jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String Leavename = (jsonObject.getString("Leave_Name"));//Leave_Name
                     String L_code = (jsonObject.getString("Leave_code"));
@@ -271,7 +271,7 @@ public class Leave_Application extends AppCompatActivity {
                     String dates = jsonObject.getString("Created_Date");
 
                     JSONObject jsonval = new JSONObject(dates);
-                    if (days.equals("")) {
+                    if(days.equals("")) {
                         days = (jsonval.getString("date"));
 
                         String dval = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_22, TimeUtils.FORMAT_4, days);
@@ -303,19 +303,19 @@ public class Leave_Application extends AppCompatActivity {
             });
             dailog_list.setOnItemClickListener((arg0, arg1, position, arg3) -> {
                 // TODO Auto-generated method stub
-                if (UtilityClass.isNetworkAvailable(this)) {
+                if(UtilityClass.isNetworkAvailable(this)) {
                     String selectedFromList = dailog_list.getItemAtPosition(position).toString();
-                    for (int i = 0; i < leave_typename.size(); i++) {
-                        if (selectedFromList.equals(leave_typename.get(i))) {
+                    for (int i = 0; i<leave_typename.size(); i++) {
+                        if(selectedFromList.equals(leave_typename.get(i))) {
                             leavebinding.LeaveType.setText(selectedFromList);
                             Ltype_id = leave_typeid.get(i);
                             L_typename = leave_typename.get(i);
                             Lshortname = leave_type.get(i);
                             try {
                                 JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
-                                for (int d = 0; d < jsonArray1.length(); d++) {
+                                for (int d = 0; d<jsonArray1.length(); d++) {
                                     JSONObject jsonobj1 = jsonArray1.getJSONObject(d);
-                                    if (Ltype_id.equals(jsonobj1.getString("Leave_code"))) {
+                                    if(Ltype_id.equals(jsonobj1.getString("Leave_code"))) {
                                         avilable = (jsonobj1.getString("Avail"));
                                         leavety = (jsonobj1.getString("Leave_Type_Code"));
 
@@ -330,7 +330,7 @@ public class Leave_Application extends AppCompatActivity {
                         }
                     }
                     leavebinding.leaveSide.closeDrawer(Gravity.END);
-                } else {
+                }else {
                     commonUtilsMethods.showToastMessage(this, getString(R.string.please_check_your_internet_connection));
                 }
                 closeKeyboard();
@@ -346,7 +346,7 @@ public class Leave_Application extends AppCompatActivity {
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
             Bundle bundle = getIntent().getExtras();
-            if (bundle != null) {
+            if(bundle != null) {
                 navigateFrom = getIntent().getExtras().getString("Origin");
             }
 
@@ -367,24 +367,24 @@ public class Leave_Application extends AppCompatActivity {
             qry.put("axn", "get/leave");
             Call<JsonElement> call = null;
             call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), qry, jsonObject.toString());
-            if (call != null) {
+            if(call != null) {
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
 
-                        if (response.isSuccessful()) {
+                        if(response.isSuccessful()) {
                             Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
                             try {
                                 JSONArray jsonArray = new JSONArray(response.body().toString());
                                 Log.d("responce1", String.valueOf(jsonArray));
-                                for (int i = 0; i < jsonArray.length(); i++) {
+                                for (int i = 0; i<jsonArray.length(); i++) {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                                     String Leavename = (jsonObject.getString("Flg"));//Leave_Name
                                     String msg = (jsonObject.getString("Msg"));
 //                                    System.out.println("leaveMessage--->" + msg);
-                                    if ((jsonObject.getString("Msg").equals(""))) {
+                                    if((jsonObject.getString("Msg").equals(""))) {
                                         Leavedetails();
-                                    } else {
+                                    }else {
                                         List_LeaveDates.clear();
                                         leavebinding.etFromDate.setText("");
                                         leavebinding.etToDate.setText("");
@@ -454,21 +454,21 @@ public class Leave_Application extends AppCompatActivity {
 
             Leave_Application.leavebinding.lDays.setText(listdate.size() + " days " + L_typename);
             L_count = String.valueOf(listdate.size());
-            if (isLeaveEntitlementRequested) {
+            if(isLeaveEntitlementRequested) {
                 totalval = Integer.parseInt(avilable);
                 val = Integer.parseInt(L_count);
                 Log.d("rem", totalval + "---" + val);
                 int bal = totalval - val;
 
-                if(bal < 0) {
+                if(bal<0) {
                     commonUtilsMethods.showToastMessage(this, "Kindly Sync Leave Available!");
                     leavebinding.submitLeave.setEnabled(false);
-                } else if (bal == 0) {
+                }else if(bal == 0) {
 
-                } else {
-                    if (leavety.equals("LOP")) {
+                }else {
+                    if(leavety.equals("LOP")) {
                         leavebinding.balanceDays.setText("");
-                    } else {
+                    }else {
                         String balval = String.valueOf(bal);
                         leavebinding.balanceDays.setText(balval + " " + "days remaining");
                     }
@@ -482,13 +482,13 @@ public class Leave_Application extends AppCompatActivity {
 
         try {
             JSONArray jsonarr = new JSONArray();
-            for (int s = 0; s < listdate.size(); s++) {
+            for (int s = 0; s<listdate.size(); s++) {
                 JSONObject jsonobj = new JSONObject();
                 jsonobj.put("Date", listdate.get(s));//cip_head
                 jsonarr.put(jsonobj);
             }
-            if (jsonarr.length() > 0) {
-                for (int j = 0; j < jsonarr.length(); j++) {
+            if(jsonarr.length()>0) {
+                for (int j = 0; j<jsonarr.length(); j++) {
                     JSONObject jsonObject = jsonarr.getJSONObject(j);
                     String listed_date = jsonObject.getString("Date");
                     Leave_modelclass model = new Leave_modelclass(listed_date, "5");//,ref_source_id
@@ -530,35 +530,62 @@ public class Leave_Application extends AppCompatActivity {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
             JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray();
             String lstatus = (jsonArray.get(0).toString());
-            if (lstatus.equals(Constants.NO_DATA_AVAILABLE)) {
+            if(lstatus.equals(Constants.NO_DATA_AVAILABLE)) {
                 leavebinding.chartLayout.setVisibility(View.GONE);
                 leavebinding.mtcard.setVisibility(View.VISIBLE);
-            } else {
+            }else {
 //                Log.d("Leave_data", jsonArray + "--" + jsonArray1);
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    for (int i1 = 0; i1 < jsonArray1.length(); i1++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        JSONObject jsonObject1 = jsonArray1.getJSONObject(i1);
-                        String Ltype = (jsonObject1.getString("Leave_Name"));
-                        if (jsonObject.getString("Leave_code").equals(jsonObject1.getString("Leave_code"))) {
-                            Leave_modelclass tackleave = new Leave_modelclass(jsonObject1.getString("Leave_Name"), (jsonObject.getString("Elig")),
-                                    (jsonObject.getString("Taken")), (jsonObject.getString("Avail")),
-                                    jsonObject.getString("Leave_Type_Code"));
+                HashMap<String, LeaveStatusModelClass> leaveStatusMap = new HashMap<>();
+                for (int i = 0; i<jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.optJSONObject(i);
+                    LeaveStatusModelClass leaveStatusModelClass = new LeaveStatusModelClass(jsonObject.optString("Leave_Type_Code"), jsonObject.optString("Elig"), jsonObject.optString("Taken"), jsonObject.optString("Avail"), jsonObject.optString("Leave_code"));
+                    leaveStatusMap.put(leaveStatusModelClass.getLeaveCode(), leaveStatusModelClass);
+                }
 
-//                            leave_modelclass tackleave=new leave_modelclass(jsonObject1.getString("Leave_Name"),"6","5","10");
-                            Chart_list.add(tackleave);
-
-
-//                        Collections.reverse(Chart_list);
-                            Piechart_adapter chart_details = new Piechart_adapter(context, Chart_list);
-                            leavebinding.RLPiechart.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-                            leavebinding.RLPiechart.setItemAnimator(new DefaultItemAnimator());
-                            leavebinding.RLPiechart.setAdapter(chart_details);
-                            chart_details.notifyDataSetChanged();
-
+                for (int i = 0; i<jsonArray1.length(); i++) {
+                    JSONObject jsonObject = jsonArray1.optJSONObject(i);
+                    if(leaveStatusMap.containsKey(jsonObject.optString("Leave_code"))) {
+                        LeaveStatusModelClass leaveStatusModelClass = leaveStatusMap.get(jsonObject.optString("Leave_code"));
+                        if(leaveStatusModelClass != null) {
+                            Leave_modelclass leave = new Leave_modelclass(jsonObject.optString("Leave_Name"), leaveStatusModelClass.getEligible(), leaveStatusModelClass.getTaken(), leaveStatusModelClass.getAvailable(), leaveStatusModelClass.getLeaveTypeCode());
+                            Chart_list.add(leave);
                         }
+                    }else {
+                        Leave_modelclass leave = new Leave_modelclass(jsonObject.optString("Leave_Name"), "0", "0", "0", jsonObject.optString("Leave_SName"));
+                        Chart_list.add(leave);
                     }
                 }
+
+                Piechart_adapter chart_details = new Piechart_adapter(context, Chart_list);
+                leavebinding.RLPiechart.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+                leavebinding.RLPiechart.setItemAnimator(new DefaultItemAnimator());
+                leavebinding.RLPiechart.setAdapter(chart_details);
+                chart_details.notifyDataSetChanged();
+
+//                for (int i = 0; i<jsonArray.length(); i++) {
+//                    for (int i1 = 0; i1<jsonArray1.length(); i1++) {
+//                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                        JSONObject jsonObject1 = jsonArray1.getJSONObject(i1);
+//                        String Ltype = (jsonObject1.getString("Leave_Name"));
+//                        if(jsonObject.getString("Leave_code").equals(jsonObject1.getString("Leave_code"))) {
+//                            Leave_modelclass tackleave = new Leave_modelclass(jsonObject1.getString("Leave_Name"), (jsonObject.getString("Elig")),
+//                                                                              (jsonObject.getString("Taken")), (jsonObject.getString("Avail")),
+//                                                                              jsonObject.getString("Leave_Type_Code"));
+//
+////                            leave_modelclass tackleave=new leave_modelclass(jsonObject1.getString("Leave_Name"),"6","5","10");
+//                            Chart_list.add(tackleave);
+//
+//
+////                        Collections.reverse(Chart_list);
+//                            Piechart_adapter chart_details = new Piechart_adapter(context, Chart_list);
+//                            leavebinding.RLPiechart.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+//                            leavebinding.RLPiechart.setItemAnimator(new DefaultItemAnimator());
+//                            leavebinding.RLPiechart.setAdapter(chart_details);
+//                            chart_details.notifyDataSetChanged();
+//
+//                        }
+//                    }
+//                }
 
             }
 
@@ -569,14 +596,14 @@ public class Leave_Application extends AppCompatActivity {
     }
 
     public void Submit() {
-        if (isNetworkConnected()) {
+        if(isNetworkConnected()) {
             String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
             String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
             String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
             Log.e("test", "login url : " + baseUrl + replacedUrl);
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl + replacedUrl);
             Bundle bundle = getIntent().getExtras();
-            if (bundle != null) {
+            if(bundle != null) {
                 navigateFrom = getIntent().getExtras().getString("Origin");
             }
 
@@ -605,14 +632,14 @@ public class Leave_Application extends AppCompatActivity {
                 mapString.put("axn", "save/leavemodule");
                 Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonobj.toString());
 
-                if (call != null) {
+                if(call != null) {
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                            if (response.isSuccessful()) {
+                            if(response.isSuccessful()) {
                                 Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
                                 commonUtilsMethods.showToastMessage(Leave_Application.this, "Leave Submitted Successfully");
-                                if (isLeaveEntitlementRequested) {
+                                if(isLeaveEntitlementRequested) {
                                     leaveViewModel.updateLeaveStatusMasterSync();
                                 }
                                 finish();
@@ -631,7 +658,7 @@ public class Leave_Application extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else {
+        }else {
             leavebinding.etFromDate.setText("");
             leavebinding.etToDate.setText("");
             leavebinding.LeaveType.setText("");
@@ -658,9 +685,9 @@ public class Leave_Application extends AppCompatActivity {
     }
 
     private void setVisibility() {
-        if (isLeaveEntitlementRequested) {
+        if(isLeaveEntitlementRequested) {
             leavebinding.chartLayout.setVisibility(View.VISIBLE);
-        } else {
+        }else {
             leavebinding.chartLayout.setVisibility(View.GONE);
         }
     }
@@ -673,14 +700,14 @@ public class Leave_Application extends AppCompatActivity {
 
     private void timeZoneVerification() {
         boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context) && commonUtilsMethods.isTimeZoneAutomatic(context);
-        if (!isAutoTimeZoneEnabled) {
+        if(!isAutoTimeZoneEnabled) {
             CommonUtilsMethods.showCustomDialog(this);
         }
     }
 
     private void closeKeyboard() {
         View view = this.getCurrentFocus();
-        if (view != null) {
+        if(view != null) {
             InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
@@ -698,7 +725,7 @@ public class Leave_Application extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // TODO Auto-generated method stub
                 String str = s.toString();
-                if (str.length() > 300) {
+                if(str.length()>300) {
                     String truncated = str.substring(0, 300);
                     leavebinding.edAddress.setText(truncated);
                     leavebinding.edAddress.setSelection(truncated.length());
@@ -722,7 +749,7 @@ public class Leave_Application extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // TODO Auto-generated method stub
                 String str = s.toString();
-                if (str.length() > 300) {
+                if(str.length()>300) {
                     String truncated = str.substring(0, 300);
                     leavebinding.edReason.setText(truncated);
                     leavebinding.edReason.setSelection(truncated.length());
@@ -736,7 +763,8 @@ public class Leave_Application extends AppCompatActivity {
             }
         });
     }
-    private void onClickListener(){
+
+    private void onClickListener() {
         leavebinding.leaveStatusSync.setOnClickListener(v -> {
             List_LeaveDates.clear();
             leavebinding.etFromDate.setText("");
