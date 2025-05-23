@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.reports.dayReport.adapter;
 import static saneforce.sanzen.commonClasses.CommonAlertBox.dialog;
 
 import android.app.Activity;
+import android.app.MediaRouteButton;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -50,10 +52,7 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
 
         String imageName = EventList.get(position).getEventimg().replace("photos/","");
         String fileName  = imageName;
-
-
         if (Objects.requireNonNull(fileName).isEmpty()) {
-
         }else {
 
             File file = new File(context.getFilesDir(),fileName);
@@ -67,7 +66,8 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
                         holder.imageView.setVisibility(View.VISIBLE);
                     } else {
                         Log.d("bitmap image", "Failed to load image, bitmap is null.");
-                        holder.imageView.setVisibility(View.GONE);
+                        holder.progressBar.setVisibility(View.VISIBLE);
+
                     }
                 }
             });
@@ -81,6 +81,7 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
 
     public class Viewholder extends RecyclerView.ViewHolder {
 
+        public ProgressBar progressBar;
         ImageView imageView;
         TextView ImageTittle,Remarks;
         public Viewholder(@NonNull View itemView) {

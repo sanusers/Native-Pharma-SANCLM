@@ -122,7 +122,6 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         masterDataDao=roomDB.masterDataDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
-//        callOfflineSignDataDao = roomDB.callOfflineSignDataDao();
         callOfflineWorkTypeDataDao = roomDB.callOfflineWorkTypeDataDao();
         offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
         activityOfflineDataDao = roomDB.activityOfflineDataDao();
@@ -697,6 +696,11 @@ private void CallSendAPIImage(int position,int i,EcModelClass ecModelClass,Strin
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                    }else{
+                        ecModelClass.setSynced(1);
+                        ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                        callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
+                        CallAPIListImage(position);
                     }
 
                 }
