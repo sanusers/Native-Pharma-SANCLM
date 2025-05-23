@@ -47,6 +47,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import saneforce.sanzen.AWS.AWSBuckets;
+import saneforce.sanzen.AWS.AWSBucketsTag;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.myresource.myresourcemodel.ResourcerviewModelClass;
@@ -271,7 +272,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
             TransferNetworkLossHandler.getInstance(getApplicationContext());
             File MapView = new File(MyResource_mapview.this.getFilesDir(), fileName);
             Log.d("TAG", "AddTaggedDetails: " + MapView.getAbsolutePath());
-            new AWSBuckets(MyResource_mapview.this, fileName, MapView, 0, "", new S3DownloadFiles() {
+            new AWSBucketsTag(MyResource_mapview.this, fileName, MapView, 0, "", new S3DownloadFiles() {
                 @Override
                 public void fileDataAdd(int pos, Bitmap bitmap) {
                     if (bitmap != null) {

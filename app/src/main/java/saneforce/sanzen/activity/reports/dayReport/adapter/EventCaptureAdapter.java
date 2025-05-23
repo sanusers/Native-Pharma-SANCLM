@@ -55,16 +55,9 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
         if (Objects.requireNonNull(fileName).isEmpty()) {
 
         }else {
-            String bucketName = "san.one";
-            String region = "ap-south-1";
-            String s3Key = "uploads/"+fileName;
-            String imageUrl = "https://s3." + region + ".amazonaws.com/" + bucketName + "/" + s3Key;
-            Log.d("Image URL", "Fetching image from: " + imageUrl);
 
             File file = new File(context.getFilesDir(),fileName);
             Log.d("TAG", "onBindViewHolder: " + file.getAbsolutePath());
-
-            /*String getFile = SharedPref.getDivisionName((Activity) context);*/
             new AWSBuckets(context, fileName, file, 0, "", new S3DownloadFiles() {
                 @Override
                 public void fileDataAdd(int pos, Bitmap bitmap) {

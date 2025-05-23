@@ -27,8 +27,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
@@ -46,17 +45,19 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import saneforce.sanzen.AWS.AWSBuckets;
+import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
-import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.Keys;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 
 
 public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHolder> {
@@ -68,6 +69,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
     private final CallOfflineECDataDao callOfflineECDataDao;
     private final CallOfflineDataDao callOfflineDataDao;
     private final OfflineDaySubmitDao offlineDaySubmitDao;
+    Util util;
 
     public OutBoxECAdapter(Activity activity, Context context, ArrayList<EcModelClass> ecModelClasses) {
         this.activity = activity;
@@ -78,6 +80,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
         offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
+        util = new Util();
     }
 
     @NonNull
@@ -201,13 +204,17 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         Log.d("CallImageApi", "filePath received: " + filePath);
         try {
 
-            CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                    context,
-                    "ap-south-1:c4c0fc81-118d-43e3-84cf-051f1bd831b9",
-                    Regions.AP_SOUTH_1);
+            /*String accessKey = Keys.ACCESS_KEY;
+            String secretKey = Keys.SECRET_KEY;
+            Regions region = Regions.EU_NORTH_1;
+            String bucketName = "san-edet";
+            BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey,secretKey);
 
-            AmazonS3Client s3Client = new AmazonS3Client(credentialsProvider);
-            s3Client.setRegion(Region.getRegion(Regions.AP_SOUTH_1));
+            AmazonS3Client s3Client = new AmazonS3Client(credentials);
+            s3Client.setRegion(Region.getRegion(region));*/
+
+            util.getS3Client(context);
+            String bucketName = "san-edet";
 
 
             File fileToUpload = new File(filePath);
@@ -216,40 +223,34 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                 Log.d("fileToUpload", "not exists: " + filePath);
             } else {
 
-                String bucketName = "san.one";
-                String s3Key = "uploads/" + fileToUpload.getName();
-                Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
-                String UploadUrl = "https://" + "s3." + "ap-south-1." + "amazonaws.com/" + bucketName + "/" + s3Key;
-                Log.d("S3UploadUrl", "CallSendAPIImage: " + UploadUrl);
+                String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/" + fileToUpload.getName();
+                Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
                 TransferNetworkLossHandler.getInstance(context);
 
                 TransferUtility transferUtility = TransferUtility.builder()
                         .context(context)
-                        .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
-                        .s3Client(s3Client)
-                        .defaultBucket(bucketName)
+                        .s3Client(util.getS3Client(context))
                         .build();
 
                 TransferObserver uploadObserver = transferUtility.upload(
                         bucketName,
                         s3Key,
                         fileToUpload);
+                Log.d("uploadObserver", "CallSendAPIImage: "+uploadObserver);
                 uploadObserver.setTransferListener(new TransferListener() {
                     @Override
                     public void onStateChanged(int idInt, TransferState state) {
                         if (state == TransferState.COMPLETED) {
                             Log.d("TAG", "ecModelClass: " + filePath);
                             InsertImage(ecModelClass.getFilePath(), context);
-//                            DeleteCacheFile(filePath, id);
                             Log.d("S3 Upload", "Upload Successful: " + s3Key);
 
                         } else if (state == TransferState.FAILED) {
 
                             Log.e("S3 Upload", "Upload Failed");
                             InsertImage(ecModelClass.getFilePath(), context);
-
                             ecModelClass.setSynced(1);
                             ecModelClass.setSync_status(Constants.CALL_FAILED);
                             try {

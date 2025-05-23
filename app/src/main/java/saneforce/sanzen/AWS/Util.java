@@ -19,20 +19,17 @@ package saneforce.sanzen.AWS;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.mobile.client.AWSMobileClient;
-import com.amazonaws.mobile.client.Callback;
-import com.amazonaws.mobile.client.UserStateDetails;
-import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.util.IOUtils;
-
-import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,7 +37,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
+
+import saneforce.sanzen.commonClasses.Keys;
 
 /**
  * Handles basic helper functions used throughout the app.
@@ -48,9 +46,9 @@ import java.util.concurrent.CountDownLatch;
 public class Util {
     private static final String TAG = Util.class.getSimpleName();
 
-    private AmazonS3Client sS3Client;
+    private AmazonS3 sS3Client;
     private AWSCredentialsProvider sMobileClient;
-    private TransferUtility sTransferUtility;
+    private TransferUtility transferUtility;
 
     /**
      * Gets an instance of AWSMobileClient which is
@@ -59,7 +57,7 @@ public class Util {
      * @param context Android context
      * @return AWSMobileClient which is a credentials provider
      */
-    private AWSCredentialsProvider getCredProvider(Context context) {
+  /*  private AWSCredentialsProvider getCredProvider(Context context) {
         if (sMobileClient == null) {
             final CountDownLatch latch = new CountDownLatch(1);
             AWSMobileClient.getInstance().initialize(context, new Callback<UserStateDetails>() {
@@ -82,7 +80,8 @@ public class Util {
             }
         }
         return sMobileClient;
-    }
+    }*/
+    private final String REGION = "eu-north-1";
 
     /**
      * Gets an instance of a S3 client which is constructed using the given
@@ -93,7 +92,7 @@ public class Util {
      */
     public AmazonS3Client getS3Client(Context context) {
         if (sS3Client == null) {
-            try {
+       /*     try {
                 String regionString = new AWSConfiguration(context)
                         .optJsonObject("S3TransferUtility")
                         .getString("Region");
@@ -101,10 +100,12 @@ public class Util {
                 sS3Client = new AmazonS3Client(getCredProvider(context), region);
             } catch (JSONException e) {
                 e.printStackTrace();
-            }
+            }*/
+            AWSCredentials credentials = new BasicAWSCredentials(Keys.ACCESS_KEY, Keys.SECRET_KEY);
+            sS3Client =  new AmazonS3Client(credentials);
+            sS3Client.setRegion(Region.getRegion(Regions.fromName(REGION)));
         }
-
-        return sS3Client;
+        return (AmazonS3Client) sS3Client;
     }
 
     /**
@@ -115,15 +116,14 @@ public class Util {
      * @return a TransferUtility instance
      */
     public TransferUtility getTransferUtility(Context context) {
-        if (sTransferUtility == null) {
-            sTransferUtility = TransferUtility.builder()
+        if (transferUtility == null) {
+            transferUtility = TransferUtility.builder()
                     .context(context)
                     .s3Client(getS3Client(context))
-                    .awsConfiguration(new AWSConfiguration(context))
                     .build();
         }
 
-        return sTransferUtility;
+        return transferUtility;
     }
 
 
