@@ -26,7 +26,7 @@ public interface NotificationDataDao {
     void deleteAllData();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void saveNotification(NotificationDataTable notificationDataTable);
+    long saveNotification(NotificationDataTable notificationDataTable);
 
     @Query("SELECT COUNT(1) > 0 FROM `NOTIFICATION_TABLE`")
     boolean isNotificationAvailable();
@@ -38,16 +38,25 @@ public interface NotificationDataDao {
     boolean isAvailableNotificationOnDateTime(String dateTime);
 
     @Query("SELECT EXISTS(SELECT 1 FROM `NOTIFICATION_TABLE` WHERE `IS_READ` = :status)")
-    boolean isNotificationAvailableByStatus(boolean status);
+    boolean isNotificationAvailableByStatus(int status);
+
+    @Query("SELECT EXISTS(SELECT 1 FROM `NOTIFICATION_TABLE` WHERE `SYNC_STATUS` = :status)")
+    boolean isNotificationAvailableBySyncStatus(int status);
 
     @Query("SELECT * FROM `NOTIFICATION_TABLE` WHERE `ID` = :id")
     NotificationDataTable getNotificationByID(int id);
 
     @Query("SELECT * FROM `NOTIFICATION_TABLE` WHERE `IS_READ` = :status")
-    List<NotificationDataTable> getNotificationByStatus(boolean status);
+    List<NotificationDataTable> getNotificationByStatus(int status);
 
-    @Query("UPDATE `NOTIFICATION_TABLE` SET `IS_READ` = :status")
-    void changeNotificationStatus(int status);
+    @Query("SELECT * FROM `NOTIFICATION_TABLE` WHERE `SYNC_STATUS` = :status")
+    List<NotificationDataTable> getNotificationBySyncStatus(int status);
+
+    @Query("UPDATE `NOTIFICATION_TABLE` SET `IS_READ` = :status WHERE `ID` = :id")
+    void changeNotificationReadStatus(int id, int status);
+
+    @Query("UPDATE `NOTIFICATION_TABLE` SET `SYNC_STATUS` = :syncStatus WHERE `ID` = :id")
+    void changeNotificationSyncStatus(int id, int syncStatus);
 
     @Query("DELETE FROM `NOTIFICATION_TABLE` WHERE `ID` = :id")
     void deleteNotificationByID(int id);
@@ -55,8 +64,14 @@ public interface NotificationDataDao {
     @Query("SELECT * FROM `NOTIFICATION_TABLE` ORDER BY `DATE_TIME` DESC")
     LiveData<List<NotificationDataTable>> getAllNotifications();
 
+    @Query("SELECT * FROM `NOTIFICATION_TABLE` WHERE `SYNC_STATUS` != 0 ORDER BY `DATE_TIME` DESC")
+    LiveData<List<NotificationDataTable>> getAllUnsyncedNotifications();
+
     @Query("SELECT COUNT(*) FROM `NOTIFICATION_TABLE` WHERE `IS_READ` = 0")
     LiveData<Integer> getUnreadNotificationCount();
+
+    @Query("SELECT COUNT(*) FROM `NOTIFICATION_TABLE` WHERE `SYNC_STATUS` != 0")
+    LiveData<Integer> getUnsyncedNotificationCount();
 
     @Query("UPDATE `NOTIFICATION_TABLE` SET `IS_READ` = 1 WHERE `ID` = :notificationId")
     int markAsRead(int notificationId);

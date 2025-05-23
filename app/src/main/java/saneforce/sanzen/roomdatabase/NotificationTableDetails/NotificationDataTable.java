@@ -24,6 +24,9 @@ public class NotificationDataTable {
     @ColumnInfo(name = "is_read", defaultValue = "0")
     private int isRead;
 
+    @ColumnInfo(name = "sync_status", defaultValue = "0")
+    private int syncStatus;
+
     @Ignore
     public NotificationDataTable() {
     }
@@ -35,12 +38,20 @@ public class NotificationDataTable {
     }
 
     @Ignore
-    public NotificationDataTable(int id, String title, String message, String dateTime, int isRead) {
-        this.id = id;
+    public NotificationDataTable(String title, String message, String dateTime, int isRead) {
         this.title = title;
         this.message = message;
         this.dateTime = dateTime;
         this.isRead = isRead;
+    }
+
+    @Ignore
+    public NotificationDataTable(String title, String message, String dateTime, int isRead, int syncStatus) {
+        this.title = title;
+        this.message = message;
+        this.dateTime = dateTime;
+        this.isRead = isRead;
+        this.syncStatus = syncStatus;
     }
 
     public int getId() {
@@ -83,4 +94,11 @@ public class NotificationDataTable {
         this.isRead = isRead;
     }
 
+    public int getSyncStatus() {
+        return syncStatus;
+    }
+
+    public void setSyncStatus(int syncStatus) {
+        this.syncStatus = syncStatus;
+    }
 }

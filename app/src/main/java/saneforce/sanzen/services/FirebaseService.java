@@ -51,18 +51,22 @@ public class FirebaseService extends FirebaseMessagingService {
     public void onMessageReceived (@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 //        System.out.println("message--->"+ remoteMessage.getNotification().getBody());
-        if(remoteMessage.getNotification() != null) {
-            imageUrl = String.valueOf(remoteMessage.getNotification().getImageUrl());
-            title = remoteMessage.getNotification().getTitle();
-            body = remoteMessage.getNotification().getBody();
-            time = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2);
-//            try {
-//                notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            notificationId = random.nextInt(1000);
-//            createNotification();
+        if(SharedPref.getSettingState(getApplicationContext())) {
+            if(SharedPref.getLoginState(getApplicationContext())) {
+                if(remoteMessage.getNotification() != null) {
+                    imageUrl = String.valueOf(remoteMessage.getNotification().getImageUrl());
+                    title = remoteMessage.getNotification().getTitle();
+                    body = remoteMessage.getNotification().getBody();
+                    time = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2);
+                    try {
+                        notificationDataDao.saveNotification(new NotificationDataTable(title, body, time));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    notificationId = random.nextInt(1000);
+                    createNotification();
+                }
+            }
         }
     }
 

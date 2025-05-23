@@ -54,7 +54,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentBottom="true"
                     android:layout_centerVertical="true"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_toStartOf="@id/img_location">
 
