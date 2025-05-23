@@ -15,7 +15,7 @@
         android:layout_marginLeft="@dimen/_3sdp"
         android:layout_marginTop="@dimen/_2sdp"
         android:fontFamily="@font/satoshi_medium"
-        android:text="Call Status"
+        android:text="DCR Status"
         android:textColor="@color/black_45"
         android:textSize="@dimen/_7sdp"
         android:textStyle="bold" />
