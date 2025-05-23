@@ -436,7 +436,6 @@ public class OutboxFragment extends Fragment {
         }
         if (!isCallAvailable) {
             CallAPIOfflineActivity(ParentPos, 4, listDates.get(ParentPos).getChildItems().get(4).getActivityModelClasses(), modelClass);
-//            CallOfflineSignImg(ParentPos,4 , listDates.get(ParentPos).getChildItems().get(4).getSignModelClasses(), modelClass);
         }
     }
 
