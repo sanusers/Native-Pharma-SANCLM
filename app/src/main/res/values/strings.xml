@@ -627,4 +627,5 @@
     <string name="Business_value">Business Value</string>
     <string name="no_of_product">No of Products:</string>
     <string name="Available">Available:</string>
+    <string name="enter_crct_email">Please Enter the correct email before saving</string>
 </resources>

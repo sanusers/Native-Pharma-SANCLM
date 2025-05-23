@@ -794,45 +794,56 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         });
         activityProfilingBinding.btnSave.setOnClickListener(v -> {
             activityProfilingBinding.btnSave.setEnabled(false);
-            JSONObject json =CommonUtilsMethods.CommonObjectParameter(this);
-            try {
+            String email = activityProfilingBinding.edtEmail.getText().toString().trim();
+            String chmemail = activityProfilingBinding.edtChmemail.getText().toString().trim();
+            if(!email.isEmpty() && activityProfilingBinding.edtEmail.getError() != null){
+                commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.enter_crct_email));
+                activityProfilingBinding.edtEmail.requestFocus();
+                activityProfilingBinding.btnSave.setEnabled(true);
+            }
+            else if(!chmemail.isEmpty() && activityProfilingBinding.edtChmemail.getError() != null){
+                commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.enter_crct_email));
+                activityProfilingBinding.edtChmemail.requestFocus();
+                activityProfilingBinding.btnSave.setEnabled(true);
+            }
+            else {
+                JSONObject json = CommonUtilsMethods.CommonObjectParameter(this);
+                try {
 
-                SfName = SharedPref.getSfName(this);
-                DivCode = SharedPref.getDivisionCode(this);
-                json.put("tableName", "updateprofile");
-                if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
-                    SfCode = SharedPref.getHqCode(this);
-                }
-                else {
-                    SfCode = SharedPref.getSfCode(this);
-                }
+                    SfName = SharedPref.getSfName(this);
+                    DivCode = SharedPref.getDivisionCode(this);
+                    json.put("tableName", "updateprofile");
+                    if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+                        SfCode = SharedPref.getHqCode(this);
+                    } else {
+                        SfCode = SharedPref.getSfCode(this);
+                    }
 
-                json.put("sfcode", SfCode);
-                json.put("division_code", DivCode);
-                json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-                json.put("DeviceID", SharedPref.getDeviceId(context));
-                json.put("DrCode", Code);
-                if(activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Male")) {
-                    json.put("DrGender", "M");
-                }
-                if(activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Female")) {
-                    json.put("DrGender", "F");
-                }
-                else{
-                    json.put("DrGender", activityProfilingBinding.txtSelectGender.getText().toString());
-                }
-                json.put("DrQulCd", Qual_code);
-                json.put("DrqulNm", activityProfilingBinding.txtSelectQua.getText().toString());
-                json.put("DrSpcCd", spec_code);
-                json.put("DrSpcNm", activityProfilingBinding.txtSelectSpec.getText().toString());
-                json.put("DrCatCd", cate_code);
-                json.put("DrCatNm", activityProfilingBinding.txtSelectCategory.getText().toString());
-               if(CustType.equalsIgnoreCase("D")||CustType.equalsIgnoreCase("U")) {
-                   json.put("DrAddr", activityProfilingBinding.edtAddr.getText().toString());
-                   json.put("DrCatNm", activityProfilingBinding.txtSelectCategory.getText().toString());
-                   json.put("DrPhone", activityProfilingBinding.edtPhone.getText().toString());
-                   json.put("DrMob", activityProfilingBinding.edtMob.getText().toString());
-                   json.put("DrEmail", activityProfilingBinding.edtEmail.getText().toString());
+                    json.put("sfcode", SfCode);
+                    json.put("division_code", DivCode);
+                    json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                    json.put("DeviceID", SharedPref.getDeviceId(context));
+                    json.put("DrCode", Code);
+                    if (activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Male")) {
+                        json.put("DrGender", "M");
+                    }
+                    if (activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Female")) {
+                        json.put("DrGender", "F");
+                    } else {
+                        json.put("DrGender", activityProfilingBinding.txtSelectGender.getText().toString());
+                    }
+                    json.put("DrQulCd", Qual_code);
+                    json.put("DrqulNm", activityProfilingBinding.txtSelectQua.getText().toString());
+                    json.put("DrSpcCd", spec_code);
+                    json.put("DrSpcNm", activityProfilingBinding.txtSelectSpec.getText().toString());
+                    json.put("DrCatCd", cate_code);
+                    json.put("DrCatNm", activityProfilingBinding.txtSelectCategory.getText().toString());
+                    if (CustType.equalsIgnoreCase("D") || CustType.equalsIgnoreCase("U")) {
+                        json.put("DrAddr", activityProfilingBinding.edtAddr.getText().toString());
+                        json.put("DrCatNm", activityProfilingBinding.txtSelectCategory.getText().toString());
+                        json.put("DrPhone", activityProfilingBinding.edtPhone.getText().toString());
+                        json.put("DrMob", activityProfilingBinding.edtMob.getText().toString());
+                        json.put("DrEmail", activityProfilingBinding.edtEmail.getText().toString());
 //                   if(!activityProfilingBinding.edtDob.getText().toString().equalsIgnoreCase(dob)) {
 //                       json.put("DrDOB", activityProfilingBinding.edtDob.getText().toString()+ " 00:00:00");
 //                   }
@@ -845,39 +856,46 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
 //                   else{
 //                       json.put("DrDOW", "");
 //                   }
-                   json.put("DrDOB", activityProfilingBinding.edtDob.getText().toString()+ " 00:00:00");
-                   json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString()+ " 00:00:00");
-               }
-               else{
-                   json.put("DrAddr", activityProfilingBinding.edtChmaddr.getText().toString());
-                   json.put("DrCatNm", activityProfilingBinding.txtSelectChmcat.getText().toString());
-                   json.put("DrPhone", activityProfilingBinding.edtChmphone.getText().toString());
-                   json.put("DrMob", activityProfilingBinding.edtChmmob.getText().toString());
-                   json.put("DrEmail", activityProfilingBinding.edtChmemail.getText().toString());
+                        if (!activityProfilingBinding.edtDob.getText().toString().equalsIgnoreCase("")) {
+                            json.put("DrDOB", activityProfilingBinding.edtDob.getText().toString() + " 00:00:00");
+                        } else {
+                             json.put("DrDOB", "");
+                        }
+                        if (!activityProfilingBinding.edtDow.getText().toString().equalsIgnoreCase(dow)) {
+                            json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString() + " 00:00:00");
+                        } else {
+                            json.put("DrDOW", "");
+                        }
+//                        json.put("DrDOB", activityProfilingBinding.edtDob.getText().toString() + " 00:00:00");
+//                        json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString() + " 00:00:00");
+                    } else {
+                        json.put("DrAddr", activityProfilingBinding.edtChmaddr.getText().toString());
+                        json.put("DrCatNm", activityProfilingBinding.txtSelectChmcat.getText().toString());
+                        json.put("DrPhone", activityProfilingBinding.edtChmphone.getText().toString());
+                        json.put("DrMob", activityProfilingBinding.edtChmmob.getText().toString());
+                        json.put("DrEmail", activityProfilingBinding.edtChmemail.getText().toString());
 
-                   if(!activityProfilingBinding.edtChmdob.getText().toString().equalsIgnoreCase(dob)) {
-                       json.put("DrDOB", activityProfilingBinding.edtChmdob.getText().toString()+ " 00:00:00");
-                   }
-                   else{
-                       // json.put("DrDOB", "");
-                   }
-                   if(!activityProfilingBinding.edtChmdow.getText().toString().equalsIgnoreCase(dow)) {
-                       json.put("DrDOW", activityProfilingBinding.edtChmdow.getText().toString()+ " 00:00:00");
-                   }
-                   else{
-                       //json.put("DrDOW", "");
-                   }
-               }
-                json.put("key", SharedPref.getSaveLicenseSetting(context));
-                json.put("DrType", CustType);
-                //json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString());
-                Log.v("printing_add_dr", json.toString());
-                activityProfilingBinding.btnSave.setEnabled(false);
-                UpdateMaster(json.toString(),CustType);
-            }
-            catch (Exception e) {
-                activityProfilingBinding.btnSave.setEnabled(true);
-                e.printStackTrace();
+                        if (!activityProfilingBinding.edtChmdob.getText().toString().equalsIgnoreCase(dob)) {
+                            json.put("DrDOB", activityProfilingBinding.edtChmdob.getText().toString() + " 00:00:00");
+                        } else {
+                            // json.put("DrDOB", "");
+                        }
+                        if (!activityProfilingBinding.edtChmdow.getText().toString().equalsIgnoreCase(dow)) {
+                            json.put("DrDOW", activityProfilingBinding.edtChmdow.getText().toString() + " 00:00:00");
+                        } else {
+                            //json.put("DrDOW", "");
+                        }
+                    }
+                    json.put("key", SharedPref.getSaveLicenseSetting(context));
+                    json.put("DrType", CustType);
+                    //json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString());
+                    Log.v("printing_add_dr", json.toString());
+                    activityProfilingBinding.btnSave.setEnabled(false);
+                    UpdateMaster(json.toString(), CustType);
+                } catch (Exception e) {
+                    activityProfilingBinding.btnSave.setEnabled(true);
+                    e.printStackTrace();
+                }
             }
         });
     }
