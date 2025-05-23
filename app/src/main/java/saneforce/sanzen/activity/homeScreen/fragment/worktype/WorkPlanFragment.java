@@ -2181,7 +2181,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     setUpDeviationLock();
                 }else {
 //                    if (!isFromTP) {
-                        binding.llDeviation.setVisibility(View.VISIBLE);
+                    TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, HomeDashBoard.selectedDate.toString()));
+                    if(tourPlanOfflineDataTable != null) {
+                        String status = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
+                        if(status.equalsIgnoreCase("3")) {
+                            binding.llDeviation.setVisibility(View.VISIBLE);
+                        } else {
+                            binding.llDeviation.setVisibility(View.GONE);
+                        }
+                    }
 //                    } else {
 //                        binding.llDeviation.setVisibility(View.GONE);
 //                    }
@@ -2577,7 +2585,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     setUpDeviationLock();
                                 }else {
 //                                    if (!isFromTP) {
-                                        binding.llDeviation.setVisibility(View.VISIBLE);
+                                    TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, HomeDashBoard.selectedDate.toString()));
+                                    if(tourPlanOfflineDataTable != null) {
+                                        String status = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
+                                        if(status.equalsIgnoreCase("3")) {
+                                            binding.llDeviation.setVisibility(View.VISIBLE);
+                                        } else {
+                                            binding.llDeviation.setVisibility(View.GONE);
+                                        }
+                                    }
 //                                    } else {
 //                                        binding.llDeviation.setVisibility(View.GONE);
 //                                    }
