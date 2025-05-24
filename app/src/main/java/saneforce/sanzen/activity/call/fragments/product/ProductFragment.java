@@ -1,5 +1,8 @@
 package saneforce.sanzen.activity.call.fragments.product;
 
+import static saneforce.sanzen.activity.call.DCRCallActivity.PrdMandatory;
+import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
@@ -43,9 +46,9 @@ public class ProductFragment extends Fragment {
         View v = productsBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-        if (DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
+        if(DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
             productsBinding.tagStock.setVisibility(View.VISIBLE);
-        } else {
+        }else {
             productsBinding.tagStock.setVisibility(View.GONE);
         }
 
@@ -77,40 +80,40 @@ public class ProductFragment extends Fragment {
         productsBinding.tagSamples.setText(DCRCallActivity.CapSamQty);
         productsBinding.tagRxQty.setText(DCRCallActivity.CapRxQty);
 
-        if(DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")||DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")){
+        if(DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2") || DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
             productsBinding.tagPromoted.setVisibility(View.GONE);
         }
 
-        switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
+        switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()){
 
             case "1":
                 Log.d("listsize123", "logsccuess");
-                if (DCRCallActivity.save_valid.equals("0")) {
-                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1")) {
+                if(DCRCallActivity.save_valid.equals("0")) {
+                    if(DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1")) {
                         productsBinding.tagSamples.setVisibility(View.VISIBLE);
                     }
-                    if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1")) {
+                    if(DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1")) {
                         productsBinding.tagRxQty.setVisibility(View.VISIBLE);
                     }
-                    if (DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
+                    if(DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
                         productsBinding.tagRcpa.setVisibility(View.VISIBLE);
                     }
 
-                } else {
+                }else {
                     productsBinding.tagRxQty.setText("Qty");
                     productsBinding.tagSamples.setText(" ");
                     productsBinding.tagRcpa.setText(" ");
 
-                    if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1")) {
+                    if(DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1")) {
                         productsBinding.tagRxQty.setVisibility(View.VISIBLE);
                     }
-                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1")) {
+                    if(DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1")) {
 //                        productsBinding.tagRcpa.setVisibility(View.GONE);
 
 //                        productsBinding.tagSamples.setVisibility(View.GONE);
                         productsBinding.tagPromoted.setVisibility(View.GONE);
                     }
-                    if (DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
+                    if(DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
                         productsBinding.tagRcpa.setVisibility(View.VISIBLE);
                     }
                 }
@@ -120,30 +123,30 @@ public class ProductFragment extends Fragment {
             case "4":
                 Log.d("listsize123", "logsccuess12");
 
-                if (DCRCallActivity.save_valid.equals("0")) {
-                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
+                if(DCRCallActivity.save_valid.equals("0")) {
+                    if(DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
                         productsBinding.tagSamples.setVisibility(View.VISIBLE);
-                    if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
+                    if(DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
                         productsBinding.tagRxQty.setVisibility(View.VISIBLE);
-                    if (DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
+                    if(DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
                         productsBinding.tagRcpa.setVisibility(View.VISIBLE);
                     }
-                } else {
+                }else {
                     productsBinding.tagRxQty.setText("Qty");
                     productsBinding.tagSamples.setText(" ");
                     productsBinding.tagRcpa.setText(" ");
 
 
-                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
+                    if(DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
 //                        productsBinding.tagSamples.setVisibility(View.GONE);
-                        if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
+                        if(DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
                             productsBinding.tagRxQty.setVisibility(View.VISIBLE);
-                    if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
-                            productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+                    if(DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
+                        productsBinding.tagRxQty.setVisibility(View.VISIBLE);
 //                    productsBinding.tagRcpa.setVisibility(View.GONE);
 //                    productsBinding.tagSamples.setVisibility(View.GONE);
                     productsBinding.tagPromoted.setVisibility(View.GONE);
-                    if (DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
+                    if(DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
                         productsBinding.tagRcpa.setVisibility(View.VISIBLE);
                     }
                 }
@@ -153,11 +156,11 @@ public class ProductFragment extends Fragment {
                 break;
             case "6":
                 Log.d("listsize123", "logsccuess9999");
-                if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1"))
+                if(DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1"))
                     productsBinding.tagSamples.setVisibility(View.VISIBLE);
-                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
+                if(DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
                     productsBinding.tagRxQty.setVisibility(View.VISIBLE);
-                if (DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
+                if(DCRCallActivity.PrdRcpaQtyNeed.equalsIgnoreCase("1")) {
                     productsBinding.tagRcpa.setVisibility(View.VISIBLE);
                 }
                 break;
@@ -171,6 +174,23 @@ public class ProductFragment extends Fragment {
     }
 
     private void AddProductList() {
+        boolean isNoProductNotSelected = false;
+        int noProductIndex = 0;
+        for (int i = 0; i<checkedPrdList.size(); i++) {
+            if(checkedPrdList.get(i).getCode().equalsIgnoreCase("-10")) {
+                noProductIndex = i;
+            }
+            if(checkedPrdList.get(i).isCheckedItem() && !checkedPrdList.get(i).getCode().equalsIgnoreCase("-10")) {
+                isNoProductNotSelected = true;
+                break;
+            }
+        }
+        if(!isFromActivity.equalsIgnoreCase("new") && PrdMandatory.equalsIgnoreCase("1") && !isNoProductNotSelected) {
+            CallCommonCheckedList callCommonCheckedList = checkedPrdList.get(noProductIndex);
+            callCommonCheckedList.setCheckedItem(true);
+            checkedPrdList.set(noProductIndex, callCommonCheckedList);
+        }
+
         checkProductListAdapter = new CheckProductListAdapter(getActivity(), getContext(), checkedPrdList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         productsBinding.rvCheckDataList.setLayoutManager(mLayoutManager);
@@ -195,51 +215,52 @@ public class ProductFragment extends Fragment {
         for (CallCommonCheckedList s : checkedPrdList) {
             String Category = "";
 
-            if (s.getCategory().equalsIgnoreCase("Sale")) {
+            if(s.getCategory().equalsIgnoreCase("Sale")) {
                 Category = "SL";
             }
 
-            if (s.getCategory().equalsIgnoreCase("Sample")) {
+            if(s.getCategory().equalsIgnoreCase("Sample")) {
                 Category = "SM";
             }
 
-            if (s.getCategory().equalsIgnoreCase("Sale/Sample")) {
+            if(s.getCategory().equalsIgnoreCase("Sale/Sample")) {
                 Category = "SL/SM";
             }
 
-            if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getCategory().toLowerCase().contains(text.toLowerCase()) || Category.toLowerCase().contains(text.toLowerCase())) {
+            if(s.getName().toLowerCase().contains(text.toLowerCase()) || s.getCategory().toLowerCase().contains(text.toLowerCase()) || Category.toLowerCase().contains(text.toLowerCase())) {
                 filteredNames.add(s);
             }
         }
         checkProductListAdapter.filterList(filteredNames);
     }
-    private void changeCaption(){
-        switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
+
+    private void changeCaption() {
+        switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()){
             case "1":
-                if (SharedPref.getDocProductCaption(requireContext()).isEmpty() || SharedPref.getDocProductCaption(requireContext()).equalsIgnoreCase(null)){
+                if(SharedPref.getDocProductCaption(requireContext()).isEmpty() || SharedPref.getDocProductCaption(requireContext()).equalsIgnoreCase(null)) {
                     productsBinding.tagPrdName.setText("Product Name");
-                }else{
+                }else {
                     productsBinding.tagPrdName.setText(SharedPref.getDocProductCaption(requireContext()));
                 }
                 break;
             case "2":
-                if (SharedPref.getChmProductCaption(requireContext()).isEmpty() || SharedPref.getChmProductCaption(requireContext()).equalsIgnoreCase(null)){
+                if(SharedPref.getChmProductCaption(requireContext()).isEmpty() || SharedPref.getChmProductCaption(requireContext()).equalsIgnoreCase(null)) {
                     productsBinding.tagPrdName.setText("Product Name");
-                }else{
+                }else {
                     productsBinding.tagPrdName.setText(SharedPref.getChmProductCaption(requireContext()));
                 }
                 break;
             case "3":
-                if (SharedPref.getStkProductCaption(requireContext()).isEmpty() || SharedPref.getStkProductCaption(requireContext()).equalsIgnoreCase(null)){
+                if(SharedPref.getStkProductCaption(requireContext()).isEmpty() || SharedPref.getStkProductCaption(requireContext()).equalsIgnoreCase(null)) {
                     productsBinding.tagPrdName.setText("Product Name");
-                }else{
+                }else {
                     productsBinding.tagPrdName.setText(SharedPref.getStkProductCaption(requireContext()));
                 }
                 break;
             case "4":
-                if (SharedPref.getUlProductCaption(requireContext()).isEmpty() || SharedPref.getUlProductCaption(requireContext()).equalsIgnoreCase(null)){
+                if(SharedPref.getUlProductCaption(requireContext()).isEmpty() || SharedPref.getUlProductCaption(requireContext()).equalsIgnoreCase(null)) {
                     productsBinding.tagPrdName.setText("Product Name");
-                }else{
+                }else {
                     productsBinding.tagPrdName.setText(SharedPref.getUlProductCaption(requireContext()));
                 }
                 break;

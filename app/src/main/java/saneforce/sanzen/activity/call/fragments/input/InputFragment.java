@@ -1,5 +1,8 @@
 package saneforce.sanzen.activity.call.fragments.input;
 
+import static saneforce.sanzen.activity.call.DCRCallActivity.PrdMandatory;
+import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
@@ -70,6 +73,23 @@ public class InputFragment extends Fragment {
     }
 
     private void dummyAdapter() {
+        boolean isNoInputNotSelected = false;
+        int noInputIndex = 0;
+        for (int i = 0; i<checkedInputList.size(); i++) {
+            if(checkedInputList.get(i).getCode().equalsIgnoreCase("-10")) {
+                noInputIndex = i;
+            }
+            if(checkedInputList.get(i).isCheckedItem() && !checkedInputList.get(i).getCode().equalsIgnoreCase("-10")) {
+                isNoInputNotSelected = true;
+                break;
+            }
+        }
+        if(!isFromActivity.equalsIgnoreCase("new") && PrdMandatory.equalsIgnoreCase("1") && !isNoInputNotSelected) {
+            CallCommonCheckedList callCommonCheckedList = checkedInputList.get(noInputIndex);
+            callCommonCheckedList.setCheckedItem(true);
+            checkedInputList.set(noInputIndex, callCommonCheckedList);
+        }
+
         checkInputListAdapter = new CheckInputListAdapter(getActivity(), getContext(), checkedInputList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         fragmentInputBinding.rvCheckDataList.setLayoutManager(mLayoutManager);

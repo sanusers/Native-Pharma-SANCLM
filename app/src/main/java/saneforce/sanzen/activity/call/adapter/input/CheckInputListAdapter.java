@@ -1,6 +1,5 @@
 package saneforce.sanzen.activity.call.adapter.input;
 
-
 import static saneforce.sanzen.activity.call.DCRCallActivity.StockInput;
 
 import android.annotation.SuppressLint;
@@ -27,10 +26,9 @@ import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.activity.call.pojo.input.SaveCallInputList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
-
 public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAdapter.ViewHolder> {
     public static ArrayList<SaveCallInputList> saveCallInputListArrayList;
-    public static boolean isCheckedInp;
+    public static boolean isCheckedInp, noInputSelected = false;
     public static String UnSelectedInpCode = "";
     Context context;
     ArrayList<CallCommonCheckedList> checked_arrayList;
@@ -52,7 +50,6 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
         this.checked_arrayList = checked_arrayList;
         saveCallInputListArrayList = saveCallInputLists;
     }
-
 
     @NonNull
     @Override
@@ -78,10 +75,16 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
 //        }
 
         if (checked_arrayList.get(position).isCheckedItem()) {
+            if(checked_arrayList.get(position).getCode().equalsIgnoreCase("-10")){
+               noInputSelected = true;
+            }
             holder.checkBox.setChecked(true);
             holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
             holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
         } else {
+            if(checked_arrayList.get(position).getCode().equalsIgnoreCase("-10")){
+                noInputSelected = false;
+            }
             holder.checkBox.setChecked(false);
             holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
             holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
@@ -89,51 +92,57 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
 
         holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, checked_arrayList.get(position).getName()));
 
-
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if (holder.checkBox.isPressed()) {
                 if(!checked_arrayList.get(position).getCode().equalsIgnoreCase("-10")){
                     if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
                     for (int i = 0; i < StockInput.size(); i++) {
                         if (StockInput.get(i).getStockCode().equalsIgnoreCase(checked_arrayList.get(position).getCode())) {
-                            checked_arrayList.set(position, new CallCommonCheckedList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), StockInput.get(i).getCurrentStock(), false));
+                            checked_arrayList.set(position, new CallCommonCheckedList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), StockInput.get(i).getCurrentStock(), holder.checkBox.isChecked()));
+                            break;
                         }
                     }
                     if (Integer.parseInt(checked_arrayList.get(position).getStock_balance()) > 1) {
                         CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                     } else {
+                        checked_arrayList.set(position, new CallCommonCheckedList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), checked_arrayList.get(position).getStock_balance(), false));
                         holder.checkBox.setChecked(false);
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_input));
                     }
                 } else {
                     CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
+                    commonUtilsMethods.showToastMessage(context, "Cannot deselect No Input!");
                 }
             }else {
-                    if(DCRCallActivity.InpMandatory != null && DCRCallActivity.InpMandatory.equalsIgnoreCase("1")) {
-                        for (int i = 0; i<checked_arrayList.size(); i++) {
-                            if(checked_arrayList.get(i).getCode().equalsIgnoreCase("-10")) {
-                                checked_arrayList.get(i).setCheckedItem(false);
-                                notifyItemChanged(i);
-                                break;
-                            }
-                        }
-//                        noInputHolder.checkBox.setChecked(false);
-                        commonUtilsMethods.showToastMessage(context, "Input selection is mandatory!");
-                    }else {
+//                    if(DCRCallActivity.InpMandatory != null && DCRCallActivity.InpMandatory.equalsIgnoreCase("1")) {
+//                        for (int i = 0; i<checked_arrayList.size(); i++) {
+//                            if(checked_arrayList.get(i).getCode().equalsIgnoreCase("-10")) {
+//                                checked_arrayList.get(i).setCheckedItem(false);
+//                                notifyItemChanged(i);
+//                                break;
+//                            }
+//                        }
+////                        noInputHolder.checkBox.setChecked(false);
+//                        commonUtilsMethods.showToastMessage(context, "Input selection is mandatory!");
+//                    }else {
                         if(holder.checkBox.isChecked() && checkAnyInputSelected()) {
                             holder.checkBox.setChecked(false);
+                            CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                             commonUtilsMethods.showToastMessage(context, "Please deselect the selected Inputs!");
 //                            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
 //                            holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
                         }else {
+                            if(noInputSelected) {
+                                commonUtilsMethods.showToastMessage(context, "Cannot deselect No Input!");
+                            }
                             holder.checkBox.setChecked(true);
-                            commonUtilsMethods.showToastMessage(context, "Cannot deselect No Input!");
+                            CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                         }
 //                        else {
 //                            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
 //                            holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
 //                        }
-                    }
+//                    }
                 }
 
             }
@@ -148,9 +157,13 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
             checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
             isCheckedInp = false;
             checked_arrayList.get(adapterPosition).setCheckedItem(true);
-            checkAndSetNoInputCheckedOrUnchecked();
-            saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(adapterPosition).getName(), checked_arrayList.get(adapterPosition).getCode(), "1", checked_arrayList.get(adapterPosition).getStock_balance(), checked_arrayList.get(adapterPosition).getStock_balance()));
-            AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
+            if(!checked_arrayList.get(adapterPosition).getCode().equalsIgnoreCase("-10")) {
+                checkAndSetNoInputCheckedOrUnchecked();
+                saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(adapterPosition).getName(), checked_arrayList.get(adapterPosition).getCode(), "1", checked_arrayList.get(adapterPosition).getStock_balance(), checked_arrayList.get(adapterPosition).getStock_balance()));
+                AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
+            } else {
+                noInputSelected = true;
+            }
         } else {
             new CountDownTimer(80, 80) {
                 public void onTick(long millisUntilFinished) {
@@ -166,9 +179,13 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
             isCheckedInp = true;
             UnSelectedInpCode = checked_arrayList.get(adapterPosition).getCode();
             checked_arrayList.get(adapterPosition).setCheckedItem(false);
-            checkAndSetNoInputCheckedOrUnchecked();
-            AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
-            finalInputCallAdapter.notifyDataSetChanged();
+            if(!checked_arrayList.get(adapterPosition).getCode().equalsIgnoreCase("-10")) {
+                checkAndSetNoInputCheckedOrUnchecked();
+                AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
+                finalInputCallAdapter.notifyDataSetChanged();
+            } else {
+                noInputSelected = false;
+            }
         }
     }
 
@@ -210,13 +227,14 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
     }
 
     private void checkAndSetNoInputCheckedOrUnchecked() {
-        if(!(DCRCallActivity.InpMandatory != null && DCRCallActivity.InpMandatory.equals("1"))) {
+//        if(!(DCRCallActivity.InpMandatory != null && DCRCallActivity.InpMandatory.equals("1"))) {
             if(!checkAnyInputSelected()) {
                 if(checked_arrayList.get(0).getCode().equalsIgnoreCase("-10")) {
                     checked_arrayList.get(0).setCheckedItem(true);
                     for (int i = 0; i<checked_arrayList.size(); i++) {
                         if(checked_arrayList.get(i).getCode().equalsIgnoreCase("-10")) {
                             checked_arrayList.get(i).setCheckedItem(true);
+                            noInputSelected = true;
                             notifyItemChanged(i);
                             break;
                         }
@@ -231,6 +249,7 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
                     for (int i = 0; i<checked_arrayList.size(); i++) {
                         if(checked_arrayList.get(i).getCode().equalsIgnoreCase("-10")) {
                             checked_arrayList.get(i).setCheckedItem(false);
+                            noInputSelected = false;
                             notifyItemChanged(i);
                             break;
                         }
@@ -240,6 +259,6 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
 //                    noInputHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
                 }
             }
-        }
+//        }
     }
 }
