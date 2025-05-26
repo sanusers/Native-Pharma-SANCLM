@@ -49,6 +49,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
         this.context = context;
         this.callCommonCheckedListArrayList = callCommonCheckedListArrayList;
         CheckProductListAdapter.saveCallProductListArrayList = saveCallProductListArrayList;
+        checkAndSetNoProductCheckedOrUnchecked();
     }
 
     public static int getPosition() {

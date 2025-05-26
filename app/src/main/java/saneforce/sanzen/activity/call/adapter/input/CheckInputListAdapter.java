@@ -49,6 +49,7 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
         this.context = context;
         this.checked_arrayList = checked_arrayList;
         saveCallInputListArrayList = saveCallInputLists;
+        checkAndSetNoInputCheckedOrUnchecked();
     }
 
     @NonNull
