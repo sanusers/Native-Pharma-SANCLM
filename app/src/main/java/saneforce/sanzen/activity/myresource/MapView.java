@@ -177,8 +177,8 @@ public class MapView extends AppCompatActivity implements OnMapReadyCallback, Go
 //        return val;
 //    }
     private void locationCheck() {
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+//        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (CommonUtilsMethods.isLocationEnabled(this)) {
             if(!CheckLocPermission()){
                 RequestLocationPermission();
             }

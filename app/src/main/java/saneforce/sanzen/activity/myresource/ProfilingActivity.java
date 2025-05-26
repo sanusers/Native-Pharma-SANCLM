@@ -861,7 +861,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                         } else {
                              json.put("DrDOB", "");
                         }
-                        if (!activityProfilingBinding.edtDow.getText().toString().equalsIgnoreCase(dow)) {
+                        if (!activityProfilingBinding.edtDow.getText().toString().equalsIgnoreCase("")) {
                             json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString() + " 00:00:00");
                         } else {
                             json.put("DrDOW", "");

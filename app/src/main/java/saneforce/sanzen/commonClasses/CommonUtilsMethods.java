@@ -215,9 +215,6 @@ public class CommonUtilsMethods {
 
 
     public static void RequestGPSPermission(Activity activity) {
-        // LocationManager locationManager = (LocationManager) activity.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-
-        // if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
         new android.app.AlertDialog.Builder(activity).setTitle("Alert")  // GPS not found
                 .setCancelable(false).setMessage("Enable the location of Gps to proceed further") // Want to enable?
                 .setPositiveButton("Yes", (dialogInterface, i) -> {
