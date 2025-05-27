@@ -314,7 +314,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                             holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", finalValue)});
                             if (!editable.toString().isEmpty()) {
                                 int final_value = Integer.parseInt(productListArrayList.get(position).getLast_stock()) - Integer.parseInt(editable.toString());
-                                if(final_value > 0) {
+                                if(final_value >= 0) {
                                     holder.tv_stocks.setText(String.valueOf(final_value));
                                     productListArrayList.set(holder.getBindingAdapterPosition(), new SaveCallProductList(productListArrayList.get(holder.getBindingAdapterPosition()).getName(), productListArrayList.get(holder.getBindingAdapterPosition()).getCode(), productListArrayList.get(holder.getBindingAdapterPosition()).getCategory(), String.valueOf(final_value), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), editable.toString(), productListArrayList.get(holder.getBindingAdapterPosition()).getRx_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRcpa_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getPromoted(), productListArrayList.get(holder.getBindingAdapterPosition()).isClicked()));
                                     for (int i = 0; i<StockSample.size(); i++) {

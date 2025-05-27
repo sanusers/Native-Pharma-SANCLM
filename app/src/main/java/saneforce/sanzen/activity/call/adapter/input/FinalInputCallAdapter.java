@@ -137,7 +137,7 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
                         holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", finalValue)});
                         if (!editable.toString().isEmpty()) {
                             int final_value = Integer.parseInt(saveCallInputLists.get(position).getLast_inp_stk()) - Integer.parseInt(editable.toString());
-                            if(final_value > 0) {
+                            if(final_value >= 0) {
                                 holder.tv_input_stk.setText(String.valueOf(final_value));
                                 saveCallInputLists.set(holder.getBindingAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getBindingAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getInp_code(), editable.toString(), String.valueOf(final_value), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk()));
                                 for (int i = 0; i<StockInput.size(); i++) {
