@@ -70,7 +70,7 @@ import saneforce.sanzen.utility.TimeUtils;
 public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     public static TextView Qualification, Speciality, Category;
-    public static String Qual_code = "", spec_code = "", cate_code = "",SfType = "", SfCode = "", SfName = "", DivCode = "",Code,gender="";
+    public static String Qual_code = "", spec_code = "", cate_code = "",SfType = "", SfCode = "", SfName = "", DivCode = "",Code,gender="",drgender="";
 
     String qualif, cate, spec, dob, dow, address, mobile, phone="", email, docname, doc_code, Dcr_posname, Lat, Long, Town_val,town,fullobject="";
     ProgressDialog progressDialog;
@@ -186,6 +186,15 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 spec_code = extra.getString("Spec_code");
                 Qual_code= extra.getString("Qual_code");
                 gender = extra.getString("ListedDrSex");
+                if(gender.equalsIgnoreCase("M")||gender.equalsIgnoreCase("Male")){
+                    drgender="Male";
+                }
+                else if(gender.equalsIgnoreCase("F")||gender.equalsIgnoreCase("Female")){
+                    drgender="Female";
+                }
+                else{
+                    drgender="";
+                }
             }
             else{
                 if (CustType.equalsIgnoreCase("C")){
@@ -236,7 +245,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             activityProfilingBinding.edtMob.setText(mobile);
             activityProfilingBinding.edtPhone.setText(phone);
             activityProfilingBinding.edtAddr.setText(address);
-            activityProfilingBinding.txtSelectGender.setText(gender);
+            activityProfilingBinding.txtSelectGender.setText(drgender);
             if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")) {
                 activityProfilingBinding.secondlayout.setVisibility(View.VISIBLE);
             } else {
@@ -415,7 +424,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             activityProfilingBinding.edtMob.setText(mobile);
             activityProfilingBinding.edtPhone.setText(phone);
             activityProfilingBinding.edtAddr.setText(address);
-            activityProfilingBinding.txtSelectGender.setText(gender);
+            activityProfilingBinding.txtSelectGender.setText(drgender);
             activityProfilingBinding.txtGeocount.setText(geotagcount + "/" + maxcount);
             if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")) {
                 activityProfilingBinding.secondlayout.setVisibility(View.VISIBLE);
@@ -824,14 +833,16 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     json.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
                     json.put("DeviceID", SharedPref.getDeviceId(context));
                     json.put("DrCode", Code);
-//                    if (activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Male")) {
-//                        json.put("DrGender", "M");
-//                    }
-//                    if (activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Female")) {
-//                        json.put("DrGender", "F");
-//                    } else {
+                    if (activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Male")) {
+                        json.put("DrGender", "M");
+                    }
+                    else if (activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Female")) {
+                        json.put("DrGender", "F");
+                    }
+                    else {
                         json.put("DrGender", activityProfilingBinding.txtSelectGender.getText().toString());
-//                    }
+                    }
+                    //json.put("DrGender", activityProfilingBinding.txtSelectGender.getText().toString());
                     json.put("DrQulCd", Qual_code);
                     json.put("DrqulNm", activityProfilingBinding.txtSelectQua.getText().toString());
                     json.put("DrSpcCd", spec_code);

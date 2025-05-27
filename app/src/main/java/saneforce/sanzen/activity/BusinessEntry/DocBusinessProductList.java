@@ -13,7 +13,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,15 +20,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,28 +37,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.BusinessEntry.Interface.UpdateUi;
 import saneforce.sanzen.activity.BusinessEntry.ModelClass.AddDoctorEntryProducts;
-import saneforce.sanzen.activity.BusinessEntry.ModelClass.DoctorBusinessModel;
 import saneforce.sanzen.activity.BusinessEntry.ModelClass.ProductListModel;
 import saneforce.sanzen.activity.BusinessEntry.adapter.DoctorBusinessProductListAdapter;
-import saneforce.sanzen.activity.call.adapter.additionalCalls.AdditionalCusListAdapter;
-import saneforce.sanzen.activity.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
-import saneforce.sanzen.activity.call.adapter.product.CheckProductListAdapter;
-import saneforce.sanzen.activity.call.fragments.additionalCall.AddCallSelectPrdSide;
-import saneforce.sanzen.activity.call.fragments.product.ProductFragment;
-import saneforce.sanzen.activity.call.fragments.rcpa.RCPASelectPrdSide;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
-import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityDocbusinessProductListBinding;
-import saneforce.sanzen.databinding.ActivityDoctorbusinessEntryBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -80,11 +65,11 @@ public class DocBusinessProductList  extends AppCompatActivity {
     ProgressDialog progressDialog;
     CommonUtilsMethods commonUtilsMethods;
     ApiInterface apiInterface;
-    int ProductCount=0;
     double prdtotalvalue=0.0;
-    String TotalValue="",Doc_name="",Month="",sfcode="",sfname="",Rsf="",divisioncode="",selmonth="",selyear="",activeflag="";
+    String Doc_name="",Month="",sfcode="",sfname="",Rsf="",selmonth="",selyear="",activeflag="";
     String Doc_code="",detailcode="",selectedhq="",ter_code="",ter_name="",catcode="",catname="",speccode="",specname="",classcode="",classname="",productJson="";
     MasterDataDao masterDataDao;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +102,7 @@ public class DocBusinessProductList  extends AppCompatActivity {
             docbusinessProductListBinding.btnSave.setVisibility(View.GONE);
             docbusinessProductListBinding.btnCancel.setVisibility(View.GONE);
         }
-        else{
+        else {
             docbusinessProductListBinding.btnSave.setVisibility(View.VISIBLE);
             docbusinessProductListBinding.btnCancel.setVisibility(View.VISIBLE);
         }
@@ -127,39 +112,43 @@ public class DocBusinessProductList  extends AppCompatActivity {
                 Date date = sdf.parse(dateStr);
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date);
-
                 int month = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH is zero-based
                 int year = calendar.get(Calendar.YEAR);
                 selmonth=String.valueOf(month);
                 selyear=String.valueOf(year);
-            } catch (ParseException e) {
+            }
+            catch (ParseException e) {
                 e.printStackTrace();
             }
         docbusinessProductListBinding.drbusiness.setText(Doc_name + " " + "Business Entry" + " (" + Month + ")");
-     if(!productJson.isEmpty()) {
-         try {
-             JSONArray jsonArray = new JSONArray(productJson);
-             Gson gson = new Gson();
-             Type listType = new TypeToken<List<ProductListModel>>() {
-             }.getType();
-             selectedProductList = gson.fromJson(jsonArray.toString(), listType);
-         } catch (JSONException e) {
-             e.printStackTrace();
-         }
-     }
+        if (!productJson.isEmpty()) {
+            try {
+                JSONArray jsonArray = new JSONArray(productJson);
+                Gson gson = new Gson();
+                Type listType = new TypeToken<List<ProductListModel>>() {
+                }.getType();
+                selectedProductList = gson.fromJson(jsonArray.toString(), listType);
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         SetUpAdapter();
+
         docbusinessProductListBinding.drBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleCancel();
             }
         });
+
         docbusinessProductListBinding.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleCancel();
             }
         });
+
         docbusinessProductListBinding.btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -233,26 +222,23 @@ public class DocBusinessProductList  extends AppCompatActivity {
                         updatedproducts.put("Territory_Name", ter_name);
                         updatedproducts.put("Target_Price", product.getTarget_Price());
                         updatedjsonArrayproducts.put(updatedproducts);
-
                     }
                     json.put("Product_data", jsonArrayproducts);
                     Log.v ("products_final",json.toString());
                     finalsubmit(json.toString());
                 }
                 catch (Exception e){
-
                 }
             }
         });
+
         docbusinessProductListBinding.searchProduct.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -261,39 +247,6 @@ public class DocBusinessProductList  extends AppCompatActivity {
             }
         });
     }
-//    private void filter(String text) {
-//        if (text.isEmpty()) {
-//            // If search is cleared, use the original list (without changing the values)
-//            ProductListAdapter.filterList(allPrdList);
-//        } else {
-//            ArrayList<CallCommonCheckedList> filteredNames = new ArrayList<>();
-//            for (CallCommonCheckedList s : allPrdList) {
-//                if (s.getName().toLowerCase().contains(text.toLowerCase())) {
-//                    filteredNames.add(s);
-//                }
-//            }
-//            ProductListAdapter.filterList(filteredNames);
-//        }
-//    }
-//    public void countvalues() {
-//        int count = 0;
-//        double total = 0;
-//        for (CallCommonCheckedList p : allPrdList) {
-//            if (p.getQty() > 0) {
-//                count++;
-//                double rate = 0;
-//                try {
-//                    rate = Double.parseDouble(p.getRate());
-//                } catch (NumberFormatException e) {
-//                    rate = 0;
-//                }
-//                total += p.getQty() * rate;
-//            }
-//        }
-//        docbusinessProductListBinding.prdCount.setText(String.valueOf(count));
-//        docbusinessProductListBinding.txtValue.setText(String.format(Locale.getDefault(), "%.2f", total));
-//    }
-
     private void filter(String text) {
         ArrayList<CallCommonCheckedList> filteredNames = new ArrayList<>();
         for (CallCommonCheckedList s : allPrdList) {
@@ -303,27 +256,6 @@ public class DocBusinessProductList  extends AppCompatActivity {
         }
         ProductListAdapter.filterList(filteredNames);
     }
-//    public void countvalues(){
-//        int count = 0;
-//        double total = 0;
-//
-//        for (CallCommonCheckedList p : allPrdList) {
-//            if (p.getQty() > 0) {
-//                count++;
-//                String rateStr = p.getRate();
-//                double rate = 0;
-//                try {
-//                    rate =  Double.parseDouble(rateStr);
-//                } catch (NumberFormatException e) {
-//                    rate = 0; // default to 0 if invalid
-//                }
-//                total += p.getQty() * rate;
-//            }
-//        }
-//        docbusinessProductListBinding.prdCount.setText(String.valueOf(count));
-//        docbusinessProductListBinding.txtValue.setText(String.format(Locale.getDefault(), "%.2f", total));
-//
-//    }
 
     public void SetUpAdapter() {
         allPrdList = new ArrayList<>();
@@ -331,7 +263,6 @@ public class DocBusinessProductList  extends AppCompatActivity {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-
                 if (!jsonObject.getString("Code").equalsIgnoreCase("-1")) {
                     String code = jsonObject.getString("Code");
                     String detail_code = jsonObject.getString("Product_Detail_Code");
@@ -340,7 +271,6 @@ public class DocBusinessProductList  extends AppCompatActivity {
                             jsonObject.getString("Pack"),
                             jsonObject.getString("DRate"),
                             code,detail_code, 0,"","","","","","","","");
-
                     for (ProductListModel selectedProduct : selectedProductList) {
                         if (selectedProduct.Detail_No.equalsIgnoreCase(detail_code)) {
                             try {
@@ -355,20 +285,16 @@ public class DocBusinessProductList  extends AppCompatActivity {
                                 product.setTarget_Price(selectedProduct.Target_Price);
                                 double mrp = Double.parseDouble(selectedProduct.MRP_Price);
                                 product.setSelectedValue(qty * mrp);
-                                //product.setSelectedValue((selectedProduct.Product_Quantity) * selectedProduct.MRP_Price);
                                 product.setSelected(true);
                             }
                             catch (Exception e){
-
                             }
                             break;
                         }
                     }
-
                     allPrdList.add(product);
                 }
             }
-
             ProductListAdapter = new DoctorBusinessProductListAdapter(DocBusinessProductList.this, DocBusinessProductList.this, allPrdList);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(DocBusinessProductList.this);
             docbusinessProductListBinding.rvPrdList.setLayoutManager(mLayoutManager);
@@ -376,8 +302,8 @@ public class DocBusinessProductList  extends AppCompatActivity {
             docbusinessProductListBinding.rvPrdList.addItemDecoration(new DividerItemDecoration(DocBusinessProductList.this, LinearLayoutManager.VERTICAL));
             docbusinessProductListBinding.rvPrdList.setAdapter(ProductListAdapter);
             ProductListAdapter.countvalues();
-
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -399,6 +325,7 @@ public class DocBusinessProductList  extends AppCompatActivity {
             dialog.dismiss();
         });
     }
+
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) DocBusinessProductList.this.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
@@ -410,10 +337,10 @@ public class DocBusinessProductList  extends AppCompatActivity {
                 CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(this);
                 progressDialog = CommonUtilsMethods.createProgressDialog(this);
                 progressDialog.show();
-            }else {
+            }
+            else {
                 progressDialog.show();
             }
-
             if(isNetworkConnected()) {
                 String baseUrl = SharedPref.getBaseWebUrl(this);
                 String pathUrl = SharedPref.getPhpPathUrl(this);
@@ -448,13 +375,12 @@ public class DocBusinessProductList  extends AppCompatActivity {
                                             setResult(RESULT_OK, resultIntent);
                                             finish();
                                         }
-                                        else {
-                                        }
-
-                                    } catch (Exception e) {
+                                    }
+                                    catch (Exception e) {
                                         Log.v("chkSamStk", "error---" + e);
                                     }
-                                } catch (Exception e) {
+                                }
+                                catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }

@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.BusinessEntry.Interface.UpdateUi;
 import saneforce.sanzen.activity.BusinessEntry.ModelClass.AddDoctorEntryProducts;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -32,18 +31,21 @@ public class DoctorBusinessProductListAdapter extends RecyclerView.Adapter<Docto
     public static int getPosition() {
         return pos;
     }
+
     public DoctorBusinessProductListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
         this.activity = activity;
         this.context = context;
         this.callCommonCheckedListArrayList = callCommonCheckedListArrayList;
         commonUtilsMethods=new CommonUtilsMethods(context);
     }
+
     @NonNull
     @Override
     public DoctorBusinessProductListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.adapter_doctorbusiness_product_list, parent, false);
         return new DoctorBusinessProductListAdapter.ViewHolder(view);
     }
+
     @Override
     public void onBindViewHolder(@NonNull DoctorBusinessProductListAdapter.ViewHolder holder, int position) {
         CallCommonCheckedList item = callCommonCheckedListArrayList.get(position); // Use filtered list
@@ -53,7 +55,8 @@ public class DoctorBusinessProductListAdapter extends RecyclerView.Adapter<Docto
             holder.rate.setText(String.valueOf(item.getSelectedMRP()));
             holder.BusinessQty.setText(String.valueOf(item.getQty()));
             holder.Businessvalue.setText(String.format(Locale.getDefault(), "%.2f", item.getSelectedValue()));
-        } else {
+        }
+        else {
             holder.rate.setText(item.getRate());
             holder.BusinessQty.setText(String.valueOf(item.getQty()));
             holder.Businessvalue.setText("0.00");
@@ -64,6 +67,7 @@ public class DoctorBusinessProductListAdapter extends RecyclerView.Adapter<Docto
         }
 
         holder.BusinessQty.setText(String.valueOf(item.getQty())); // Update current qt
+
         // Create and assign new watcher
         holder.qtyTextWatcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -82,61 +86,37 @@ public class DoctorBusinessProductListAdapter extends RecyclerView.Adapter<Docto
                     float rate;
                     try {
                         rate = Float.parseFloat(holder.rate.getText().toString());
-                    } catch (NumberFormatException e) {
+                    }
+                    catch (NumberFormatException e) {
                         rate = 0;
                     }
                     float cal = qtyVal * rate;
                     item.setSelectedValue(cal);
                     holder.Businessvalue.setText(String.format(Locale.getDefault(), "%.2f", cal));
                     countvalues(); // Update activity
-                } catch (NumberFormatException e) {
+                }
+                catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
             }
         };
         holder.BusinessQty.addTextChangedListener(holder.qtyTextWatcher);
-//// Attach new watcher
-//        holder.BusinessQty.addTextChangedListener(holder.qtyTextWatcher);
-//        // Avoid multiple triggers
-//        holder.BusinessQty.addTextChangedListener(new TextWatcher() {
-//            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-//            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                String val = editable.toString();
-//                int qtyVal = 0;
-//                try {
-//                    if (!TextUtils.isEmpty(val)) {
-//                        qtyVal = Integer.parseInt(val);
-//                    }
-//                    item.setQty(qtyVal);
-//                    float rate;
-//                    try {
-//                        rate = Float.parseFloat(holder.rate.getText().toString());
-//                    } catch (NumberFormatException e) {
-//                        rate = 0;
-//                    }
-//                    float cal = qtyVal * rate;
-//                    item.setSelectedValue(cal); // Store calculated value
-//                    holder.Businessvalue.setText(String.format(Locale.getDefault(), "%.2f", cal));
-//                    countvalues();
-//                } catch (NumberFormatException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+
         holder.tv_name.setOnClickListener(view -> {
             commonUtilsMethods.displayPopupWindow(context, view, item.getName());
         });
     }
+
     @Override
     public int getItemCount() {
         return callCommonCheckedListArrayList.size();
     }
+
     public void filterList(ArrayList<CallCommonCheckedList> filteredNames) {
         this.callCommonCheckedListArrayList = filteredNames;
         notifyDataSetChanged();
     }
+
     public List<AddDoctorEntryProducts> getSelectedProducts() {
         List<AddDoctorEntryProducts> selectedProducts = new ArrayList<>();
         for (CallCommonCheckedList item : callCommonCheckedListArrayList) {
@@ -153,18 +133,18 @@ public class DoctorBusinessProductListAdapter extends RecyclerView.Adapter<Docto
         for (CallCommonCheckedList p : callCommonCheckedListArrayList) {
             if (p.getQty() > 0) {
                 count++;
-
                 double rate;
                 try {
                     if (p.isSelected()) {
                         rate = p.getSelectedMRP(); // use selected MRP if selected
-                    } else {
+                    }
+                    else {
                         rate = Double.parseDouble(p.getRate());
                     }
-                } catch (NumberFormatException e) {
+                }
+                catch (NumberFormatException e) {
                     rate = 0;
                 }
-
                 total += p.getQty() * rate;
             }
         }
@@ -176,6 +156,7 @@ public class DoctorBusinessProductListAdapter extends RecyclerView.Adapter<Docto
         TextView tv_name, tv_pack;
         EditText rate,targetQty,potentialQty,BusinessQty,Businessvalue;
         TextWatcher qtyTextWatcher;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tv_name = itemView.findViewById(R.id.tv_docbusiness_prd_name);
@@ -187,6 +168,5 @@ public class DoctorBusinessProductListAdapter extends RecyclerView.Adapter<Docto
             Businessvalue = itemView.findViewById(R.id.ed_businessvalue);
         }
     }
-
 }
 
