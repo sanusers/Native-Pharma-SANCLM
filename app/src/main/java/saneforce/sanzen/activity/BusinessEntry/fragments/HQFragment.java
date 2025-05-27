@@ -1,7 +1,6 @@
 package saneforce.sanzen.activity.BusinessEntry.fragments;
 
 import static saneforce.sanzen.activity.BusinessEntry.DoctorBusinessActivity.doctorbusinessEntryBinding;
-import static saneforce.sanzen.activity.call.dcrCallSelection.UnlistedDoctorAddition.unlistedadditionbinding;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
@@ -15,20 +14,17 @@ import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.BusinessEntry.DoctorBusinessActivity;
-import saneforce.sanzen.activity.call.dcrCallSelection.fragments.ClusterFragment;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentHqBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
-import saneforce.sanzen.storage.SharedPref;
 
 public class HQFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
@@ -57,6 +53,7 @@ public class HQFragment extends Fragment {
         hqName = "";
         hqCode = "";
         sel_hqcode = 0;
+
         selectHQSideBinding.tvDummy.setOnClickListener(view -> {
         });
 
@@ -71,12 +68,10 @@ public class HQFragment extends Fragment {
         selectHQSideBinding.searchList.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -110,7 +105,8 @@ public class HQFragment extends Fragment {
                 list_name.add(jsonObject.getString("name"));
                 list_code.add(jsonObject.getString("id"));
             }
-        } catch (Exception ignored) {
+        }
+        catch (Exception ignored) {
         }
         dataAdapter = new ArrayAdapter<>(requireActivity(), R.layout.listview_items, list_name);
         selectHQSideBinding.selectListView.setAdapter(dataAdapter);

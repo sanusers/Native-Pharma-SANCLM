@@ -1,6 +1,5 @@
 package saneforce.sanzen.activity.BusinessEntry.ModelClass;
 
-
 public class DoctorBusinessModel {
     public String getHeaderno() {
         return Headerno;

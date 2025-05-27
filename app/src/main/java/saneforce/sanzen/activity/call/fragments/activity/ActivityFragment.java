@@ -2595,7 +2595,8 @@ public class ActivityFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 LocationManager locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
-                if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                        ||locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                     if(!CheckLocPermission()) {
                         RequestLocationPermission();
                     }else {

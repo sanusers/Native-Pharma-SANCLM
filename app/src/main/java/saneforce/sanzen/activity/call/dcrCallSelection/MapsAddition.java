@@ -158,7 +158,8 @@ public class MapsAddition extends AppCompatActivity  implements OnMapReadyCallba
         gpsTrack = new GPSTrack(MapsAddition.this);
         try {
             LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                    || !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                 new android.app.AlertDialog.Builder(MapsAddition.this).setTitle("Alert") // GPS not found
                         .setCancelable(false).setMessage("Activate the Gps to proceed further") // Want to enable?
                         .setPositiveButton("Yes", (dialogInterface, i) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))).show();
@@ -172,7 +173,7 @@ public class MapsAddition extends AppCompatActivity  implements OnMapReadyCallba
     }
     private void locationCheck() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             if(!CheckLocPermission()){
                 RequestLocationPermission();
             }
