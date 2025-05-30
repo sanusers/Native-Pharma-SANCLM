@@ -46,7 +46,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-//import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -164,6 +164,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
         binding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                itemsPagerAdapter.onPageChanged(position);
             }
 
             @SuppressLint("NotifyDataSetChanged")
@@ -230,13 +231,13 @@ public class PlaySlideDetailing extends AppCompatActivity {
                     String fileFormat = SupportClass.getFileExtension(fileName);
                     switch (fileFormat){
                         case "pdf":
-//                            binding.pdfView.setVisibility(View.VISIBLE);
+                            binding.pdfView.setVisibility(View.VISIBLE);
                             binding.videoView.setVisibility(View.GONE);
                             binding.webView.setVisibility(View.GONE);
                             loadPdf(file.getAbsolutePath());
                             break;
                         case "mp4":
-//                            binding.pdfView.setVisibility(View.GONE);
+                            binding.pdfView.setVisibility(View.GONE);
                             binding.videoView.setVisibility(View.VISIBLE);
                             binding.webView.setVisibility(View.GONE);
                             Uri uri = Uri.parse(file.getAbsolutePath());
@@ -245,7 +246,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                             binding.videoView.start();
                             break;
                         case "zip":
-//                            binding.pdfView.setVisibility(View.GONE);
+                            binding.pdfView.setVisibility(View.GONE);
                             binding.videoView.setVisibility(View.GONE);
                             binding.webView.setVisibility(View.VISIBLE);
 
@@ -312,24 +313,10 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 playBtnClicked = false;
                 binding.playBtn.setImageResource(R.drawable.play_icon);
                 binding.viewPager.setVisibility(View.VISIBLE);
-//                binding.pdfView.setVisibility(View.GONE);
+                binding.pdfView.setVisibility(View.GONE);
                 binding.videoView.setVisibility(View.GONE);
                 binding.webView.setVisibility(View.GONE);
                 binding.upArrow.setVisibility(View.VISIBLE);
-            }
-        });
-        binding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                itemsPagerAdapter.onPageChanged(position);
-            }
-
-            @Override
-            public void onPageScrolled(int pos, float offset, int px) {
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
             }
         });
     }
@@ -547,7 +534,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
     }
 
     public void loadPdf(String fileName) {
-//        binding.pdfView.fromFile(new File(fileName)).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();
+        binding.pdfView.fromFile(new File(fileName)).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();
     }
 
     @Override

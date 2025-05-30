@@ -116,6 +116,7 @@
                                 android:singleLine="true"
                                 android:imeOptions="actionDone"
                                 android:maxLines="1"
+                                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.- *#()/"
                                 android:paddingHorizontal="@dimen/_5sdp"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/light_grey"

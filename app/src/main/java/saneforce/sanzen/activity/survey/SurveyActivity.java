@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.survey;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -50,6 +51,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.activityModule.DynamicActivity;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.survey.adapter.SurveyAdapter;
 import saneforce.sanzen.activity.survey.adapter.SurveySideAdapter;
@@ -66,6 +69,7 @@ import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivitySurveyBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
+import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataTable;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -154,6 +158,7 @@ public class SurveyActivity extends AppCompatActivity {
         });
 
         surveyAdapter = new SurveyAdapter(this, surveyDataList, (surveyModelClass, position) -> {
+            UtilityClass.hideKeyboard(SurveyActivity.this);
             if(this.chosenSurveyPosition != position && this.chosenSurveyPosition != -1 && validateAnswerMap()) {
                 activityChangeAlert(surveyModelClass, position);
             }else if(this.chosenSurveyPosition != position) {
@@ -192,7 +197,7 @@ public class SurveyActivity extends AppCompatActivity {
             }
         });
 
-        getSurveyData();
+        syncSurvey();
         getRequiredData();
         getMasterData();
 
@@ -1321,6 +1326,59 @@ public class SurveyActivity extends AppCompatActivity {
     public void hideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    private void syncSurvey() {
+        if(UtilityClass.isNetworkAvailable(SurveyActivity.this)) {
+            callSyncSurveyAPI();
+        } else {
+            commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.no_network));
+            startActivity(new Intent(SurveyActivity.this, HomeDashBoard.class));
+            finishAffinity();
+        }
+    }
+
+    private void callSyncSurveyAPI() {
+        surveyBinding.progressMain.setVisibility(View.VISIBLE);
+        try {
+            JSONObject object = CommonUtilsMethods.CommonObjectParameter(SurveyActivity.this);
+            object.put("tableName", "getsurveydetail");
+            object.put("sfcode", SharedPref.getSfCode(this));
+            object.put("division_code", SharedPref.getDivisionCode(this));
+            Log.v("JsonObject  :", object.toString());
+            Map<String, String> QueryParam = new HashMap<>();
+            QueryParam.put("axn", "get/survey");
+
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(SurveyActivity.this), QueryParam, object.toString());
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                    Log.v("Response :", "" + response);
+                    surveyBinding.progressMain.setVisibility(View.GONE);
+                    if(response.isSuccessful()) {
+                        try {
+                            JsonElement jsonElement = response.body();
+                            if(jsonElement != null) {
+                                JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.SURVEY, jsonArray.toString(), 2));
+                                getSurveyData();
+                            }
+                        } catch (Exception a) {
+                            Log.e("Error", "----- " + a);
+                            a.printStackTrace();
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    surveyBinding.progressMain.setVisibility(View.GONE);
+                    t.printStackTrace();
+                }
+            });
+        } catch (Exception a) {
+            surveyBinding.progressMain.setVisibility(View.GONE);
+            a.printStackTrace();
+        }
     }
 
 }

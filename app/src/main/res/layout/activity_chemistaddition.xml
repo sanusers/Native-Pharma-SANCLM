@@ -142,6 +142,7 @@
                                 android:layout_marginTop="5dp"
                                 android:drawablePadding="@dimen/_5sdp"
                                 android:padding="5dp"
+                                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.- *#()/"
                                 android:hint="@string/enter_name"
                                 android:singleLine="true"
                                 android:imeOptions="actionDone"

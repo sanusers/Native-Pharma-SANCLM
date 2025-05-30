@@ -1349,7 +1349,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.survey))) {
-            startActivity(new Intent(HomeDashBoard.this, SurveyActivity.class));
+            if(UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
+                startActivity(new Intent(HomeDashBoard.this, SurveyActivity.class));
+            } else {
+                commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.no_network));
+            }
             return true;
         }
 

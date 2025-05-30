@@ -25,13 +25,13 @@
         android:layout_centerInParent="true"
         android:padding="@dimen/_5sdp" />
 
-<!--    <com.github.barteksc.pdfviewer.PDFView-->
-<!--        android:id="@+id/pdf_view"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:visibility="gone"-->
-<!--        android:layout_centerInParent="true"-->
-<!--        android:padding="@dimen/_5sdp" />-->
+    <com.github.barteksc.pdfviewer.PDFView
+        android:id="@+id/pdf_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:padding="@dimen/_5sdp" />
 
     <WebView
         android:id="@+id/web_view"
@@ -48,7 +48,6 @@
         android:contentDescription="@string/refresh"
         android:src="@drawable/refresh"
         android:layout_above="@id/close"
-
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/_5sdp"
         app:tint="@color/white" />

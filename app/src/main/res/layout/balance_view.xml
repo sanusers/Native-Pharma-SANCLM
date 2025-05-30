@@ -21,7 +21,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/satoshi_bold"
-            android:hint="@string/product_name"
             android:textColor="@color/red_60"
             android:textSize="@dimen/_7sdp"
             android:padding="@dimen/_3sdp"

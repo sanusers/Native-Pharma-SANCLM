@@ -4,6 +4,7 @@ package saneforce.sanzen.activity.call.adapter.input;
 import static saneforce.sanzen.activity.call.DCRCallActivity.InpQtyRestrictValue;
 import static saneforce.sanzen.activity.call.DCRCallActivity.InpQtyRestriction;
 import static saneforce.sanzen.activity.call.DCRCallActivity.InputValidation;
+import static saneforce.sanzen.activity.call.DCRCallActivity.SamQtyRestrictValue;
 import static saneforce.sanzen.activity.call.DCRCallActivity.StockInput;
 
 import android.annotation.SuppressLint;
@@ -98,7 +99,10 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
             if (InputValidation.equalsIgnoreCase("1")) {
                 if (InpQtyRestriction.equalsIgnoreCase("0")) {
                     //  Log.v("asdasds", (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) + "----" + SamQtyRestrictValue + "----" + productListArrayList.get(position).getLast_stock());
-                    if (Integer.parseInt(InpQtyRestrictValue) >= Integer.parseInt(saveCallInputLists.get(position).getLast_inp_stk())) {
+                    if(SamQtyRestrictValue.equalsIgnoreCase("0")) {
+                        finalValue = saveCallInputLists.get(position).getLast_inp_stk();
+                        holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", saveCallInputLists.get(position).getLast_inp_stk())});
+                    } else if (Integer.parseInt(InpQtyRestrictValue) >= Integer.parseInt(saveCallInputLists.get(position).getLast_inp_stk())) {
                         finalValue = saveCallInputLists.get(position).getLast_inp_stk();
                         holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", saveCallInputLists.get(position).getLast_inp_stk())});
                     } else {
