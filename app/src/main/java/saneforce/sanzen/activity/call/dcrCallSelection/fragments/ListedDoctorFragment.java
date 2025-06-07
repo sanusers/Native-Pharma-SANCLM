@@ -512,8 +512,9 @@ public class ListedDoctorFragment extends Fragment {
 
         try {
             String brands = getBrands(jsonObject.getString("MappProds"));
-            if((((TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
-                    || (TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
+            if((((TPNeed.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")) || (TPNeed.equalsIgnoreCase("0")
+                    && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0")
+                    && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
                     && !deviation.equalsIgnoreCase("1")) {
                 List<String> drList = new ArrayList<>();
                 if(tpDataObj != null) {

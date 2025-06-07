@@ -384,7 +384,6 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
     @Override
     public void onClickDcrDetail(DcrDetailModelList dcrDetailModelList) {
-
     }
 
     @Override

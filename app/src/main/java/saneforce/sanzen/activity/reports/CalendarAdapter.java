@@ -17,22 +17,27 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.tourPlan.calendar.OnDayClickInterface;
+import saneforce.sanzen.activity.tourPlan.calendar.OnDayClickOneBuildInterface;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
+import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.utility.TimeUtils;
 
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
 
     ArrayList<String> arrayList = new ArrayList<>();
+    int id;
     Context context;
     OnDayClickInterface onDayClickInterface;
+    OnDayClickOneBuildInterface onDayClickedOneBuild;
     LocalDate localDate;
     String myDate;
-
+    private int OneBuildSetup = 0 ;
     public CalendarAdapter(ArrayList<String> arrayList, Context context,LocalDate localDate,OnDayClickInterface onDayClickInterface) {
         this.arrayList = arrayList;
         this.context = context;
         this.onDayClickInterface = onDayClickInterface;
+
         this.localDate = localDate;
 //        System.out.println("localDate--->"+localDate);
         localDate = LocalDate.now();
@@ -71,9 +76,14 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!arrayList.get(holder.getAbsoluteAdapterPosition()).equals("")){
-                    onDayClickInterface.onDayClicked(holder.getAbsoluteAdapterPosition(),arrayList.get(holder.getAbsoluteAdapterPosition()),new ModelClass()); // Used the same Interface class which used for TourPlan.So passing 1st and 3rd argument for no purpose
-//                System.out.println("onDayClickInterface--->"+myDate);
+                if (OneBuildSetup == 0){
+                    if(!arrayList.get(holder.getAbsoluteAdapterPosition()).equals("")){
+                        onDayClickedOneBuild.onDayClickedOneBuild(holder.getAbsoluteAdapterPosition(),arrayList.get(holder.getAbsoluteAdapterPosition()),new OneBuildModelClass()); // Used the same Interface class which used for TourPlan.So passing 1st and 3rd argument for no purpose
+                    }
+                }else {
+                    if (!arrayList.get(holder.getAbsoluteAdapterPosition()).equals("")) {
+                        onDayClickInterface.onDayClicked(holder.getAbsoluteAdapterPosition(), arrayList.get(holder.getAbsoluteAdapterPosition()), new ModelClass()); // Used the same Interface class which used for TourPlan.So passing 1st and 3rd argument for no purpose
+                    }
                 }
             }
         });

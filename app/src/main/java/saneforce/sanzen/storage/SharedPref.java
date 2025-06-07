@@ -484,6 +484,7 @@ public class SharedPref {
         editor.putString(SF_STAT, jsonObject.optString("SFStat"));
         editor.putString(DIVISION_CODE, jsonObject.optString("Division_Code"));
         editor.putString(T_BASE, jsonObject.optString("TBase"));
+        //editor.putString(ONE_BUILD, jsonObject.optString("ONE_BUILD"));
         editor.putString(GEO_CHK, jsonObject.optString("GeoChk"));
         editor.putString(GEO_NEED, jsonObject.optString("GeoNeed"));
         editor.putString(CHM_NEED, jsonObject.optString("ChmNeed"));
@@ -499,7 +500,7 @@ public class SharedPref {
         editor.putString(DOC_BUSINESS_PRODUCT, jsonObject.optString("doc_business_product"));
         editor.putString(DOC_BUSINESS_VALUE, jsonObject.optString("doc_business_value"));
         editor.putString(DCR_DOC_BUSINESS_PRODUCT, jsonObject.optString("dcr_doc_business_product"));
-        editor.putString(DR_MAPPINGPRODUCT, jsonObject.optString("Dr_mappingproduct"));
+         editor.putString(DR_MAPPINGPRODUCT, jsonObject.optString("Dr_mappingproduct"));
         editor.putString(CP_NEED, jsonObject.optString("CPNeed"));
         editor.putString(CI_NEED, jsonObject.optString("CINeed"));
         editor.putString(CMPGN_NEED, jsonObject.optString("CmpgnNeed"));
@@ -840,6 +841,9 @@ public class SharedPref {
     public static String getTBase(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(T_BASE, "");
     }
+    /*public static String getONE_BUILD(Context context){
+    * return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(ONE_BUILD, "");
+    * }*/
 
     public static String getGeoChk(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(GEO_CHK, "");

@@ -61,7 +61,6 @@ public class ModelClass implements Serializable {
       ModelClass.SessionList copySession = new ModelClass.SessionList(session);
       this.sessionList.add(copySession);
     }
-
   }
 
 
@@ -153,7 +152,7 @@ public class ModelClass implements Serializable {
     this.STP_Name = STP_Name;
   }
 
-  public static class SessionList implements Serializable {
+  public static class   SessionList implements Serializable {
     private String layoutVisible = "";
 
     private Boolean isVisible = false;

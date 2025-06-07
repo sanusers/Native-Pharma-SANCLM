@@ -15,10 +15,12 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
+import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 
 
 public class SummaryIconAdapter extends RecyclerView.Adapter<SummaryIconAdapter.MyViewHolder> {
     ArrayList<ModelClass.CountModel> modelClass;
+    ArrayList<OneBuildModelClass.CountModel> oneBuildModelClass;
     Context context;
 
     public SummaryIconAdapter (ArrayList<ModelClass.CountModel> modelClass, Context context) {
@@ -26,8 +28,15 @@ public class SummaryIconAdapter extends RecyclerView.Adapter<SummaryIconAdapter.
         this.context = context;
     }
 
-    public SummaryIconAdapter () {
+    public SummaryIconAdapter(Context context,ArrayList<OneBuildModelClass.CountModel> oneBuildModelClass) {
+        this.context = context;
+        this.oneBuildModelClass = oneBuildModelClass;
     }
+
+    public SummaryIconAdapter() {
+
+    }
+
 
     @NonNull
     @Override

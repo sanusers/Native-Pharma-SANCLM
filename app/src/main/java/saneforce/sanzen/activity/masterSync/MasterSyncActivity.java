@@ -225,7 +225,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                    /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
                     sync(Constants.DOCTOR, "gettodaydcr", dcrModelArray, 2);
                     // to get all the HQ list initially only for MGR
-// to get all the HQ list initially only for MGR
+                    // to get all the HQ list initially only for MGR
                 } else {
                     commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
                 }
@@ -708,7 +708,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
             MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY,  Constants.DOCTOR, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
-            MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION,  Constants.DOCTOR, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
+                MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION,  Constants.DOCTOR, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
             MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY,  Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
         //    MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
             MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, Constants.DOCTOR, "getclass", Constants.CLASS, classStatus, false);

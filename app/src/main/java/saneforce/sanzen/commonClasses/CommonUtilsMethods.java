@@ -342,7 +342,7 @@ public class CommonUtilsMethods {
     public void showToastMessage(Context context, String message) {
 
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_layout, ((Activity) context).findViewById(R.id.toast_layout_root));
+        View layout = inflater.inflate(R.layout.toast_layout,((Activity) context).findViewById(R.id.toast_layout_root));
 
         //ImageView image = layout.findViewById(R.id.image);
         // image.setImageResource(R.drawable.san_clm_logo);

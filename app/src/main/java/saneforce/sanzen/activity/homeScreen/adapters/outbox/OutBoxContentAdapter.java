@@ -107,7 +107,6 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     private final ActivityOfflineDataDao activityOfflineDataDao;
     private final ActivityUploadDataDao activityUploadDataDao;
     private final CallsUtil callsUtil;
-    String baseUrl = "http://sanffa.info/iOSServer/db_api.php/";
 
     public OutBoxContentAdapter(Activity activity, Context context, ArrayList<ChildListModelClass> groupModelClasses) {
         this.activity = activity;

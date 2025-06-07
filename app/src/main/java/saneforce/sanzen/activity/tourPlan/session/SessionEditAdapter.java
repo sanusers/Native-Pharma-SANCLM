@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.tourPlan.session;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -52,6 +53,7 @@ import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.model.EditModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
+import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.STPDaySorter;
@@ -66,11 +68,13 @@ import saneforce.sanzen.storage.SharedPref;
 public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.MyViewHolder> {
 
     public static ModelClass inputDataArray = new ModelClass();
+    public static OneBuildModelClass inputDataArrayOneBuild = new OneBuildModelClass();
     public int itemPosition;
     static Context context;
 
     ApiInterface apiInterface;
     SessionInterface sessionInterface;
+    SessionInterfaceOneBuild sessionInterfaceOneBuild;
     SessionItemAdapter sessionItemAdapter = new SessionItemAdapter();
     String sfCode = "", division_code = "", sfType = "", designation = "", state_code = "", subdivision_code = "";
     int synccount = 0;
@@ -79,6 +83,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+    private int OneBuildSetup = 0;
 
     public SessionEditAdapter() {
     }
@@ -114,7 +119,35 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
     }
 
-    public static void setSelectedCount(MyViewHolder holder, ArrayList<EditModelClass> arrayList, boolean selectState, TextView selectedNameTxtView, TextView countTxt) {
+    public SessionEditAdapter(Context context,OneBuildModelClass inputDataArrayOneBuild,SessionInterfaceOneBuild sessionInterfaceOneBuild){
+        commonUtilsMethods = new CommonUtilsMethods(context);
+        this.context = context;
+        SessionEditAdapter.inputDataArrayOneBuild = inputDataArrayOneBuild;
+        this.sessionInterfaceOneBuild = sessionInterfaceOneBuild;
+        roomDB = RoomDB.getDatabase(context);
+        masterDataDao = roomDB.masterDataDao();
+        sfType = SharedPref.getSfType(context);
+
+        //Tp Setup
+        try {
+            JSONArray jsonArray = new JSONArray();
+            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.TP_SETUP).getMasterSyncDataJsonArray();
+            for (int i = 0; i<jsonArray.length(); i++) {
+                drNeed = jsonArray.getJSONObject(i).getString("DrNeed");
+                chemistNeed = jsonArray.getJSONObject(i).getString("ChmNeed");
+                jwNeed = jsonArray.getJSONObject(i).getString("JWNeed");
+                stockiestNeed = jsonArray.getJSONObject(i).getString("StkNeed");
+                unListedDrNeed = jsonArray.getJSONObject(i).getString("UnDrNeed");
+                cipNeed = jsonArray.getJSONObject(i).getString("Cip_Need");
+                hospNeed = jsonArray.getJSONObject(i).getString("HospNeed");
+                FW_meetup_mandatory = jsonArray.getJSONObject(i).getString("FW_meetup_mandatory");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setSelectedCount(MyViewHolder holder, ArrayList<EditModelClass> arrayList, boolean selectState, TextView selectedNameTxtView, TextView countTxt) {
 
         if(!selectState) { // if its false we should show the text as "Selected" with count or just "Select" .if its true we need to show the selected item name in TextView.
             int count = 0;
@@ -152,39 +185,75 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
             holder.fieldSelected = false;
 
-            List<ModelClass.SessionList.SubClass> subClassList = new ArrayList<>();
-            for (int i = 0; i<arrayList.size(); i++) {
-                if(arrayList.get(i).isChecked()) {
-                    ModelClass.SessionList.SubClass subClass = new ModelClass.SessionList.SubClass(arrayList.get(i).getName(), arrayList.get(i).getCode());
-                    subClassList.add(subClass);
+            if(OneBuildSetup == 0){
+                List<OneBuildModelClass.SessionList.SubClass> subClassListOneBuild = new ArrayList<>();
+                for(int i = 0; i<arrayList.size(); i++){
+                    if (arrayList.get(i).isChecked()){
+                        OneBuildModelClass.SessionList.SubClass subClassOneBuild = new OneBuildModelClass.SessionList.SubClass(arrayList.get(i).getName(),arrayList.get(i).getCode());
+                        subClassListOneBuild.add(subClassOneBuild);
+                    }
                 }
-            }
 
-            //replace the new/modified data to the input data of this adapter class
-            if(holder.clusterLayout.getVisibility() == View.VISIBLE) {
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCluster().clear();
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCluster(subClassList);
-            }else if(holder.jcLayout.getVisibility() == View.VISIBLE) {
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getJC().clear();
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setJC(subClassList);
-            }else if(holder.drLayout.getVisibility() == View.VISIBLE) {
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassList);
-            }else if(holder.chemistLayout.getVisibility() == View.VISIBLE) {
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassList);
-            }else if(holder.stockiestLayout.getVisibility() == View.VISIBLE) {
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getStockiest().clear();
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setStockiest(subClassList);
-            }else if(holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnListedDr().clear();
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnListedDr(subClassList);
-            }else if(holder.cipLayout.getVisibility() == View.VISIBLE) {
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassList);
-            }else if(holder.hospLayout.getVisibility() == View.VISIBLE) {
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassList);
+                if(holder.clusterLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCluster().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCluster(subClassListOneBuild);
+                }else if(holder.jcLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getJC().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setJC(subClassListOneBuild);
+                }else if(holder.drLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassListOneBuild);
+                }else if(holder.chemistLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassListOneBuild);
+                }else if(holder.stockiestLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getStockList().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setStockList(subClassListOneBuild);
+                }else if(holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnlistedDr().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnlistedDr(subClassListOneBuild);
+                }else if(holder.cipLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassListOneBuild);
+                }else if(holder.hospLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassListOneBuild);
+                }
+            }else {
+                List<ModelClass.SessionList.SubClass> subClassList = new ArrayList<>();
+                for (int i = 0; i < arrayList.size(); i++) {
+                    if (arrayList.get(i).isChecked()) {
+                        ModelClass.SessionList.SubClass subClass = new ModelClass.SessionList.SubClass(arrayList.get(i).getName(), arrayList.get(i).getCode());
+                        subClassList.add(subClass);
+                    }
+                }
+
+                //replace the new/modified data to the input data of this adapter class
+                if (holder.clusterLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCluster().clear();
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCluster(subClassList);
+                } else if (holder.jcLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getJC().clear();
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setJC(subClassList);
+                } else if (holder.drLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassList);
+                } else if (holder.chemistLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassList);
+                } else if (holder.stockiestLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getStockiest().clear();
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setStockiest(subClassList);
+                } else if (holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnListedDr().clear();
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnListedDr(subClassList);
+                } else if (holder.cipLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassList);
+                } else if (holder.hospLayout.getVisibility() == View.VISIBLE) {
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassList);
+                }
             }
         }
     }
@@ -196,361 +265,314 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         return new MyViewHolder(view);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull SessionEditAdapter.MyViewHolder holder, int position) {
-        holder.progress_hq.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
-        holder.remarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        holder.remarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
-        holder.sessionData = inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition());
-        holder.clusterModelArray = new ArrayList<>(holder.sessionData.getCluster());
-        holder.jcModelArray = new ArrayList<>(holder.sessionData.getJC());
-        holder.listedDrModelArray = new ArrayList<>(holder.sessionData.getListedDr());
-        holder.chemistModelArray = new ArrayList<>(holder.sessionData.getChemist());
-        holder.stockiestModelArray = new ArrayList<>(holder.sessionData.getStockiest());
-        holder.unListedDrModelArray = new ArrayList<>(holder.sessionData.getUnListedDr());
-        holder.cipModelArray = new ArrayList<>(holder.sessionData.getCip());
-        holder.hospitalModelArray = new ArrayList<>(holder.sessionData.getHospital());
-        designation = SharedPref.getDesig(context);
-        if(holder.sessionData.getVisible()) {
-            holder.itemView.setVisibility(View.VISIBLE);
-            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        }else {
-            holder.itemView.setVisibility(View.GONE);
-            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
-        }
-
-        holder.sessionNoTxt.setText("Session " + (position + 1));
-        if(holder.getAbsoluteAdapterPosition() == 0) { //No need to show delete icon if there is only one session
-            if(inputDataArray.getSessionList().size()>1)
-                holder.sessionDelete.setVisibility(View.VISIBLE);
-            else
-                holder.sessionDelete.setVisibility(View.GONE);
-
-        }
-
-        //Work Day
-        if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
-            holder.workDayLayout.setVisibility(View.VISIBLE);
-            if(inputDataArray.getSTP_Code().isEmpty()) {
-                holder.workDayField.setText("Select");
+        if(OneBuildSetup == 0){
+            holder.progress_hq.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
+            holder.remarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            holder.remarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
+            holder.sessionDataOneBuild = inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition());
+            holder.clusterModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getCluster());
+            holder.jcModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getJC());
+            holder.listedDrModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getListedDr());
+            holder.chemistModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getChemist());
+            holder.stockListModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getStockList());
+            holder.unListedDrModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getUnlistedDr());
+            holder.cipModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getCip());
+            holder.hospitalModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getHospital());
+            designation = SharedPref.getDesig(context);
+            if(holder.sessionDataOneBuild.getVisible()) {
+                holder.itemView.setVisibility(View.VISIBLE);
+                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             }else {
-                holder.workDayField.setText(inputDataArray.getSTP_Name());
+                holder.itemView.setVisibility(View.GONE);
+                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
             }
-        }else {
-            holder.workDayLayout.setVisibility(View.GONE);
-        }
 
-        //work Type
-        if(holder.sessionData.getWorkType().getName().equals("")) {
-            holder.workTypeField.setText("Select");
-        }else {
-            holder.workTypeField.setText(holder.sessionData.getWorkType().getName());
-        }
-
-        if(holder.sessionData.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // Y - yes
-            holder.hqNeed = "0"; // 0 - Yes
-            holder.clusterNeed = "0";
-        }else if(holder.sessionData.getWorkType().getTerrSlFlg().equalsIgnoreCase("N")) {
-            holder.hqNeed = "1"; // 1 - No
-            holder.clusterNeed = "1";
-        }
-        workTypeBasedUI(holder, holder.sessionData, true);
-
-        //HQ
-        switch (designation){
-            case "MR":
-                holder.hqLayout.setVisibility(View.GONE);
-                holder.sessionData.getHQ().setName(SharedPref.getHqName(context));
-                holder.sessionData.getHQ().setCode(SharedPref.getHqCode(context));
-                holder.hqField.setText(holder.sessionData.getHQ().getName());
-                holder.selectedHq = holder.sessionData.getHQ().getCode();
-                break;
-            case "MGR":
-                if(holder.sessionData.getHQ().getName().equals("")) {
-                    holder.hqField.setText("Select");
+            holder.sessionNoTxt.setText("Session " + (position + 1));
+            if(holder.getAbsoluteAdapterPosition() == 0) { //No need to show delete icon if there is only one session
+                if(inputDataArrayOneBuild.getSessionList().size()>1)
+                    holder.sessionDelete.setVisibility(View.VISIBLE);
+                else
+                    holder.sessionDelete.setVisibility(View.GONE);
+            }
+            //Work Day
+            if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
+                holder.workDayLayout.setVisibility(View.VISIBLE);
+                if(inputDataArrayOneBuild.getSTP_Code().isEmpty()) {
+                    holder.workDayField.setText("Select");
                 }else {
-
+                    holder.workDayField.setText(inputDataArray.getSTP_Name());
+                }
+            }else {
+                holder.workDayLayout.setVisibility(View.GONE);
+            }
+            worktypeBasedUiOneBuild(holder, holder.sessionDataOneBuild, true);
+            //HQ
+            switch (designation){
+                case "MR":
+                    holder.hqLayout.setVisibility(View.GONE);
+                    holder.sessionDataOneBuild.getHq().setName(SharedPref.getHqName(context));
+                    holder.sessionDataOneBuild.getHq().setCode(SharedPref.getHqCode(context));
                     holder.hqField.setText(holder.sessionData.getHQ().getName());
                     holder.selectedHq = holder.sessionData.getHQ().getCode();
-                }
-                if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
-                    holder.hqLayout.setVisibility(View.GONE);
-                }
-
-        }
-        if(SharedPref.getWrkAreaName(context).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)) {
-            holder.textCluster.setText("Cluster");
-        }else {
-            holder.textCluster.setText(SharedPref.getWrkAreaName(context));
-        }
-
-        if(!holder.selectedHq.equals("")) {
-            getDataFromLocal(holder, holder.selectedHq);
-        }
-
-        //Cluster
-        StringBuilder clusterName = new StringBuilder();
-        for (int i = 0; i<holder.clusterModelArray.size(); i++) {
-            if(clusterName.length() == 0) {
-                clusterName = new StringBuilder(holder.clusterModelArray.get(i).getName());
-            }else {
-                clusterName.append(", ").append(holder.clusterModelArray.get(i).getName());
+                    break;
+                case "MGR":
+                    if(holder.sessionDataOneBuild.getHq().getName().equals("")) {
+                        holder.hqField.setText("Select");
+                    }else {
+                        holder.hqField.setText(holder.sessionDataOneBuild.getHq().getName());
+                        holder.selectedHq = holder.sessionDataOneBuild.getHq().getCode();
+                    }
+                    if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
+                        holder.hqLayout.setVisibility(View.GONE);
+                    }
             }
-        }
-        if(clusterName.length()>0) {
-            holder.clusterField.setText(clusterName);
-        }
-        prepareInputData(holder.clusterModelArray, holder.clusterArray);
+            if(SharedPref.getWrkAreaName(context).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)) {
+                holder.textCluster.setText("Cluster");
+            }else {
+                holder.textCluster.setText(SharedPref.getWrkAreaName(context));
+            }
 
-        holder.selectedClusterCode.clear();
-        for (int i = 0; i<holder.clusterModelArray.size(); i++) {
-            holder.selectedClusterCode.add(holder.clusterModelArray.get(i).getCode());
-        }
+            if(!holder.selectedHq.equals("")) {
+                getDataFromLocal(holder, holder.selectedHq);
+            }
 
-        //Joint Work
-        StringBuilder jcName = new StringBuilder();
-        if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
-            holder.jcLayout.setVisibility(View.GONE);
-        }else {
+            //Cluster
+            StringBuilder clusterName = new StringBuilder();
+            for (int i = 0; i<holder.clusterModelArrayOneBuild.size(); i++) {
+                if(clusterName.length() == 0) {
+                    clusterName = new StringBuilder(holder.clusterModelArrayOneBuild.get(i).getName());
+                }else {
+                    clusterName.append(", ").append(holder.clusterModelArrayOneBuild.get(i).getName());
+                }
+            }
+            if(clusterName.length()>0) {
+                holder.clusterField.setText(clusterName);
+            }
+            prepareInputDataOneBuild(holder.clusterModelArrayOneBuild, holder.clusterArray);
+
+            holder.selectedClusterCode.clear();
+            for (int i = 0; i<holder.clusterModelArrayOneBuild.size(); i++) {
+                holder.selectedClusterCode.add(holder.clusterModelArrayOneBuild.get(i).getCode());
+            }
+
+            //Joint Work
+            StringBuilder jcName = new StringBuilder();
+            if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+                holder.jcLayout.setVisibility(View.GONE);
+            }else {
 //            holder.jcLayout.setVisibility(View.VISIBLE);
-            for (int i = 0; i<holder.jcModelArray.size(); i++) {
-                if(jcName.length() == 0) {
-                    jcName = new StringBuilder(holder.jcModelArray.get(i).getName());
-                }else {
-                    jcName.append(", ").append(holder.jcModelArray.get(i).getName());
-                }
-            }
-            if(jcName.length()>0) {
-                holder.jcField.setText(jcName);
-            }
-            prepareInputData(holder.jcModelArray, holder.jointCallArray);
-        }
-
-        //Dr
-        StringBuilder drName = new StringBuilder();
-        for (int i = 0; i<holder.listedDrModelArray.size(); i++) {
-            if(drName.length() == 0) {
-                drName = new StringBuilder(holder.listedDrModelArray.get(i).getName());
-            }else {
-                drName.append(", ").append(holder.listedDrModelArray.get(i).getName());
-            }
-        }
-        if(drName.length()>0) {
-            holder.drField.setText(drName);
-        }
-        prepareInputData(holder.listedDrModelArray, holder.listedDrArray);
-
-        //Chemist
-        StringBuilder chemistName = new StringBuilder();
-        for (int i = 0; i<holder.chemistModelArray.size(); i++) {
-            if(chemistName.length() == 0) {
-                chemistName = new StringBuilder(holder.chemistModelArray.get(i).getName());
-            }else {
-                chemistName.append(", ").append(holder.chemistModelArray.get(i).getName());
-            }
-        }
-        if(chemistName.length()>0) {
-            holder.chemistField.setText(chemistName);
-        }
-        prepareInputData(holder.chemistModelArray, holder.chemistArray);
-
-        //Stockiest
-        StringBuilder stockiestName = new StringBuilder();
-        for (int i = 0; i<holder.stockiestModelArray.size(); i++) {
-            if(stockiestName.length() == 0) {
-                stockiestName = new StringBuilder(holder.stockiestModelArray.get(i).getName());
-            }else {
-                stockiestName.append(", ").append(holder.stockiestModelArray.get(i).getName());
-            }
-        }
-        if(stockiestName.length()>0) {
-            holder.stockiestField.setText(stockiestName);
-        }
-        prepareInputData(holder.stockiestModelArray, holder.stockiestArray);
-
-        //UnListed Doctor
-        StringBuilder unListedDrName = new StringBuilder();
-        for (int i = 0; i<holder.unListedDrModelArray.size(); i++) {
-            if(unListedDrName.length() == 0) {
-                unListedDrName = new StringBuilder(holder.unListedDrModelArray.get(i).getName());
-            }else {
-                unListedDrName.append(", ").append(holder.unListedDrModelArray.get(i).getName());
-            }
-
-        }
-        if(unListedDrName.length()>0) {
-            holder.unListedDrField.setText(unListedDrName);
-        }
-        prepareInputData(holder.unListedDrModelArray, holder.unListedDrArray);
-
-        //Cip
-        StringBuilder cipName = new StringBuilder();
-        for (int i = 0; i<holder.cipModelArray.size(); i++) {
-            if(cipName.length() == 0) {
-                cipName = new StringBuilder(holder.cipModelArray.get(i).getName());
-            }else {
-                cipName.append(",").append(holder.cipModelArray.get(i).getName());
-            }
-
-        }
-        if(cipName.length()>0) {
-            holder.cipField.setText(cipName);
-        }
-        prepareInputData(holder.cipModelArray, holder.cipArray);
-
-        //Hospital
-        StringBuilder hospName = new StringBuilder();
-        for (int i = 0; i<holder.hospitalModelArray.size(); i++) {
-            if(hospName.length() == 0) {
-                hospName = new StringBuilder(holder.hospitalModelArray.get(i).getName());
-            }else {
-                jcName.append(", ").append(holder.hospitalModelArray.get(i).getName());
-            }
-        }
-        if(hospName.length()>0) {
-            holder.hospField.setText(hospName);
-        }
-        prepareInputData(holder.hospitalModelArray, holder.hospArray);
-        holder.remarks.setText(holder.sessionData.getRemarks());
-
-        holder.searchET.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length()>0) {
-                    holder.searchClearIcon.setVisibility(View.VISIBLE);
-                }else {
-                    holder.searchClearIcon.setVisibility(View.GONE);
-                }
-                sessionItemAdapter.getFilter().filter(charSequence);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                sessionItemAdapter.getFilter().filter(editable.toString());
-            }
-        });
-
-        holder.searchET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if(id == EditorInfo.IME_ACTION_DONE) {
-                    UtilityClass.hideKeyboard((Activity) context);
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        holder.searchClearIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.searchET.setText("");
-            }
-        });
-
-        holder.workTypeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                itemPosition = holder.getLayoutPosition();
-                holder.relativeLayout.setSelected(false);
-                if(!holder.fieldSelected) {
-                    if(holder.workTypeArray.size() == 0) {
-                        holder.workTypeArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray());
+                for (int i = 0; i<holder.jcModelArrayOneBuild.size(); i++) {
+                    if(jcName.length() == 0) {
+                        jcName = new StringBuilder(holder.jcModelArrayOneBuild.get(i).getName());
+                    }else {
+                        jcName.append(", ").append(holder.jcModelArrayOneBuild.get(i).getName());
                     }
-                    ArrayList<EditModelClass> filteredArray = new ArrayList<>();
-                    for (int i = 0; i<holder.workTypeArray.size(); i++) {
-                        if(holder.workTypeArray.get(i).getTP_DCR().contains("T")) {
-                            filteredArray.add(holder.workTypeArray.get(i));
-                        }
-                    }
-                    holder.sessionItemAdapterArray = filteredArray;
-                    populateSessionItemAdapter(holder, false, true);
-                    holder.fieldSelected = true;
-                    onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_TYPE);
-                }else {
-                    changeUIState(holder, holder.workTypeLayout, holder.workTypeArrow, true);
-                    holder.fieldSelected = false;
-                    onEdit(holder.getAbsoluteAdapterPosition(), true, "");
                 }
-                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
+                if(jcName.length()>0) {
+                    holder.jcField.setText(jcName);
+                }
+                prepareInputDataOneBuild(holder.jcModelArrayOneBuild, holder.jointCallArray);
             }
-        });
 
-        if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
-            holder.workDayLayout.setOnClickListener(new View.OnClickListener() {
+            //Dr
+            StringBuilder drName = new StringBuilder();
+            for (int i = 0; i<holder.listedDrModelArrayOneBuild.size(); i++) {
+                if(drName.length() == 0) {
+                    drName = new StringBuilder(holder.listedDrModelArrayOneBuild.get(i).getName());
+                }else {
+                    drName.append(", ").append(holder.listedDrModelArrayOneBuild.get(i).getName());
+                }
+            }
+            if(drName.length()>0) {
+                holder.drField.setText(drName);
+            }
+            prepareInputDataOneBuild(holder.listedDrModelArrayOneBuild, holder.listedDrArray);
+
+            StringBuilder chemistName = new StringBuilder();
+            for (int i = 0; i<holder.chemistModelArrayOneBuild.size(); i++) {
+                if(chemistName.length() == 0) {
+                    chemistName = new StringBuilder(holder.chemistModelArrayOneBuild.get(i).getName());
+                }else {
+                    chemistName.append(", ").append(holder.chemistModelArrayOneBuild.get(i).getName());
+                }
+            }
+            if(chemistName.length()>0) {
+                holder.chemistField.setText(chemistName);
+            }
+            prepareInputDataOneBuild(holder.chemistModelArrayOneBuild, holder.chemistArray);
+
+            //Stockiest
+            StringBuilder stockiestName = new StringBuilder();
+            for (int i = 0; i<holder.stockListModelArrayOneBuild.size(); i++) {
+                if(stockiestName.length() == 0) {
+                    stockiestName = new StringBuilder(holder.stockListModelArrayOneBuild.get(i).getName());
+                }else {
+                    stockiestName.append(", ").append(holder.stockListModelArrayOneBuild.get(i).getName());
+                }
+            }
+            if(stockiestName.length()>0) {
+                holder.stockiestField.setText(stockiestName);
+            }
+            prepareInputDataOneBuild(holder.stockListModelArrayOneBuild, holder.stockiestArray);
+
+
+            //UnListed Doctor
+            StringBuilder unListedDrName = new StringBuilder();
+            for (int i = 0; i<holder.unListedDrModelArrayOneBuild.size(); i++) {
+                if(unListedDrName.length() == 0) {
+                    unListedDrName = new StringBuilder(holder.unListedDrModelArrayOneBuild.get(i).getName());
+                }else {
+                    unListedDrName.append(", ").append(holder.unListedDrModelArrayOneBuild.get(i).getName());
+                }
+
+            }
+            if(unListedDrName.length()>0) {
+                holder.unListedDrField.setText(unListedDrName);
+            }
+            prepareInputDataOneBuild(holder.unListedDrModelArrayOneBuild, holder.unListedDrArray);
+
+            //Cip
+            StringBuilder cipName = new StringBuilder();
+            for (int i = 0; i<holder.cipModelArrayOneBuild.size(); i++) {
+                if(cipName.length() == 0) {
+                    cipName = new StringBuilder(holder.cipModelArrayOneBuild.get(i).getName());
+                }else {
+                    cipName.append(",").append(holder.cipModelArrayOneBuild.get(i).getName());
+                }
+
+            }
+            if(cipName.length()>0) {
+                holder.cipField.setText(cipName);
+            }
+            prepareInputDataOneBuild(holder.cipModelArrayOneBuild, holder.cipArray);
+
+            //Hospital
+            StringBuilder hospName = new StringBuilder();
+            for (int i = 0; i<holder.hospitalModelArrayOneBuild.size(); i++) {
+                if(hospName.length() == 0) {
+                    hospName = new StringBuilder(holder.hospitalModelArrayOneBuild.get(i).getName());
+                }else {
+                    jcName.append(", ").append(holder.hospitalModelArrayOneBuild.get(i).getName());
+                }
+            }
+            if(hospName.length()>0) {
+                holder.hospField.setText(hospName);
+            }
+            prepareInputDataOneBuild(holder.hospitalModelArrayOneBuild, holder.hospArray);
+            holder.remarks.setText(holder.sessionDataOneBuild.getRemarks());
+
+            holder.searchET.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if(charSequence.length()>0) {
+                        holder.searchClearIcon.setVisibility(View.VISIBLE);
+                    }else {
+                        holder.searchClearIcon.setVisibility(View.GONE);
+                    }
+                    sessionItemAdapter.getFilter().filter(charSequence);
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    sessionItemAdapter.getFilter().filter(editable.toString());
+                }
+            });
+
+            holder.searchET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                    if(id == EditorInfo.IME_ACTION_DONE) {
+                        UtilityClass.hideKeyboard((Activity) context);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+            holder.searchClearIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                }
+            });
+
+            holder.workTypeLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     itemPosition = holder.getLayoutPosition();
                     holder.relativeLayout.setSelected(false);
                     if(!holder.fieldSelected) {
-                        ArrayList<EditModelClass> workDayArray = new ArrayList<>();
-                        if(holder.workDayArray.isEmpty()) {
-                            try {
-                                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
-                                if(jsonArray != null && jsonArray.length()>0) {
-                                    JSONObject jsonObject = jsonArray.optJSONObject(0);
-                                    String[] dayIDs = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_SName")).split("/");
-                                    String[] dayCaptions = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_Name")).split("/");
-                                    for (int index = 0; index<dayIDs.length; index++) {
-                                        if(!dayIDs[index].isEmpty()) {
-                                            workDayArray.add(new EditModelClass(dayIDs[index], dayCaptions[index], false));
-                                        }
-                                    }
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            new STPDaySorter().sortDaysTP(workDayArray);
-                            holder.workDayArray = workDayArray;
+                        if(holder.workTypeArray.size() == 0) {
+                            holder.workTypeArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray());
                         }
-                        holder.sessionItemAdapterArray = holder.workDayArray;
-                        populateSessionItemAdapter(holder, false, false);
+                        ArrayList<EditModelClass> filteredArray = new ArrayList<>();
+                        for (int i = 0; i<holder.workTypeArray.size(); i++) {
+                            if(holder.workTypeArray.get(i).getTP_DCR().contains("T")) {
+                                filteredArray.add(holder.workTypeArray.get(i));
+                            }
+                        }
+                        holder.sessionItemAdapterArray = filteredArray;
+                        populateSessionItemAdapterOneBuild(holder, false, true);
                         holder.fieldSelected = true;
-                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_DAY);
+                        onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_TYPE);
                     }else {
-                        changeUIState(holder, holder.workDayLayout, holder.workDayArrow, true);
+                        changeUIState(holder, holder.workTypeLayout, holder.workTypeArrow, true);
                         holder.fieldSelected = false;
-                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");  // change it
                     }
                     TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
                 }
             });
-        }
 
-        holder.hqLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.searchET.setText("");
-                itemPosition = holder.getLayoutPosition();
-                holder.relativeLayout.setSelected(false);
-                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                }else {
-                    if(!holder.fieldSelected) {
-                        if(holder.hqArray.size() == 0) {
-                            holder.hqArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray());
+            if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
+                holder.workDayLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        itemPosition = holder.getLayoutPosition();
+                        holder.relativeLayout.setSelected(false);
+                        if(!holder.fieldSelected) {
+                            ArrayList<EditModelClass> workDayArray = new ArrayList<>();
+                            if(holder.workDayArray.isEmpty()) {
+                                try {
+                                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
+                                    if(jsonArray != null && jsonArray.length()>0) {
+                                        JSONObject jsonObject = jsonArray.optJSONObject(0);
+                                        String[] dayIDs = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_SName")).split("/");
+                                        String[] dayCaptions = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_Name")).split("/");
+                                        for (int index = 0; index<dayIDs.length; index++) {
+                                            if(!dayIDs[index].isEmpty()) {
+                                                workDayArray.add(new EditModelClass(dayIDs[index], dayCaptions[index], false));
+                                            }
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                new STPDaySorter().sortDaysTP(workDayArray);
+                                holder.workDayArray = workDayArray;
+                            }
+                            holder.sessionItemAdapterArray = holder.workDayArray;
+                            populateSessionItemAdapterOneBuild(holder, false, false);
+                            holder.fieldSelected = true;
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_DAY);
+                        }else {
+                            changeUIState(holder, holder.workDayLayout, holder.workDayArrow, true);
+                            holder.fieldSelected = false;
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");  // change it
                         }
-                        holder.sessionItemAdapterArray = holder.hqArray;
-                        populateSessionItemAdapter(holder, false, true);
-                        holder.fieldSelected = true;
-                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.SUBORDINATE);
-                    }else {
-                        changeUIState(holder, holder.hqLayout, holder.hqArrow, true);
-                        holder.fieldSelected = false;
-                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
                     }
-                }
-                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
+                });
             }
-        });
-
-        if(!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1"))) {
-            holder.clusterLayout.setOnClickListener(new View.OnClickListener() {
+            holder.hqLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     holder.searchET.setText("");
@@ -559,325 +581,1032 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
                     }else {
-                        if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                        }else {
-                            if(!holder.fieldSelected) {
-                                if(holder.clusterArray.size() == 0) {
-                                    holder.clusterArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + holder.selectedHq).getMasterSyncDataJsonArray());
-                                    TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                                }else {
-                                    setSelectedCount(holder, holder.clusterArray, false, holder.clusterField, holder.clusterCount);
-                                }
-                                holder.fieldSelected = true;
-                                holder.sessionItemAdapterArray = holder.clusterArray;
-                                populateSessionItemAdapter(holder, true, true);
-                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CLUSTER);
-                            }else {
-                                holder.fieldSelected = false;
-                                setSelectedCount(holder, holder.clusterArray, true, holder.clusterField, holder.clusterCount);
-                                changeUIState(holder, holder.clusterLayout, holder.clusterArrow, true);
-                                onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        if(!holder.fieldSelected) {
+                            if(holder.hqArray.size() == 0) {
+                                holder.hqArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray());
                             }
+                            holder.sessionItemAdapterArray = holder.hqArray;
+                            populateSessionItemAdapterOneBuild(holder, false, true);
+                            holder.fieldSelected = true;
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.SUBORDINATE);
+                        }else {
+                            changeUIState(holder, holder.hqLayout, holder.hqArrow, true);
+                            holder.fieldSelected = false;
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");   // change
+                        }
+                    }
+                    TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
+                }
+            });
+
+            if(!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1"))) {
+                holder.clusterLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        holder.searchET.setText("");
+                        itemPosition = holder.getLayoutPosition();
+                        holder.relativeLayout.setSelected(false);
+                        if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                        }else {
+                            if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                            }else {
+                                if(!holder.fieldSelected) {
+                                    if(holder.clusterArray.size() == 0) {
+                                        holder.clusterArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + holder.selectedHq).getMasterSyncDataJsonArray());
+                                        TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                                    }else {
+                                        setSelectedCount(holder, holder.clusterArray, false, holder.clusterField, holder.clusterCount);
+                                    }
+                                    holder.fieldSelected = true;
+                                    holder.sessionItemAdapterArray = holder.clusterArray;
+                                    populateSessionItemAdapterOneBuild(holder, true, true);
+                                    onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.CLUSTER);  // change
+                                }else {
+                                    holder.fieldSelected = false;
+                                    setSelectedCount(holder, holder.clusterArray, true, holder.clusterField, holder.clusterCount);
+                                    changeUIState(holder, holder.clusterLayout, holder.clusterArrow, true);
+                                    onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");       // change
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            holder.jcLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+
+                    if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
+                    }else {
+                        if(!holder.fieldSelected) {
+                            if(holder.jointCallArray.size() == 0) {
+                                holder.jointCallArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            }else {
+                                setSelectedCount(holder, holder.jointCallArray, false, holder.jcField, holder.jcCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = holder.jointCallArray;
+                            populateSessionItemAdapterOneBuild(holder, true, true);
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.JOINT_WORK);   //change
+                        }else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.jointCallArray, true, holder.jcField, holder.jcCount);
+                            changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, ""); //change
+                        }
+                    }
+
+                }
+            });
+            holder.drLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+
+                    if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
+                    }else {
+                        if(!holder.fieldSelected) {
+                            if(holder.listedDrArray.size() == 0) {
+                                holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            }else {
+                                setSelectedCount(holder, holder.listedDrArray, false, holder.drField, holder.drCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = filterJsonArray(holder, holder.listedDrArray);
+                            populateSessionItemAdapterOneBuild(holder, true, true);
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR);  //change
+                        }else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.listedDrArray, true, holder.drField, holder.drCount);
+                            changeUIState(holder, holder.drLayout, holder.drArrow, true);
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");//change
                         }
                     }
                 }
             });
-        }
 
-        holder.jcLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.searchET.setText("");
-                itemPosition = holder.getLayoutPosition();
-                holder.relativeLayout.setSelected(false);
+            holder.chemistLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
 
-                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                }else {
-                    if(!holder.fieldSelected) {
-                        if(holder.jointCallArray.size() == 0) {
-                            holder.jointCallArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + holder.selectedHq).getMasterSyncDataJsonArray());
-                            TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        }else {
-                            setSelectedCount(holder, holder.jointCallArray, false, holder.jcField, holder.jcCount);
-                        }
-                        holder.fieldSelected = true;
-                        holder.sessionItemAdapterArray = holder.jointCallArray;
-                        populateSessionItemAdapter(holder, true, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.JOINT_WORK);
+                    if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
                     }else {
-                        holder.fieldSelected = false;
-                        setSelectedCount(holder, holder.jointCallArray, true, holder.jcField, holder.jcCount);
-                        changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+
+                        if(!holder.fieldSelected) {
+                            if(holder.chemistArray.size() == 0) {
+                                holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            }else {
+                                setSelectedCount(holder, holder.chemistArray, false, holder.chemistField, holder.chemistCount);
+                            }
+
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = filterJsonArray(holder, holder.chemistArray);
+                            populateSessionItemAdapterOneBuild(holder, true, true);
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST);   //change
+                        }else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.chemistArray, true, holder.chemistField, holder.chemistCount);
+                            changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");//change
+                        }
                     }
+                }
+            });
+
+            holder.stockiestLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+                    holder.searchET.setText("");
+                    if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
+                    }else {
+                        if(!holder.fieldSelected) {
+                            if(holder.stockiestArray.size() == 0) {
+                                holder.stockiestArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            }else {
+                                setSelectedCount(holder, holder.stockiestArray, false, holder.stockiestField, holder.stockiestCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = holder.stockiestArray;
+                            populateSessionItemAdapterOneBuild(holder, true, true);
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST);  //change
+                        }else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.stockiestArray, true, holder.stockiestField, holder.stockiestCount);
+                            changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, true);
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");  //change
+                        }
+
+                    }
+                }
+            });
+
+            holder.unListedDrLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+
+                    if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
+                    }else {
+                        if(!holder.fieldSelected) {
+                            if(holder.unListedDrArray.size() == 0) {
+                                holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            }else {
+                                setSelectedCount(holder, holder.unListedDrArray, false, holder.unListedDrField, holder.unListedDrCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = filterJsonArray(holder, holder.unListedDrArray);
+                            populateSessionItemAdapterOneBuild(holder, true, true);
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.UNLISTED_DOCTOR);   //change
+                        }else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.unListedDrArray, true, holder.unListedDrField, holder.unListedDrCount);
+                            changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, true);
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");//change
+                        }
+
+                    }
+                }
+            });
+
+            holder.cipLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+
+                    if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
+                    }else {
+                        if(!holder.fieldSelected) {
+                            if(holder.cipArray.size() == 0) {
+                                holder.cipArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CIP + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            }else {
+                                setSelectedCount(holder, holder.cipArray, false, holder.cipField, holder.cipCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = filterJsonArray(holder, holder.cipArray);
+                            populateSessionItemAdapterOneBuild(holder, true, true);
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.CIP);  //change
+                        }else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.cipArray, true, holder.cipField, holder.cipCount);
+                            changeUIState(holder, holder.cipLayout, holder.cipArrow, true);
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, ""); //change
+                        }
+                    }
+                }
+            });
+
+            holder.hospLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+
+                    if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
+                    }else {
+                        if(!holder.fieldSelected) {
+                            if(holder.hospArray.size() == 0) {
+                                holder.hospArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            }else {
+                                setSelectedCount(holder, holder.hospArray, false, holder.hospField, holder.hospCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = filterJsonArray(holder, holder.hospArray);
+                            populateSessionItemAdapterOneBuild(holder, true, true);
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.HOSPITAL); //change
+                        }else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.hospArray, true, holder.hospField, holder.hospCount);
+                            changeUIState(holder, holder.hospLayout, holder.hospArrow, true);
+                            onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, ""); //change
+                        }
+                    }
+                }
+            });
+
+            holder.remarks.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    if(holder.remarks.hasFocus()) {
+                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        if((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_SCROLL) {
+                            v.getParent().requestDisallowInterceptTouchEvent(false);
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
+
+            holder.remarks.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                    if(actionId == EditorInfo.IME_ACTION_DONE) {
+                        holder.sessionDataOneBuild.setRemarks(holder.remarks.getText().toString());
+                    }
+                    return false;
+                }
+            });
+
+            holder.remarks.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if(!b) {
+                        holder.sessionDataOneBuild.setRemarks(holder.remarks.getText().toString());
+                    }
+                }
+            });
+
+            holder.sessionDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    sessionInterfaceOneBuild.deleteClickedOneBuild(inputDataArrayOneBuild, holder.getAbsoluteAdapterPosition());
+                }
+            });
+
+        }else {
+            holder.progress_hq.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
+            holder.remarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            holder.remarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
+            holder.sessionData = inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition());
+            holder.clusterModelArray = new ArrayList<>(holder.sessionData.getCluster());
+            holder.jcModelArray = new ArrayList<>(holder.sessionData.getJC());
+            holder.listedDrModelArray = new ArrayList<>(holder.sessionData.getListedDr());
+            holder.chemistModelArray = new ArrayList<>(holder.sessionData.getChemist());
+            holder.stockiestModelArray = new ArrayList<>(holder.sessionData.getStockiest());
+            holder.unListedDrModelArray = new ArrayList<>(holder.sessionData.getUnListedDr());
+            holder.cipModelArray = new ArrayList<>(holder.sessionData.getCip());
+            holder.hospitalModelArray = new ArrayList<>(holder.sessionData.getHospital());
+            designation = SharedPref.getDesig(context);
+            if (holder.sessionData.getVisible()) {
+                holder.itemView.setVisibility(View.VISIBLE);
+                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            } else {
+                holder.itemView.setVisibility(View.GONE);
+                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+            }
+
+            holder.sessionNoTxt.setText("Session " + (position + 1));
+            if (holder.getAbsoluteAdapterPosition() == 0) { //No need to show delete icon if there is only one session
+                if (inputDataArray.getSessionList().size() > 1)
+                    holder.sessionDelete.setVisibility(View.VISIBLE);
+                else
+                    holder.sessionDelete.setVisibility(View.GONE);
+            }
+
+            //Work Day
+            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
+                holder.workDayLayout.setVisibility(View.VISIBLE);
+                if (inputDataArray.getSTP_Code().isEmpty()) {
+                    holder.workDayField.setText("Select");
+                } else {
+                    holder.workDayField.setText(inputDataArray.getSTP_Name());
+                }
+            } else {
+                holder.workDayLayout.setVisibility(View.GONE);
+            }
+
+            //work Type
+            if (holder.sessionData.getWorkType().getName().equals("")) {
+                holder.workTypeField.setText("Select");
+            } else {
+                holder.workTypeField.setText(holder.sessionData.getWorkType().getName());
+            }
+
+            if (holder.sessionData.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // Y - yes
+                holder.hqNeed = "0"; // 0 - Yes
+                holder.clusterNeed = "0";
+            } else if (holder.sessionData.getWorkType().getTerrSlFlg().equalsIgnoreCase("N")) {
+                holder.hqNeed = "1"; // 1 - No
+                holder.clusterNeed = "1";
+            }
+            workTypeBasedUI(holder, holder.sessionData, true);
+
+            //HQ
+            switch (designation) {
+                case "MR":
+                    holder.hqLayout.setVisibility(View.GONE);
+                    holder.sessionData.getHQ().setName(SharedPref.getHqName(context));
+                    holder.sessionData.getHQ().setCode(SharedPref.getHqCode(context));
+                    holder.hqField.setText(holder.sessionData.getHQ().getName());
+                    holder.selectedHq = holder.sessionData.getHQ().getCode();
+                    break;
+                case "MGR":
+                    if (holder.sessionData.getHQ().getName().equals("")) {
+                        holder.hqField.setText("Select");
+                    } else {
+
+                        holder.hqField.setText(holder.sessionData.getHQ().getName());
+                        holder.selectedHq = holder.sessionData.getHQ().getCode();
+                    }
+                    if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
+                        holder.hqLayout.setVisibility(View.GONE);
+                    }
+
+            }
+            if (SharedPref.getWrkAreaName(context).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)) {
+                holder.textCluster.setText("Cluster");
+            } else {
+                holder.textCluster.setText(SharedPref.getWrkAreaName(context));
+            }
+
+            if (!holder.selectedHq.equals("")) {
+                getDataFromLocal(holder, holder.selectedHq);
+            }
+
+            //Cluster
+            StringBuilder clusterName = new StringBuilder();
+            for (int i = 0; i < holder.clusterModelArray.size(); i++) {
+                if (clusterName.length() == 0) {
+                    clusterName = new StringBuilder(holder.clusterModelArray.get(i).getName());
+                } else {
+                    clusterName.append(", ").append(holder.clusterModelArray.get(i).getName());
+                }
+            }
+            if (clusterName.length() > 0) {
+                holder.clusterField.setText(clusterName);
+            }
+            prepareInputData(holder.clusterModelArray, holder.clusterArray);
+
+            holder.selectedClusterCode.clear();
+            for (int i = 0; i < holder.clusterModelArray.size(); i++) {
+                holder.selectedClusterCode.add(holder.clusterModelArray.get(i).getCode());
+            }
+
+            //Joint Work
+            StringBuilder jcName = new StringBuilder();
+            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+                holder.jcLayout.setVisibility(View.GONE);
+            } else {
+//            holder.jcLayout.setVisibility(View.VISIBLE);
+                for (int i = 0; i < holder.jcModelArray.size(); i++) {
+                    if (jcName.length() == 0) {
+                        jcName = new StringBuilder(holder.jcModelArray.get(i).getName());
+                    } else {
+                        jcName.append(", ").append(holder.jcModelArray.get(i).getName());
+                    }
+                }
+                if (jcName.length() > 0) {
+                    holder.jcField.setText(jcName);
+                }
+                prepareInputData(holder.jcModelArray, holder.jointCallArray);
+            }
+
+            //Dr
+            StringBuilder drName = new StringBuilder();
+            for (int i = 0; i < holder.listedDrModelArray.size(); i++) {
+                if (drName.length() == 0) {
+                    drName = new StringBuilder(holder.listedDrModelArray.get(i).getName());
+                } else {
+                    drName.append(", ").append(holder.listedDrModelArray.get(i).getName());
+                }
+            }
+            if (drName.length() > 0) {
+                holder.drField.setText(drName);
+            }
+            prepareInputData(holder.listedDrModelArray, holder.listedDrArray);
+
+            //Chemist
+            StringBuilder chemistName = new StringBuilder();
+            for (int i = 0; i < holder.chemistModelArray.size(); i++) {
+                if (chemistName.length() == 0) {
+                    chemistName = new StringBuilder(holder.chemistModelArray.get(i).getName());
+                } else {
+                    chemistName.append(", ").append(holder.chemistModelArray.get(i).getName());
+                }
+            }
+            if (chemistName.length() > 0) {
+                holder.chemistField.setText(chemistName);
+            }
+            prepareInputData(holder.chemistModelArray, holder.chemistArray);
+
+            //Stockiest
+            StringBuilder stockiestName = new StringBuilder();
+            for (int i = 0; i < holder.stockiestModelArray.size(); i++) {
+                if (stockiestName.length() == 0) {
+                    stockiestName = new StringBuilder(holder.stockiestModelArray.get(i).getName());
+                } else {
+                    stockiestName.append(", ").append(holder.stockiestModelArray.get(i).getName());
+                }
+            }
+            if (stockiestName.length() > 0) {
+                holder.stockiestField.setText(stockiestName);
+            }
+            prepareInputData(holder.stockiestModelArray, holder.stockiestArray);
+
+            //UnListed Doctor
+            StringBuilder unListedDrName = new StringBuilder();
+            for (int i = 0; i < holder.unListedDrModelArray.size(); i++) {
+                if (unListedDrName.length() == 0) {
+                    unListedDrName = new StringBuilder(holder.unListedDrModelArray.get(i).getName());
+                } else {
+                    unListedDrName.append(", ").append(holder.unListedDrModelArray.get(i).getName());
                 }
 
             }
-        });
+            if (unListedDrName.length() > 0) {
+                holder.unListedDrField.setText(unListedDrName);
+            }
+            prepareInputData(holder.unListedDrModelArray, holder.unListedDrArray);
 
-        holder.drLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.searchET.setText("");
-                itemPosition = holder.getLayoutPosition();
-                holder.relativeLayout.setSelected(false);
+            //Cip
+            StringBuilder cipName = new StringBuilder();
+            for (int i = 0; i < holder.cipModelArray.size(); i++) {
+                if (cipName.length() == 0) {
+                    cipName = new StringBuilder(holder.cipModelArray.get(i).getName());
+                } else {
+                    cipName.append(",").append(holder.cipModelArray.get(i).getName());
+                }
 
-                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                }else {
-                    if(!holder.fieldSelected) {
-                        if(holder.listedDrArray.size() == 0) {
-                            holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
-                            TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        }else {
-                            setSelectedCount(holder, holder.listedDrArray, false, holder.drField, holder.drCount);
-                        }
-                        holder.fieldSelected = true;
-                        holder.sessionItemAdapterArray = filterJsonArray(holder, holder.listedDrArray);
-                        populateSessionItemAdapter(holder, true, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR);
-                    }else {
-                        holder.fieldSelected = false;
-                        setSelectedCount(holder, holder.listedDrArray, true, holder.drField, holder.drCount);
-                        changeUIState(holder, holder.drLayout, holder.drArrow, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
-                    }
+            }
+            if (cipName.length() > 0) {
+                holder.cipField.setText(cipName);
+            }
+            prepareInputData(holder.cipModelArray, holder.cipArray);
+
+            //Hospital
+            StringBuilder hospName = new StringBuilder();
+            for (int i = 0; i < holder.hospitalModelArray.size(); i++) {
+                if (hospName.length() == 0) {
+                    hospName = new StringBuilder(holder.hospitalModelArray.get(i).getName());
+                } else {
+                    jcName.append(", ").append(holder.hospitalModelArray.get(i).getName());
                 }
             }
-        });
-
-        holder.chemistLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.searchET.setText("");
-                itemPosition = holder.getLayoutPosition();
-                holder.relativeLayout.setSelected(false);
-
-                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                }else {
-
-                    if(!holder.fieldSelected) {
-                        if(holder.chemistArray.size() == 0) {
-                            holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + holder.selectedHq).getMasterSyncDataJsonArray());
-                            TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        }else {
-                            setSelectedCount(holder, holder.chemistArray, false, holder.chemistField, holder.chemistCount);
-                        }
-
-                        holder.fieldSelected = true;
-                        holder.sessionItemAdapterArray = filterJsonArray(holder, holder.chemistArray);
-                        populateSessionItemAdapter(holder, true, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST);
-                    }else {
-                        holder.fieldSelected = false;
-                        setSelectedCount(holder, holder.chemistArray, true, holder.chemistField, holder.chemistCount);
-                        changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
-                    }
-                }
+            if (hospName.length() > 0) {
+                holder.hospField.setText(hospName);
             }
-        });
+            prepareInputData(holder.hospitalModelArray, holder.hospArray);
+            holder.remarks.setText(holder.sessionData.getRemarks());
 
-        holder.stockiestLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                itemPosition = holder.getLayoutPosition();
-                holder.relativeLayout.setSelected(false);
-                holder.searchET.setText("");
-                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                }else {
-                    if(!holder.fieldSelected) {
-                        if(holder.stockiestArray.size() == 0) {
-                            holder.stockiestArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + holder.selectedHq).getMasterSyncDataJsonArray());
-                            TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        }else {
-                            setSelectedCount(holder, holder.stockiestArray, false, holder.stockiestField, holder.stockiestCount);
-                        }
-                        holder.fieldSelected = true;
-                        holder.sessionItemAdapterArray = holder.stockiestArray;
-                        populateSessionItemAdapter(holder, true, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST);
-                    }else {
-                        holder.fieldSelected = false;
-                        setSelectedCount(holder, holder.stockiestArray, true, holder.stockiestField, holder.stockiestCount);
-                        changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
-                    }
+            holder.searchET.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                 }
-            }
-        });
 
-        holder.unListedDrLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.searchET.setText("");
-                itemPosition = holder.getLayoutPosition();
-                holder.relativeLayout.setSelected(false);
-
-                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                }else {
-                    if(!holder.fieldSelected) {
-                        if(holder.unListedDrArray.size() == 0) {
-                            holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
-                            TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        }else {
-                            setSelectedCount(holder, holder.unListedDrArray, false, holder.unListedDrField, holder.unListedDrCount);
-                        }
-                        holder.fieldSelected = true;
-                        holder.sessionItemAdapterArray = filterJsonArray(holder, holder.unListedDrArray);
-                        populateSessionItemAdapter(holder, true, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.UNLISTED_DOCTOR);
-                    }else {
-                        holder.fieldSelected = false;
-                        setSelectedCount(holder, holder.unListedDrArray, true, holder.unListedDrField, holder.unListedDrCount);
-                        changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if (charSequence.length() > 0) {
+                        holder.searchClearIcon.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.searchClearIcon.setVisibility(View.GONE);
                     }
-
+                    sessionItemAdapter.getFilter().filter(charSequence);
                 }
-            }
-        });
 
-        holder.cipLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.searchET.setText("");
-                itemPosition = holder.getLayoutPosition();
-                holder.relativeLayout.setSelected(false);
-
-                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                }else {
-                    if(!holder.fieldSelected) {
-                        if(holder.cipArray.size() == 0) {
-                            holder.cipArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CIP + holder.selectedHq).getMasterSyncDataJsonArray());
-                            TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        }else {
-                            setSelectedCount(holder, holder.cipArray, false, holder.cipField, holder.cipCount);
-                        }
-                        holder.fieldSelected = true;
-                        holder.sessionItemAdapterArray = filterJsonArray(holder, holder.cipArray);
-                        populateSessionItemAdapter(holder, true, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CIP);
-                    }else {
-                        holder.fieldSelected = false;
-                        setSelectedCount(holder, holder.cipArray, true, holder.cipField, holder.cipCount);
-                        changeUIState(holder, holder.cipLayout, holder.cipArrow, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
-                    }
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    sessionItemAdapter.getFilter().filter(editable.toString());
                 }
-            }
-        });
+            });
 
-        holder.hospLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.searchET.setText("");
-                itemPosition = holder.getLayoutPosition();
-                holder.relativeLayout.setSelected(false);
-
-                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                }else {
-                    if(!holder.fieldSelected) {
-                        if(holder.hospArray.size() == 0) {
-                            holder.hospArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + holder.selectedHq).getMasterSyncDataJsonArray());
-                            TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        }else {
-                            setSelectedCount(holder, holder.hospArray, false, holder.hospField, holder.hospCount);
-                        }
-                        holder.fieldSelected = true;
-                        holder.sessionItemAdapterArray = filterJsonArray(holder, holder.hospArray);
-                        populateSessionItemAdapter(holder, true, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.HOSPITAL);
-                    }else {
-                        holder.fieldSelected = false;
-                        setSelectedCount(holder, holder.hospArray, true, holder.hospField, holder.hospCount);
-                        changeUIState(holder, holder.hospLayout, holder.hospArrow, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
-                    }
-                }
-            }
-        });
-
-        holder.remarks.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                if(holder.remarks.hasFocus()) {
-                    v.getParent().requestDisallowInterceptTouchEvent(true);
-                    if((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_SCROLL) {
-                        v.getParent().requestDisallowInterceptTouchEvent(false);
+            holder.searchET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                    if (id == EditorInfo.IME_ACTION_DONE) {
+                        UtilityClass.hideKeyboard((Activity) context);
                         return true;
                     }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
 
-        holder.remarks.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_DONE) {
-                    holder.sessionData.setRemarks(holder.remarks.getText().toString());
+            holder.searchClearIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
                 }
-                return false;
-            }
-        });
+            });
 
-        holder.remarks.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if(!b) {
-                    holder.sessionData.setRemarks(holder.remarks.getText().toString());
+            holder.workTypeLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+                    if (!holder.fieldSelected) {
+                        if (holder.workTypeArray.size() == 0) {
+                            holder.workTypeArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray());
+                        }
+                        ArrayList<EditModelClass> filteredArray = new ArrayList<>();
+                        for (int i = 0; i < holder.workTypeArray.size(); i++) {
+                            if (holder.workTypeArray.get(i).getTP_DCR().contains("T")) {
+                                filteredArray.add(holder.workTypeArray.get(i));
+                            }
+                        }
+                        holder.sessionItemAdapterArray = filteredArray;
+                        populateSessionItemAdapter(holder, false, true);
+                        holder.fieldSelected = true;
+                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_TYPE);
+                    } else {
+                        changeUIState(holder, holder.workTypeLayout, holder.workTypeArrow, true);
+                        holder.fieldSelected = false;
+                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                    }
+                    TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
                 }
-            }
-        });
+            });
 
-        holder.sessionDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sessionInterface.deleteClicked(inputDataArray, holder.getAbsoluteAdapterPosition());
+            if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
+                holder.workDayLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        itemPosition = holder.getLayoutPosition();
+                        holder.relativeLayout.setSelected(false);
+                        if (!holder.fieldSelected) {
+                            ArrayList<EditModelClass> workDayArray = new ArrayList<>();
+                            if (holder.workDayArray.isEmpty()) {
+                                try {
+                                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
+                                    if (jsonArray != null && jsonArray.length() > 0) {
+                                        JSONObject jsonObject = jsonArray.optJSONObject(0);
+                                        String[] dayIDs = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_SName")).split("/");
+                                        String[] dayCaptions = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_Name")).split("/");
+                                        for (int index = 0; index < dayIDs.length; index++) {
+                                            if (!dayIDs[index].isEmpty()) {
+                                                workDayArray.add(new EditModelClass(dayIDs[index], dayCaptions[index], false));
+                                            }
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                new STPDaySorter().sortDaysTP(workDayArray);
+                                holder.workDayArray = workDayArray;
+                            }
+                            holder.sessionItemAdapterArray = holder.workDayArray;
+                            populateSessionItemAdapter(holder, false, false);
+                            holder.fieldSelected = true;
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_DAY);
+                        } else {
+                            changeUIState(holder, holder.workDayLayout, holder.workDayArrow, true);
+                            holder.fieldSelected = false;
+                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        }
+                        TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
+                    }
+                });
             }
-        });
 
+            holder.hqLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+                    if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    } else {
+                        if (!holder.fieldSelected) {
+                            if (holder.hqArray.size() == 0) {
+                                holder.hqArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray());
+                            }
+                            holder.sessionItemAdapterArray = holder.hqArray;
+                            populateSessionItemAdapter(holder, false, true);
+                            holder.fieldSelected = true;
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.SUBORDINATE);
+                        } else {
+                            changeUIState(holder, holder.hqLayout, holder.hqArrow, true);
+                            holder.fieldSelected = false;
+                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        }
+                    }
+                    TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
+                }
+            });
+
+            if (!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1"))) {
+                holder.clusterLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        holder.searchET.setText("");
+                        itemPosition = holder.getLayoutPosition();
+                        holder.relativeLayout.setSelected(false);
+                        if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                        } else {
+                            if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                            } else {
+                                if (!holder.fieldSelected) {
+                                    if (holder.clusterArray.size() == 0) {
+                                        holder.clusterArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + holder.selectedHq).getMasterSyncDataJsonArray());
+                                        TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                                    } else {
+                                        setSelectedCount(holder, holder.clusterArray, false, holder.clusterField, holder.clusterCount);
+                                    }
+                                    holder.fieldSelected = true;
+                                    holder.sessionItemAdapterArray = holder.clusterArray;
+                                    populateSessionItemAdapter(holder, true, true);
+                                    onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CLUSTER);
+                                } else {
+                                    holder.fieldSelected = false;
+                                    setSelectedCount(holder, holder.clusterArray, true, holder.clusterField, holder.clusterCount);
+                                    changeUIState(holder, holder.clusterLayout, holder.clusterArrow, true);
+                                    onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            holder.jcLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+
+                    if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
+                    } else {
+                        if (!holder.fieldSelected) {
+                            if (holder.jointCallArray.size() == 0) {
+                                holder.jointCallArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            } else {
+                                setSelectedCount(holder, holder.jointCallArray, false, holder.jcField, holder.jcCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = holder.jointCallArray;
+                            populateSessionItemAdapter(holder, true, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.JOINT_WORK);
+                        } else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.jointCallArray, true, holder.jcField, holder.jcCount);
+                            changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        }
+                    }
+
+                }
+            });
+
+            holder.drLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+
+                    if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
+                    } else {
+                        if (!holder.fieldSelected) {
+                            if (holder.listedDrArray.size() == 0) {
+                                holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            } else {
+                                setSelectedCount(holder, holder.listedDrArray, false, holder.drField, holder.drCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = filterJsonArray(holder, holder.listedDrArray);
+                            populateSessionItemAdapter(holder, true, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR);
+                        } else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.listedDrArray, true, holder.drField, holder.drCount);
+                            changeUIState(holder, holder.drLayout, holder.drArrow, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        }
+                    }
+                }
+            });
+
+            holder.chemistLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+
+                    if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
+                    } else {
+
+                        if (!holder.fieldSelected) {
+                            if (holder.chemistArray.size() == 0) {
+                                holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            } else {
+                                setSelectedCount(holder, holder.chemistArray, false, holder.chemistField, holder.chemistCount);
+                            }
+
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = filterJsonArray(holder, holder.chemistArray);
+                            populateSessionItemAdapter(holder, true, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST);
+                        } else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.chemistArray, true, holder.chemistField, holder.chemistCount);
+                            changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        }
+                    }
+                }
+            });
+
+            holder.stockiestLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+                    holder.searchET.setText("");
+                    if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
+                    } else {
+                        if (!holder.fieldSelected) {
+                            if (holder.stockiestArray.size() == 0) {
+                                holder.stockiestArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            } else {
+                                setSelectedCount(holder, holder.stockiestArray, false, holder.stockiestField, holder.stockiestCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = holder.stockiestArray;
+                            populateSessionItemAdapter(holder, true, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST);
+                        } else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.stockiestArray, true, holder.stockiestField, holder.stockiestCount);
+                            changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        }
+
+                    }
+                }
+            });
+
+            holder.unListedDrLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+
+                    if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
+                    } else {
+                        if (!holder.fieldSelected) {
+                            if (holder.unListedDrArray.size() == 0) {
+                                holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            } else {
+                                setSelectedCount(holder, holder.unListedDrArray, false, holder.unListedDrField, holder.unListedDrCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = filterJsonArray(holder, holder.unListedDrArray);
+                            populateSessionItemAdapter(holder, true, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.UNLISTED_DOCTOR);
+                        } else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.unListedDrArray, true, holder.unListedDrField, holder.unListedDrCount);
+                            changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        }
+
+                    }
+                }
+            });
+
+            holder.cipLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+
+                    if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
+                    } else {
+                        if (!holder.fieldSelected) {
+                            if (holder.cipArray.size() == 0) {
+                                holder.cipArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CIP + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            } else {
+                                setSelectedCount(holder, holder.cipArray, false, holder.cipField, holder.cipCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = filterJsonArray(holder, holder.cipArray);
+                            populateSessionItemAdapter(holder, true, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CIP);
+                        } else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.cipArray, true, holder.cipField, holder.cipCount);
+                            changeUIState(holder, holder.cipLayout, holder.cipArrow, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        }
+                    }
+                }
+            });
+
+            holder.hospLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
+
+                    if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
+                    } else {
+                        if (!holder.fieldSelected) {
+                            if (holder.hospArray.size() == 0) {
+                                holder.hospArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            } else {
+                                setSelectedCount(holder, holder.hospArray, false, holder.hospField, holder.hospCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = filterJsonArray(holder, holder.hospArray);
+                            populateSessionItemAdapter(holder, true, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.HOSPITAL);
+                        } else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.hospArray, true, holder.hospField, holder.hospCount);
+                            changeUIState(holder, holder.hospLayout, holder.hospArrow, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        }
+                    }
+                }
+            });
+
+            holder.remarks.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (holder.remarks.hasFocus()) {
+                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_SCROLL) {
+                            v.getParent().requestDisallowInterceptTouchEvent(false);
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
+
+            holder.remarks.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        holder.sessionData.setRemarks(holder.remarks.getText().toString());
+                    }
+                    return false;
+                }
+            });
+
+            holder.remarks.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (!b) {
+                        holder.sessionData.setRemarks(holder.remarks.getText().toString());
+                    }
+                }
+            });
+
+            holder.sessionDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    sessionInterface.deleteClicked(inputDataArray, holder.getAbsoluteAdapterPosition());
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
-        return inputDataArray.getSessionList().size();
+        if(OneBuildSetup == 0){
+            return inputDataArrayOneBuild.getSessionList().size();
+        }
+        else{
+            return inputDataArray.getSessionList().size();
+        }
     }
 
     public void workTypeBasedUI(MyViewHolder holder, ModelClass.SessionList session, boolean bool) {
@@ -1088,6 +1817,216 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     }
 
+    public void worktypeBasedUiOneBuild(MyViewHolder holder, OneBuildModelClass.SessionList sessionOneBuild, boolean bool){
+        String worktype = sessionOneBuild.getWorkType().getFWFlg();
+        switch(worktype){
+            case "F":
+                if(holder.hqNeed.equalsIgnoreCase("0"))
+                    holder.hqLayout.setVisibility(View.VISIBLE);
+                else if(holder.hqNeed.equalsIgnoreCase("1"))
+                    holder.hqLayout.setVisibility(View.GONE);
+
+                if(holder.clusterNeed.equalsIgnoreCase("0"))
+                    holder.clusterLayout.setVisibility(View.VISIBLE);
+                else if(holder.clusterNeed.equalsIgnoreCase("1"))
+                    holder.clusterLayout.setVisibility(View.GONE);
+
+                if(jwNeed.equalsIgnoreCase("0"))
+                    holder.jcLayout.setVisibility(View.VISIBLE);
+                else
+                    holder.jcLayout.setVisibility(View.GONE);
+
+                if(drNeed.equalsIgnoreCase("0"))
+                    holder.drLayout.setVisibility(View.VISIBLE);
+                else
+                    holder.drLayout.setVisibility(View.GONE);
+
+                if(chemistNeed.equalsIgnoreCase("0"))
+                    holder.chemistLayout.setVisibility(View.VISIBLE);
+                else
+                    holder.chemistLayout.setVisibility(View.GONE);
+
+                if(stockiestNeed.equalsIgnoreCase("0"))
+                    holder.stockiestLayout.setVisibility(View.VISIBLE);
+                else
+                    holder.stockiestLayout.setVisibility(View.GONE);
+
+//                if (unListedDrNeed.equalsIgnoreCase("0"))
+//                    holder.unListedDrLayout.setVisibility(View.VISIBLE);
+//                else
+//                    holder.unListedDrLayout.setVisibility(View.GONE);
+
+                if(cipNeed.equalsIgnoreCase("0"))
+                    holder.cipLayout.setVisibility(View.VISIBLE);
+                else
+                    holder.cipLayout.setVisibility(View.GONE);
+
+                if(hospNeed.equalsIgnoreCase("0"))
+                    holder.hospLayout.setVisibility(View.VISIBLE);
+                else
+                    holder.hospLayout.setVisibility(View.GONE);
+
+                if(SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
+                    holder.workDayLayout.setVisibility(View.VISIBLE);
+                } else {
+                    holder.workDayLayout.setVisibility(View.GONE);
+                }
+                break;
+
+            case "W":
+            case "H":
+            case "L":{
+                holder.hqLayout.setVisibility(View.GONE);
+                holder.clusterLayout.setVisibility(View.GONE);
+                holder.jcLayout.setVisibility(View.GONE);
+                holder.drLayout.setVisibility(View.GONE);
+                holder.chemistLayout.setVisibility(View.GONE);
+                holder.stockiestLayout.setVisibility(View.GONE);
+                holder.unListedDrLayout.setVisibility(View.GONE);
+                holder.cipLayout.setVisibility(View.GONE);
+                holder.hospLayout.setVisibility(View.GONE);
+                holder.workDayLayout.setVisibility(View.GONE);
+                break;
+            }
+
+            case "N":{
+                if(sessionOneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
+                    if(holder.hqNeed.equalsIgnoreCase("0"))
+                        holder.hqLayout.setVisibility(View.VISIBLE);
+                    else if(holder.hqNeed.equalsIgnoreCase("1"))
+                        holder.hqLayout.setVisibility(View.GONE);
+
+                    if(holder.clusterNeed.equalsIgnoreCase("0"))
+                        holder.clusterLayout.setVisibility(View.VISIBLE);
+                    else if(holder.clusterNeed.equalsIgnoreCase("1"))
+                        holder.clusterLayout.setVisibility(View.GONE);
+
+                    if(jwNeed.equalsIgnoreCase("0"))
+                        holder.jcLayout.setVisibility(View.VISIBLE);
+                    else if(jwNeed.equalsIgnoreCase("1"))
+                        holder.jcLayout.setVisibility(View.GONE);
+                }else {
+                    holder.hqLayout.setVisibility(View.GONE);
+                    holder.clusterLayout.setVisibility(View.GONE);
+                    holder.jcLayout.setVisibility(View.GONE);
+                }
+
+                holder.drLayout.setVisibility(View.GONE);
+                holder.chemistLayout.setVisibility(View.GONE);
+                holder.stockiestLayout.setVisibility(View.GONE);
+                holder.unListedDrLayout.setVisibility(View.GONE);
+                holder.cipLayout.setVisibility(View.GONE);
+                holder.hospLayout.setVisibility(View.GONE);
+                holder.workDayLayout.setVisibility(View.GONE);
+                break;
+            }
+
+            default:{
+                if(holder.hqNeed.equalsIgnoreCase("0"))
+                    holder.hqLayout.setVisibility(View.VISIBLE);
+                else if(holder.hqNeed.equalsIgnoreCase("1"))
+                    holder.hqLayout.setVisibility(View.GONE);
+
+                if(holder.clusterNeed.equalsIgnoreCase("0"))
+                    holder.clusterLayout.setVisibility(View.VISIBLE);
+                else if(holder.clusterNeed.equalsIgnoreCase("1"))
+                    holder.clusterLayout.setVisibility(View.GONE);
+
+                if(jwNeed.equalsIgnoreCase("0"))
+                    holder.jcLayout.setVisibility(View.VISIBLE);
+                else
+                    holder.jcLayout.setVisibility(View.GONE);
+
+                if(drNeed.equalsIgnoreCase("0"))
+                    holder.drLayout.setVisibility(View.VISIBLE);
+                else
+                    holder.drLayout.setVisibility(View.GONE);
+
+                if(chemistNeed.equalsIgnoreCase("0"))
+                    holder.chemistLayout.setVisibility(View.VISIBLE);
+                else
+                    holder.chemistLayout.setVisibility(View.GONE);
+
+                if(stockiestNeed.equalsIgnoreCase("0"))
+                    holder.stockiestLayout.setVisibility(View.VISIBLE);
+                else
+                    holder.stockiestLayout.setVisibility(View.GONE);
+
+//                if (unListedDrNeed.equalsIgnoreCase("0"))
+//                    holder.unListedDrLayout.setVisibility(View.VISIBLE);
+//                else
+//                    holder.unListedDrLayout.setVisibility(View.GONE);
+
+                if(cipNeed.equalsIgnoreCase("0"))
+                    holder.cipLayout.setVisibility(View.VISIBLE);
+                else
+                    holder.cipLayout.setVisibility(View.GONE);
+
+                if(hospNeed.equalsIgnoreCase("0"))
+                    holder.hospLayout.setVisibility(View.VISIBLE);
+                else
+                    holder.hospLayout.setVisibility(View.GONE);
+
+                if(SharedPref.getStpNeed(context).equalsIgnoreCase(SharedPref.getStpBasedMtp(context)) && SharedPref.getStpNeed(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
+                    holder.workDayLayout.setVisibility(View.VISIBLE);
+                } else {
+                    holder.workDayLayout.setVisibility(View.GONE);
+                }
+            }
+
+        }
+        if(bool) {
+            switch (sessionOneBuild.getLayoutVisible()){
+                case Constants.WORK_TYPE:{
+                    changeUIState(holder, holder.workTypeLayout, holder.workTypeArrow, false);
+                    break;
+                }
+                case Constants.SUBORDINATE:{
+                    changeUIState(holder, holder.hqLayout, holder.hqArrow, false);
+                    break;
+                }
+                case Constants.CLUSTER:{
+                    changeUIState(holder, holder.clusterLayout, holder.clusterArrow, false);
+                    break;
+                }
+                case Constants.JOINT_WORK:{
+                    changeUIState(holder, holder.jcLayout, holder.jcArrow, false);
+                    break;
+                }
+                case Constants.DOCTOR:{
+                    changeUIState(holder, holder.drLayout, holder.drArrow, false);
+                    break;
+                }
+                case Constants.CHEMIST:{
+                    changeUIState(holder, holder.chemistLayout, holder.chemistArrow, false);
+                    break;
+                }
+                case Constants.STOCKIEST:{
+                    changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, false);
+                    break;
+                }
+                case Constants.UNLISTED_DOCTOR:{
+                    changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, false);
+                    break;
+                }
+                case Constants.CIP:{
+                    changeUIState(holder, holder.cipLayout, holder.cipArrow, false);
+                    break;
+                }
+                case Constants.HOSPITAL:{
+                    changeUIState(holder, holder.hospLayout, holder.hospArrow, false);
+                    break;
+                }
+                case Constants.WORK_DAY:{
+                    changeUIState(holder, holder.workDayLayout, holder.workDayArrow, false);
+                    break;
+                }
+            }
+        }
+
+
+    }
+
     public void getDataFromLocal(MyViewHolder holder, String hqCode) {
 
         if(!masterDataDao.getMasterSyncDataOfHQ(Constants.CLUSTER + hqCode)) {
@@ -1276,6 +2215,18 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
     }
 
+    public void prepareInputDataOneBuild(ArrayList<OneBuildModelClass.SessionList.SubClass> oneBuildModelClass, ArrayList<EditModelClass> arrayList){
+        if(oneBuildModelClass.size()>0) {
+            for (int i = 0; i<oneBuildModelClass.size(); i++) {
+                for (int j = 0; j<arrayList.size(); j++) {
+                    if(oneBuildModelClass.get(i).getCode().equalsIgnoreCase(arrayList.get(j).getCode())) {
+                        arrayList.get(j).setChecked(true);
+                    }
+                }
+            }
+        }
+    }
+
     public void populateSessionItemAdapter(MyViewHolder holder, boolean checkBoxNeed, boolean isSortNeeded) {
 
         if(isSortNeeded) {
@@ -1294,26 +2245,26 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             public void itemClicked(ArrayList<EditModelClass> jsonArray, EditModelClass jsonObject) {
                 if(holder.workTypeLayout.getVisibility() == View.VISIBLE) {
                     boolean workTypeRepeated = false;
-                    if(inputDataArray.getSessionList().size()>1) {
-                        for (int i = 0; i<inputDataArray.getSessionList().size(); i++) {
-                            if(i != holder.getAbsoluteAdapterPosition()) {
-                                if(inputDataArray.getSessionList().get(i).getWorkType().getCode().equalsIgnoreCase(jsonObject.getCode())) {
-                                    switch (jsonObject.getFWFlg().toUpperCase()){
+                    if (inputDataArray.getSessionList().size() > 1) {
+                        for (int i = 0; i < inputDataArray.getSessionList().size(); i++) {
+                            if (i != holder.getAbsoluteAdapterPosition()) {
+                                if (inputDataArray.getSessionList().get(i).getWorkType().getCode().equalsIgnoreCase(jsonObject.getCode())) {
+                                    switch (jsonObject.getFWFlg().toUpperCase()) {
                                         case "W":
-                                        case "H":{
+                                        case "H": {
                                             workTypeRepeated = true;
                                             commonUtilsMethods.showToastMessage(context, context.getString(R.string.wt_already_selected) + (i + 1));
                                             break;
                                         }
-                                        case "N":{
-                                            if(inputDataArray.getSessionList().get(i).getWorkType().getCode().equalsIgnoreCase(jsonObject.getCode())) {
+                                        case "N": {
+                                            if (inputDataArray.getSessionList().get(i).getWorkType().getCode().equalsIgnoreCase(jsonObject.getCode())) {
                                                 workTypeRepeated = true;
                                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.wt_already_selected) + (i + 1));
                                                 break;
                                             }
                                         }
-                                        case "F":{
-                                            if(!sfType.equalsIgnoreCase("2")) {
+                                        case "F": {
+                                            if (!sfType.equalsIgnoreCase("2")) {
                                                 workTypeRepeated = true;
                                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.wt_already_selected) + (i + 1));
                                                 break;
@@ -1326,13 +2277,13 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     }
 
                     if(!workTypeRepeated) {
-                        holder.workTypeField.setText(jsonObject.getName());
-                        holder.sessionData.getWorkType().setName(jsonObject.getName());
-                        holder.sessionData.getWorkType().setCode(jsonObject.getCode());
-                        holder.sessionData.getWorkType().setFWFlg(jsonObject.getFWFlg());
-                        holder.sessionData.getWorkType().setTerrSlFlg(jsonObject.getTerrSlFlg());
+                            holder.workTypeField.setText(jsonObject.getName());
+                            holder.sessionData.getWorkType().setName(jsonObject.getName());
+                            holder.sessionData.getWorkType().setCode(jsonObject.getCode());
+                            holder.sessionData.getWorkType().setFWFlg(jsonObject.getFWFlg());
+                            holder.sessionData.getWorkType().setTerrSlFlg(jsonObject.getTerrSlFlg());
 
-                        sessionInterface.fieldWorkSelected(inputDataArray, holder.getAbsoluteAdapterPosition());
+                            sessionInterface.fieldWorkSelected(inputDataArray, holder.getAbsoluteAdapterPosition());
                     }
                 }else if(holder.hqLayout.getVisibility() == View.VISIBLE) {
 
@@ -1502,6 +2453,230 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     }
 
+    public void populateSessionItemAdapterOneBuild(MyViewHolder holder, boolean checkBoxNeed, boolean idSortNeeded){
+        if(idSortNeeded) {
+            Collections.sort(holder.sessionItemAdapterArray, new Comparator<EditModelClass>() {
+                @Override
+                public int compare(EditModelClass editModelClass, EditModelClass t1) {
+                    if (editModelClass.getName().equals(Constants.INDEPENDENT)) return -1;
+                    if (t1.getName().equals(Constants.INDEPENDENT)) return 1;
+                    return editModelClass.getName().compareTo(t1.getName());
+                }
+            });
+        }
+        sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, checkBoxNeed, new SessionItemInterface() {
+
+            @Override
+            public void itemClicked(ArrayList<EditModelClass> jsonArray, EditModelClass jsonObject) {
+                if(holder.workTypeLayout.getVisibility() == View.VISIBLE) {
+                    boolean workTypeRepeated = false;
+                    if (inputDataArrayOneBuild.getSessionList().size() > 1) {
+                        for (int i = 0; i < inputDataArrayOneBuild.getSessionList().size(); i++) {
+                            if (i != holder.getAbsoluteAdapterPosition()) {
+                                if (inputDataArrayOneBuild.getSessionList().get(i).getWorkType().getCode().equalsIgnoreCase(jsonObject.getCode())) {
+                                    switch (jsonObject.getFWFlg().toUpperCase()) {
+                                        case "W":
+                                        case "H": {
+                                            workTypeRepeated = true;
+                                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.wt_already_selected) + (i + 1));
+                                            break;
+                                        }
+                                        case "N": {
+                                            if (inputDataArrayOneBuild.getSessionList().get(i).getWorkType().getCode().equalsIgnoreCase(jsonObject.getCode())) {
+                                                workTypeRepeated = true;
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.wt_already_selected) + (i + 1));
+                                                break;
+                                            }
+                                        }
+                                        case "F": {
+                                            if (!sfType.equalsIgnoreCase("2")) {
+                                                workTypeRepeated = true;
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.wt_already_selected) + (i + 1));
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if(!workTypeRepeated) {
+                        holder.workTypeField.setText(jsonObject.getName());
+                        holder.sessionDataOneBuild.getWorkType().setName(jsonObject.getName());
+                        holder.sessionDataOneBuild.getWorkType().setCode(jsonObject.getCode());
+                        holder.sessionDataOneBuild.getWorkType().setFWFlg(jsonObject.getFWFlg());
+                        holder.sessionDataOneBuild.getWorkType().setTerrSlFlg(jsonObject.getTerrSlFlg());
+
+                        sessionInterfaceOneBuild.fieldWorkSelectedOneBuild(inputDataArrayOneBuild, holder.getAbsoluteAdapterPosition());
+                    }
+
+                }else if(holder.hqLayout.getVisibility() == View.VISIBLE) {
+                    boolean hqRepeated = false;
+                    if(inputDataArrayOneBuild.getSessionList().size()>1) {
+                        for (int i = 0; i<inputDataArrayOneBuild.getSessionList().size(); i++) {
+                            OneBuildModelClass.SessionList oneBuildModelClass = inputDataArrayOneBuild.getSessionList().get(i);
+                            if(i != holder.getAbsoluteAdapterPosition()) {
+                                if(oneBuildModelClass.getWorkType().getFWFlg().equalsIgnoreCase(inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getWorkType().getFWFlg())) {
+                                    if(oneBuildModelClass.getHq().getCode().equalsIgnoreCase(jsonObject.getCode())) {
+                                        hqRepeated = true;
+                                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.hq_already_selected) + (i + 1));
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if(!hqRepeated) {
+                        holder.sessionData.getHQ().setName(jsonObject.getName());
+                        holder.sessionData.getHQ().setCode(jsonObject.getCode());
+
+                        holder.hq_code = jsonObject.getCode();
+                        if(!holder.selectedHq.equalsIgnoreCase(holder.hq_code)) {
+                            holder.selectedHq = holder.hq_code;
+                            sessionInterfaceOneBuild.hqChangedOneBuild(inputDataArrayOneBuild, itemPosition, true);
+                        }else {
+                            sessionInterfaceOneBuild.hqChangedOneBuild(inputDataArrayOneBuild, itemPosition, false);
+                        }
+                    }
+                }else if(holder.clusterLayout.getVisibility() == View.VISIBLE) {
+                    int count = 0;
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
+                            count++;
+                        }
+                    }
+
+                    if(count>0) {
+                        holder.clusterField.setText("Selected");
+                        holder.clusterCount.setVisibility(View.VISIBLE);
+                        holder.clusterCount.setText(String.valueOf(count));
+                    }else {
+                        holder.clusterField.setText("Select");
+                        holder.clusterCount.setVisibility(View.GONE);
+                    }
+                }else if(holder.jcLayout.getVisibility() == View.VISIBLE) {
+                    int count = 0;
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
+                            count++;
+                        }
+                    }
+
+                    if(count>0) {
+                        holder.jcField.setText("Selected");
+                        holder.jcCount.setVisibility(View.VISIBLE);
+                        holder.jcCount.setText(String.valueOf(count));
+                    }else {
+                        holder.jcField.setText("Select");
+                        holder.jcCount.setVisibility(View.GONE);
+                    }
+                }else if(holder.drLayout.getVisibility() == View.VISIBLE) {
+                    int count = 0;
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
+                            count++;
+                        }
+                    }
+                    if(count>0) {
+                        holder.drField.setText("Selected");
+                        holder.drCount.setVisibility(View.VISIBLE);
+                        holder.drCount.setText(String.valueOf(count));
+                    }else {
+                        holder.drField.setText("Select");
+                        holder.drCount.setVisibility(View.GONE);
+                    }
+                }else if(holder.chemistLayout.getVisibility() == View.VISIBLE) {
+                    int count = 0;
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
+                            count++;
+                        }
+                    }
+                    if(count>0) {
+                        holder.chemistField.setText("Selected");
+                        holder.chemistCount.setVisibility(View.VISIBLE);
+                        holder.chemistCount.setText(String.valueOf(count));
+                    }else {
+                        holder.chemistField.setText("Select");
+                        holder.chemistCount.setVisibility(View.GONE);
+                    }
+                }else if(holder.stockiestLayout.getVisibility() == View.VISIBLE) {
+                    int count = 0;
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
+                            count++;
+                        }
+                    }
+                    if(count>0) {
+                        holder.stockiestField.setText("Selected");
+                        holder.stockiestCount.setVisibility(View.VISIBLE);
+                        holder.stockiestCount.setText(String.valueOf(count));
+                    }else {
+                        holder.stockiestField.setText("Select");
+                        holder.stockiestCount.setVisibility(View.GONE);
+                    }
+                }else if(holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
+                    int count = 0;
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
+                            count++;
+                        }
+                    }
+                    if(count>0) {
+                        holder.unListedDrField.setText("Selected");
+                        holder.unListedDrCount.setVisibility(View.VISIBLE);
+                        holder.unListedDrCount.setText(String.valueOf(count));
+                    }else {
+                        holder.unListedDrField.setText("Select");
+                        holder.unListedDrCount.setVisibility(View.GONE);
+                    }
+                }else if(holder.cipLayout.getVisibility() == View.VISIBLE) {
+                    int count = 0;
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
+                            count++;
+                        }
+                    }
+                    if(count>0) {
+                        holder.cipField.setText("Selected");
+                        holder.cipCount.setVisibility(View.VISIBLE);
+                        holder.cipCount.setText(String.valueOf(count));
+                    }else {
+                        holder.cipField.setText("Select");
+                        holder.cipCount.setVisibility(View.GONE);
+                    }
+                }else if(holder.hospLayout.getVisibility() == View.VISIBLE) {
+                    int count = 0;
+                    for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                        if(holder.sessionItemAdapterArray.get(i).isChecked()) {
+                            count++;
+                        }
+                    }
+                    if(count>0) {
+                        holder.hospField.setText("Selected");
+                        holder.hospCount.setVisibility(View.VISIBLE);
+                        holder.hospCount.setText(String.valueOf(count));
+                    }else {
+                        holder.hospField.setText("Select");
+                        holder.hospCount.setVisibility(View.GONE);
+                    }
+                }else if(holder.workDayLayout.getVisibility() == View.VISIBLE) {
+                    holder.workDayField.setText(jsonObject.getName());
+                    inputDataArrayOneBuild.setSTP_Name(jsonObject.getName());
+                    inputDataArrayOneBuild.setSTP_Code(jsonObject.getCode());
+                    sessionInterfaceOneBuild.workDayChangedOneBuild(inputDataArrayOneBuild, itemPosition);
+                }
+            }
+        });
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+        holder.itemRecView.setLayoutManager(layoutManager);
+        holder.itemRecView.setAdapter(sessionItemAdapter);
+        sessionItemAdapter.notifyDataSetChanged();
+
+    }
+
     public void changeUIState(MyViewHolder holder, LinearLayout linearLayout, ImageView imageView, boolean allLayoutVisible) {
 
         if(allLayoutVisible) {
@@ -1512,7 +2687,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             TourPlanActivity.addSaveBtnLayout.setVisibility(View.VISIBLE);
             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
 
-            workTypeBasedUI(holder, holder.sessionData, false);
+            if(OneBuildSetup == 0){
+                worktypeBasedUiOneBuild(holder,holder.sessionDataOneBuild,false);
+            }else {
+                workTypeBasedUI(holder, holder.sessionData, false);
+            }
         }else {
             holder.workTypeLayout.setVisibility(View.GONE);
             holder.hqLayout.setVisibility(View.GONE);
@@ -1557,6 +2736,18 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 inputDataArray.getSessionList().get(i).setVisible(visibility); // set all other sessions visibility either true or false
             else
                 inputDataArray.getSessionList().get(i).setLayoutVisible(layoutVisible); // to set which one need to be visible at a time while edit of a same session.ex: when user click on session1 cluster then session1 cluster will only be visible
+        }
+        notifyDataSetChanged();
+        TourPlanActivity activity = (TourPlanActivity) context;
+        activity.scrollToPosition(position, false);
+    }
+
+    public void onEditOneBuild(int position, boolean visibility, String layoutVisible){
+        for (int i = 0; i<inputDataArrayOneBuild.getSessionList().size(); i++) {
+            if(i != position)
+                inputDataArrayOneBuild.getSessionList().get(i).setVisible(visibility); // set all other sessions visibility either true or false
+            else
+                inputDataArrayOneBuild.getSessionList().get(i).setLayoutVisible(layoutVisible); // to set which one need to be visible at a time while edit of a same session.ex: when user click on session1 cluster then session1 cluster will only be visible
         }
         notifyDataSetChanged();
         TourPlanActivity activity = (TourPlanActivity) context;
@@ -1642,6 +2833,50 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         onEdit(holder.getAbsoluteAdapterPosition(), true, "");
     }
 
+    public void saveCheckedItemOneBuild(MyViewHolder holder){
+        if(holder.clusterLayout.getVisibility() == View.VISIBLE) {
+            holder.selectedClusterCode.clear();
+            for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
+                if(holder.sessionItemAdapterArray.get(i).isChecked()) {
+                    holder.selectedClusterCode.add(holder.sessionItemAdapterArray.get(i).getCode());
+                }
+            }
+
+            clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR, holder);
+            clusterChanged(holder.selectedClusterCode, holder.chemistArray, holder.chemistField, Constants.CHEMIST, holder);
+            clusterChanged(holder.selectedClusterCode, holder.stockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
+            clusterChanged(holder.selectedClusterCode, holder.unListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
+            clusterChanged(holder.selectedClusterCode, holder.cipArray, holder.cipField, Constants.CIP, holder);
+            clusterChanged(holder.selectedClusterCode, holder.hospArray, holder.hospField, Constants.HOSPITAL, holder);
+
+            setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.clusterField, holder.clusterCount);
+            inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setLayoutVisible("");
+            sessionInterfaceOneBuild.clusterChangedOneBuild(inputDataArrayOneBuild, holder.getLayoutPosition());
+        }else if(holder.jcLayout.getVisibility() == View.VISIBLE) {
+            setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.jcField, holder.jcCount);
+            changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
+        }else if(holder.drLayout.getVisibility() == View.VISIBLE) {
+            setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.drField, holder.drCount);
+            changeUIState(holder, holder.drLayout, holder.drArrow, true);
+        }else if(holder.chemistLayout.getVisibility() == View.VISIBLE) {
+            setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.chemistField, holder.chemistCount);
+            changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
+        }else if(holder.stockiestLayout.getVisibility() == View.VISIBLE) {
+            setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.stockiestField, holder.stockiestCount);
+            changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, true);
+        }else if(holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
+            setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.unListedDrField, holder.unListedDrCount);
+            changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, true);
+        }else if(holder.cipLayout.getVisibility() == View.VISIBLE) {
+            setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.cipField, holder.cipCount);
+            changeUIState(holder, holder.cipLayout, holder.cipArrow, true);
+        }else if(holder.hospLayout.getVisibility() == View.VISIBLE) {
+            setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.hospField, holder.hospCount);
+            changeUIState(holder, holder.hospLayout, holder.hospArrow, true);
+        }
+        onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");
+    }
+
     public void clusterChanged(ArrayList<String> clusterCodes, ArrayList<EditModelClass> arrayList, TextView label, String master, MyViewHolder holder) {
 
         for (int i = 0; i<arrayList.size(); i++) {
@@ -1673,29 +2908,55 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }else {
             label.setText(text);
         }
-
-        List<ModelClass.SessionList.SubClass> subClassList = new ArrayList<>();
-        for (int i = 0; i<arrayList.size(); i++) {
-            if(arrayList.get(i).isChecked()) {
-                ModelClass.SessionList.SubClass subClass = new ModelClass.SessionList.SubClass(arrayList.get(i).getName(), arrayList.get(i).getCode());
-                subClassList.add(subClass);
+        if(OneBuildSetup == 0){
+            List<OneBuildModelClass.SessionList.SubClass> subClassListOneBuild = new ArrayList<>();
+            for (int i = 0; i<arrayList.size(); i++) {
+                if(arrayList.get(i).isChecked()) {
+                    OneBuildModelClass.SessionList.SubClass subClassOneBuild = new OneBuildModelClass.SessionList.SubClass(arrayList.get(i).getName(), arrayList.get(i).getCode());
+                    subClassListOneBuild.add(subClassOneBuild);
+                }
             }
-        }
-        if(master.equalsIgnoreCase(Constants.DOCTOR)) {
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassList);
-        }else if(master.equalsIgnoreCase(Constants.CHEMIST)) {
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassList);
-        }else if(master.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)) {
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnListedDr().clear();
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnListedDr(subClassList);
-        }else if(master.equalsIgnoreCase(Constants.CIP)) {
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassList);
-        }else if(master.equalsIgnoreCase(Constants.HOSPITAL)) {
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassList);
+            if(master.equalsIgnoreCase(Constants.DOCTOR)) {
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassListOneBuild);
+            }else if(master.equalsIgnoreCase(Constants.CHEMIST)) {
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassListOneBuild);
+            }else if(master.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)) {
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnlistedDr().clear();
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnlistedDr(subClassListOneBuild);
+            }else if(master.equalsIgnoreCase(Constants.CIP)) {
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassListOneBuild);
+            }else if(master.equalsIgnoreCase(Constants.HOSPITAL)) {
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassListOneBuild);
+            }
+        }else {
+
+            List<ModelClass.SessionList.SubClass> subClassList = new ArrayList<>();
+            for (int i = 0; i < arrayList.size(); i++) {
+                if (arrayList.get(i).isChecked()) {
+                    ModelClass.SessionList.SubClass subClass = new ModelClass.SessionList.SubClass(arrayList.get(i).getName(), arrayList.get(i).getCode());
+                    subClassList.add(subClass);
+                }
+            }
+            if (master.equalsIgnoreCase(Constants.DOCTOR)) {
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassList);
+            } else if (master.equalsIgnoreCase(Constants.CHEMIST)) {
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassList);
+            } else if (master.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)) {
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnListedDr().clear();
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnListedDr(subClassList);
+            } else if (master.equalsIgnoreCase(Constants.CIP)) {
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassList);
+            } else if (master.equalsIgnoreCase(Constants.HOSPITAL)) {
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassList);
+            }
         }
     }
 
@@ -1708,6 +2969,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         public LinearLayout sessionDelete, workTypeLayout, hqLayout, clusterLayout, jcLayout, drLayout, chemistLayout, stockiestLayout, unListedDrLayout, cipLayout, hospLayout, remarksLayout, workDayLayout;
         public ImageView workTypeArrow, hqArrow, clusterArrow, jcArrow, drArrow, chemistArrow, stockiestArrow, unListedDrArrow, cipArrow, hospArrow, workDayArrow;
         public ModelClass.SessionList sessionData = new ModelClass.SessionList();
+        public OneBuildModelClass.SessionList sessionDataOneBuild = new OneBuildModelClass.SessionList();
+
         public ArrayList<EditModelClass> workTypeArray = new ArrayList<>();
         public ArrayList<EditModelClass> hqArray = new ArrayList<>();
         public ArrayList<EditModelClass> clusterArray = new ArrayList<>();
@@ -1735,6 +2998,15 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         ArrayList<ModelClass.SessionList.SubClass> unListedDrModelArray;
         ArrayList<ModelClass.SessionList.SubClass> cipModelArray;
         ArrayList<ModelClass.SessionList.SubClass> hospitalModelArray;
+        ArrayList<OneBuildModelClass.SessionList.SubClass> clusterModelArrayOneBuild;
+        ArrayList<OneBuildModelClass.SessionList.SubClass> jcModelArrayOneBuild;
+        ArrayList<OneBuildModelClass.SessionList.SubClass> listedDrModelArrayOneBuild;
+        ArrayList<OneBuildModelClass.SessionList.SubClass> chemistModelArrayOneBuild;
+        ArrayList<OneBuildModelClass.SessionList.SubClass> stockListModelArrayOneBuild;
+        ArrayList<OneBuildModelClass.SessionList.SubClass> unListedDrModelArrayOneBuild;
+        ArrayList<OneBuildModelClass.SessionList.SubClass> cipModelArrayOneBuild;
+        ArrayList<OneBuildModelClass.SessionList.SubClass> hospitalModelArrayOneBuild;
+
         String hq_code = "", selectedHq = "", hqNeed = "", clusterNeed = "";
         ArrayList<String> selectedClusterCode = new ArrayList<>();
         ProgressBar progress_hq;
