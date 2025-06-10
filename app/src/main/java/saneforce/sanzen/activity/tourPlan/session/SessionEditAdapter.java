@@ -308,22 +308,36 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             }else {
                 holder.workDayLayout.setVisibility(View.GONE);
             }
+            //work Type
+            if (holder.sessionDataOneBuild.getWorkType().getName().equals("")) {
+                holder.workTypeField.setText("Select");
+            } else {
+                holder.workTypeField.setText(holder.sessionDataOneBuild.getWorkType().getName());
+            }
+
+            if (holder.sessionDataOneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // Y - yes
+                holder.hqNeed = "0"; // 0 - Yes
+                holder.clusterNeed = "0";
+            } else if (holder.sessionDataOneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("N")) {
+                holder.hqNeed = "1"; // 1 - No
+                holder.clusterNeed = "1";
+            }
             worktypeBasedUiOneBuild(holder, holder.sessionDataOneBuild, true);
             //HQ
             switch (designation){
                 case "MR":
                     holder.hqLayout.setVisibility(View.GONE);
-                    holder.sessionDataOneBuild.getHq().setName(SharedPref.getHqName(context));
-                    holder.sessionDataOneBuild.getHq().setCode(SharedPref.getHqCode(context));
-                    holder.hqField.setText(holder.sessionData.getHQ().getName());
-                    holder.selectedHq = holder.sessionData.getHQ().getCode();
+                    holder.sessionDataOneBuild.getHeadquarters().setName(SharedPref.getHqName(context));
+                    holder.sessionDataOneBuild.getHeadquarters().setCode(SharedPref.getHqCode(context));
+                    holder.hqField.setText(holder.sessionDataOneBuild.getHeadquarters().getName());
+                    holder.selectedHq = holder.sessionDataOneBuild.getHeadquarters().getCode();
                     break;
                 case "MGR":
-                    if(holder.sessionDataOneBuild.getHq().getName().equals("")) {
+                    if(holder.sessionDataOneBuild.getHeadquarters().getName().equals("")) {
                         holder.hqField.setText("Select");
                     }else {
-                        holder.hqField.setText(holder.sessionDataOneBuild.getHq().getName());
-                        holder.selectedHq = holder.sessionDataOneBuild.getHq().getCode();
+                        holder.hqField.setText(holder.sessionDataOneBuild.getHeadquarters().getName());
+                        holder.selectedHq = holder.sessionDataOneBuild.getHeadquarters().getCode();
                     }
                     if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
                         holder.hqLayout.setVisibility(View.GONE);
@@ -2518,7 +2532,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             OneBuildModelClass.SessionList oneBuildModelClass = inputDataArrayOneBuild.getSessionList().get(i);
                             if(i != holder.getAbsoluteAdapterPosition()) {
                                 if(oneBuildModelClass.getWorkType().getFWFlg().equalsIgnoreCase(inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getWorkType().getFWFlg())) {
-                                    if(oneBuildModelClass.getHq().getCode().equalsIgnoreCase(jsonObject.getCode())) {
+                                    if(oneBuildModelClass.getHeadquarters().getCode().equalsIgnoreCase(jsonObject.getCode())) {
                                         hqRepeated = true;
                                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.hq_already_selected) + (i + 1));
                                         break;

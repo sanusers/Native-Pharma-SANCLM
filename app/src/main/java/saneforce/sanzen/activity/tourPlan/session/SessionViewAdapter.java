@@ -81,12 +81,12 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
                 }
             }else {
                 holder.workDayLayout.setVisibility(View.GONE);
-                if (holder.dataOneBuild.getHq().getName().equals("")){
+                if (holder.dataOneBuild.getHeadquarters().getName().equals("")){
                     holder.hqLayout.setVisibility(View.GONE);
                 }else if(SharedPref.getSfType(context).equalsIgnoreCase("1")){
                     holder.hqLayout.setVisibility(View.GONE);
                 } else{
-                    holder.hqTV.setText(holder.dataOneBuild.getHq().getName());
+                    holder.hqTV.setText(holder.dataOneBuild.getHeadquarters().getName());
                 }
             }
 

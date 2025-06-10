@@ -36,16 +36,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         this.inputData = inputData;
         this.context = context;
         this.onDayClickInterface = onDayClickInterface;
-        this.OneBuildSetup = 1;
-        this.OneBuildInputData.clear();
 
     }
     public CalendarAdapter ( Context context, ArrayList<OneBuildModelClass> inputDataOneBuild,OnDayClickOneBuildInterface onDayClickOneBuildInterface) {
         this.context = context;
         this.OneBuildInputData = inputDataOneBuild;
         this.onDayClickOneBuildInterface = onDayClickOneBuildInterface;
-        this.OneBuildSetup = 0;
-        this.inputData.clear();
 
     }
 
@@ -105,8 +101,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     @Override
     public int getItemCount () {
         if(OneBuildSetup == 0)
-
-             return OneBuildInputData.size();
+            return OneBuildInputData.size();
         else return inputData.size();
     }
 

@@ -44,6 +44,14 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
 
     }
 
+    public CalendarAdapter(ArrayList<String> arrayList, Context context,LocalDate localDate,OnDayClickOneBuildInterface onDayClickOneBuildInterface){
+        this.arrayList = arrayList;
+        this.context = context;
+        this.localDate = localDate;
+        localDate = LocalDate.now();
+        this.onDayClickedOneBuild = onDayClickOneBuildInterface;
+    }
+
     @NonNull
     @Override
     public CalendarAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

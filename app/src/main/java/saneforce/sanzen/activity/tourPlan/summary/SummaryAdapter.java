@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
@@ -41,7 +40,7 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
         this.summaryInterface = summaryInterface;
         summaryIconAdapter = new SummaryIconAdapter();
     }
-    public SummaryAdapter (Context context, ArrayList<OneBuildModelClass> arrayList, SummaryInterfaceOneBuild summaryInterfaceoNEbUILD) {
+    public SummaryAdapter (Context context, ArrayList<OneBuildModelClass> arrayList, SummaryInterfaceOneBuild summaryInterfaceOneBuild) {
         this.arrayListOneBuild = arrayList;
         this.context = context;
         this.summaryInterfaceOneBuild = summaryInterfaceOneBuild;
@@ -62,12 +61,12 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
         if(OneBuildSetup == 0) {
             OneBuildModelClass oneBuildModelClasses = arrayListOneBuild.get(holder.getAbsoluteAdapterPosition());
             holder.setIsRecyclable(false);
-            if (!oneBuildModelClasses.getId().isEmpty()) {
+            if (!oneBuildModelClasses.getDayNo().isEmpty()) {
                 OneBuildModelClass.SessionList oneBuildModelClass = new OneBuildModelClass.SessionList();
                 for (int i = 0; i < oneBuildModelClasses.getSessionList().size(); i++) {
                     oneBuildModelClass = oneBuildModelClasses.getSessionList().get(i);
                     holder.workTypeModelArrayOneBuild.add(oneBuildModelClass.getWorkType());
-                    holder.hqModelArrayOneBuild.add(oneBuildModelClass.getHq());
+                    holder.hqModelArrayOneBuild.add(oneBuildModelClass.getHeadquarters());
                     holder.clusterCount += oneBuildModelClass.getCluster().size();
                     holder.jwCount += oneBuildModelClass.getJC().size();
                     holder.drCount += oneBuildModelClass.getListedDr().size();
@@ -79,14 +78,14 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
 
                 }
                 holder.date.setText(oneBuildModelClasses.getDate());
-                for (ModelClass.SessionList.WorkType workType : holder.workTypeModelArray) {
+                for (OneBuildModelClass.SessionList.WorkType workType : holder.workTypeModelArrayOneBuild) {
                     if (!workType.getName().isEmpty())
                         holder.workTypeNames.add(workType.getName());
                 }
 
-                if (holder.workTypeModelArray.size() == 1) {
-                    holder.workType.setText(holder.workTypeModelArray.get(0).getName());
-                    holder.hqName.setText(holder.hqModelArray.get(0).getName());
+                if (holder.workTypeModelArrayOneBuild.size() == 1) {
+                    holder.workType.setText(holder.workTypeModelArrayOneBuild.get(0).getName());
+                    holder.hqName.setText(holder.hqModelArrayOneBuild.get(0).getName());
                     if (SharedPref.getSfType(context).equalsIgnoreCase("2")) {
                         holder.hqName.setVisibility(View.VISIBLE);
                         holder.view.setVisibility(View.VISIBLE);
@@ -96,12 +95,12 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
                     }
                     holder.workTypeLayout2.setVisibility(View.GONE);
                     holder.workTypeLayout3.setVisibility(View.GONE);
-                } else if (holder.workTypeModelArray.size() == 2) {
+                } else if (holder.workTypeModelArrayOneBuild.size() == 2) {
                     holder.workTypeLayout3.setVisibility(View.GONE);
-                    holder.workType.setText(holder.workTypeModelArray.get(0).getName());
-                    holder.hqName.setText(holder.hqModelArray.get(0).getName());
-                    holder.workType2.setText(holder.workTypeModelArray.get(1).getName());
-                    holder.hqName2.setText(holder.hqModelArray.get(1).getName());
+                    holder.workType.setText(holder.workTypeModelArrayOneBuild.get(0).getName());
+                    holder.hqName.setText(holder.hqModelArrayOneBuild.get(0).getName());
+                    holder.workType2.setText(holder.workTypeModelArrayOneBuild.get(1).getName());
+                    holder.hqName2.setText(holder.hqModelArrayOneBuild.get(1).getName());
                     if (SharedPref.getSfType(context).equalsIgnoreCase("2")) {
                         holder.hqName.setVisibility(View.VISIBLE);
                         holder.view.setVisibility(View.VISIBLE);
@@ -114,13 +113,13 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
                         holder.view2.setVisibility(View.GONE);
                     }
 
-                }else if (holder.workTypeModelArray.size() == 3) {
-                    holder.workType.setText(holder.workTypeModelArray.get(0).getName());
-                    holder.hqName.setText(holder.hqModelArray.get(0).getName());
-                    holder.workType2.setText(holder.workTypeModelArray.get(1).getName());
-                    holder.hqName2.setText(holder.hqModelArray.get(1).getName());
-                    holder.workType3.setText(holder.workTypeModelArray.get(2).getName());
-                    holder.hqName3.setText(holder.hqModelArray.get(2).getName());
+                }else if (holder.workTypeModelArrayOneBuild.size() == 3) {
+                    holder.workType.setText(holder.workTypeModelArrayOneBuild.get(0).getName());
+                    holder.hqName.setText(holder.hqModelArrayOneBuild.get(0).getName());
+                    holder.workType2.setText(holder.workTypeModelArrayOneBuild.get(1).getName());
+                    holder.hqName2.setText(holder.hqModelArrayOneBuild.get(1).getName());
+                    holder.workType3.setText(holder.workTypeModelArrayOneBuild.get(2).getName());
+                    holder.hqName3.setText(holder.hqModelArrayOneBuild.get(2).getName());
 
 
                     if (SharedPref.getSfType(context).equalsIgnoreCase("2")) {
@@ -232,7 +231,7 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
             ModelClass modelClasses = arrayList.get(holder.getAbsoluteAdapterPosition());
             holder.setIsRecyclable(false);
             if (!modelClasses.getDayNo().isEmpty()) {
-                ModelClass.SessionList modelClass = new ModelClass.SessionList();
+                ModelClass.SessionList modelClass;
                 for (int i = 0; i < modelClasses.getSessionList().size(); i++) {
                     modelClass = modelClasses.getSessionList().get(i);
                     holder.workTypeModelArray.add(modelClass.getWorkType());

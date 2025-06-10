@@ -59,7 +59,7 @@ public class OneBuildModelClass implements Serializable {
         this.STP_Name = oneBuildmodelClass.getSTP_Name();
         this.STP_Code = oneBuildmodelClass.getSTP_Code();
 
-        this.sessionList = new ArrayList<>();
+        this.sessionList = new ArrayList<OneBuildModelClass.SessionList>();
         for(OneBuildModelClass.SessionList sessionListOneBuild : oneBuildmodelClass.sessionList){
             OneBuildModelClass.SessionList copySessionOneBuild = new OneBuildModelClass.SessionList(sessionListOneBuild);
             this.sessionList.add(copySessionOneBuild);
@@ -190,8 +190,8 @@ public class OneBuildModelClass implements Serializable {
         private String remarks = "";
         private String sessionId = "";
 
-        private OneBuildModelClass.SessionList.WorkType workType;
-        private OneBuildModelClass.SessionList.SubClass hq;
+        private OneBuildModelClass.SessionList.WorkType workType = new WorkType();
+        private OneBuildModelClass.SessionList.SubClass Headquarters = new SubClass();
         private List<OneBuildModelClass.SessionList.SubClass> Cluster;
         private List<OneBuildModelClass.SessionList.SubClass> JC;
         private List<OneBuildModelClass.SessionList.SubClass> listedDr;
@@ -205,20 +205,20 @@ public class OneBuildModelClass implements Serializable {
         }
 
         public SessionList(String layoutVisible, Boolean isVisible, String remarks, String sessionId, OneBuildModelClass.SessionList.WorkType workType,
-                           OneBuildModelClass.SessionList.SubClass hq, List<OneBuildModelClass.SessionList.SubClass> cluster, List<OneBuildModelClass.SessionList.SubClass> JC,
-                           List<OneBuildModelClass.SessionList.SubClass> listedDr, List<OneBuildModelClass.SessionList.SubClass> chemist, List<OneBuildModelClass.SessionList.SubClass> stockList,
+                           OneBuildModelClass.SessionList.SubClass Headquarters, List<OneBuildModelClass.SessionList.SubClass> Cluster, List<OneBuildModelClass.SessionList.SubClass> JC,
+                           List<OneBuildModelClass.SessionList.SubClass> listedDr, List<OneBuildModelClass.SessionList.SubClass> chemist, List<OneBuildModelClass.SessionList.SubClass> StockList,
                            List<OneBuildModelClass.SessionList.SubClass> unlistedDr, List<OneBuildModelClass.SessionList.SubClass> cip, List<OneBuildModelClass.SessionList.SubClass> hospital) {
             this.layoutVisible = layoutVisible;
             this.isVisible = isVisible;
             this.remarks = remarks;
             this.sessionId = sessionId;
             this.workType = workType;
-            this.hq = hq;
-            this.Cluster = cluster;
+            this.Headquarters = Headquarters;
+            this.Cluster = Cluster;
             this.JC = JC;
             this.listedDr = listedDr;
             this.chemist = chemist;
-            this.StockList = stockList;
+            this.StockList = StockList;
             this.unlistedDr = unlistedDr;
             Cip = cip;
             this.hospital = hospital;
@@ -230,8 +230,8 @@ public class OneBuildModelClass implements Serializable {
             this.remarks = sessionList.getRemarks();
             this.sessionId = sessionList.getSessionId();
             this.workType = new WorkType(sessionList.getWorkType());
-            if(sessionList.getHq() != null) {
-                this.hq = new SubClass(sessionList.getHq());
+            if(sessionList.getHeadquarters() != null) {
+                this.Headquarters = new SubClass(sessionList.getHeadquarters());
             }else{
                 Log.d("HQ", "SessionList: "+"HQ is NULL");
             }
@@ -294,7 +294,7 @@ public class OneBuildModelClass implements Serializable {
                 Log.d("unListedDr", "SessionList: "+"unListedDr is NULL");
             }
             if(sessionList.getCip() != null) {
-                for (OneBuildModelClass.SessionList.SubClass cip : sessionList.Cip) {
+                 for (OneBuildModelClass.SessionList.SubClass cip : sessionList.Cip) {
                     OneBuildModelClass.SessionList.SubClass copyCip = new OneBuildModelClass.SessionList.SubClass(cip);
                     this.Cip.add(copyCip);
                 }
@@ -352,12 +352,12 @@ public class OneBuildModelClass implements Serializable {
             this.workType = workType;
         }
 
-        public OneBuildModelClass.SessionList.SubClass getHq() {
-            return hq;
+        public OneBuildModelClass.SessionList.SubClass getHeadquarters() {
+            return Headquarters;
         }
 
-        public void setHq(OneBuildModelClass.SessionList.SubClass hq) {
-            this.hq = hq;
+        public void setHeadquarters(OneBuildModelClass.SessionList.SubClass Headquarters) {
+            this.Headquarters = Headquarters;
         }
 
         public List<OneBuildModelClass.SessionList.SubClass> getCluster() {
