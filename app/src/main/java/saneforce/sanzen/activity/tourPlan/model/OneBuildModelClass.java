@@ -192,36 +192,36 @@ public class OneBuildModelClass implements Serializable {
 
         private OneBuildModelClass.SessionList.WorkType workType = new WorkType();
         private OneBuildModelClass.SessionList.SubClass Headquarters = new SubClass();
-        private List<OneBuildModelClass.SessionList.SubClass> Cluster;
-        private List<OneBuildModelClass.SessionList.SubClass> JC;
-        private List<OneBuildModelClass.SessionList.SubClass> listedDr;
-        private List<OneBuildModelClass.SessionList.SubClass> chemist;
-        private List<OneBuildModelClass.SessionList.SubClass> StockList;
-        private List<OneBuildModelClass.SessionList.SubClass> unlistedDr;
+        private List<OneBuildModelClass.SessionList.SubClass> Territories  = new ArrayList<>();
+        private List<OneBuildModelClass.SessionList.SubClass> JointWorks = new ArrayList<>() ;
+        private List<OneBuildModelClass.SessionList.SubClass> Doctors = new ArrayList<>();
+        private List<OneBuildModelClass.SessionList.SubClass> Chemists = new ArrayList<>();
+        private List<OneBuildModelClass.SessionList.SubClass> StockLists = new ArrayList<>();
+        private List<OneBuildModelClass.SessionList.SubClass> UnlistedDoctors = new ArrayList<>();
         private List<OneBuildModelClass.SessionList.SubClass> Cip;
-        private List<OneBuildModelClass.SessionList.SubClass> hospital;
+        private List<OneBuildModelClass.SessionList.SubClass> Hospitals = new ArrayList<>();
 
         public SessionList() {
         }
 
         public SessionList(String layoutVisible, Boolean isVisible, String remarks, String sessionId, OneBuildModelClass.SessionList.WorkType workType,
-                           OneBuildModelClass.SessionList.SubClass Headquarters, List<OneBuildModelClass.SessionList.SubClass> Cluster, List<OneBuildModelClass.SessionList.SubClass> JC,
-                           List<OneBuildModelClass.SessionList.SubClass> listedDr, List<OneBuildModelClass.SessionList.SubClass> chemist, List<OneBuildModelClass.SessionList.SubClass> StockList,
-                           List<OneBuildModelClass.SessionList.SubClass> unlistedDr, List<OneBuildModelClass.SessionList.SubClass> cip, List<OneBuildModelClass.SessionList.SubClass> hospital) {
+                           OneBuildModelClass.SessionList.SubClass Headquarters, List<OneBuildModelClass.SessionList.SubClass> Territories , List<OneBuildModelClass.SessionList.SubClass> JointWorks ,
+                           List<OneBuildModelClass.SessionList.SubClass> Doctors, List<OneBuildModelClass.SessionList.SubClass> Chemists, List<OneBuildModelClass.SessionList.SubClass> StockLists,
+                           List<OneBuildModelClass.SessionList.SubClass> UnlistedDoctors, List<OneBuildModelClass.SessionList.SubClass> cip, List<OneBuildModelClass.SessionList.SubClass> Hospitals) {
             this.layoutVisible = layoutVisible;
             this.isVisible = isVisible;
             this.remarks = remarks;
             this.sessionId = sessionId;
             this.workType = workType;
             this.Headquarters = Headquarters;
-            this.Cluster = Cluster;
-            this.JC = JC;
-            this.listedDr = listedDr;
-            this.chemist = chemist;
-            this.StockList = StockList;
-            this.unlistedDr = unlistedDr;
+            this.Territories  = Territories ;
+            this.JointWorks  = JointWorks ;
+            this.Doctors = Doctors;
+            this.Chemists = Chemists;
+            this.StockLists = StockLists;
+            this.UnlistedDoctors = UnlistedDoctors;
             Cip = cip;
-            this.hospital = hospital;
+            this.Hospitals = Hospitals;
         }
 
         public SessionList (SessionList sessionList){
@@ -236,59 +236,59 @@ public class OneBuildModelClass implements Serializable {
                 Log.d("HQ", "SessionList: "+"HQ is NULL");
             }
 
-            this.Cluster = new ArrayList<>();
-            this.JC = new ArrayList<>();
-            this.listedDr = new ArrayList<>();
-            this.chemist = new ArrayList<>();
-            this.StockList = new ArrayList<>();
-            this.unlistedDr = new ArrayList<>();
+            this.Territories  = new ArrayList<>();
+            this.JointWorks  = new ArrayList<>();
+            this.Doctors = new ArrayList<>();
+            this.Chemists = new ArrayList<>();
+            this.StockLists = new ArrayList<>();
+            this.UnlistedDoctors = new ArrayList<>();
             this.Cip = new ArrayList<>();
-            this.hospital = new ArrayList<>();
+            this.Hospitals = new ArrayList<>();
 
-            if(sessionList.getCluster() != null) {
-                for (OneBuildModelClass.SessionList.SubClass Cluster : sessionList.getCluster()) {
-                    OneBuildModelClass.SessionList.SubClass copyCluster = new OneBuildModelClass.SessionList.SubClass(Cluster);
-                    this.Cluster.add(copyCluster);
+            if(sessionList.getTerritories () != null) {
+                for (OneBuildModelClass.SessionList.SubClass Territories : sessionList.getTerritories ()) {
+                    OneBuildModelClass.SessionList.SubClass copyTerritories = new OneBuildModelClass.SessionList.SubClass(Territories);
+                    this.Territories .add(copyTerritories);
                 }
             }else{
                 Log.d("Cluster", "SessionList: "+"Cluster is NULL");
             }
-            if(sessionList.getJC() != null) {
-                for (OneBuildModelClass.SessionList.SubClass JC : sessionList.getJC()) {
-                    OneBuildModelClass.SessionList.SubClass copyJC = new OneBuildModelClass.SessionList.SubClass(JC);
-                    this.JC.add(copyJC);
+            if(sessionList.getJointWorks() != null) {
+                for (OneBuildModelClass.SessionList.SubClass JointWorks : sessionList.getJointWorks()) {
+                    OneBuildModelClass.SessionList.SubClass copyJointWorks = new OneBuildModelClass.SessionList.SubClass(JointWorks);
+                    this.JointWorks .add(copyJointWorks);
                 }
             }else{
                 Log.d("JC", "SessionList: "+"JC is NULL");
             }
-            if(sessionList.listedDr != null) {
-                for (OneBuildModelClass.SessionList.SubClass listedDr : sessionList.listedDr) {
+            if(sessionList.Doctors != null) {
+                for (OneBuildModelClass.SessionList.SubClass listedDr : sessionList.Doctors) {
                     OneBuildModelClass.SessionList.SubClass copyListedDr = new OneBuildModelClass.SessionList.SubClass(listedDr);
-                    this.listedDr.add(copyListedDr);
+                    this.Doctors.add(copyListedDr);
                 }
             }else{
                 Log.d("listedDr", "SessionList: "+"listedDr is Null");
             }
-            if(sessionList.getChemist() != null) {
-                for (OneBuildModelClass.SessionList.SubClass chemist : sessionList.chemist) {
-                    OneBuildModelClass.SessionList.SubClass copyChemist = new OneBuildModelClass.SessionList.SubClass(chemist);
-                    this.chemist.add(copyChemist);
+            if(sessionList.getChemists() != null) {
+                for (OneBuildModelClass.SessionList.SubClass chemists : sessionList.Chemists) {
+                    OneBuildModelClass.SessionList.SubClass copyChemists = new OneBuildModelClass.SessionList.SubClass(chemists);
+                    this.Chemists.add(copyChemists);
                 }
             }else{
                 Log.d("Chemist", "SessionList: "+"Chemist is NULL");
             }
-            if(sessionList.getStockList() != null) {
-                for (OneBuildModelClass.SessionList.SubClass stockList : sessionList.StockList) {
-                    OneBuildModelClass.SessionList.SubClass copyStockList = new OneBuildModelClass.SessionList.SubClass(stockList);
-                    this.StockList.add(copyStockList);
+            if(sessionList.getStockLists() != null) {
+                for (OneBuildModelClass.SessionList.SubClass stockLists : sessionList.StockLists) {
+                    OneBuildModelClass.SessionList.SubClass copyStockLists = new OneBuildModelClass.SessionList.SubClass(stockLists);
+                    this.StockLists.add(copyStockLists);
                 }
             }else{
                 Log.d("StockList", "SessionList: "+"StockList is NULL");
             }
-            if(sessionList.getUnlistedDr() != null) {
-                for (OneBuildModelClass.SessionList.SubClass unListedDr : sessionList.unlistedDr) {
-                    OneBuildModelClass.SessionList.SubClass copyUnListedDr = new OneBuildModelClass.SessionList.SubClass(unListedDr);
-                    this.unlistedDr.add(copyUnListedDr);
+            if(sessionList.getUnlistedDoctors() != null) {
+                for (OneBuildModelClass.SessionList.SubClass UnlistedDoctors : sessionList.UnlistedDoctors) {
+                    OneBuildModelClass.SessionList.SubClass copyUnlistedDoctors = new OneBuildModelClass.SessionList.SubClass(UnlistedDoctors);
+                    this.UnlistedDoctors.add(copyUnlistedDoctors);
                 }
             }else{
                 Log.d("unListedDr", "SessionList: "+"unListedDr is NULL");
@@ -301,10 +301,10 @@ public class OneBuildModelClass implements Serializable {
             }else{
                 Log.d("Cip", "SessionList: "+"CIP is NULL");
             }
-            if(sessionList.getHospital() != null) {
-                for (OneBuildModelClass.SessionList.SubClass hospital : sessionList.hospital) {
-                    OneBuildModelClass.SessionList.SubClass copyHospital = new OneBuildModelClass.SessionList.SubClass(hospital);
-                    this.hospital.add(copyHospital);
+            if(sessionList.getHospitals() != null) {
+                for (OneBuildModelClass.SessionList.SubClass Hospitals : sessionList.Hospitals) {
+                    OneBuildModelClass.SessionList.SubClass copyHospitals = new OneBuildModelClass.SessionList.SubClass(Hospitals);
+                    this.Hospitals.add(copyHospitals);
                 }
             }else{
                 Log.d("Hospital", "SessionList: "+"Hospital is NULL");
@@ -360,52 +360,52 @@ public class OneBuildModelClass implements Serializable {
             this.Headquarters = Headquarters;
         }
 
-        public List<OneBuildModelClass.SessionList.SubClass> getCluster() {
-            return Cluster;
+        public List<OneBuildModelClass.SessionList.SubClass> getTerritories () {
+            return Territories ;
         }
 
-        public void setCluster(List<OneBuildModelClass.SessionList.SubClass> cluster) {
-            Cluster = cluster;
+        public void setTerritories (List<OneBuildModelClass.SessionList.SubClass> cluster) {
+            Territories  = cluster;
         }
 
-        public List<OneBuildModelClass.SessionList.SubClass> getJC() {
-            return JC;
+        public List<OneBuildModelClass.SessionList.SubClass> getJointWorks() {
+            return JointWorks;
         }
 
-        public void setJC(List<OneBuildModelClass.SessionList.SubClass> JC) {
-            this.JC = JC;
+        public void setJointWorks(List<OneBuildModelClass.SessionList.SubClass> JointWorks) {
+            this.JointWorks = JointWorks;
         }
 
-        public List<OneBuildModelClass.SessionList.SubClass> getListedDr() {
-            return listedDr;
+        public List<OneBuildModelClass.SessionList.SubClass> getDoctors() {
+            return Doctors;
         }
 
-        public void setListedDr(List<OneBuildModelClass.SessionList.SubClass> listedDr) {
-            this.listedDr = listedDr;
+        public void setDoctors(List<OneBuildModelClass.SessionList.SubClass> Doctors) {
+            this.Doctors = Doctors;
         }
 
-        public List<OneBuildModelClass.SessionList.SubClass> getChemist() {
-            return chemist;
+        public List<OneBuildModelClass.SessionList.SubClass> getChemists() {
+            return Chemists;
         }
 
-        public void setChemist(List<OneBuildModelClass.SessionList.SubClass> chemist) {
-            this.chemist = chemist;
+        public void setChemists(List<OneBuildModelClass.SessionList.SubClass> Chemists) {
+            this.Chemists = Chemists;
         }
 
-        public List<OneBuildModelClass.SessionList.SubClass> getStockList() {
-            return StockList;
+        public List<OneBuildModelClass.SessionList.SubClass> getStockLists() {
+            return StockLists;
         }
 
-        public void setStockList(List<OneBuildModelClass.SessionList.SubClass> stockList) {
-            StockList = stockList;
+        public void setStockLists(List<OneBuildModelClass.SessionList.SubClass> stockList) {
+            StockLists = stockList;
         }
 
-        public List<OneBuildModelClass.SessionList.SubClass> getUnlistedDr() {
-            return unlistedDr;
+        public List<OneBuildModelClass.SessionList.SubClass> getUnlistedDoctors() {
+            return UnlistedDoctors;
         }
 
-        public void setUnlistedDr(List<OneBuildModelClass.SessionList.SubClass> unlistedDr) {
-            this.unlistedDr = unlistedDr;
+        public void setUnlistedDoctors(List<OneBuildModelClass.SessionList.SubClass> UnlistedDoctors) {
+            this.UnlistedDoctors = UnlistedDoctors;
         }
 
         public List<OneBuildModelClass.SessionList.SubClass> getCip() {
@@ -416,12 +416,12 @@ public class OneBuildModelClass implements Serializable {
             Cip = cip;
         }
 
-        public List<OneBuildModelClass.SessionList.SubClass> getHospital() {
-            return hospital;
+        public List<OneBuildModelClass.SessionList.SubClass> getHospitals() {
+            return Hospitals;
         }
 
-        public void setHospital(List<OneBuildModelClass.SessionList.SubClass> hospital) {
-            this.hospital = hospital;
+        public void setHospitals(List<OneBuildModelClass.SessionList.SubClass> Hospitals) {
+            this.Hospitals = Hospitals;
         }
 
         //SUB CLASS

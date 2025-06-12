@@ -49,14 +49,14 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
 
         if(OneBuildSetup == 0){
             holder.dataOneBuild = inputDataModelOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition());
-            holder.clusterModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getCluster());
-            holder.jcModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getJC());
-            holder.listedDrModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getListedDr());
-            holder.chemistModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getChemist());
-            holder.stockiestModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getStockList());
-            holder.unListedDrModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getUnlistedDr());
+            holder.clusterModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getTerritories());
+            holder.jcModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getJointWorks());
+            holder.listedDrModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getDoctors());
+            holder.chemistModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getChemists());
+            holder.stockiestModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getStockLists());
+            holder.unListedDrModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getUnlistedDoctors());
             holder.cipModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getCip());
-            holder.hospitalModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getHospital());
+            holder.hospitalModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getHospitals());
 
             holder.sessionNoTxt.setText("Session " +  (position + 1));
             holder.workTypeTV.setText(holder.dataOneBuild.getWorkType().getName());
@@ -91,7 +91,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             }
 
             //Cluster
-            if (holder.dataOneBuild.getCluster().size() > 0){
+            if (holder.dataOneBuild.getTerritories().size() > 0){
                 holder.clusterLayout.setVisibility(View.VISIBLE);
                 StringBuilder clusterName = new StringBuilder();
                 for (int i=0;i<holder.clusterModelArrayOneBuild.size();i++){
@@ -109,7 +109,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             }
 
             //Joint Work
-            if (holder.dataOneBuild.getJC().size() > 0){
+            if (holder.dataOneBuild.getJointWorks().size() > 0){
                 StringBuilder jcName = new StringBuilder();
                 for (int i=0;i<holder.jcModelArrayOneBuild.size();i++){
                     if (jcName.length() == 0){
@@ -126,7 +126,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             }
 
             //Listed Dr
-            if (holder.dataOneBuild.getListedDr().size() > 0){
+            if (holder.dataOneBuild.getDoctors().size() > 0){
                 StringBuilder drName = new StringBuilder();
                 for (int i=0;i<holder.listedDrModelArrayOneBuild.size();i++){
                     if (drName.length() == 0){
@@ -143,7 +143,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             }
 
             //Chemist
-            if (holder.dataOneBuild.getChemist().size() > 0){
+            if (holder.dataOneBuild.getChemists().size() > 0){
                 StringBuilder chemistName = new StringBuilder();
                 for (int i=0;i<holder.chemistModelArrayOneBuild.size();i++){
                     if (chemistName.length() == 0){
@@ -160,7 +160,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             }
 
             //Stockiest
-            if (holder.dataOneBuild.getStockList().size() > 0){
+            if (holder.dataOneBuild.getStockLists().size() > 0){
                 StringBuilder stockiestName = new StringBuilder();
                 for (int i=0;i<holder.stockiestModelArrayOneBuild.size();i++){
                     if (stockiestName.length() == 0){
@@ -178,7 +178,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
 
 
             //Unlisted Dr
-            if (holder.dataOneBuild.getUnlistedDr().size() > 0){
+            if (holder.dataOneBuild.getUnlistedDoctors().size() > 0){
                 StringBuilder unListedDrName = new StringBuilder();
                 for (int i=0;i<holder.unListedDrModelArrayOneBuild.size();i++){
                     if (unListedDrName.length() == 0){
@@ -214,7 +214,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
 
 
             //Hospital
-            if (holder.dataOneBuild.getHospital().size() > 0){
+            if (holder.dataOneBuild.getHospitals().size() > 0){
                 StringBuilder hospName = new StringBuilder();
                 for (int i=0;i<holder.hospitalModelArrayOneBuild.size();i++){
                     if (hospName.length() == 0){

@@ -195,29 +195,29 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
 
                 if(holder.clusterLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCluster().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCluster(subClassListOneBuild);
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getTerritories().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setTerritories(subClassListOneBuild);
                 }else if(holder.jcLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getJC().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setJC(subClassListOneBuild);
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getJointWorks().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setJointWorks(subClassListOneBuild);
                 }else if(holder.drLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassListOneBuild);
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getDoctors().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setDoctors(subClassListOneBuild);
                 }else if(holder.chemistLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassListOneBuild);
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemists().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemists(subClassListOneBuild);
                 }else if(holder.stockiestLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getStockList().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setStockList(subClassListOneBuild);
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getStockLists().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setStockLists(subClassListOneBuild);
                 }else if(holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnlistedDr().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnlistedDr(subClassListOneBuild);
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnlistedDoctors().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnlistedDoctors(subClassListOneBuild);
                 }else if(holder.cipLayout.getVisibility() == View.VISIBLE) {
                     inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
                     inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassListOneBuild);
                 }else if(holder.hospLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassListOneBuild);
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospitals().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospitals(subClassListOneBuild);
                 }
             }else {
                 List<ModelClass.SessionList.SubClass> subClassList = new ArrayList<>();
@@ -273,14 +273,14 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.remarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
             holder.remarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
             holder.sessionDataOneBuild = inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition());
-            holder.clusterModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getCluster());
-            holder.jcModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getJC());
-            holder.listedDrModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getListedDr());
-            holder.chemistModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getChemist());
-            holder.stockListModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getStockList());
-            holder.unListedDrModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getUnlistedDr());
+            holder.clusterModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getTerritories());
+            holder.jcModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getJointWorks());
+            holder.listedDrModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getDoctors());
+            holder.chemistModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getChemists());
+            holder.stockListModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getStockLists());
+            holder.unListedDrModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getUnlistedDoctors());
             holder.cipModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getCip());
-            holder.hospitalModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getHospital());
+            holder.hospitalModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getHospitals());
             designation = SharedPref.getDesig(context);
             if(holder.sessionDataOneBuild.getVisible()) {
                 holder.itemView.setVisibility(View.VISIBLE);
@@ -469,7 +469,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 if(hospName.length() == 0) {
                     hospName = new StringBuilder(holder.hospitalModelArrayOneBuild.get(i).getName());
                 }else {
-                    jcName.append(", ").append(holder.hospitalModelArrayOneBuild.get(i).getName());
+                    hospName.append(", ").append(holder.hospitalModelArrayOneBuild.get(i).getName());
                 }
             }
             if(hospName.length()>0) {
@@ -2931,20 +2931,20 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             }
             if(master.equalsIgnoreCase(Constants.DOCTOR)) {
-                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
-                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassListOneBuild);
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getDoctors().clear();
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setDoctors(subClassListOneBuild);
             }else if(master.equalsIgnoreCase(Constants.CHEMIST)) {
-                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
-                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassListOneBuild);
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemists().clear();
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemists(subClassListOneBuild);
             }else if(master.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)) {
-                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnlistedDr().clear();
-                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnlistedDr(subClassListOneBuild);
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnlistedDoctors().clear();
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnlistedDoctors(subClassListOneBuild);
             }else if(master.equalsIgnoreCase(Constants.CIP)) {
                 inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
                 inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassListOneBuild);
             }else if(master.equalsIgnoreCase(Constants.HOSPITAL)) {
-                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
-                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassListOneBuild);
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospitals().clear();
+                inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospitals(subClassListOneBuild);
             }
         }else {
 

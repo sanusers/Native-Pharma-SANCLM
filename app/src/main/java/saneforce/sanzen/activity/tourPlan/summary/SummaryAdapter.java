@@ -67,14 +67,14 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
                     oneBuildModelClass = oneBuildModelClasses.getSessionList().get(i);
                     holder.workTypeModelArrayOneBuild.add(oneBuildModelClass.getWorkType());
                     holder.hqModelArrayOneBuild.add(oneBuildModelClass.getHeadquarters());
-                    holder.clusterCount += oneBuildModelClass.getCluster().size();
-                    holder.jwCount += oneBuildModelClass.getJC().size();
-                    holder.drCount += oneBuildModelClass.getListedDr().size();
-                    holder.chemistCount += oneBuildModelClass.getChemist().size();
-                    holder.stockiestCount += oneBuildModelClass.getStockList().size();
-                    holder.unListedDrCount += oneBuildModelClass.getUnlistedDr().size();
+                    holder.clusterCount += oneBuildModelClass.getTerritories().size();
+                    holder.jwCount += oneBuildModelClass.getJointWorks().size();
+                    holder.drCount += oneBuildModelClass.getDoctors().size();
+                    holder.chemistCount += oneBuildModelClass.getChemists().size();
+                    holder.stockiestCount += oneBuildModelClass.getStockLists().size();
+                    holder.unListedDrCount += oneBuildModelClass.getUnlistedDoctors().size();
                     holder.cipCount += oneBuildModelClass.getCip().size();
-                    holder.hospitalCount += oneBuildModelClass.getHospital().size();
+                    holder.hospitalCount += oneBuildModelClass.getHospitals().size();
 
                 }
                 holder.date.setText(oneBuildModelClasses.getDate());
