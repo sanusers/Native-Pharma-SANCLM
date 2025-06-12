@@ -890,6 +890,7 @@ public class AddListActivity extends AppCompatActivity {
                 jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
                 jsonObject.put("sfcode", SharedPref.getSfCode(this));
                 jsonObject.put("DivCode", SharedPref.getDivisionCode(this));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(this));
                 jsonObject.put("Rsf", SharedPref.getHqCode(this));
                 jsonObject.put("town_code", strClusterID);
                 jsonObject.put("town_name", strClusterName);

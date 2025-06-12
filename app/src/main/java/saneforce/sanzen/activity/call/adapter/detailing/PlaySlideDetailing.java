@@ -176,6 +176,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 switch (SupportClass.getFileExtension(arrayList.get(position).getSlideName())){
                     case "pdf":
                     case "mp4":
+                    case "avi":
                     case "zip":
                     case "html":{
                         binding.playBtn.setVisibility(View.VISIBLE);
@@ -237,6 +238,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
                             loadPdf(file.getAbsolutePath());
                             break;
                         case "mp4":
+                        case "avi":
                             binding.pdfView.setVisibility(View.GONE);
                             binding.videoView.setVisibility(View.VISIBLE);
                             binding.webView.setVisibility(View.GONE);
@@ -505,6 +507,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
             switch (SupportClass.getFileExtension(arrayList.get(SelectedPos).getSlideName())){
                 case "pdf":
                 case "mp4":
+                case "avi":
                 case "zip":
                 case "html":{
                     binding.playBtn.setVisibility(View.VISIBLE);

@@ -5,9 +5,11 @@ import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.MediaController;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -75,6 +77,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                 switch (SupportClass.getFileExtension(arrayList.get(position).getSlideName())) {
                     case "pdf":
                     case "mp4":
+                    case "avi":
                     case "zip":
                     case "html": {
                         binding.playBtn.setVisibility(View.VISIBLE);
@@ -154,6 +157,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                             loadPdf(file.getAbsolutePath());
                             break;
                         case "mp4":
+                        case "avi":
                             binding.pdfView.setVisibility(View.GONE);
                             binding.videoView.setVisibility(View.VISIBLE);
                             binding.webView.setVisibility(View.GONE);
@@ -190,6 +194,16 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                             if (!filePath.isEmpty()) {
                                 binding.webView.loadUrl("file://" + filePath);
                             }
+                            binding.webView.setWebViewClient(new WebViewClient() {
+                                @Override
+                                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                                    Log.v("Slides", " ---- " + url + " ---- " + view.getTitle() + " ---- " + view.getOriginalUrl());
+                                    if(!url.isEmpty()) {
+                                        binding.webView.loadUrl(url);
+                                    }
+                                    return true;
+                                }
+                            });
                     }
                 }
             } else {
@@ -238,6 +252,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
             switch (SupportClass.getFileExtension(arrayList.get(0).getSlideName())) {
                 case "pdf":
                 case "mp4":
+                case "avi":
                 case "zip":
                 case "html": {
                     binding.playBtn.setVisibility(View.VISIBLE);

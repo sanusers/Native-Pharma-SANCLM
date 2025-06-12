@@ -329,7 +329,7 @@ public class WorkPlanEntriesNeeded {
                             }
                         }
                         dateBefore = LocalDate.parse(date);
-                        if(dateBefore != null && dateBefore.isBefore(currentDate) && dateBefore.isAfter(limitDate)) {
+                        if(dateBefore != null && dateBefore.isBefore(currentDate) && (dateBefore.getMonthValue() >= limitDate.minusMonths(2).getMonthValue())) {
                             datesNeeded.add(date);
                         }
                     }
@@ -344,7 +344,9 @@ public class WorkPlanEntriesNeeded {
                 }
                 Log.v("TAG 3", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }
-            if(!isTodayPresent || isTodayNotFinished) {
+            if((!isTodayPresent &&
+                    (!(HWDates.contains(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)) && (SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1") || SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1"))))
+            ) || (isTodayNotFinished)) {
                 datesNeeded.add(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
                 Log.v("TAG 4", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }

@@ -99,20 +99,23 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
                     if(DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
                         for (int i = 0; i<StockInput.size(); i++) {
                             if(StockInput.get(i).getStockCode().equalsIgnoreCase(checked_arrayList.get(position).getCode())) {
-                                checked_arrayList.set(position, new CallCommonCheckedList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), StockInput.get(i).getCurrentStock(), holder.checkBox.isChecked()));
+                                checked_arrayList.set(position, new CallCommonCheckedList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), StockInput.get(i).getCurrentStock(), checked_arrayList.get(position).isCheckedItem()));
                                 break;
                             }
                         }
                         if(Integer.parseInt(checked_arrayList.get(position).getStock_balance())>0) {
                             CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                         }else {
-                            checked_arrayList.set(position, new CallCommonCheckedList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), checked_arrayList.get(position).getStock_balance(), false));
+                            if(!checked_arrayList.get(position).isCheckedItem()) {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_input));
+                            }
                             holder.checkBox.setChecked(false);
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_input));
+                            checked_arrayList.set(position, new CallCommonCheckedList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), checked_arrayList.get(position).getStock_balance(), false));
+                            CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                         }
                     }else {
                         CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
-                        commonUtilsMethods.showToastMessage(context, "Cannot deselect No Input!");
+//                        commonUtilsMethods.showToastMessage(context, "Cannot deselect No Input!");
                     }
                 }else {
 //                    if(DCRCallActivity.InpMandatory != null && DCRCallActivity.InpMandatory.equalsIgnoreCase("1")) {

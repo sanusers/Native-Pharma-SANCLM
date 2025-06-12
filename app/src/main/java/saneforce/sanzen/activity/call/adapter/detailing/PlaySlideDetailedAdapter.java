@@ -388,6 +388,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     shareIntent.setType("image/png");
                     return;
                 }
+                case "avi":
                 case "mp4":{
                     shareIntent.setType("video/mp4");
                     return;
@@ -516,6 +517,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     }
                     return;
                 }
+                case "avi":
                 case "mp4":{
                     try {
                         ContentValues content = new ContentValues(4);

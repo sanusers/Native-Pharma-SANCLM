@@ -84,7 +84,7 @@ public class InputFragment extends Fragment {
                 break;
             }
         }
-        if(!isFromActivity.equalsIgnoreCase("new") && PrdMandatory.equalsIgnoreCase("1") && !isNoInputNotSelected) {
+        if(!isFromActivity.equalsIgnoreCase("new") && !isNoInputNotSelected) {
             CallCommonCheckedList callCommonCheckedList = checkedInputList.get(noInputIndex);
             callCommonCheckedList.setCheckedItem(true);
             checkedInputList.set(noInputIndex, callCommonCheckedList);

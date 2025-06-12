@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.homeScreen.adapters;
 
+import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.tpDataObj;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -15,6 +17,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -24,10 +33,13 @@ import java.util.TreeSet;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.modelClass.EventCalenderModelClass;
+import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.WorkPlanEntriesNeeded;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
+import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataTable;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
@@ -41,7 +53,8 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
     String selectedDate;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
-
+    private TourPlanOfflineDataDao tourPlanOfflineDataDao;
+    private String  STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPMandatory, TPBasedDCR, TPDCRDeviation, TPDCRMGRApprNeed;
 
     public Callstatusadapter(ArrayList<EventCalenderModelClass> days, Context context, LocalDate selectedMonth) {
         this.days = days;
@@ -50,9 +63,18 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         commonUtilsMethods = new CommonUtilsMethods(context);
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
+        tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
         dateStrings.clear();
         selectedDate = SharedPref.getSelectedDateCal(context);
         dateStrings = WorkPlanEntriesNeeded.datesNeeded;
+        STPNeed = SharedPref.getStpNeed(context);
+        STPBasedMTP = SharedPref.getStpBasedMtp(context);
+        STPBasedDCR = SharedPref.getStpBasedDcr(context);
+        TPNeed = SharedPref.getTpNeed(context);
+        TPMandatory = SharedPref.getTpMandatoryNeed(context);
+        TPBasedDCR = SharedPref.getTpbasedDcr(context);
+        TPDCRDeviation = SharedPref.getTpdcrDeviation(context);
+        TPDCRMGRApprNeed = SharedPref.getTpdcrMgrappr(context);
 //        try {
 //            JSONArray getMissedDates = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
 //            for (int i = 0; i < getMissedDates.length(); i++) {
@@ -100,12 +122,6 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         if (list.getWorkTypeFlag().equalsIgnoreCase("F")) {
             drawable.setColor(context.getResources().getColor(R.color.green_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorkTypeFlag().equalsIgnoreCase("W")) {
-            drawable.setColor(context.getResources().getColor(R.color.yellow_60));
-            holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorkTypeFlag().equalsIgnoreCase("H")) {
-            drawable.setColor(context.getResources().getColor(R.color.lustylavender_60));
-            holder.imageView.setVisibility(View.VISIBLE);
         } else if (list.getWorkTypeFlag().equalsIgnoreCase("L")) {
             drawable.setColor(context.getResources().getColor(R.color.red_60));
             holder.imageView.setVisibility(View.VISIBLE);
@@ -120,6 +136,12 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
             holder.imageView.setVisibility(View.VISIBLE);
         } else if (list.getWorkTypeFlag().equalsIgnoreCase("R")) {
             drawable.setColor(context.getResources().getColor(R.color.brown_60));
+            holder.imageView.setVisibility(View.VISIBLE);
+        } else if (list.getWorkTypeFlag().equalsIgnoreCase("W")) {
+            drawable.setColor(context.getResources().getColor(R.color.yellow_60));
+            holder.imageView.setVisibility(View.VISIBLE);
+        } else if (list.getWorkTypeFlag().equalsIgnoreCase("H")) {
+            drawable.setColor(context.getResources().getColor(R.color.lustylavender_60));
             holder.imageView.setVisibility(View.VISIBLE);
         } else {
             holder.imageView.setVisibility(View.GONE);
@@ -169,11 +191,40 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
 
         holder.relativeLayout.setOnClickListener(v -> {
             if (!list.getDateID().equalsIgnoreCase("")) {
-                if(list.getWorkTypeFlag().equalsIgnoreCase("W") && SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + "Weekly off auto post is enabled");
-                } else if(list.getWorkTypeFlag().equalsIgnoreCase("H") && SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + "Holiday auto post is enabled");
-                } else {
+                ModelClass modelClass = null;
+                if(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")
+                        || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
+                    try {
+                        @SuppressLint("DefaultLocale") String chosenMonthYear = String.format("%04d-%02d-%02d", Integer.parseInt(list.getYear()), Integer.parseInt(list.getMonth()), Integer.parseInt(list.getDateID()));
+                        String monthYear = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, chosenMonthYear);
+                        TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(monthYear);
+                        JSONArray tpDataArray = tourPlanOfflineDataTable.getTpDataJSONArray();
+                        String tpApprovalStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
+                        String date = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_38, chosenMonthYear);
+                        if(tpDataArray.length()>0 && tpApprovalStatus.equalsIgnoreCase("3")) {
+                            for (int i = 0; i<tpDataArray.length(); i++) {
+                                JSONObject tpDataObj = tpDataArray.optJSONObject(i);
+                                if(tpDataObj.optString("date").equalsIgnoreCase(date)) {
+                                    Type type = new TypeToken<ModelClass>() {
+                                    }.getType();
+                                    modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
+                                    break;
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                if(list.getWorkTypeFlag().equalsIgnoreCase("W")
+//                        && modelClass != null && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("W")
+                        && SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Weekly off auto post is enabled");
+                }else if(list.getWorkTypeFlag().equalsIgnoreCase("H")
+//                        && modelClass != null && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("H")
+                        && SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Holiday auto post is enabled");
+                }else {
                     boolean isApplicableDate = false;
                     String monthConverted = "";
                     if(!list.getMonth().isEmpty()) {
@@ -201,7 +252,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                             break;
                         }
                     }
-
+                    
                     if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date));
                     }else if(!SharedPref.getDayPlanStartedDate(context).isEmpty() && WorkPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {

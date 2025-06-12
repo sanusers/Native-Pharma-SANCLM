@@ -161,6 +161,8 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                             dialog.dismiss();
                             try {
                                 dialogTransparent.show();
+                                Log.d("Validation", "onBindViewHolder: " + callslist.getProduct() + " --> " + callslist.getInput());
+                                UpdateInputSample(callslist.getProduct(), callslist.getInput());
                                 CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode(), checkInOutNeed);
                                 String mMdata= masterDataDao.getDataByKey(Constants.CALL_SYNC);
                                 JSONArray jsonArray = new JSONArray(mMdata);
@@ -214,8 +216,63 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         });
     }
 
-    @SuppressLint("DefaultLocale")
+    private void UpdateInputSample(String product, String input) {
+        try {
+            String[] inputs = input.split("#");
+            String[] products = product.split("#");
+            //Input
+            if (SharedPref.getInputValidation(context).equalsIgnoreCase("1")) {
+                JSONArray jsonArrayInpStk = masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray();
+                if (inputs.length > 0) {
+                    for (String s : inputs) {
+                        String name = s.substring(0, s.lastIndexOf("~")), data = s.substring(s.lastIndexOf("~") + 1);
+                        String sampleQty = data.split("\\$")[0];
+                        //InputStockChange
+                        for (int j = 0; j<jsonArrayInpStk.length(); j++) {
+                            JSONObject jsonObject = jsonArrayInpStk.optJSONObject(j);
+                            if(name.equalsIgnoreCase(jsonObject.optString("Name"))) {
+                                int EnterQty = Integer.parseInt(sampleQty);
+                                int BalanceStock = Integer.parseInt(jsonObject.getString("Balance_Stock"));
+                                int FinalStock = EnterQty + BalanceStock;
+                                jsonObject.remove("Balance_Stock");
+                                jsonObject.put("Balance_Stock", FinalStock);
+                                break;
+                            }
+                        }
+                    }
+                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 2));
+                }
+            }
 
+            //Sample
+            if (SharedPref.getSampleValidation(context).equalsIgnoreCase("1")) {
+                JSONArray jsonArraySamStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray();
+                if (products.length > 0) {
+                    //InputStockChange
+                    for (String s : products) {
+                        String name = s.substring(0, s.lastIndexOf("~")), data = s.substring(s.lastIndexOf("~") + 1);
+                        String sampleQty = data.split("\\$")[0];
+                        for (int j = 0; j<jsonArraySamStk.length(); j++) {
+                            JSONObject jsonObject = jsonArraySamStk.getJSONObject(j);
+                            if(name.equalsIgnoreCase(jsonObject.getString("Name"))) {
+                                int EnterQty = Integer.parseInt(sampleQty);
+                                int BalanceStock = Integer.parseInt(jsonObject.getString("Balance_Stock"));
+                                int FinalStock = EnterQty + BalanceStock;
+                                jsonObject.remove("Balance_Stock");
+                                jsonObject.put("Balance_Stock", FinalStock);
+                                break;
+                            }
+                        }
+                    }
+                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 0));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressLint("DefaultLocale")
     private void CallDeleteAPI(String TranslNo, String aDetSLNo, String type, String date, String docCode, String checkInOutNeed) {
         JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
         try {
