@@ -152,32 +152,32 @@ public class ModelClass implements Serializable {
     this.STP_Name = STP_Name;
   }
 
-  public static class   SessionList implements Serializable {
+  public static class SessionList implements Serializable {
     private String layoutVisible = "";
 
     private Boolean isVisible = false;
 
     private String remarks = "";
 
-    private ModelClass.SessionList.WorkType workType;
+    private ModelClass.SessionList.WorkType workType = new WorkType();
 
-    private ModelClass.SessionList.SubClass HQ;
+    private ModelClass.SessionList.SubClass HQ = new SubClass();
 
-    private List<ModelClass.SessionList.SubClass> cluster;
+    private List<ModelClass.SessionList.SubClass> cluster = new ArrayList<>();
 
-    private List<ModelClass.SessionList.SubClass> JC;
+    private List<ModelClass.SessionList.SubClass> JC = new ArrayList<>();
 
-    private List<ModelClass.SessionList.SubClass> listedDr;
+    private List<ModelClass.SessionList.SubClass> listedDr = new ArrayList<>();
 
-    private List<ModelClass.SessionList.SubClass> chemist;
+    private List<ModelClass.SessionList.SubClass> chemist = new ArrayList<>();
 
-    private List<ModelClass.SessionList.SubClass> stockiest;
+    private List<ModelClass.SessionList.SubClass> stockiest = new ArrayList<>();
 
-    private List<ModelClass.SessionList.SubClass> unListedDr;
+    private List<ModelClass.SessionList.SubClass> unListedDr = new ArrayList<>();
 
     private List<ModelClass.SessionList.SubClass> Cip;
 
-    private List<ModelClass.SessionList.SubClass> hospital;
+    private List<ModelClass.SessionList.SubClass> hospital = new ArrayList<>();
 
     public SessionList () {
     }
@@ -365,7 +365,7 @@ public class ModelClass implements Serializable {
 
 
     public static class SubClass implements Serializable {
-      private String name = "";
+        private String name = "";
 
       private String Code = "";
 

@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.BuildConfig;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -216,7 +217,6 @@ public class TourPlanActivity extends AppCompatActivity {
         }else {
             checkTpApiStaus();
         }
-
         try {
             SFTP_Date_sp = SharedPref.getSftpDate(TourPlanActivity.this);
             JSONObject obj = new JSONObject(SFTP_Date_sp);
@@ -796,7 +796,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
                 populateSummaryAdapterOneBuild(dayWiseArrayPrevMonthOneBuild);
                   saveTpLocalOneBuild(dayWiseArrayPrevMonthOneBuild, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), "1");
-                  prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), dayNo, dayWiseArrayPrevMonthOneBuild, false);
+                      prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), dayNo, dayWiseArrayPrevMonthOneBuild, false);
 
             }
 
@@ -1044,50 +1044,74 @@ public class TourPlanActivity extends AppCompatActivity {
 
         if(OneBuildSetup == 0){
             binding.draftSave.setOnClickListener(view -> {
-                UtilityClass.hideKeyboard(TourPlanActivity.this);
+               /* UtilityClass.hideKeyboard(TourPlanActivity.this);
                 boolean isEmpty = false;
                 int position = 0;
 
-                OneBuildModelClass dataModelOneBuild = inputDataArrayOneBuild;
+                OneBuildModelClass oneBuildModelClass = inputDataArrayOneBuild;
                 if(inputDataArrayOneBuild != null ) {
-                    ArrayList<OneBuildModelClass.SessionList> sessionLists = dataModelOneBuild.getSessionList();
-                    String dayNo = dataModelOneBuild.getDayNo();
-                    for (int i = 0; i < sessionLists.size(); i++) {
-                        OneBuildModelClass.SessionList oneBuildModelClass = sessionLists.get(i);
-                        if (oneBuildModelClass.getWorkType().getName().isEmpty()) {
-                            isEmpty = true;
-                            position = i;
-                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
-                            break;
-                        } else if (oneBuildModelClass.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // TerrSlFlg is "Y" (yes) means head quarter and clusters are mandatory
-                            if (oneBuildModelClass.getHeadquarters().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                    ArrayList<OneBuildModelClass.SessionList> sessionLists = oneBuildModelClass.getSessionList();
+                    String dayNo = oneBuildModelClass.getDayNo();
+                    if(sessionLists != null) {
+                        for (int i = 0; i < sessionLists.size(); i++) {
+                            OneBuildModelClass.SessionList dataModelOneBuild = sessionLists.get(i);
+                            if (dataModelOneBuild.getWorkType().getName().isEmpty()) {
                                 isEmpty = true;
                                 position = i;
-                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
                                 break;
-                            } else if (oneBuildModelClass.getTerritories().size() == 0) {
-                                isEmpty = true;
-                                position = i;
-                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
-                                break;
+                            } else if (dataModelOneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // TerrSlFlg is "Y" (yes) means head quarter and clusters are mandatory
+                                if (dataModelOneBuild.getHeadquarters().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                                    isEmpty = true;
+                                    position = i;
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
+                                    break;
+                                } else if (dataModelOneBuild.getTerritories().size() == 0) {
+                                    isEmpty = true;
+                                    position = i;
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
+                                    break;
 
-                            } else if (oneBuildModelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
-                                if (FW_meetup_mandatory.equals("0")) {
-                                    if (drNeed.equals("0")) {
-                                        if (oneBuildModelClass.getDoctors().size() == 0) {
+                                } else if (dataModelOneBuild.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                                    if (FW_meetup_mandatory.equals("0")) {
+                                        if (drNeed.equals("0")) {
+                                            if (dataModelOneBuild.getDoctors().size() == 0) {
+                                                isEmpty = true;
+                                                position = i;
+                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
+                                                break;
+                                            } else if (dataModelOneBuild.getDoctors().size() > Integer.parseInt(maxDrCount)) {
+                                                isEmpty = true;
+                                                position = i;
+                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                                break;
+                                            }
+                                        }
+
+                                        if (dataModelOneBuild.getDoctors().isEmpty() && dataModelOneBuild.getChemists().isEmpty() && dataModelOneBuild.getStockLists().isEmpty() && dataModelOneBuild.getUnlistedDoctors().isEmpty() && dataModelOneBuild.getCip().isEmpty() && dataModelOneBuild.getHospitals().isEmpty()) {
                                             isEmpty = true;
                                             position = i;
-                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + (i + 1));
                                             break;
-                                        } else if (oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) {
+                                        }
+                                    }
+                                }
+                            } else if (dataModelOneBuild.getWorkType().getFWFlg().equalsIgnoreCase("F")) { // if the selected work type is "F" means Field Work then we need to check the FW_meetup_mandatory
+                                if (FW_meetup_mandatory.equals("0")) { // "0"-- yes
+                                    if (drNeed.equals("0")) { // Dr meet up mandatory
+                                        if (dataModelOneBuild.getDoctors().isEmpty()) {
+                                            isEmpty = true;
+                                            position = i;
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + (i + 1));
+                                            break;
+                                        } else if (dataModelOneBuild.getDoctors().size() > Integer.parseInt(maxDrCount)) { //Selected Dr count should not be more than maxDrCount setup limit
                                             isEmpty = true;
                                             position = i;
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
                                             break;
                                         }
                                     }
-
-                                    if (oneBuildModelClass.getDoctors().isEmpty() && oneBuildModelClass.getChemists().isEmpty() && oneBuildModelClass.getStockLists().isEmpty() && oneBuildModelClass.getUnlistedDoctors().isEmpty() && oneBuildModelClass.getCip().isEmpty() && oneBuildModelClass.getHospitals().isEmpty()) {
+                                    if (dataModelOneBuild.getDoctors().isEmpty() && dataModelOneBuild.getChemists().isEmpty() && dataModelOneBuild.getStockLists().isEmpty() && dataModelOneBuild.getUnlistedDoctors().isEmpty() && dataModelOneBuild.getCip().isEmpty() && dataModelOneBuild.getHospitals().isEmpty()) {
                                         isEmpty = true;
                                         position = i;
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + (i + 1));
@@ -1095,68 +1119,48 @@ public class TourPlanActivity extends AppCompatActivity {
                                     }
                                 }
                             }
-                        } else if (oneBuildModelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) { // if the selected work type is "F" means Field Work then we need to check the FW_meetup_mandatory
-                            if (FW_meetup_mandatory.equals("0")) { // "0"-- yes
-                                if (drNeed.equals("0")) { // Dr meet up mandatory
-                                    if (oneBuildModelClass.getDoctors().isEmpty()) {
-                                        isEmpty = true;
-                                        position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + (i + 1));
-                                        break;
-                                    } else if (oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) { //Selected Dr count should not be more than maxDrCount setup limit
-                                        isEmpty = true;
-                                        position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
-                                        break;
-                                    }
-                                }
-                                if (oneBuildModelClass.getDoctors().isEmpty() && oneBuildModelClass.getChemists().isEmpty() && oneBuildModelClass.getStockLists().isEmpty() && oneBuildModelClass.getUnlistedDoctors().isEmpty() && oneBuildModelClass.getCip().isEmpty() && oneBuildModelClass.getHospitals().isEmpty()) {
-                                    isEmpty = true;
-                                    position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + (i + 1));
-                                    break;
-                                }
-                            }
                         }
+                    }else{
+                        Log.d("SessionLists Draft", "onCreate: "+"SessionLists is null");
                     }
 
                     if (!isEmpty) {
                         binding.tpDrawer.closeDrawer(GravityCompat.END);
-                        dataModelOneBuild.setSubmittedTime(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
+                        oneBuildModelClass.setSubmittedTime(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
                         if (monthInAdapterFlag == 0) {
 
                             for (int i = 0; i < dayWiseArrayCurrentMonthOneBuild.size(); i++) {
-                                if (dayWiseArrayCurrentMonthOneBuild.get(i).getDate().equalsIgnoreCase(dataModelOneBuild.getDate())) {
+                                if (dayWiseArrayCurrentMonthOneBuild.get(i).getDate().equalsIgnoreCase(oneBuildModelClass.getDate())) {
                                     dayWiseArrayCurrentMonthOneBuild.remove(i);
-                                    dayWiseArrayCurrentMonthOneBuild.add(i, dataModelOneBuild); // removed and replaced the object with updated session data
+                                    dayWiseArrayCurrentMonthOneBuild.add(i, oneBuildModelClass); // removed and replaced the object with updated session data
                                     break;
                                 }
                             }
                             populateSummaryAdapterOneBuild(dayWiseArrayCurrentMonthOneBuild);
-                            prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), dayNo, dayWiseArrayCurrentMonthOneBuild, false);
+                            prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, oneBuildModelClass.getDate()), dayNo, dayWiseArrayCurrentMonthOneBuild, false);
                         } else if (monthInAdapterFlag == 1) {
                             for (int i = 0; i < dayWiseArrayNextMonthOneBuild.size(); i++) {
-                                if (dayWiseArrayNextMonthOneBuild.get(i).getDate().equalsIgnoreCase(dataModelOneBuild.getDate())) {
+                                if (dayWiseArrayNextMonthOneBuild.get(i).getDate().equalsIgnoreCase(oneBuildModelClass.getDate())) {
                                     dayWiseArrayNextMonthOneBuild.remove(i);
-                                    dayWiseArrayNextMonthOneBuild.add(i, dataModelOneBuild); // removed and replaced the object with updated session data
+                                    dayWiseArrayNextMonthOneBuild.add(i, oneBuildModelClass); // removed and replaced the object with updated session data
                                     break;
                                 }
                             }
                             populateSummaryAdapterOneBuild(dayWiseArrayNextMonthOneBuild);
-                            saveTpLocalOneBuild(dayWiseArrayNextMonthOneBuild, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), "1");
-                            prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), dayNo, dayWiseArrayNextMonthOneBuild, false);
+                            saveTpLocalOneBuild(dayWiseArrayNextMonthOneBuild, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, oneBuildModelClass.getDate()), "1");
+                            prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, oneBuildModelClass.getDate()), dayNo, dayWiseArrayNextMonthOneBuild, false);
 
                         } else if (monthInAdapterFlag == -1) {
                             for (int i = 0; i < dayWiseArrayPrevMonthOneBuild.size(); i++) {
-                                if (dayWiseArrayPrevMonthOneBuild.get(i).getDate().equalsIgnoreCase(dataModelOneBuild.getDate())) {
+                                if (dayWiseArrayPrevMonthOneBuild.get(i).getDate().equalsIgnoreCase(oneBuildModelClass.getDate())) {
                                     dayWiseArrayPrevMonthOneBuild.remove(i);
-                                    dayWiseArrayPrevMonthOneBuild.add(i, dataModelOneBuild); // removed and replaced the object with updated session data
+                                    dayWiseArrayPrevMonthOneBuild.add(i, oneBuildModelClass); // removed and replaced the object with updated session data
                                     break;
                                 }
                             }
                             populateSummaryAdapterOneBuild(dayWiseArrayPrevMonthOneBuild);
-                            saveTpLocalOneBuild(dayWiseArrayPrevMonthOneBuild, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), "1");
-                            prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), dayNo, dayWiseArrayPrevMonthOneBuild, false);
+                            saveTpLocalOneBuild(dayWiseArrayPrevMonthOneBuild, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, oneBuildModelClass.getDate()), "1");
+                            prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, oneBuildModelClass.getDate()), dayNo, dayWiseArrayPrevMonthOneBuild, false);
 
                         }
 
@@ -1174,10 +1178,46 @@ public class TourPlanActivity extends AppCompatActivity {
                 }else{
                     Log.d("inputDataArrayOneBuild", "onCreate: "+"inputDataArrayOneBuild is null");
                 }
+*/
+                NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, status -> {
 
+                    if (status) {
+//                        binding.tpSendToApproval.setEnabled(false);
+                        JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
+                        ArrayList<OneBuildModelClass> arrayList;
+                        ArrayList<String> dummy = new ArrayList<>();
+                        Type type = new TypeToken<ArrayList<OneBuildModelClass>>() {
+                        }.getType();
+                        if (jsonArray.length() > 0) {
+                            arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
+
+                            for (OneBuildModelClass oneBuildModelClass : arrayList) {
+                                if (!oneBuildModelClass.getDate().equals("") && !oneBuildModelClass.getSyncStatus().equals("0")) {
+
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, " Offline TourPlan Uploading…");
+                                    dummy.add(oneBuildModelClass.getDayNo());
+                                    Log.v("tpApproval", "---" + oneBuildModelClass.getDayNo());
+                                    binding.progressBar.setVisibility(View.VISIBLE);
+
+                                    prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, oneBuildModelClass.getDate()), oneBuildModelClass.getDayNo(), arrayList, true);
+                                    break;
+                                }
+                            }
+                        }
+
+//                        if (dummy.size() == 0) {
+//                            binding.progressBar.setVisibility(View.VISIBLE);
+//                            sendWholeMonthStatusOneBuild(localDate);
+//                        }
+                    } else {
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
+
+                    }
+                });
+                networkStatusTask.execute();
             });
 
-            binding.tpNavigation.sessionEdit.setOnClickListener(view -> {
+/*            binding.tpNavigation.sessionEdit.setOnClickListener(view -> {
                 isEdited = true;
                 binding.tpNavigation.addEditViewTxt.setText("Edit Plan");
                 populateSessionEditAdapterOneBuild(sessionViewAdapter.inputDataModelOneBuild);
@@ -1222,7 +1262,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 });
                 networkStatusTask.execute();
-            });
+            });*/
 
         }else{
             binding.draftSave.setVisibility(8);
@@ -2177,7 +2217,7 @@ public class TourPlanActivity extends AppCompatActivity {
             binding.summaryRecView.setLayoutManager(layoutManager);
             binding.summaryRecView.setAdapter(summaryAdapter);
 
-//            changeApprovalBtnState(arrayList);
+            changeApprovalBtnStateOneBuild(arrayListOneBuild);
 
         } catch (Exception e) {
             Log.v("error", "---" + e);
@@ -2276,7 +2316,96 @@ public class TourPlanActivity extends AppCompatActivity {
 
     }
 
-    public void scrollToPosition(int position, boolean fieldEmpty) {
+    public void changeApprovalBtnStateOneBuild(ArrayList<OneBuildModelClass> arrayList) { // To set send to approval btn enable/disable  based on syncStatus and  workType
+        boolean wholeMonthTpCompleted = false, isDataAvailable = false;
+        for (int i = 0; i<arrayList.size(); i++) { // to enable/disable the send to approval button
+            if(!arrayList.get(i).getDayNo().isEmpty()) {
+                OneBuildModelClass.SessionList.WorkType workType = arrayList.get(i).getSessionList().get(0).getWorkType();
+                if(!workType.getName().isEmpty()) {
+                    wholeMonthTpCompleted = true;
+                    isDataAvailable = true;
+                }else {
+                    if(Integer.valueOf(arrayList.get(i).getDayNo())<TourPlanActivity.JoningDate && Integer.valueOf(arrayList.get(i).getMonth()) == TourPlanActivity.JoiningMonth && Integer.valueOf(arrayList.get(i).getYear()) == TourPlanActivity.JoinYear) {
+                        wholeMonthTpCompleted = true;
+                    }else {
+                        wholeMonthTpCompleted = false;
+                        break;
+                    }
+                }
+            }
+        }
+        String status = "";
+        String reason = "";
+        TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+        if(tourPlanOfflineDataTable != null) {
+            status = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
+            reason = tourPlanOfflineDataTable.getTpRejectionReasonOrEmpty();
+        }
+        switch (status){
+            case "1":  // when waiting for approval
+                binding.tpNavigation.sessionEdit.setEnabled(false);
+                binding.rejectedReasonTxt.setText("");
+                binding.rejectionReasonLayout.setVisibility(View.GONE);
+                break;
+            case "3":  //Approved by manager
+                binding.rejectionReasonLayout.setVisibility(View.GONE);
+                binding.rejectedReasonTxt.setText(reason);
+                binding.tpNavigation.sessionEdit.setEnabled(false);
+                break;
+            case "2":  //Rejected by manager
+                binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
+                binding.tpNavigation.sessionEdit.setEnabled(true);
+                binding.rejectedReasonTxt.setText(reason);
+                break;
+            case "":
+            case "0":
+            case "-1":  // when planning(0),monthly status send call failed(-1)
+                binding.rejectionReasonLayout.setVisibility(View.GONE);
+                binding.tpNavigation.sessionEdit.setEnabled(true);
+                binding.rejectedReasonTxt.setText("");
+                break;
+        }
+        binding.tpSendToApproval.setEnabled(wholeMonthTpCompleted && (status.equals("0") || status.equals("-1") || status.equals("") || status.equals("2")));
+
+        switch (status){
+            case "":
+            case "0":{
+                binding.tpStatusTxt.setText(Constants.STATUS_0);
+                binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                break;
+            }
+            case "-1":{
+                binding.tpStatusTxt.setText(Constants.STATUS_4);
+                binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                break;
+            }
+            case "1":{
+                binding.tpStatusTxt.setText(Constants.STATUS_1);
+                binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                break;
+            }
+            case "2":{
+                binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
+                binding.tpStatusTxt.setText(Constants.STATUS_2);
+                binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
+                break;
+            }
+            case "3":{
+                binding.tpStatusTxt.setText(Constants.STATUS_3);
+                binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                SetTpRangeStatus();
+                break;
+            }
+        }
+        if(!isDataAvailable) {
+            binding.rejectionReasonLayout.setVisibility(View.GONE);
+            binding.rejectedReasonTxt.setText("");
+            binding.tpStatusTxt.setText(Constants.STATUS_EMPTY);
+        }
+    }
+
+
+        public void scrollToPosition(int position, boolean fieldEmpty) {
         new Handler().postDelayed(() -> {
             if(fieldEmpty) {
                 RecyclerView.ViewHolder holder = binding.tpNavigation.tpSessionRecView.findViewHolderForAdapterPosition(position);
@@ -3667,7 +3796,7 @@ public class TourPlanActivity extends AppCompatActivity {
         networkStatusTask.execute();
 
     }
-    public void prepareObjectToSendForApprovalOneBuild(String month, String dayNo, ArrayList<OneBuildModelClass> arrayList, boolean statusOffline){
+    public void prepareObjectToSendForApprovalOneBuild(String month, String dateForApproval, ArrayList<OneBuildModelClass> arrayList, boolean statusOffline){
         OneBuildSetup = 0;
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
 
@@ -3679,26 +3808,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                         for (OneBuildModelClass oneBuildModelClass: arrayList){
                              if(!oneBuildModelClass.getDayNo().isEmpty() && !oneBuildModelClass.getSessionList().get(0).getWorkType().getName().isEmpty()) {
-                                 if (!oneBuildModelClass.getDayNo().equals(dayNo)) {
-                                     JSONObject jsonObject = new JSONObject();
-                                     jsonObject.put("mode", "Android-Edet");
-                                     jsonObject.put("tpId", 0);  // always 0 while sending
-
-
-                                     JSONObject tourPlan = new JSONObject();
-                                     jsonObject.put("Month", oneBuildModelClass.getMonth());
-                                     jsonObject.put("SFName", SharedPref.getSfName(TourPlanActivity.this));
-                                     jsonObject.put("SFCode", SharedPref.getSfCode(TourPlanActivity.this));
-                                     jsonObject.put("DivisionCode", SharedPref.getDivisionCode(TourPlanActivity.this));
-                                     jsonObject.put("Year", oneBuildModelClass.getYear());
-
-                                     //Details
-
-                                     jsonObject.put("Details",new JSONArray());
-                                     JSONObject DetailsObj = new JSONObject();
-                                     jsonObject.put("TDate", oneBuildModelClass.getDate());
-                                     jsonObject.put("Id", 0); // always 0 while sending
-                                     jsonObject.put("Others", new JSONArray());
+                                 if (!oneBuildModelClass.getDayNo().equals(dateForApproval)) {
 
                                      String WorkTypeName = "", WorkTypeFlag = "", WorkTypeCode = "", Id = "", Remarks = "";
                                      String HeadquartersName = "", HeadquartersCode = "", TerritoriesName = "", TerritoriesCode = "", JWName = "", JWCode = "", CheName = "", CheCode = "", DrName = "", DrCode = "", UnDrName = "", UnDrCode = "", StkName = "", StkCode = "", HospName = "", HospCode = "";
@@ -3734,83 +3844,102 @@ public class TourPlanActivity extends AppCompatActivity {
                                          }
                                      }
 
-                                     //Sessions
-
-                                     jsonObject.put("Sessions", new JSONArray());
-                                     JSONObject SessionsObj = new JSONObject();
-                                     jsonObject.put("WorkTypeName", WorkTypeName);
-                                     jsonObject.put("Id", Id);
-                                     jsonObject.put("WorkTypeFlag", WorkTypeFlag);
-                                     jsonObject.put("WorkTypeCode", WorkTypeCode);
-
                                      //JointWorks
-                                     jsonObject.put("JointWorks",new JSONArray());
+
                                      JSONObject JointWorks_obj = new JSONObject();
-                                     jsonObject.put("Name", JWName);
-                                     jsonObject.put("Id", JWCode);
+                                     JointWorks_obj.put("Name", JWName);
+                                     JointWorks_obj.put("Id", JWCode);
 
 
                                      //Territories
-                                     jsonObject.put("Territories",new JSONArray());
+
                                      JSONObject Territories_obj = new JSONObject();
-                                     jsonObject.put("Name", TerritoriesName);
-                                     jsonObject.put("Id", TerritoriesCode);
+                                     Territories_obj.put("Name", TerritoriesName);
+                                     Territories_obj.put("Id", TerritoriesCode);
 
 
                                      //Headquarters
-                                     jsonObject.put("Headquarters",new JSONArray());
+//                                     SessionsObj.put("Headquarters",new JSONArray());
                                      JSONObject Headquarters_obj = new JSONObject();
-                                     jsonObject.put("Name", HeadquartersName);
-                                     jsonObject.put("Code", HeadquartersCode);
+                                     Headquarters_obj.put("Name", HeadquartersName);
+                                     Headquarters_obj.put("Code", HeadquartersCode);
 
                                      //Hospitals
-                                     jsonObject.put("Hospitals",new JSONArray());
+//                                     SessionsObj.put("Hospitals",new JSONArray());
                                      JSONObject Hospitals_obj = new JSONObject();
-                                     jsonObject.put("Name", HospName);
-                                     jsonObject.put("Code", HospCode);
+                                     Hospitals_obj.put("Name", HospName);
+                                     Hospitals_obj.put("Code", HospCode);
 
                                      //Chemist
-                                     jsonObject.put("Chemists",new JSONArray());
+//                                     SessionsObj.put("Chemists",new JSONArray());
                                      JSONObject Chemists_obj = new JSONObject();
-                                     jsonObject.put("Name", CheName);
-                                     jsonObject.put("Id", CheCode);
+                                     Chemists_obj.put("Name", CheName);
+                                     Chemists_obj.put("Id", CheCode);
 
                                      //StockLists
 
-                                     jsonObject.put("StockLists",new JSONArray());
+//                                     SessionsObj.put("StockLists",new JSONArray());
                                      JSONObject Stockists_obj = new JSONObject();
-                                     jsonObject.put("Name", StkName);
-                                     jsonObject.put("Code", StkCode);
+                                     Stockists_obj.put("Name", StkName);
+                                     Stockists_obj.put("Code", StkCode);
 
                                      //ListedDr
-                                     jsonObject.put("Doctors",new JSONArray());
+
                                      JSONObject Doctors_obj = new JSONObject();
-                                     jsonObject.put("Name", DrName);
-                                     jsonObject.put("Id", DrCode);
+                                     Doctors_obj.put("Name", DrName);
+                                     Doctors_obj.put("Id", DrCode);
 
                                      //UnlistedDr
-                                     jsonObject.put("UnlistedDoctors",new JSONArray());
+//                                     SessionsObj.put("UnlistedDoctors",new JSONArray());
                                      JSONObject UnlistedDoctors_obj = new JSONObject();
-                                     jsonObject.put("Name", UnDrName);
-                                     jsonObject.put("Id", UnDrCode);
+                                     UnlistedDoctors_obj.put("Name", UnDrName);
+                                     UnlistedDoctors_obj.put("Id", UnDrCode);
 
-                                     //Remarks
-                                     jsonObject.put("Tour Plan",tourPlan);
-                                     jsonObject.put("Details :",DetailsObj);
-                                     jsonObject.put("Session", SessionsObj);
-                                     jsonObject.put("Remark", Remarks);
+                                     //Sessions
 
+                                     JSONArray Sessions = new JSONArray();
+                                     JSONObject SessionsObj = new JSONObject();
+                                     SessionsObj.put("WorkTypeName", WorkTypeName);
+                                     SessionsObj.put("Id", Id);
+                                     SessionsObj.put("WorkTypeFlag", WorkTypeFlag);
+                                     SessionsObj.put("WorkTypeCode", WorkTypeCode);
+
+                                     //Details
+                                     JSONArray Details = new JSONArray();
+                                     JSONObject DetailsObj = new JSONObject();
+                                     DetailsObj.put("TDate", oneBuildModelClass.getDate());
+                                     DetailsObj.put("Id", 0); // always 0 while sending
+                                     DetailsObj.put("Others", new JSONArray());
+
+                                     JSONObject tourPlan = new JSONObject();
+                                     tourPlan.put("Month", oneBuildModelClass.getMonth());
+                                     tourPlan.put("SFName", SharedPref.getSfName(TourPlanActivity.this));
+                                     tourPlan.put("SFCode", SharedPref.getSfCode(TourPlanActivity.this));
+                                     tourPlan.put("DivisionCode", SharedPref.getDivisionCode(TourPlanActivity.this));
+                                     tourPlan.put("Year", oneBuildModelClass.getYear());
+
+                                     JSONObject jsonObject = new JSONObject();
+                                     jsonObject.put("mode", "Android-Edet");
+                                     jsonObject.put("tpId", 0);// always 0 while sending
+                                     jsonObject.put("TourPlan",tourPlan);
+                                     tourPlan.put("Details",DetailsObj);
+                                     DetailsObj.put("Sessions",SessionsObj);
+                                     SessionsObj.put("JointWorks",JointWorks_obj);
+                                     SessionsObj.put("Territories",Territories_obj);
+                                     SessionsObj.put("Doctors",Doctors_obj);
+                                     SessionsObj.put("Chemists",Chemists_obj);
+                                     SessionsObj.put("Remark", Remarks);
 
                                      jsonArray.put(jsonObject);
 
-                                     Log.d("JSON", "isNetworkAvailable: " + jsonObject);
+                                     Log.d("JSON", "isNetworkAvailable: " + jsonArray);
 
                                  }
 
                              }
                         }
                          Log.d("JSON_One_Build", "isNetworkAvailable: "+jsonArray);
-                        sendTpForApprovalOneBuild(jsonArray, arrayList, month, dayNo, statusOffline);
+                        sendTpForApprovalOneBuild(jsonArray, arrayList, month, dateForApproval, statusOffline);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
