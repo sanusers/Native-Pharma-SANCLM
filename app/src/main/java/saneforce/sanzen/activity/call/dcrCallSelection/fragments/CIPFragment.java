@@ -15,18 +15,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
@@ -42,6 +47,7 @@ import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
@@ -112,6 +118,80 @@ public class CIPFragment extends Fragment {
                 filter(editable.toString());
             }
         });
+
+        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+            tv_hqName.setOnClickListener(view -> {
+                try {
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+                    ArrayList<String> list = new ArrayList<>();
+
+                    if(jsonArray.length()>0) {
+                        for (int i = 0; i<jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            if(SharedPref.getMultiHQCode(requireContext()).contains(jsonObject.optString("id"))) {
+                                list.add(jsonObject.getString("name"));
+                            }
+                        }
+                    }
+
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(requireContext());
+//                LayoutInflater inflater = requireActivity().getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.dialog_listview, null);
+                    alertDialog.setView(dialogView);
+                    TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
+                    ListView listView = dialogView.findViewById(R.id.listView);
+                    SearchView searchView = dialogView.findViewById(R.id.searchET);
+
+                    headerTxt.setText(getResources().getText(R.string.select_hq));
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, list);
+                    listView.setAdapter(adapter);
+                    AlertDialog dialog = alertDialog.create();
+
+                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit(String s) {
+                            adapter.getFilter().filter(s);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onQueryTextChange(String s) {
+                            adapter.getFilter().filter(s);
+                            return false;
+                        }
+                    });
+
+                    listView.setOnItemClickListener((adapterView, view1, position, l) -> {
+                        String selectedHq = listView.getItemAtPosition(position).toString();
+                        tv_hqName.setText(selectedHq);
+                        for (int i = 0; i<jsonArray.length(); i++) {
+                            try {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                if(jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
+                                    DcrCallTabLayoutActivity.TodayPlanSfCode = jsonObject.getString("id");
+                                    DcrCallTabLayoutActivity.TodayPlanSfName = jsonObject.getString("name");
+                                    SharedPref.saveHq(requireContext(), DcrCallTabLayoutActivity.TodayPlanSfName, DcrCallTabLayoutActivity.TodayPlanSfCode);
+                                    break;
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        DcrCallTabLayoutActivity.prepareClusterList(requireActivity());
+                        SetupAdapter();
+                        dialog.dismiss();
+                    });
+
+                    alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
+
+                    dialog.show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                UtilityClass.hideKeyboard(requireActivity());
+
+            });
+        }
 
         return v;
     }

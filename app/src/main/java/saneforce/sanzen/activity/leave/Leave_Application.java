@@ -327,27 +327,27 @@ public class Leave_Application extends AppCompatActivity {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            if(avilable == null || avilable.isEmpty()) {
-                                listdate.clear();
-                                Leave_Application.leavebinding.lDays.setText("");
-                                commonUtilsMethods.showToastMessage(this, "No Leave Available!");
-                                leavebinding.submitLeave.setEnabled(false);
-                                leavebinding.etFromDate.setText("");
-                                leavebinding.etToDate.setText("");
-                                leavebinding.LeaveType.setText("");
-                                leavebinding.balanceDays.setText("");
-                                List_LeaveDates.clear();
-                                List_LeaveDates = new ArrayList<>();
-
-                                Leavedetails_adapter l_details = new Leavedetails_adapter(Leave_Application.this, List_LeaveDates);
-                                LinearLayoutManager LayoutManagerpoc = new LinearLayoutManager(Leave_Application.this);
-                                Leave_Application.leavebinding.leaveDetails.setLayoutManager(LayoutManagerpoc);
-                                Leave_Application.leavebinding.leaveDetails.setItemAnimator(new DefaultItemAnimator());
-                                Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
-                                l_details.notifyDataSetChanged();
-                            } else {
+//                            if(avilable == null || avilable.isEmpty()) {
+//                                listdate.clear();
+//                                Leave_Application.leavebinding.lDays.setText("");
+//                                commonUtilsMethods.showToastMessage(this, "No Leave Available!");
+//                                leavebinding.submitLeave.setEnabled(false);
+//                                leavebinding.etFromDate.setText("");
+//                                leavebinding.etToDate.setText("");
+//                                leavebinding.LeaveType.setText("");
+//                                leavebinding.balanceDays.setText("");
+//                                List_LeaveDates.clear();
+//                                List_LeaveDates = new ArrayList<>();
+//
+//                                Leavedetails_adapter l_details = new Leavedetails_adapter(Leave_Application.this, List_LeaveDates);
+//                                LinearLayoutManager LayoutManagerpoc = new LinearLayoutManager(Leave_Application.this);
+//                                Leave_Application.leavebinding.leaveDetails.setLayoutManager(LayoutManagerpoc);
+//                                Leave_Application.leavebinding.leaveDetails.setItemAnimator(new DefaultItemAnimator());
+//                                Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
+//                                l_details.notifyDataSetChanged();
+//                            } else {
                                 leave_avalabledetails();
-                            }
+//                            }
 
                         }
                     }
@@ -381,6 +381,7 @@ public class Leave_Application extends AppCompatActivity {
             jsonObject.put("Fdt", f_date);
             jsonObject.put("Tdt", t_date);
             jsonObject.put("LTy", Lshortname);
+            jsonObject.put("Leave_type_code", Ltype_id);
             jsonObject.put("division_code", SharedPref.getDivisionCode(this));
             jsonObject.put("Rsf", SharedPref.getHqCode(this));
             Log.d("JSonobj", String.valueOf(jsonObject));

@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat;
 import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
@@ -244,15 +245,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 }
             }
 
-            TodayPlanClusterList.clear();
-            JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + TodayPlanSfCode).getMasterSyncDataJsonArray();
-            for (int i = 0; i < jsonArray2.length(); i++) {
-                JSONObject jsonClusterList = jsonArray2.getJSONObject(i);
-                if (SharedPref.getTodayDayPlanClusterCode(this).contains(jsonClusterList.getString("Code"))) {
-                    TodayPlanClusterList.add(jsonClusterList.getString("Code"));
-                    TodayPlanClusterList.add(jsonClusterList.getString("Name"));
-                }
-            }
+            prepareClusterList(DcrCallTabLayoutActivity.this);
 
             Log.v("required_data", "---" + TodayPlanSfCode + "---" + TodayPlanClusterList);
 
@@ -261,6 +254,21 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         }
     }
 
+    public static void prepareClusterList(Context context) {
+        try {
+            TodayPlanClusterList.clear();
+            JSONArray jsonArray2 = RoomDB.getDatabase(context).masterDataDao().getMasterDataTableOrNew(Constants.CLUSTER + TodayPlanSfCode).getMasterSyncDataJsonArray();
+            for (int i = 0; i<jsonArray2.length(); i++) {
+                JSONObject jsonClusterList = jsonArray2.getJSONObject(i);
+                if(SharedPref.getTodayDayPlanClusterCode(context).contains(jsonClusterList.getString("Code"))) {
+                    TodayPlanClusterList.add(jsonClusterList.getString("Code"));
+                    TodayPlanClusterList.add(jsonClusterList.getString("Name"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onResume() {

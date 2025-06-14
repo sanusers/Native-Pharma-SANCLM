@@ -355,7 +355,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialiconsoutlined/download_for_offline/outline_download_for_offline_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/pause/baseline_pause_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -366,8 +366,8 @@
                         <option name="values">
                           <map>
                             <entry key="color" value="2f2d2d" />
-                            <entry key="outputName" value="outline_download_for_offline_24" />
-                            <entry key="sourceFile" value="C:\Users\apps\Downloads\Native-Pharma-SANCLM" />
+                            <entry key="outputName" value="baseline_pause_24" />
+                            <entry key="sourceFile" value="C:\Users\apps\Downloads\pause-svgrepo-com.svg" />
                           </map>
                         </option>
                       </PersistentState>
