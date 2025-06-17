@@ -219,8 +219,9 @@ public class ChemistFragment extends Fragment {
                                 e.printStackTrace();
                             }
                         }
-                        DcrCallTabLayoutActivity.prepareClusterList(requireActivity());
-                        SetupAdapter();
+//                        DcrCallTabLayoutActivity.prepareClusterList(requireActivity());
+//                        SetupAdapter();
+                        hqChangeListener.onHQChange();
                         dialog.dismiss();
                     });
 
@@ -234,78 +235,6 @@ public class ChemistFragment extends Fragment {
 
             });
         }
-
-//        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
-//            tv_hqName.setOnClickListener(view -> {
-//                try {
-//                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-//                    ArrayList<String> list = new ArrayList<>();
-//
-//                    if(jsonArray.length()>0) {
-//                        for (int i = 0; i<jsonArray.length(); i++) {
-//                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-//                            if((WorkPlanFragment.mHQCode1 != null && WorkPlanFragment.mHQCode1.equalsIgnoreCase(jsonObject.optString("id")) && WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F"))
-//                                    || (WorkPlanFragment.mHQCode2 != null && WorkPlanFragment.mHQCode2.equalsIgnoreCase(jsonObject.optString("id")) && WorkPlanFragment.mFwFlg2.equalsIgnoreCase("F"))) {
-//                                list.add(jsonObject.getString("name"));
-//                            }
-//                        }
-//                    }
-//
-//                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(requireContext());
-//                    View dialogView = inflater.inflate(R.layout.dialog_listview, null);
-//                    alertDialog.setView(dialogView);
-//                    TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
-//                    ListView listView = dialogView.findViewById(R.id.listView);
-//                    SearchView searchView = dialogView.findViewById(R.id.searchET);
-//
-//                    headerTxt.setText(getResources().getText(R.string.select_hq));
-//                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, list);
-//                    listView.setAdapter(adapter);
-//                    AlertDialog dialog = alertDialog.create();
-//
-//                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//                        @Override
-//                        public boolean onQueryTextSubmit(String s) {
-//                            adapter.getFilter().filter(s);
-//                            return false;
-//                        }
-//
-//                        @Override
-//                        public boolean onQueryTextChange(String s) {
-//                            adapter.getFilter().filter(s);
-//                            return false;
-//                        }
-//                    });
-//
-//                    listView.setOnItemClickListener((adapterView, view1, position, l) -> {
-//                        String selectedHq = listView.getItemAtPosition(position).toString();
-//                        tv_hqName.setText(selectedHq);
-//                        for (int i = 0; i<jsonArray.length(); i++) {
-//                            try {
-//                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-//                                if(jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
-//                                    DcrCallTabLayoutActivity.TodayPlanSfCode = jsonObject.getString("id");
-//                                    DcrCallTabLayoutActivity.TodayPlanSfName = jsonObject.getString("name");
-//                                    SharedPref.saveHq(requireContext(), DcrCallTabLayoutActivity.TodayPlanSfName, DcrCallTabLayoutActivity.TodayPlanSfCode);
-//                                    break;
-//                                }
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                        hqChangeListener.onHQChange();
-//                        dialog.dismiss();
-//                    });
-//
-//                    alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
-//
-//                    dialog.show();
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                UtilityClass.hideKeyboard(requireActivity());
-//            });
-//        }
 
         return v;
     }

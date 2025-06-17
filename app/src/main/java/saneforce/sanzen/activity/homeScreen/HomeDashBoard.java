@@ -199,7 +199,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     AlertDialog customDialog;
     Handler mainHandler = new Handler(Looper.getMainLooper());
     Handler handler1 = new Handler();
-    long delay = 4000;
+    long delay = 1000;
     Runnable runnable;
     private static boolean isDateSelectionClicked = false;
     private LeaveViewModel leaveViewModel;
@@ -232,10 +232,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onResume() {
         if(!isFakeLocationDetected) {
+            timeZoneVerification();
             if(isDateSelectionClicked) {
                 setUpCalendar();
             }
-            timeZoneVerification();
             accessibility();
             super.onResume();
             AppIdentify();
@@ -2119,11 +2119,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                         customDialog.dismiss();
                                         customDialog.cancel();
                                     }
-                                    handler1.removeCallbacks(runnable);
                                 }else {
                                     timeZoneVerificationDialog();
-                                    handler1.removeCallbacks(runnable);
                                 }
+                                handler1.removeCallbacks(runnable);
                             }
                         });
                     }
