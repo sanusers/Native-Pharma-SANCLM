@@ -691,7 +691,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
         OneBuildModelClass dataModelOneBuild = inputDataArrayOneBuild;
         ArrayList<OneBuildModelClass.SessionList> sessionLists = dataModelOneBuild.getSessionList();
-        String dayNo = dataModelOneBuild.getDayNo();
+        String dayNo = String.valueOf(sessionLists.size());
         for (int i = 0; i < sessionLists.size(); i++) {
             OneBuildModelClass.SessionList oneBuildModelClass = sessionLists.get(i);
             if (oneBuildModelClass.getWorkType().getName().isEmpty()) {
@@ -795,8 +795,8 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 }
                 populateSummaryAdapterOneBuild(dayWiseArrayPrevMonthOneBuild);
-                  saveTpLocalOneBuild(dayWiseArrayPrevMonthOneBuild, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), "1");
-                      prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), dayNo, dayWiseArrayPrevMonthOneBuild, false);
+                saveTpLocalOneBuild(dayWiseArrayPrevMonthOneBuild, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), "1");
+                prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModelOneBuild.getDate()), dayNo, dayWiseArrayPrevMonthOneBuild, false);
 
             }
 
@@ -1182,7 +1182,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, status -> {
 
                     if (status) {
-//                        binding.tpSendToApproval.setEnabled(false);
+//                        binding.draftSave.setEnabled(false);
                         JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
                         ArrayList<OneBuildModelClass> arrayList;
                         ArrayList<String> dummy = new ArrayList<>();
@@ -1190,16 +1190,15 @@ public class TourPlanActivity extends AppCompatActivity {
                         }.getType();
                         if (jsonArray.length() > 0) {
                             arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
-
                             for (OneBuildModelClass oneBuildModelClass : arrayList) {
                                 if (!oneBuildModelClass.getDate().equals("") && !oneBuildModelClass.getSyncStatus().equals("0")) {
 
                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, " Offline TourPlan Uploading…");
                                     dummy.add(oneBuildModelClass.getDayNo());
                                     Log.v("tpApproval", "---" + oneBuildModelClass.getDayNo());
-                                    binding.progressBar.setVisibility(View.VISIBLE);
+//                                    binding.progressBar.setVisibility(View.VISIBLE);   // this is an temproaray fix in the progress bar un command it when fixing api.
 
-                                    prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, oneBuildModelClass.getDate()), oneBuildModelClass.getDayNo(), arrayList, true);
+                                    prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, oneBuildModelClass.getDate()),String.valueOf(arrayList.size()), arrayList, true);
                                     break;
                                 }
                             }
@@ -2218,6 +2217,7 @@ public class TourPlanActivity extends AppCompatActivity {
             binding.summaryRecView.setAdapter(summaryAdapter);
 
             changeApprovalBtnStateOneBuild(arrayListOneBuild);
+            changeDraftBtnState(arrayListOneBuild);
 
         } catch (Exception e) {
             Log.v("error", "---" + e);
@@ -2401,6 +2401,25 @@ public class TourPlanActivity extends AppCompatActivity {
             binding.rejectionReasonLayout.setVisibility(View.GONE);
             binding.rejectedReasonTxt.setText("");
             binding.tpStatusTxt.setText(Constants.STATUS_EMPTY);
+        }
+    }
+
+    public void changeDraftBtnState(ArrayList<OneBuildModelClass> arrayList){
+        boolean isDataAvailable = false;
+        for (int i = 0; i<arrayList.size(); i++) { // to enable/disable the send to approval button
+            if(!arrayList.get(i).getDayNo().isEmpty()) {
+                OneBuildModelClass.SessionList.WorkType workType = arrayList.get(i).getSessionList().get(0).getWorkType();
+                if(!workType.getName().isEmpty()) {
+                    isDataAvailable = true;
+                }else {
+                    if(Integer.valueOf(arrayList.get(i).getDayNo())<TourPlanActivity.JoningDate && Integer.valueOf(arrayList.get(i).getMonth()) == TourPlanActivity.JoiningMonth && Integer.valueOf(arrayList.get(i).getYear()) == TourPlanActivity.JoinYear) {
+
+                    }else {
+
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -3800,6 +3819,7 @@ public class TourPlanActivity extends AppCompatActivity {
         OneBuildSetup = 0;
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
 
+
             @Override
             public void isNetworkAvailable(Boolean status) {
                 if(status){
@@ -3807,11 +3827,13 @@ public class TourPlanActivity extends AppCompatActivity {
                         JSONArray jsonArray = new JSONArray();
 
                         for (OneBuildModelClass oneBuildModelClass: arrayList){
-                             if(!oneBuildModelClass.getDayNo().isEmpty() && !oneBuildModelClass.getSessionList().get(0).getWorkType().getName().isEmpty()) {
+                             if(!oneBuildModelClass.getDayNo().isEmpty() /*&& oneBuildModelClass.getSessionList().get(0).getWorkType().getName().isEmpty()*/ /*|| !oneBuildModelClass.getSessionList().get(0).getWorkType().getName().isEmpty()*/) {
                                  if (!oneBuildModelClass.getDayNo().equals(dateForApproval)) {
+                                 String WorkTypeName = "", WorkTypeFlag = "", WorkTypeCode = "",SessionId = "", Remarks = "", WorkTypeName2 = "", WorkTypeFlag2 = "", WorkTypeCode2 = "", SessionId2 = "",Remarks2 = "", WorkTypeName3 = "", WorkTypeFlag3 = "", WorkTypeCode3 = "",SessionId3 = "", Remarks3 = "";
+                                 String HeadquartersName = "", HeadquartersCode = "", TerritoriesName = "", TerritoriesCode = "", JWName = "", JWCode = "", CheName = "", CheCode = "", DrName = "", DrCode = "", UnDrName = "", UnDrCode = "", StkName = "", StkCode = "", CipName = "", CipCode = "", HospName = "", HospCode = "";
+                                 String HeadquartersName2 = "", HeadquartersCode2 = "", TerritoriesName2 = "", TerritoriesCode2 = "", JWName2 = "", JWCode2 = "", CheName2 = "", CheCode2 = "", DrName2 = "", DrCode2 = "", UnDrName2 = "", UnDrCode2 = "", StkName2 = "", StkCode2 = "", CipName2 = "", CipCode2 = "", HospName2 = "", HospCode2 = "";
+                                 String HeadquartersName3 = "", HeadquartersCode3 = "", TerritoriesName3 = "", TerritoriesCode3 = "", JWName3 = "", JWCode3 = "", CheName3 = "", CheCode3 = "", DrName3 = "", DrCode3 = "", UnDrName3 = "", UnDrCode3 = "", StkName3 = "", StkCode3 = "", CipName3 = "", CipCode3 = "", HospName3 = "", HospCode3 = "";
 
-                                     String WorkTypeName = "", WorkTypeFlag = "", WorkTypeCode = "", Id = "", Remarks = "";
-                                     String HeadquartersName = "", HeadquartersCode = "", TerritoriesName = "", TerritoriesCode = "", JWName = "", JWCode = "", CheName = "", CheCode = "", DrName = "", DrCode = "", UnDrName = "", UnDrCode = "", StkName = "", StkCode = "", HospName = "", HospCode = "";
 
                                      for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
                                          OneBuildModelClass.SessionList sessionList_OneBuild = oneBuildModelClass.getSessionList().get(i);
@@ -3820,7 +3842,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                              WorkTypeName = sessionList_OneBuild.getWorkType().getName();
                                              WorkTypeCode = sessionList_OneBuild.getWorkType().getCode();
                                              WorkTypeFlag = sessionList_OneBuild.getWorkType().getFWFlg();
-                                             Id = sessionList_OneBuild.getSessionId();
+                                             //SessionId    = String.valueOf(oneBuildModelClass.getSessionList().get(i));
                                              Remarks = sessionList_OneBuild.getRemarks();
 
                                              HeadquartersName = sessionList_OneBuild.getHeadquarters().getName();
@@ -3838,79 +3860,241 @@ public class TourPlanActivity extends AppCompatActivity {
                                              UnDrCode = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
                                              StkName = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
                                              StkCode = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                                             CipName = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                                             CipCode = textBuilder_OB(sessionList_OneBuild.getCip(), true);
                                              HospName = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
                                              HospCode = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
 
+                                         } else if (i == 1) {
+                                             WorkTypeName2 = sessionList_OneBuild.getWorkType().getName();
+                                             WorkTypeCode2 = sessionList_OneBuild.getWorkType().getCode();
+                                             WorkTypeFlag2 = sessionList_OneBuild.getWorkType().getFWFlg();
+                                            // SessionId2    = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                                             Remarks2 = sessionList_OneBuild.getRemarks();
+
+                                             HeadquartersName2 = sessionList_OneBuild.getHeadquarters().getName();
+                                             HeadquartersCode2 = sessionList_OneBuild.getHeadquarters().getCode();
+                                             TerritoriesName2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                                             TerritoriesCode2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+                                             JWName2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                                             JWCode2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+
+                                             CheName2 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                                             CheCode2 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                                             DrName2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                                             DrCode2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                                             UnDrName2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                                             UnDrCode2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                                             StkName2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
+                                             StkCode2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                                             CipName2 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                                             CipCode2 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                                             HospName2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                                             HospCode2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+
+                                         } else if (i == 2) {
+                                             WorkTypeName3 = sessionList_OneBuild.getWorkType().getName();
+                                             WorkTypeCode3 = sessionList_OneBuild.getWorkType().getCode();
+                                             WorkTypeFlag3 = sessionList_OneBuild.getWorkType().getFWFlg();
+                                           //  SessionId3    = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                                             Remarks3 = sessionList_OneBuild.getRemarks();
+
+                                             HeadquartersName3 = sessionList_OneBuild.getHeadquarters().getName();
+                                             HeadquartersCode3 = sessionList_OneBuild.getHeadquarters().getCode();
+                                             TerritoriesName3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                                             TerritoriesCode3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+
+                                             JWName3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                                             JWCode3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+                                             CheName3 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                                             CheCode3 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                                             DrName3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                                             DrCode3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                                             UnDrName3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                                             UnDrCode3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                                             StkName3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
+                                             StkCode3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                                             CipName3 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                                             CipCode3 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                                             HospName3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                                             HospCode3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
                                          }
                                      }
 
-                                     //JointWorks
-
-                                     JSONObject JointWorks_obj = new JSONObject();
-                                     JointWorks_obj.put("Name", JWName);
-                                     JointWorks_obj.put("Id", JWCode);
-
-
-                                     //Territories
-
-                                     JSONObject Territories_obj = new JSONObject();
-                                     Territories_obj.put("Name", TerritoriesName);
-                                     Territories_obj.put("Id", TerritoriesCode);
-
-
-                                     //Headquarters
-//                                     SessionsObj.put("Headquarters",new JSONArray());
-                                     JSONObject Headquarters_obj = new JSONObject();
-                                     Headquarters_obj.put("Name", HeadquartersName);
-                                     Headquarters_obj.put("Code", HeadquartersCode);
-
-                                     //Hospitals
-//                                     SessionsObj.put("Hospitals",new JSONArray());
-                                     JSONObject Hospitals_obj = new JSONObject();
-                                     Hospitals_obj.put("Name", HospName);
-                                     Hospitals_obj.put("Code", HospCode);
-
-                                     //Chemist
-//                                     SessionsObj.put("Chemists",new JSONArray());
-                                     JSONObject Chemists_obj = new JSONObject();
-                                     Chemists_obj.put("Name", CheName);
-                                     Chemists_obj.put("Id", CheCode);
-
-                                     //StockLists
-
-//                                     SessionsObj.put("StockLists",new JSONArray());
-                                     JSONObject Stockists_obj = new JSONObject();
-                                     Stockists_obj.put("Name", StkName);
-                                     Stockists_obj.put("Code", StkCode);
-
-                                     //ListedDr
-
-                                     JSONObject Doctors_obj = new JSONObject();
-                                     Doctors_obj.put("Name", DrName);
-                                     Doctors_obj.put("Id", DrCode);
-
-                                     //UnlistedDr
-//                                     SessionsObj.put("UnlistedDoctors",new JSONArray());
-                                     JSONObject UnlistedDoctors_obj = new JSONObject();
-                                     UnlistedDoctors_obj.put("Name", UnDrName);
-                                     UnlistedDoctors_obj.put("Id", UnDrCode);
 
                                      //Sessions
 
                                      JSONArray Sessions = new JSONArray();
-                                     JSONObject SessionsObj = new JSONObject();
-                                     SessionsObj.put("WorkTypeName", WorkTypeName);
-                                     SessionsObj.put("Id", Id);
-                                     SessionsObj.put("WorkTypeFlag", WorkTypeFlag);
-                                     SessionsObj.put("WorkTypeCode", WorkTypeCode);
+                                     for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
 
-                                     //Details
-                                     JSONArray Details = new JSONArray();
-                                     JSONObject DetailsObj = new JSONObject();
-                                     DetailsObj.put("TDate", oneBuildModelClass.getDate());
-                                     DetailsObj.put("Id", 0); // always 0 while sending
-                                     DetailsObj.put("Others", new JSONArray());
+                                         JSONObject SessionsObj = new JSONObject();
+                                         if (i == 0) {
+                                             SessionsObj.put("WorkTypeName", WorkTypeName);
+//                                     SessionsObj.put("Id", Id);
+                                             SessionsObj.put("WorkTypeFlag", WorkTypeFlag);
+                                             SessionsObj.put("WorkTypeCode", WorkTypeCode);
+                                             SessionsObj.put("Remarks", Remarks);
+                                         } else if (i == 1) {
 
+                                             SessionsObj.put("WorkTypeName2", WorkTypeName2);
+//                                     SessionsObj.put("Id", Id);
+                                             SessionsObj.put("WorkTypeFlag2", WorkTypeFlag2);
+                                             SessionsObj.put("WorkTypeCode2", WorkTypeCode2);
+                                             SessionsObj.put("Remarks2", Remarks2);
+                                         } else if (i == 2) {
+
+                                             SessionsObj.put("WorkTypeName3", WorkTypeName3);
+//                                     SessionsObj.put("Id", Id);
+                                             SessionsObj.put("WorkTypeFlag3", WorkTypeFlag3);
+                                             SessionsObj.put("WorkTypeCode3", WorkTypeCode3);
+                                             SessionsObj.put("Remarks3", Remarks3);
+                                         }
+
+
+                                         //JointWorks
+
+                                         JSONObject JointWorks_obj = new JSONObject();
+                                         if (i == 0) {
+                                             JointWorks_obj.put("Name", JWName);
+                                             JointWorks_obj.put("Id", JWCode);
+                                         } else if (i == 1) {
+                                             JointWorks_obj.put("Name2", JWName2);
+                                             JointWorks_obj.put("Name2", JWCode2);
+                                         } else if (i == 2) {
+                                             JointWorks_obj.put("Name3", JWName3);
+                                             JointWorks_obj.put("Name3", JWCode3);
+                                         }
+
+                                         //Territories
+
+                                         JSONObject Territories_obj = new JSONObject();
+                                         if (i == 0) {
+                                             Territories_obj.put("Name", TerritoriesName);
+                                             Territories_obj.put("Id", TerritoriesCode);
+                                         } else if (i == 1) {
+                                             Territories_obj.put("Name2", TerritoriesName2);
+                                             Territories_obj.put("Id2", TerritoriesCode2);
+                                         } else if (i == 2) {
+                                             Territories_obj.put("Name3", TerritoriesName3);
+                                             Territories_obj.put("Id3", TerritoriesCode3);
+                                         }
+
+                                         //Headquarters
+                                         JSONObject Headquarters_obj = new JSONObject();
+                                         if (i == 0) {
+                                             Headquarters_obj.put("Name", HeadquartersName);
+                                             Headquarters_obj.put("Code", HeadquartersCode);
+                                         } else if (i == 1) {
+                                             Headquarters_obj.put("Name2", HeadquartersName2);
+                                             Headquarters_obj.put("Code2", HeadquartersCode2);
+                                         } else if (i == 2) {
+                                             Headquarters_obj.put("Name3", HeadquartersName3);
+                                             Headquarters_obj.put("Code3", HeadquartersCode3);
+
+                                         }
+
+                                         //Hospitals
+                                         JSONObject Hospitals_obj = new JSONObject();
+                                         if (i == 0) {
+                                             Hospitals_obj.put("Name", HospName);
+                                             Hospitals_obj.put("Code", HospCode);
+
+                                         } else if (i == 1) {
+                                             Hospitals_obj.put("Name2", HospName2);
+                                             Hospitals_obj.put("Code2", HospCode2);
+
+                                         } else if (i == 2) {
+                                             Hospitals_obj.put("Name3", HospName3);
+                                             Hospitals_obj.put("Code3", HospCode3);
+
+                                         }
+
+                                         //Chemist
+                                         JSONObject Chemists_obj = new JSONObject();
+                                         if (i == 0) {
+                                             Chemists_obj.put("Name", CheName);
+                                             Chemists_obj.put("Id", CheCode);
+                                         } else if (i == 1) {
+                                             Chemists_obj.put("Name2", CheName2);
+                                             Chemists_obj.put("Id2", CheCode2);
+                                         } else if (i == 2) {
+                                             Chemists_obj.put("Name3", CheName3);
+                                             Chemists_obj.put("Id3", CheCode3);
+
+                                         }
+
+                                         //StockLists
+                                         JSONObject Stockists_obj = new JSONObject();
+                                         if (i == 0) {
+                                             Stockists_obj.put("Name", StkName);
+                                             Stockists_obj.put("Code", StkCode);
+
+                                         } else if (i == 1) {
+                                             Stockists_obj.put("Name2", StkName2);
+                                             Stockists_obj.put("Code2", StkCode2);
+
+                                         } else if (i == 2) {
+                                             Stockists_obj.put("Name3", StkName3);
+                                             Stockists_obj.put("Code3", StkCode3);
+
+                                         }
+
+                                         //ListedDr
+
+                                         JSONObject Doctors_obj = new JSONObject();
+                                         if (i == 0) {
+                                             Doctors_obj.put("Name", DrName);
+                                             Doctors_obj.put("Id", DrCode);
+
+                                         } else if (i == 1) {
+                                             Doctors_obj.put("Name2", DrName2);
+                                             Doctors_obj.put("Id2", DrCode2);
+
+                                         } else if (i == 2) {
+                                             Doctors_obj.put("Name3", DrName3);
+                                             Doctors_obj.put("Id3", DrCode3);
+
+                                         }
+
+                                         //UnlistedDr
+                                         JSONObject UnlistedDoctors_obj = new JSONObject();
+                                         if (i == 0) {
+                                             UnlistedDoctors_obj.put("Name", UnDrName);
+                                             UnlistedDoctors_obj.put("Id", UnDrCode);
+
+                                         } else if (i == 1) {
+                                             UnlistedDoctors_obj.put("Name2", UnDrName2);
+                                             UnlistedDoctors_obj.put("Id2", UnDrCode2);
+
+                                         } else if (i == 2) {
+                                             UnlistedDoctors_obj.put("Name3", UnDrName3);
+                                             UnlistedDoctors_obj.put("Id3", UnDrCode3);
+                                         }
+
+                                         //Cip
+                                         JSONObject Cip_obj = new JSONObject();
+                                         if (i == 0) {
+                                             Cip_obj.put("Name", CipName);
+                                             Cip_obj.put("Id", CipCode);
+                                         } else if (i == 1) {
+                                             Cip_obj.put("Name2", CipName2);
+                                             Cip_obj.put("Id2", CipCode2);
+                                         } else if (i == 2) {
+                                             Cip_obj.put("Name3", CipName3);
+                                             Cip_obj.put("Id3", CipCode3);
+                                         }
+                                         SessionsObj.put("JointWorks", JointWorks_obj);
+                                         SessionsObj.put("HeadQuarters", Headquarters_obj);
+                                         SessionsObj.put("Territories", Territories_obj);
+                                         SessionsObj.put("Doctors", Doctors_obj);
+                                         SessionsObj.put("Chemists", Chemists_obj);
+                                         SessionsObj.put("StockLists", Stockists_obj);
+                                         SessionsObj.put("UnlistedDoctors", UnlistedDoctors_obj);
+                                         SessionsObj.put("Hospitals", Hospitals_obj);
+                                         SessionsObj.put("Cip", Cip_obj);
+                                         Sessions.put(SessionsObj);
+
+                                     }
                                      JSONObject tourPlan = new JSONObject();
                                      tourPlan.put("Month", oneBuildModelClass.getMonth());
                                      tourPlan.put("SFName", SharedPref.getSfName(TourPlanActivity.this));
@@ -3921,21 +4105,21 @@ public class TourPlanActivity extends AppCompatActivity {
                                      JSONObject jsonObject = new JSONObject();
                                      jsonObject.put("mode", "Android-Edet");
                                      jsonObject.put("tpId", 0);// always 0 while sending
-                                     jsonObject.put("TourPlan",tourPlan);
-                                     tourPlan.put("Details",DetailsObj);
-                                     DetailsObj.put("Sessions",SessionsObj);
-                                     SessionsObj.put("JointWorks",JointWorks_obj);
-                                     SessionsObj.put("Territories",Territories_obj);
-                                     SessionsObj.put("Doctors",Doctors_obj);
-                                     SessionsObj.put("Chemists",Chemists_obj);
-                                     SessionsObj.put("Remark", Remarks);
-
+                                     jsonObject.put("TourPlan", tourPlan);
                                      jsonArray.put(jsonObject);
+                                     //Details
+                                     JSONArray Details = new JSONArray();
+                                     JSONObject DetailsObj = new JSONObject();
+                                     DetailsObj.put("TDate", oneBuildModelClass.getDate());
+                                     DetailsObj.put("Id", 0); // always 0 while sending
+                                     DetailsObj.put("Others", new JSONArray());
+
+                                     Details.put(DetailsObj);
+                                     tourPlan.put("Details", Details);
+                                     DetailsObj.put("Sessions", Sessions);
 
                                      Log.d("JSON", "isNetworkAvailable: " + jsonArray);
-
                                  }
-
                              }
                         }
                          Log.d("JSON_One_Build", "isNetworkAvailable: "+jsonArray);
@@ -3943,7 +4127,6 @@ public class TourPlanActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         });
@@ -4050,7 +4233,7 @@ public class TourPlanActivity extends AppCompatActivity {
         System.out.println(jsonArray);
         Map<String, String> mapString = new HashMap<>();
 //        mapString.put("axn", "savenew/tp");
-        Call<JsonElement> call = null;  /*apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonArray.toString())*/;
+         Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonArray.toString());
         call.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
