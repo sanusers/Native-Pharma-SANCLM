@@ -192,15 +192,20 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         holder.relativeLayout.setOnClickListener(v -> {
             if (!list.getDateID().equalsIgnoreCase("")) {
                 ModelClass modelClass = null;
+                String chosenDate = "";
+                try {
+                    chosenDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", Integer.parseInt(list.getYear()), Integer.parseInt(list.getMonth()), Integer.parseInt(list.getDateID()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 if(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")
                         || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
                     try {
-                        @SuppressLint("DefaultLocale") String chosenMonthYear = String.format("%04d-%02d-%02d", Integer.parseInt(list.getYear()), Integer.parseInt(list.getMonth()), Integer.parseInt(list.getDateID()));
-                        String monthYear = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, chosenMonthYear);
+                        String monthYear = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, chosenDate);
                         TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(monthYear);
                         JSONArray tpDataArray = tourPlanOfflineDataTable.getTpDataJSONArray();
                         String tpApprovalStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
-                        String date = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_38, chosenMonthYear);
+                        String date = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_38, chosenDate);
                         if(tpDataArray.length()>0 && tpApprovalStatus.equalsIgnoreCase("3")) {
                             for (int i = 0; i<tpDataArray.length(); i++) {
                                 JSONObject tpDataObj = tpDataArray.optJSONObject(i);
@@ -217,14 +222,27 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                     }
                 }
                 if(list.getWorkTypeFlag().equalsIgnoreCase("W")
-//                        && modelClass != null && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("W")
                         && SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Weekly off auto post is enabled");
+                    if(modelClass != null && !modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("W")) {
+                        WorkPlanEntriesNeeded.datesNeeded.add(chosenDate);
+                        WorkPlanEntriesNeeded.addedDatesNeeded.clear();
+                        WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Weekly off auto post is enabled");
+                        return;
+                    }
                 }else if(list.getWorkTypeFlag().equalsIgnoreCase("H")
-//                        && modelClass != null && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("H")
                         && SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Holiday auto post is enabled");
-                }else {
+                    if(modelClass != null && !modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("H")) {
+                        WorkPlanEntriesNeeded.datesNeeded.add(chosenDate);
+                        WorkPlanEntriesNeeded.addedDatesNeeded.clear();
+                        WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Holiday auto post is enabled");
+                        return;
+                    }
+                }
+//                else {
                     boolean isApplicableDate = false;
                     String monthConverted = "";
                     if(!list.getMonth().isEmpty()) {
@@ -272,7 +290,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                         Log.e("call status", "onBindViewHolder: ");
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
                     }
-                }
+//                }
 
               /*  if (new Date().equals(strDate)) {
                     HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));

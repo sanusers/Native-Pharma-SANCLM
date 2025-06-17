@@ -3004,8 +3004,6 @@ public class DCRCallActivity extends AppCompatActivity {
             InputValidation = SharedPref.getInputValidation(this);
             GeoChk = SharedPref.getGeoChk(this);
             HosNeed = SharedPref.getHospNeed(this);
-            PrdMandatory = "0";
-            InpMandatory ="0";
 
             if (SharedPref.getSampleValQty(this).equalsIgnoreCase("0")) {
                 SamQtyRestriction = "1";

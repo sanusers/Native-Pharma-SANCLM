@@ -862,27 +862,30 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         super.onDestroyView();
     }
 
-    void setScreenDesign (){
+    void setScreenDesign() {
         ViewTreeObserver vto = callAnalysisBinding.callAnalysisLayout.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(() -> {
-            try {
-                int getwidhtlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredWidth();
-                int getlayoutlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredHeight();
-                int width = (getwidhtlayout / 3 - 8);
-                LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, getlayoutlayout - requireContext().getResources().getDimensionPixelSize(R.dimen._22sdp));
-                param.setMargins(0, 5, 10, 0);
-                callAnalysisBinding.llDocChild.setLayoutParams(param);
-                callAnalysisBinding.llCheChild.setLayoutParams(param);
-                callAnalysisBinding.llStockChild.setLayoutParams(param);
-                callAnalysisBinding.llUnliChild.setLayoutParams(param);
-                callAnalysisBinding.llHosChild.setLayoutParams(param);
-                callAnalysisBinding.llCipChild.setLayoutParams(param);
-            } catch (Exception e) {
-                e.printStackTrace();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                callAnalysisBinding.callAnalysisLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                try {
+                    if(!isAdded() || getContext() == null) return;
+                    int getwidhtlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredWidth();
+                    int getlayoutlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredHeight();
+                    int width = (getwidhtlayout / 3 - 8);
+                    LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, getlayoutlayout - requireContext().getResources().getDimensionPixelSize(R.dimen._22sdp));
+                    param.setMargins(0, 5, 10, 0);
+                    callAnalysisBinding.llDocChild.setLayoutParams(param);
+                    callAnalysisBinding.llCheChild.setLayoutParams(param);
+                    callAnalysisBinding.llStockChild.setLayoutParams(param);
+                    callAnalysisBinding.llUnliChild.setLayoutParams(param);
+                    callAnalysisBinding.llHosChild.setLayoutParams(param);
+                    callAnalysisBinding.llCipChild.setLayoutParams(param);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
 }
-
-

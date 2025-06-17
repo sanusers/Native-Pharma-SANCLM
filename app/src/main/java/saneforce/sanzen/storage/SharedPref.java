@@ -2100,6 +2100,12 @@ public class SharedPref {
         editor.putBoolean(SETTING_STATE, state).apply();
     }
 
+    public static void setTpMandatoryNeed(Context context, String state) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TP_MANDATORY_NEED, state).apply();
+    }
+
     public static boolean getSettingState(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SETTING_STATE, false);
     }

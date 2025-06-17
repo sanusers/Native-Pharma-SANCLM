@@ -2759,6 +2759,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             }
                             if(isFromTP) {
                                 enableSave();
+                                SharedPref.setDayPlanStartedDate(requireContext(), "");
+                            } else {
+                                SharedPref.setDayPlanStartedDate(requireContext(), HomeDashBoard.selectedDate.toString());
                             }
                             if(TPDCRDeviation.equalsIgnoreCase("0")) {
                                 if(deviation.equalsIgnoreCase("1")) {
@@ -2879,6 +2882,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             disableSession2();
                             if(isFromTP) {
                                 enableSave();
+                                SharedPref.setDayPlanStartedDate(requireContext(), "");
+                            } else {
+                                SharedPref.setDayPlanStartedDate(requireContext(), HomeDashBoard.selectedDate.toString());
                             }
                         }else {
                             binding.cardPlan2.setVisibility(View.GONE);
