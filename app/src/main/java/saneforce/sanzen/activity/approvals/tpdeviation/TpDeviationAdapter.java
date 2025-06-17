@@ -77,11 +77,11 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
             viewPlanClickListener.onClick(tpDeviationModelLists.get(position));
         });
 
-        holder.btn_approve.setOnClickListener(view -> CallApprovedTpDeviation(tpDeviationModelLists.get(position).getSfName(), tpDeviationModelLists.get(position).getSfCode(), tpDeviationModelLists.get(position).getSlNo(), holder.getBindingAdapterPosition(), "4"));
-        holder.btn_reject.setOnClickListener(view -> showRemarksAlert(tpDeviationModelLists.get(position).getSfName(), tpDeviationModelLists.get(position).getSfCode(), tpDeviationModelLists.get(position).getSlNo(), holder.getBindingAdapterPosition(), "3"));
+        holder.btn_approve.setOnClickListener(view -> CallApprovedTpDeviation(tpDeviationModelLists.get(position).getSfName(), tpDeviationModelLists.get(position).getSfCode(), tpDeviationModelLists.get(position).getSlNo(), holder.getBindingAdapterPosition(), tpDeviationModelLists.get(position).getDate(), "4"));
+        holder.btn_reject.setOnClickListener(view -> showRemarksAlert(tpDeviationModelLists.get(position).getSfName(), tpDeviationModelLists.get(position).getSfCode(), tpDeviationModelLists.get(position).getSlNo(), holder.getBindingAdapterPosition(), tpDeviationModelLists.get(position).getDate(), "2"));
     }
 
-    private void showRemarksAlert(String sfName, String sfCode, String slNo, int position, String status) {
+    private void showRemarksAlert(String sfName, String sfCode, String slNo, int position, String date, String status) {
         Dialog dialogReject = new Dialog(context);
         dialogReject.setContentView(R.layout.popup_reject);
         Objects.requireNonNull(dialogReject.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -104,7 +104,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
 
         btn_reject.setOnClickListener(view13 -> {
             if(!TextUtils.isEmpty(ed_reason.getText().toString())) {
-                CallRejectedTpDeviation(sfName, sfCode, slNo, position, status, ed_reason.getText().toString());
+                CallRejectedTpDeviation(sfName, sfCode, slNo, position, status, date, ed_reason.getText().toString());
             }else {
                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_reason_for_reject));
             }
@@ -113,7 +113,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
         dialogReject.show();
     }
 
-    private void CallApprovedTpDeviation(String sfName, String sfCode, String slNo, int position, String status) {
+    private void CallApprovedTpDeviation(String sfName, String sfCode, String slNo, int position, String date, String status) {
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         try {
             jsonTpDeviation=CommonUtilsMethods.CommonObjectParameter(context);
@@ -122,6 +122,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
             jsonTpDeviation.put("status", status);
             jsonTpDeviation.put("sfcode", sfCode);
             jsonTpDeviation.put("sfname", sfName);
+            jsonTpDeviation.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_15, date));
             jsonTpDeviation.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
             jsonTpDeviation.put("Rsf", SharedPref.getHqCode(context));
             Log.v("json_approve_tpDev", jsonTpDeviation.toString());
@@ -131,7 +132,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
         submitAPI(position, status);
     }
 
-    private void CallRejectedTpDeviation(String sfName, String sfCode, String slNo, int position, String status, String reason) {
+    private void CallRejectedTpDeviation(String sfName, String sfCode, String slNo, int position, String status, String date, String reason) {
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         try {
             jsonTpDeviation=CommonUtilsMethods.CommonObjectParameter(context);
@@ -141,6 +142,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
             jsonTpDeviation.put("sfcode", sfCode);
             jsonTpDeviation.put("sfname", sfName);
             jsonTpDeviation.put("reason", reason);
+            jsonTpDeviation.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_15, date));
             jsonTpDeviation.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
             jsonTpDeviation.put("Rsf", SharedPref.getHqCode(context));
             Log.v("json_reject_tpDev", jsonTpDeviation.toString());

@@ -141,37 +141,63 @@ public class CommonUtilsMethods {
         return address;
     }
 
-
     public static InputFilter FilterSpaceEditText(EditText editText) {
-        return new InputFilter() {
-            boolean canEnterSpace = false;
+        return (source, start, end, dest, dstart, dend) -> {
 
-            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            StringBuilder result = new StringBuilder(dest);
+            result.replace(dstart, dend, source.subSequence(start, end).toString());
 
-                if(editText.getText().toString().equals("")) {
-                    canEnterSpace = false;
-                }
-
-                StringBuilder builder = new StringBuilder();
-
-                for (int i = start; i<end; i++) {
-                    char currentChar = source.charAt(i);
-
-                    if(Character.isLetterOrDigit(currentChar) || currentChar == '_') {
-                        builder.append(currentChar);
-                        canEnterSpace = true;
-                    }
-
-                    if(Character.isWhitespace(currentChar) && canEnterSpace) {
-                        builder.append(currentChar);
-                    }
-
-
-                }
-                return builder.toString();
+            if (result.length() > 0 && result.charAt(0) == ' ') {
+                return "";
             }
+
+            for (int i = 1; i < result.length(); i++) {
+                if (result.charAt(i) == ' ' && result.charAt(i - 1) == ' ') {
+                    return "";
+                }
+            }
+
+            for (int i = start; i < end; i++) {
+                char c = source.charAt(i);
+                if (!Character.isLetterOrDigit(c) && c != '_' && !Character.isWhitespace(c)) {
+                    return "";
+                }
+            }
+
+            return null;
         };
     }
+
+//    public static InputFilter FilterSpaceEditText(EditText editText) {
+//        return new InputFilter() {
+//            boolean canEnterSpace = false;
+//
+//            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+//
+//                if(editText.getText().toString().equals("")) {
+//                    canEnterSpace = false;
+//                }
+//
+//                StringBuilder builder = new StringBuilder();
+//
+//                for (int i = start; i<end; i++) {
+//                    char currentChar = source.charAt(i);
+//
+//                    if(Character.isLetterOrDigit(currentChar) || currentChar == '_') {
+//                        builder.append(currentChar);
+//                        canEnterSpace = true;
+//                    }
+//
+//                    if(Character.isWhitespace(currentChar) && canEnterSpace) {
+//                        builder.append(currentChar);
+//                    }
+//
+//
+//                }
+//                return builder.toString();
+//            }
+//        };
+//    }
 
     public static InputFilter FilterSpaceEditText(final EditText editText, final int maxLength) {
         return new InputFilter() {
@@ -519,7 +545,7 @@ public class CommonUtilsMethods {
             jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
             jsonObject.put("language", SharedPref.getSelectedLanguage(context));
             jsonObject.put("sf_type", SharedPref.getSfType(context));
-            jsonObject.put("Designation", SharedPref.getDesig(context));
+            jsonObject.put("Designation", SharedPref.getDsName(context));
             jsonObject.put("state_code", SharedPref.getStateCode(context));
             jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
             jsonObject.put("key", SharedPref.getLicenseKey(context));

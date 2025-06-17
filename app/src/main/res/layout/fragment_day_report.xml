@@ -23,7 +23,7 @@
         android:fontFamily="@font/satoshi_medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/searchET"
+        app:layout_constraintEnd_toStartOf="@+id/cl_search_sort"
         android:layout_marginStart="12dp"
         android:background="@drawable/black_stroke"
         tools:ignore="SpUsage"/>
@@ -38,6 +38,15 @@
        app:tint="@color/white"
        android:background="@color/text_dark" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_search_sort"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/calender"
+        app:layout_constraintTop_toTopOf="@+id/calender"
+        app:layout_constraintBottom_toBottomOf="@+id/calender">
     <EditText
         android:id="@+id/searchET"
         android:layout_width="0dp"
@@ -54,9 +63,9 @@
         android:paddingStart="36dp"
         android:paddingEnd="24dp"
         app:layout_constraintEnd_toStartOf="@+id/sortIcon"
-        app:layout_constraintStart_toEndOf="@+id/calender"
-        app:layout_constraintTop_toTopOf="@+id/calender"
-        app:layout_constraintBottom_toBottomOf="@+id/calender"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="SpUsage"/>
     <View
         android:id="@+id/searchBkn"
@@ -115,6 +124,7 @@
         app:layout_constraintTop_toTopOf="@+id/sortIcon"
         app:layout_constraintBottom_toBottomOf="@+id/sortIcon"
         />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 <!--

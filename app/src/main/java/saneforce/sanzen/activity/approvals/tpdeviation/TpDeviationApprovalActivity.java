@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.approvals.tpdeviation;
 import static saneforce.sanzen.activity.tourPlan.TourPlanActivity.binding;
 import static saneforce.sanzen.activity.tourPlan.TourPlanActivity.prepareSessionListForAdapter;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -69,6 +70,12 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         if(hasFocus) {
             tpDeviationApprovalBinding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
     }
 
     @Override
@@ -305,6 +312,49 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
 
             ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
             sessionLists.add(sessionList);
+
+//            ModelClass modelClass = new ModelClass(jsonObject.optString("Day"), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_19, jsonObject.optString("TPDt")), jsonObject.optString("tpday"), jsonObject.optString("Tour_Month"), jsonObject.optString("Tour_Year"), false, sessionLists);
+
+            if(!jsonObject.optString("HQCodes2").isEmpty()) {
+                sessionList = prepareSessionListForAdapter();
+                sessionList.setHQ(getHQData(jsonObject.optString("HQCodes2")));
+
+                workType = new ModelClass.SessionList.WorkType(jsonObject.optString("FWFlg2"), jsonObject.optString("WTName2"), "", jsonObject.optString("WTCode2"));
+                sessionList.setWorkType(workType);
+
+                clusterList = prepareList(jsonObject.optString("ClusterCode2"), jsonObject.optString("ClusterName2"));
+                jwList = prepareList(jsonObject.optString("JWCodes2"), jsonObject.optString("JWNames2"));
+                doctorList = prepareList(jsonObject.optString("Dr_Code2"), jsonObject.optString("Dr_Name2"));
+                chemistList = prepareList(jsonObject.optString("Chem_Code2"), jsonObject.optString("Chem_Name2"));
+                stockistList = prepareList(jsonObject.optString("Stockist_Code2"), jsonObject.optString("Stockist_Name2"));
+                sessionList.setCluster(clusterList);
+                sessionList.setJC(jwList);
+                sessionList.setListedDr(doctorList);
+                sessionList.setChemist(chemistList);
+                sessionList.setStockiest(stockistList);
+
+                sessionLists.add(sessionList);
+            }
+            if(!jsonObject.optString("HQCodes3").isEmpty()) {
+                sessionList = prepareSessionListForAdapter();
+                sessionList.setHQ(getHQData(jsonObject.optString("HQCodes3")));
+
+                workType = new ModelClass.SessionList.WorkType(jsonObject.optString("FWFlg3"), jsonObject.optString("WTName3"), "", jsonObject.optString("WTCode3"));
+                sessionList.setWorkType(workType);
+
+                clusterList = prepareList(jsonObject.optString("ClusterCode3"), jsonObject.optString("ClusterName3"));
+                jwList = prepareList(jsonObject.optString("JWCodes3"), jsonObject.optString("JWNames3"));
+                doctorList = prepareList(jsonObject.optString("Dr_Code3"), jsonObject.optString("Dr_Name3"));
+                chemistList = prepareList(jsonObject.optString("Chem_Code3"), jsonObject.optString("Chem_Name3"));
+                stockistList = prepareList(jsonObject.optString("Stockist_Code3"), jsonObject.optString("Stockist_Name3"));
+                sessionList.setCluster(clusterList);
+                sessionList.setJC(jwList);
+                sessionList.setListedDr(doctorList);
+                sessionList.setChemist(chemistList);
+                sessionList.setStockiest(stockistList);
+
+                sessionLists.add(sessionList);
+            }
 
             ModelClass modelClass = new ModelClass(jsonObject.optString("Day"), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_19, jsonObject.optString("TPDt")), jsonObject.optString("tpday"), jsonObject.optString("Tour_Month"), jsonObject.optString("Tour_Year"), false, sessionLists);
             populateSessionViewAdapter(modelClass);

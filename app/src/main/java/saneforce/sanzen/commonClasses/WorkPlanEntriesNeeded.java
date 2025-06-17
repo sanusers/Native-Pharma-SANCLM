@@ -8,13 +8,16 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -35,28 +38,42 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
+import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
+import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataTable;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class WorkPlanEntriesNeeded {
 
     public static TreeSet<String> datesNeeded = new TreeSet<>();
+    public static TreeSet<String> addedDatesNeeded = new TreeSet<>();
     private static MasterDataDao masterDataDao;
     private static OfflineDaySubmitDao offlineDaySubmitDao;
+    private static TourPlanOfflineDataDao tourPlanOfflineDataDao;
     private static ApiInterface apiInterface;
     private static int callSyncSuccess = 0, dateSyncSuccess = 0;
     private static SyncTaskStatus syncTaskStatus;
+    private static String STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPMandatory, TPBasedDCR;
     public static int lockDays = 0;
 
     public static void updateMyDayPlanEntryDates(Context context, boolean shouldSync, SyncTaskStatus syncTaskStatus) {
-        masterDataDao = RoomDB.getDatabase(context).masterDataDao();
-        offlineDaySubmitDao = RoomDB.getDatabase(context).offlineDaySubmitDao();
+        RoomDB roomDB = RoomDB.getDatabase(context);
+        masterDataDao = roomDB.masterDataDao();
+        offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
+        tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
+        STPNeed = SharedPref.getStpNeed(context);
+        STPBasedMTP = SharedPref.getStpBasedMtp(context);
+        STPBasedDCR = SharedPref.getStpBasedDcr(context);
+        TPNeed = SharedPref.getTpNeed(context);
+        TPMandatory = SharedPref.getTpMandatoryNeed(context);
+        TPBasedDCR = SharedPref.getTpbasedDcr(context);
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
         WorkPlanEntriesNeeded.syncTaskStatus = syncTaskStatus;
 //        if(shouldSync) {
@@ -163,13 +180,49 @@ public class WorkPlanEntriesNeeded {
                 }else {
                     holidayDate = jsonObject.optString("Holiday_Date");
                 }
-                HWDates.add(holidayDate);
+//                HWDates.add(holidayDate);
                 if(SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
-                    if(datesNeeded != null && !datesNeeded.isEmpty()) {
-                        datesNeeded.remove(holidayDate);
-                    }
-                    if(!pastDates.isEmpty()) {
-                        pastDates.remove(holidayDate);
+                    ModelClass modelClass = null;
+                    if(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")
+                            || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
+                        try {
+                            String monthYear = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, holidayDate);
+                            TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(monthYear);
+                            JSONArray tpDataArray = tourPlanOfflineDataTable.getTpDataJSONArray();
+                            String tpApprovalStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
+                            String date = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_38, holidayDate);
+                            if(tpDataArray.length()>0 && tpApprovalStatus.equalsIgnoreCase("3")) {
+                                for (int j = 0; j<tpDataArray.length(); j++) {
+                                    JSONObject tpDataObj = tpDataArray.optJSONObject(j);
+                                    if(tpDataObj.optString("date").equalsIgnoreCase(date)) {
+                                        Type type = new TypeToken<ModelClass>() {
+                                        }.getType();
+                                        modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
+                                        break;
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        if(datesNeeded != null && !datesNeeded.isEmpty() && modelClass != null && !modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("H")) {
+                            datesNeeded.remove(holidayDate);
+                            HWDates.add(holidayDate);
+                        }
+                        if(!pastDates.isEmpty() && modelClass != null && !modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("H")) {
+                            pastDates.remove(holidayDate);
+                            HWDates.add(holidayDate);
+                        }
+                    } else {
+                        if(datesNeeded != null && !datesNeeded.isEmpty()) {
+                            datesNeeded.remove(holidayDate);
+                            HWDates.add(holidayDate);
+                        }
+                        if(!pastDates.isEmpty()) {
+                            pastDates.remove(holidayDate);
+                            HWDates.add(holidayDate);
+                        }
                     }
                 }
             }
@@ -223,14 +276,49 @@ public class WorkPlanEntriesNeeded {
 //                    pastDates.remove(date);
 //                }
                 if(weeklyOffDays.contains(dayName)) {
-                    HWDates.add(date);
+//                    HWDates.add(date);
                 }
                 if(SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
-                    if(datesNeeded != null && !datesNeeded.isEmpty() && weeklyOffDays.contains(dayName)) {
-                        datesNeeded.remove(date);
-                    }
-                    if(!pastDates.isEmpty() && weeklyOffDays.contains(dayName)) {
-                        pastDates.remove(date);
+                    ModelClass modelClass = null;
+                    if(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")
+                            || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
+                        try {
+                            String monthYear = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, date);
+                            TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(monthYear);
+                            JSONArray tpDataArray = tourPlanOfflineDataTable.getTpDataJSONArray();
+                            String tpApprovalStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
+                            String date1 = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_38, date);
+                            if(tpDataArray.length()>0 && tpApprovalStatus.equalsIgnoreCase("3")) {
+                                for (int j = 0; j<tpDataArray.length(); j++) {
+                                    JSONObject tpDataObj = tpDataArray.optJSONObject(j);
+                                    if(tpDataObj.optString("date").equalsIgnoreCase(date1)) {
+                                        Type type = new TypeToken<ModelClass>() {
+                                        }.getType();
+                                        modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
+                                        break;
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if(datesNeeded != null && !datesNeeded.isEmpty() && weeklyOffDays.contains(dayName) && modelClass != null && !modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("W")) {
+                            datesNeeded.remove(date);
+                            HWDates.add(date);
+                        }
+                        if(!pastDates.isEmpty() && weeklyOffDays.contains(dayName) && modelClass != null && !modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("W")) {
+                            pastDates.remove(date);
+                            HWDates.add(date);
+                        }
+                    } else{
+                        if(datesNeeded != null && !datesNeeded.isEmpty() && weeklyOffDays.contains(dayName)) {
+                            datesNeeded.remove(date);
+                            HWDates.add(date);
+                        }
+                        if(!pastDates.isEmpty() && weeklyOffDays.contains(dayName)) {
+                            pastDates.remove(date);
+                            HWDates.add(date);
+                        }
                     }
                 }
             }
@@ -329,7 +417,7 @@ public class WorkPlanEntriesNeeded {
                             }
                         }
                         dateBefore = LocalDate.parse(date);
-                        if(dateBefore != null && dateBefore.isBefore(currentDate) && dateBefore.isAfter(limitDate)) {
+                        if(dateBefore != null && dateBefore.isBefore(currentDate) && (dateBefore.getMonthValue() >= limitDate.minusMonths(2).getMonthValue())) {
                             datesNeeded.add(date);
                         }
                     }
@@ -344,7 +432,9 @@ public class WorkPlanEntriesNeeded {
                 }
                 Log.v("TAG 3", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }
-            if(!isTodayPresent || isTodayNotFinished) {
+            if((!isTodayPresent &&
+                    (!(HWDates.contains(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)) && (SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1") || SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1"))))
+            ) || (isTodayNotFinished)) {
                 datesNeeded.add(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
                 Log.v("TAG 4", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }
@@ -368,7 +458,7 @@ public class WorkPlanEntriesNeeded {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        datesNeeded.addAll(addedDatesNeeded);
 
         String date = null;
         Log.i("TAG", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));

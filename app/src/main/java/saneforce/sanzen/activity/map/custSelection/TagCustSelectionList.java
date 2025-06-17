@@ -179,7 +179,7 @@ public class TagCustSelectionList extends AppCompatActivity {
             binding.txtSelectedHq.setEnabled(false);
         } else {
             binding.txtSelectedHq.setEnabled(true);
-            if (SharedPref.getTpbasedDcr(this).equalsIgnoreCase("0")) {
+            if (SharedPref.getTpNeed(this).equalsIgnoreCase("0") && SharedPref.getTpMandatoryNeed(this).equalsIgnoreCase("0") && SharedPref.getTpbasedDcr(this).equalsIgnoreCase("0")) {
                 binding.txtSelectedHq.setEnabled(false);
             }
             SetHqAdapter();

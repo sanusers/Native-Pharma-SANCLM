@@ -141,6 +141,11 @@ public class DayReportFragment extends Fragment {
         }.getType();
         arrayListOfReportData = new Gson().fromJson(dataViewModel.getSummaryData().getValue(), type);
 
+        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+            binding.clSearchSort.setVisibility(View.INVISIBLE);
+        } else {
+            binding.clSearchSort.setVisibility(View.VISIBLE);
+        }
     }
 
     private ArrayList<String> daysInMonthArray(LocalDate date) {

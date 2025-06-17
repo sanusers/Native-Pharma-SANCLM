@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="bottom"
+    android:paddingVertical="@dimen/_5sdp"
+    android:orientation="horizontal"
+    android:background="#ffffff"
+    android:visibility="visible">
+
+    <ImageView
+        android:id="@+id/sequential_dot"
+        android:layout_width="@dimen/_10sdp"
+        android:layout_height="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_2sdp"
+        android:background="@drawable/round_back_brown"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="center"
+        android:padding="3dp"
+        android:src="@drawable/baseline_repeat_24"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvLdot"
+        android:layout_width="@dimen/_10sdp"
+        android:layout_height="@dimen/_10sdp"
+        android:layout_marginLeft="@dimen/_2sdp"
+        android:layout_marginRight="@dimen/_2sdp"
+        android:background="@drawable/round_back_yellow"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="center"
+        android:text="L"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/_6ssp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvDdot"
+        android:layout_width="@dimen/_10sdp"
+        android:layout_height="@dimen/_10sdp"
+        android:layout_marginLeft="@dimen/_2sdp"
+        android:layout_marginRight="@dimen/_2sdp"
+        android:background="@drawable/round_back_green"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="center"
+        android:padding="0dp"
+        android:text="D"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/_6ssp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvCdot"
+        android:layout_width="@dimen/_10sdp"
+        android:layout_height="@dimen/_10sdp"
+        android:layout_marginLeft="@dimen/_2sdp"
+        android:layout_marginRight="@dimen/_2sdp"
+        android:background="@drawable/round_back_blue"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="center"
+        android:padding="0dp"
+        android:text="C"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/_6ssp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvSdot"
+        android:layout_width="@dimen/_10sdp"
+        android:layout_height="@dimen/_10sdp"
+        android:layout_marginLeft="@dimen/_2sdp"
+        android:layout_marginRight="@dimen/_2sdp"
+        android:background="@drawable/round_back_pink"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="center"
+        android:padding="0dp"
+        android:text="S"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/_6ssp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvUdot"
+        android:layout_width="@dimen/_10sdp"
+        android:layout_height="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_2sdp"
+        android:background="@drawable/round_back_gray"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="center"
+        android:padding="0dp"
+        android:text="U"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/_6ssp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvHdot"
+        android:layout_width="@dimen/_10sdp"
+        android:layout_height="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_2sdp"
+        android:background="@drawable/round_back_violet"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="center"
+        android:padding="0dp"
+        android:text="H"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/_6ssp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/app_vers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="end"
+        android:padding="@dimen/_2sdp"
+        android:text="@string/app_version"
+        android:textSize="@dimen/_7sdp"
+        android:textStyle="bold" />
+
+</LinearLayout>

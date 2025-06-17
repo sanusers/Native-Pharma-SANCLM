@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -81,6 +82,8 @@ import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDa
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 //import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
+import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
+import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataTable;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
 import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -110,6 +113,7 @@ public class OutboxFragment extends Fragment {
     private RoomDB db;
     private static MasterDataDao masterDataDao;
     private OfflineCheckInOutDataDao offlineCheckInOutDataDao;
+    private CallOfflineDataDao callOfflineDataDao;
     private CallOfflineECDataDao callOfflineECDataDao;
 //    private CallOfflineSignDataDao callOfflineSignDataDao;
     private CallOfflineWorkTypeDataDao offlineWorkTypeDataDao;
@@ -161,6 +165,7 @@ public class OutboxFragment extends Fragment {
         db = RoomDB.getDatabase(requireContext());
         masterDataDao =db.masterDataDao();
         offlineCheckInOutDataDao = db.offlineCheckInOutDataDao();
+        callOfflineDataDao = db.callOfflineDataDao();
         callOfflineECDataDao = db.callOfflineECDataDao();
 //        callOfflineSignDataDao = db.callOfflineSignDataDao();
         offlineWorkTypeDataDao = db.callOfflineWorkTypeDataDao();
@@ -300,6 +305,17 @@ public class OutboxFragment extends Fragment {
                 SharedPref.setCheckDateTodayPlan(requireContext(), "");
             }
         }
+
+        try {
+            List<CallOfflineDataTable> callOfflineDataTables = callOfflineDataDao.getAllOutBoxCallList();
+            for (CallOfflineDataTable callOfflineDataTable : callOfflineDataTables) {
+                String jsonArray = callOfflineDataTable.getCallJsonValues();
+                UpdateInputSample(jsonArray);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         callsUtil.deleteOfflineCalls();
         listDates.clear();
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(requireActivity(), requireContext(), listDates);
@@ -313,6 +329,68 @@ public class OutboxFragment extends Fragment {
         Log.e("RefreshStatus","Is Working");
         SendOfflineData(this::sendingOfflineCalls);
 
+    }
+
+    private void UpdateInputSample(String jsonArray) {
+        try {
+            JSONObject json = new JSONObject(jsonArray);
+            //Input
+            if (SharedPref.getInputValidation(context).equalsIgnoreCase("1")) {
+                JSONArray jsonArrayInpStk = masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray();
+                JSONArray jsonInput = json.getJSONArray("Inputs");
+                Log.v("input_wrk", String.valueOf(jsonInput));
+                if (jsonInput.length() > 0) {
+                    for (int i = 0; i < jsonInput.length(); i++) {
+                        JSONObject jsIp = jsonInput.getJSONObject(i);
+                        //InputStockChange
+                        for (int j = 0; j < jsonArrayInpStk.length(); j++) {
+                            JSONObject jsonObject = jsonArrayInpStk.getJSONObject(j);
+                            Log.v("chkInpStk", jsIp.getString("Code") + "-----" + jsonObject.getString("Code"));
+                            if (jsIp.getString("Code").equalsIgnoreCase(jsonObject.getString("Code"))) {
+                                int EnterQty = Integer.parseInt(jsIp.getString("IQty"));
+                                int BalanceStock = Integer.parseInt(jsonObject.getString("Balance_Stock"));
+                                int FinalStock = EnterQty + BalanceStock;
+                                jsonObject.remove("Balance_Stock");
+                                jsonObject.put("Balance_Stock", FinalStock);
+                                break;
+                            }
+                        }
+                    }
+                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 2));
+                }
+            }
+
+            //Sample
+            if (SharedPref.getSampleValidation(context).equalsIgnoreCase("1")) {
+                JSONArray jsonArraySamStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray();
+                JSONArray jsonPrdArray = new JSONArray(json.getString("Products"));
+                Log.v("sample_wrk", String.valueOf(jsonPrdArray));
+                if (jsonPrdArray.length() > 0) {
+                    //InputStockChange
+                    for (int i = 0; i < jsonPrdArray.length(); i++) {
+                        JSONObject js = jsonPrdArray.getJSONObject(i);
+                        if (js.getString("Group").equalsIgnoreCase("0")) {
+                            for (int j = 0; j < jsonArraySamStk.length(); j++) {
+                                JSONObject jsonObject = jsonArraySamStk.getJSONObject(j);
+                                if (js.getString("Code").equalsIgnoreCase(jsonObject.getString("Code"))) {
+                                    int EnterQty = Integer.parseInt(js.getString("SmpQty"));
+                                    int BalanceStock = Integer.parseInt(jsonObject.getString("Balance_Stock"));
+                                    int FinalStock = EnterQty + BalanceStock;
+                                    jsonObject.remove("Balance_Stock");
+                                    jsonObject.put("Balance_Stock", FinalStock);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 0));
+                }
+            }
+
+
+        } catch (Exception e) {
+
+        }
     }
 
     private void sendingOfflineCalls() {

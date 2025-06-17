@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.homeScreen.modelClass;
 
+import androidx.camera.core.processing.SurfaceProcessorNode;
+
 public class CallsModalClass {
 
 
@@ -9,13 +11,15 @@ public class CallsModalClass {
         DocNameID = docNameID;
     }
 
-    public CallsModalClass(String TranslNo,String ADetSLNo, String docName, String doccode,String callsDateTime, String docNameID) {
+    public CallsModalClass(String TranslNo,String ADetSLNo, String docName, String doccode,String callsDateTime, String docNameID, String product, String input) {
         this.Trans_Slno = TranslNo;
         this.ADetSLNo = ADetSLNo;
         DocName = docName;
         DocCode = doccode;
         CallsDateTime = callsDateTime;
         DocNameID = docNameID;
+        Product = product;
+        Input = input;
     }
 
     public String getDocCode() {
@@ -56,6 +60,8 @@ public class CallsModalClass {
     String  DocNameID;
     String Trans_Slno;
     String ADetSLNo;
+    String Product;
+    String Input;
 
     public String getTrans_Slno() {
         return Trans_Slno;
@@ -71,5 +77,21 @@ public class CallsModalClass {
 
     public void setADetSLNo(String ADetSLNo) {
         this.ADetSLNo = ADetSLNo;
+    }
+
+    public String getProduct() {
+        return Product;
+    }
+
+    public void setProduct(String product) {
+        Product = product;
+    }
+
+    public String getInput() {
+        return Input;
+    }
+
+    public void setInput(String input) {
+        Input = input;
     }
 }

@@ -185,7 +185,7 @@ public class ProductFragment extends Fragment {
                 break;
             }
         }
-        if(!isFromActivity.equalsIgnoreCase("new") && PrdMandatory.equalsIgnoreCase("1") && !isNoProductNotSelected) {
+        if(!isFromActivity.equalsIgnoreCase("new") && !isNoProductNotSelected) {
             CallCommonCheckedList callCommonCheckedList = checkedPrdList.get(noProductIndex);
             callCommonCheckedList.setCheckedItem(true);
             checkedPrdList.set(noProductIndex, callCommonCheckedList);

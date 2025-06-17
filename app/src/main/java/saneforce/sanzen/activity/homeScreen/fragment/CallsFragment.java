@@ -125,13 +125,13 @@ public class CallsFragment extends Fragment {
                                             for (int i = 0; i<jsonArray.length(); i++) {
                                                 JSONObject json = jsonArray.getJSONObject(i);
                                                 SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.toString());
-                                                TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
-                                                TodayCallListTwo.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
+                                                TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                                                TodayCallListTwo.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
 
                                                 for (int j = 0; j<jsonArray1.length(); j++) {
                                                     JSONObject jsonObject = jsonArray1.getJSONObject(j);
                                                     if(json.getString("vstTime").substring(0, 10).equalsIgnoreCase(jsonObject.getString("Dcr_dt")) && jsonObject.getString("CustCode").equalsIgnoreCase(json.getString("CustCode"))) {
-                                                        TodayCallListOne.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
+                                                        TodayCallListOne.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
                                                         jsonArray1.remove(j);
                                                         break;
                                                     }
@@ -241,7 +241,7 @@ public class CallsFragment extends Fragment {
                     for (int i = 0; i<jsonArray.length(); i++) {
                         JSONObject json = jsonArray.getJSONObject(i);
                         SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
-                        TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
+                        TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
                     }
                 }
             }

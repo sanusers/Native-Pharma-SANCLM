@@ -4,6 +4,7 @@ package saneforce.sanzen.activity.call.adapter.input;
 import static saneforce.sanzen.activity.call.DCRCallActivity.InpQtyRestrictValue;
 import static saneforce.sanzen.activity.call.DCRCallActivity.InpQtyRestriction;
 import static saneforce.sanzen.activity.call.DCRCallActivity.InputValidation;
+import static saneforce.sanzen.activity.call.DCRCallActivity.SamQtyRestrictValue;
 import static saneforce.sanzen.activity.call.DCRCallActivity.StockInput;
 
 import android.annotation.SuppressLint;
@@ -98,7 +99,10 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
             if (InputValidation.equalsIgnoreCase("1")) {
                 if (InpQtyRestriction.equalsIgnoreCase("0")) {
                     //  Log.v("asdasds", (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) + "----" + SamQtyRestrictValue + "----" + productListArrayList.get(position).getLast_stock());
-                    if (Integer.parseInt(InpQtyRestrictValue) >= Integer.parseInt(saveCallInputLists.get(position).getLast_inp_stk())) {
+                    if(SamQtyRestrictValue.equalsIgnoreCase("0")) {
+                        finalValue = saveCallInputLists.get(position).getLast_inp_stk();
+                        holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", saveCallInputLists.get(position).getLast_inp_stk())});
+                    } else if (Integer.parseInt(InpQtyRestrictValue) >= Integer.parseInt(saveCallInputLists.get(position).getLast_inp_stk())) {
                         finalValue = saveCallInputLists.get(position).getLast_inp_stk();
                         holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", saveCallInputLists.get(position).getLast_inp_stk())});
                     } else {
@@ -113,6 +117,8 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
                 if (InpQtyRestriction.equalsIgnoreCase("0")) {
                     finalValue = InpQtyRestrictValue;
                     holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", InpQtyRestrictValue)});
+                } else {
+                    holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", "9999")});
                 }
             }
             return false;
@@ -143,6 +149,7 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
                                 for (int i = 0; i<StockInput.size(); i++) {
                                     if(StockInput.get(i).getStockCode().equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
                                         StockInput.set(i, new CallCommonCheckedList(StockInput.get(i).getStockCode(), StockInput.get(i).getActualStock(), String.valueOf(final_value)));
+                                        break;
                                     }
                                 }
                             } else {
@@ -160,14 +167,24 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
                             for (int i = 0; i < StockInput.size(); i++) {
                                 if (StockInput.get(i).getStockCode().equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
                                     StockInput.set(i, new CallCommonCheckedList(StockInput.get(i).getStockCode(), StockInput.get(i).getActualStock(), saveCallInputLists.get(position).getLast_inp_stk()));
+                                    break;
                                 }
                             }
                         }
                     } else {
                         if (InpQtyRestriction.equalsIgnoreCase("0")) {
                             holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", InpQtyRestrictValue)});
+                        } else {
+                            holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", "9999")});
                         }
-                        saveCallInputLists.set(holder.getBindingAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getBindingAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getInp_code(), editable.toString() , saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk()));
+                        if(!editable.toString().isEmpty()) {
+                            int value = Integer.parseInt(editable.toString());
+                            if(value > 0) {
+                                saveCallInputLists.set(holder.getBindingAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getBindingAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getInp_code(), editable.toString() , saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk()));
+                            } else {
+                                holder.ed_inpQty.setText("1");
+                            }
+                        }
                     }
 
                 } catch (Exception e) {
@@ -195,6 +212,7 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
                                             currentBalance = Integer.parseInt(StockInput.get(i).getCurrentStock()) + Integer.parseInt(saveCallInputLists.get(position).getInp_qty());
                                         }
                                         StockInput.set(i, new CallCommonCheckedList(StockInput.get(i).getStockCode(), StockInput.get(i).getActualStock(), String.valueOf(currentBalance)));
+                                        break;
                                     }
                                 }
                                 removeAt(position);

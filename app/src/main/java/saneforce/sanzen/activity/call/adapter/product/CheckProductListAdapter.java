@@ -124,7 +124,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
                     if(DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
                         for (int i = 0; i<StockSample.size(); i++) {
                             if(StockSample.get(i).getStockCode().equalsIgnoreCase(callCommonCheckedListArrayList.get(position).getCode())) {
-                                callCommonCheckedListArrayList.set(position, new CallCommonCheckedList(callCommonCheckedListArrayList.get(position).getName(), callCommonCheckedListArrayList.get(position).getCode(), StockSample.get(i).getCurrentStock(), holder.checkBox.isChecked(), callCommonCheckedListArrayList.get(position).getCategory(), callCommonCheckedListArrayList.get(position).getCategoryExtra()));
+                                callCommonCheckedListArrayList.set(position, new CallCommonCheckedList(callCommonCheckedListArrayList.get(position).getName(), callCommonCheckedListArrayList.get(position).getCode(), StockSample.get(i).getCurrentStock(), callCommonCheckedListArrayList.get(position).isCheckedItem(), callCommonCheckedListArrayList.get(position).getCategory(), callCommonCheckedListArrayList.get(position).getCategoryExtra()));
                                 break;
                             }
                         }
@@ -134,39 +134,42 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
                             if(Integer.parseInt(callCommonCheckedListArrayList.get(position).getStock_balance())>0) {
                                 CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                             }else {
-                                callCommonCheckedListArrayList.set(position, new CallCommonCheckedList(callCommonCheckedListArrayList.get(position).getName(), callCommonCheckedListArrayList.get(position).getCode(), callCommonCheckedListArrayList.get(position).getStock_balance(), false, callCommonCheckedListArrayList.get(position).getCategory(), callCommonCheckedListArrayList.get(position).getCategoryExtra()));
+                                if(!callCommonCheckedListArrayList.get(position).isCheckedItem()) {
+                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_prd));
+                                }
                                 holder.checkBox.setChecked(false);
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_prd));
+                                callCommonCheckedListArrayList.set(position, new CallCommonCheckedList(callCommonCheckedListArrayList.get(position).getName(), callCommonCheckedListArrayList.get(position).getCode(), callCommonCheckedListArrayList.get(position).getStock_balance(), false, callCommonCheckedListArrayList.get(position).getCategory(), callCommonCheckedListArrayList.get(position).getCategoryExtra()));
+                                CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                             }
                         }
                     }else {
                         CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                     }
                 }else {
-//                    if(DCRCallActivity.PrdMandatory != null && DCRCallActivity.PrdMandatory.equalsIgnoreCase("1")) {
-//                        for (int i = 0; i<callCommonCheckedListArrayList.size(); i++) {
-//                            if(callCommonCheckedListArrayList.get(i).getCode().equalsIgnoreCase("-10")) {
-//                                callCommonCheckedListArrayList.get(i).setCheckedItem(false);
-//                                notifyItemChanged(i);
-//                                break;
-//                            }
-//                        }
-////                        noProductHolder.checkBox.setChecked(false);
-//                        commonUtilsMethods.showToastMessage(context, "Product selection is mandatory!");
-//                    }else {
-//                    CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
-                    if(holder.checkBox.isChecked() && checkAnyProductSelected()) {
-                        holder.checkBox.setChecked(false);
-                        CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
-                        commonUtilsMethods.showToastMessage(context, "Please deselect the selected Products!");
-                    }else {
-                        if(noProductSelected) {
-                            commonUtilsMethods.showToastMessage(context, "Cannot deselect No Product!");
+                    if(DCRCallActivity.PrdMandatory != null && DCRCallActivity.PrdMandatory.equalsIgnoreCase("1")) {
+                        for (int i = 0; i<callCommonCheckedListArrayList.size(); i++) {
+                            if(callCommonCheckedListArrayList.get(i).getCode().equalsIgnoreCase("-10")) {
+                                callCommonCheckedListArrayList.get(i).setCheckedItem(false);
+                                notifyItemChanged(i);
+                                break;
+                            }
                         }
-                        holder.checkBox.setChecked(true);
-                        CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
+//                        noProductHolder.checkBox.setChecked(false);
+                        commonUtilsMethods.showToastMessage(context, "Product selection is mandatory!");
+                    }else {
+//                    CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
+                        if(holder.checkBox.isChecked() && checkAnyProductSelected()) {
+                            holder.checkBox.setChecked(false);
+                            CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
+                            commonUtilsMethods.showToastMessage(context, "Please deselect the selected Products!");
+                        }else {
+                            if(noProductSelected) {
+                                commonUtilsMethods.showToastMessage(context, "Cannot deselect No Product!");
+                            }
+                            holder.checkBox.setChecked(true);
+                            CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
+                        }
                     }
-////                    }
                 }
             }
         });
@@ -229,6 +232,18 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
     @SuppressLint("NotifyDataSetChanged")
     public void filterList(ArrayList<CallCommonCheckedList> filteredNames) {
         this.callCommonCheckedListArrayList = filteredNames;
+        for (int i = 0; i<filteredNames.size(); i++) {
+            CallCommonCheckedList callCommonCheckedList = filteredNames.get(i);
+            boolean isSaved = false;
+            for (SaveCallProductList saveCallProductList : saveCallProductListArrayList) {
+                if(saveCallProductList.getCode().equalsIgnoreCase(callCommonCheckedList.getCode())) {
+                    isSaved = true;
+                    break;
+                }
+            }
+            callCommonCheckedList.setCheckedItem(isSaved);
+            callCommonCheckedListArrayList.set(i, callCommonCheckedList);
+        }
         notifyDataSetChanged();
     }
 
@@ -255,7 +270,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
 
     private void checkAndSetNoProductCheckedOrUnchecked() {
 //        if(!(DCRCallActivity.PrdMandatory != null && DCRCallActivity.PrdMandatory.equals("1"))) {
-        if(!checkAnyProductSelected()) {
+        if(!checkAnyProductSelected() && !DCRCallActivity.PrdMandatory.equalsIgnoreCase("1")) {
             if(callCommonCheckedListArrayList.get(0).getCode().equalsIgnoreCase("-10")) {
                 callCommonCheckedListArrayList.get(0).setCheckedItem(true);
                 for (int i = 0; i<callCommonCheckedListArrayList.size(); i++) {

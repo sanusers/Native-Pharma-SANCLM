@@ -221,7 +221,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
         holder.sessionNoTxt.setText("Session " + (position + 1));
         if(holder.getAbsoluteAdapterPosition() == 0) { //No need to show delete icon if there is only one session
-            if(inputDataArray.getSessionList().size()>1)
+            if(inputDataArray.getSessionList().size()>1 && holder.getAbsoluteAdapterPosition() != 0)
                 holder.sessionDelete.setVisibility(View.VISIBLE);
             else
                 holder.sessionDelete.setVisibility(View.GONE);
@@ -1511,6 +1511,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.listCardView.setVisibility(View.GONE);
             TourPlanActivity.addSaveBtnLayout.setVisibility(View.VISIBLE);
             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
+            if(inputDataArray.getSessionList().size()>1  && holder.getAbsoluteAdapterPosition() != 0) {
+                holder.sessionDelete.setVisibility(View.VISIBLE);
+            }
 
             workTypeBasedUI(holder, holder.sessionData, false);
         }else {
@@ -1530,6 +1533,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             linearLayout.setVisibility(View.VISIBLE);
             imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.up_arrow));
             TourPlanActivity.addSaveBtnLayout.setVisibility(View.GONE);
+            holder.sessionDelete.setVisibility(View.GONE);
 //            TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
         }
         UtilityClass.hideKeyboard((Activity) context);

@@ -912,14 +912,14 @@ public class DCRCallActivity extends AppCompatActivity {
                 if(ProductNeed.equalsIgnoreCase("0")) {
                     if(PrdMandatory.equalsIgnoreCase("1")) {
                         if(CheckProductListAdapter.saveCallProductListArrayList.isEmpty() && !CheckProductListAdapter.noProductSelected) {
-                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.enter_the).trim(), capPrd));
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.select_the).trim(), capPrd));
                             moveToPage(capPrd);
                             return false;
                         }
 
                         if(PrdSamNeed.equalsIgnoreCase("1") && SamQtyMandatory.equalsIgnoreCase("1")) {
                             if(CheckProductListAdapter.saveCallProductListArrayList.isEmpty() && !CheckProductListAdapter.noProductSelected) {
-                                commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.enter_the).trim(), capPrd));
+                                commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.select_the).trim(), capPrd));
                                 moveToPage(capPrd);
                                 return false;
                             }else {
@@ -936,7 +936,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                         if(PrdRxNeed.equalsIgnoreCase("1") && RxQtyMandatory.equalsIgnoreCase("1")) {
                             if(CheckProductListAdapter.saveCallProductListArrayList.isEmpty() && !CheckProductListAdapter.noProductSelected) {
-                                commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.enter_the).trim(), capPrd));
+                                commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.select_the).trim(), capPrd));
                                 moveToPage(capPrd);
                                 return false;
                             }else {
@@ -955,7 +955,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 if(InputNeed.equalsIgnoreCase("0")) {
                     if(InpMandatory.equalsIgnoreCase("1")) {
                         if(CheckInputListAdapter.saveCallInputListArrayList.isEmpty() && !CheckInputListAdapter.noInputSelected) {
-                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.enter_the).trim(), capInp));
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.select_the).trim(), capInp));
                             moveToPage(capInp);
                             return false;
                         }

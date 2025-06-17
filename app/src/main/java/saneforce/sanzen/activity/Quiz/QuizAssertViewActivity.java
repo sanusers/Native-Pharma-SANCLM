@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy;
-//import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 
 import java.io.File;
 import java.net.URLEncoder;
@@ -76,14 +75,14 @@ public class QuizAssertViewActivity extends AppCompatActivity {
         if(file.exists()) {
             if(fileType.toLowerCase().contains("image")) {
                 binding.imgView.setVisibility(View.VISIBLE);
-//                binding.pdfView.setVisibility(View.GONE);
+                binding.pdfView.setVisibility(View.GONE);
                 binding.videoView.setVisibility(View.GONE);
                 binding.webView.setVisibility(View.GONE);
                 binding.retry.setVisibility(View.GONE);
                 Glide.with(QuizAssertViewActivity.this).load(new File(file.getAbsolutePath())).downsample(DownsampleStrategy.FIT_CENTER).placeholder(R.drawable.baseline_cached_24).into(binding.imgView);
             }else if(fileType.toLowerCase().contains("video")) {
                 binding.imgView.setVisibility(View.GONE);
-//                binding.pdfView.setVisibility(View.GONE);
+                binding.pdfView.setVisibility(View.GONE);
                 binding.videoView.setVisibility(View.VISIBLE);
                 binding.webView.setVisibility(View.GONE);
                 binding.retry.setVisibility(View.GONE);
@@ -93,7 +92,7 @@ public class QuizAssertViewActivity extends AppCompatActivity {
                 binding.videoView.start();
             }else if(fileType.toLowerCase().contains("pdf")) {
                 binding.imgView.setVisibility(View.GONE);
-//                binding.pdfView.setVisibility(View.VISIBLE);
+                binding.pdfView.setVisibility(View.VISIBLE);
                 binding.videoView.setVisibility(View.GONE);
                 binding.webView.setVisibility(View.GONE);
                 binding.retry.setVisibility(View.GONE);
@@ -101,7 +100,7 @@ public class QuizAssertViewActivity extends AppCompatActivity {
             }else if(fileType.toLowerCase().contains("msword") || fileType.toLowerCase().contains("excel") || fileType.toLowerCase().contains("sheet") || fileType.toLowerCase().contains("ppt") || fileType.toLowerCase().contains("presentation")) {
                 progressDialog = CommonUtilsMethods.createProgressDialog(QuizAssertViewActivity.this);
                 binding.imgView.setVisibility(View.GONE);
-//                binding.pdfView.setVisibility(View.GONE);
+                binding.pdfView.setVisibility(View.GONE);
                 binding.videoView.setVisibility(View.GONE);
                 binding.webView.setVisibility(View.VISIBLE);
                 binding.retry.setVisibility(View.VISIBLE);
@@ -160,7 +159,7 @@ public class QuizAssertViewActivity extends AppCompatActivity {
     }
 
     public void loadPdf(String fileName) {
-//        binding.pdfView.fromFile(new File(fileName)).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();
+        binding.pdfView.fromFile(new File(fileName)).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();
     }
 
 }

@@ -5,9 +5,11 @@ import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.MediaController;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +17,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
-//import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -75,6 +77,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                 switch (SupportClass.getFileExtension(arrayList.get(position).getSlideName())) {
                     case "pdf":
                     case "mp4":
+                    case "avi":
                     case "zip":
                     case "html": {
                         binding.playBtn.setVisibility(View.VISIBLE);
@@ -148,13 +151,14 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                     String fileFormat = SupportClass.getFileExtension(fileName);
                     switch (fileFormat) {
                         case "pdf":
-//                            binding.pdfView.setVisibility(View.VISIBLE);
+                            binding.pdfView.setVisibility(View.VISIBLE);
                             binding.videoView.setVisibility(View.GONE);
                             binding.webView.setVisibility(View.GONE);
                             loadPdf(file.getAbsolutePath());
                             break;
                         case "mp4":
-//                            binding.pdfView.setVisibility(View.GONE);
+                        case "avi":
+                            binding.pdfView.setVisibility(View.GONE);
                             binding.videoView.setVisibility(View.VISIBLE);
                             binding.webView.setVisibility(View.GONE);
                             Uri uri = Uri.parse(file.getAbsolutePath());
@@ -163,7 +167,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                             binding.videoView.start();
                             break;
                         case "zip":
-//                            binding.pdfView.setVisibility(View.GONE);
+                            binding.pdfView.setVisibility(View.GONE);
                             binding.videoView.setVisibility(View.GONE);
                             binding.webView.setVisibility(View.VISIBLE);
 
@@ -190,6 +194,16 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                             if (!filePath.isEmpty()) {
                                 binding.webView.loadUrl("file://" + filePath);
                             }
+                            binding.webView.setWebViewClient(new WebViewClient() {
+                                @Override
+                                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                                    Log.v("Slides", " ---- " + url + " ---- " + view.getTitle() + " ---- " + view.getOriginalUrl());
+                                    if(!url.isEmpty()) {
+                                        binding.webView.loadUrl(url);
+                                    }
+                                    return true;
+                                }
+                            });
                     }
                 }
             } else {
@@ -199,7 +213,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                 playBtnClicked = false;
                 binding.playBtn.setImageResource(R.drawable.play_icon);
                 binding.viewPager.setVisibility(View.VISIBLE);
-//                binding.pdfView.setVisibility(View.GONE);
+                binding.pdfView.setVisibility(View.GONE);
                 binding.videoView.setVisibility(View.GONE);
                 binding.webView.setVisibility(View.GONE);
                 binding.upArrow.setVisibility(View.VISIBLE);
@@ -238,6 +252,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
             switch (SupportClass.getFileExtension(arrayList.get(0).getSlideName())) {
                 case "pdf":
                 case "mp4":
+                case "avi":
                 case "zip":
                 case "html": {
                     binding.playBtn.setVisibility(View.VISIBLE);
@@ -293,7 +308,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     }
 
     public void loadPdf(String fileName) {
-//        binding.pdfView.fromFile(new File(fileName)).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();
+        binding.pdfView.fromFile(new File(fileName)).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();
     }
 
     @Override

@@ -37,7 +37,7 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy;
-//import com.github.barteksc.pdfviewer.BuildConfig;
+import com.github.barteksc.pdfviewer.BuildConfig;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -57,7 +57,6 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import saneforce.sanzen.BuildConfig;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.pojo.detailing.LoadBitmap;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
@@ -389,6 +388,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     shareIntent.setType("image/png");
                     return;
                 }
+                case "avi":
                 case "mp4":{
                     shareIntent.setType("video/mp4");
                     return;
@@ -517,6 +517,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     }
                     return;
                 }
+                case "avi":
                 case "mp4":{
                     try {
                         ContentValues content = new ContentValues(4);
@@ -590,9 +591,9 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                 }
             }
 
-            for (int i = 0; i<PlaySlideDetailedAdapter.storingSlide.size(); i++) {
-                Log.v("total_printing", PlaySlideDetailedAdapter.storingSlide.get(i).getSlideName() + "size" + PlaySlideDetailedAdapter.storingSlide.size() + "slide" + PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal());
-            }
+//            for (int i = 0; i<PlaySlideDetailedAdapter.storingSlide.size(); i++) {
+//                Log.v("total_printing", PlaySlideDetailedAdapter.storingSlide.get(i).getSlideName() + "size" + PlaySlideDetailedAdapter.storingSlide.size() + "slide" + PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal());
+//            }
 
             for (int i = 0; i<PlaySlideDetailedAdapter.storingSlide.size(); i++) {
                 int ll = 0;
@@ -624,11 +625,11 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                 if(!BrandName.equalsIgnoreCase("Welcome")) {
                     String eTime;
                     if(arrayStore != null && !arrayStore.isEmpty() && arrayStore.contains(new StoreImageTypeUrl(SlideName))) {
-                        eTime = findingEndTime(i);
-                        int index = checkForProduct(SlideName);
-                        StoreImageTypeUrl mmm = arrayStore.get(index);
+//                        eTime = findingEndTime(i);
+//                        int index = checkForProduct(SlideName);
+//                        StoreImageTypeUrl mmm = arrayStore.get(index);
 
-                        try {
+//                        try {
 //                            JSONArray jj = new JSONArray(mmm.getRemTime());
 //                            JSONArray jk = new JSONArray();
 //                            JSONObject js = null;
@@ -641,18 +642,18 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 //                            js.put("eT", eTime);
 //                            jk.put(js);
 //                            mmm.setRemTime(jk.toString());
-                        } catch (Exception ignored) {
-                        }
+//                        } catch (Exception ignored) {
+//                        }
                     }else if(!SlideName.isEmpty()) {
-                        eTime = findingEndTime(i);
+//                        eTime = findingEndTime(i);
                         JSONObject jsonObject = new JSONObject();
                         JSONArray jsonArray = new JSONArray();
-                        try {
-                            jsonObject.put("sT", timevalue);
-                            jsonObject.put("eT", eTime);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            jsonObject.put("sT", timevalue);
+//                            jsonObject.put("eT", eTime);
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
 //                        jsonArray.put(jsonObject);
                         Set<String> timing = new LinkedHashSet<>(timer.get(SlideName));
                         if(!timing.isEmpty()) {

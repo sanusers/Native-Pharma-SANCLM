@@ -214,7 +214,16 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
 
         if (SampleValidation.equalsIgnoreCase("1")) {
             holder.tv_stocks.setVisibility(View.VISIBLE);
-            holder.tv_stocks.setText(productListArrayList.get(position).getBalance_sam_stk());
+            String stockBalance = productListArrayList.get(position).getBalance_sam_stk();
+            if(stockBalance != null && !stockBalance.isEmpty()) {
+                int balance = Integer.parseInt(stockBalance);
+                if(balance < 0) {
+                    stockBalance = "0";
+                }
+            } else {
+                stockBalance = "0";
+            }
+            holder.tv_stocks.setText(stockBalance);
             if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample")) {
                 holder.ed_samplesQty.setEnabled(true);
             } else if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
@@ -273,22 +282,25 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                 if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample") || productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
                     if (SamQtyRestriction.equalsIgnoreCase("0")) {
                         //  Log.v("asdasds", (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) + "----" + SamQtyRestrictValue + "----" + productListArrayList.get(position).getLast_stock());
-                        if (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) {
+                        if(SamQtyRestrictValue.equalsIgnoreCase("0")) {
                             finalValue = productListArrayList.get(position).getLast_stock();
-                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", productListArrayList.get(position).getLast_stock())});
+                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("0", productListArrayList.get(position).getLast_stock())});
+                        } else if (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) {
+                            finalValue = productListArrayList.get(position).getLast_stock();
+                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("0", productListArrayList.get(position).getLast_stock())});
                         } else {
                             finalValue = SamQtyRestrictValue;
-                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", SamQtyRestrictValue)});
+                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("0", SamQtyRestrictValue)});
                         }
                     } else {
                         finalValue = productListArrayList.get(position).getLast_stock();
-                        holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", productListArrayList.get(position).getLast_stock())});
+                        holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("0", productListArrayList.get(position).getLast_stock())});
                     }
                 }
             } else {
                 if (SamQtyRestriction.equalsIgnoreCase("0")) {
                     finalValue = SamQtyRestrictValue;
-                    holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", SamQtyRestrictValue)});
+                    holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("0", SamQtyRestrictValue)});
                 }
             }
             return false;
@@ -311,15 +323,23 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                 try {
                     if (SampleValidation.equalsIgnoreCase("1")) {
                         if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample") || productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
-                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", finalValue)});
+                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("0", finalValue)});
                             if (!editable.toString().isEmpty()) {
                                 int final_value = Integer.parseInt(productListArrayList.get(position).getLast_stock()) - Integer.parseInt(editable.toString());
-                                if(final_value >= 0) {
+                                int value = 0, enteredValue = 0;
+                                try {
+                                    value = Integer.parseInt(finalValue);
+                                    enteredValue = Integer.parseInt(editable.toString());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                if(final_value >= 0 && enteredValue <= value) {
                                     holder.tv_stocks.setText(String.valueOf(final_value));
                                     productListArrayList.set(holder.getBindingAdapterPosition(), new SaveCallProductList(productListArrayList.get(holder.getBindingAdapterPosition()).getName(), productListArrayList.get(holder.getBindingAdapterPosition()).getCode(), productListArrayList.get(holder.getBindingAdapterPosition()).getCategory(), String.valueOf(final_value), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), editable.toString(), productListArrayList.get(holder.getBindingAdapterPosition()).getRx_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRcpa_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getPromoted(), productListArrayList.get(holder.getBindingAdapterPosition()).isClicked()));
                                     for (int i = 0; i<StockSample.size(); i++) {
                                         if(StockSample.get(i).getStockCode().equalsIgnoreCase(productListArrayList.get(position).getCode())) {
                                             StockSample.set(i, new CallCommonCheckedList(StockSample.get(i).getStockCode(), StockSample.get(i).getActualStock(), String.valueOf(final_value)));
+                                            break;
                                         }
                                     }
                                 } else {
@@ -337,6 +357,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                                 for (int i = 0; i < StockSample.size(); i++) {
                                     if (StockSample.get(i).getStockCode().equalsIgnoreCase(productListArrayList.get(position).getCode())) {
                                         StockSample.set(i, new CallCommonCheckedList(StockSample.get(i).getStockCode(), StockSample.get(i).getActualStock(), productListArrayList.get(position).getLast_stock()));
+                                        break;
                                     }
                                 }
                             }

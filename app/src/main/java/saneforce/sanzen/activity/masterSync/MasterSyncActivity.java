@@ -96,7 +96,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     MasterSyncAdapter masterSyncAdapter = new MasterSyncAdapter();
     public static Dialog dialog1;
     String rsf="";
-    boolean retrystatus=false;
+    boolean retrystatus=false, isSlideDownloading = false, isWelcomeSlideDownloading = false;
     //  Api call status  ======> 2 - sucesss, 1- failure ,  0- Notsync yet
     int doctorStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0;
     int apiSuccessCount = 0, itemCount = 0;
@@ -148,6 +148,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     private int dayPlanDelayCount = 0;
     public String SFTP_Date_sp="",SFTP_Date="";
     public int JoningDate,JoiningMonth, JoinYear;
+    private Dialog slideDialog, welcomeSlideDialog;
 
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
         return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
@@ -1363,10 +1364,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 } else {
                                     masterSyncItemModels.get(position).setSyncSuccess(1);
                                     masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
-                                    if (navigateFrom.equalsIgnoreCase("Login")) {
-                                        masterSyncAll(false);
-                                        }
-                                    }
+//                                    if (navigateFrom.equalsIgnoreCase("Login")) {
+//                                        masterSyncAll(false);
+//                                    }
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -1385,13 +1386,19 @@ public class MasterSyncActivity extends AppCompatActivity {
                             //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
-                                SlideAlertbox(true);
+//                                if(!isSlideDownloading) {
+//                                    isSlideDownloading = true;
+                                    SlideAlertbox(true);
+//                                }
                             } else if (masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
 //                                SharedPref.putAutomassync(getApplicationContext(), true);
                             //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
-                                welcomeSlideAlertBox(true);
+//                                if(!isWelcomeSlideDownloading) {
+//                                    isWelcomeSlideDownloading = true;
+                                    welcomeSlideAlertBox(true);
+//                                }
                             } else {
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
                                 binding.backArrow.setVisibility(View.VISIBLE);
@@ -2221,14 +2228,18 @@ public class MasterSyncActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
         builder.setView(dialogView);
-        Dialog dialog = builder.create();
-        dialog.setCancelable(false);
+        if(slideDialog != null && slideDialog.isShowing()) {
+            slideDialog.dismiss();
+        }
+
+        slideDialog = builder.create();
+        slideDialog.setCancelable(false);
         if(!isFinishing()) {
-            dialog.show();
+            slideDialog.show();
         }
 
         cancel_img.setOnClickListener(view -> {
-            dialog.dismiss();
+            slideDialog.dismiss();
             navigateFrom = "Slide";
         });
 
@@ -2328,14 +2339,17 @@ public class MasterSyncActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
         builder.setView(dialogView);
-        Dialog dialog = builder.create();
-        dialog.setCancelable(false);
+        if(welcomeSlideDialog != null && welcomeSlideDialog.isShowing()) {
+            welcomeSlideDialog.dismiss();
+        }
+        welcomeSlideDialog = builder.create();
+        welcomeSlideDialog.setCancelable(false);
         if(!isFinishing()) {
-            dialog.show();
+            welcomeSlideDialog.show();
         }
 
         cancel_img.setOnClickListener(view -> {
-            dialog.dismiss();
+            welcomeSlideDialog.dismiss();
             navigateFrom = "Slide";
         });
 

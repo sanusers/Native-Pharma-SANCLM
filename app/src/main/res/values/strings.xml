@@ -1,6 +1,6 @@
 <resources>
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">T.3.0.3</string>
+    <string name="app_version" translatable="false">SET-1</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -43,6 +43,7 @@
     <string name="reached_session_limit">Reached Session limit</string>
     <string name="you_have_select">You have selected the </string>
     <string name="select_any_masters">Select any masters in session </string>
+    <string name="select_any">Select any </string>
     <string name="more_than_limit"> more than limits </string>
     <string name="in_session"> in session </string>
     <string name="rx_qty">RX Qty</string>

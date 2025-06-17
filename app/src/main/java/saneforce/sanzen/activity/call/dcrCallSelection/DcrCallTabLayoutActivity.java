@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.call.dcrCallSelection;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -33,6 +31,7 @@ import saneforce.sanzen.activity.call.dcrCallSelection.fragments.ListedDoctorFra
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.StockiestFragment;
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.UnlistedDoctorFragment;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
@@ -55,6 +54,16 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+    private ListedDoctorFragment listedDoctorFragment;
+    private ChemistFragment chemistFragment;
+    private StockiestFragment stockiestFragment;
+    private UnlistedDoctorFragment unlistedDoctorFragment;
+    private CIPFragment cipFragment;
+    private HospitalFragment hospitalFragment;
+
+    public interface HQChangeListener {
+        void onHQChange();
+    }
 
     //To Hide the bottomNavigation When popup
     @Override
@@ -112,26 +121,52 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         }
 
         getRequiredData();
+        HQChangeListener hqChangeListener = () -> {
+            prepareClusterList();
+            if(listedDoctorFragment != null) {
+                listedDoctorFragment.SetupAdapter();
+            }
+            if(chemistFragment != null) {
+                chemistFragment.SetupAdapter();
+            }
+            if(stockiestFragment != null) {
+                stockiestFragment.SetupAdapter();
+            }
+            if(unlistedDoctorFragment != null) {
+                unlistedDoctorFragment.SetupAdapter();
+            }
+            if(cipFragment != null) {
+                cipFragment.SetupAdapter();
+            }
+            if(hospitalFragment != null) {
+                hospitalFragment.SetupAdapter();
+            }
+        };
 
         viewPagerAdapter = new TabLayoutAdapter(getSupportFragmentManager());
-        if (SharedPref.getDrNeed(context).equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new ListedDoctorFragment(), SharedPref.getDrCap(context));
+        if (SharedPref.getDrNeed(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
+            listedDoctorFragment = new ListedDoctorFragment(hqChangeListener);
+            viewPagerAdapter.add(listedDoctorFragment, SharedPref.getDrCap(DcrCallTabLayoutActivity.this));
         }
-
-        if (SharedPref.getChmNeed(context).equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new ChemistFragment(), SharedPref.getChmCap(context));
+        if (SharedPref.getChmNeed(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
+            chemistFragment = new ChemistFragment(hqChangeListener);
+            viewPagerAdapter.add(chemistFragment, SharedPref.getChmCap(DcrCallTabLayoutActivity.this));
         }
-        if (SharedPref.getCipNeed(context).equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new CIPFragment(), SharedPref.getCipCaption(context));
+        if (SharedPref.getStkNeed(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
+            stockiestFragment = new StockiestFragment(hqChangeListener);
+            viewPagerAdapter.add(stockiestFragment, SharedPref.getStkCap(DcrCallTabLayoutActivity.this));
         }
-        if (SharedPref.getStkNeed(context).equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new StockiestFragment(), SharedPref.getStkCap(context));
+        if (SharedPref.getUnlNeed(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
+            unlistedDoctorFragment = new UnlistedDoctorFragment(hqChangeListener);
+            viewPagerAdapter.add(unlistedDoctorFragment, SharedPref.getUNLcap(DcrCallTabLayoutActivity.this));
         }
-        if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new UnlistedDoctorFragment(), SharedPref.getUNLcap(context));
+        if (SharedPref.getCipNeed(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
+            cipFragment = new CIPFragment(hqChangeListener);
+            viewPagerAdapter.add(cipFragment, SharedPref.getCipCaption(DcrCallTabLayoutActivity.this));
         }
-        if (SharedPref.getHospNeed(context).equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new HospitalFragment(), SharedPref.getHospCaption(context));
+        if (SharedPref.getHospNeed(DcrCallTabLayoutActivity.this).equalsIgnoreCase("0")) {
+            hospitalFragment = new HospitalFragment(hqChangeListener);
+            viewPagerAdapter.add(hospitalFragment, SharedPref.getHospCaption(DcrCallTabLayoutActivity.this));
         }
 
         dcrSelectionBinding.viewPagerCallSelection.setAdapter(viewPagerAdapter);
@@ -139,7 +174,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         //dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(viewPagerAdapter.getCount());
         dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(7);
 
-        if (SharedPref.getGeotagNeed(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+        if (SharedPref.getGeotagNeed(DcrCallTabLayoutActivity.this).equalsIgnoreCase("1") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
             dcrSelectionBinding.imgLocation.setVisibility(View.VISIBLE);
         } else {
             dcrSelectionBinding.imgLocation.setVisibility(View.GONE);
@@ -151,35 +186,35 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 Log.d("Call Selection Tab Layout", "onTabSelected: " + tab.getPosition());
                 switch (tab.getPosition()){
                     case 0:
-                        if(SharedPref.getGeotagNeed(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                        if(SharedPref.getGeotagNeed(DcrCallTabLayoutActivity.this).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                             dcrSelectionBinding.imgLocation.setVisibility(View.VISIBLE);
                         }else {
                             dcrSelectionBinding.imgLocation.setVisibility(View.GONE);
                         }
                         break;
                     case 1:
-                        if(SharedPref.getGeotagNeedChe(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                        if(SharedPref.getGeotagNeedChe(DcrCallTabLayoutActivity.this).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                             dcrSelectionBinding.imgLocation.setVisibility(View.VISIBLE);
                         }else {
                             dcrSelectionBinding.imgLocation.setVisibility(View.GONE);
                         }
                         break;
                     case 2:
-                        if(SharedPref.getGeotagNeedStock(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                        if(SharedPref.getGeotagNeedStock(DcrCallTabLayoutActivity.this).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                             dcrSelectionBinding.imgLocation.setVisibility(View.VISIBLE);
                         }else {
                             dcrSelectionBinding.imgLocation.setVisibility(View.GONE);
                         }
                         break;
                     case 3:
-                        if(SharedPref.getGeotagNeedUnlst(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                        if(SharedPref.getGeotagNeedUnlst(DcrCallTabLayoutActivity.this).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                             dcrSelectionBinding.imgLocation.setVisibility(View.VISIBLE);
                         }else {
                             dcrSelectionBinding.imgLocation.setVisibility(View.GONE);
                         }
                         break;
                     case 4:
-                        if(SharedPref.getGeotagNeedCip(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
+                        if(SharedPref.getGeotagNeedCip(DcrCallTabLayoutActivity.this).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
                             dcrSelectionBinding.imgLocation.setVisibility(View.VISIBLE);
                         }else {
                             dcrSelectionBinding.imgLocation.setVisibility(View.GONE);
@@ -245,7 +280,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 }
             }
 
-            prepareClusterList(DcrCallTabLayoutActivity.this);
+            prepareClusterList();
 
             Log.v("required_data", "---" + TodayPlanSfCode + "---" + TodayPlanClusterList);
 
@@ -254,13 +289,18 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         }
     }
 
-    public static void prepareClusterList(Context context) {
+    private void prepareClusterList() {
         try {
+            if(WorkPlanFragment.mHQCode1 != null && WorkPlanFragment.mHQCode1.equalsIgnoreCase(TodayPlanSfCode) && WorkPlanFragment.mTowncode1 != null && !WorkPlanFragment.mTowncode1.isEmpty()){
+                SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode1);
+            } else if(WorkPlanFragment.mHQCode2 != null && WorkPlanFragment.mHQCode2.equalsIgnoreCase(TodayPlanSfCode) && WorkPlanFragment.mTowncode2 != null && !WorkPlanFragment.mTowncode2.isEmpty()){
+                SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode2);
+            }
             TodayPlanClusterList.clear();
-            JSONArray jsonArray2 = RoomDB.getDatabase(context).masterDataDao().getMasterDataTableOrNew(Constants.CLUSTER + TodayPlanSfCode).getMasterSyncDataJsonArray();
+            JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + TodayPlanSfCode).getMasterSyncDataJsonArray();
             for (int i = 0; i<jsonArray2.length(); i++) {
                 JSONObject jsonClusterList = jsonArray2.getJSONObject(i);
-                if(SharedPref.getTodayDayPlanClusterCode(context).contains(jsonClusterList.getString("Code"))) {
+                if(SharedPref.getTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this).contains(jsonClusterList.getString("Code"))) {
                     TodayPlanClusterList.add(jsonClusterList.getString("Code"));
                     TodayPlanClusterList.add(jsonClusterList.getString("Name"));
                 }
