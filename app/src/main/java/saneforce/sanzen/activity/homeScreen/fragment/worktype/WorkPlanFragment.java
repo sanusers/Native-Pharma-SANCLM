@@ -1283,6 +1283,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }else {
                             if(binding.llDeviation.getVisibility() == View.VISIBLE) {
                                 commonUtilsMethods.showToastMessage(requireContext(), "Deviate to edit WorkPlan");
+                            } else if(dayStatus.equalsIgnoreCase("0")) {
+                                dialogFWEditConfirmation("1", mWTName1);
                             } else {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need));
                             }
@@ -1322,6 +1324,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }else {
                             if(binding.llDeviation.getVisibility() == View.VISIBLE) {
                                 commonUtilsMethods.showToastMessage(requireContext(), "Deviate to edit WorkPlan");
+                            } else if(dayStatus.equalsIgnoreCase("0")) {
+                                dialogFWEditConfirmation("2", mWTName2);
                             } else {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need));
                             }
@@ -3812,6 +3816,43 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         dialogEditDeleteConfirmation.show();
     }
 
+    private void dialogFWEditConfirmation(String sessionType, String workTypeName) {
+        Dialog dialogEditDeleteConfirmation = new Dialog(requireActivity());
+        dialogEditDeleteConfirmation.setContentView(R.layout.popup_remarks);
+        Objects.requireNonNull(dialogEditDeleteConfirmation.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogEditDeleteConfirmation.setCancelable(false);
+        ImageView iv_close = dialogEditDeleteConfirmation.findViewById(R.id.img_close);
+        EditText ed_remarks = dialogEditDeleteConfirmation.findViewById(R.id.ed_remark);
+        TextView heading = dialogEditDeleteConfirmation.findViewById(R.id.tv_head);
+        TextView content = dialogEditDeleteConfirmation.findViewById(R.id.content);
+        Button btn_clear = dialogEditDeleteConfirmation.findViewById(R.id.btn_clear);
+        Button btn_save = dialogEditDeleteConfirmation.findViewById(R.id.btn_save);
+        heading.setText(R.string.alert);
+        btn_save.setText(requireContext().getString(R.string.yes));
+        btn_clear.setText(requireContext().getString(R.string.no));
+        content.setText(String.format("%s %s %s", getString(R.string.edit_delete_session), getString(R.string.edit), workTypeName));
+        content.setVisibility(View.VISIBLE);
+        ed_remarks.setVisibility(View.INVISIBLE);
+        btn_save.setOnClickListener(view -> {
+            if(sessionType.equals("1")) {
+                EditSession = "1";
+                enableEditFW1();
+                dialogEditDeleteConfirmation.dismiss();
+            }else {
+                EditSession = "2";
+                enableEditFW2();
+                dialogEditDeleteConfirmation.dismiss();
+            }
+            createDeleteJson(sessionType, "1");
+        });
+        btn_clear.setOnClickListener(view -> {
+            EditSession = "";
+            dialogEditDeleteConfirmation.dismiss();
+        });
+        iv_close.setOnClickListener(view -> dialogEditDeleteConfirmation.dismiss());
+        dialogEditDeleteConfirmation.show();
+    }
+
     private void deleteSession(String sessionType, String option) {
         if(UtilityClass.isNetworkAvailable(requireContext())) {
             createDeleteJson(sessionType, "0");
@@ -3928,6 +3969,21 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //        DayPlanCount = "1";
     }
 
+    private void enableEditFW1() {
+        binding.rlcluster1.setEnabled(true);
+        binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.backround_text));
+        binding.rlheadquates1.setEnabled(true);
+        binding.rlheadquates1.setBackground(getResources().getDrawable(R.drawable.backround_text));
+        binding.llPlan1.setBackground(getResources().getDrawable(R.drawable.backround_text));
+        binding.flSession1.setVisibility(View.GONE);
+        if(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")){
+            binding.rlcluster1.setEnabled(false);
+            binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+        }
+        enableUpdate();
+//        DayPlanCount = "1";
+    }
+
     private void enableEditSession2() {
         binding.rlworktype2.setEnabled(true);
         binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.backround_text));
@@ -3937,6 +3993,21 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.backround_text));
         binding.rlworkday2.setEnabled(true);
         binding.rlworkday2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+        binding.llPlan2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+        binding.flSession2.setVisibility(View.GONE);
+        if(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")){
+            binding.rlcluster2.setEnabled(false);
+            binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+        }
+        enableUpdate();
+//        DayPlanCount = "2";
+    }
+
+    private void enableEditFW2() {
+        binding.rlcluster2.setEnabled(true);
+        binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+        binding.rlheadquates2.setEnabled(true);
+        binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.backround_text));
         binding.llPlan2.setBackground(getResources().getDrawable(R.drawable.backround_text));
         binding.flSession2.setVisibility(View.GONE);
         if(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")){
