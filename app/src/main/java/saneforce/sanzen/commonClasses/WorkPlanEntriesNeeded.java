@@ -2,6 +2,14 @@ package saneforce.sanzen.commonClasses;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static saneforce.sanzen.storage.SharedPref.SP_NAME;
+import static saneforce.sanzen.storage.SharedPref.STP_APPR_NEED;
+import static saneforce.sanzen.storage.SharedPref.STP_BASED_MTP;
+import static saneforce.sanzen.storage.SharedPref.STP_NEED;
+import static saneforce.sanzen.storage.SharedPref.TP_END_DATE;
+import static saneforce.sanzen.storage.SharedPref.TP_MANDATORY_NEED;
+import static saneforce.sanzen.storage.SharedPref.TP_START_DATE;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -76,6 +84,18 @@ public class WorkPlanEntriesNeeded {
         TPBasedDCR = SharedPref.getTpbasedDcr(context);
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
         WorkPlanEntriesNeeded.syncTaskStatus = syncTaskStatus;
+
+        SharedPreferences sharedPreferences;
+        SharedPreferences.Editor editor;
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+//        editor.putString(STP_NEED, "0");
+//        editor.putString(STP_BASED_MTP, "0");
+//        editor.putString(STP_APPR_NEED, "0");
+        editor.putString(TP_MANDATORY_NEED, "1");
+//        editor.putString(TP_START_DATE, "10");
+//        editor.putString(TP_END_DATE, "15");
+        editor.apply();
 //        if(shouldSync) {
 //            syncCallAndDate(context);
 //        }else {
@@ -341,7 +361,7 @@ public class WorkPlanEntriesNeeded {
                             break;
                         }
                     }
-                    if(SharedPref.getDelayHwNeed(context).equalsIgnoreCase("1")) {
+                    if(SharedPref.getDelayHwNeed(context).equalsIgnoreCase("0")) {
                         int i = numberOfDaysLock;
                         lockDays = 1;
                         while(i > 1) {
@@ -353,12 +373,17 @@ public class WorkPlanEntriesNeeded {
                             lockDays++;
                         }
                         Log.d("TAG", "setupMyDayPlanEntriesNeeded: " + lockDays + " -> " + numberOfDaysLock);
+                    } else {
+                        lockDays = numberOfDaysLock;
                     }
                     datesNeededDup = new TreeSet<>(pastDates);
                     for (String dt : datesNeededDup) {
                         LocalDate date = LocalDate.parse(dt, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
                         LocalDate checkDate = LocalDate.now().minusDays(lockDays);
-                        if(date.isBefore(checkDate) && (SharedPref.getDelayHwNeed(context).equalsIgnoreCase("1") && !HWDates.contains(dt))) {
+                        if(date.isBefore(checkDate) && (SharedPref.getDelayHwNeed(context).equalsIgnoreCase("0") && !HWDates.contains(dt))) {
+                            pastDates.remove(dt);
+                            datesNeeded.remove(dt);
+                        } else if(date.isBefore(checkDate) && SharedPref.getDelayHwNeed(context).equalsIgnoreCase("1")) {
                             pastDates.remove(dt);
                             datesNeeded.remove(dt);
                         }
@@ -474,7 +499,7 @@ public class WorkPlanEntriesNeeded {
                 && datesNeeded.contains(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)))) {
             Log.e("set date switched2 ", "setupMyDayPlanEntriesNeeded: " + SharedPref.getSelectedDateCal(context));
             date = SharedPref.getSelectedDateCal(context);
-        }else if(SharedPref.getSelectedDateCal(context).isEmpty()
+        }else if(!SharedPref.getSelectedDateCal(context).isEmpty()
                 && !datesNeeded.isEmpty()
                 && isCallDataAvailable) {
             Log.e("set date first", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());

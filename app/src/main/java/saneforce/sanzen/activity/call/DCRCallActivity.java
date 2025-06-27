@@ -960,6 +960,13 @@ public class DCRCallActivity extends AppCompatActivity {
                             return false;
                         }
                     }
+                    for (int i = 0; i<CheckInputListAdapter.saveCallInputListArrayList.size(); i++) {
+                        if(CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().isEmpty()) {
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), "Qty", getString(R.string.value)));
+                            moveToPage(capInp);
+                            return false;
+                        }
+                    }
                 }
                 if(!validateInput()) return false;
 

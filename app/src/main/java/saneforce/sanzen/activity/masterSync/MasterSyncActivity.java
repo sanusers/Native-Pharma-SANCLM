@@ -1566,7 +1566,13 @@ public class MasterSyncActivity extends AppCompatActivity {
                     jsonSave.put("tableName", "save_stp");
                     jsonSave.put("ReqDt", dateTime);
                     Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
-                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), "0"));
+                    int stpFlag = 3;
+                    try {
+                        stpFlag = Integer.parseInt(activeFlag);
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
                 }
             }
         } catch (Exception e) {

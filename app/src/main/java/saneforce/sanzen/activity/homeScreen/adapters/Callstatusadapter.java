@@ -261,7 +261,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                     }
 
                     String selectedDate = String.format("%s-%s-%s", list.getYear(), monthConverted, dayConverted);
-                    if(selectedDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"))) {
+                    if(selectedDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && WorkPlanEntriesNeeded.datesNeeded != null && WorkPlanEntriesNeeded.datesNeeded.contains(selectedDate)) {
                         isApplicableDate = true;
                     }
                     for (String date : dateStrings) {

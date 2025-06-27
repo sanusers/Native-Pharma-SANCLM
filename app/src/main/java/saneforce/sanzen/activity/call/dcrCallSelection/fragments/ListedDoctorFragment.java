@@ -599,38 +599,38 @@ public class ListedDoctorFragment extends Fragment {
                     && !deviation.equalsIgnoreCase("1")) {
                 List<String> drList = new ArrayList<>();
                 if(tpDataObj != null) {
-                    Type type = new TypeToken<ModelClass>() {
-                    }.getType();
-                    ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
-                    int fwSession = -1;
-                    if(!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(0).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)){
-                        fwSession = 0;
-                    } else if((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(1).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)) {
-                        fwSession = 1;
-                    }
-                    if(fwSession != -1) {
-                        for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(fwSession).getListedDr()) {
-                            drList.add(subClass.getCode());
-                        }
-                        Log.i("TP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
-                        if(!drList.isEmpty()) {
-                            if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
-                                prepareData(jsonObject, i, brands, false);
-                            }
-                        } else {
+//                    Type type = new TypeToken<ModelClass>() {
+//                    }.getType();
+//                    ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
+//                    int fwSession = -1;
+//                    if(!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(0).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)){
+//                        fwSession = 0;
+//                    } else if((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(1).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)) {
+//                        fwSession = 1;
+//                    }
+//                    if(fwSession != -1) {
+//                        for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(fwSession).getListedDr()) {
+//                            drList.add(subClass.getCode());
+//                        }
+//                        Log.i("TP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
+//                        if(!drList.isEmpty()) {
+//                            if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+//                                prepareData(jsonObject, i, brands, false);
+//                            }
+//                        } else {
                             if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
                                 prepareData(jsonObject, i, brands, false);
-                            } else {
-                                prepareData(jsonObject, i, brands, true);
+//                            } else {
+//                                prepareData(jsonObject, i, brands, true);
                             }
-                        }
-                    } else {
-                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
-                            prepareData(jsonObject, i, brands, false);
-                        } else {
-                            prepareData(jsonObject, i, brands, true);
-                        }
-                    }
+//                        }
+//                    } else {
+//                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+//                            prepareData(jsonObject, i, brands, false);
+//                        } else {
+//                            prepareData(jsonObject, i, brands, true);
+//                        }
+//                    }
                 }else {
                     if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
                         prepareData(jsonObject, i, brands, false);

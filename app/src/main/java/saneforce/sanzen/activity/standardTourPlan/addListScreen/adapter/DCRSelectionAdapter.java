@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.SavedStateHandle;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -26,7 +25,6 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.ClusterModel;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.NoDataModel;
-import saneforce.sanzen.activity.standardTourPlan.calendarScreen.adapter.CalendarAdapter;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DCRModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -41,7 +39,7 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int VIEW_TYPE_DCR = 1;
     private static final int VIEW_TYPE_NO_DATA = 2;
     private CheckBoxClickListener checkBoxClickListener;
-    private String selectedDCR, mode, dayCaption;
+    private String selectedDCR, mode, dayCaption, dayID;
     private CommonUtilsMethods commonUtilsMethods;
 
     public interface CheckBoxClickListener {
@@ -51,10 +49,7 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         void onDeSelected(DCRModel dcrModel, String selectedDCR);
     }
 
-    public DCRSelectionAdapter() {
-    }
-
-    public DCRSelectionAdapter(Context context, List<Object> filtereddcrModelList, CheckBoxClickListener checkBoxClickListener, String selectedDCR, String mode, String dayCaption) {
+    public DCRSelectionAdapter(Context context, List<Object> filtereddcrModelList, CheckBoxClickListener checkBoxClickListener, String selectedDCR, String mode, String dayCaption, String dayID) {
         this.context = context;
         this.filtereddcrModelList = filtereddcrModelList;
         this.dcrModelList = filtereddcrModelList;
@@ -62,6 +57,7 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.selectedDCR = selectedDCR;
         this.mode = mode;
         this.dayCaption = dayCaption;
+        this.dayID = dayID;
         commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
@@ -124,9 +120,12 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     if(dcrModel.isSelected() && !dcrModel.getPlannedForName().toLowerCase().contains(dayCaption.toLowerCase())) {
                         dcrViewHolder.plannedFor.setText(CommonUtilsMethods.removeLastComma(String.format("%s%s,", dcrModel.getPlannedForName().replace("-", ""), dayCaption)));
                     }else if(!dcrModel.isSelected()) {
-                        String plannedForName = dcrModel.getPlannedForName().replaceAll(dayCaption, "");
+                        String plannedForName = dcrModel.getPlannedForName().replaceAll(dayCaption, ""), plannedForCode = dcrModel.getPlannedForCode().replaceAll(dayID, "");
                         if(dcrModel.getPlannedForName().toLowerCase().contains((dayCaption + ",").toLowerCase())) {
                             plannedForName = dcrModel.getPlannedForName().replaceAll(dayCaption + ",", "");
+                            plannedForCode = dcrModel.getPlannedForCode().replaceAll(dayID + ",", "");
+                            dcrModel.setPlannedForName(plannedForName);
+                            dcrModel.setPlannedForCode(plannedForCode);
                         }
                         dcrViewHolder.plannedFor.setText(CommonUtilsMethods.removeLastComma(plannedForName.isEmpty() ? "-" : plannedForName));
                     }
@@ -183,9 +182,9 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 } else {
                     String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
                     docList = Arrays.stream(docList).filter(str -> str != null && !str.isEmpty() && !str.equals(",")).toArray(String[]::new);
-                    if (docList.length < dcrModel.getVisitFrequency() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
+                    if (dcrViewHolder.checkBox.isChecked() && docList.length < dcrModel.getVisitFrequency() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR)) {
                         updateDcrModelAndViews(dcrModel, dcrViewHolder, position);
-                    } else if (selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && docList.length >= dcrModel.getVisitFrequency()) {
+                    } else if (dcrViewHolder.checkBox.isChecked() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && docList.length >= dcrModel.getVisitFrequency()) {
                         commonUtilsMethods.showToastMessage(context, "Visit Frequency already met");
                         dcrViewHolder.checkBox.setChecked(false);
                     } else {

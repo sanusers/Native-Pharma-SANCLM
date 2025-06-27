@@ -505,7 +505,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            new STPDaySorter().sortDaysTP(workDayArray);
+                            STPDaySorter.sortDays(workDayArray, EditModelClass::getCode);
                             holder.workDayArray = workDayArray;
                         }
                         holder.sessionItemAdapterArray = holder.workDayArray;

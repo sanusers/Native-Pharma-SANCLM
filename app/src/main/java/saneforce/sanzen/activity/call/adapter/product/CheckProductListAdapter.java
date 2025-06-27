@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.call.adapter.product;
 
+import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.sanzen.activity.call.DCRCallActivity.StockSample;
 
 import android.annotation.SuppressLint;
@@ -146,7 +147,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
                         CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                     }
                 }else {
-                    if(DCRCallActivity.PrdMandatory != null && DCRCallActivity.PrdMandatory.equalsIgnoreCase("1")) {
+                    if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1") && DCRCallActivity.PrdMandatory != null && DCRCallActivity.PrdMandatory.equalsIgnoreCase("1")) {
                         for (int i = 0; i<callCommonCheckedListArrayList.size(); i++) {
                             if(callCommonCheckedListArrayList.get(i).getCode().equalsIgnoreCase("-10")) {
                                 callCommonCheckedListArrayList.get(i).setCheckedItem(false);

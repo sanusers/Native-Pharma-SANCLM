@@ -795,10 +795,6 @@ public class SharedPref {
         editor.putString(WEEKOFF_AUTOPOST_NEED, jsonObject.optString("Weekoff_AutoPost_Need"));
         editor.putString(SLIDES_PATH, jsonObject.optString("slide_folder").replaceAll("\\\\",""));
         editor.putString(PROFILING_NEED, jsonObject.optString("DrProfile"));
-        editor.putString(STP_NEED, jsonObject.optString("STP_Need"));
-        editor.putString(STP_APPR_NEED, jsonObject.optString("STP_Appr_Need"));
-        editor.putString(STP_BASED_MTP, jsonObject.optString("STP_Based_MTP"));
-        editor.putString(STP_BASED_DCR, jsonObject.optString("STP_Based_DCR"));
         editor.putString(SEQ_DLY_CTRL, jsonObject.optString("Seq_dly_ctrl"));
         editor.putString(SEQ_DCR_LOCK_DAYS, jsonObject.optString("SeqDcrLockDays"));
         editor.putString(DELAY_HW_NEED, jsonObject.optString("Delay_HW_Need"));

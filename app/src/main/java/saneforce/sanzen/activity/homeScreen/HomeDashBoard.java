@@ -199,7 +199,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     AlertDialog customDialog;
     Handler mainHandler = new Handler(Looper.getMainLooper());
     Handler handler1 = new Handler();
-    long delay = 4000;
+    long delay = 1000;
     Runnable runnable;
     private static boolean isDateSelectionClicked = false;
     private LeaveViewModel leaveViewModel;
@@ -232,10 +232,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onResume() {
         if(!isFakeLocationDetected) {
+            timeZoneVerification();
             if(isDateSelectionClicked) {
                 setUpCalendar();
             }
-            timeZoneVerification();
             accessibility();
             super.onResume();
             AppIdentify();
@@ -1257,7 +1257,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
 
-        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.standard_tour_plan))) {
+        if (item.getTitle().toString().equalsIgnoreCase(SharedPref.getStpCaption(this))) {
             Intent intent=new Intent(HomeDashBoard.this, StandardTourPlanActivity.class);
             startActivity(intent);
             return true;
@@ -2035,22 +2035,22 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 int mCurrentDate = Integer.parseInt(mCurrDate);
 
 
-             if (tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate) != null && !tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
+                if(tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate) != null && !tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan....");
                     TourplanFlog = "0";
                     SharedPref.setTpStatus(HomeDashBoard.this, true);
                     Intent intent = new Intent(HomeDashBoard.this, TourPlanActivity.class);
                     startActivity(intent);
-                } else if (tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate) != null && !tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")&&((mCurrentDate >= Start_Date))) {
-                      commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan...");
-                        if (End_Date < mCurrentDate) {
-                            SharedPref.setTpStatus(HomeDashBoard.this, true);
-                        } else {
-                            SharedPref.setTpStatus(HomeDashBoard.this, false);
-                        }
-                        Intent intent = new Intent(HomeDashBoard.this, TourPlanActivity.class);
-                        TourplanFlog="1";
-                        startActivity(intent);
+                }else if(tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate) != null && !tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3") && ((mCurrentDate>=Start_Date))) {
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan...");
+                    if(End_Date<mCurrentDate) {
+                        SharedPref.setTpStatus(HomeDashBoard.this, true);
+                    }else {
+                        SharedPref.setTpStatus(HomeDashBoard.this, false);
+                    }
+                    Intent intent = new Intent(HomeDashBoard.this, TourPlanActivity.class);
+                    TourplanFlog = "1";
+                    startActivity(intent);
                 }else {
                     SharedPref.setTpStatus(HomeDashBoard.this, false);
                 }
@@ -2119,11 +2119,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                         customDialog.dismiss();
                                         customDialog.cancel();
                                     }
-                                    handler1.removeCallbacks(runnable);
                                 }else {
                                     timeZoneVerificationDialog();
-                                    handler1.removeCallbacks(runnable);
                                 }
+                                handler1.removeCallbacks(runnable);
                             }
                         });
                     }

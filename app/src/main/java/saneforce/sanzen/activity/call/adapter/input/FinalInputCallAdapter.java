@@ -184,6 +184,8 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
                             } else {
                                 holder.ed_inpQty.setText("1");
                             }
+                        } else {
+                            saveCallInputLists.set(holder.getBindingAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getBindingAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getInp_code(), editable.toString() , saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk()));
                         }
                     }
 

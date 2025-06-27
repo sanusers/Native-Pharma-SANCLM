@@ -154,6 +154,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             holder.constraintRv.setVisibility(View.GONE);
             holder.img_expand_child.setVisibility(View.GONE);
             holder.tvCount.setVisibility(View.GONE);
+            holder.tvCount.setText("-");
         }
 
         switch (contentList.getChildId()) {
