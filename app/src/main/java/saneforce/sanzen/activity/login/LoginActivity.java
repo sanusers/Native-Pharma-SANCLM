@@ -379,16 +379,6 @@ public class LoginActivity extends AppCompatActivity {
         try {
             binding.loginBtn.setEnabled(false);
             binding.progressBar.setVisibility(View.VISIBLE);
-            // give the one build setup here
-            //if 0 means give one build api with json
-            // if 1 means give the old api.
-            /*
-            if(OneBuildSetup == 0){
-                        call the one build api here
-                        }else{
-                        give the normal callapiurl here
-                        }
-             */
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
             @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);

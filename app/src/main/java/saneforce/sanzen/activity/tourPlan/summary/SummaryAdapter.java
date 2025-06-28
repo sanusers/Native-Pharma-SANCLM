@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.tourPlan.summary;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -29,7 +31,7 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
     SummaryInterface summaryInterface;
     SummaryInterfaceOneBuild summaryInterfaceOneBuild;
     SummaryIconAdapter summaryIconAdapter;
-    private int OneBuildSetup = 0;
+//    private int OneBuildSetup = 0;
 
     public SummaryAdapter () {
     }
@@ -58,7 +60,7 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
     @Override
     public void onBindViewHolder (@NonNull SummaryAdapter.MyViewHolder holder, int position) {
 
-        if(OneBuildSetup == 0) {
+        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             OneBuildModelClass oneBuildModelClasses = arrayListOneBuild.get(holder.getAbsoluteAdapterPosition());
             holder.setIsRecyclable(false);
             if (!oneBuildModelClasses.getDayNo().isEmpty()) {
@@ -408,7 +410,7 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
 
     @Override
     public int getItemCount () {
-        if (OneBuildSetup == 0){
+        if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
             return arrayListOneBuild.size();
         }else {
             return arrayList.size();

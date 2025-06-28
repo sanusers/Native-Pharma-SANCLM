@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.tourPlan.session;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +23,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
 
     public ModelClass inputDataModel = new ModelClass();
     public OneBuildModelClass inputDataModelOneBuild = new OneBuildModelClass();
-    private int OneBuildSetup = 0 ;
+//    private int OneBuildSetup = 0 ;
     Context context;
 
     public SessionViewAdapter () {
@@ -47,7 +49,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
     @Override
     public void onBindViewHolder (@NonNull SessionViewAdapter.MyViewHolder holder, int position) {
 
-        if(OneBuildSetup == 0){
+        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
             holder.dataOneBuild = inputDataModelOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition());
             holder.clusterModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getTerritories());
             holder.jcModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getJointWorks());
@@ -416,7 +418,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
 
     @Override
     public int getItemCount () {
-        if (OneBuildSetup == 0) return inputDataModelOneBuild.getSessionList().size();
+        if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) return inputDataModelOneBuild.getSessionList().size();
         else return inputDataModel.getSessionList().size();
     }
 

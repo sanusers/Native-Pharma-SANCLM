@@ -140,19 +140,36 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
     private void tpApproval() {
         progressDialog = CommonUtilsMethods.createProgressDialog(TpApprovalActivity.this);
-        try {
-            jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
-            jsonTp.put("tableName", "savetpapproval");
-            jsonTp.put("sfcode", SharedPref.getSfCode(this));
-            jsonTp.put("Month", SelectedMonth);
-            jsonTp.put("Year", SelectedYear);
-            jsonTp.put("division_code", SharedPref.getDivisionCode(this));
-            jsonTp.put("Rsf", SelectedSfCode);
+        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
+            try {
+                jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
+                jsonTp.put("tableName", "savetpapproval_onebuild");
+                jsonTp.put("sfcode", SharedPref.getSfCode(this));
+                jsonTp.put("Month", SelectedMonth);
+                jsonTp.put("Year", SelectedYear);
+                jsonTp.put("division_code", SharedPref.getDivisionCode(this));
+                jsonTp.put("Rsf", SelectedSfCode);
+                jsonTp.put("approval_date_time",TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+
+                Log.v("json_tp_Approved", jsonTp.toString());
+            } catch (Exception ignored) {
+
+            }
+        }else {
+            try {
+                jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
+                jsonTp.put("tableName", "savetpapproval");
+                jsonTp.put("sfcode", SharedPref.getSfCode(this));
+                jsonTp.put("Month", SelectedMonth);
+                jsonTp.put("Year", SelectedYear);
+                jsonTp.put("division_code", SharedPref.getDivisionCode(this));
+                jsonTp.put("Rsf", SelectedSfCode);
 
 
-            Log.v("json_tp_Approved", jsonTp.toString());
-        } catch (Exception ignored) {
+                Log.v("json_tp_Approved", jsonTp.toString());
+            } catch (Exception ignored) {
 
+            }
         }
 
         Map<String, String> mapString = new HashMap<>();
@@ -221,18 +238,35 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
     private void tpReject(String reason) {
         progressDialog = CommonUtilsMethods.createProgressDialog(TpApprovalActivity.this);
-        try {
-            jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
-            jsonTp.put("tableName", "savetpreject");
-            jsonTp.put("sfcode", SharedPref.getSfCode(this));
-            jsonTp.put("Month", SelectedMonth);
-            jsonTp.put("Year", SelectedYear);
-            jsonTp.put("reason", reason);
-            jsonTp.put("division_code", SharedPref.getDivisionCode(this));
-            jsonTp.put("Rsf", SelectedSfCode);
-            Log.v("json_tp_Reject", jsonTp.toString());
-        } catch (Exception ignored) {
+        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
+            try {
+                jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
+                jsonTp.put("tableName", "savetpreject_onebuild");
+                jsonTp.put("sfcode", SharedPref.getSfCode(this));
+                jsonTp.put("Month", SelectedMonth);
+                jsonTp.put("Year", SelectedYear);
+                jsonTp.put("reason", reason);
+                jsonTp.put("division_code", SharedPref.getDivisionCode(this));
+                jsonTp.put("Rsf", SelectedSfCode);
+                jsonTp.put("reject_date_time",TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                Log.v("json_tp_Reject", jsonTp.toString());
+            } catch (Exception ignored) {
 
+            }
+        }else {
+            try {
+                jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
+                jsonTp.put("tableName", "savetpreject");
+                jsonTp.put("sfcode", SharedPref.getSfCode(this));
+                jsonTp.put("Month", SelectedMonth);
+                jsonTp.put("Year", SelectedYear);
+                jsonTp.put("reason", reason);
+                jsonTp.put("division_code", SharedPref.getDivisionCode(this));
+                jsonTp.put("Rsf", SelectedSfCode);
+                Log.v("json_tp_Reject", jsonTp.toString());
+            } catch (Exception ignored) {
+
+            }
         }
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "save/tp");
@@ -290,15 +324,28 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
     private void CallTpListApi() {
         progressDialog = CommonUtilsMethods.createProgressDialog(TpApprovalActivity.this);
-        try {
-            jsonTp=CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
-            jsonTp.put("tableName", "gettpapproval");
-            jsonTp.put("sfcode", SharedPref.getSfCode(this));
-            jsonTp.put("division_code", SharedPref.getDivisionCode(this));
-            jsonTp.put("Rsf", SharedPref.getHqCode(this));
-            Log.v("json_getTpList", jsonTp.toString());
-        } catch (Exception ignored) {
+        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
+            try {
+                jsonTp=CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
+                jsonTp.put("tableName", "gettpapproval_onebuild");
+                jsonTp.put("sfcode", SharedPref.getSfCode(this));
+                jsonTp.put("division_code", SharedPref.getDivisionCode(this));
+                jsonTp.put("Rsf", SharedPref.getHqCode(this));
+                Log.v("json_getTpList", jsonTp.toString());
+            } catch (Exception ignored) {
 
+            }
+        }else {
+            try {
+                jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
+                jsonTp.put("tableName", "gettpapproval");
+                jsonTp.put("sfcode", SharedPref.getSfCode(this));
+                jsonTp.put("division_code", SharedPref.getDivisionCode(this));
+                jsonTp.put("Rsf", SharedPref.getHqCode(this));
+                Log.v("json_getTpList", jsonTp.toString());
+            } catch (Exception ignored) {
+
+            }
         }
 
 
@@ -407,17 +454,32 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
     }
 
     private void GetDetailsApi() {
-        try {
-            jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
-            jsonTp.put("tableName", "gettpdetail");
-            jsonTp.put("sfcode", SelectedSfCode);
-            jsonTp.put("Month", SelectedMonth);
-            jsonTp.put("Year", SelectedYear);
-            jsonTp.put("division_code", SharedPref.getDivisionCode(this));
-            jsonTp.put("Rsf", SelectedSfCode);
-            Log.v("json_getTpDetailedList", jsonTp.toString());
-        } catch (Exception ignored) {
+        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
+            try {
+                jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
+                jsonTp.put("tableName", "gettpdetail_onebuild");
+                jsonTp.put("sfcode", SelectedSfCode);
+                jsonTp.put("Month", SelectedMonth);
+                jsonTp.put("Year", SelectedYear);
+                jsonTp.put("division_code", SharedPref.getDivisionCode(this));
+                jsonTp.put("Rsf", SelectedSfCode);
+                Log.v("json_getTpDetailedList", jsonTp.toString());
+            } catch (Exception ignored) {
 
+            }
+        }else {
+            try {
+                jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
+                jsonTp.put("tableName", "gettpdetail");
+                jsonTp.put("sfcode", SelectedSfCode);
+                jsonTp.put("Month", SelectedMonth);
+                jsonTp.put("Year", SelectedYear);
+                jsonTp.put("division_code", SharedPref.getDivisionCode(this));
+                jsonTp.put("Rsf", SelectedSfCode);
+                Log.v("json_getTpDetailedList", jsonTp.toString());
+            } catch (Exception ignored) {
+
+            }
         }
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "get/tp");

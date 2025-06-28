@@ -343,6 +343,7 @@ public class SharedPref {
     public static final String RCPA_COMPETITOR_ADD = "RCPA_competitor_add";
     public static final String GEOTAGGING = "GeoTagging";
     public static final String DCR_APPROVAL_NEED = "DcrapprvNd";
+    public static final String ONE_BUILD = "one_build";
     //myresource
     public static final String SETSYNHQ = "SETSYNHQ";
     public static final String SETSYN_HQCODE = "SETSYN_HQCODE";
@@ -444,7 +445,6 @@ public class SharedPref {
 
     public static final String HOLIDAY_AUTOPOST_NEED = "Holiday_AutoPost_Need";
     public static final String WEEKOFF_AUTOPOST_NEED = "Weekoff_AutoPost_Need";
-//    public static final String TAGGED_ADDRESS = "tggedaddress";
     public static final String PROFILING_NEED = "DrProfile";
 
     public static final String QUIZ_DATE = "Quiz Date";
@@ -459,6 +459,10 @@ public class SharedPref {
     public static final String DELAY_HW_NEED = "Delay_HW_Need";
 
     public static final String TAGGED_DCR_CUSTOMERS = "Tagged DCR Customers";
+
+    public static String TpIdCurrent = "tpIdCurrent";
+    public static String TpIdPrecious = "tpIdPrevious";
+    public static String TpIdNext     = "tpIdNext";
 
     public static SharedPreferences.Editor editor;
 
@@ -802,6 +806,7 @@ public class SharedPref {
         editor.putString(SEQ_DCR_LOCK_DAYS, jsonObject.optString("SeqDcrLockDays"));
         editor.putString(DELAY_HW_NEED, jsonObject.optString("Delay_HW_Need"));
         editor.putString(WELCOME_SLIDES_PATH, "");
+        editor.putString(ONE_BUILD,jsonObject.optString("one_build"));
         editor.apply();
 
         } catch (Exception ignore) {
@@ -809,6 +814,7 @@ public class SharedPref {
         }
 
     }
+
 
     public static String getSfName(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SF_NAME, "");
@@ -2011,6 +2017,10 @@ public class SharedPref {
     public static String getDcrApprovalNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DCR_APPROVAL_NEED, "");
     }
+    public static String getOneBuild(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(ONE_BUILD,"");
+    }
+
 
     public static void setDrAddCallNeed(Context context, String drAddCallNeed) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -2843,5 +2853,28 @@ public class SharedPref {
     public static String getDelayHwNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DELAY_HW_NEED, "");
     }
+
+    public static void saveTpId(Context context, int retrievedId) {
+        try{
+            sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+            editor = sharedPreferences.edit();
+            editor.putInt(TpIdCurrent,retrievedId);
+            editor.putInt(TpIdPrecious,retrievedId);
+            editor.putInt(TpIdNext,retrievedId);
+            editor.apply();
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
+        }
+    }
+    public static int getTpIdCurrentMonth(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdCurrent,0);
+    }
+    public static int getTpIdPreviousMonth(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdPrecious,0);
+    }
+    public static int getTpIdNextMonth(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdNext,0);
+    }
+
 
 }

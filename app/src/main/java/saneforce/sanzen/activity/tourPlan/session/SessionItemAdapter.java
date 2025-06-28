@@ -25,6 +25,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     private boolean checkBoxVisibility = false;
     private ValueFilter valueFilter;
     SessionItemInterface sessionItemInterface;
+
     private int independentPosition = -1;
     public SessionItemAdapter() {
     }
@@ -58,6 +59,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                System.out.println("onClickListener--->");
                 int position = holder.getAbsoluteAdapterPosition();
                 if (position == RecyclerView.NO_POSITION) return;
 
@@ -88,6 +90,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                         notifyItemChanged(independentPos);
                     }
                 }
+                System.out.println("onClickListene1r--->"+arrayList.size());
 
                 sessionItemInterface.itemClicked(arrayList, clickedItem);
             }

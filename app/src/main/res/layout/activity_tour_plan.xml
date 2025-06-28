@@ -288,18 +288,6 @@
                         android:layout_below="@id/calendar_header"
                         android:layout_marginBottom="@dimen/_20sdp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/draftSave"
-                        android:layout_width="@dimen/_70sdp"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/satoshi_variable"
-                        android:text="Draft save"
-                        android:background="@drawable/tp_btn_select_state"
-                        android:layout_marginStart="670dp"
-                        android:layout_marginTop="630dp"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:visibility="gone"/>
 
                 </RelativeLayout>
 

@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.tourPlan.calendar;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
+import saneforce.sanzen.storage.SharedPref;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
 
@@ -27,7 +30,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
      OnDayClickInterface onDayClickInterface;
      OnDayClickOneBuildInterface onDayClickOneBuildInterface;
     Context context;
-    private int OneBuildSetup = 0;
+//    private int OneBuildSetup = 0;
 
     public CalendarAdapter () {
     }
@@ -54,7 +57,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
 
     @Override
     public void onBindViewHolder (@NonNull MyViewHolder holder, int position) {
-        if(OneBuildSetup == 0){
+        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
             OneBuildModelClass oneBuildModelClass = OneBuildInputData.get(holder.getAbsoluteAdapterPosition());
             String date = oneBuildModelClass.getDayNo();
             holder.dateNo.setText(date);
@@ -100,7 +103,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
 
     @Override
     public int getItemCount () {
-        if(OneBuildSetup == 0)
+        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0"))
             return OneBuildInputData.size();
         else return inputData.size();
     }

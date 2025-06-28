@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.tourPlan.session;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -83,7 +85,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
-    private int OneBuildSetup = 0;
 
     public SessionEditAdapter() {
     }
@@ -99,7 +100,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
 //        hq_code = SharedPref.getHqCode(context); // Selected HQ code in master sync ,it will be changed if any other HQ selected in Add Plan
 
-        //Tour Plan setup
         try {
             JSONArray jsonArray = new JSONArray();
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.TP_SETUP).getMasterSyncDataJsonArray();
@@ -185,7 +185,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
             holder.fieldSelected = false;
 
-            if(OneBuildSetup == 0){
+            if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
                 List<OneBuildModelClass.SessionList.SubClass> subClassListOneBuild = new ArrayList<>();
                 for(int i = 0; i<arrayList.size(); i++){
                     if (arrayList.get(i).isChecked()){
@@ -268,7 +268,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull SessionEditAdapter.MyViewHolder holder, int position) {
-        if(OneBuildSetup == 0){
+        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
             holder.progress_hq.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
             holder.remarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
             holder.remarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
@@ -327,20 +327,24 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             switch (designation){
                 case "MR":
                     holder.hqLayout.setVisibility(View.GONE);
-                    holder.sessionDataOneBuild.getHeadquarters().setName(SharedPref.getHqName(context));
-                    holder.sessionDataOneBuild.getHeadquarters().setCode(SharedPref.getHqCode(context));
-                    holder.hqField.setText(holder.sessionDataOneBuild.getHeadquarters().getName());
-                    holder.selectedHq = holder.sessionDataOneBuild.getHeadquarters().getCode();
-                    break;
-                case "MGR":
-                    if(holder.sessionDataOneBuild.getHeadquarters().getName().equals("")) {
-                        holder.hqField.setText("Select");
-                    }else {
+                    if(holder.sessionDataOneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
+                        holder.sessionDataOneBuild.getHeadquarters().setName(SharedPref.getHqName(context));
+                        holder.sessionDataOneBuild.getHeadquarters().setCode(SharedPref.getHqCode(context));
                         holder.hqField.setText(holder.sessionDataOneBuild.getHeadquarters().getName());
                         holder.selectedHq = holder.sessionDataOneBuild.getHeadquarters().getCode();
                     }
-                    if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
-                        holder.hqLayout.setVisibility(View.GONE);
+                    break;
+                case "MGR":
+                    if(holder.sessionDataOneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
+                        if (holder.sessionDataOneBuild.getHeadquarters().getName().equals("")) {
+                            holder.hqField.setText("Select");
+                        } else {
+                            holder.hqField.setText(holder.sessionDataOneBuild.getHeadquarters().getName());
+                            holder.selectedHq = holder.sessionDataOneBuild.getHeadquarters().getCode();
+                        }
+                        if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
+                            holder.hqLayout.setVisibility(View.GONE);
+                        }
                     }
             }
             if(SharedPref.getWrkAreaName(context).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)) {
@@ -590,13 +594,18 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 @Override
                 public void onClick(View view) {
                     holder.searchET.setText("");
+                    System.out.println("hqLayoutListener--->");
                     itemPosition = holder.getLayoutPosition();
                     holder.relativeLayout.setSelected(false);
                     if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
                     }else {
                         if(!holder.fieldSelected) {
+                            System.out.println("hqLayoutListener3--->");
+                            System.out.println("hqLayoutListener5--->"+convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray()).size());
+
                             if(holder.hqArray.size() == 0) {
+
                                 holder.hqArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray());
                             }
                             holder.sessionItemAdapterArray = holder.hqArray;
@@ -604,6 +613,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             holder.fieldSelected = true;
                             onEditOneBuild(holder.getAbsoluteAdapterPosition(), false, Constants.SUBORDINATE);
                         }else {
+                            System.out.println("hqLayoutListener4--->");
                             changeUIState(holder, holder.hqLayout, holder.hqArrow, true);
                             holder.fieldSelected = false;
                             onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");   // change
@@ -1615,7 +1625,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     @Override
     public int getItemCount() {
-        if(OneBuildSetup == 0){
+        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
             return inputDataArrayOneBuild.getSessionList().size();
         }
         else{
@@ -2124,9 +2134,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 if(masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.DOCTOR)) {
                     mapString.put("axn", "table/dcrmasterdata");
                     call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                    System.out.println("masterdata");
                 }else if(masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.SUBORDINATE)) {
                     mapString.put("axn", "table/subordinates");
                     call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                    System.out.println("subordinates");
                 }
 
                 if(call != null) {
@@ -2242,6 +2254,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     }
 
     public void populateSessionItemAdapter(MyViewHolder holder, boolean checkBoxNeed, boolean isSortNeeded) {
+        System.out.println("sessionItemAdapter--->");
 
         if(isSortNeeded) {
             Collections.sort(holder.sessionItemAdapterArray, new Comparator<EditModelClass>() {
@@ -2253,7 +2266,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
         }
-
+        System.out.println("sessionItemAdapter1--->"+holder.sessionItemAdapterArray.size());
         sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, checkBoxNeed, new SessionItemInterface() {
             @Override
             public void itemClicked(ArrayList<EditModelClass> jsonArray, EditModelClass jsonObject) {
@@ -2543,8 +2556,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     }
 
                     if(!hqRepeated) {
-                        holder.sessionData.getHQ().setName(jsonObject.getName());
-                        holder.sessionData.getHQ().setCode(jsonObject.getCode());
+                        holder.sessionDataOneBuild.getHeadquarters().setName(jsonObject.getName());
+                        holder.sessionDataOneBuild.getHeadquarters().setCode(jsonObject.getCode());
 
                         holder.hq_code = jsonObject.getCode();
                         if(!holder.selectedHq.equalsIgnoreCase(holder.hq_code)) {
@@ -2701,7 +2714,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             TourPlanActivity.addSaveBtnLayout.setVisibility(View.VISIBLE);
             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
 
-            if(OneBuildSetup == 0){
+            if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
                 worktypeBasedUiOneBuild(holder,holder.sessionDataOneBuild,false);
             }else {
                 workTypeBasedUI(holder, holder.sessionData, false);
@@ -2922,7 +2935,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }else {
             label.setText(text);
         }
-        if(OneBuildSetup == 0){
+        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
             List<OneBuildModelClass.SessionList.SubClass> subClassListOneBuild = new ArrayList<>();
             for (int i = 0; i<arrayList.size(); i++) {
                 if(arrayList.get(i).isChecked()) {

@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.tourPlan.summary;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,13 +18,14 @@ import java.util.ArrayList;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
+import saneforce.sanzen.storage.SharedPref;
 
 
 public class SummaryIconAdapter extends RecyclerView.Adapter<SummaryIconAdapter.MyViewHolder> {
     ArrayList<ModelClass.CountModel> modelClass;
     ArrayList<OneBuildModelClass.CountModel> oneBuildModelClass;
     Context context;
-    private int OneBuildSetup = 0;
+//    private int OneBuildSetup = 0;
 
     public SummaryIconAdapter (ArrayList<ModelClass.CountModel> modelClass, Context context) {
         this.modelClass = modelClass;
@@ -49,7 +52,7 @@ public class SummaryIconAdapter extends RecyclerView.Adapter<SummaryIconAdapter.
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder (@NonNull MyViewHolder holder, int position) {
-        if (OneBuildSetup == 0) {
+        if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             OneBuildModelClass.CountModel oneBuildModel = oneBuildModelClass.get(holder.getAbsoluteAdapterPosition());
 
             switch (oneBuildModel.getName().toUpperCase()) {
@@ -133,7 +136,7 @@ public class SummaryIconAdapter extends RecyclerView.Adapter<SummaryIconAdapter.
 
     @Override
     public int getItemCount () {
-        if(OneBuildSetup == 0) return oneBuildModelClass.size();
+        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")) return oneBuildModelClass.size();
         else return modelClass.size();
     }
 
