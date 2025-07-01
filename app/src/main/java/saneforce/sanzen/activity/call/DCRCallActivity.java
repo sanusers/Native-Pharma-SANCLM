@@ -949,6 +949,39 @@ public class DCRCallActivity extends AppCompatActivity {
                                 }
                             }
                         }
+                    } else {
+                        if(PrdSamNeed.equalsIgnoreCase("1") && SamQtyMandatory.equalsIgnoreCase("1")) {
+//                            if(CheckProductListAdapter.saveCallProductListArrayList.isEmpty() && !CheckProductListAdapter.noProductSelected) {
+//                                commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.select_the).trim(), capPrd));
+//                                moveToPage(capPrd);
+//                                return false;
+//                            }else {
+                                for (int i = 0; i<CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
+                                    if(!CheckProductListAdapter.saveCallProductListArrayList.get(i).getCategory().equalsIgnoreCase("Sale")
+                                            && (CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty().isEmpty())) {
+                                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), CapSamQty, getString(R.string.value)));
+                                        moveToPage(capPrd);
+                                        return false;
+                                    }
+                                }
+//                            }
+                        }
+
+                        if(PrdRxNeed.equalsIgnoreCase("1") && RxQtyMandatory.equalsIgnoreCase("1")) {
+//                            if(CheckProductListAdapter.saveCallProductListArrayList.isEmpty() && !CheckProductListAdapter.noProductSelected) {
+//                                commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.select_the).trim(), capPrd));
+//                                moveToPage(capPrd);
+//                                return false;
+//                            }else {
+                                for (int i = 0; i<CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
+                                    if(!CheckProductListAdapter.saveCallProductListArrayList.get(i).getCategory().equalsIgnoreCase("Sample") && (CheckProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty().isEmpty())) {
+                                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), CapRxQty, getString(R.string.value)));
+                                        moveToPage(capPrd);
+                                        return false;
+                                    }
+                                }
+//                            }
+                        }
                     }
                 }
 
