@@ -2,10 +2,13 @@ package saneforce.sanzen.commonClasses;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static saneforce.sanzen.storage.SharedPref.CUST_SRT_ND;
 import static saneforce.sanzen.storage.SharedPref.SP_NAME;
+import static saneforce.sanzen.storage.SharedPref.SRT_ND;
 import static saneforce.sanzen.storage.SharedPref.STP_APPR_NEED;
 import static saneforce.sanzen.storage.SharedPref.STP_BASED_MTP;
 import static saneforce.sanzen.storage.SharedPref.STP_NEED;
+import static saneforce.sanzen.storage.SharedPref.TPDCR_MGRAPPR;
 import static saneforce.sanzen.storage.SharedPref.TP_END_DATE;
 import static saneforce.sanzen.storage.SharedPref.TP_MANDATORY_NEED;
 import static saneforce.sanzen.storage.SharedPref.TP_START_DATE;
@@ -92,7 +95,10 @@ public class WorkPlanEntriesNeeded {
 //        editor.putString(STP_NEED, "0");
 //        editor.putString(STP_BASED_MTP, "0");
 //        editor.putString(STP_APPR_NEED, "0");
-        editor.putString(TP_MANDATORY_NEED, "1");
+//        editor.putString(TP_MANDATORY_NEED, "1");
+//        editor.putString(TPDCR_MGRAPPR, "0");
+//        editor.putString(CUST_SRT_ND, "0");
+//        editor.putString(SRT_ND, "0");
 //        editor.putString(TP_START_DATE, "10");
 //        editor.putString(TP_END_DATE, "15");
         editor.apply();

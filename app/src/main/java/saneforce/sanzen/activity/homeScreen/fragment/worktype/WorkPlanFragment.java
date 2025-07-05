@@ -112,7 +112,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     JSONObject SelectedWorkDay;
     ApiInterface api_interface;
     List<String> SynqList = new ArrayList<>();
-    String strClusterID = "", strClusterName = "";
+    String strClusterID = "", strClusterName = "", previousWTCode1 = "", previousWTCode2 = "";
     String DayPlanCount = "1", IsFeildWorkFlag = "F0", EditSession = "", insMode = "0";
     CommonUtilsMethods commonUtilsMethods;
     double latitude, longitude;
@@ -140,6 +140,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("StaticFieldLeak")
     private static Context context;
     private static WorkPlanFragment workPlanFragment;
+    private boolean isRefreshCalled = false;
 
     @Override
     public void onResume() {
@@ -909,7 +910,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     break;
 
                 case R.id.txtAddPlan:
-                    if(!EditSession.equalsIgnoreCase("1") && DayPlanCount.equals("1")) {
+                    if(isTPorSTPBased() && TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.VISIBLE && !binding.switchButton.isChecked()) {
+                        commonUtilsMethods.showToastMessage(requireContext(), "Deviate to Add Plan...");
+                    } else if(!EditSession.equalsIgnoreCase("1") && DayPlanCount.equals("1")) {
                         DayPlanCount = "2";
                         binding.llDelete.setVisibility(View.VISIBLE);
                         binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
@@ -996,11 +999,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         commonUtilsMethods.showToastMessage(requireContext(), "Deviate to edit WorkPlan");
                         break;
                     }
-                    else if(TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1")) {
-//                        commonUtilsMethods.showToastMessage(requireContext(), "Already Deviated");
-                        dialogEditOrDelete("1");
-                        break;
-                    }
+//                    else if(TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1") && binding.flSession2.getVisibility() == View.VISIBLE) {
+////                        commonUtilsMethods.showToastMessage(requireContext(), "Already Deviated");
+//                        dialogEditOrDelete("1");
+//                        break;
+//                    }
                     if(!UtilityClass.isNetworkAvailable(requireContext())) {
                         if(DayPlanCount.equalsIgnoreCase("2")) {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_edit_delete_workplan));
@@ -1012,7 +1015,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     if(dayStatus == null) dayStatus = "";
                     if(DayPlanCount.equalsIgnoreCase("1") || (DayPlanCount.equalsIgnoreCase("2") && binding.flSession2.getVisibility() == View.VISIBLE)) {
                         if(dayStatus.equalsIgnoreCase("2") || dayStatus.equalsIgnoreCase("3") || (binding.switchButton.isChecked())
-//                                || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && !TPDCRDeviation.equalsIgnoreCase("0"))
+                                || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1"))
                         ) {
                             dialogEditOrDelete("1");
                         }else {
@@ -1033,11 +1036,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         commonUtilsMethods.showToastMessage(requireContext(), "Deviate to edit WorkPlan");
                         break;
                     }
-                    else if(TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1")) {
-//                        commonUtilsMethods.showToastMessage(requireContext(), "Already Deviated");
-                        dialogEditOrDelete("2");
-                        break;
-                    }
+//                    else if(TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1")) {
+////                        commonUtilsMethods.showToastMessage(requireContext(), "Already Deviated");
+//                        dialogEditOrDelete("2");
+//                        break;
+//                    }
 //                    if(!binding.switchButton.isChecked()) {
 //                        commonUtilsMethods.showToastMessage(requireContext(), "Deviate to edit WorkPlan");
 //                        break;
@@ -1053,7 +1056,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     if(dayStatus == null) dayStatus = "";
                     if(binding.flSession1.getVisibility() == View.VISIBLE) {
                         if(dayStatus.equalsIgnoreCase("2") || dayStatus.equalsIgnoreCase("3") || (binding.switchButton.isChecked())
-//                                || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && !TPDCRDeviation.equalsIgnoreCase("0"))
+                                || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1"))
                         ) {
                             dialogEditOrDelete("2");
                         }else {
@@ -1492,7 +1495,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 if(TPDCRMGRApprNeed.equalsIgnoreCase("0")) {
                                     SharedPref.setTpDcrDeviationApprStatus(requireContext(), "3");
                                 } else {
-                                    saveOrUpdateWorkPlan();
+                                    saveOrUpdateWorkPlan(false);
                                 }
                                 updateLocalWPData();
                             }else {
@@ -1524,16 +1527,26 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
     private void onSaveClicked() {
-        if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
-            if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
-                saveOrUpdateWorkPlan();
+//        if(((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
+//                || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")))
+//                && binding.switchButton.isChecked()) {
+//                if(UtilityClass.isNetworkAvailable(requireContext())) {
+//                    showDeviationAlert();
+//                }else {
+//                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+//                }
+//        } else {
+            if(SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0")) {
+                if((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0)) {
+                    saveOrUpdateWorkPlan(true);
+                }else {
+                    gpsTrack = new GPSTrack(requireActivity());
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_location_please_try_again));
+                }
             }else {
-                gpsTrack = new GPSTrack(requireActivity());
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_location_please_try_again));
+                saveOrUpdateWorkPlan(true);
             }
-        }else {
-            saveOrUpdateWorkPlan();
-        }
+//        }
     }
 
     public static void showCheckInDialog() {
@@ -1697,15 +1710,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_select_a_date));
         }
     }
-    private void saveOrUpdateWorkPlan() {
+    private void saveOrUpdateWorkPlan(boolean isSaveClicked) {
         if (EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
-            handleSession("1", NeedClusterFlag1, binding.txtheadquaters1, binding.txtCluster1, binding.txtWorktype1, binding.txtworkday1);
+            handleSession("1", NeedClusterFlag1, binding.txtheadquaters1, binding.txtCluster1, binding.txtWorktype1, binding.txtworkday1, isSaveClicked);
         } else {
-            handleSession("2", NeedClusterFlag2, binding.txtheadquaters2, binding.txtCluster2, binding.txtWorktype2, binding.txtworkday2);
+            handleSession("2", NeedClusterFlag2, binding.txtheadquaters2, binding.txtCluster2, binding.txtWorktype2, binding.txtworkday2, isSaveClicked);
         }
     }
 
-    private void handleSession(String sessionId, boolean needClusterFlag, TextView txtHq, TextView txtCluster, TextView txtWorkType, TextView txtWorkDay) {
+    private void handleSession(String sessionId, boolean needClusterFlag, TextView txtHq, TextView txtCluster, TextView txtWorkType, TextView txtWorkDay, boolean isSaveClicked) {
         boolean isSession1 = sessionId.equals("1");
 
         if (needClusterFlag) {
@@ -1723,22 +1736,26 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
-        if (CheckInOutManager.isCheckedId(requireContext())) {
-            CheckInOutDate(true);
-            return;
-        }
-
         if (isTPorSTPBased() && binding.switchButton.isChecked()) {
-            if (isEmpty(txtWorkDay)) {
+            if (isEmpty(txtWorkDay) && (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") &&
+                    STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") &&
+                    TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
                 showToast("Select Work Day for Session " + sessionId);
                 return;
             }
 
-            if (UtilityClass.isNetworkAvailable(requireContext())) {
-                showDeviationAlert();
-            } else {
-                showToast(R.string.no_network);
+            if(isSaveClicked) {
+                if(UtilityClass.isNetworkAvailable(requireContext())) {
+                    showDeviationAlert();
+                }else {
+                    showToast(R.string.no_network);
+                }
+                return;
             }
+        }
+
+        if (CheckInOutManager.isCheckedId(requireContext())) {
+            CheckInOutDate(true);
             return;
         }
 
@@ -1899,7 +1916,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                updateWorkPlan();
 //                deleteSession(sessionType, "Edit");
 //                createDeleteJson(sessionType);
-                callDeleteWP(sessionType, "Edit");
+                if(mWTCode1.equalsIgnoreCase(previousWTCode1) && mWTCode2.equalsIgnoreCase(previousWTCode2)) {
+                    CallsFragment.syncCalls();
+                    updateLocalWPData();
+                    setUpWorkPlan();
+                } else {
+                    callDeleteWP(sessionType, "Edit");
+                }
 //                workPlanSubmit();
             }else {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_update_wp));
@@ -2387,7 +2410,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     iv_close.setVisibility(View.GONE);
                                     btn_save.setOnClickListener(view -> {
                                         insMode = "1";
-                                        saveOrUpdateWorkPlan();
+                                        saveOrUpdateWorkPlan(false);
                                         deviationConfirmation.dismiss();
                                     });
 //                                    btn_clear.setOnClickListener(view -> {
@@ -2935,10 +2958,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 if(deviation.equalsIgnoreCase("1")) {
                                     binding.llDeviation.setVisibility(View.GONE);
                                     binding.switchButton.setChecked(false);
+                                    isRefreshCalled = false;
                                     setUpDeviationLock();
                                 }else {
 //                                    if (!isFromTP) {
-                                    if(UtilityClass.isNetworkAvailable(requireContext())) {
+                                    if(UtilityClass.isNetworkAvailable(requireContext()) && !isRefreshCalled) {
+                                        isRefreshCalled = true;
                                         refresh(false);
                                     }
                                     TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, HomeDashBoard.selectedDate.toString()));
@@ -3226,6 +3251,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } catch (Exception a) {
             a.printStackTrace();
         }
+        previousWTCode1 = mWTCode1;
+        previousWTCode2 = mWTCode2;
         binding.progressWt1.setVisibility(View.GONE);
     }
 
@@ -3432,20 +3459,22 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
         if(UtilityClass.isNetworkAvailable(requireContext())) {
             progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
-            CallCheckOutAPI();
-//            CallFinalSubmitAPI();
             tpDataObj = null;
-//            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+                CallCheckOutAPI();
 //                if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
 //                    CallCheckOutAPI();
 //                }
-//            }
+            } else {
+                CallFinalSubmitAPI();
+            }
         }else {
-            SharedPref.setCheckTodayCheckInOut(requireContext(), "");
-            SharedPref.setCheckInTime(requireContext(), "");
-            SharedPref.setCheckDateTodayPlan(requireContext(), "");
-            offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
-
+            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+                SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+                SharedPref.setCheckInTime(requireContext(), "");
+                SharedPref.setCheckDateTodayPlan(requireContext(), "");
+                offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+            }
             if(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")) {
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 0));
             }

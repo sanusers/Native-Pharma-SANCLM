@@ -27,7 +27,7 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.databinding.MapViewActivityBinding;
 
 
-public class MapViewActvity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapViewActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private MapViewActivityBinding binding;

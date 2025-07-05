@@ -222,7 +222,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                 }
             } else {
                 stockBalance = "0";
-            }
+            } 
             holder.tv_stocks.setText(stockBalance);
             if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample")) {
                 holder.ed_samplesQty.setEnabled(true);

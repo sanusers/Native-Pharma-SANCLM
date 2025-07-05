@@ -46,7 +46,7 @@ import saneforce.sanzen.activity.approvals.dcr.detailView.adapter.InputAdapter;
 import saneforce.sanzen.activity.approvals.dcr.detailView.adapter.ProductAdapter;
 import saneforce.sanzen.activity.call.pojo.input.SaveCallInputList;
 import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
-import saneforce.sanzen.activity.reports.dayReport.MapViewActvity;
+import saneforce.sanzen.activity.reports.dayReport.MapViewActivity;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportDetailModel;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportRcpaModelClass;
 import saneforce.sanzen.activity.reports.dayReport.model.EventCaptureModelClass;
@@ -394,7 +394,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         });
 
         holder.checkInMarker.setOnClickListener(view -> {
-            Intent intent = new Intent(context, MapViewActvity.class);
+            Intent intent = new Intent(context, MapViewActivity.class);
             Bundle bundle = new Bundle();
             if(dataModel.getCin_loc() != null && !dataModel.getCin_loc().isEmpty()) {
                 String[] inLatLng = dataModel.getCin_loc().split(":");
@@ -416,7 +416,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         });
 
         holder.checkOutMarker.setOnClickListener(view -> {
-            Intent intent = new Intent(context, MapViewActvity.class);
+            Intent intent = new Intent(context, MapViewActivity.class);
             Bundle bundle = new Bundle();
             if(dataModel.getCin_loc() != null && !dataModel.getCin_loc().isEmpty()) {
                 String[] inLatLng = dataModel.getCin_loc().split(":");

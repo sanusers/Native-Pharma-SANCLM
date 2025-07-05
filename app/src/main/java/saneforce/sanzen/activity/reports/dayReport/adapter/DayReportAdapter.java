@@ -25,10 +25,9 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.geotagging.GeoTaggingModelList;
 import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
 import saneforce.sanzen.activity.reports.dayReport.DataViewModel;
-import saneforce.sanzen.activity.reports.dayReport.MapViewActvity;
+import saneforce.sanzen.activity.reports.dayReport.MapViewActivity;
 import saneforce.sanzen.activity.reports.dayReport.fragment.DayReportDetailFragment;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportModel;
-import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.storage.SharedPref;
 
 
@@ -228,7 +227,7 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         }
 
         holder.checkInMarker.setOnClickListener(view -> {
-            Intent intent = new Intent(context, MapViewActvity.class);
+            Intent intent = new Intent(context, MapViewActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString("INLat", dayReportModel.getStart_lat());
             bundle.putString("INLong", dayReportModel.getStart_lang());
@@ -245,7 +244,7 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
 
         holder.checkOutMarker.setOnClickListener(view -> {
             Bundle bundle = new Bundle();
-            Intent intent = new Intent(context, MapViewActvity.class);
+            Intent intent = new Intent(context, MapViewActivity.class);
             bundle.putString("INLat", dayReportModel.getStart_lat());
             bundle.putString("INLong", dayReportModel.getStart_lang());
             bundle.putString("OUTLat", dayReportModel.getEnd_lat());

@@ -111,7 +111,7 @@
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".activity.reports.dayReport.MapViewActvity"
+            android:name=".activity.reports.dayReport.MapViewActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity

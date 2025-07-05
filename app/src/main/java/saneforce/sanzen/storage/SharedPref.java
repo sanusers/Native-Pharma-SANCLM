@@ -364,6 +364,7 @@ public class SharedPref {
     public static final String TodayDayPlanSfCode = "today_plan_sfcode";
     public static final String TodayDayPlanSfName = "today_plan_sfname";
     public static final String TodayDayPlanClusterCode = "today_plan_cluster_code";
+    public static final String TodayDayPlanClusterName = "today_plan_cluster_name";
 
     //TodayCalls
     public static final String TODAY_CALL_LIST = "today_call_list";
@@ -2301,6 +2302,16 @@ public class SharedPref {
 
     public static String getTodayDayPlanClusterCode(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TodayDayPlanClusterCode, "");
+    }
+
+    public static void setTodayDayPlanClusterName(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TodayDayPlanClusterName, status).apply();
+    }
+
+    public static String getTodayDayPlanClusterName(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TodayDayPlanClusterName, "");
     }
 
     public static void setCheckTodayCheckInOut(Context context, String date) {

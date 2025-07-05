@@ -1291,6 +1291,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
                 binding.tpStatusTxt.setText(Constants.STATUS_2);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
+                SetTpRangeStatus();
                 break;
             }
             case "3":{
