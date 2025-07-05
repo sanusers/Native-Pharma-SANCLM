@@ -23,7 +23,6 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
 
     public ModelClass inputDataModel = new ModelClass();
     public OneBuildModelClass inputDataModelOneBuild = new OneBuildModelClass();
-//    private int OneBuildSetup = 0 ;
     Context context;
 
     public SessionViewAdapter () {

@@ -1,9 +1,14 @@
 package saneforce.sanzen.network;
 
+import android.annotation.SuppressLint;
+
+import androidx.annotation.RawRes;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,9 +16,11 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -28,6 +35,10 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST()
     Call<JsonElement> getJSONElement(@Url String url, @QueryMap Map<String, String> qry, @Field("data") String postObj);
+
+    @Headers("Content-Type: application/json")
+    @POST()
+    Call<JsonElement> getJSONElementOneBuild(@Url String url,  @Body JsonObject tourPlanBody);
 
     @FormUrlEncoded
     @POST()

@@ -461,7 +461,7 @@ public class SharedPref {
     public static final String TAGGED_DCR_CUSTOMERS = "Tagged DCR Customers";
 
     public static String TpIdCurrent = "tpIdCurrent";
-    public static String TpIdPrecious = "tpIdPrevious";
+    public static String TpIdPrevious = "tpIdPrevious";
     public static String TpIdNext     = "tpIdNext";
 
     public static SharedPreferences.Editor editor;
@@ -2854,23 +2854,43 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DELAY_HW_NEED, "");
     }
 
-    public static void saveTpId(Context context, int retrievedId) {
+    public static void saveTpId(Context context, int retrievedIdPm) {
         try{
             sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
             editor = sharedPreferences.edit();
-            editor.putInt(TpIdCurrent,retrievedId);
-            editor.putInt(TpIdPrecious,retrievedId);
-            editor.putInt(TpIdNext,retrievedId);
+            editor.putInt(TpIdPrevious,retrievedIdPm);
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
         }
     }
+    public static void saveTpIdCm(Context context, int retrievedIdCm) {
+        try{
+            sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+            editor = sharedPreferences.edit();
+            editor.putInt(TpIdCurrent,retrievedIdCm);
+            editor.apply();
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
+        }
+    }
+
+    public static void saveTpIdNm(Context context, int retrievedIdNm) {
+        try{
+            sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+            editor = sharedPreferences.edit();
+            editor.putInt(TpIdCurrent,retrievedIdNm);
+            editor.apply();
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
+        }
+    }
+
     public static int getTpIdCurrentMonth(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdCurrent,0);
     }
     public static int getTpIdPreviousMonth(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdPrecious,0);
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdPrevious,0);
     }
     public static int getTpIdNextMonth(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdNext,0);

@@ -61,6 +61,7 @@ import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideAdapter;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideService;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlidesViewModel;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
+import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -131,6 +132,9 @@ public class MasterSyncActivity extends AppCompatActivity {
     JSONArray holidayJSONArray = new JSONArray();
     ModelClass.SessionList.WorkType weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType();
     ModelClass.SessionList.WorkType holidayWorkTypeModel = new ModelClass.SessionList.WorkType();
+    OneBuildModelClass.SessionList.WorkType weeklyOffWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType();
+    OneBuildModelClass.SessionList.WorkType holidayWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType();
+
     String holidayMode = "", weeklyOffCaption = "";
     boolean isDataAvailable;
     CommonUtilsMethods commonUtilsMethods;
@@ -1667,6 +1671,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                 holidayMode = jsonObject.getString("Holiday_Mode");
                 weeklyOffCaption = jsonObject.getString("WTname");
             }
+            if(holidayMode.endsWith(",")){
+                holidayMode = holidayMode.substring(0,holidayMode.length()-1);
+            }
+            System.out.println(holidayMode);
             String[] holidayModeArray = holidayMode.split(",");
             weeklyOffDays = new ArrayList<>();
             for (String str : holidayModeArray) {

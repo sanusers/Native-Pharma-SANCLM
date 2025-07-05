@@ -20,6 +20,7 @@ import saneforce.sanzen.activity.tourPlan.calendar.OnDayClickInterface;
 import saneforce.sanzen.activity.tourPlan.calendar.OnDayClickOneBuildInterface;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
+import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 
@@ -32,7 +33,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     OnDayClickOneBuildInterface onDayClickedOneBuild;
     LocalDate localDate;
     String myDate;
-    private int OneBuildSetup = 0 ;
+
     public CalendarAdapter(ArrayList<String> arrayList, Context context,LocalDate localDate,OnDayClickInterface onDayClickInterface) {
         this.arrayList = arrayList;
         this.context = context;
@@ -84,7 +85,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (OneBuildSetup == 0){
+                if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
                     if(!arrayList.get(holder.getAbsoluteAdapterPosition()).equals("")){
                         onDayClickedOneBuild.onDayClickedOneBuild(holder.getAbsoluteAdapterPosition(),arrayList.get(holder.getAbsoluteAdapterPosition()),new OneBuildModelClass()); // Used the same Interface class which used for TourPlan.So passing 1st and 3rd argument for no purpose
                     }

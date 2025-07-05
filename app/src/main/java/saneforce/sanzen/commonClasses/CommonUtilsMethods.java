@@ -525,6 +525,7 @@ public class CommonUtilsMethods {
             jsonObject.put("key", SharedPref.getLicenseKey(context));
             jsonObject.put("Configurl", SharedPref.getBaseWebUrl(context));
             jsonObject.put("battery", String.valueOf(mBatteryPercent));
+            jsonObject.put("Mod_No","2");
 
 
         } catch (JSONException e) {
