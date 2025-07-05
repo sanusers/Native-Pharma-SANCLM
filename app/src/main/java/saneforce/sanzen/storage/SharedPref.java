@@ -463,6 +463,8 @@ public class SharedPref {
 
     public static final String DETAILING_IDLE_DURATION = "detailing_idle_duration";
 
+    public static final String TPDCR_DEVIATED_DATE = "TPDCR_Deviated_date";
+
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -2668,6 +2670,16 @@ public class SharedPref {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(TPDCR_DEVIATION_APPR_STATUS, status).apply();
+    }
+
+    public static void setTpDcrDeviatedDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TPDCR_DEVIATED_DATE, date).apply();
+    }
+
+    public static String getTpDcrDeviatedDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TPDCR_DEVIATED_DATE, "");
     }
 
     public static void setLastCallSyncDate(Context context, String date) {

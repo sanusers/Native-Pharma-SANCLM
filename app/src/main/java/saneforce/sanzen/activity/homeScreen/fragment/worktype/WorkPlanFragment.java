@@ -253,6 +253,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     deviation = "0";
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
                     binding.switchButton.setChecked(false);
+                    binding.switchButton.getThumbDrawable().setTint(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.switchButton.getTrackDrawable().setTint(ContextCompat.getColor(requireContext(), R.color.mildRed));
                 }
             }else {
                 binding.switchButton.getThumbDrawable().setTint(ContextCompat.getColor(requireContext(), R.color.white));
@@ -1083,7 +1085,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             Log.e("WorkPlan Fragment", "onClick: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
 
     private void refresh(boolean isToSetupWorkPlan) {
@@ -1483,6 +1484,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         try {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
                             if(json.getString("success").equalsIgnoreCase("true")) {
+                                SharedPref.setTpDcrDeviatedDate(requireContext(), HomeDashBoard.selectedDate.toString());
                                 SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
                                 if(DayPlanCount.equalsIgnoreCase("1")) {
                                     if(mFwFlg1.equalsIgnoreCase("F") || mFwFlg1.equalsIgnoreCase("A"))
@@ -1904,10 +1906,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void saveOrUpdateWP(String sessionType) {
         if(binding.txtSave.getText().equals(getString(R.string.save))) {
-            if(UtilityClass.isNetworkAvailable(requireContext())) {
-                workPlanSubmit("Save");
-            }else {
-                SaveWTLocal(sessionType);
+            if(mWTCode1.equalsIgnoreCase(previousWTCode1) && mWTCode2.equalsIgnoreCase(previousWTCode2) && !isFromTP) {
+                CallsFragment.syncCalls();
+                updateLocalWPData();
+                setUpWorkPlan();
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.work_plan_updated_successfully));
+            } else {
+                if(UtilityClass.isNetworkAvailable(requireContext())) {
+                    workPlanSubmit("Save");
+                }else {
+                    SaveWTLocal(sessionType);
+                }
             }
         }else if(binding.txtSave.getText().equals(getString(R.string.update))) {
             binding.txtSave.setText(getString(R.string.save));
@@ -1916,10 +1925,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                updateWorkPlan();
 //                deleteSession(sessionType, "Edit");
 //                createDeleteJson(sessionType);
-                if(mWTCode1.equalsIgnoreCase(previousWTCode1) && mWTCode2.equalsIgnoreCase(previousWTCode2)) {
+                if(mWTCode1.equalsIgnoreCase(previousWTCode1) && mWTCode2.equalsIgnoreCase(previousWTCode2) && !isFromTP) {
                     CallsFragment.syncCalls();
                     updateLocalWPData();
                     setUpWorkPlan();
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.work_plan_updated_successfully));
                 } else {
                     callDeleteWP(sessionType, "Edit");
                 }
@@ -2934,6 +2944,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             workDayCode = FirstSeasonDayPlanObject.optString("Others_Code");
                             workDayName = FirstSeasonDayPlanObject.optString("Others_Name");
                             isFromTP = FirstSeasonDayPlanObject.optBoolean("isFromTP", false);
+                            if(SharedPref.getTpDcrDeviatedDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+                                deviation = "1";
+                            }
                             Log.i("TP", "setUpWorkPlan: " + isFromTP);
                             if(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
                                 binding.rlworkday1.setVisibility(View.VISIBLE);
@@ -3039,6 +3052,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             SharedPref.setDayPlanStartedDate(requireContext(), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()));
                             //   mRemarks1 = SecondSeasonDayPlanObject.getString("Rem");
 
+                            if(SharedPref.getTpDcrDeviatedDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+                                deviation = "1";
+                            }
                             if(workTypeData.length()>0) {
                                 for (int i = 0; i<workTypeData.length(); i++) {
                                     JSONObject mJsonObject = workTypeData.getJSONObject(i);
