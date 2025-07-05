@@ -41,7 +41,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
@@ -233,7 +232,7 @@ public class StockiestFragment extends Fragment {
                                 Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                 if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
 //                                    if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
-                                        custListArrayList = SaveData(jsonObject,i);
+                                        custListArrayList = SaveData(jsonObject,i, true);
 //                                    }
                                 }
                             } else {
@@ -241,7 +240,7 @@ public class StockiestFragment extends Fragment {
                                 float[] distance = new float[2];
                                 Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                 if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
-                                    custListArrayList = SaveData(jsonObject,i);
+                                    custListArrayList = SaveData(jsonObject,i, true);
                                 }
                             }
                         }
@@ -253,7 +252,7 @@ public class StockiestFragment extends Fragment {
 //                            }
 //                        } else {
                             Log.v("STKCALL", "--44-");
-                            custListArrayList = SaveData(jsonObject,i);
+                            custListArrayList = SaveData(jsonObject,i, false);
 //                        }
                     }
                 }
@@ -294,12 +293,20 @@ public class StockiestFragment extends Fragment {
         }
     }
 
-    private ArrayList<CustList> SaveData(JSONObject jsonObject, int i) {
+    private ArrayList<CustList> SaveData(JSONObject jsonObject, int i, boolean isFenced) {
         try {
             if((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
                     || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
                     && !deviation.equalsIgnoreCase("1")) {
                 if(tpDataObj != null) {
+                    if (SharedPref.getTodayDayPlanClusterName(requireContext()).contains(jsonObject.getString("Town_Name"))) {
+                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "3", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), "", "", jsonObject.getString("Stockiest_Email"), jsonObject.getString("Stockiest_Mobile"), jsonObject.getString("Stockiest_Phone"), jsonObject.getString("Stockiest_Cont_Desig"), "","","",false));
+                    }
+                }
+            } else if((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
+                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
+                    && deviation.equalsIgnoreCase("1")) {
+                if(isFenced) {
                     if (SharedPref.getTodayDayPlanClusterName(requireContext()).contains(jsonObject.getString("Town_Name"))) {
                         custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "3", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("Addr"), "", "", jsonObject.getString("Stockiest_Email"), jsonObject.getString("Stockiest_Mobile"), jsonObject.getString("Stockiest_Phone"), jsonObject.getString("Stockiest_Cont_Desig"), "","","",false));
                     }
@@ -311,7 +318,7 @@ public class StockiestFragment extends Fragment {
             }
         } catch (Exception e) {
             Log.v("STKCALL", "--1111---" + e.toString());
-
+            e.printStackTrace();
         }
         return custListArrayList;
     }

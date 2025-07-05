@@ -88,20 +88,6 @@ public class WorkPlanEntriesNeeded {
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
         WorkPlanEntriesNeeded.syncTaskStatus = syncTaskStatus;
 
-        SharedPreferences sharedPreferences;
-        SharedPreferences.Editor editor;
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-//        editor.putString(STP_NEED, "0");
-//        editor.putString(STP_BASED_MTP, "0");
-//        editor.putString(STP_APPR_NEED, "0");
-//        editor.putString(TP_MANDATORY_NEED, "1");
-//        editor.putString(TPDCR_MGRAPPR, "0");
-//        editor.putString(CUST_SRT_ND, "0");
-//        editor.putString(SRT_ND, "0");
-//        editor.putString(TP_START_DATE, "10");
-//        editor.putString(TP_END_DATE, "15");
-        editor.apply();
 //        if(shouldSync) {
 //            syncCallAndDate(context);
 //        }else {
