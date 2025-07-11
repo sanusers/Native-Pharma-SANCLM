@@ -2864,6 +2864,9 @@ public class SharedPref {
             ignore.printStackTrace();
         }
     }
+    public static int getTpIdPreviousMonth(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdPrevious,0);
+    }
     public static void saveTpIdCm(Context context, int retrievedIdCm) {
         try{
             sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -2874,24 +2877,21 @@ public class SharedPref {
             ignore.printStackTrace();
         }
     }
+    public static int getTpIdCurrentMonth(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdCurrent,0);
+    }
 
     public static void saveTpIdNm(Context context, int retrievedIdNm) {
         try{
             sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
             editor = sharedPreferences.edit();
-            editor.putInt(TpIdCurrent,retrievedIdNm);
+            editor.putInt(TpIdNext,retrievedIdNm);
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
         }
     }
 
-    public static int getTpIdCurrentMonth(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdCurrent,0);
-    }
-    public static int getTpIdPreviousMonth(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdPrevious,0);
-    }
     public static int getTpIdNextMonth(Context context){
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdNext,0);
     }
