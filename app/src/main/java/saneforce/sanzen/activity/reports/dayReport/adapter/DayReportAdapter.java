@@ -233,8 +233,8 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             bundle.putString("INLong", dayReportModel.getStart_lang());
             bundle.putString("OUTLat", dayReportModel.getEnd_lat());
             bundle.putString("OUTLong", dayReportModel.getEnd_lang());
-            bundle.putString("INDateTime", dayReportModel.getRptdate() + dayReportModel.getIntime());
-            bundle.putString("OUTDateTime", dayReportModel.getRptdate() + dayReportModel.getOuttime());
+            bundle.putString("INDateTime", dayReportModel.getRptdate() + " " + dayReportModel.getIntime());
+            bundle.putString("OUTDateTime", dayReportModel.getRptdate() + " " + dayReportModel.getOuttime());
             bundle.putString("INAddress", dayReportModel.getInaddress());
             bundle.putString("OUTAddress", dayReportModel.getOutaddress());
             bundle.putString("title", context.getString(R.string.day_check_in) + " ( " + dayReportModel.getRptdate() + " )");
@@ -249,8 +249,8 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             bundle.putString("INLong", dayReportModel.getStart_lang());
             bundle.putString("OUTLat", dayReportModel.getEnd_lat());
             bundle.putString("OUTLong", dayReportModel.getEnd_lang());
-            bundle.putString("INDateTime", dayReportModel.getRptdate() + dayReportModel.getIntime());
-            bundle.putString("OUTDateTime", dayReportModel.getRptdate() + dayReportModel.getOuttime());
+            bundle.putString("INDateTime", dayReportModel.getRptdate() + " " + dayReportModel.getIntime());
+            bundle.putString("OUTDateTime", dayReportModel.getRptdate() + " " + dayReportModel.getOuttime());
             bundle.putString("INAddress", dayReportModel.getInaddress());
             bundle.putString("OUTAddress", dayReportModel.getOutaddress());
             bundle.putString("title", context.getString(R.string.day_check_in) + " ( " + dayReportModel.getRptdate() + " )");

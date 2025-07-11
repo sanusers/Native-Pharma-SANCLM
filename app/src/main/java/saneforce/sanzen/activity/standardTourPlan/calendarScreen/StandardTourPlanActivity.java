@@ -174,7 +174,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void checkApprovalButtonStatus() {
-        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() == totalDaysCount) && (stpFlag.equalsIgnoreCase("1") || stpFlag.equalsIgnoreCase("3")));
+        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() >= totalDaysCount) && (stpFlag.equalsIgnoreCase("1") || stpFlag.equalsIgnoreCase("3")));
     }
 
     @Override
@@ -631,6 +631,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Kindly sync Standard Tour Plan Setup!");
                 startActivity(new Intent(StandardTourPlanActivity.this, MasterSyncActivity.class));
                 finish();
+            } else {
+                List<String> dayIDs = stpOfflineDataDao.getAllSTPDayID();
+                for (String dayID : dayIDs) {
+                    if(!this.dayIDs.contains(dayID)) {
+                        stpOfflineDataDao.deleteByDayID(dayID);
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

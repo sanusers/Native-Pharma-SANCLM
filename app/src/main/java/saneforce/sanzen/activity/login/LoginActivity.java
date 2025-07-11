@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.login;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -10,6 +11,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -18,6 +21,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,10 +40,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.setting.SettingsActivity;
@@ -184,6 +192,37 @@ public class LoginActivity extends AppCompatActivity {
                 DeleteAllFiles();
             }
         });
+
+        if((SharedPref.getSrtNd(this).equalsIgnoreCase("0")
+                || SharedPref.getCustSrtNd(LoginActivity.this).equalsIgnoreCase("0")
+                || SharedPref.getChmSrtNd(LoginActivity.this).equalsIgnoreCase("0")
+                || SharedPref.getUnlistSrtNd(LoginActivity.this).equalsIgnoreCase("0"))
+                && SharedPref.getCheckInSkipDate(this).equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, LocalDate.now().toString()))) {
+            Dialog loginConfirmation = new Dialog(this);
+            loginConfirmation.setContentView(R.layout.popup_remarks);
+            Objects.requireNonNull(loginConfirmation.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            loginConfirmation.setCancelable(false);
+            ImageView iv_close = loginConfirmation.findViewById(R.id.img_close);
+            EditText ed_remarks = loginConfirmation.findViewById(R.id.ed_remark);
+            TextView heading = loginConfirmation.findViewById(R.id.tv_head);
+            TextView content = loginConfirmation.findViewById(R.id.content);
+            Button btn_clear = loginConfirmation.findViewById(R.id.btn_clear);
+            Button btn_save = loginConfirmation.findViewById(R.id.btn_save);
+            heading.setText(this.getString(R.string.alert));
+            btn_save.setText(this.getString(R.string.ok));
+            btn_clear.setText(this.getString(R.string.no));
+            content.setText("Check-In/Out is enabled and Date has been changed. So logged out. Kindly start over after login");
+            content.setVisibility(View.VISIBLE);
+            btn_clear.setVisibility(View.INVISIBLE);
+            ed_remarks.setVisibility(View.INVISIBLE);
+            iv_close.setVisibility(View.GONE);
+            btn_save.setOnClickListener(view -> {
+                SharedPref.setDayCheckInData(LoginActivity.this, "");
+                SharedPref.setCheckInSkipDate(LoginActivity.this, "");
+                loginConfirmation.dismiss();
+            });
+            loginConfirmation.show();
+        }
     }
 
     private void SelectedLanguage(String selectedLanguage) {

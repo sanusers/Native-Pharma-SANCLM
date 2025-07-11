@@ -1264,6 +1264,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)){
                                             isCallSynced = true;
                                             CallDataRestClass.resetcallValues(context);
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC_DUP, jsonArray.toString(), 2));
                                         }
                                         else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.DATE_SYNC)){
                                             isDateSynced = true;

@@ -413,7 +413,7 @@ public class CallsFragment extends Fragment {
                         if(CheckInOutManager.isCheckedId(requireContext())) {
 //                            WorkPlanFragment.showCheckInDialog();
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
-                        }else if(WorkPlanFragment.isFromTP) {
+                        }else if(WorkPlanFragment.isFromTP && WorkPlanFragment.binding.txtSave.isEnabled()) {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
                         }else if(WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(requireContext()).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(requireContext()).equalsIgnoreCase("3")) {
                             commonUtilsMethods.showToastMessage(requireContext(), "Get Deviation Approval");

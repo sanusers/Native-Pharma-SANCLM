@@ -34,6 +34,7 @@ public class Constants {
     //DCR
     public static final String DCR = "DCR";
     public static final String CALL_SYNC = "Call Sync";
+    public static final String CALL_SYNC_DUP = "Call Sync Dup";
     public static final String WORK_PLAN = "Work Plan";
     public static final String VISIT_CONTROL = "Visit Control";
     public static final String MISSED_DATE = "Missed Date";

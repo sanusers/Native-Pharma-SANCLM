@@ -141,6 +141,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private static Context context;
     private static WorkPlanFragment workPlanFragment;
     private boolean isRefreshCalled = false;
+    private long lastClickTime = 0;
 
     @Override
     public void onResume() {
@@ -189,6 +190,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         chk_cluster = "";
+        deviationRejectedReason = "";
         tpDataObj = null;
         hqCode = SharedPref.getHqCode(requireContext());
 
@@ -815,6 +817,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastClickTime < 1000) {
+            return; // Ignore fast click
+        }
+        lastClickTime = currentTime;
         try {
             switch (v.getId()){
                 case R.id.close_rejected_reason:
@@ -846,7 +853,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                     break;
 
-
                 case R.id.rlworktype2:
                     updateWorkTypeList();
                     ShowWorkTypeAlert(binding.txtWorktype2, binding.rlcluster2, binding.rlheadquates2);
@@ -864,7 +870,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }else {
                         showMultiClusterAlter();
                     }
-
                     break;
 
                 case R.id.rlheadquates1:
@@ -1129,6 +1134,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                         binding.switchButton.setChecked(false);
 //                                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 2));
                                         deviation = "1";
+                                        SharedPref.setTpDcrDeviatedDate(requireContext(), "");
                                         syncMyDayPlan(true);
 
 //                                        Type type = new TypeToken<ModelClass>() {
@@ -1618,9 +1624,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonCheck.put("DateTime", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
                 jsonCheck.put("Activity_Dt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
                 Log.v("CheckInOut", "--json--" + jsonCheck.toString());
-            } catch (JSONException ignored) {
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-
+            SharedPref.setDayCheckInData(requireContext(), jsonCheck.toString());
             if (UtilityClass.isNetworkAvailable(requireContext())) {
                 progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
                 CallCheckInAPI(saveWorkPlan);
@@ -1688,7 +1695,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
             if(binding.rlworktype1.isEnabled()) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-            }else if(binding.rlworktype2.isEnabled() && !mWTName2.isEmpty()) {
+            }else if(binding.cardPlan2.getVisibility() == View.VISIBLE && binding.rlworktype2.isEnabled() && !mWTName2.isEmpty()) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
             }else if(mWTName1.isEmpty()) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
@@ -2177,47 +2184,51 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
     private void CallCheckOutAPI() {
-        Map<String, String> mapString = new HashMap<>();
-        mapString.put("axn", "save/activity");
-        Call<JsonElement> callCheckInOut = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonCheck.toString());
-        callCheckInOut.enqueue(new Callback<JsonElement>() {
-            @Override
-            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                assert response.body() != null;
-                Log.v("CheckInOut", response.body() + "--" + response.isSuccessful());
-                if(response.isSuccessful()) {
-                    try {
-                        JSONArray jsonArray = new JSONArray(response.body().toString());
-                        for (int i = 0; i<jsonArray.length(); i++) {
-                            JSONObject obj = jsonArray.getJSONObject(i);
-                            CheckInOutStatus = obj.getString("msg");
-                        }
+        try {
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "save/activity");
+            Call<JsonElement> callCheckInOut = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonCheck.toString());
+            callCheckInOut.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    assert response.body() != null;
+                    Log.v("CheckInOut", response.body() + "--" + response.isSuccessful());
+                    if(response.isSuccessful()) {
+                        try {
+                            JSONArray jsonArray = new JSONArray(response.body().toString());
+                            for (int i = 0; i<jsonArray.length(); i++) {
+                                JSONObject obj = jsonArray.getJSONObject(i);
+                                CheckInOutStatus = obj.getString("msg");
+                            }
 
-                        if(CheckInOutStatus.equalsIgnoreCase("1")) {
-                            SharedPref.setCheckInTime(requireContext(), "");
-                            SharedPref.setCheckTodayCheckInOut(requireContext(), "");
-                            dialogAfterCheckOut.dismiss();
-                            CallFinalSubmitAPI();
+                            if(CheckInOutStatus.equalsIgnoreCase("1")) {
+                                SharedPref.setCheckInTime(requireContext(), "");
+                                SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+                                dialogAfterCheckOut.dismiss();
+                                CallFinalSubmitAPI();
 //                            remarksAlertBox();
-                        }else {
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_leave_posted));
+                            }else {
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_leave_posted));
+                            }
+                            progressDialog.dismiss();
+                        } catch (Exception ignored) {
+                            progressDialog.dismiss();
                         }
-                        progressDialog.dismiss();
-                    } catch (Exception ignored) {
+                    }else {
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.contact_admin_out));
                         progressDialog.dismiss();
                     }
-                }else {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.contact_admin_out));
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
                     progressDialog.dismiss();
                 }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
-                progressDialog.dismiss();
-            }
-        });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void CallFinalSubmitAPI() {
@@ -2270,6 +2281,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         DayPlanCount = "1";
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+            boolean isDateFound = false;
             for (int index = 0; index<jsonArray.length(); index++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(index);
                 String cusType = jsonObject.optString("CustType");
@@ -2278,9 +2290,47 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 if(cusType.equalsIgnoreCase("0")
                         && date.equalsIgnoreCase(HomeDashBoard.selectedDate.toString())
                         && !dayStatus.equalsIgnoreCase("1")) {
+                    isDateFound = true;
                     jsonObject.put("day_status", "1");
                     jsonArray.put(index, jsonObject);
                     break;
+                }
+            }
+            if(!isDateFound) {
+                try {
+                    String FWIndicator = "", WTName = "";
+                    if(mFwFlg1.equalsIgnoreCase("F")) {
+                        FWIndicator = mFwFlg1;
+                        WTName = mWTName1;
+                    }else if(mFwFlg2.equalsIgnoreCase("F")) {
+                        FWIndicator = mFwFlg2;
+                        WTName = mWTName2;
+                    }else {
+                        FWIndicator = mFwFlg1;
+                        WTName = mWTName1;
+                    }
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("CustCode", "");
+                    jsonObject.put("CustType", "0");
+                    jsonObject.put("Dcr_dt", HomeDashBoard.selectedDate.toString());
+                    jsonObject.put("month_name", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_9, HomeDashBoard.selectedDate.toString()));
+                    jsonObject.put("Mnth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_31, HomeDashBoard.selectedDate.toString()));
+                    jsonObject.put("Yr", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_10, HomeDashBoard.selectedDate.toString()));
+                    jsonObject.put("vtm", CommonUtilsMethods.getCurrentInstance("hh:mm aa"));
+                    jsonObject.put("CustName", "");
+                    jsonObject.put("town_code", "");
+                    jsonObject.put("FW_Indicator", FWIndicator);
+                    jsonObject.put("WorkType_Name", WTName);
+                    jsonObject.put("town_name", "");
+                    jsonObject.put("Dcr_flag", "0");
+                    jsonObject.put("SF_Code", "");
+                    jsonObject.put("Trans_SlNo", "");
+                    jsonObject.put("AMSLNo", "");
+                    jsonObject.put("day_status", "1");
+                    jsonArray.put(jsonObject);
+//                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
@@ -2558,7 +2608,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
             }
             SharedPref.setDayPlanStartedDate(requireContext(), HomeDashBoard.selectedDate.toString());
-            if(TPDCRDeviation.equalsIgnoreCase("0")) {
+            if((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")
+                    || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")))
+                    && TPDCRDeviation.equalsIgnoreCase("0")) {
                 if(deviation.equalsIgnoreCase("1")) {
                     binding.llDeviation.setVisibility(View.GONE);
                     binding.switchButton.setChecked(false);
@@ -2962,7 +3014,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 enableSave();
                                 SharedPref.setDayPlanStartedDate(requireContext(), "");
                             } else {
-                                if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+                                if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && HomeDashBoard.selectedDate!= null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
                                     SharedPref.setCheckTodayCheckInOut(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
                                 }
                                 SharedPref.setDayPlanStartedDate(requireContext(), HomeDashBoard.selectedDate.toString());
@@ -3130,6 +3182,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                 }
             }else if(tpDataObj != null && HomeDashBoard.selectedDate != null) {
+                SharedPref.setTpDcrDeviatedDate(requireContext(), "");
                 Type type = new TypeToken<ModelClass>() {
                 }.getType();
                 ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
@@ -3220,6 +3273,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     setUpWorkPlan();
                 }
             }else {
+                SharedPref.setTpDcrDeviatedDate(requireContext(), "");
                 SharedPref.setDayPlanStartedDate(requireContext(), "");
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 2));
                 binding.txtWorktype1.setText("");
@@ -3267,8 +3321,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } catch (Exception a) {
             a.printStackTrace();
         }
-        previousWTCode1 = mWTCode1;
-        previousWTCode2 = mWTCode2;
+        if(!isFromTP && !binding.txtSave.isEnabled()) {
+            previousWTCode1 = mWTCode1;
+            previousWTCode2 = mWTCode2;
+        }
         binding.progressWt1.setVisibility(View.GONE);
     }
 
@@ -3476,7 +3532,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         if(UtilityClass.isNetworkAvailable(requireContext())) {
             progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
             tpDataObj = null;
-            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && CheckInOutManager.isCheckInAvailable(requireContext())) {
                 CallCheckOutAPI();
 //                if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
 //                    CallCheckOutAPI();
@@ -3485,7 +3541,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 CallFinalSubmitAPI();
             }
         }else {
-            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
                 SharedPref.setCheckTodayCheckInOut(requireContext(), "");
                 SharedPref.setCheckInTime(requireContext(), "");
                 SharedPref.setCheckDateTodayPlan(requireContext(), "");
@@ -3506,6 +3562,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //            SharedPref.setCheckDateTodayPlan(requireContext(), "");
             SharedPref.setLastCallDate(requireContext(), "");
             SharedPref.setSelectedDateCal(requireContext(), "");
+            SharedPref.setDayPlanStartedDate(requireContext(), "");
             SetupOutBoxAdapter(requireActivity(), requireContext());
 //            if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
 //                if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
@@ -3705,6 +3762,23 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 }
                             }
                             if(!option.equalsIgnoreCase("Edit")) {
+//                                try {
+//                                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+//                                    JSONArray newJsonArray = new JSONArray();
+//                                    for (int i = 0; i<jsonArray.length(); i++) {
+//                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                                        String custType = jsonObject.getString("CustType");
+//                                        String date = jsonObject.getString("Dcr_dt");
+//                                        if(custType.equalsIgnoreCase("0") && date.equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
+//                                            continue;
+//                                        }else {
+//                                            newJsonArray.put(jsonObject);
+//                                        }
+//                                    }
+//                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, newJsonArray.toString(), 2));
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                }
                                 commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
                                 syncMyDayPlan(false);
                             }else {

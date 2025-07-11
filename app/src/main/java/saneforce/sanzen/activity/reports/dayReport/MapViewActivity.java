@@ -99,11 +99,19 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         }
 
         binding.tvInDateTime.setText(checkInDateTime);
+        binding.tvInLatLong.setText(String.format("%s , %s", CheckINLat, CheckINLong));
         binding.tvInAddress.setText(checkInAddress);
         if(checkOutAddress.isEmpty()) {
+            binding.tvOutDateTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            binding.tvOutLatLong.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            binding.tvOutAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             binding.tvOutDateTime.setText("Not Checked Out");
         } else {
+            binding.tvOutDateTime.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_calendar_month_14, 0, 0, 0);
+            binding.tvOutLatLong.setCompoundDrawablesWithIntrinsicBounds(R.drawable.outline_my_location_14, 0, 0, 0);
+            binding.tvOutAddress.setCompoundDrawablesWithIntrinsicBounds(R.drawable.outline_home_pin_14, 0, 0, 0);
             binding.tvOutDateTime.setText(checkOutDateTime);
+            binding.tvOutLatLong.setText(String.format("%s , %s", CheckOUTLat, CheckOUTLong));
             binding.tvOutAddress.setText(checkOutAddress);
         }
 

@@ -1085,11 +1085,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             }
         }
-
     }
 
     public void getDataFromLocal(MyViewHolder holder, String hqCode) {
-
         if(!masterDataDao.getMasterSyncDataOfHQ(Constants.CLUSTER + hqCode)) {
             prepareMasterToSync(holder, hqCode);
         }
@@ -1102,8 +1100,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + hqCode).getMasterSyncDataJsonArray());
         holder.cipArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CIP + hqCode).getMasterSyncDataJsonArray());
         holder.hospArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + hqCode).getMasterSyncDataJsonArray());
-
-
     }
 
     public ArrayList<EditModelClass> convertJSONToModel(JSONArray jsonArray) {

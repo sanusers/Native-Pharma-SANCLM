@@ -12,6 +12,7 @@ import static saneforce.sanzen.storage.SharedPref.TPDCR_MGRAPPR;
 import static saneforce.sanzen.storage.SharedPref.TP_END_DATE;
 import static saneforce.sanzen.storage.SharedPref.TP_MANDATORY_NEED;
 import static saneforce.sanzen.storage.SharedPref.TP_START_DATE;
+import static saneforce.sanzen.storage.SharedPref.WEEKOFF_AUTOPOST_NEED;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -96,8 +97,9 @@ public class WorkPlanEntriesNeeded {
 // editor.putString(STP_APPR_NEED, "0");
 // editor.putString(TP_MANDATORY_NEED, "1");
 // editor.putString(TPDCR_MGRAPPR, "0");
-// editor.putString(CUST_SRT_ND, "1");
-// editor.putString(SRT_ND, "1");
+// editor.putString(CUST_SRT_ND, "0");
+// editor.putString(SRT_ND, "0");
+// editor.putString(WEEKOFF_AUTOPOST_NEED, "0");
 // editor.putString(TP_START_DATE, "10");
 // editor.putString(TP_END_DATE, "15");
         editor.apply();

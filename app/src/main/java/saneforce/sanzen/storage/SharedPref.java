@@ -465,6 +465,9 @@ public class SharedPref {
 
     public static final String TPDCR_DEVIATED_DATE = "TPDCR_Deviated_date";
 
+    public static final String DAY_CHECK_IN_DATA = "Day_Check_In_Data";
+    public static final String CHECK_IN_SKIP_DATE = "Check_In_Skip_Date";
+
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -2870,6 +2873,26 @@ public class SharedPref {
 
     public static String getDetailingIdleDuration(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DETAILING_IDLE_DURATION, "");
+    }
+
+    public static void setDayCheckInData(Context context, String data) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DAY_CHECK_IN_DATA, data).apply();
+    }
+
+    public static String getDayCheckInData(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DAY_CHECK_IN_DATA, "");
+    }
+
+    public static void setCheckInSkipDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CHECK_IN_SKIP_DATE, date).apply();
+    }
+
+    public static String getCheckInSkipDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CHECK_IN_SKIP_DATE, "");
     }
 
 }

@@ -236,6 +236,10 @@ public class OutboxFragment extends Fragment {
             }
 
             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, dateSyncArray.toString(), 0));
+            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC_DUP).getMasterSyncDataJsonArray().toString(), 0));
+            if(HomeDashBoard.binding.textDate.getText().toString() == null || HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 0));
+            }
         } catch (Exception e) {
             Log.e("Outbox clear calls", "addDateSyncDataBack: " + e.getMessage());
             e.printStackTrace();

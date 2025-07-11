@@ -560,10 +560,10 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView name, visitTime, modifiedTime, cluster, pob, feedback, jointWork, nextVisit, checkInTime, checkInAddress, checkInMarker, textInputName;
-        TextView checkOutTime, checkOutAddress, checkOutMarker, overAllRemark, viewMoreTxt, textPromoted, textProduct, textSamples, textRxQty, textInput, textProductName, clusterText, textRCPAName;
+        TextView name, visitTime, modifiedTime, cluster, pob, feedback, jointWork, nextVisit, checkInTime, checkInAddress, textInputName;
+        TextView checkOutTime, checkOutAddress, overAllRemark, viewMoreTxt, textPromoted, textProduct, textSamples, textRxQty, textInput, textProductName, clusterText, textRCPAName;
         ImageView nameIcon, viewMoreArrow, rcpa_arrow, slide_arrow;
-        LinearLayout viewMore, checkInOutLayout, EventLayout, rcpaLayout, rcpaLayoutitle, slideDetailsLayout, SlidercpaLayoutitle, jointWorkLayout;
+        LinearLayout viewMore, checkInOutLayout, EventLayout, rcpaLayout, rcpaLayoutitle, slideDetailsLayout, SlidercpaLayoutitle, jointWorkLayout, checkInMarker, checkOutMarker;
         RelativeLayout rlNextVisit, pobLayOut, feedBackLayout;
         ConstraintLayout PrdLayout, InpLayout, expandLayout;
         CardView slideLayout;
@@ -582,10 +582,10 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             nextVisit = itemView.findViewById(R.id.nextVisit);
             checkInTime = itemView.findViewById(R.id.checkInTime);
             checkInAddress = itemView.findViewById(R.id.inAddress);
-            checkInMarker = itemView.findViewById(R.id.checkInMarker);
+            checkInMarker = itemView.findViewById(R.id.check_in_marker);
             checkOutTime = itemView.findViewById(R.id.checkOutTime);
             checkOutAddress = itemView.findViewById(R.id.outAddress);
-            checkOutMarker = itemView.findViewById(R.id.checkOutMarker);
+            checkOutMarker = itemView.findViewById(R.id.check_out_marker);
             overAllRemark = itemView.findViewById(R.id.overAllRemark);
             viewMoreTxt = itemView.findViewById(R.id.viewMoreTxt);
             rlNextVisit = itemView.findViewById(R.id.rl_nextVisit);

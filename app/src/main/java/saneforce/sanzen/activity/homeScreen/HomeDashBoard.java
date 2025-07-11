@@ -1968,6 +1968,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             navigationFooterBinding.sequentialDot.setVisibility(View.GONE);
         }
 
+        if(SharedPref.getTpNeed(this).equalsIgnoreCase("0")
+                && SharedPref.getTpMandatoryNeed(this).equalsIgnoreCase("0")
+                && SharedPref.getTpbasedDcr(this).equalsIgnoreCase("0")
+                && !SharedPref.getTpStartDate(HomeDashBoard.this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(HomeDashBoard.this).equalsIgnoreCase("-1")
+                && !SharedPref.getTpEndDate(HomeDashBoard.this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(HomeDashBoard.this).equalsIgnoreCase("-1")) {
+            navigationFooterBinding.tvTdot.setVisibility(View.VISIBLE);
+        } else {
+            navigationFooterBinding.tvTdot.setVisibility(View.GONE);
+        }
+
         if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")) {
             navigationFooterBinding.tvLdot.setVisibility(View.VISIBLE);
             binding.imgLocation.setVisibility(View.VISIBLE);
