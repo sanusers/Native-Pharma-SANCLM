@@ -2462,8 +2462,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     Button btn_save = deviationConfirmation.findViewById(R.id.btn_save);
                                     heading.setText(R.string.alert);
                                     btn_save.setText(requireContext().getString(R.string.ok));
-                                    btn_clear.setText(requireContext().getString(R.string.no));
-                                    content.setText(json.getString("Msg"));
+                                    btn_clear.setText(requireContext().getString(R.string.cancel));
+                                    content.setText(json.optString("Msg"));
                                     content.setVisibility(View.VISIBLE);
                                     btn_clear.setVisibility(View.INVISIBLE);
                                     ed_remarks.setVisibility(View.INVISIBLE);
@@ -2474,6 +2474,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                         deviationConfirmation.dismiss();
                                     });
 //                                    btn_clear.setOnClickListener(view -> {
+//                                        disableSession1();
+//                                        if(DayPlanCount.equalsIgnoreCase("2")) {
+//                                            disableSession2();
+//                                        }
+//                                        enableSave();
+//                                        setUpWorkPlan();
 //                                        deviationConfirmation.dismiss();
 //                                    });
 //                                    iv_close.setOnClickListener(view -> deviationConfirmation.dismiss());
