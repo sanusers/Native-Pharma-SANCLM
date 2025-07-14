@@ -24,6 +24,9 @@ public interface STPOfflineDataDao {
     @Query("DELETE FROM `STP_OFFLINE_TABLE`")
     void deleteAllData();
 
+    @Query("DELETE FROM `STP_OFFLINE_TABLE` WHERE `DAY_ID` = :dayID")
+    void deleteByDayID(String dayID);
+
     @Query("DELETE FROM `STP_OFFLINE_TABLE` WHERE `SYNC_STATUS` = :status")
     void deleteAllData(String status);
 
@@ -35,6 +38,9 @@ public interface STPOfflineDataDao {
 
     @Query("UPDATE `STP_OFFLINE_TABLE` SET `SYNC_STATUS` = :status WHERE `DAY_ID` = :dayID")
     void saveDaySyncStatus(String dayID, String status);
+
+    @Query("SELECT `DAY_ID` FROM `STP_OFFLINE_TABLE`")
+    List<String> getAllSTPDayID();
 
     @Query("SELECT * FROM `STP_OFFLINE_TABLE`")
     List<STPOfflineDataTable> getAllSTPData();
@@ -50,6 +56,9 @@ public interface STPOfflineDataDao {
 
     @Query("SELECT COUNT(1) > 0 FROM `STP_OFFLINE_TABLE` WHERE `SYNC_STATUS` = '1'")
     boolean isNonSyncAvailable();
+
+    @Query("SELECT COUNT(1) > 0 FROM `STP_OFFLINE_TABLE` WHERE `STATUS` != '0'")
+    boolean isNotApproved();
 
     default STPOfflineDataTable getSTPDataOfDayOrNew(String dayID) {
         STPOfflineDataTable stpOfflineDataTable = getSTPDataOfDay(dayID);

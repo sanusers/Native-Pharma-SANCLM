@@ -32,14 +32,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +54,6 @@ import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
-import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -68,7 +63,6 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataDao;
 import saneforce.sanzen.roomdatabase.STPOfflineTableDetails.STPOfflineDataTable;
 import saneforce.sanzen.storage.SharedPref;
-import saneforce.sanzen.utility.TimeUtils;
 
 public class ListedDoctorFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
@@ -504,7 +498,7 @@ public class ListedDoctorFragment extends Fragment {
                                 Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                 if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
                                     if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
-                                        custListArrayList = SaveData(jsonObject, i);
+                                        custListArrayList = SaveData(jsonObject, i, true);
                                     }
                                 }
                             } else {
@@ -512,7 +506,7 @@ public class ListedDoctorFragment extends Fragment {
                                 float[] distance = new float[2];
                                 Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                                 if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
-                                    custListArrayList = SaveData(jsonObject, i);
+                                    custListArrayList = SaveData(jsonObject, i, true);
                                 }
                             }
                         }
@@ -530,7 +524,7 @@ public class ListedDoctorFragment extends Fragment {
 //                            custListArrayList = SaveData(jsonObject, i);
 //                        }
 
-                        custListArrayList = SaveData(jsonObject, i);
+                        custListArrayList = SaveData(jsonObject, i, false);
                     }
                 } catch (Exception e) {
                     Log.v("DrCall", "dr--error-1-" + e);
@@ -593,46 +587,54 @@ public class ListedDoctorFragment extends Fragment {
         }
     }
 
-    private ArrayList<CustList> SaveData(JSONObject jsonObject, int i) {
+    private ArrayList<CustList> SaveData(JSONObject jsonObject, int i, boolean isFenced) {
         try {
             String brands = getBrands(jsonObject.getString("MappProds"));
             if((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
-                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
+                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) && !stpOfflineDataDao.isNotApproved()))
                     && !deviation.equalsIgnoreCase("1")) {
-                List<String> drList = new ArrayList<>();
-                if(tpDataObj != null) {
-                    Type type = new TypeToken<ModelClass>() {
-                    }.getType();
-                    ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
-                    int fwSession = -1;
-                    if(!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(0).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)){
-                        fwSession = 0;
-                    } else if((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(1).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)) {
-                        fwSession = 1;
-                    }
-                    if(fwSession != -1) {
-                        for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(fwSession).getListedDr()) {
-                            drList.add(subClass.getCode());
+                if((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && !stpOfflineDataDao.isNotApproved())) {
+                    STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workDayCode);
+                    List<String> drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
+                    Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
+                    if(!drList.isEmpty()) {
+                        if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+                            prepareData(jsonObject, i, brands, false);
                         }
-                        Log.i("TP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
-                        if(!drList.isEmpty()) {
-                            if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
-                                prepareData(jsonObject, i, brands, false);
-                            }
-                        } else {
+                    }
+                } else if(tpDataObj != null) {
+//                    Type type = new TypeToken<ModelClass>() {
+//                    }.getType();
+//                    ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
+//                    int fwSession = -1;
+//                    if(!modelClass.getSessionList().isEmpty() && modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(0).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)){
+//                        fwSession = 0;
+//                    } else if((modelClass.getSessionList().size() > 1) && modelClass.getSessionList().get(1).getWorkType().getFWFlg().equalsIgnoreCase("F") && modelClass.getSessionList().get(1).getHQ().getCode().equalsIgnoreCase(DcrCallTabLayoutActivity.TodayPlanSfCode)) {
+//                        fwSession = 1;
+//                    }
+//                    if(fwSession != -1) {
+//                        for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(fwSession).getListedDr()) {
+//                            drList.add(subClass.getCode());
+//                        }
+//                        Log.i("TP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
+//                        if(!drList.isEmpty()) {
+//                            if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+//                                prepareData(jsonObject, i, brands, false);
+//                            }
+//                        } else {
                             if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
                                 prepareData(jsonObject, i, brands, false);
-                            } else {
-                                prepareData(jsonObject, i, brands, true);
+//                            } else {
+//                                prepareData(jsonObject, i, brands, true);
                             }
-                        }
-                    } else {
-                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
-                            prepareData(jsonObject, i, brands, false);
-                        } else {
-                            prepareData(jsonObject, i, brands, true);
-                        }
-                    }
+//                        }
+//                    } else {
+//                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+//                            prepareData(jsonObject, i, brands, false);
+//                        } else {
+//                            prepareData(jsonObject, i, brands, true);
+//                        }
+//                    }
                 }else {
                     if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
                         prepareData(jsonObject, i, brands, false);
@@ -641,16 +643,21 @@ public class ListedDoctorFragment extends Fragment {
                     }
                 }
             } else if((((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))
-                    && (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
+                    || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1"))))
                     && deviation.equalsIgnoreCase("1")) {
-                STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDay(workDayCode);
-                List<String> drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
-                Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
-                if(!drList.isEmpty()) {
-                    if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+//                STPOfflineDataTable stpOfflineDataTable = stpOfflineDataDao.getSTPDataOfDayOrNew(workDayCode);
+//                List<String> drList = Arrays.asList(CommonUtilsMethods.removeLastComma(stpOfflineDataTable.getDoctorCode()).split(","));
+//                Log.i("STP DR LIST", "SaveData: " + Arrays.toString(drList.toArray()));
+//                if(!drList.isEmpty()) {
+//                    if(SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code")) && (!drList.isEmpty() && drList.contains(jsonObject.getString("Code")))) {
+//                        prepareData(jsonObject, i, brands, false);
+//                    }
+//                } else
+                if(isFenced){
+                    if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
                         prepareData(jsonObject, i, brands, false);
                     }
-                } else {
+                }else {
                     if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
                         prepareData(jsonObject, i, brands, false);
                     } else {
@@ -665,7 +672,7 @@ public class ListedDoctorFragment extends Fragment {
             Log.v("DrCall", "--brands---" + brands);
         } catch (Exception e) {
             Log.v("DrCall", "--1111---" + e.toString());
-
+            e.printStackTrace();
         }
         return custListArrayList;
     }

@@ -2,170 +2,495 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/_200sdp"
+    android:layout_width="@dimen/_300sdp"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/_2sdp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txt_heading"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_4sdp"
-            android:layout_marginTop="@dimen/_4sdp"
-            android:fontFamily="@font/satoshi_bold"
-            android:gravity="start"
-            android:paddingHorizontal="@dimen/_3sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:text="@string/customer_check_out"
-            android:textColor="@color/dark_purple"
-            android:textSize="@dimen/_9ssp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/view2"
-            app:layout_constraintEnd_toStartOf="@id/img_close"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/img_close"
-            android:layout_width="@dimen/_12sdp"
-            android:layout_height="@dimen/_12sdp"
-            android:layout_marginEnd="@dimen/_4sdp"
-            android:src="@drawable/img_close"
-            app:layout_constraintBottom_toBottomOf="@id/txt_heading"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/txt_heading"
-            app:layout_constraintTop_toTopOf="@id/txt_heading"
-            tools:ignore="ContentDescription" />
-
-        <View
-            android:id="@+id/view2"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_1sdp"
-            android:layout_marginVertical="@dimen/_2sdp"
-            android:background="@color/bg_grey"
-            app:layout_constraintBottom_toTopOf="@id/txt_date_time"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_heading" />
-
-        <TextView
-            android:id="@+id/txt_date_time"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_4sdp"
-            android:layout_marginTop="@dimen/_1sdp"
-            android:fontFamily="@font/satoshi_medium"
-            android:gravity="start"
-            android:paddingHorizontal="@dimen/_3sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:singleLine="true"
-            android:text="Date and Time"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_7ssp"
-            android:textStyle="normal"
-            app:layout_constraintBottom_toTopOf="@id/txt_latlong_tag"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/view2" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/txt_latlong_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_4sdp"
-            android:layout_marginTop="@dimen/_4sdp"
-            android:drawablePadding="@dimen/_6sdp"
-            android:fontFamily="@font/satoshi_bold"
-            android:gravity="start"
-            android:paddingHorizontal="@dimen/_3sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:text="@string/latitude_longitude"
-            android:textColor="@color/dark_purple"
-            android:textSize="@dimen/_7ssp"
-            android:textStyle="bold"
-            app:drawableStartCompat="@drawable/img_loc"
-            app:layout_constraintBottom_toTopOf="@id/txt_lat_lng"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_date_time" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/txt_lat_lng"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_4sdp"
-            android:layout_marginStart="@dimen/_18sdp"
-            android:layout_marginTop="@dimen/_1sdp"
-            android:layout_marginEnd="@dimen/_2sdp"
-            android:fontFamily="@font/satoshi_medium"
-            android:gravity="start"
-            android:paddingHorizontal="@dimen/_3sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:singleLine="false"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_7ssp"
-            android:textStyle="normal"
-            app:layout_constraintBottom_toTopOf="@id/txt_address_tag"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_latlong_tag" />
+                <TextView
+                    android:id="@+id/txt_heading_in"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="start"
+                    android:paddingHorizontal="@dimen/_3sdp"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:text="@string/check_in"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_9ssp"
+                    android:textStyle="bold"
+                    android:drawablePadding="@dimen/_5sdp"
+                    app:drawableStartCompat="@drawable/outline_location_on_14"
+                    app:drawableTint="@color/green_60"
+                    app:layout_constraintBottom_toTopOf="@id/view_2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/txt_address_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_4sdp"
-            android:layout_marginTop="@dimen/_4sdp"
-            android:drawablePadding="@dimen/_6sdp"
-            android:fontFamily="@font/satoshi_bold"
-            android:gravity="start"
-            android:paddingHorizontal="@dimen/_3sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:text="@string/address"
-            android:textColor="@color/dark_purple"
-            android:textSize="@dimen/_9ssp"
-            android:textStyle="bold"
-            app:drawableStartCompat="@drawable/btn_marker"
-            app:layout_constraintBottom_toTopOf="@id/txt_address"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_lat_lng" />
+                <!--            <ImageView-->
+                <!--                android:id="@+id/img_close"-->
+                <!--                android:layout_width="@dimen/_12sdp"-->
+                <!--                android:layout_height="@dimen/_12sdp"-->
+                <!--                android:layout_marginEnd="@dimen/_4sdp"-->
+                <!--                android:src="@drawable/img_close"-->
+                <!--                app:layout_constraintBottom_toBottomOf="@id/txt_heading"-->
+                <!--                app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                app:layout_constraintStart_toEndOf="@id/txt_heading"-->
+                <!--                app:layout_constraintTop_toTopOf="@id/txt_heading"-->
+                <!--                tools:ignore="ContentDescription" />-->
 
-        <TextView
-            android:id="@+id/txt_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_4sdp"
-            android:layout_marginStart="@dimen/_18sdp"
-            android:layout_marginTop="@dimen/_1sdp"
-            android:layout_marginEnd="@dimen/_2sdp"
-            android:fontFamily="@font/satoshi_medium"
-            android:gravity="start"
-            android:paddingHorizontal="@dimen/_3sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:singleLine="false"
-            android:text="@string/address"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_7ssp"
-            android:textStyle="normal"
-            app:layout_constraintBottom_toTopOf="@id/btn_checkOut"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_address_tag" />
+                <View
+                    android:id="@+id/view_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:layout_marginVertical="@dimen/_2sdp"
+                    android:background="@color/bg_grey"
+                    app:layout_constraintBottom_toTopOf="@id/txt_date_time_in"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_heading_in" />
+
+                <!--            <ImageView-->
+                <!--                android:id="@+id/img_cust_check_in"-->
+                <!--                android:layout_width="@dimen/_40sdp"-->
+                <!--                android:layout_height="@dimen/_40sdp"-->
+                <!--                android:layout_marginVertical="@dimen/_4sdp"-->
+                <!--                android:src="@drawable/img_cus_checkin"-->
+                <!--                app:layout_constraintBottom_toTopOf="@id/txt_content_top"-->
+                <!--                app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                app:layout_constraintStart_toStartOf="parent"-->
+                <!--                app:layout_constraintTop_toBottomOf="@id/view_2"-->
+                <!--                tools:ignore="ContentDescription" />-->
+
+                <!--            <ImageView-->
+                <!--                android:id="@+id/img_cust"-->
+                <!--                android:layout_width="@dimen/_15sdp"-->
+                <!--                android:layout_height="@dimen/_15sdp"-->
+                <!--                android:src="@drawable/doctor_img"-->
+                <!--                app:layout_constraintVertical_bias="0.06"-->
+                <!--                app:layout_constraintHorizontal_bias="0.51"-->
+                <!--                app:layout_constraintStart_toStartOf="@id/img_cust_check_in"-->
+                <!--                app:layout_constraintEnd_toEndOf="@id/img_cust_check_in"-->
+                <!--                app:layout_constraintTop_toTopOf="@id/img_cust_check_in"-->
+                <!--                app:layout_constraintBottom_toBottomOf="@id/img_cust_check_in"/>-->
+
+                <!--            <TextView-->
+                <!--                android:id="@+id/txt_content_top"-->
+                <!--                android:layout_width="wrap_content"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:layout_marginHorizontal="@dimen/_4sdp"-->
+                <!--                android:drawablePadding="@dimen/_6sdp"-->
+                <!--                android:fontFamily="@font/satoshi_medium"-->
+                <!--                android:gravity="center"-->
+                <!--                android:paddingHorizontal="@dimen/_3sdp"-->
+                <!--                android:paddingVertical="@dimen/_2sdp"-->
+                <!--                android:singleLine="true"-->
+                <!--                android:text="@string/you_re_going_to_visit"-->
+                <!--                android:textColor="@color/black"-->
+                <!--                android:textSize="@dimen/_7ssp"-->
+                <!--                android:textStyle="normal"-->
+                <!--                app:layout_constraintBottom_toTopOf="@id/txt_cus_name"-->
+                <!--                app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                app:layout_constraintStart_toStartOf="parent"-->
+                <!--                app:layout_constraintTop_toBottomOf="@id/img_cust_check_in" />-->
+
+                <!--            <TextView-->
+                <!--                android:id="@+id/txt_cus_name"-->
+                <!--                android:layout_width="wrap_content"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:layout_marginHorizontal="@dimen/_4sdp"-->
+                <!--                android:drawablePadding="@dimen/_6sdp"-->
+                <!--                android:fontFamily="@font/satoshi_bold"-->
+                <!--                android:gravity="center"-->
+                <!--                android:paddingHorizontal="@dimen/_3sdp"-->
+                <!--                android:paddingVertical="@dimen/_2sdp"-->
+                <!--                android:singleLine="true"-->
+                <!--                android:text="Name"-->
+                <!--                android:textColor="@color/black"-->
+                <!--                android:textSize="@dimen/_7ssp"-->
+                <!--                android:textStyle="normal"-->
+                <!--                app:layout_constraintBottom_toTopOf="@id/view3"-->
+                <!--                app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                app:layout_constraintStart_toStartOf="parent"-->
+                <!--                app:layout_constraintTop_toBottomOf="@id/txt_content_top" />-->
+
+                <!--            <View-->
+                <!--                android:id="@+id/view3"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="@dimen/_1sdp"-->
+                <!--                android:layout_marginHorizontal="@dimen/_6sdp"-->
+                <!--                android:layout_marginVertical="@dimen/_2sdp"-->
+                <!--                android:background="@color/bg_grey"-->
+                <!--                app:layout_constraintBottom_toTopOf="@id/txt_date_time"-->
+                <!--                app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                app:layout_constraintStart_toStartOf="parent"-->
+                <!--                app:layout_constraintTop_toBottomOf="@id/txt_cus_name" />-->
+
+                <TextView
+                    android:id="@+id/txt_date_time_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_4sdp"
+                    android:layout_marginTop="@dimen/_1sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:paddingHorizontal="@dimen/_3sdp"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:singleLine="true"
+                    android:text="Date and Time"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="normal"
+                    android:drawablePadding="@dimen/_5sdp"
+                    app:drawableStartCompat="@drawable/baseline_calendar_month_14"
+                    app:layout_constraintBottom_toTopOf="@id/txt_latlong_tag_in"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/view_2" />
+
+                <TextView
+                    android:id="@+id/txt_latlong_tag_in"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:drawablePadding="@dimen/_6sdp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="start"
+                    android:paddingHorizontal="@dimen/_3sdp"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:text="@string/latitude_longitude"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/outline_my_location_14"
+                    app:layout_constraintBottom_toTopOf="@id/txt_lat_lng_in"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_date_time_in" />
+
+                <TextView
+                    android:id="@+id/txt_lat_lng_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_4sdp"
+                    android:layout_marginStart="@dimen/_18sdp"
+                    android:layout_marginTop="@dimen/_1sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:paddingHorizontal="@dimen/_3sdp"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:singleLine="false"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toTopOf="@id/txt_address_tag_in"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_latlong_tag_in" />
+
+                <TextView
+                    android:id="@+id/txt_address_tag_in"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:drawablePadding="@dimen/_6sdp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="start"
+                    android:paddingHorizontal="@dimen/_3sdp"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:text="@string/address"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/outline_home_pin_14"
+                    app:layout_constraintBottom_toTopOf="@id/txt_address_in"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_lat_lng_in" />
+
+                <TextView
+                    android:id="@+id/txt_address_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_4sdp"
+                    android:layout_marginStart="@dimen/_18sdp"
+                    android:layout_marginTop="@dimen/_1sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:paddingHorizontal="@dimen/_3sdp"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:singleLine="false"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_address_tag_in"
+                    tools:text="@string/address" />
+
+                <!--            <TextView-->
+                <!--                android:id="@+id/txt_content_in"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:layout_marginHorizontal="@dimen/_4sdp"-->
+                <!--                android:layout_marginTop="@dimen/_1sdp"-->
+                <!--                android:fontFamily="@font/satoshi_bold"-->
+                <!--                android:gravity="start"-->
+                <!--                android:paddingHorizontal="@dimen/_3sdp"-->
+                <!--                android:paddingVertical="@dimen/_2sdp"-->
+                <!--                android:text="@string/confirm_check_in"-->
+                <!--                android:textColor="@color/gray_med"-->
+                <!--                android:textSize="@dimen/_7ssp"-->
+                <!--                android:textStyle="normal"-->
+                <!--                app:layout_constraintBottom_toTopOf="@id/btn_checkIn"-->
+                <!--                app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                app:layout_constraintHorizontal_bias="0.0"-->
+                <!--                app:layout_constraintStart_toStartOf="parent"-->
+                <!--                app:layout_constraintTop_toBottomOf="@id/txt_address_in" />-->
+
+                <!--            <com.google.android.material.button.MaterialButton-->
+                <!--                android:id="@+id/btn_checkIn"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:layout_marginHorizontal="@dimen/_4sdp"-->
+                <!--                android:layout_marginVertical="@dimen/_5sdp"-->
+                <!--                android:background="@drawable/bg_purple"-->
+                <!--                android:fontFamily="@font/satoshi_bold"-->
+                <!--                android:text="@string/check_in"-->
+                <!--                android:textAllCaps="false"-->
+                <!--                android:textColor="@color/white"-->
+                <!--                android:textStyle="bold"-->
+                <!--                app:icon="@drawable/btn_check_in"-->
+                <!--                app:iconGravity="textStart"-->
+                <!--                app:iconPadding="@dimen/_4sdp"-->
+                <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--                app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                app:layout_constraintStart_toStartOf="parent"-->
+                <!--                app:layout_constraintTop_toBottomOf="@id/txt_content_in"-->
+                <!--                app:layout_constraintVertical_bias="1.0" />-->
+
+                <ProgressBar
+                    android:id="@+id/marker_progress"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:indeterminate="true"
+                    android:indeterminateOnly="true"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/bg_grey" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/txt_heading"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="start"
+                    android:paddingHorizontal="@dimen/_3sdp"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:text="@string/check_out"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_9ssp"
+                    android:textStyle="bold"
+                    android:drawablePadding="@dimen/_5sdp"
+                    app:drawableStartCompat="@drawable/outline_location_on_14"
+                    app:drawableTint="@color/red_60"
+                    app:layout_constraintBottom_toTopOf="@id/view2"
+                    app:layout_constraintEnd_toStartOf="@id/img_close"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/img_close"
+                    android:layout_width="@dimen/_12sdp"
+                    android:layout_height="@dimen/_12sdp"
+                    android:layout_marginEnd="@dimen/_4sdp"
+                    android:src="@drawable/img_close"
+                    app:layout_constraintBottom_toBottomOf="@id/txt_heading"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/txt_heading"
+                    app:layout_constraintTop_toTopOf="@id/txt_heading"
+                    tools:ignore="ContentDescription" />
+
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:layout_marginVertical="@dimen/_2sdp"
+                    android:background="@color/bg_grey"
+                    app:layout_constraintBottom_toTopOf="@id/txt_date_time"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_heading" />
+
+                <TextView
+                    android:id="@+id/txt_date_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_4sdp"
+                    android:layout_marginTop="@dimen/_1sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:paddingHorizontal="@dimen/_3sdp"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:singleLine="true"
+                    android:text="Date and Time"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="normal"
+                    android:drawablePadding="@dimen/_5sdp"
+                    app:drawableStartCompat="@drawable/baseline_calendar_month_14"
+                    app:layout_constraintBottom_toTopOf="@id/txt_latlong_tag"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/view2" />
+
+                <TextView
+                    android:id="@+id/txt_latlong_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:drawablePadding="@dimen/_6sdp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="start"
+                    android:paddingHorizontal="@dimen/_3sdp"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:text="@string/latitude_longitude"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/outline_my_location_14"
+                    app:layout_constraintBottom_toTopOf="@id/txt_lat_lng"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_date_time" />
+
+                <TextView
+                    android:id="@+id/txt_lat_lng"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_4sdp"
+                    android:layout_marginStart="@dimen/_18sdp"
+                    android:layout_marginTop="@dimen/_1sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:paddingHorizontal="@dimen/_3sdp"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:singleLine="false"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toTopOf="@id/txt_address_tag"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_latlong_tag" />
+
+                <TextView
+                    android:id="@+id/txt_address_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:drawablePadding="@dimen/_6sdp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="start"
+                    android:paddingHorizontal="@dimen/_3sdp"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:text="@string/address"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/outline_home_pin_14"
+                    app:layout_constraintBottom_toTopOf="@id/txt_address"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_lat_lng" />
+
+                <TextView
+                    android:id="@+id/txt_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_4sdp"
+                    android:layout_marginStart="@dimen/_18sdp"
+                    android:layout_marginTop="@dimen/_1sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:paddingHorizontal="@dimen/_3sdp"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:singleLine="false"
+                    android:text="@string/address"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_address_tag" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_checkOut"
@@ -183,12 +508,6 @@
             android:visibility="visible"
             app:icon="@drawable/btn_check_out"
             app:iconGravity="textStart"
-            app:iconPadding="@dimen/_4sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_address"
-            app:layout_constraintVertical_bias="1.0" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:iconPadding="@dimen/_4sdp" />
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

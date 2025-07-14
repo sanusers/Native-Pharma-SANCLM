@@ -149,26 +149,34 @@ public class TourPlanActivity extends AppCompatActivity {
 
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
-
-        if(SharedPref.getSfType(this).equalsIgnoreCase("1") && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0") && (SharedPref.getStpStatus(TourPlanActivity.this).isEmpty() || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Planning...") || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Rejected"))) {
-            commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Prepare Standard Tour Plan and get Approved to prepare Tour Plan");
-            Intent intent = new Intent(getApplicationContext(), StandardTourPlanActivity.class);
-            startActivity(intent);
-            finish();
-        }else if(SharedPref.getSfType(this).equalsIgnoreCase("1") && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0") && (SharedPref.getStpStatus(TourPlanActivity.this).isEmpty() || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Waiting for approval"))) {
-            commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Standard Tour Plan must be approved to enter Tour Plan");
-            finish();
-        }
-
-        setContentView(binding.getRoot());
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         roomDB = RoomDB.getDatabase(getApplicationContext());
         tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
         tourPlanOnlineDataDao = roomDB.tourPlanOnlineDataDao();
         stpOfflineDataDao = roomDB.stpOfflineDataDao();
         masterDataDao = roomDB.masterDataDao();
-        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
-        commonUtilsMethods.setUpLanguage(getApplicationContext());
+
+//        if(SharedPref.getSfType(this).equalsIgnoreCase("1") && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0") && (SharedPref.getStpStatus(TourPlanActivity.this).isEmpty() || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Planning...") || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Rejected"))) {
+        if(SharedPref.getSfType(this).equalsIgnoreCase("1")
+                && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0")
+                && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0")
+                && stpOfflineDataDao.isNotApproved()
+                && SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0")
+                && !SharedPref.getTpStartDate(context).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("-1")
+                && !SharedPref.getTpEndDate(context).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(context).equalsIgnoreCase("-1")) {
+            commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Prepare Standard Tour Plan and get Approved to prepare Tour Plan");
+            Intent intent = new Intent(getApplicationContext(), StandardTourPlanActivity.class);
+            startActivity(intent);
+            finish();
+        }
+//        else if(SharedPref.getSfType(this).equalsIgnoreCase("1") && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0") && (SharedPref.getStpStatus(TourPlanActivity.this).isEmpty() || SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Waiting for approval"))) {
+//            commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Standard Tour Plan must be approved to enter Tour Plan");
+//            Intent intent = new Intent(getApplicationContext(), StandardTourPlanActivity.class);
+//            startActivity(intent);
+//            finish();
+//        }
+
+        setContentView(binding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         addSaveBtnLayout = binding.tpNavigation.addSaveLayout;
         clrSaveBtnLayout = binding.tpNavigation.clrSaveBtnLayout;
         checkTpApiStaus();
@@ -655,7 +663,13 @@ public class TourPlanActivity extends AppCompatActivity {
                         jsonSave.put("tableName", "save_stp");
                         jsonSave.put("ReqDt", dateTime);
                         Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
-                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), "0"));
+                        int stpFlag = 3;
+                        try {
+                            stpFlag = Integer.parseInt(activeFlag);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
                     }
                 }
             }
@@ -1277,6 +1291,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
                 binding.tpStatusTxt.setText(Constants.STATUS_2);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
+                SetTpRangeStatus();
                 break;
             }
             case "3":{
@@ -1896,9 +1911,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
                         jsonObject.put("TPMonth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_31, localDate1.getMonth().toString()));
                         jsonObject.put("TPYear", localDate1.getYear());
-
-
-                        Log.v("ApprovalObject", "" + jsonObject.toString());
+                        Log.v("ApprovalObject", jsonObject.toString());
 
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "save/tp");

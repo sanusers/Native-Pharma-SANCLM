@@ -456,24 +456,31 @@
                                 android:textStyle="bold"
                                 tools:ignore="SpUsage" />
 
-                            <ImageView
-                                android:layout_width="@dimen/_6sdp"
-                                android:layout_height="@dimen/_6sdp"
-                                android:layout_marginStart="@dimen/_3sdp"
-                                android:src="@drawable/marker_geo_approval" />
-
-                            <TextView
-                                android:id="@+id/checkInMarker"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_marginStart="@dimen/_2sdp"
-                                android:fontFamily="@font/satoshi_medium"
-                                android:gravity="bottom|start"
-                                android:text="@string/view"
-                                android:textColor="@color/pink"
-                                android:textSize="@dimen/_5sdp"
-                                tools:ignore="SpUsage" />
+                                android:id="@+id/check_in_marker"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="@dimen/_6sdp"
+                                    android:layout_height="@dimen/_6sdp"
+                                    android:layout_marginStart="@dimen/_3sdp"
+                                    android:src="@drawable/marker_geo_approval" />
+
+                                <TextView
+                                    android:id="@+id/checkInMarker"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="@dimen/_2sdp"
+                                    android:fontFamily="@font/satoshi_medium"
+                                    android:gravity="bottom|start"
+                                    android:text="@string/view"
+                                    android:textColor="@color/pink"
+                                    android:textSize="@dimen/_5sdp"
+                                    tools:ignore="SpUsage" />
+                            </LinearLayout>
 
                         </LinearLayout>
 
@@ -544,6 +551,12 @@
                                 android:textStyle="bold"
                                 tools:ignore="SpUsage" />
 
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/check_out_marker"
+                            android:orientation="horizontal">
+
                             <ImageView
                                 android:layout_width="@dimen/_6sdp"
                                 android:layout_height="@dimen/_6sdp"
@@ -562,6 +575,7 @@
                                 android:textColor="@color/pink"
                                 android:textSize="@dimen/_5sdp"
                                 tools:ignore="SpUsage" />
+                        </LinearLayout>
 
                         </LinearLayout>
 

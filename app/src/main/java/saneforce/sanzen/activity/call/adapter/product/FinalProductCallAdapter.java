@@ -222,22 +222,23 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                 }
             } else {
                 stockBalance = "0";
-            }
+            } 
             holder.tv_stocks.setText(stockBalance);
             if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample")) {
                 holder.ed_samplesQty.setEnabled(true);
+                holder.ed_samplesQty.setText("");
             } else if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
                 if (Integer.parseInt(productListArrayList.get(position).getLast_stock()) > 0) {
                     holder.ed_samplesQty.setEnabled(true);
                 } else {
-                    //  holder.ed_samplesQty.setEnabled(false);
-                    holder.ed_samplesQty.setInputType(InputType.TYPE_NULL);
-                    holder.ed_samplesQty.setShowSoftInputOnFocus(false);
-                    holder.ed_samplesQty.setShowSoftInputOnFocus(false);
-                    holder.ed_samplesQty.setCursorVisible(false);
-                    holder.ed_samplesQty.setFocusableInTouchMode(false);
-                    holder.ed_samplesQty.setFocusable(false);
-                    holder.ed_samplesQty.setText("0");
+                      holder.ed_samplesQty.setEnabled(true);
+//                    holder.ed_samplesQty.setInputType(InputType.TYPE_NULL);
+//                    holder.ed_samplesQty.setShowSoftInputOnFocus(false);
+//                    holder.ed_samplesQty.setShowSoftInputOnFocus(false);
+//                    holder.ed_samplesQty.setCursorVisible(false);
+//                    holder.ed_samplesQty.setFocusableInTouchMode(false);
+//                    holder.ed_samplesQty.setFocusable(false);
+                    holder.ed_samplesQty.setText("");
                 }
             }
         } else {

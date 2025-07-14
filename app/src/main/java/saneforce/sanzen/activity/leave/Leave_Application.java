@@ -47,6 +47,8 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -670,6 +672,48 @@ public class Leave_Application extends AppCompatActivity {
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                             if(response.isSuccessful()) {
                                 Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
+                                try {
+                                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+                                    JSONArray wtJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+                                    String FWIndicator = "", WTName = "";
+                                    for (int i = 0; i<wtJsonArray.length(); i++) {
+                                        JSONObject jsonObject = wtJsonArray.optJSONObject(i);
+                                        if(jsonObject.optString("FWFlg").equalsIgnoreCase("L")) {
+                                            FWIndicator = jsonObject.optString("FWFlg");
+                                            WTName = jsonObject.optString("Name");
+                                            break;
+                                        }
+                                    }
+
+                                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TimeUtils.FORMAT_21);
+                                    LocalDate fromDate = LocalDate.parse(f_date, formatter);
+                                    LocalDate toDate = LocalDate.parse(t_date, formatter);
+
+                                    for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
+                                        JSONObject jsonObject = new JSONObject();
+                                        jsonObject.put("CustCode", "");
+                                        jsonObject.put("CustType", "0");
+                                        jsonObject.put("Dcr_dt", date.toString());
+                                        jsonObject.put("month_name", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_9, date.toString()));
+                                        jsonObject.put("Mnth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_31, date.toString()));
+                                        jsonObject.put("Yr", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_10, date.toString()));
+                                        jsonObject.put("vtm", CommonUtilsMethods.getCurrentInstance("hh:mm aa"));
+                                        jsonObject.put("CustName", "");
+                                        jsonObject.put("town_code", "");
+                                        jsonObject.put("FW_Indicator", FWIndicator);
+                                        jsonObject.put("WorkType_Name", WTName);
+                                        jsonObject.put("town_name", "");
+                                        jsonObject.put("Dcr_flag", "0");
+                                        jsonObject.put("SF_Code", "");
+                                        jsonObject.put("Trans_SlNo", "");
+                                        jsonObject.put("AMSLNo", "");
+                                        jsonObject.put("day_status", "1");
+                                        jsonArray.put(jsonObject);
+                                    }
+                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                                 commonUtilsMethods.showToastMessage(Leave_Application.this, "Leave Submitted Successfully");
                                 if(isLeaveEntitlementRequested) {
                                     leaveViewModel.updateLeaveStatusMasterSync();

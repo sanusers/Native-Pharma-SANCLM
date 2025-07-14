@@ -366,6 +366,7 @@ public class SharedPref {
     public static final String TodayDayPlanSfCode = "today_plan_sfcode";
     public static final String TodayDayPlanSfName = "today_plan_sfname";
     public static final String TodayDayPlanClusterCode = "today_plan_cluster_code";
+    public static final String TodayDayPlanClusterName = "today_plan_cluster_name";
 
     //TodayCalls
     public static final String TODAY_CALL_LIST = "today_call_list";
@@ -463,6 +464,11 @@ public class SharedPref {
     public static final String TAGGED_DCR_CUSTOMERS = "Tagged DCR Customers";
 
     public static final String DETAILING_IDLE_DURATION = "detailing_idle_duration";
+
+    public static final String TPDCR_DEVIATED_DATE = "TPDCR_Deviated_date";
+
+    public static final String DAY_CHECK_IN_DATA = "Day_Check_In_Data";
+    public static final String CHECK_IN_SKIP_DATE = "Check_In_Skip_Date";
 
     public static SharedPreferences.Editor editor;
 
@@ -797,10 +803,6 @@ public class SharedPref {
         editor.putString(WEEKOFF_AUTOPOST_NEED, jsonObject.optString("Weekoff_AutoPost_Need"));
         editor.putString(SLIDES_PATH, jsonObject.optString("slide_folder").replaceAll("\\\\",""));
         editor.putString(PROFILING_NEED, jsonObject.optString("DrProfile"));
-        editor.putString(STP_NEED, jsonObject.optString("STP_Need"));
-        editor.putString(STP_APPR_NEED, jsonObject.optString("STP_Appr_Need"));
-        editor.putString(STP_BASED_MTP, jsonObject.optString("STP_Based_MTP"));
-        editor.putString(STP_BASED_DCR, jsonObject.optString("STP_Based_DCR"));
         editor.putString(SEQ_DLY_CTRL, jsonObject.optString("Seq_dly_ctrl"));
         editor.putString(SEQ_DCR_LOCK_DAYS, jsonObject.optString("SeqDcrLockDays"));
         editor.putString(DELAY_HW_NEED, jsonObject.optString("Delay_HW_Need"));
@@ -2324,6 +2326,16 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TodayDayPlanClusterCode, "");
     }
 
+    public static void setTodayDayPlanClusterName(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TodayDayPlanClusterName, status).apply();
+    }
+
+    public static String getTodayDayPlanClusterName(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TodayDayPlanClusterName, "");
+    }
+
     public static void setCheckTodayCheckInOut(Context context, String date) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2680,6 +2692,16 @@ public class SharedPref {
         editor.putString(TPDCR_DEVIATION_APPR_STATUS, status).apply();
     }
 
+    public static void setTpDcrDeviatedDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TPDCR_DEVIATED_DATE, date).apply();
+    }
+
+    public static String getTpDcrDeviatedDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TPDCR_DEVIATED_DATE, "");
+    }
+
     public static void setLastCallSyncDate(Context context, String date) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2868,6 +2890,26 @@ public class SharedPref {
 
     public static String getDetailingIdleDuration(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DETAILING_IDLE_DURATION, "");
+    }
+
+    public static void setDayCheckInData(Context context, String data) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DAY_CHECK_IN_DATA, data).apply();
+    }
+
+    public static String getDayCheckInData(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DAY_CHECK_IN_DATA, "");
+    }
+
+    public static void setCheckInSkipDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CHECK_IN_SKIP_DATE, date).apply();
+    }
+
+    public static String getCheckInSkipDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CHECK_IN_SKIP_DATE, "");
     }
 
 }

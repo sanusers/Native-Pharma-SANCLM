@@ -26,6 +26,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 
 import saneforce.sanzen.BuildConfig;
 import saneforce.sanzen.R;
@@ -135,10 +136,20 @@ public class GPSTrack implements LocationListener {
             return;
         }
 
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); // Or PRIORITY_BALANCED_POWER_ACCURACY
-        locationRequest.setInterval(0); // Get updates as soon as possible
-        locationRequest.setFastestInterval(0); // Get updates as soon as possible
+//        LocationRequest locationRequest = LocationRequest.create();
+//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); // Or PRIORITY_BALANCED_POWER_ACCURACY
+////        locationRequest.setInterval(0); // Get updates as soon as possible
+////        locationRequest.setFastestInterval(0); // Get updates as soon as possible
+//        locationRequest.setInterval(1000);           // 1 second
+//        locationRequest.setFastestInterval(500);     // Accept updates as fast as 500ms
+//        locationRequest.setNumUpdates(1);            // Get one update and stop
+
+        LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000)
+                .setWaitForAccurateLocation(true)
+                .setMinUpdateIntervalMillis(500)
+                .setMaxUpdateDelayMillis(5000)
+                .setMaxUpdates(1)
+                .build();
 
         locationCallback = new LocationCallback() {
             @Override

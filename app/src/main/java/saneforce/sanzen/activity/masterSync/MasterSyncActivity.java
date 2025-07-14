@@ -1264,6 +1264,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)){
                                             isCallSynced = true;
                                             CallDataRestClass.resetcallValues(context);
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC_DUP, jsonArray.toString(), 2));
                                         }
                                         else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.DATE_SYNC)){
                                             isDateSynced = true;
@@ -1566,7 +1567,13 @@ public class MasterSyncActivity extends AppCompatActivity {
                     jsonSave.put("tableName", "save_stp");
                     jsonSave.put("ReqDt", dateTime);
                     Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
-                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), "0"));
+                    int stpFlag = 3;
+                    try {
+                        stpFlag = Integer.parseInt(activeFlag);
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
                 }
             }
         } catch (Exception e) {

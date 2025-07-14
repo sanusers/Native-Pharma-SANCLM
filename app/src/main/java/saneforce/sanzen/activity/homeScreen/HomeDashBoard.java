@@ -1257,7 +1257,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
 
-        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.standard_tour_plan))) {
+        if (item.getTitle().toString().equalsIgnoreCase(SharedPref.getStpCaption(this))) {
             Intent intent=new Intent(HomeDashBoard.this, StandardTourPlanActivity.class);
             startActivity(intent);
             return true;
@@ -1968,6 +1968,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             navigationFooterBinding.sequentialDot.setVisibility(View.GONE);
         }
 
+        if(SharedPref.getTpNeed(this).equalsIgnoreCase("0")
+                && SharedPref.getTpMandatoryNeed(this).equalsIgnoreCase("0")
+                && SharedPref.getTpbasedDcr(this).equalsIgnoreCase("0")
+                && !SharedPref.getTpStartDate(HomeDashBoard.this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(HomeDashBoard.this).equalsIgnoreCase("-1")
+                && !SharedPref.getTpEndDate(HomeDashBoard.this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(HomeDashBoard.this).equalsIgnoreCase("-1")) {
+            navigationFooterBinding.tvTdot.setVisibility(View.VISIBLE);
+        } else {
+            navigationFooterBinding.tvTdot.setVisibility(View.GONE);
+        }
+
         if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")) {
             navigationFooterBinding.tvLdot.setVisibility(View.VISIBLE);
             binding.imgLocation.setVisibility(View.VISIBLE);
@@ -2035,22 +2045,22 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 int mCurrentDate = Integer.parseInt(mCurrDate);
 
 
-             if (tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate) != null && !tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
+                if(tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate) != null && !tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan....");
                     TourplanFlog = "0";
                     SharedPref.setTpStatus(HomeDashBoard.this, true);
                     Intent intent = new Intent(HomeDashBoard.this, TourPlanActivity.class);
                     startActivity(intent);
-                } else if (tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate) != null && !tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")&&((mCurrentDate >= Start_Date))) {
-                      commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan...");
-                        if (End_Date < mCurrentDate) {
-                            SharedPref.setTpStatus(HomeDashBoard.this, true);
-                        } else {
-                            SharedPref.setTpStatus(HomeDashBoard.this, false);
-                        }
-                        Intent intent = new Intent(HomeDashBoard.this, TourPlanActivity.class);
-                        TourplanFlog="1";
-                        startActivity(intent);
+                }else if(tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate) != null && !tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3") && ((mCurrentDate>=Start_Date))) {
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare your tourplan...");
+                    if(End_Date<mCurrentDate) {
+                        SharedPref.setTpStatus(HomeDashBoard.this, true);
+                    }else {
+                        SharedPref.setTpStatus(HomeDashBoard.this, false);
+                    }
+                    Intent intent = new Intent(HomeDashBoard.this, TourPlanActivity.class);
+                    TourplanFlog = "1";
+                    startActivity(intent);
                 }else {
                     SharedPref.setTpStatus(HomeDashBoard.this, false);
                 }

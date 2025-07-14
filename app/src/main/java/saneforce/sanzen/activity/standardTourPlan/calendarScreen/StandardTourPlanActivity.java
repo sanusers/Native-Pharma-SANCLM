@@ -66,9 +66,11 @@ import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.DoctorCat
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.PlanForModel;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.model.SelectedDCRModel;
 import saneforce.sanzen.activity.standardTourPlan.unplannedVisitScreen.UnplannedVisitActivity;
+import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
+import saneforce.sanzen.commonClasses.STPDaySorter;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityStandardTourPlanBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -172,7 +174,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
     }
 
     private void checkApprovalButtonStatus() {
-        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() == totalDaysCount) && (stpFlag.equalsIgnoreCase("1") || stpFlag.equalsIgnoreCase("3")));
+        activityStandardTourPlanBinding.sendToApproval.setEnabled(selectedDcrMap != null && checkAllDocsSelected() && (stpOfflineDataDao.getTotalFilledCount() >= totalDaysCount) && (stpFlag.equalsIgnoreCase("1") || stpFlag.equalsIgnoreCase("3")));
     }
 
     @Override
@@ -185,7 +187,8 @@ public class StandardTourPlanActivity extends AppCompatActivity {
         populateAdapters();
         activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
         activityStandardTourPlanBinding.backArrow.setOnClickListener(v -> {
-            super.onBackPressed();
+            SharedPref.setTpSKIPDate(StandardTourPlanActivity.this, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
+            getOnBackPressedDispatcher().onBackPressed();
         });
 
         activityStandardTourPlanBinding.checkUnplannedVisits.setOnClickListener(view -> startActivity(new Intent(StandardTourPlanActivity.this, UnplannedVisitActivity.class)));
@@ -375,7 +378,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     jsonSave.put("tableName", "save_stp");
                     jsonSave.put("ReqDt", dateTime);
                     Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
-                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), "0"));
+                    int stpFlag = 3;
+                    try {
+                        stpFlag = Integer.parseInt(activeFlag);
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                    stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
                 }
             }
         } catch (Exception e) {
@@ -622,6 +631,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Kindly sync Standard Tour Plan Setup!");
                 startActivity(new Intent(StandardTourPlanActivity.this, MasterSyncActivity.class));
                 finish();
+            } else {
+                List<String> dayIDs = stpOfflineDataDao.getAllSTPDayID();
+                for (String dayID : dayIDs) {
+                    if(!this.dayIDs.contains(dayID)) {
+                        stpOfflineDataDao.deleteByDayID(dayID);
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1328,6 +1344,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     stpDataModels.add(new DCRFillteredModelClass(stpOfflineDataTable.getDayCaption(), stpOfflineDataTable.getDayID()));
                 }
             }
+            STPDaySorter.sortDays(stpDataModels, DCRFillteredModelClass::getCode);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1445,6 +1462,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     final int[] apiCount = {0};
                     for (STPOfflineDataTable stpOfflineDataTable : stpOfflineDataTableList) {
                         String dayID = stpOfflineDataTable.getDayID(), dayCaption = stpOfflineDataTable.getDayCaption(), strClusterID = stpOfflineDataTable.getClusterCode(), strClusterName = stpOfflineDataTable.getClusterName(), docCodes = stpOfflineDataTable.getDoctorCode(), docNames = stpOfflineDataTable.getDoctorName(), chmCodes = stpOfflineDataTable.getChemistCode(), chmNames = stpOfflineDataTable.getChemistName(), jsonObject = stpOfflineDataTable.getStpData();
+                        int stpFlag = stpOfflineDataTable.getStatus();
                         apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "save/stp");
@@ -1459,7 +1477,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                         JSONObject jsonObject1 = new JSONObject(response.body().toString());
                                         if(jsonObject1.optString("success").equals("true")) {
                                             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, dayCaption + " " + getString(R.string.saved_successfully));
-                                            stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, jsonObject, "0"));
+                                            stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, jsonObject, stpFlag, "0"));
                                         }else {
                                             commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally));
                                         }
@@ -1502,7 +1520,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             jsonObject.put("sfcode", SharedPref.getSfCode(this));
             jsonObject.put("division_code", CommonUtilsMethods.removeLastComma(SharedPref.getDivisionCode(this)));
             jsonObject.put("Rsf", SharedPref.getHqCode(this));
-            jsonObject.put("StpFlag", "2");
+            jsonObject.put("StpFlag", SharedPref.getStpApprNeed(this).equalsIgnoreCase("1") ? "0" : "2");
             jsonObject.put("tableName", "submit_stp");
             jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
             Log.v("json_save_stp", jsonObject.toString());

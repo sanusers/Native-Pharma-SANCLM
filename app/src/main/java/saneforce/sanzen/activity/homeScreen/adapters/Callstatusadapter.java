@@ -32,6 +32,7 @@ import java.util.TreeSet;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.EventCalenderModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -261,7 +262,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                     }
 
                     String selectedDate = String.format("%s-%s-%s", list.getYear(), monthConverted, dayConverted);
-                    if(selectedDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"))) {
+                    if(selectedDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && WorkPlanEntriesNeeded.datesNeeded != null && WorkPlanEntriesNeeded.datesNeeded.contains(selectedDate)) {
                         isApplicableDate = true;
                     }
                     for (String date : dateStrings) {

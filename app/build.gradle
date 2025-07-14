@@ -15,8 +15,8 @@ android {
         applicationId "saneforce.sanzen"
         minSdk 23
         targetSdk 35
-        versionCode 55
-        versionName "3.0.5"
+        versionCode 56
+        versionName "1.0.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -133,6 +133,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
     //Pdf viewer
+    implementation 'com.github.barteksc:pdfium-android:1.9.0'
 //    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
 //    implementation 'com.github.barteksc:AndroidPdfViewer:master-SNAPSHOT'
 //    implementation(name: 'android-pdf-viewer-2.8.2', ext: 'aar')

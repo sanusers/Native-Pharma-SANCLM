@@ -78,6 +78,7 @@ public class AddListActivity extends AppCompatActivity {
     private JSONObject jsonObject;
     private List<String> localDocCodeList, localChmCodeList;
     private Set<String> populatedDCRList;
+    private boolean isRouteSelected = false;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -119,8 +120,9 @@ public class AddListActivity extends AppCompatActivity {
         activityAddListBinding.btnSave.setOnClickListener(v -> {
             if(strClusterName.isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
-            }else if(selectedDataList.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, "Please select any " + drCap + " or" + chmCap);
+            }else if(selectedDCRMap.get(Constants.DOCTOR) != null && selectedDCRMap.get(Constants.DOCTOR).isEmpty()
+                    && selectedDCRMap.get(Constants.CHEMIST) != null && selectedDCRMap.get(Constants.CHEMIST).isEmpty()) {
+                commonUtilsMethods.showToastMessage(this, "Please select any " + drCap + " or " + chmCap);
             }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
                 commonUtilsMethods.showToastMessage(this, "Cannot Save, Already Approved");
             }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
@@ -131,6 +133,7 @@ public class AddListActivity extends AppCompatActivity {
         });
 
         activityAddListBinding.selectedClusters.setOnClickListener(v -> {
+            isRouteSelected = true;
             if (SharedPref.getStpStatus(this).equalsIgnoreCase("Approved")) {
                 commonUtilsMethods.showToastMessage(this, "Cannot Clear, Already Approved");
             }else if (SharedPref.getStpStatus(this).equalsIgnoreCase("Waiting For Approval")) {
@@ -240,7 +243,10 @@ public class AddListActivity extends AppCompatActivity {
                     dcrSelectionAdapter.getFilter().filter(searchString);
                 } else if(strClusterID.isEmpty()) {
                     UtilityClass.hideKeyboard(AddListActivity.this);
-                    commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.please_select_cluster));
+                    if(!isRouteSelected) {
+                        commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.please_select_cluster));
+                        isRouteSelected = false;
+                    }
                 }
             }
 
@@ -265,6 +271,10 @@ public class AddListActivity extends AppCompatActivity {
             }
         });
 
+        selectedDCR = Constants.CHEMIST;
+        populateDcrData();
+
+        selectedDCR = Constants.DOCTOR;
         populateDcrData();
     }
 
@@ -536,7 +546,7 @@ public class AddListActivity extends AppCompatActivity {
             activityAddListBinding.noData.setVisibility(View.GONE);
             activityAddListBinding.llDcrSelection.setVisibility(View.VISIBLE);
             activityAddListBinding.cvRightPane.setVisibility(View.VISIBLE);
-            dcrSelectionAdapter = new DCRSelectionAdapter(this, dataList, checkBoxClickListener, selectedDCR, mode, dayCaption);
+            dcrSelectionAdapter = new DCRSelectionAdapter(this, dataList, checkBoxClickListener, selectedDCR, mode, dayCaption, dayID);
             RecyclerView.LayoutManager dcrSelectionLayoutManager = new LinearLayoutManager(this);
             activityAddListBinding.rvDcrSelection.setLayoutManager(dcrSelectionLayoutManager);
             activityAddListBinding.rvDcrSelection.setAdapter(dcrSelectionAdapter);
@@ -729,7 +739,7 @@ public class AddListActivity extends AppCompatActivity {
                     }
                 }
             }
-            selectedDCRMap.put(dcr, new ArrayList<>());
+            selectedDCRMap.put(dcr, dcrModels);
         }
         activityAddListBinding.btnClear.setVisibility(View.GONE);
         populateDcrData();
@@ -805,7 +815,7 @@ public class AddListActivity extends AppCompatActivity {
                 strClusterName = "";
                 strClusterID = "";
             }
-            selectedDCRMap = new HashMap<>();
+//            selectedDCRMap = new HashMap<>();
             activityAddListBinding.selectedClusters.setText(strClusterName);
             clusterChangeClearDCRSelection();
         });
@@ -909,7 +919,7 @@ public class AddListActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "1"));
+            stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), 3, "1"));
 
             if(UtilityClass.isNetworkAvailable(this)) {
                 APICallSaveSTP();
@@ -936,7 +946,7 @@ public class AddListActivity extends AppCompatActivity {
                             JSONObject jsonObject1 = new JSONObject(response.body().toString());
                             if(jsonObject1.optString("success").equals("true")) {
                                 commonUtilsMethods.showToastMessage(AddListActivity.this, dayCaption + " " + getString(R.string.saved_successfully));
-                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), "0"));
+                                stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), 3, "0"));
                             }else {
                                 commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.stp_saved_locally));
                             }

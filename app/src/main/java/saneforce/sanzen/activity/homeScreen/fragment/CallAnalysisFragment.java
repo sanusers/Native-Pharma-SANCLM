@@ -2,11 +2,13 @@ package saneforce.sanzen.activity.homeScreen.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,16 +32,19 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.view.CustomMarkerView;
 import saneforce.sanzen.activity.homeScreen.view.ImageLineChartRenderer;
+import saneforce.sanzen.activity.login.LoginActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.CallAnalysisFagmentBinding;
@@ -57,12 +62,13 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     public static ArrayList<String> count_list = new ArrayList<>();
     public static Context context;
     CommonUtilsMethods commonUtilsMethods;
-    public static  String  Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
+    public static String Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
     public static int DrCallsCount, CheCallsCount, StkCallsCount, UnlCallSCount, CipCallsCount, HosCallsCount;
 
     static CallTableDao callTableDao;
     RoomDB db;
     private MasterDataDao masterDataDao;
+
     @Override
     public void onResume() {
         super.onResume();
@@ -70,19 +76,53 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         SetcallDetailsInLineChart();
     }
 
+    private final Handler handler = new Handler();
+    private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.getDefault());
+    private final Runnable updateClock = new Runnable() {
+        @Override
+        public void run() {
+            String currentTime = sdf.format(new Date());
+            callAnalysisBinding.clock.setText(currentTime);
+            handler.postDelayed(this, 1000);
+            try {
+                String checkInData = SharedPref.getDayCheckInData(requireContext());
+                if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && !checkInData.isEmpty() && HomeDashBoard.selectedDate != null) {
+                    JSONObject checkInObj = new JSONObject(checkInData);
+//                    SharedPref.setCheckInSkipDate(requireContext(), "");
+                    String currentDate = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5),
+                            previousDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, (LocalDate.now().minusDays(1)).toString()),
+                            homeDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, HomeDashBoard.selectedDate.toString()),
+                            checkInDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_5, checkInObj.optString("DateTime"));
+                    if(checkInDate.equalsIgnoreCase(previousDate) && homeDate.equalsIgnoreCase(previousDate) && !SharedPref.getCheckInSkipDate(requireContext()).equalsIgnoreCase(currentDate)) {
+                        SharedPref.setCheckInSkipDate(requireContext(), currentDate);
+                        Log.d("Clock", "run: log out");
+                        SharedPref.saveLoginState(requireContext(), false);
+                        Intent intent = new Intent(requireActivity(), LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        requireActivity().finishAffinity();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
     @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("Fragment_STATUS","OnResume");
+        Log.d("Fragment_STATUS", "OnResume");
         callAnalysisBinding = CallAnalysisFagmentBinding.inflate(inflater);
+        handler.post(updateClock);
         View v = callAnalysisBinding.getRoot();
 //        setScreenDesign();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         context = requireContext();
         db = RoomDB.getDatabase(getActivity());
-        callTableDao=db.callTableDao();
+        callTableDao = db.callTableDao();
         masterDataDao = db.masterDataDao();
         return v;
     }
@@ -95,141 +135,141 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
     public static int computePercent(int current, int total) {
         int percent = 0;
-        if (total > 0) percent = current * 100 / total;
+        if(total>0) percent = current * 100 / total;
         return percent;
     }
 
     public static void SetcallDetailsInLineChart() {
         try {
             Calendar calendar = Calendar.getInstance();
-            int month = calendar.get(Calendar.MONTH)+1;
+            int month = calendar.get(Calendar.MONTH) + 1;
 
-                DrCallsCount = callTableDao.getCurrentMonthCallsCount(  String.valueOf(month), "1");
-                CheCallsCount = callTableDao.getCurrentMonthCallsCount(  String.valueOf(month), "2");
-                StkCallsCount = callTableDao.getCurrentMonthCallsCount(  String.valueOf(month), "3");
-                UnlCallSCount = callTableDao.getCurrentMonthCallsCount(  String.valueOf(month), "4");
-                CipCallsCount = callTableDao.getCurrentMonthCallsCount(  String.valueOf(month), "5");
-                HosCallsCount = callTableDao.getCurrentMonthCallsCount(  String.valueOf(month), "6");
-                callAnalysisBinding.txtDocCount.setText(String.valueOf(DrCallsCount));
-                callAnalysisBinding.txtCheCount.setText(String.valueOf(CheCallsCount));
-                callAnalysisBinding.txtStockCount.setText(String.valueOf(StkCallsCount));
-                callAnalysisBinding.txtUnlistCount.setText(String.valueOf(UnlCallSCount));
-                callAnalysisBinding.txtCipCount.setText(String.valueOf(CipCallsCount));
-                callAnalysisBinding.txtHosCount.setText(String.valueOf(HosCallsCount));
+            DrCallsCount = callTableDao.getCurrentMonthCallsCount(String.valueOf(month), "1");
+            CheCallsCount = callTableDao.getCurrentMonthCallsCount(String.valueOf(month), "2");
+            StkCallsCount = callTableDao.getCurrentMonthCallsCount(String.valueOf(month), "3");
+            UnlCallSCount = callTableDao.getCurrentMonthCallsCount(String.valueOf(month), "4");
+            CipCallsCount = callTableDao.getCurrentMonthCallsCount(String.valueOf(month), "5");
+            HosCallsCount = callTableDao.getCurrentMonthCallsCount(String.valueOf(month), "6");
+            callAnalysisBinding.txtDocCount.setText(String.valueOf(DrCallsCount));
+            callAnalysisBinding.txtCheCount.setText(String.valueOf(CheCallsCount));
+            callAnalysisBinding.txtStockCount.setText(String.valueOf(StkCallsCount));
+            callAnalysisBinding.txtUnlistCount.setText(String.valueOf(UnlCallSCount));
+            callAnalysisBinding.txtCipCount.setText(String.valueOf(CipCallsCount));
+            callAnalysisBinding.txtHosCount.setText(String.valueOf(HosCallsCount));
 
-                if (SharedPref.getSfType(context).equalsIgnoreCase("2")) {
-                    callAnalysisBinding.imgDoc.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.imgChe.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.imgStock.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.imgUnlist.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.imgCip.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.imgHos.setVisibility(View.VISIBLE);
+            if(SharedPref.getSfType(context).equalsIgnoreCase("2")) {
+                callAnalysisBinding.imgDoc.setVisibility(View.VISIBLE);
+                callAnalysisBinding.imgChe.setVisibility(View.VISIBLE);
+                callAnalysisBinding.imgStock.setVisibility(View.VISIBLE);
+                callAnalysisBinding.imgUnlist.setVisibility(View.VISIBLE);
+                callAnalysisBinding.imgCip.setVisibility(View.VISIBLE);
+                callAnalysisBinding.imgHos.setVisibility(View.VISIBLE);
 
-                    callAnalysisBinding.FlDocProgress.setVisibility(View.GONE);
-                    callAnalysisBinding.FlCheProgress.setVisibility(View.GONE);
-                    callAnalysisBinding.FlStockProgress.setVisibility(View.GONE);
-                    callAnalysisBinding.FlUnistProgress.setVisibility(View.GONE);
-                    callAnalysisBinding.FlCipProgress.setVisibility(View.GONE);
-                    callAnalysisBinding.FlHosProgress.setVisibility(View.GONE);
+                callAnalysisBinding.FlDocProgress.setVisibility(View.GONE);
+                callAnalysisBinding.FlCheProgress.setVisibility(View.GONE);
+                callAnalysisBinding.FlStockProgress.setVisibility(View.GONE);
+                callAnalysisBinding.FlUnistProgress.setVisibility(View.GONE);
+                callAnalysisBinding.FlCipProgress.setVisibility(View.GONE);
+                callAnalysisBinding.FlHosProgress.setVisibility(View.GONE);
 
-                } else {
-                    //Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
-                    callAnalysisBinding.txtDocCount.setText(DrCallsCount + " / " + Doc_count);
-                    callAnalysisBinding.txtCheCount.setText(CheCallsCount + " / " + Che_count);
-                    callAnalysisBinding.txtStockCount.setText(StkCallsCount + " / " + Strck_count);
-                    callAnalysisBinding.txtUnlistCount.setText(UnlCallSCount + " / " +  Unlist_count);
-                    callAnalysisBinding.txtCipCount.setText(CipCallsCount + " / " +  Cip_count);
-                    callAnalysisBinding.txtHosCount.setText(HosCallsCount + " / " +  Hosp_count);
+            }else {
+                //Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
+                callAnalysisBinding.txtDocCount.setText(DrCallsCount + " / " + Doc_count);
+                callAnalysisBinding.txtCheCount.setText(CheCallsCount + " / " + Che_count);
+                callAnalysisBinding.txtStockCount.setText(StkCallsCount + " / " + Strck_count);
+                callAnalysisBinding.txtUnlistCount.setText(UnlCallSCount + " / " + Unlist_count);
+                callAnalysisBinding.txtCipCount.setText(CipCallsCount + " / " + Cip_count);
+                callAnalysisBinding.txtHosCount.setText(HosCallsCount + " / " + Hosp_count);
 
-                    int doc_progress_value, che_progress_value, stockiest_progress_value, unlistered_progress_value, cip_progress_value, hos_progress_value;
-                    doc_progress_value = computePercent(DrCallsCount, Integer.parseInt(Doc_count));
-                    che_progress_value = computePercent(CheCallsCount, Integer.parseInt(Che_count));
-                    stockiest_progress_value = computePercent(StkCallsCount, Integer.parseInt(Strck_count));
-                    unlistered_progress_value = computePercent(UnlCallSCount, Integer.parseInt(Unlist_count));
-                    cip_progress_value = computePercent(CipCallsCount, Integer.parseInt(Cip_count));
-                    hos_progress_value = computePercent(HosCallsCount, Integer.parseInt(Hosp_count));
+                int doc_progress_value, che_progress_value, stockiest_progress_value, unlistered_progress_value, cip_progress_value, hos_progress_value;
+                doc_progress_value = computePercent(DrCallsCount, Integer.parseInt(Doc_count));
+                che_progress_value = computePercent(CheCallsCount, Integer.parseInt(Che_count));
+                stockiest_progress_value = computePercent(StkCallsCount, Integer.parseInt(Strck_count));
+                unlistered_progress_value = computePercent(UnlCallSCount, Integer.parseInt(Unlist_count));
+                cip_progress_value = computePercent(CipCallsCount, Integer.parseInt(Cip_count));
+                hos_progress_value = computePercent(HosCallsCount, Integer.parseInt(Hosp_count));
 
-                    callAnalysisBinding.txtDocValue.setText(doc_progress_value + "%");
-                    callAnalysisBinding.txtCheValue.setText(che_progress_value + "%");
-                    callAnalysisBinding.txtStockValue.setText(stockiest_progress_value + "%");
-                    callAnalysisBinding.txtUnlistedValue.setText(unlistered_progress_value + "%");
-                    callAnalysisBinding.txtCipValue.setText(cip_progress_value + "%");
-                    callAnalysisBinding.txtHosValue.setText(hos_progress_value + "%");
+                callAnalysisBinding.txtDocValue.setText(doc_progress_value + "%");
+                callAnalysisBinding.txtCheValue.setText(che_progress_value + "%");
+                callAnalysisBinding.txtStockValue.setText(stockiest_progress_value + "%");
+                callAnalysisBinding.txtUnlistedValue.setText(unlistered_progress_value + "%");
+                callAnalysisBinding.txtCipValue.setText(cip_progress_value + "%");
+                callAnalysisBinding.txtHosValue.setText(hos_progress_value + "%");
 
-                    callAnalysisBinding.docProgressBar.setProgress(doc_progress_value);
-                    callAnalysisBinding.cheProgressBar.setProgress(che_progress_value);
-                    callAnalysisBinding.stockProgressBar.setProgress(stockiest_progress_value);
-                    callAnalysisBinding.unlistProgressBar.setProgress(unlistered_progress_value);
-                    callAnalysisBinding.cipProgressBar.setProgress(cip_progress_value);
-                    callAnalysisBinding.hosProgressBar.setProgress(hos_progress_value);
+                callAnalysisBinding.docProgressBar.setProgress(doc_progress_value);
+                callAnalysisBinding.cheProgressBar.setProgress(che_progress_value);
+                callAnalysisBinding.stockProgressBar.setProgress(stockiest_progress_value);
+                callAnalysisBinding.unlistProgressBar.setProgress(unlistered_progress_value);
+                callAnalysisBinding.cipProgressBar.setProgress(cip_progress_value);
+                callAnalysisBinding.hosProgressBar.setProgress(hos_progress_value);
 
-                    callAnalysisBinding.FlDocProgress.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.FlCheProgress.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.FlStockProgress.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.FlUnistProgress.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.FlCipProgress.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.FlHosProgress.setVisibility(View.VISIBLE);
+                callAnalysisBinding.FlDocProgress.setVisibility(View.VISIBLE);
+                callAnalysisBinding.FlCheProgress.setVisibility(View.VISIBLE);
+                callAnalysisBinding.FlStockProgress.setVisibility(View.VISIBLE);
+                callAnalysisBinding.FlUnistProgress.setVisibility(View.VISIBLE);
+                callAnalysisBinding.FlCipProgress.setVisibility(View.VISIBLE);
+                callAnalysisBinding.FlHosProgress.setVisibility(View.VISIBLE);
 
-                    callAnalysisBinding.imgDoc.setVisibility(View.GONE);
-                    callAnalysisBinding.imgChe.setVisibility(View.GONE);
-                    callAnalysisBinding.imgStock.setVisibility(View.GONE);
-                    callAnalysisBinding.imgUnlist.setVisibility(View.GONE);
-                    callAnalysisBinding.imgCip.setVisibility(View.GONE);
-                    callAnalysisBinding.imgHos.setVisibility(View.GONE);
+                callAnalysisBinding.imgDoc.setVisibility(View.GONE);
+                callAnalysisBinding.imgChe.setVisibility(View.GONE);
+                callAnalysisBinding.imgStock.setVisibility(View.GONE);
+                callAnalysisBinding.imgUnlist.setVisibility(View.GONE);
+                callAnalysisBinding.imgCip.setVisibility(View.GONE);
+                callAnalysisBinding.imgHos.setVisibility(View.GONE);
 
-                }
-                callAnalysisBinding.inChart.lineChart.clear();
-                callAnalysisBinding.inChart.llMonthlayout.setVisibility(View.VISIBLE);
+            }
+            callAnalysisBinding.inChart.lineChart.clear();
+            callAnalysisBinding.inChart.llMonthlayout.setVisibility(View.VISIBLE);
 
-                if (SharedPref.getDrNeed(context).equalsIgnoreCase("0")) {
-                    callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
-                    setLineChartData("1", context);
-                } else if (SharedPref.getChmNeed(context).equalsIgnoreCase("0")) {
-                    callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleChe.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
-                    setLineChartData("2", context);
-                } else if (SharedPref.getStkNeed(context).equalsIgnoreCase("0")) {
-                    callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
-                    setLineChartData("3", context);
-                } else if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) {
-                    callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
-                    setLineChartData("4", context);
-                } else if (SharedPref.getCipNeed(context).equalsIgnoreCase("0")) {
-                    callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleCip.setVisibility(View.VISIBLE);
-                    callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
-                    setLineChartData("5",  context);
-                } else if (SharedPref.getHospNeed(context).equalsIgnoreCase("0")) {
-                    callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
-                    callAnalysisBinding.imgDownTriangleHos.setVisibility(View.VISIBLE);
-                    setLineChartData("6", context);
-                }
+            if(SharedPref.getDrNeed(context).equalsIgnoreCase("0")) {
+                callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
+                callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
+                setLineChartData("1", context);
+            }else if(SharedPref.getChmNeed(context).equalsIgnoreCase("0")) {
+                callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleChe.setVisibility(View.VISIBLE);
+                callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
+                setLineChartData("2", context);
+            }else if(SharedPref.getStkNeed(context).equalsIgnoreCase("0")) {
+                callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.VISIBLE);
+                callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
+                setLineChartData("3", context);
+            }else if(SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) {
+                callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.VISIBLE);
+                callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
+                setLineChartData("4", context);
+            }else if(SharedPref.getCipNeed(context).equalsIgnoreCase("0")) {
+                callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleCip.setVisibility(View.VISIBLE);
+                callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
+                setLineChartData("5", context);
+            }else if(SharedPref.getHospNeed(context).equalsIgnoreCase("0")) {
+                callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
+                callAnalysisBinding.imgDownTriangleHos.setVisibility(View.VISIBLE);
+                setLineChartData("6", context);
+            }
 
 //            } else {
 //                callAnalysisBinding.inChart.llMonthlayout.setVisibility(View.GONE);
@@ -310,7 +350,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         boolean isMonthB = callTableDao.isMonthDataAvailableForCustType(Custype, month1);
 
         List<Integer> listYrange = new ArrayList<>();
-        if (isMonthC) {
+        if(isMonthC) {
             key = "3";
             callAnalysisBinding.inChart.txtMonthOne.setText(sdfs.format(MonthC.getTime()));
             callAnalysisBinding.inChart.txtMonthTwo.setText(sdfs.format(MonthB.getTime()));
@@ -321,11 +361,11 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             callAnalysisBinding.textDate.setText(String.format("%s %d - %s %d", sdfs.format(MonthC.getTime()), MonthC.get(Calendar.YEAR), sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
 
             int xaxis1 = callTableDao.getCallsCountByRange("C1", Custype);
-            int xaxis2 = callTableDao.getCallsCountByRange("C1","C2", Custype);
+            int xaxis2 = callTableDao.getCallsCountByRange("C1", "C2", Custype);
             int xaxis3 = callTableDao.getCallsCountByRange("B1", Custype);
-            int xaxis4 = callTableDao.getCallsCountByRange("B1","B2", Custype);
+            int xaxis4 = callTableDao.getCallsCountByRange("B1", "B2", Custype);
             int xaxis5 = callTableDao.getCallsCountByRange("A1", Custype);
-            int xaxis6 = callTableDao.getCallsCountByRange("A1","A2", Custype);
+            int xaxis6 = callTableDao.getCallsCountByRange("A1", "A2", Custype);
 
             listYrange.add(xaxis1);
             listYrange.add(xaxis2);
@@ -339,11 +379,11 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             entries.add(new Entry(3, xaxis3));
             entries.add(new Entry(4, xaxis4));
             entries.add(new Entry(5, xaxis5));
-            if (Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7)) > 15) {
+            if(Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7))>15) {
                 entries.add(new Entry(6, xaxis6));
             }
 
-        } else if (isMonthB) {
+        }else if(isMonthB) {
             key = "2";
             callAnalysisBinding.inChart.txtMonthOne.setText(sdfs.format(MonthB.getTime()));
             callAnalysisBinding.inChart.txtMonthTwo.setText(sdfs.format(MonthA.getTime()));
@@ -353,9 +393,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             callAnalysisBinding.textDate.setText(String.format("%s %d - %s %d", sdfs.format(MonthB.getTime()), MonthB.get(Calendar.YEAR), sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
 
             int xaxis3 = callTableDao.getCallsCountByRange("B1", Custype);
-            int xaxis4 = callTableDao.getCallsCountByRange("B1","B2", Custype);
+            int xaxis4 = callTableDao.getCallsCountByRange("B1", "B2", Custype);
             int xaxis5 = callTableDao.getCallsCountByRange("A1", Custype);
-            int xaxis6 = callTableDao.getCallsCountByRange("A1","A2", Custype);
+            int xaxis6 = callTableDao.getCallsCountByRange("A1", "A2", Custype);
 
             listYrange.add(xaxis3);
             listYrange.add(xaxis4);
@@ -365,11 +405,11 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             entries.add(new Entry(1, xaxis3));
             entries.add(new Entry(2, xaxis4));
             entries.add(new Entry(3, xaxis5));
-            if (Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7)) > 15) {
+            if(Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7))>15) {
                 entries.add(new Entry(4, xaxis6));
             }
 
-        } else {
+        }else {
             key = "1";
             callAnalysisBinding.inChart.txtMonthOne.setText(sdfs.format(MonthA.getTime()));
             callAnalysisBinding.inChart.txtMonthTwo.setVisibility(View.INVISIBLE);
@@ -378,13 +418,13 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             callAnalysisBinding.textDate.setText(String.format("%s %d", sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
 
             int xaxis5 = callTableDao.getCallsCountByRange("A1", Custype);
-            int xaxis6 = callTableDao.getCallsCountByRange("A1","A2", Custype);
+            int xaxis6 = callTableDao.getCallsCountByRange("A1", "A2", Custype);
 
             listYrange.add(xaxis5);
             listYrange.add(xaxis6);
 
             entries.add(new Entry(1, xaxis5));
-            if (Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7)) > 15) {
+            if(Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7))>15) {
                 entries.add(new Entry(2, xaxis6));
             }
 
@@ -406,7 +446,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         callAnalysisBinding.inChart.lineChart.setData(lineData1);
 
         Typeface customTypeface = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if(android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.O) {
             customTypeface = context.getResources().getFont(R.font.satoshi_medium);
         }
 
@@ -429,66 +469,66 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             @Override
             public String getAxisLabel(float value, AxisBase axis) {
 
-                if (isMonthC) {
+                if(isMonthC) {
 
-                    if (value == 0f) {
+                    if(value == 0f) {
                         return "";
-                    } else if (value == 1f) {
+                    }else if(value == 1f) {
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
-                    } else if (value == 2f) {
+                    }else if(value == 2f) {
                         return "1" + getSuperscript("s") + " - " + MonthCLastDate + getSuperscript("t");
 
-                    } else if (value == 3f) {
+                    }else if(value == 3f) {
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
-                    } else if (value == 4f) {
+                    }else if(value == 4f) {
                         return "1" + getSuperscript("s") + " - " + MonthBLastDate + getSuperscript("t");
 
-                    } else if (value == 5f) {
+                    }else if(value == 5f) {
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
-                    } else if (value == 6f) {
-                        if (Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7)) > 15) {
+                    }else if(value == 6f) {
+                        if(Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7))>15) {
                             return "1" + getSuperscript("s") + " - " + MonthALastDate + getSuperscript("t");
-                        } else {
+                        }else {
                             return "";
                         }
-                    } else {
+                    }else {
                         return "";
                     }
 
-                } else if (isMonthB) {
-                    if (value == 0f) {
+                }else if(isMonthB) {
+                    if(value == 0f) {
                         return "";
-                    } else if (value == 1f) {
+                    }else if(value == 1f) {
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
-                    } else if (value == 2f) {
+                    }else if(value == 2f) {
                         return "1" + getSuperscript("s") + " - " + MonthBLastDate + getSuperscript("t");
-                    } else if (value == 3f) {
+                    }else if(value == 3f) {
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
 
-                    } else if (value == 4f) {
-                        if (Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7)) > 15) {
+                    }else if(value == 4f) {
+                        if(Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7))>15) {
                             return "1" + getSuperscript("s") + " - " + MonthALastDate + getSuperscript("t");
-                        } else {
+                        }else {
                             return "";
                         }
-                    } else {
+                    }else {
                         return "";
                     }
 
-                } else {
+                }else {
 
-                    if (value == 0f) {
+                    if(value == 0f) {
                         return "";
 
-                    } else if (value == 1f) {
+                    }else if(value == 1f) {
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
-                    } else if (value == 2f) {
-                        if (Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7)) > 15) {
+                    }else if(value == 2f) {
+                        if(Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7))>15) {
                             return "1" + getSuperscript("s") + " - " + MonthALastDate + getSuperscript("t");
-                        } else {
+                        }else {
                             return "";
                         }
-                    } else {
+                    }else {
                         return "";
                     }
                 }
@@ -500,11 +540,11 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 StringBuilder result = new StringBuilder();
 
                 for (char c : text.toCharArray()) {
-                    if (c == 's') {
+                    if(c == 's') {
                         result.append(superscripts[1]);
-                    } else if (c == 't') {
+                    }else if(c == 't') {
                         result.append(superscripts[2]);
-                    } else {
+                    }else {
                         result.append(c);
                     }
                 }
@@ -521,19 +561,19 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
         int maxvalue = Collections.max(listYrange);
 
-        if (maxvalue >= 100 && maxvalue < 200) {
+        if(maxvalue>=100 && maxvalue<200) {
             leftYAxis.setAxisMaximum(200);
-        } else if (maxvalue >= 200 && maxvalue < 300) {
+        }else if(maxvalue>=200 && maxvalue<300) {
             leftYAxis.setAxisMaximum(300);
-        } else if (maxvalue >= 300 && maxvalue < 400) {
+        }else if(maxvalue>=300 && maxvalue<400) {
             leftYAxis.setAxisMaximum(400);
-        } else if (maxvalue >= 400 && maxvalue < 500) {
+        }else if(maxvalue>=400 && maxvalue<500) {
             leftYAxis.setAxisMaximum(400);
-        } else if (maxvalue >= 500 && maxvalue < 1000) {
+        }else if(maxvalue>=500 && maxvalue<1000) {
             leftYAxis.setAxisMaximum(1000);
-        } else if (maxvalue >= 1000) {
+        }else if(maxvalue>=1000) {
             leftYAxis.setAxisMaximum(5000);
-        } else {
+        }else {
             leftYAxis.setAxisMaximum(100);
         }
 
@@ -579,26 +619,26 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         callAnalysisBinding.inChart.lineChart.setExtraBottomOffset(5f);
 
         Bitmap starBitmap;
-        if (Custype.equalsIgnoreCase("1")) {
+        if(Custype.equalsIgnoreCase("1")) {
             starBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.circular_img_doctor);
 
-        } else if (Custype.equalsIgnoreCase("2")) {
+        }else if(Custype.equalsIgnoreCase("2")) {
 
             starBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.circular_img_chemist);
 
-        } else if (Custype.equalsIgnoreCase("3")) {
+        }else if(Custype.equalsIgnoreCase("3")) {
             starBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.circular_img_stockiest);
 
-        } else if (Custype.equalsIgnoreCase("4")) {
+        }else if(Custype.equalsIgnoreCase("4")) {
             starBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.circular_img_unlistered);
 
-        } else if (Custype.equalsIgnoreCase("5")) {
+        }else if(Custype.equalsIgnoreCase("5")) {
             starBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.circular_img_cip);
 
-        } else if (Custype.equalsIgnoreCase("6")) {
+        }else if(Custype.equalsIgnoreCase("6")) {
             starBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.circular_img_hospital);
 
-        } else {
+        }else {
             starBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.circular_img_doctor);
         }
 
@@ -607,28 +647,28 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     }
 
     private void HiddenVisibleFunctions() {
-        if (SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")) {
+        if(SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")) {
             callAnalysisBinding.llDocHead.setVisibility(View.VISIBLE);
             callAnalysisBinding.txtDocName.setText(SharedPref.getDrCap(requireContext()));
             callAnalysisBinding.textAverage.setText(String.format("%s %s %s", getString(R.string.average), callAnalysisBinding.txtDocName.getText().toString(), getString(R.string.calls)));
         }
-        if (SharedPref.getChmNeed(requireContext()).equalsIgnoreCase("0")) {
+        if(SharedPref.getChmNeed(requireContext()).equalsIgnoreCase("0")) {
             callAnalysisBinding.llChemHead.setVisibility(View.VISIBLE);
             callAnalysisBinding.txtCheName.setText(SharedPref.getChmCap(requireContext()));
         }
-        if (SharedPref.getStkNeed(requireContext()).equalsIgnoreCase("0")) {
+        if(SharedPref.getStkNeed(requireContext()).equalsIgnoreCase("0")) {
             callAnalysisBinding.llStockHead.setVisibility(View.VISIBLE);
             callAnalysisBinding.txtStockName.setText(SharedPref.getStkCap(requireContext()));
         }
-        if (SharedPref.getUnlNeed(requireContext()).equalsIgnoreCase("0")) {
+        if(SharedPref.getUnlNeed(requireContext()).equalsIgnoreCase("0")) {
             callAnalysisBinding.llUnliHead.setVisibility(View.VISIBLE);
             callAnalysisBinding.txtUnliName.setText(SharedPref.getUNLcap(requireContext()));
         }
-        if (SharedPref.getCipNeed(requireContext()).equalsIgnoreCase("0")) {
+        if(SharedPref.getCipNeed(requireContext()).equalsIgnoreCase("0")) {
             callAnalysisBinding.llCipHead.setVisibility(View.VISIBLE);
             callAnalysisBinding.txtCipName.setText(SharedPref.getCipCaption(requireContext()));
         }
-        if (SharedPref.getHospNeed(requireContext()).equalsIgnoreCase("0")) {
+        if(SharedPref.getHospNeed(requireContext()).equalsIgnoreCase("0")) {
             callAnalysisBinding.llHosHead.setVisibility(View.VISIBLE);
             callAnalysisBinding.txtHosName.setText(SharedPref.getHospCaption(requireContext()));
         }
@@ -657,117 +697,117 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         callAnalysisBinding.llHosChild.setOnClickListener(this);
         callAnalysisBinding.llCipChild.setOnClickListener(this);
 
-        if(SharedPref.getSfType(context).equalsIgnoreCase("1")){
+        if(SharedPref.getSfType(context).equalsIgnoreCase("1")) {
             try {
                 JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
 
                 String Doc_code = "", Chm_code = "", Stk_code = "", Cip_code = "", Hosp_code = "", Unlist_code = "";
                 String doctor = String.valueOf(jsonDoc);
-                if (!doctor.equals("") || !doctor.equals("null")) {
+                if(!doctor.equals("") || !doctor.equals("null")) {
                     count_list.clear();
-                    if (jsonDoc.length() > 0) {
-                        for (int i = 0; i < jsonDoc.length(); i++) {
+                    if(jsonDoc.length()>0) {
+                        for (int i = 0; i<jsonDoc.length(); i++) {
                             JSONObject jsonObject = jsonDoc.getJSONObject(i);
-                            if (!Doc_code.equals(jsonObject.getString("Code"))) {
+                            if(!Doc_code.equals(jsonObject.getString("Code"))) {
                                 Doc_code = jsonObject.getString("Code");
                                 count_list.add(Doc_code);
                                 Doc_count = String.valueOf(count_list.size());
                             }
                         }
-                    } else {
+                    }else {
                         Doc_count = "0";
                     }
                 }
 
-                JSONArray jsonChm =  masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+                JSONArray jsonChm = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
                 String chemist = String.valueOf(jsonChm);
-                if (!chemist.equals("") || !chemist.equals("null")) {
+                if(!chemist.equals("") || !chemist.equals("null")) {
                     count_list.clear();
-                    if (jsonChm.length() > 0) {
-                        for (int i = 0; i < jsonChm.length(); i++) {
+                    if(jsonChm.length()>0) {
+                        for (int i = 0; i<jsonChm.length(); i++) {
                             JSONObject jsonObject = jsonChm.getJSONObject(i);
-                            if (!Chm_code.equals(jsonObject.getString("Code"))) {
+                            if(!Chm_code.equals(jsonObject.getString("Code"))) {
                                 Chm_code = jsonObject.getString("Code");
                                 count_list.add(Chm_code);
                                 Che_count = String.valueOf(count_list.size());
                             }
                         }
-                    } else {
+                    }else {
                         Che_count = "0";
                     }
                 }
-                JSONArray jsonstock =  masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+                JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
 
                 String stockist = String.valueOf(jsonstock);
-                if (!stockist.equals("") || !stockist.equals("null")) {
+                if(!stockist.equals("") || !stockist.equals("null")) {
                     count_list.clear();
-                    if (jsonstock.length() > 0) {
-                        for (int i = 0; i < jsonstock.length(); i++) {
+                    if(jsonstock.length()>0) {
+                        for (int i = 0; i<jsonstock.length(); i++) {
                             JSONObject jsonObject = jsonstock.getJSONObject(i);
-                            if (!Stk_code.equals(jsonObject.getString("Code"))) {
+                            if(!Stk_code.equals(jsonObject.getString("Code"))) {
                                 Stk_code = jsonObject.getString("Code");
                                 count_list.add(Stk_code);
                                 Strck_count = String.valueOf(count_list.size());
                             }
                         }
-                    } else {
+                    }else {
                         Strck_count = "0";
                     }
                 }
                 JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
                 String unlisted = String.valueOf(jsonunlisted);
-                if (!unlisted.equals("") || !unlisted.equals("null")) {
+                if(!unlisted.equals("") || !unlisted.equals("null")) {
                     count_list.clear();
-                    if (jsonunlisted.length() > 0) {
-                        for (int i = 0; i < jsonunlisted.length(); i++) {
+                    if(jsonunlisted.length()>0) {
+                        for (int i = 0; i<jsonunlisted.length(); i++) {
                             JSONObject jsonObject = jsonunlisted.getJSONObject(i);
-                            if (!Unlist_code.equals(jsonObject.getString("Code"))) {
+                            if(!Unlist_code.equals(jsonObject.getString("Code"))) {
                                 Stk_code = jsonObject.getString("Code");
                                 count_list.add(Stk_code);
                                 Unlist_count = String.valueOf(count_list.size());
                             }
                         }
-                    } else {
+                    }else {
                         Unlist_count = "0";
                     }
                 }
 
                 JSONArray jsoncip = masterDataDao.getMasterDataTableOrNew(Constants.CIP + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
                 String cip = String.valueOf(jsoncip);
-                if (!cip.equals("") || !cip.equals("null")) {
+                if(!cip.equals("") || !cip.equals("null")) {
                     count_list.clear();
-                    if (jsoncip.length() > 0) {
-                        for (int i = 0; i < jsoncip.length(); i++) {
+                    if(jsoncip.length()>0) {
+                        for (int i = 0; i<jsoncip.length(); i++) {
                             JSONObject jsonObject = jsoncip.getJSONObject(i);
-                            if (!Cip_code.equals(jsonObject.getString("Code"))) {
+                            if(!Cip_code.equals(jsonObject.getString("Code"))) {
                                 Cip_code = jsonObject.getString("Code");
                                 count_list.add(Cip_code);
                                 Cip_count = String.valueOf(count_list.size());
                             }
                         }
-                    } else {
+                    }else {
                         Cip_count = "0";
                     }
                 }
                 JSONArray jsonhosp = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
                 String hosp = String.valueOf(jsonhosp);
-                if (!hosp.equals("") || !hosp.equals("null")) {
+                if(!hosp.equals("") || !hosp.equals("null")) {
                     count_list.clear();
-                    if (jsonhosp.length() > 0) {
-                        for (int i = 0; i < jsonhosp.length(); i++) {
+                    if(jsonhosp.length()>0) {
+                        for (int i = 0; i<jsonhosp.length(); i++) {
                             JSONObject jsonObject = jsonhosp.getJSONObject(i);
-                            if (!Hosp_code.equals(jsonObject.getString("Code"))) {
+                            if(!Hosp_code.equals(jsonObject.getString("Code"))) {
                                 Hosp_code = jsonObject.getString("Code");
                                 count_list.add(Hosp_code);
                                 Hosp_count = String.valueOf(count_list.size());
                             }
                         }
-                    } else {
+                    }else {
                         Hosp_count = "0";
                     }
                 }
 
-            }catch (Exception a){
+            } catch (Exception a) {
                 a.printStackTrace();
             }
         }
@@ -777,7 +817,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()) {
+        switch (v.getId()){
 
             case R.id.ll_doc_child:
                 callAnalysisBinding.textAverage.setText(String.format("%s %s %s", getString(R.string.average), callAnalysisBinding.txtDocName.getText().toString(), getString(R.string.calls)));
@@ -789,7 +829,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
                 callAnalysisBinding.inChart.lineChart.clear();
 
-                setLineChartData("1",context);
+                setLineChartData("1", context);
 
                 break;
             case R.id.ll_che_child:
@@ -853,13 +893,14 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
                 callAnalysisBinding.imgDownTriangleHos.setVisibility(View.VISIBLE);
                 callAnalysisBinding.inChart.lineChart.clear();
-                setLineChartData("6",  context);
+                setLineChartData("6", context);
                 break;
         }
     }
 
     public void onDestroyView() {
         super.onDestroyView();
+        handler.removeCallbacks(updateClock);
     }
 
     void setScreenDesign() {

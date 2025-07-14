@@ -41,13 +41,16 @@ public class STPOfflineDataTable {
     @ColumnInfo(name = "stp_data")
     private String stpData;
 
+    @ColumnInfo(name = "status")
+    private int status;
+
     @ColumnInfo(name = "sync_status")
     private String syncStatus; // 0 -> true, 1 -> false
 
     public STPOfflineDataTable() {}
 
     @Ignore
-    public STPOfflineDataTable(@NonNull String dayID, String dayCaption, String clusterCode, String clusterName, String doctorCode, String doctorName, String chemistCode, String chemistName, String stpData, String syncStatus) {
+    public STPOfflineDataTable(@NonNull String dayID, String dayCaption, String clusterCode, String clusterName, String doctorCode, String doctorName, String chemistCode, String chemistName, String stpData, int status, String syncStatus) {
         this.dayID = dayID;
         this.dayCaption = dayCaption;
         this.clusterCode = clusterCode;
@@ -57,6 +60,7 @@ public class STPOfflineDataTable {
         this.chemistCode = chemistCode;
         this.chemistName = chemistName;
         this.stpData = stpData;
+        this.status = status;
         this.syncStatus = syncStatus;
     }
 
@@ -131,6 +135,14 @@ public class STPOfflineDataTable {
 
     public void setStpData(String stpData) {
         this.stpData = stpData;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getSyncStatus() {
