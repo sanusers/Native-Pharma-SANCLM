@@ -192,6 +192,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         chk_cluster = "";
         deviationRejectedReason = "";
         tpDataObj = null;
+        isRefreshCalled = false;
         hqCode = SharedPref.getHqCode(requireContext());
 
         if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
@@ -1260,6 +1261,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             if(TPDCRMGRApprNeed.equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(requireContext()).equalsIgnoreCase("3")) {
                                 binding.deviationLock.setVisibility(View.VISIBLE);
                                 binding.rlWorkPlanMain.setVisibility(View.GONE);
+                                previousWTCode1 = "";
+                                previousWTCode2 = "";
                             }else {
                                 binding.rlWorkPlanMain.setVisibility(View.VISIBLE);
                                 binding.deviationLock.setVisibility(View.GONE);

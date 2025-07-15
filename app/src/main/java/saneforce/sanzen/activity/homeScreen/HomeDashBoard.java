@@ -2153,6 +2153,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         timezoneBinding.btnOpenSettings.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
+            HomeDashBoard.this.finishAffinity();
             System.exit(0);
         });
     }

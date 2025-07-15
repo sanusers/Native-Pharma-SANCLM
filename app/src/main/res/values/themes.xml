@@ -179,4 +179,9 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+        <item name="android:windowBackground">@drawable/zen_logo</item>
+        <item name="android:windowIsTranslucent">false</item>
+    </style>
+
 </resources>
