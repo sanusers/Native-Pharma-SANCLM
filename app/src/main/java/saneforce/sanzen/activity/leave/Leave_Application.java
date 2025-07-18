@@ -136,6 +136,9 @@ public class Leave_Application extends AppCompatActivity {
         et_Custsearch = findViewById(R.id.et_Custsearch);
         dailog_list.setVisibility(View.VISIBLE);
         leaveViewModel = new LeaveViewModel(this);
+        if(isLeaveEntitlementRequested) {
+            leaveViewModel.updateLeaveStatusMasterSync();
+        }
         setVisibility();
         setMaxLength();
         onClickListener();
@@ -329,27 +332,27 @@ public class Leave_Application extends AppCompatActivity {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            if(avilable == null || avilable.isEmpty()) {
-                                listdate.clear();
-                                Leave_Application.leavebinding.lDays.setText("");
-                                commonUtilsMethods.showToastMessage(this, "No Leave Available!");
-                                leavebinding.submitLeave.setEnabled(false);
-                                leavebinding.etFromDate.setText("");
-                                leavebinding.etToDate.setText("");
-                                leavebinding.LeaveType.setText("");
-                                leavebinding.balanceDays.setText("");
-                                List_LeaveDates.clear();
-                                List_LeaveDates = new ArrayList<>();
-
-                                Leavedetails_adapter l_details = new Leavedetails_adapter(Leave_Application.this, List_LeaveDates);
-                                LinearLayoutManager LayoutManagerpoc = new LinearLayoutManager(Leave_Application.this);
-                                Leave_Application.leavebinding.leaveDetails.setLayoutManager(LayoutManagerpoc);
-                                Leave_Application.leavebinding.leaveDetails.setItemAnimator(new DefaultItemAnimator());
-                                Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
-                                l_details.notifyDataSetChanged();
-                            } else {
+//                            if(avilable == null || avilable.isEmpty()) {
+//                                listdate.clear();
+//                                Leave_Application.leavebinding.lDays.setText("");
+//                                commonUtilsMethods.showToastMessage(this, "No Leave Available!");
+//                                leavebinding.submitLeave.setEnabled(false);
+//                                leavebinding.etFromDate.setText("");
+//                                leavebinding.etToDate.setText("");
+//                                leavebinding.LeaveType.setText("");
+//                                leavebinding.balanceDays.setText("");
+//                                List_LeaveDates.clear();
+//                                List_LeaveDates = new ArrayList<>();
+//
+//                                Leavedetails_adapter l_details = new Leavedetails_adapter(Leave_Application.this, List_LeaveDates);
+//                                LinearLayoutManager LayoutManagerpoc = new LinearLayoutManager(Leave_Application.this);
+//                                Leave_Application.leavebinding.leaveDetails.setLayoutManager(LayoutManagerpoc);
+//                                Leave_Application.leavebinding.leaveDetails.setItemAnimator(new DefaultItemAnimator());
+//                                Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
+//                                l_details.notifyDataSetChanged();
+//                            } else {
                                 leave_avalabledetails();
-                            }
+//                            }
 
                         }
                     }
@@ -413,6 +416,8 @@ public class Leave_Application extends AppCompatActivity {
                                         leavebinding.etFromDate.setText("");
                                         leavebinding.etToDate.setText("");
                                         leavebinding.LeaveType.setText("");
+                                        leavebinding.balanceDays.setText("");
+                                        leavebinding.lDays.setText("");
                                         List_LeaveDates = new ArrayList<>();
 
                                         Leavedetails_adapter l_details = new Leavedetails_adapter(Leave_Application.this, List_LeaveDates);
@@ -487,15 +492,16 @@ public class Leave_Application extends AppCompatActivity {
                 if(bal<0) {
                     commonUtilsMethods.showToastMessage(this, "Kindly Sync Leave Available!");
                     leavebinding.submitLeave.setEnabled(false);
-                }else if(bal == 0) {
-
                 }else {
-                    if(leavety.equals("LOP")) {
-                        leavebinding.balanceDays.setText("");
-                    }else {
+//                    if(bal == 0) {
+//
+//                }else {
+//                    if(leavety.equals("LOP")) {
+//                        leavebinding.balanceDays.setText("");
+//                    }else {
                         String balval = String.valueOf(bal);
                         leavebinding.balanceDays.setText(balval + " " + "days remaining");
-                    }
+//                    }
                 }
             }
 

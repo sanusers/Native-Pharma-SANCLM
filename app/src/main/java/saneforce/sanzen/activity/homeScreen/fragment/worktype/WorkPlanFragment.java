@@ -1230,6 +1230,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                         binding.rejectedReason.setText("");
                                         binding.rejectedReason.setVisibility(View.GONE);
                                         binding.switchButton.setChecked(true);
+                                        binding.llDeviation.setVisibility(View.GONE);
                                         JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
                                         for (int i = 0; i<jsonArray1.length(); i++) {
                                             JSONObject jsonObject1 = jsonArray1.optJSONObject(i);
@@ -1748,7 +1749,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
-        if (isTPorSTPBased() && binding.switchButton.isChecked()) {
+        if (isTPorSTPBased() && binding.switchButton.isChecked() && binding.llDeviation.getVisibility() == View.VISIBLE) {
             if (isEmpty(txtWorkDay) && (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") &&
                     STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") &&
                     TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
@@ -2548,7 +2549,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             FirstSeasonObject.put("Others_Code", workDayCode);
             FirstSeasonObject.put("Others_Name", workDayName);
             WorkPlanDataList.put(FirstSeasonObject);
-            if(DayPlanCount.equalsIgnoreCase("2")) {
+            if(DayPlanCount.equalsIgnoreCase("2") || !mWTCode2.isEmpty()) {
                 SecondSeasonObject.put("SFCode", SharedPref.getSfCode(requireContext()));
                 JSONObject TPDtSecondSeasonObject = new JSONObject();
                 TPDtSecondSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
