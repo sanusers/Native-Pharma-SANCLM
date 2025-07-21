@@ -1364,7 +1364,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.doctor_business))) {
-            startActivity(new Intent(HomeDashBoard.this, DoctorBusinessActivity.class));
+//            startActivity(new Intent(HomeDashBoard.this, DoctorBusinessActivity.class));
             return true;
         }
 
@@ -1955,9 +1955,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             menu.findItem(R.id.remaindercall).setVisible(false);
 
 
-        if (SharedPref.getDocBusinessProduct(this).equalsIgnoreCase("0"))
-            menu.findItem(R.id.docbusinessentry).setVisible(true);
-        else
+//        if (SharedPref.getDocBusinessProduct(this).equalsIgnoreCase("0"))
+//            menu.findItem(R.id.docbusinessentry).setVisible(true);
+//        else
             menu.findItem(R.id.docbusinessentry).setVisible(false);
 
         menu.findItem(R.id.form).setVisible(false);

@@ -655,7 +655,10 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 //                            e.printStackTrace();
 //                        }
 //                        jsonArray.put(jsonObject);
-                        Set<String> timing = new LinkedHashSet<>(timer.get(SlideName));
+                        Set<String> timing = new LinkedHashSet<>();
+                        if(timer.get(SlideName) != null && !timer.get(SlideName).isEmpty()) {
+                            timing.addAll(timer.get(SlideName));
+                        }
                         if(!timing.isEmpty()) {
                             for (String time : timing) {
                                 try {

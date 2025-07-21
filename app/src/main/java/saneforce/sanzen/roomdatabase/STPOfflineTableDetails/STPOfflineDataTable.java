@@ -39,13 +39,13 @@ public class STPOfflineDataTable {
     private String chemistName = "";
 
     @ColumnInfo(name = "stp_data")
-    private String stpData;
+    private String stpData = "";
 
     @ColumnInfo(name = "status")
-    private int status;
+    private int status = 0;
 
     @ColumnInfo(name = "sync_status")
-    private String syncStatus; // 0 -> true, 1 -> false
+    private String syncStatus = ""; // 0 -> true, 1 -> false
 
     public STPOfflineDataTable() {}
 
