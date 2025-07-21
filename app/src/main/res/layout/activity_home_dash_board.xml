@@ -542,7 +542,7 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/aiImageView"
+                    android:id="@+id/aiImageView1"
                     android:layout_width="@dimen/_25sdp"
                     android:layout_height="@dimen/_25sdp"
                     android:layout_alignParentEnd="true"
@@ -552,9 +552,21 @@
                     android:adjustViewBounds="true"
                     android:background="@drawable/circle_idle_bg"
                     android:elevation="@dimen/_3sdp"
+                    android:visibility="gone"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ai_bot"
                     tools:ignore="ContentDescription" />
+
+                <saneforce.sanzen.commonClasses.GifView
+                    android:id="@+id/aiImageView"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:scaleType="centerCrop"
+                    android:visibility="visible"
+                    android:layout_marginHorizontal="@dimen/_1sdp"
+                    android:layout_marginVertical="@dimen/_40sdp"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"/>
 
             </RelativeLayout>
 

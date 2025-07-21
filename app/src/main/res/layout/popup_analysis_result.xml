@@ -27,16 +27,45 @@
                 android:orientation="vertical"
                 android:padding="@dimen/card_padding">
 
-                <TextView
-                    android:id="@+id/aiGreetingTextView"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/title_margin_bottom"
-                    android:fontFamily="@font/satoshi_regular"
-                    android:text="Greetings!"
-                    android:textColor="@color/dark_purple"
-                    android:textSize="@dimen/_6ssp"
-                    android:textStyle="bold" />
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/aiGreetingTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/title_margin_bottom"
+                        android:fontFamily="@font/satoshi_regular"
+                        android:text="Greetings!"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_6ssp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/greetingCloseIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:clickable="true"
+                        android:contentDescription="Close Card"
+                        android:focusable="true"
+                        android:padding="4dp"
+                        android:src="@drawable/img_close" />
+
+                </RelativeLayout>
+
+<!--                <TextView-->
+<!--                    android:id="@+id/aiGreetingTextView1"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="@dimen/title_margin_bottom"-->
+<!--                    android:fontFamily="@font/satoshi_regular"-->
+<!--                    android:text="Greetings!"-->
+<!--                    android:textColor="@color/dark_purple"-->
+<!--                    android:textSize="@dimen/_6ssp"-->
+<!--                    android:textStyle="bold" />-->
             </LinearLayout>
 
             <ImageView
@@ -57,15 +86,42 @@
             android:orientation="vertical"
             android:padding="@dimen/card_padding">
 
-            <TextView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/title_margin_bottom"
-                android:fontFamily="@font/satoshi_regular"
-                android:text="Daily Visit Recommendation"
-                android:textColor="@color/dark_purple"
-                android:textSize="@dimen/_6ssp"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/title_margin_bottom"
+                    android:fontFamily="@font/satoshi_regular"
+                    android:text="Visit Recommendation / Day"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_6ssp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/recommendationClose"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:clickable="true"
+                    android:contentDescription="Close Card"
+                    android:focusable="true"
+                    android:padding="4dp"
+                    android:src="@drawable/img_close" />
+
+            </RelativeLayout>
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginBottom="@dimen/title_margin_bottom"-->
+<!--                android:fontFamily="@font/satoshi_regular"-->
+<!--                android:text="Visit Recommendation / Day"-->
+<!--                android:textColor="@color/dark_purple"-->
+<!--                android:textSize="@dimen/_6ssp"-->
+<!--                android:textStyle="bold" />-->
 
             <View
                 android:layout_width="match_parent"
@@ -101,8 +157,7 @@
                         android:fontFamily="@font/satoshi_regular"
                         android:text="6 - Listed Doctor"
                         android:textColor="@color/dark_purple"
-                        android:textSize="@dimen/_6ssp"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/_6ssp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -128,8 +183,7 @@
                         android:fontFamily="@font/satoshi_regular"
                         android:text="6"
                         android:textColor="@color/dark_purple"
-                        android:textSize="@dimen/_6ssp"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/_6ssp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -156,8 +210,7 @@
                         android:fontFamily="@font/satoshi_regular"
                         android:text="6"
                         android:textColor="@color/dark_purple"
-                        android:textSize="@dimen/_6ssp"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/_6ssp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -183,8 +236,7 @@
                         android:fontFamily="@font/satoshi_regular"
                         android:text="6"
                         android:textColor="@color/dark_purple"
-                        android:textSize="@dimen/_6ssp"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/_6ssp" />
                 </LinearLayout>
 
                 <!--                <LinearLayout-->
@@ -351,7 +403,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/title_margin_bottom"
                 android:fontFamily="@font/satoshi_regular"
-                android:text="Unvisited Customers (Listed Doctor, 10-90 Days Ago)"
+                android:text="Unvisited Customers"
                 android:textColor="@color/dark_purple"
                 android:textSize="@dimen/_6ssp"
                 android:textStyle="bold" />
@@ -406,7 +458,8 @@
                     android:layout_width="@dimen/_10sdp"
                     android:layout_height="@dimen/_10sdp"
                     android:padding="@dimen/_2sdp"
-                    android:src="@drawable/down_arrow" />
+                    android:src="@drawable/down_arrow"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -419,8 +472,7 @@
                 android:id="@+id/recentVisitsContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone"></LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
         </LinearLayout>
 
@@ -438,7 +490,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/title_margin_bottom"
                 android:fontFamily="@font/satoshi_regular"
-                android:text="Your Nearest Customers (Within 1 km)"
+                android:text="Your Nearest Customers"
                 android:textColor="@color/dark_purple"
                 android:textSize="@dimen/_6ssp"
                 android:textStyle="bold" />

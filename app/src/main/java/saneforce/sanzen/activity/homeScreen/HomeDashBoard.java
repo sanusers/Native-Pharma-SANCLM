@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -43,6 +44,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
@@ -324,6 +326,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             super.onResume();
         }
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) binding.aiImageView.getLayoutParams();
+                initialMargin = params.rightMargin; // Or params.leftMargin
+                viewHalfWidth = (int) (binding.aiImageView.getWidth() / 1.8f);
+                binding.aiImageView.setX(getRightAttachedX(binding.aiImageView.getWidth()));
+                showAnalysisPopup(binding.aiImageView);
+            }
+        }, 2000);
     }
 
     @Override
@@ -432,10 +444,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
+        binding.aiImageView.setGifResource(R.raw.bot);
+
         binding.aiImageView.post(() -> {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) binding.aiImageView.getLayoutParams();
             initialMargin = params.rightMargin; // Or params.leftMargin
-            viewHalfWidth = binding.aiImageView.getWidth() / 2;
+            viewHalfWidth = (int) (binding.aiImageView.getWidth() / 1.8f);
             binding.aiImageView.setX(getRightAttachedX(binding.aiImageView.getWidth()));
         });
 
@@ -458,7 +472,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                                 .x(getFullyOnScreenX(v.getWidth(), v.getX(), ((View)v.getParent()).getWidth()))
                                 .setDuration(100)
                                 .start();
-                        v.setBackgroundResource(R.drawable.circle_active_bg);
+//                        v.setBackgroundResource(R.drawable.circle_active_bg);
                         return true;
 
                     case MotionEvent.ACTION_UP:
@@ -474,16 +488,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             View parentUp = (View) v.getParent();
                             int parentWidth = parentUp.getWidth();
                             int viewWidth = v.getWidth();
-                            float currentCenterX = v.getX() + (viewWidth / 2f);
+                            float currentCenterX = v.getX() + (viewWidth / 1.8f);
 
                             float targetX;
-                            if (currentCenterX < parentWidth / 2f) {
+                            if (currentCenterX < parentWidth / 1.8f) {
                                 targetX = getLeftAttachedX(viewWidth);
                             } else {
                                 targetX = getRightAttachedX(viewWidth);
                             }
                             v.animate().x(targetX).setDuration(200).start();
-                            v.setBackgroundResource(R.drawable.circle_idle_bg);
+//                            v.setBackgroundResource(R.drawable.circle_idle_bg);
                         }
                         return true;
 
@@ -638,17 +652,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
     private float getLeftAttachedX(int viewWidth) {
-        return -viewWidth / 2f + initialMargin;
+        return -viewWidth / 1.8f + initialMargin;
     }
 
     private float getRightAttachedX(int viewWidth) {
         View parent = (View) binding.aiImageView.getParent();
         if (parent == null) return 0;
-        return parent.getWidth() - viewWidth / 2f - initialMargin;
+        return parent.getWidth() - viewWidth / 1.8f - initialMargin;
     }
 
     private float getFullyOnScreenX(int viewWidth, float currentX, int parentWidth) {
-        if (currentX < parentWidth / 2f) {
+        if (currentX < parentWidth / 1.8f) {
             return initialMargin;
         } else {
             return parentWidth - viewWidth - initialMargin;
@@ -668,6 +682,97 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             default:
                 return R.drawable.bg_dark_purple_round; // Replace with a default icon
         }
+    }
+
+    // Function to add swipe-to-dismiss behavior to a view using translationX
+    private void addSwipeToDismiss(final View view) {
+        final float[] initialTouchX = {0};
+        final float[] initialTouchY = {0};
+        final float[] initialTranslationX = {0};
+        final boolean[] isSwiping = {false};
+        // Calculate swipe threshold based on view width (ensure layout is complete)
+        view.post(() -> {
+            final int swipeThreshold = view.getWidth() / 3; // Adjust threshold as needed
+
+            view.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getActionMasked()) {
+                        case MotionEvent.ACTION_DOWN:
+                            initialTouchX[0] = event.getRawX();
+                            initialTouchY[0] = event.getRawY();
+                            initialTranslationX[0] = v.getTranslationX();
+                            isSwiping[0] = false;
+                            return true; // Consume the DOWN event
+
+                        case MotionEvent.ACTION_MOVE:
+                            float deltaX = event.getRawX() - initialTouchX[0];
+                            float deltaY = event.getRawY() - initialTouchY[0];
+
+                            // Determine if it's primarily a horizontal swipe
+                            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > CLICK_THRESHOLD) {
+                                isSwiping[0] = true;
+                            }
+
+                            if (isSwiping[0]) {
+                                // Update the view's horizontal translation
+                                v.setTranslationX(initialTranslationX[0] + deltaX);
+
+                                return true; // Consume MOVE events while swiping
+                            }
+                            return false; // Don't consume if not swiping horizontally
+
+                        case MotionEvent.ACTION_UP:
+                            float currentTranslationX = v.getTranslationX();
+
+                            if (isSwiping[0]) {
+                                // Check if the swipe distance is enough to dismiss
+                                if (Math.abs(currentTranslationX - initialTranslationX[0]) > swipeThreshold) {
+                                    // Animate dismissal
+                                    ViewPropertyAnimator animator = v.animate();
+                                    float targetTranslationX = (currentTranslationX > initialTranslationX[0]) ? ((View)v.getParent()).getWidth() : -view.getWidth();
+                                    animator.translationX(targetTranslationX)
+                                            .alpha(0.0f) // Fade out while swiping
+                                            .setDuration(300) // Animation duration
+                                            .setListener(new AnimatorListenerAdapter() {
+                                                @Override
+                                                public void onAnimationEnd(Animator animation) {
+                                                    v.setVisibility(View.GONE); // Hide the view after animation
+                                                    // Optional: Remove the view from its parent layout if dynamically added
+                                                    // If cards are added dynamically to a LinearLayout, removing might be desired
+                                                    // ((ViewGroup)v.getParent()).removeView(v);
+                                                }
+                                            })
+                                            .start();
+                                } else {
+                                    // Animate back to original position
+                                    v.animate()
+                                            .translationX(initialTranslationX[0])
+                                            .alpha(1.0f) // Fade back in
+                                            .setDuration(200)
+                                            .setListener(null) // Remove listener
+                                            .start();
+                                }
+                                isSwiping[0] = false;
+                                return true; // Consume the UP event if swiping occurred
+                            }
+                            return false; // Don't consume if no swiping occurred
+
+                        case MotionEvent.ACTION_CANCEL:
+                            // Animate back to original position on cancel
+                            v.animate()
+                                    .translationX(initialTranslationX[0])
+                                    .alpha(1.0f)
+                                    .setDuration(200)
+                                    .setListener(null)
+                                    .start();
+                            isSwiping[0] = false;
+                            return true; // Consume the CANCEL event
+                    }
+                    return false;
+                }
+            });
+        });
     }
 
     // Method for showing the Analysis popup
@@ -743,6 +848,21 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         TextView errorMessageTextView = errorCard.findViewById(R.id.errorMessageTextView);
         ImageView closeButton = popupView.findViewById(R.id.closePopup_button);
 
+        // Apply the swipe-to-dismiss listener to each card
+        addSwipeToDismiss(dailyRecommendationOverallCard);
+        addSwipeToDismiss(recentVisitsCard);
+        addSwipeToDismiss(unvisitedType1Card);
+        addSwipeToDismiss(nearestCustomersCard);
+        addSwipeToDismiss(specialDatesCard);
+        addSwipeToDismiss(fallbackUnvisitedCustomersCard);
+        addSwipeToDismiss(errorCard);
+
+        ImageView recommendationClose = dailyRecommendationOverallCard.findViewById(R.id.recommendationClose);
+        if (recommendationClose != null) {
+            recommendationClose.setOnClickListener(v -> {
+                dailyRecommendationOverallCard.setVisibility(View.GONE);
+            });
+        }
 
         // --- Populate AI Greeting ---
         String userName = SharedPref.getSfName(this);
@@ -880,6 +1000,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             });
 
 
+            int i = 0;
             for (String groupKey : sortedKeys) {
                 List<String> customers = recentVisitsGrouped.get(groupKey);
                 if (customers != null && !customers.isEmpty()) {
@@ -887,23 +1008,42 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     groupTitle.setLayoutParams(new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT));
-                    groupTitle.setText(groupKey);
+//                    groupTitle.setText(groupKey);
+                    if(i==0) {
+                        groupTitle.setText("1 visit");
+                    } else if(i==1) {
+                        groupTitle.setText("2 visits");
+                    } else {
+                        groupTitle.setText("3+ visits");
+                    }
 //                    groupTitle.setTextStyle(android.graphics.Typeface.BOLD);
                     groupTitle.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
+                    groupTitle.setTypeface(null, Typeface.BOLD);; // Use ssp
                     groupTitle.setPadding(0, getResources().getDimensionPixelSize(R.dimen.title_margin_bottom), 0, getResources().getDimensionPixelSize(R.dimen.text_margin_small));
                     recentVisitsContent.addView(groupTitle);
 
+                    int j = 4, k = 0;
+                    if(i==1) {
+                        j = 1;
+                    } else if(i==2) {
+                        j = 3;
+                    }
                     for (String customerInfo : customers) {
                         TextView customerTextView = new TextView(this);
                         customerTextView.setLayoutParams(new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT));
-                        customerTextView.setText("- " + customerInfo);
+                        customerTextView.setText("- " + customerInfo.substring(0, customerInfo.indexOf("(")));
                         customerTextView.setTextSize(getResources().getDimension(com.intuit.ssp.R.dimen._4ssp)); // Use ssp
                         customerTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.list_item_padding_left), getResources().getDimensionPixelSize(R.dimen.list_item_padding_vertical), 0, getResources().getDimensionPixelSize(R.dimen.list_item_padding_vertical)); // Add some left padding
                         recentVisitsContent.addView(customerTextView);
+                        k++;
+                        if(k == j) {
+                            break;
+                        }
                     }
                 }
+                i++;
             }
             recentVisitsCard.setVisibility(View.GONE);
             new Handler().postDelayed(() -> {
@@ -1333,13 +1473,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             View parent = (View) binding.aiImageView.getParent();
             if (parent != null) {
                 float targetX;
-                if (initialViewX + (binding.aiImageView.getWidth() / 2f) < parent.getWidth() / 2f) {
+                if (initialViewX + (binding.aiImageView.getWidth() / 1.8f) < parent.getWidth() / 1.8f) {
                     targetX = getLeftAttachedX(binding.aiImageView.getWidth());
                 } else {
                     targetX = getRightAttachedX(binding.aiImageView.getWidth());
                 }
                 binding.aiImageView.animate().x(targetX).setDuration(200).start();
-                binding.aiImageView.setBackgroundResource(R.drawable.circle_idle_bg);
+//                binding.aiImageView.setBackgroundResource(R.drawable.circle_idle_bg);
             }
         });
 
@@ -1348,7 +1488,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         // Determine which side the AI view is currently on
         View parent = (View) anchorView.getParent();
         if (parent != null) {
-            float currentCenterX = anchorView.getX() + (anchorView.getWidth() / 2f);
+            float currentCenterX = anchorView.getX() + (anchorView.getWidth() / 1.8f);
             int parentWidth = parent.getWidth();
 
             int xOffset;
@@ -1358,7 +1498,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             int popupArrowWidth = getResources().getDimensionPixelSize(R.dimen.popup_arrow_width);
 
 
-            if (currentCenterX < parentWidth / 2f) {
+            if (currentCenterX < parentWidth / 1.8f) {
                 // AI view is on the left side, show popup to the right of it
                 xOffset = (int) (anchorView.getX() + anchorView.getWidth() + popupArrowWidth); // Position to the right, considering arrow width
                 // Ensure it doesn't go off screen
