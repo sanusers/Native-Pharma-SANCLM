@@ -119,7 +119,7 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.btnSave.setOnClickListener(v -> {
             if(strClusterName.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else if(selectedDCRMap.get(Constants.DOCTOR) != null && selectedDCRMap.get(Constants.DOCTOR).isEmpty()
                     && selectedDCRMap.get(Constants.CHEMIST) != null && selectedDCRMap.get(Constants.CHEMIST).isEmpty()) {
                 commonUtilsMethods.showToastMessage(this, "Please select any " + drCap + " or " + chmCap);
@@ -145,7 +145,7 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.tagTvDoctor.setOnClickListener(v -> {
             if(strClusterName.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
                 selectedDCR = Constants.DOCTOR;
                 selectedDCRCap = drCap;
@@ -157,7 +157,7 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.tagTvChemist.setOnClickListener(v -> {
             if(strClusterName.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
                 selectedDCR = Constants.CHEMIST;
                 selectedDCRCap = chmCap;
@@ -169,7 +169,7 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.tagTvStockist.setOnClickListener(v -> {
             if(strClusterName.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
                 selectedDCR = Constants.STOCKIEST;
                 selectedDCRCap = stkCap;
@@ -181,7 +181,7 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.tagTvUndr.setOnClickListener(v -> {
             if(strClusterName.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
                 selectedDCR = Constants.UNLISTED_DOCTOR;
                 selectedDCRCap = unDrCap;
@@ -193,7 +193,7 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.tagTvCip.setOnClickListener(v -> {
             if(strClusterName.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
                 selectedDCR = cipCap;
                 activityAddListBinding.etSearch.setText("");
@@ -204,7 +204,7 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.tagTvHospital.setOnClickListener(v -> {
             if(strClusterName.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_cluster));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
             }else {
                 selectedDCR = Constants.HOSPITAL;
                 selectedDCRCap = hosCap;
@@ -244,7 +244,7 @@ public class AddListActivity extends AppCompatActivity {
                 } else if(strClusterID.isEmpty()) {
                     UtilityClass.hideKeyboard(AddListActivity.this);
                     if(!isRouteSelected) {
-                        commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.please_select_cluster));
+                        commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.please_select) + " " + clusterCap);
                         isRouteSelected = false;
                     }
                 }
@@ -309,8 +309,10 @@ public class AddListActivity extends AppCompatActivity {
         strClusterName = "";
         jsonObject = new JSONObject();
         if(clusterCap.isEmpty()) {
+            activityAddListBinding.clusterTitle.setText("Cluster");
             activityAddListBinding.selectedClusters.setText("Select Cluster");
         }else {
+            activityAddListBinding.clusterTitle.setText(clusterCap);
             activityAddListBinding.selectedClusters.setText("Select " + clusterCap);
         }
         localDocCodeList = new ArrayList<>();
@@ -535,7 +537,7 @@ public class AddListActivity extends AppCompatActivity {
 
         if(dataList.isEmpty()) {
             if(activityAddListBinding.selectedClusters.getText().toString().isEmpty() || activityAddListBinding.selectedClusters.getText().toString().trim().equalsIgnoreCase("Select Cluster")) {
-                activityAddListBinding.tvNoData.setText("Select Cluster to view list");
+                activityAddListBinding.tvNoData.setText("Select " + clusterCap + " to view list");
             }else {
                 activityAddListBinding.tvNoData.setText("No Data To View");
             }

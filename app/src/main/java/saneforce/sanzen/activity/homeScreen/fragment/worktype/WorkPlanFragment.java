@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -1593,7 +1594,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         tvName.setText(String.format("%s%s", getResources().getString(R.string.hi), SharedPref.getSfName(requireContext())));
 
         tvDateTime = dialogCheckInOut.findViewById(R.id.txt_date_time);
-        tvDateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
+        Handler handler = new Handler();
+        Runnable runnable = () -> tvDateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
+        handler.postDelayed(runnable , 1000);
 
         tvLat = dialogCheckInOut.findViewById(R.id.txt_lat);
         tvLat.setText(String.valueOf(latitude));
@@ -1609,6 +1612,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         imgClose.setOnClickListener(v -> {
             dialogCheckInOut.dismiss();
             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+            handler.removeCallbacks(runnable);
         });
 
         btnCheckIn = dialogCheckInOut.findViewById(R.id.btn_checkin);
@@ -1643,6 +1647,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 onSaveClicked();
 //                CallDialogAfterCheckIn();
             }
+            handler.removeCallbacks(runnable);
         });
         if(!requireActivity().isFinishing()) {
             dialogCheckInOut.show();
@@ -2397,7 +2402,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         tvLong = dialogAfterCheckOut.findViewById(R.id.txt_long);
 
         tvHeading.setText(getResources().getString(R.string.check_out));
-        tvDateTimeAfter.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
+        Handler handler = new Handler();
+        Runnable runnable = () -> tvDateTimeAfter.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
+        handler.postDelayed(runnable , 1000);
         tvLat.setText(String.valueOf(latitude));
         tvLong.setText(String.valueOf(longitude));
         tvAddress.setText(address);
@@ -2411,8 +2418,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                SharedPref.setCheckInTime(requireContext(), "");
 //                SharedPref.setCheckDateTodayPlan(requireContext(), "");
 //                offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
-                dialogAfterCheckOut.dismiss();
-                remarksAlertBox();
+            handler.removeCallbacks(runnable);
+            dialogAfterCheckOut.dismiss();
+            remarksAlertBox();
 //            }
         });
 

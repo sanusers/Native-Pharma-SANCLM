@@ -33,6 +33,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     private MapViewActivityBinding binding;
     private String title = "", checkInDateTime = "", checkOutDateTime = "", checkInAddress = "", checkOutAddress = "";
     private double CheckINLat =0.0,CheckINLong=0.0, CheckOUTLat=0.0,CheckOUTLong=0.0;
+    private boolean isCheckIn = false;
     private Marker checkInMarker, checkOutMarker;
     private CameraUpdate checkInCameraUpdate, checkOutCameraUpdate;
     private CommonUtilsMethods commonUtilsMethods;
@@ -93,6 +94,9 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
                 if(extra.containsKey("OUTLong") && extra.getString("OUTLong") != null && !extra.getString("OUTLong").isEmpty()) {
                     CheckOUTLong = Double.parseDouble(extra.getString("OUTLong"));
                 }
+                if(extra.containsKey("ISCheckIN")) {
+                    isCheckIn = extra.getBoolean("ISCheckIN", true);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -146,19 +150,28 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         mMap = googleMap;
         float zoomLevel = 14.0f;
 
-        if(CheckINLat != 0.0 && CheckINLong != 0.0){
+        if(CheckINLat != 0.0 && CheckINLong != 0.0 && isCheckIn){
             LatLng yourLocation = new LatLng(CheckINLat, CheckINLong);
             checkInMarker = mMap.addMarker(new MarkerOptions().position(yourLocation).title(getString(R.string.check_in)).icon(BitmapDescriptorFactory.defaultMarker(164.0F)));
-            checkInCameraUpdate = CameraUpdateFactory.newLatLngZoom(yourLocation,zoomLevel);
+            checkInCameraUpdate = CameraUpdateFactory.newLatLngZoom(yourLocation, zoomLevel);
             mMap.moveCamera(checkInCameraUpdate);
         }
 
-        if(CheckOUTLat != 0.0 && CheckOUTLong != 0.0){
+        if(CheckOUTLat != 0.0 && CheckOUTLong != 0.0 && !isCheckIn){
             LatLng yourLocation = new LatLng(CheckOUTLat, CheckOUTLong);
             checkOutMarker = mMap.addMarker(new MarkerOptions().position(yourLocation).title(getString(R.string.check_out)).icon(BitmapDescriptorFactory.defaultMarker(347.05884F)));
-            checkOutCameraUpdate = CameraUpdateFactory.newLatLng(yourLocation);
+            checkOutCameraUpdate = CameraUpdateFactory.newLatLngZoom(yourLocation, zoomLevel);
             mMap.moveCamera(checkOutCameraUpdate);
         }
+
+//        if(isCheckIn) {
+//            checkOutMarker.remove();
+//            checkInMarker.remove();
+//            LatLng yourLocation = new LatLng(CheckINLat, CheckINLong);
+//            checkInMarker = mMap.addMarker(new MarkerOptions().position(yourLocation).title(getString(R.string.check_in)).icon(BitmapDescriptorFactory.defaultMarker(164.0F)));
+//            checkInCameraUpdate = CameraUpdateFactory.newLatLngZoom(yourLocation,zoomLevel);
+//            mMap.moveCamera(checkInCameraUpdate);
+//        }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //    ActivityCompat#requestPermissions

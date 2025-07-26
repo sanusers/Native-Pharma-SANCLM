@@ -128,7 +128,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         holder.checkInTime.setText(inDateTime);
         holder.checkOutTime.setText(outDateTime);
         holder.checkInAddress.setText(dataModel.getCheckin_addrs());
-        holder.checkOutAddress.setText(dataModel.getCheckin_addrs());
+        holder.checkOutAddress.setText(dataModel.getCheckout_addrs());
 
         if(checkInOutNeed) {
             if(dataModel.getCheckin() != null && !dataModel.getCheckin().isEmpty()
@@ -411,6 +411,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             bundle.putString("INAddress", dataModel.getCheckin_addrs());
             bundle.putString("OUTAddress", dataModel.getCheckout_addrs());
             bundle.putString("title", dataModel.getName());
+            bundle.putBoolean("ISCheckIN", true);
             intent.putExtras(bundle);
             context.startActivity(intent);
         });
@@ -433,6 +434,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             bundle.putString("INAddress", dataModel.getCheckin_addrs());
             bundle.putString("OUTAddress", dataModel.getCheckout_addrs());
             bundle.putString("title", dataModel.getName());
+            bundle.putBoolean("ISCheckIN", false);
             intent.putExtras(bundle);
             context.startActivity(intent);
         });

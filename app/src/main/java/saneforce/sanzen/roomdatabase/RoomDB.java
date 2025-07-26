@@ -78,7 +78,7 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_4_6)
                     .addMigrations(MIGRATION_4_5)
                     .addMigrations(MIGRATION_5_6)
-                    .fallbackToDestructiveMigration()
+//                    .fallbackToDestructiveMigration()
                     .build();
         }
         return database;
@@ -118,7 +118,7 @@ public abstract class RoomDB extends RoomDatabase {
     public static final Migration MIGRATION_4_5 = new Migration(4, 5) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE `presentation_table` ADD COLUMN `customer_type` TEXT");
+            database.execSQL("ALTER TABLE `presentation_table` ADD COLUMN `customer_type` TEXT NOT NULL");
             database.execSQL("ALTER TABLE `presentation_table` ADD COLUMN `customer_codes` TEXT");
             database.execSQL("ALTER TABLE `presentation_table` ADD COLUMN `headquarter_code` TEXT");
         }

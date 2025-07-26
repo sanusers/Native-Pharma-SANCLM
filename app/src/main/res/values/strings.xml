@@ -557,7 +557,7 @@
     <string name="plan_for">Plan for</string>
     <string name="visit_frequency">Visit Frequency</string>
     <string name="doctor_category">Doctor Category</string>
-    <string name="please_select_cluster">Please Select Cluster!</string>
+    <string name="please_select">Please Select </string>
     <string name="stp_saved_locally">No Internet. Plan Saved Locally</string>
     <string name="unplanned_visits">Unplanned Visits</string>
     <string name="saved_successfully">Saved Successfully</string>

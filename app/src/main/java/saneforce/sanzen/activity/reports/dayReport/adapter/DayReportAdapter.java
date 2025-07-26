@@ -237,7 +237,8 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             bundle.putString("OUTDateTime", dayReportModel.getRptdate() + " " + dayReportModel.getOuttime());
             bundle.putString("INAddress", dayReportModel.getInaddress());
             bundle.putString("OUTAddress", dayReportModel.getOutaddress());
-            bundle.putString("title", context.getString(R.string.day_check_in) + " ( " + dayReportModel.getRptdate() + " )");
+            bundle.putString("title", context.getString(R.string.day_check_in) + " Out ( " + dayReportModel.getRptdate() + " )");
+            bundle.putBoolean("ISCheckIN", true);
             intent.putExtras(bundle);
             context.startActivity(intent);
         });
@@ -253,7 +254,8 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             bundle.putString("OUTDateTime", dayReportModel.getRptdate() + " " + dayReportModel.getOuttime());
             bundle.putString("INAddress", dayReportModel.getInaddress());
             bundle.putString("OUTAddress", dayReportModel.getOutaddress());
-            bundle.putString("title", context.getString(R.string.day_check_in) + " ( " + dayReportModel.getRptdate() + " )");
+            bundle.putString("title", context.getString(R.string.day_check_in) + " Out ( " + dayReportModel.getRptdate() + " )");
+            bundle.putBoolean("ISCheckIN", false);
             intent.putExtras(bundle);
             context.startActivity(intent);
         });
