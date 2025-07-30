@@ -101,8 +101,8 @@
                 tools:ignore="SpUsage" />
 
             <ImageView
-                android:layout_width="@dimen/_6sdp"
-                android:layout_height="@dimen/_6sdp"
+                android:layout_width="7.80dp"
+                android:layout_height="7.80dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
                 android:src="@drawable/arrow_down" />
@@ -193,6 +193,15 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/done"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/done"
+                        android:layout_alignTop="@id/listedDr"
+                        android:layout_alignBottom="@id/listedDr"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_20sdp" />
 
                     <TextView
                         android:id="@+id/chemist"
