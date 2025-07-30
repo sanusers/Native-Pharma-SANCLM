@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/constraint_cluster"
+            app:layout_constraintBottom_toTopOf="@id/constraint_work_day"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -108,6 +108,80 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_hq" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_work_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/constraint_cluster"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/constraint_hq">
+
+            <TextView
+                android:id="@+id/tag_work_day"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="start"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                android:text="@string/work_day"
+                android:textColor="@color/light_grey_2"
+                android:textSize="@dimen/_6ssp"
+                app:layout_constraintBottom_toTopOf="@id/tv_work_day"
+                app:layout_constraintEnd_toStartOf="@id/tv_work_day_count"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_work_day_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:background="@drawable/bg_light_grey_1"
+                android:fontFamily="@font/satoshi_bold"
+                android:gravity="start"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                android:text="0"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@id/tv_work_day"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@id/tag_work_day"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_work_day"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:gravity="start"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_6ssp"
+                app:layout_constraintBottom_toTopOf="@id/view_work_day"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tag_work_day" />
+
+            <View
+                android:id="@+id/view_work_day"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_marginVertical="@dimen/_1sdp"
+                android:background="@color/bg_grey"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_work_day" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_cluster"
@@ -117,7 +191,7 @@
             app:layout_constraintBottom_toTopOf="@id/constraint_listed_doctor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/constraint_hq">
+            app:layout_constraintTop_toBottomOf="@id/constraint_work_day">
 
             <TextView
                 android:id="@+id/tag_cluster"

@@ -231,7 +231,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         //Work Day
         if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
             holder.workDayLayout.setVisibility(View.VISIBLE);
-            if(inputDataArray.getSTP_Code().isEmpty()) {
+            if(inputDataArray.getSTP_Code().isEmpty() || !holder.sessionData.getWorkType().getFWFlg().equalsIgnoreCase("F") || holder.sessionData.getCluster() == null || holder.sessionData.getCluster().isEmpty()) {
                 holder.workDayField.setText("Select");
             }else {
                 holder.workDayField.setText(inputDataArray.getSTP_Name());
