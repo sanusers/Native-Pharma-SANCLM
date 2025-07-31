@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.tourPlan;
 
-
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.tourPlan.session.SessionEditAdapter.inputDataArray;
 
 import android.annotation.SuppressLint;
@@ -159,11 +157,11 @@ public class TourPlanActivity extends AppCompatActivity {
         if(SharedPref.getSfType(this).equalsIgnoreCase("1")
                 && SharedPref.getStpNeed(TourPlanActivity.this).equalsIgnoreCase("0")
                 && SharedPref.getStpBasedMtp(TourPlanActivity.this).equalsIgnoreCase("0")
-                && stpOfflineDataDao.isNotApproved()
-                && SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0")
-                && !SharedPref.getTpStartDate(context).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("-1")
-                && !SharedPref.getTpEndDate(context).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(context).equalsIgnoreCase("-1")) {
-            commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Prepare Standard Tour Plan and get Approved to prepare Tour Plan");
+                && (stpOfflineDataDao.isNotApproved() || masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() == 0)
+                && SharedPref.getTpMandatoryNeed(this).equalsIgnoreCase("0") && SharedPref.getTpNeed(this).equalsIgnoreCase("0")
+                && !SharedPref.getTpStartDate(this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(this).equalsIgnoreCase("-1")
+                && !SharedPref.getTpEndDate(this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(this).equalsIgnoreCase("-1")) {
+            commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Prepare " + SharedPref.getStpCaption(this) + " and get Approved to prepare Tour Plan");
             Intent intent = new Intent(getApplicationContext(), StandardTourPlanActivity.class);
             startActivity(intent);
             finish();
@@ -264,9 +262,9 @@ public class TourPlanActivity extends AppCompatActivity {
 
         binding.backArrow.setOnClickListener(view -> {
 
-            if(SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") &&
-                    !SharedPref.getTpStartDate(context).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("-1") &&
-                    !SharedPref.getTpEndDate(context).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(context).equalsIgnoreCase("-1")) {
+            if(SharedPref.getTpMandatoryNeed(this).equalsIgnoreCase("0") && SharedPref.getTpNeed(this).equalsIgnoreCase("0") &&
+                    !SharedPref.getTpStartDate(this).equalsIgnoreCase("0") && !SharedPref.getTpStartDate(this).equalsIgnoreCase("-1") &&
+                    !SharedPref.getTpEndDate(this).equalsIgnoreCase("0") && !SharedPref.getTpEndDate(this).equalsIgnoreCase("-1")) {
                 SharedPref.setTpSKIPDate(TourPlanActivity.this, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
             }
 
@@ -1336,7 +1334,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                     Map<String, String> mapString = new HashMap<>();
                     mapString.put("axn", "table/setups");
-                    Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                    Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -1398,7 +1396,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                     Map<String, String> mapString = new HashMap<>();
                     mapString.put("axn", "get/tp");
-                    Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                    Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -1831,7 +1829,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
             Map<String, String> mapString = new HashMap<>();
             mapString.put("axn", "get/tp");
-            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
             call.enqueue(new Callback<JsonElement>() {
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -1915,7 +1913,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "save/tp");
-                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(TourPlanActivity.this), mapString, jsonObject.toString());
                         call.enqueue(new Callback<JsonElement>() {
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -2207,7 +2205,7 @@ public class TourPlanActivity extends AppCompatActivity {
         Log.v("tpApproval", "--json--" + jsonArray.toString());
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "savenew/tp");
-        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonArray.toString());
+        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonArray.toString());
         call.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -2305,8 +2303,8 @@ public class TourPlanActivity extends AppCompatActivity {
         calendar.add(Calendar.MONTH, 1);
         String nextMonthDate = sdf.format(calendar.getTime());
 
-        String tp_start = SharedPref.getTpStartDate(context);
-        String tp_end = SharedPref.getTpEndDate(context);
+        String tp_start = SharedPref.getTpStartDate(this);
+        String tp_end = SharedPref.getTpEndDate(this);
         int Start_Date = Integer.parseInt(tp_start);
         int End_Date = Integer.parseInt(tp_end);
         int mCurrentDate = Integer.parseInt(mCurrDate);

@@ -78,7 +78,7 @@ public abstract class RoomDB extends RoomDatabase {
                     .addMigrations(MIGRATION_4_6)
                     .addMigrations(MIGRATION_4_5)
                     .addMigrations(MIGRATION_5_6)
-                    .fallbackToDestructiveMigration()
+//                    .fallbackToDestructiveMigration()
                     .build();
         }
         return database;
@@ -92,7 +92,8 @@ public abstract class RoomDB extends RoomDatabase {
     public static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("CREATE TABLE IF NOT EXISTS `stp_offline_table` (`day_id` TEXT NOT NULL PRIMARY KEY, `day_caption` TEXT, `cluste_code` TEXT, `cluster_name` TEXT, `doctor_code` TEXT, `doctor_name` TEXT, `chemist_code` TEXT, `chemist_name` TEXT, `stp_data` TEXT, `status` INTEGER, `sync_status` TEXT)");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `stp_offline_table` (`day_id` TEXT NOT NULL PRIMARY KEY, `day_caption` TEXT, `cluste_code` TEXT, `cluster_name` TEXT, `doctor_code` TEXT, `doctor_name` TEXT, `chemist_code` TEXT, `chemist_name` TEXT, `stp_data` TEXT, `status` INTEGER NOT NULL, `sync_status` TEXT)");
+//            database.execSQL("ALTER TABLE `stp_offline_table` ADD COLUMN `status` INTEGER NOT NULL DEFAULT 0");
             database.execSQL("CREATE TABLE IF NOT EXISTS `welcome_slides_table` (`name` TEXT NOT NULL PRIMARY KEY, `slide_size` TEXT, `downloading_status` TEXT, `progress` TEXT, `background_task` TEXT, `file_position` TEXT)");
         }
     };
@@ -117,7 +118,7 @@ public abstract class RoomDB extends RoomDatabase {
     public static final Migration MIGRATION_4_5 = new Migration(4, 5) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE `presentation_table` ADD COLUMN `customer_type` TEXT");
+            database.execSQL("ALTER TABLE `presentation_table` ADD COLUMN `customer_type` TEXT NOT NULL");
             database.execSQL("ALTER TABLE `presentation_table` ADD COLUMN `customer_codes` TEXT");
             database.execSQL("ALTER TABLE `presentation_table` ADD COLUMN `headquarter_code` TEXT");
         }

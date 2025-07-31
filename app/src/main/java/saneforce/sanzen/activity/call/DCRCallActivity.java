@@ -802,6 +802,9 @@ public class DCRCallActivity extends AppCompatActivity {
 
         tv_address.setText(address);
         tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
+        Handler handler = new Handler();
+        Runnable runnable = () -> tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
+        handler.postDelayed(runnable , 1000);
         tvLatLong.setText(String.format(Locale.getDefault(), "%f , %f", lat, lng));
 
         dialogCheckOut.show();

@@ -1,8 +1,6 @@
 package saneforce.sanzen.activity.approvals.tp.adapter;
 
-
 import static saneforce.sanzen.activity.approvals.tp.TpApprovalActivity.TpChemNeed;
-import static saneforce.sanzen.activity.approvals.tp.TpApprovalActivity.TpClusterNeed;
 import static saneforce.sanzen.activity.approvals.tp.TpApprovalActivity.TpDrNeed;
 import static saneforce.sanzen.activity.approvals.tp.TpApprovalActivity.TpJwNeed;
 import static saneforce.sanzen.activity.approvals.tp.TpApprovalActivity.TpStockistNeed;
@@ -43,56 +41,64 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
     @Override
     public void onBindViewHolder(@NonNull TpClickViewDetailsAdapter.ViewHolder holder, int position) {
         holder.tv_wtName.setText(tpDetailedModels.get(position).getWtName());
-        if (tpDetailedModels.get(position).getFWFlg().equalsIgnoreCase("F")) {
+        if(tpDetailedModels.get(position).getFWFlg().equalsIgnoreCase("F")) {
+            holder.constraint_cluster.setVisibility(View.VISIBLE);
+            holder.tv_cluster.setText(tpDetailedModels.get(position).getClusterName());
+            holder.tag_cluster.setText(SharedPref.getClusterCap(context));
+            if(!tpDetailedModels.get(position).getClusterName().isEmpty()) {
+                str = tpDetailedModels.get(position).getClusterName().split(",");
+                holder.tv_cluster_count.setText(String.valueOf(str.length));
+            }
+            if(!tpDetailedModels.get(position).getHqName().isEmpty()) {
+                holder.constraint_hq.setVisibility(View.VISIBLE);
+                holder.tv_hq.setText(tpDetailedModels.get(position).getHqName());
+            }else {
+                holder.constraint_hq.setVisibility(View.GONE);
+            }
 
-               holder.constraint_cluster.setVisibility(View.VISIBLE);
-                holder.tv_cluster.setText(tpDetailedModels.get(position).getClusterName());
-                holder.tag_cluster.setText(SharedPref.getClusterCap(context));
-                if (!tpDetailedModels.get(position).getClusterName().isEmpty()) {
-                    str = tpDetailedModels.get(position).getClusterName().split(",");
-                    holder.tv_cluster_count.setText(String.valueOf(str.length));
-                }
-                if(!tpDetailedModels.get(position).getHqName().isEmpty()){
-                    holder.constraint_hq.setVisibility(View.VISIBLE);
-                    holder.tv_hq.setText(tpDetailedModels.get(position).getHqName());
-                }else {
-                    holder.constraint_hq.setVisibility(View.GONE);
-                }
+            if(!tpDetailedModels.get(position).getSTPCode().isEmpty()
+                    && SharedPref.getStpNeed(context).equalsIgnoreCase("0")
+                    && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+                holder.constraint_workday.setVisibility(View.VISIBLE);
+                holder.tv_workdayName.setText(tpDetailedModels.get(position).getSTPName());
+            }else {
+                holder.constraint_workday.setVisibility(View.GONE);
+            }
 
-            if (TpDrNeed.equalsIgnoreCase("0")) {
+            if(TpDrNeed.equalsIgnoreCase("0")) {
                 holder.constraint_doctor.setVisibility(View.VISIBLE);
                 holder.tv_drList.setText(tpDetailedModels.get(position).getDrName());
                 holder.tag_dr.setText(SharedPref.getDrCap(context));
-                if (!tpDetailedModels.get(position).getDrName().isEmpty()) {
+                if(!tpDetailedModels.get(position).getDrName().isEmpty()) {
                     str = tpDetailedModels.get(position).getDrName().split(",");
                     holder.tv_dr_count.setText(String.valueOf(str.length));
                 }
             }
 
-            if (TpChemNeed.equalsIgnoreCase("0")) {
+            if(TpChemNeed.equalsIgnoreCase("0")) {
                 holder.constraint_chemist.setVisibility(View.VISIBLE);
                 holder.tv_chemistList.setText(tpDetailedModels.get(position).getChemistName());
                 holder.tag_chemist.setText(SharedPref.getChmCap(context));
-                if (!tpDetailedModels.get(position).getChemistName().isEmpty()) {
+                if(!tpDetailedModels.get(position).getChemistName().isEmpty()) {
                     str = tpDetailedModels.get(position).getChemistName().split(",");
                     holder.tv_chemist_count.setText(String.valueOf(str.length));
                 }
             }
 
-            if (TpStockistNeed.equalsIgnoreCase("0")) {
+            if(TpStockistNeed.equalsIgnoreCase("0")) {
                 holder.constraint_stockiest.setVisibility(View.VISIBLE);
                 holder.tv_stockiestList.setText(tpDetailedModels.get(position).getStockiestName());
                 holder.tag_stockist.setText(SharedPref.getStkCap(context));
-                if (!tpDetailedModels.get(position).getStockiestName().isEmpty()) {
+                if(!tpDetailedModels.get(position).getStockiestName().isEmpty()) {
                     str = tpDetailedModels.get(position).getStockiestName().split(",");
                     holder.tv_stockiest_count.setText(String.valueOf(str.length));
                 }
             }
 
-            if (TpJwNeed.equalsIgnoreCase("0")) {
+            if(TpJwNeed.equalsIgnoreCase("0")) {
                 holder.constraint_jw.setVisibility(View.VISIBLE);
                 holder.tv_jwList.setText(tpDetailedModels.get(position).getJwName());
-                if (!tpDetailedModels.get(position).getJwName().isEmpty()) {
+                if(!tpDetailedModels.get(position).getJwName().isEmpty()) {
                     str = tpDetailedModels.get(position).getJwName().split(",");
                     holder.tv_jw_count.setText(String.valueOf(str.length));
                 }
@@ -100,10 +106,8 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
 
             holder.constraint_remarks.setVisibility(View.VISIBLE);
             holder.tv_remarks.setText(tpDetailedModels.get(position).getDayRemarks());
-        } else {
-
-
-            if(!tpDetailedModels.get(position).getClusterName().isEmpty()){
+        }else {
+            if(!tpDetailedModels.get(position).getClusterName().isEmpty()) {
                 holder.constraint_cluster.setVisibility(View.VISIBLE);
                 holder.tv_cluster.setText(tpDetailedModels.get(position).getClusterName());
                 holder.tag_cluster.setText(SharedPref.getClusterCap(context));
@@ -114,28 +118,27 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
                 holder.constraint_cluster.setVisibility(View.GONE);
             }
 
-
-            if (SharedPref.getSfType(context).equalsIgnoreCase("2")) {
-                if (!tpDetailedModels.get(position).getHqName().isEmpty()) {
+            if(SharedPref.getSfType(context).equalsIgnoreCase("2")) {
+                if(!tpDetailedModels.get(position).getHqName().isEmpty()) {
                     holder.constraint_hq.setVisibility(View.VISIBLE);
                     holder.tv_hq.setText(tpDetailedModels.get(position).getHqName());
-                } else {
+                }else {
                     holder.constraint_hq.setVisibility(View.GONE);
                 }
-            } else {
+            }else {
                 holder.constraint_hq.setVisibility(View.GONE);
             }
 
-            if (TpJwNeed.equalsIgnoreCase("0")) {
-                if (!tpDetailedModels.get(position).getJwName().isEmpty()) {
+            if(TpJwNeed.equalsIgnoreCase("0")) {
+                if(!tpDetailedModels.get(position).getJwName().isEmpty()) {
                     holder.tv_jwList.setText(tpDetailedModels.get(position).getJwName());
                     holder.constraint_jw.setVisibility(View.VISIBLE);
                     str = tpDetailedModels.get(position).getJwName().split(",");
                     holder.tv_jw_count.setText(String.valueOf(str.length));
-                } else {
+                }else {
                     holder.constraint_jw.setVisibility(View.GONE);
                 }
-            } else {
+            }else {
                 holder.constraint_jw.setVisibility(View.GONE);
             }
 
@@ -154,13 +157,15 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ConstraintLayout constraint_cluster, constraint_doctor, constraint_chemist, constraint_stockiest, constraint_jw, constraint_remarks,constraint_hq;
-        TextView tv_wtName, tag_cluster, tag_dr, tag_chemist, tag_stockist, tag_jw, tv_cluster, tv_drList, tv_chemistList, tv_stockiestList, tv_jwList, tv_remarks, tv_cluster_count, tv_dr_count, tv_chemist_count, tv_stockiest_count, tv_jw_count,tv_hq,tv_count;
+        ConstraintLayout constraint_workday, constraint_cluster, constraint_doctor, constraint_chemist, constraint_stockiest, constraint_jw, constraint_remarks, constraint_hq;
+        TextView tv_workdayName, tv_wtName, tag_cluster, tag_dr, tag_chemist, tag_stockist, tag_jw, tv_cluster, tv_drList, tv_chemistList, tv_stockiestList, tv_jwList, tv_remarks, tv_cluster_count, tv_dr_count, tv_chemist_count, tv_stockiest_count, tv_jw_count, tv_hq, tv_count;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tv_wtName = itemView.findViewById(R.id.tv_wt);
+            constraint_workday = itemView.findViewById(R.id.constraint_work_day);
             constraint_cluster = itemView.findViewById(R.id.constraint_cluster);
+            tv_workdayName = itemView.findViewById(R.id.tv_work_day);
             tv_cluster = itemView.findViewById(R.id.tv_cluster);
             tag_cluster = itemView.findViewById(R.id.tag_cluster);
             tv_cluster_count = itemView.findViewById(R.id.tv_cluster_count);
@@ -185,8 +190,6 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
             tv_hq = itemView.findViewById(R.id.tv_hq);
             tv_count = itemView.findViewById(R.id.tv_hq_count);
             constraint_hq = itemView.findViewById(R.id.constraint_hq);
-
-
         }
     }
 }

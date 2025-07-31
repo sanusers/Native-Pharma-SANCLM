@@ -40,7 +40,9 @@ public class TpDetailedModel {
     String jwName;
     String jwName2;
     String jwName3;
-    public TpDetailedModel(String dayNo, String wtName,String hqName, String clusterName, String FWFlg, String dayRemarks, String drName,String chemName,String StockiestName,String jwName) {
+    String STPCode;
+    String STPName;
+    public TpDetailedModel(String dayNo, String wtName,String hqName, String clusterName, String FWFlg, String dayRemarks, String drName,String chemName,String StockiestName,String jwName, String  STPCode, String  STPName) {
         DayNo = dayNo;
         WtName = wtName;
         ClusterName = clusterName;
@@ -52,8 +54,10 @@ public class TpDetailedModel {
         this.stockiestName = StockiestName;
         this.jwName = jwName;
         this.HqName = hqName;
+        this.STPCode = STPCode;
+        this.STPName = STPName;
     }
-    public TpDetailedModel(String dayNo, String status, String reasonForRejection, String wtCode, String wtCode2, String wtCode3, String wtName, String wtName2, String wtName3, String hqCode ,String hqCode2, String hqCode3,String hqName,String hqName2,String hqName3,String clusterCode, String clusterCode2, String clusterCode3, String clusterName, String clusterName2, String clusterName3, String FWFlg, String FWFlg2, String FWFlg3, String dayRemarks, String dayRemarks2, String dayRemarks3, String drName, String drName2, String drName3, String chemistName, String chemistName2, String chemistName3, String stockiestName, String stockiestName2, String stockiestName3, String jwName, String jwName2, String jwName3) {
+    public TpDetailedModel(String dayNo, String status, String reasonForRejection, String wtCode, String wtCode2, String wtCode3, String wtName, String wtName2, String wtName3, String hqCode ,String hqCode2, String hqCode3,String hqName,String hqName2,String hqName3,String clusterCode, String clusterCode2, String clusterCode3, String clusterName, String clusterName2, String clusterName3, String FWFlg, String FWFlg2, String FWFlg3, String dayRemarks, String dayRemarks2, String dayRemarks3, String drName, String drName2, String drName3, String chemistName, String chemistName2, String chemistName3, String stockiestName, String stockiestName2, String stockiestName3, String jwName, String jwName2, String jwName3, String  STPCode, String  STPName) {
         DayNo = dayNo;
         Status = status;
         this.reasonForRejection = reasonForRejection;
@@ -93,6 +97,8 @@ public class TpDetailedModel {
         this.jwName = jwName;
         this.jwName2 = jwName2;
         this.jwName3 = jwName3;
+        this.STPCode = STPCode;
+        this.STPName = STPName;
     }
 
     public String getDrName() {
@@ -405,5 +411,21 @@ public class TpDetailedModel {
 
     public void setHqName3(String hqName3) {
         HqName3 = hqName3;
+    }
+
+    public String getSTPCode() {
+        return STPCode;
+    }
+
+    public void setSTPCode(String STPCode) {
+        this.STPCode = STPCode;
+    }
+
+    public String getSTPName() {
+        return STPName;
+    }
+
+    public void setSTPName(String STPName) {
+        this.STPName = STPName;
     }
 }

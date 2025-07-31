@@ -379,6 +379,15 @@ public class WorkPlanEntriesNeeded {
                             }
                             lockDays++;
                         }
+                        i=0;
+                        while(true) {
+                            String date = LocalDate.now().minusDays(lockDays).toString();
+                            if(HWDates.contains(date)) {
+                                lockDays++;
+                            } else {
+                                break;
+                            }
+                        }
                         Log.d("TAG", "setupMyDayPlanEntriesNeeded: " + lockDays + " -> " + numberOfDaysLock);
                     } else {
                         lockDays = numberOfDaysLock;

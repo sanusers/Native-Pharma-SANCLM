@@ -21,16 +21,16 @@ public class PresentationDataTable {
     private String presentationName = "";
 
     @ColumnInfo(name = "presentation_data")
-    private String presentationData;
+    private String presentationData = "";
 
     @ColumnInfo(name = "customer_type")
-    private String customerType;
+    private String customerType = "";
 
     @ColumnInfo(name = "customer_codes")
-    private String customerCodes;
+    private String customerCodes = "";
 
     @ColumnInfo(name = "headquarter_code")
-    private String headquarterCode;
+    private String headquarterCode = "";
 
     public PresentationDataTable() {
     }

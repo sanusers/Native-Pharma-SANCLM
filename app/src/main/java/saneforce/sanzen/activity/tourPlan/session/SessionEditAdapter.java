@@ -231,7 +231,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         //Work Day
         if(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1")) {
             holder.workDayLayout.setVisibility(View.VISIBLE);
-            if(inputDataArray.getSTP_Code().isEmpty()) {
+            if(inputDataArray.getSTP_Code().isEmpty() || !holder.sessionData.getWorkType().getFWFlg().equalsIgnoreCase("F") || holder.sessionData.getCluster() == null || holder.sessionData.getCluster().isEmpty()) {
                 holder.workDayField.setText("Select");
             }else {
                 holder.workDayField.setText(inputDataArray.getSTP_Name());
@@ -621,77 +621,81 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             }
         });
 
-        holder.drLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.searchET.setText("");
-                itemPosition = holder.getLayoutPosition();
-                holder.relativeLayout.setSelected(false);
+        if(!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1"))) {
+            holder.drLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
 
-                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                }else {
-                    if(!holder.fieldSelected) {
-                        if(holder.listedDrArray.size() == 0) {
-                            holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
-                            TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        }else {
-                            setSelectedCount(holder, holder.listedDrArray, false, holder.drField, holder.drCount);
-                        }
-                        holder.fieldSelected = true;
-                        holder.sessionItemAdapterArray = filterJsonArray(holder, holder.listedDrArray);
-                        populateSessionItemAdapter(holder, true, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR);
+                    if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
                     }else {
-                        holder.fieldSelected = false;
-                        setSelectedCount(holder, holder.listedDrArray, true, holder.drField, holder.drCount);
-                        changeUIState(holder, holder.drLayout, holder.drArrow, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        if(!holder.fieldSelected) {
+                            if(holder.listedDrArray.size() == 0) {
+                                holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            }else {
+                                setSelectedCount(holder, holder.listedDrArray, false, holder.drField, holder.drCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = filterJsonArray(holder, holder.listedDrArray);
+                            populateSessionItemAdapter(holder, true, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR);
+                        }else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.listedDrArray, true, holder.drField, holder.drCount);
+                            changeUIState(holder, holder.drLayout, holder.drArrow, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
-        holder.chemistLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.searchET.setText("");
-                itemPosition = holder.getLayoutPosition();
-                holder.relativeLayout.setSelected(false);
+        if(!(SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0") && sfType.equalsIgnoreCase("1"))) {
+            holder.chemistLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.searchET.setText("");
+                    itemPosition = holder.getLayoutPosition();
+                    holder.relativeLayout.setSelected(false);
 
-                if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
-                }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
-                }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
-                }else {
-
-                    if(!holder.fieldSelected) {
-                        if(holder.chemistArray.size() == 0) {
-                            holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + holder.selectedHq).getMasterSyncDataJsonArray());
-                            TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
-                        }else {
-                            setSelectedCount(holder, holder.chemistArray, false, holder.chemistField, holder.chemistCount);
-                        }
-
-                        holder.fieldSelected = true;
-                        holder.sessionItemAdapterArray = filterJsonArray(holder, holder.chemistArray);
-                        populateSessionItemAdapter(holder, true, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST);
+                    if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    }else if(sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
+                    }else if(holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
                     }else {
-                        holder.fieldSelected = false;
-                        setSelectedCount(holder, holder.chemistArray, true, holder.chemistField, holder.chemistCount);
-                        changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+
+                        if(!holder.fieldSelected) {
+                            if(holder.chemistArray.size() == 0) {
+                                holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            }else {
+                                setSelectedCount(holder, holder.chemistArray, false, holder.chemistField, holder.chemistCount);
+                            }
+
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = filterJsonArray(holder, holder.chemistArray);
+                            populateSessionItemAdapter(holder, true, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST);
+                        }else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.chemistArray, true, holder.chemistField, holder.chemistCount);
+                            changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
         holder.stockiestLayout.setOnClickListener(new View.OnClickListener() {
             @Override

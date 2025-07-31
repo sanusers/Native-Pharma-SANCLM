@@ -1372,7 +1372,14 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 createDeleteJson(dayID);
                 callDeleteAPI(dayID, caption);
             }else {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+//                if(stpOfflineDataDao.getSTPDataOfDayOrNew(dayID).getSyncStatus().equalsIgnoreCase("1")) {
+//                    stpOfflineDataDao.deleteByDayID(dayID);
+//                    getRequiredData();
+//                    populateAdapters();
+//                    checkApprovalButtonStatus();
+//                } else {
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+//                }
             }
             dialogOptionSelection.dismiss();
         });
