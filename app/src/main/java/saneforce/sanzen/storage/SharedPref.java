@@ -343,6 +343,7 @@ public class SharedPref {
     public static final String RCPA_COMPETITOR_ADD = "RCPA_competitor_add";
     public static final String GEOTAGGING = "GeoTagging";
     public static final String DCR_APPROVAL_NEED = "DcrapprvNd";
+    public static final String ONE_BUILD = "one_build";
     //myresource
     public static final String SETSYNHQ = "SETSYNHQ";
     public static final String SETSYN_HQCODE = "SETSYN_HQCODE";
@@ -468,6 +469,10 @@ public class SharedPref {
     public static final String DAY_CHECK_IN_DATA = "Day_Check_In_Data";
     public static final String CHECK_IN_SKIP_DATE = "Check_In_Skip_Date";
 
+    public static String TpIdCurrent = "tpIdCurrent";
+    public static String TpIdPrevious = "tpIdPrevious";
+    public static String TpIdNext     = "tpIdNext";
+
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -507,7 +512,7 @@ public class SharedPref {
         editor.putString(DOC_BUSINESS_PRODUCT, jsonObject.optString("doc_business_product"));
         editor.putString(DOC_BUSINESS_VALUE, jsonObject.optString("doc_business_value"));
         editor.putString(DCR_DOC_BUSINESS_PRODUCT, jsonObject.optString("dcr_doc_business_product"));
-        editor.putString(DR_MAPPINGPRODUCT, jsonObject.optString("Dr_mappingproduct"));
+         editor.putString(DR_MAPPINGPRODUCT, jsonObject.optString("Dr_mappingproduct"));
         editor.putString(CP_NEED, jsonObject.optString("CPNeed"));
         editor.putString(CI_NEED, jsonObject.optString("CINeed"));
         editor.putString(CMPGN_NEED, jsonObject.optString("CmpgnNeed"));
@@ -806,6 +811,7 @@ public class SharedPref {
         editor.putString(DELAY_HW_NEED, jsonObject.optString("Delay_HW_Need"));
         editor.putString(DETAILING_IDLE_DURATION, jsonObject.optString("detailing_idle_duration"));
         editor.putString(WELCOME_SLIDES_PATH, "");
+        editor.putString(ONE_BUILD,jsonObject.optString("one_build"));
         editor.apply();
 
         } catch (Exception ignore) {
@@ -2012,6 +2018,10 @@ public class SharedPref {
     public static String getDcrApprovalNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DCR_APPROVAL_NEED, "");
     }
+    public static String getOneBuild(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(ONE_BUILD,"");
+    }
+
 
     public static void setDrAddCallNeed(Context context, String drAddCallNeed) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -2894,5 +2904,48 @@ public class SharedPref {
     public static String getCheckInSkipDate(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CHECK_IN_SKIP_DATE, "");
     }
+
+    public static void saveTpId(Context context, int retrievedIdPm) {
+        try{
+            sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+            editor = sharedPreferences.edit();
+            editor.putInt(TpIdPrevious,retrievedIdPm);
+            editor.apply();
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
+        }
+    }
+    public static int getTpIdPreviousMonth(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdPrevious,0);
+    }
+    public static void saveTpIdCm(Context context, int retrievedIdCm) {
+        try{
+            sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+            editor = sharedPreferences.edit();
+            editor.putInt(TpIdCurrent,retrievedIdCm);
+            editor.apply();
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
+        }
+    }
+    public static int getTpIdCurrentMonth(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdCurrent,0);
+    }
+
+    public static void saveTpIdNm(Context context, int retrievedIdNm) {
+        try{
+            sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+            editor = sharedPreferences.edit();
+            editor.putInt(TpIdNext,retrievedIdNm);
+            editor.apply();
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
+        }
+    }
+
+    public static int getTpIdNextMonth(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdNext,0);
+    }
+
 
 }

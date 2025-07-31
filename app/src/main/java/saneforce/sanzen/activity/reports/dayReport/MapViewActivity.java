@@ -127,7 +127,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
                 checkInMarker.showInfoWindow();
                 mMap.moveCamera(checkInCameraUpdate);
             } else {
-                commonUtilsMethods.showToastMessage(this, "Not Checked In");
+                commonUtilsMethods. showToastMessage(this, "Not Checked In");
             }
         });
 

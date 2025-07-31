@@ -150,6 +150,7 @@ public class ApprovalsActivity extends AppCompatActivity {
             jsonGetCount.put("geotag_need", SharedPref.getGeotagNeed(this));
             jsonGetCount.put("TPdev_need", SharedPref.getTpdcrMgrappr(this));
             jsonGetCount.put("STP_Need", SharedPref.getStpNeed(this));
+            jsonGetCount.put("OneBuild_Need",SharedPref.getOneBuild(this));
 
 
             Log.v("json_get_full_dcr_list", jsonGetCount.toString());

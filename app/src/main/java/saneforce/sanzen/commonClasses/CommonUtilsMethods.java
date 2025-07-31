@@ -361,7 +361,7 @@ public class CommonUtilsMethods {
     public void showToastMessage(Context context, String message) {
 
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_layout, ((Activity) context).findViewById(R.id.toast_layout_root));
+        View layout = inflater.inflate(R.layout.toast_layout,((Activity) context).findViewById(R.id.toast_layout_root));
 
         //ImageView image = layout.findViewById(R.id.image);
         // image.setImageResource(R.drawable.san_clm_logo);
@@ -545,6 +545,7 @@ public class CommonUtilsMethods {
             jsonObject.put("key", SharedPref.getLicenseKey(context));
             jsonObject.put("Configurl", SharedPref.getBaseWebUrl(context));
             jsonObject.put("battery", String.valueOf(mBatteryPercent));
+            jsonObject.put("Mod_No","2");
 
 
         } catch (JSONException e) {

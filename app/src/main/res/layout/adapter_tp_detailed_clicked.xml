@@ -261,7 +261,7 @@
             android:id="@+id/constraint_listed_doctor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
+                android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/constraint_listed_chemist"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -306,8 +306,8 @@
 
             <TextView
                 android:id="@+id/tv_listed_doctor"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="3dp"
+                android:layout_height="2dp"
                 android:fontFamily="@font/satoshi_bold"
                 android:gravity="start"
                 android:paddingHorizontal="@dimen/_4sdp"

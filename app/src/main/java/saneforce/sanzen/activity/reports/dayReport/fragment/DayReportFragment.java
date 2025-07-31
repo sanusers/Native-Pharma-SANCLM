@@ -55,7 +55,9 @@ import saneforce.sanzen.activity.reports.dayReport.DataViewModel;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DayReportAdapter;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportModel;
 import saneforce.sanzen.activity.tourPlan.calendar.OnDayClickInterface;
+import saneforce.sanzen.activity.tourPlan.calendar.OnDayClickOneBuildInterface;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
+import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -84,6 +86,7 @@ public class DayReportFragment extends Fragment {
     DataViewModel dataViewModel;
     AlertDialog.Builder alertDialog;
     CommonUtilsMethods commonUtilsMethods;
+    private int OneBuildSetup = 0;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -267,19 +270,33 @@ public class DayReportFragment extends Fragment {
     }
 
     public void populateCalendarAdapter(RecyclerView recyclerView) {
-        calendarAdapter = new CalendarAdapter(daysArrayList, getContext(), localDate,new OnDayClickInterface() {
-            @Override
-            public void onDayClicked(int position, String date, ModelClass modelClass) {
-                calendarDialog.cancel();
-//                System.out.println("localDate1--->"+localDate);
-                getData(monthYearFromDate(localDate, TimeUtils.FORMAT_24) + "-" + date);
-//                System.out.println("monthDate--->"+monthYearFromDate(localDate, TimeUtils.FORMAT_23) + "-" + date);
-            }
-        });
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 7);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(calendarAdapter);
 
+        if(OneBuildSetup == 0){
+            calendarAdapter = new CalendarAdapter(daysArrayList, getContext(), localDate, new OnDayClickOneBuildInterface() {
+                @Override
+                public void onDayClickedOneBuild(int position, String date, OneBuildModelClass oneBuildModelClass) {
+                    calendarDialog.cancel();
+                    getData(monthYearFromDate(localDate, TimeUtils.FORMAT_24) + "-" + date);
+
+                }
+            });
+            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 7);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setAdapter(calendarAdapter);
+        }else {
+            calendarAdapter = new CalendarAdapter(daysArrayList, getContext(), localDate, new OnDayClickInterface() {
+                @Override
+                public void onDayClicked(int position, String date, ModelClass modelClass) {
+                    calendarDialog.cancel();
+//                System.out.println("localDate1--->"+localDate);
+                    getData(monthYearFromDate(localDate, TimeUtils.FORMAT_24) + "-" + date);
+//                System.out.println("monthDate--->"+monthYearFromDate(localDate, TimeUtils.FORMAT_23) + "-" + date);
+                }
+            });
+            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 7);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setAdapter(calendarAdapter);
+        }
     }
 
     public void getData(String date) {

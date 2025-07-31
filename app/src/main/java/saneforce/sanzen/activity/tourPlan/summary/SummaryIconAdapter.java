@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.tourPlan.summary;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,19 +17,30 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
+import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
+import saneforce.sanzen.storage.SharedPref;
 
 
 public class SummaryIconAdapter extends RecyclerView.Adapter<SummaryIconAdapter.MyViewHolder> {
     ArrayList<ModelClass.CountModel> modelClass;
+    ArrayList<OneBuildModelClass.CountModel> oneBuildModelClass;
     Context context;
+//    private int OneBuildSetup = 0;
 
     public SummaryIconAdapter (ArrayList<ModelClass.CountModel> modelClass, Context context) {
         this.modelClass = modelClass;
         this.context = context;
     }
 
-    public SummaryIconAdapter () {
+    public SummaryIconAdapter(Context context,ArrayList<OneBuildModelClass.CountModel> oneBuildModelClass) {
+        this.context = context;
+        this.oneBuildModelClass = oneBuildModelClass;
     }
+
+    public SummaryIconAdapter() {
+
+    }
+
 
     @NonNull
     @Override
@@ -39,49 +52,92 @@ public class SummaryIconAdapter extends RecyclerView.Adapter<SummaryIconAdapter.
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder (@NonNull MyViewHolder holder, int position) {
+        if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+            OneBuildModelClass.CountModel oneBuildModel = oneBuildModelClass.get(holder.getAbsoluteAdapterPosition());
+
+            switch (oneBuildModel.getName().toUpperCase()) {
+                case "CLUSTER": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_cluster_location_ic));
+                    break;
+                }
+                case "JW": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_joint_work_ic));
+                    break;
+                }
+                case "DR": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_dr_icon));
+                    break;
+                }
+                case "CHEMIST": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_chemist_icon));
+                    break;
+                }
+                case "STOCKIEST": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_stockiest_icon));
+                    break;
+                }
+                case "UNLISTEDDR": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_unlist_dr_icon));
+                    break;
+                }
+                case "CIP": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_cip_icon));
+                    break;
+                }
+                case "HOSP": {
+                    holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_hospital_icon));
+                    break;
+                }
+            }
+            holder.count.setText(String.valueOf(oneBuildModel.getCount()));
+
+        }else{
+
         ModelClass.CountModel model = modelClass.get(holder.getAbsoluteAdapterPosition());
 
-        switch (model.getName().toUpperCase()){
-            case "CLUSTER" : {
+        switch (model.getName().toUpperCase()) {
+            case "CLUSTER": {
                 holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_cluster_location_ic));
                 break;
             }
-            case "JW" : {
+            case "JW": {
                 holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_joint_work_ic));
                 break;
             }
-            case "DR" : {
+            case "DR": {
                 holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_dr_icon));
                 break;
             }
-            case "CHEMIST" : {
+            case "CHEMIST": {
                 holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_chemist_icon));
                 break;
             }
-            case "STOCKIEST" : {
+            case "STOCKIEST": {
                 holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_stockiest_icon));
                 break;
             }
-            case "UNLISTEDDR" : {
+            case "UNLISTEDDR": {
                 holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_unlist_dr_icon));
                 break;
             }
-            case "CIP" : {
+            case "CIP": {
                 holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_cip_icon));
                 break;
             }
-            case "HOSP" : {
+            case "HOSP": {
                 holder.iconImage.setImageDrawable(context.getResources().getDrawable(R.drawable.tp_hospital_icon));
                 break;
             }
         }
         holder.count.setText(String.valueOf(model.getCount()));
+    }
 
     }
 
     @Override
     public int getItemCount () {
-        return modelClass.size();
+        if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")) return oneBuildModelClass.size();
+        else return modelClass.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
