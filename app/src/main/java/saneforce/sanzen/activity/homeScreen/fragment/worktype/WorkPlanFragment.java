@@ -101,7 +101,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     public ArrayList<Multicheckclass_clust> listSelectedHQ = new ArrayList<>();
     public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "", mFinalRemarks = "", mTerratiry1 = "", mTerratiry2 = "", dayStatus = "", tpWorkType = "", tpCluster = "", tpDoctor = "", deviation = "0", remarks = "", tpApprovalStatus = "", workDayName = "", workDayCode = "";
     @SuppressLint("StaticFieldLeak")
-    public WorkplanFragmentBinding binding;
+    public static WorkplanFragmentBinding binding;
     ProgressDialog progressDialog;
     String CheckInOutStatus, FinalSubmitStatus, hqCode = "", rejectedReason = "", deviationRejectedReason = "";
     JSONObject jsonObject = new JSONObject(), deviationJSONObject = new JSONObject();

@@ -53,6 +53,7 @@ import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.calendar.CalendarAdapter;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
+import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanzen.activity.tourPlan.session.SessionEditAdapter;
 import saneforce.sanzen.activity.tourPlan.session.SessionInterface;
@@ -115,6 +116,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
         ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
         ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
+        ArrayList<ModelClass.SessionList.SubClass> hqArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
@@ -124,12 +126,21 @@ public class TourPlanActivity extends AppCompatActivity {
         ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-        return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+        ArrayList<MultiHQHeaderModelClass> clustersArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> jcsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> drsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> chemistsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> stocksArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> unListedDrsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> cipsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> hospsArray = new ArrayList<>();
+
+        return new ModelClass.SessionList("", true, "", workType, hq, hqArray, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clustersArray, jcsArray, drsArray, chemistsArray, stocksArray, unListedDrsArray, cipsArray, hospsArray);
     }
 
-    public static ModelClass.SessionList prepareSessionListForAdapter1(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq) {
-        return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
-    }
+//    public static ModelClass.SessionList prepareSessionListForAdapter1(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq) {
+//        return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+//    }
 
     //To Hide the bottomNavigation When popup
     @Override
@@ -138,6 +149,12 @@ public class TourPlanActivity extends AppCompatActivity {
         if(hasFocus) {
             binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
     }
 
     @Override
@@ -710,6 +727,7 @@ public class TourPlanActivity extends AppCompatActivity {
         ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
         ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
 
+        ArrayList<ModelClass.SessionList.SubClass> hqArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
@@ -718,10 +736,17 @@ public class TourPlanActivity extends AppCompatActivity {
         ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> clustersArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> jcsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> drsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> chemistsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> stocksArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> unListedDrsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> cipsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> hospsArray = new ArrayList<>();
 
-        return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+        return new ModelClass.SessionList("", true, "", workType, hq, hqArray, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clustersArray, jcsArray, drsArray, chemistsArray, stocksArray, unListedDrsArray, cipsArray, hospsArray);
     }
-
 
     public void uiInitialization() {
         localDate = LocalDate.now();
@@ -1092,6 +1117,7 @@ public class TourPlanActivity extends AppCompatActivity {
             public void fieldWorkSelected(ModelClass arrayList, int position) {
                 ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(arrayList.getSessionList().get(position).getWorkType());
                 ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
+                ArrayList<ModelClass.SessionList.SubClass> hqArray = new ArrayList<>();
                 ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
                 ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
                 ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
@@ -1101,7 +1127,16 @@ public class TourPlanActivity extends AppCompatActivity {
                 ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
                 ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-                ModelClass.SessionList modelClass = new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+                ArrayList<MultiHQHeaderModelClass> clustersArray = new ArrayList<>();
+                ArrayList<MultiHQHeaderModelClass> jcsArray = new ArrayList<>();
+                ArrayList<MultiHQHeaderModelClass> drsArray = new ArrayList<>();
+                ArrayList<MultiHQHeaderModelClass> chemistsArray = new ArrayList<>();
+                ArrayList<MultiHQHeaderModelClass> stocksArray = new ArrayList<>();
+                ArrayList<MultiHQHeaderModelClass> unListedDrsArray = new ArrayList<>();
+                ArrayList<MultiHQHeaderModelClass> cipsArray = new ArrayList<>();
+                ArrayList<MultiHQHeaderModelClass> hospsArray = new ArrayList<>();
+
+                ModelClass.SessionList modelClass = new ModelClass.SessionList("", true, "", workType, hq, hqArray, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clustersArray, jcsArray, drsArray, chemistsArray, stocksArray, unListedDrsArray, cipsArray, hospsArray);
                 arrayList.getSessionList().remove(position);
                 arrayList.getSessionList().add(position, modelClass);
 
@@ -1118,6 +1153,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 if(changed) {
                     ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(arrayList.getSessionList().get(position).getWorkType());
                     ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(arrayList.getSessionList().get(position).getHQ());
+                    ArrayList<ModelClass.SessionList.SubClass> hqArray = new ArrayList<>(arrayList.getSessionList().get(position).getHQs());
                     ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
                     ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
                     ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
@@ -1127,7 +1163,16 @@ public class TourPlanActivity extends AppCompatActivity {
                     ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
                     ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-                    ModelClass.SessionList modelClass = new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+                    ArrayList<MultiHQHeaderModelClass> clustersArray = new ArrayList<>();
+                    ArrayList<MultiHQHeaderModelClass> jcsArray = new ArrayList<>();
+                    ArrayList<MultiHQHeaderModelClass> drsArray = new ArrayList<>();
+                    ArrayList<MultiHQHeaderModelClass> chemistsArray = new ArrayList<>();
+                    ArrayList<MultiHQHeaderModelClass> stocksArray = new ArrayList<>();
+                    ArrayList<MultiHQHeaderModelClass> unListedDrsArray = new ArrayList<>();
+                    ArrayList<MultiHQHeaderModelClass> cipsArray = new ArrayList<>();
+                    ArrayList<MultiHQHeaderModelClass> hospsArray = new ArrayList<>();
+
+                    ModelClass.SessionList modelClass = new ModelClass.SessionList("", true, "", workType, hq, hqArray, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clustersArray, jcsArray, drsArray, chemistsArray, stocksArray, unListedDrsArray, cipsArray, hospsArray);
                     arrayList.getSessionList().remove(position);
                     arrayList.getSessionList().add(modelClass);
                 }

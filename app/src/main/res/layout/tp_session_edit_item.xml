@@ -179,6 +179,23 @@
                                 android:textSize="@dimen/_6sdp"
                                 tools:ignore="SpUsage" />
 
+                            <TextView
+                                android:id="@+id/hqCount"
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="@dimen/_4sdp"
+                                android:background="@drawable/edittext_stroke"
+                                android:backgroundTint="@color/bg_priority"
+                                android:fontFamily="@font/satoshi_regular"
+                                android:gravity="center"
+                                android:text="0"
+                                android:textColor="#00C689"
+                                android:textSize="@dimen/_5sdp"
+                                android:textStyle="bold"
+                                android:visibility="gone"
+                                tools:ignore="SpUsage" />
+
                             <ImageView
                                 android:id="@+id/hqArrow"
                                 android:layout_width="@dimen/_6sdp"
