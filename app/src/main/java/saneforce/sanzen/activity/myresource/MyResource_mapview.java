@@ -129,13 +129,17 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         mMap = googleMap;
 
         if (CUST_FLAG.equalsIgnoreCase("D")) {
-            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + HQ_CODE).getMasterSyncDataJsonArray().toString());
+            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.GEO + HQ_CODE).getMasterSyncDataJsonArray().toString());
+            //parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + HQ_CODE).getMasterSyncDataJsonArray().toString());
         } else if (CUST_FLAG.equalsIgnoreCase("C")) {
-            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + HQ_CODE).getMasterSyncDataJsonArray().toString());
+//            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + HQ_CODE).getMasterSyncDataJsonArray().toString());
+            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_GEO + HQ_CODE).getMasterSyncDataJsonArray().toString());
         } else if (CUST_FLAG.equalsIgnoreCase("S")) {
-            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + HQ_CODE).getMasterSyncDataJsonArray().toString());
+//            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + HQ_CODE).getMasterSyncDataJsonArray().toString());
+            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_GEO + HQ_CODE).getMasterSyncDataJsonArray().toString());
         } else if (CUST_FLAG.equalsIgnoreCase("U")) {
-            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + HQ_CODE).getMasterSyncDataJsonArray().toString());
+//            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + HQ_CODE).getMasterSyncDataJsonArray().toString());
+            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_GEO + HQ_CODE).getMasterSyncDataJsonArray().toString());
         }
 
         if (SharedPref.getGeotagImg(this).equalsIgnoreCase("0")) {
@@ -161,9 +165,10 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                     String docid = jsonObject1.optString("Code");
                     if (DCR_CODE.equals(docid)) {
                         if (CUST_FLAG.equalsIgnoreCase("D")) {
-                            loclist.add(new ResourcerviewModelClass(jsonObject1.optString("Name"), jsonObject1.optString("Code"), jsonObject1.optString("Lat"), jsonObject1.optString("Long"), jsonObject1.optString("Addrs"), jsonObject1.optString("Town_Name"), jsonObject1.optString("img_name")));
-                        } else if (CUST_FLAG.equalsIgnoreCase("C")) {
+//                            loclist.add(new ResourcerviewModelClass(jsonObject1.optString("Name"), jsonObject1.optString("Code"), jsonObject1.optString("Lat"), jsonObject1.optString("Long"), jsonObject1.optString("Addrs"), jsonObject1.optString("Town_Name"), jsonObject1.optString("img_name")));
                             loclist.add(new ResourcerviewModelClass(jsonObject1.optString("Name"), jsonObject1.optString("Code"), jsonObject1.optString("lat"), jsonObject1.optString("long"), jsonObject1.optString("addrs"), jsonObject1.optString("Town_Name"), jsonObject1.optString("img_name")));
+                        } else if (CUST_FLAG.equalsIgnoreCase("C")) {
+                            loclist.add(new ResourcerviewModelClass(jsonObject1.optString("Name"), jsonObject1.optString("Code"), jsonObject1.optString("lat"), jsonObject1.optString("long"), jsonObject1.optString("addr"), jsonObject1.optString("Town_Name"), jsonObject1.optString("img_name")));
                         } else if (CUST_FLAG.equalsIgnoreCase("S")) {
                             loclist.add(new ResourcerviewModelClass(jsonObject1.optString("Name"), jsonObject1.optString("Code"), jsonObject1.optString("lat"), jsonObject1.optString("long"), jsonObject1.optString("addrs"), jsonObject1.optString("Town_Name"), jsonObject1.optString("img_name")));
                         } else if (CUST_FLAG.equalsIgnoreCase("U")) {

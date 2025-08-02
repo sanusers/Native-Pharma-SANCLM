@@ -128,7 +128,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, cusListArrayList.get(position).getName()));
 
         for (int i = 0; i < DcrCallTabLayoutActivity.TodayPlanClusterList.size(); i++) {
-            if (cusListArrayList.get(position).getType().equalsIgnoreCase("3")) {
+            if (cusListArrayList.get(position). getType().equalsIgnoreCase("3")) {
                 if (cusListArrayList.get(position).getTown_name().contains(DcrCallTabLayoutActivity.TodayPlanClusterList.get(i))) {
                     holder.view_top.setVisibility(View.VISIBLE);
                     holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
@@ -185,7 +185,8 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_visited));
                 }
             } catch (Exception e) {
-                Log.v("Call_Data", "---" + e);
+                e.printStackTrace();
+                Log.v("Call_Data1", "---" + e);
             }
         });
     }

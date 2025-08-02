@@ -55,11 +55,13 @@ public class CustomerListSelectionAdapter extends RecyclerView.Adapter<CustomerL
         holder.tv_class.setText(customerDataModel.getClassName());
         holder.tv_area.setText(customerDataModel.getClusterName());
 
-        if(customerType.equalsIgnoreCase(Constants.DOCTOR) || customerType.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)) {
+//        if(customerType.equalsIgnoreCase(Constants.DOCTOR) || customerType.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)) {
+        if(customerType.equalsIgnoreCase(Constants.DOCTOR_MAS) || customerType.equalsIgnoreCase(Constants.UNLISTED_DOCTOR_MAS)) {
             holder.tv_category.setVisibility(View.VISIBLE);
             holder.tv_specialist.setVisibility(View.VISIBLE);
             holder.tv_class.setVisibility(View.VISIBLE);
-        }else if(customerType.equalsIgnoreCase(Constants.CHEMIST) || customerType.equalsIgnoreCase(Constants.CIP)) {
+//        }else if(customerType.equalsIgnoreCase(Constants.CHEMIST) || customerType.equalsIgnoreCase(Constants.CIP)) {
+        }else if(customerType.equalsIgnoreCase(Constants.CHEMIST_MAS) || customerType.equalsIgnoreCase(Constants.CIP)) {
             holder.tv_category.setVisibility(View.VISIBLE);
             holder.tv_specialist.setVisibility(View.GONE);
             holder.tv_class.setVisibility(View.GONE);

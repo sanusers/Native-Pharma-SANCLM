@@ -70,9 +70,9 @@ import saneforce.sanzen.utility.TimeUtils;
 public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     public static TextView Qualification, Speciality, Category;
-    public static String Qual_code = "", spec_code = "", cate_code = "",SfType = "", SfCode = "", SfName = "", DivCode = "",Code,gender="",drgender="";
+    public static String Qual_code = "", spec_code = "", cate_code = "", SfType = "", SfCode = "", SfName = "", DivCode = "", Code, gender = "", drgender = "";
 
-    String qualif, cate, spec, dob, dow, address, mobile, phone="", email, docname, doc_code, Dcr_posname, Lat, Long, Town_val,town,fullobject="";
+    String qualif, cate, spec, dob, dow, address, mobile, phone = "", email, docname, doc_code, Dcr_posname, Lat, Long, Town_val, town, fullobject = "";
     ProgressDialog progressDialog;
     private GoogleMap mMap;
     private CommonUtilsMethods commonUtilsMethods;
@@ -80,12 +80,12 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
     private RoomDB roomDB;
     private LoginDataDao loginDataDao;
     private MasterDataDao masterDataDao;
-    String CustValue,CustType,geotagcount,maxcount;
-    int chemistStatus = 0,categoryStatus = 0;
+    String CustValue, CustType, geotagcount, maxcount;
+    int chemistStatus = 0, categoryStatus = 0;
     ArrayList<MasterSyncItemModel> arrayForAdapter = new ArrayList<>();
-    ArrayList<String> Latitude= new ArrayList<>();
-    ArrayList<String> Longitude= new ArrayList<>();
-    ArrayList<String> Address= new ArrayList<>();
+    ArrayList<String> Latitude = new ArrayList<>();
+    ArrayList<String> Longitude = new ArrayList<>();
+    ArrayList<String> Address = new ArrayList<>();
 
     ApiInterface apiInterface;
     JSONArray jsonArray;
@@ -126,9 +126,9 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                             jsonObject = jsonArray.getJSONObject(i);
                             try {
                                 if (jsonObject.getString("Code").equalsIgnoreCase(Code)) {
-                                    Latitude.add(jsonObject.getString("Lat"));
-                                    Longitude.add(jsonObject.getString("Long"));
-                                    Address.add(jsonObject.getString("Addrs"));
+                                    Latitude.add(jsonObject.optString("lat"));
+                                    Longitude.add(jsonObject.optString("long"));
+                                    Address.add(jsonObject.optString("addrs"));
                                 }
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
@@ -139,7 +139,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     }
                 }
             }
-            if (CustType.equalsIgnoreCase("C")||CustType.equalsIgnoreCase("S")) {
+            if (CustType.equalsIgnoreCase("C") || CustType.equalsIgnoreCase("S")) {
                 if (!fullobject.equalsIgnoreCase("")) {
                     try {
                         jsonArray = new JSONArray(fullobject);
@@ -147,9 +147,9 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                             jsonObject = jsonArray.getJSONObject(i);
                             try {
                                 if (jsonObject.getString("Code").equalsIgnoreCase(Code)) {
-                                    Latitude.add(jsonObject.getString("lat"));
-                                    Longitude.add(jsonObject.getString("long"));
-                                    Address.add(jsonObject.getString("addrs"));
+                                    Latitude.add(jsonObject.optString("lat"));
+                                    Longitude.add(jsonObject.optString("long"));
+                                    Address.add(jsonObject.optString("addr"));
                                 }
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
@@ -181,28 +181,25 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     }
                 }
             }
-            if (CustType.equalsIgnoreCase("D")||CustType.equalsIgnoreCase("U")) {
+            if (CustType.equalsIgnoreCase("D") || CustType.equalsIgnoreCase("U")) {
                 cate_code = extra.getString("cate_code");
                 spec_code = extra.getString("Spec_code");
-                Qual_code= extra.getString("Qual_code");
+                Qual_code = extra.getString("Qual_code");
                 gender = extra.getString("ListedDrSex");
-                if(gender.equalsIgnoreCase("M")||gender.equalsIgnoreCase("Male")){
-                    drgender="Male";
+                if (gender.equalsIgnoreCase("M") || gender.equalsIgnoreCase("Male")) {
+                    drgender = "Male";
+                } else if (gender.equalsIgnoreCase("F") || gender.equalsIgnoreCase("Female")) {
+                    drgender = "Female";
+                } else {
+                    drgender = "";
                 }
-                else if(gender.equalsIgnoreCase("F")||gender.equalsIgnoreCase("Female")){
-                    drgender="Female";
-                }
-                else{
-                    drgender="";
-                }
-            }
-            else{
-                if (CustType.equalsIgnoreCase("C")){
+            } else {
+                if (CustType.equalsIgnoreCase("C")) {
                     cate_code = extra.getString("cate_code");
-                    if(!cate_code.equalsIgnoreCase("")) {
-                        cate=getChemistCategory(cate_code);
+                    if (!cate_code.equalsIgnoreCase("")) {
+                        cate = getChemistCategory(cate_code);
                     }
-                   // cate = extra.getString("cate_values");
+                    // cate = extra.getString("cate_values");
                 }
             }
             if (extra.getString("PHN").equalsIgnoreCase("") || extra.getString("PHN").equalsIgnoreCase("null")) {
@@ -222,6 +219,9 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             }
             address = extra.getString("ADDRESS");
             geotagcount = extra.getString("tagcount");
+            if(geotagcount == null || geotagcount.trim().isEmpty()){
+                geotagcount = "0";
+            }
             maxcount = extra.getString("maxcount");
 
         }
@@ -252,30 +252,30 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 activityProfilingBinding.secondlayout.setVisibility(View.GONE);
             }
             activityProfilingBinding.txtGeocount.setText(geotagcount + "/" + maxcount);
-            if (!geotagcount.equalsIgnoreCase("0")) {
+            if (!geotagcount.equalsIgnoreCase("0") && !geotagcount.equalsIgnoreCase("")) {
                 if (geotagcount.equalsIgnoreCase("1")) {
                     activityProfilingBinding.geotwo.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geothree.setVisibility(View.GONE);
                     activityProfilingBinding.geofour.setVisibility(View.GONE);
-                    String TagAddress=Address.get(0);
+                    String TagAddress = Address.get(0);
                     activityProfilingBinding.tagaddress1.setText(TagAddress);
                 } else if (geotagcount.equalsIgnoreCase("2")) {
                     activityProfilingBinding.geotwo.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geothree.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geofour.setVisibility(View.GONE);
-                    String TagAddress=Address.get(0);
+                    String TagAddress = Address.get(0);
                     activityProfilingBinding.tagaddress1.setText(TagAddress);
-                    String TagAddress1=Address.get(1);
+                    String TagAddress1 = Address.get(1);
                     activityProfilingBinding.tagaddress2.setText(TagAddress1);
                 } else if (geotagcount.equalsIgnoreCase("3")) {
                     activityProfilingBinding.geotwo.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geothree.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geofour.setVisibility(View.VISIBLE);
-                    String TagAddress=Address.get(0);
+                    String TagAddress = Address.get(0);
                     activityProfilingBinding.tagaddress1.setText(TagAddress);
-                    String TagAddress1=Address.get(1);
+                    String TagAddress1 = Address.get(1);
                     activityProfilingBinding.tagaddress2.setText(TagAddress1);
-                    String TagAddress2=Address.get(2);
+                    String TagAddress2 = Address.get(2);
                     activityProfilingBinding.tagaddress3.setText(TagAddress2);
                 }
             } else {
@@ -308,30 +308,30 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 activityProfilingBinding.secondchmlayout.setVisibility(View.GONE);
             }
             activityProfilingBinding.txtChmgeocount.setText(geotagcount + "/" + maxcount);
-            if (!geotagcount.equalsIgnoreCase("0")) {
+            if (!geotagcount.equalsIgnoreCase("0") && !geotagcount.equalsIgnoreCase("")) {
                 if (geotagcount.equalsIgnoreCase("1")) {
                     activityProfilingBinding.geochmtwo.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geochmthree.setVisibility(View.GONE);
                     activityProfilingBinding.geochmfour.setVisibility(View.GONE);
-                    String TagAddress=Address.get(0);
+                    String TagAddress = Address.get(0);
                     activityProfilingBinding.chmaddress1.setText(TagAddress);
                 } else if (geotagcount.equalsIgnoreCase("2")) {
                     activityProfilingBinding.geochmtwo.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geochmthree.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geochmfour.setVisibility(View.GONE);
-                    String TagAddress=Address.get(0);
+                    String TagAddress = Address.get(0);
                     activityProfilingBinding.chmaddress1.setText(TagAddress);
-                    String TagAddress1=Address.get(1);
+                    String TagAddress1 = Address.get(1);
                     activityProfilingBinding.chmaddress2.setText(TagAddress1);
                 } else if (geotagcount.equalsIgnoreCase("3")) {
                     activityProfilingBinding.geochmtwo.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geochmthree.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geochmfour.setVisibility(View.VISIBLE);
-                    String TagAddress=Address.get(0);
+                    String TagAddress = Address.get(0);
                     activityProfilingBinding.chmaddress1.setText(TagAddress);
-                    String TagAddress1=Address.get(1);
+                    String TagAddress1 = Address.get(1);
                     activityProfilingBinding.chmaddress2.setText(TagAddress1);
-                    String TagAddress2=Address.get(2);
+                    String TagAddress2 = Address.get(2);
                     activityProfilingBinding.chmaddress3.setText(TagAddress2);
                 }
             } else {
@@ -363,27 +363,27 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             } else {
                 activityProfilingBinding.secondlayout.setVisibility(View.GONE);
             }
-            if (!geotagcount.equalsIgnoreCase("0")) {
+            if (!geotagcount.equalsIgnoreCase("0") && !geotagcount.equalsIgnoreCase("")) {
                 if (geotagcount.equalsIgnoreCase("1")) {
-                    String TagAddress=Address.get(0);
+                    String TagAddress = Address.get(0);
                     activityProfilingBinding.tagaddress1.setText(TagAddress);
                     activityProfilingBinding.geochmtwo.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geochmthree.setVisibility(View.GONE);
                     activityProfilingBinding.geochmfour.setVisibility(View.GONE);
                 } else if (geotagcount.equalsIgnoreCase("2")) {
-                    String TagAddress=Address.get(0);
+                    String TagAddress = Address.get(0);
                     activityProfilingBinding.tagaddress1.setText(TagAddress);
-                    String TagAddress1=Address.get(1);
+                    String TagAddress1 = Address.get(1);
                     activityProfilingBinding.tagaddress2.setText(TagAddress1);
                     activityProfilingBinding.geochmtwo.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geochmthree.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geochmfour.setVisibility(View.GONE);
                 } else if (geotagcount.equalsIgnoreCase("3")) {
-                    String TagAddress=Address.get(0);
+                    String TagAddress = Address.get(0);
                     activityProfilingBinding.tagaddress1.setText(TagAddress);
-                    String TagAddress1=Address.get(1);
+                    String TagAddress1 = Address.get(1);
                     activityProfilingBinding.tagaddress2.setText(TagAddress1);
-                    String TagAddress2=Address.get(2);
+                    String TagAddress2 = Address.get(2);
                     activityProfilingBinding.tagaddress3.setText(TagAddress2);
                     activityProfilingBinding.geochmtwo.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geochmthree.setVisibility(View.VISIBLE);
@@ -432,27 +432,27 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 activityProfilingBinding.secondlayout.setVisibility(View.GONE);
             }
             activityProfilingBinding.txtGeocount.setText(geotagcount + "/" + maxcount);
-            if (!geotagcount.equalsIgnoreCase("0")) {
+            if (!geotagcount.equalsIgnoreCase("0") && !geotagcount.equalsIgnoreCase("")) {
                 if (geotagcount.equalsIgnoreCase("1")) {
-                    String TagAddress=Address.get(0);
+                    String TagAddress = Address.get(0);
                     activityProfilingBinding.tagaddress1.setText(TagAddress);
                     activityProfilingBinding.geotwo.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geothree.setVisibility(View.GONE);
                     activityProfilingBinding.geofour.setVisibility(View.GONE);
                 } else if (geotagcount.equalsIgnoreCase("2")) {
-                    String TagAddress=Address.get(0);
+                    String TagAddress = Address.get(0);
                     activityProfilingBinding.tagaddress1.setText(TagAddress);
-                    String TagAddress1=Address.get(1);
+                    String TagAddress1 = Address.get(1);
                     activityProfilingBinding.tagaddress2.setText(TagAddress1);
                     activityProfilingBinding.geotwo.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geothree.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geofour.setVisibility(View.GONE);
                 } else if (geotagcount.equalsIgnoreCase("3")) {
-                    String TagAddress=Address.get(0);
+                    String TagAddress = Address.get(0);
                     activityProfilingBinding.tagaddress1.setText(TagAddress);
-                    String TagAddress1=Address.get(1);
+                    String TagAddress1 = Address.get(1);
                     activityProfilingBinding.tagaddress2.setText(TagAddress1);
-                    String TagAddress2=Address.get(2);
+                    String TagAddress2 = Address.get(2);
                     activityProfilingBinding.tagaddress3.setText(TagAddress2);
                     activityProfilingBinding.geotwo.setVisibility(View.VISIBLE);
                     activityProfilingBinding.geothree.setVisibility(View.VISIBLE);
@@ -737,7 +737,6 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         });
 
 
-
         activityProfilingBinding.txtSelectChmcat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -805,17 +804,15 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             activityProfilingBinding.btnSave.setEnabled(false);
             String email = activityProfilingBinding.edtEmail.getText().toString().trim();
             String chmemail = activityProfilingBinding.edtChmemail.getText().toString().trim();
-            if(!email.isEmpty() && activityProfilingBinding.edtEmail.getError() != null){
+            if (!email.isEmpty() && activityProfilingBinding.edtEmail.getError() != null) {
                 commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.enter_crct_email));
                 activityProfilingBinding.edtEmail.requestFocus();
                 activityProfilingBinding.btnSave.setEnabled(true);
-            }
-            else if(!chmemail.isEmpty() && activityProfilingBinding.edtChmemail.getError() != null){
+            } else if (!chmemail.isEmpty() && activityProfilingBinding.edtChmemail.getError() != null) {
                 commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.enter_crct_email));
                 activityProfilingBinding.edtChmemail.requestFocus();
                 activityProfilingBinding.btnSave.setEnabled(true);
-            }
-            else {
+            } else {
                 JSONObject json = CommonUtilsMethods.CommonObjectParameter(this);
                 try {
 
@@ -835,11 +832,9 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     json.put("DrCode", Code);
                     if (activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Male")) {
                         json.put("DrGender", "M");
-                    }
-                    else if (activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Female")) {
+                    } else if (activityProfilingBinding.txtSelectGender.getText().toString().equalsIgnoreCase("Female")) {
                         json.put("DrGender", "F");
-                    }
-                    else {
+                    } else {
                         json.put("DrGender", activityProfilingBinding.txtSelectGender.getText().toString());
                     }
                     //json.put("DrGender", activityProfilingBinding.txtSelectGender.getText().toString());
@@ -870,7 +865,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                         if (!activityProfilingBinding.edtDob.getText().toString().equalsIgnoreCase("")) {
                             json.put("DrDOB", activityProfilingBinding.edtDob.getText().toString() + " 00:00:00");
                         } else {
-                             json.put("DrDOB", "");
+                            json.put("DrDOB", "");
                         }
                         if (!activityProfilingBinding.edtDow.getText().toString().equalsIgnoreCase("")) {
                             json.put("DrDOW", activityProfilingBinding.edtDow.getText().toString() + " 00:00:00");
@@ -910,7 +905,8 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
     }
-    public void UpdateMaster(String val,String Type) {
+
+    public void UpdateMaster(String val, String Type) {
         try {
             if (progressDialog == null) {
                 CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(this);
@@ -945,16 +941,13 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                                         if (Type.equalsIgnoreCase("D")) {
                                             prepareArray(SfCode);
                                             //populateAdapter(doctorModelArray);
-                                        }
-                                        else if (Type.equalsIgnoreCase("C")){
+                                        } else if (Type.equalsIgnoreCase("C")) {
                                             prepareArray(SfCode);
                                             //populateAdapter(chemistModelArray);
-                                        }
-                                        else if (Type.equalsIgnoreCase("S")) {
+                                        } else if (Type.equalsIgnoreCase("S")) {
                                             prepareArray(SfCode);
                                             //populateAdapter(stockiestModelArray);
-                                        }
-                                        else if (Type.equalsIgnoreCase("U")) {
+                                        } else if (Type.equalsIgnoreCase("U")) {
                                             prepareArray(SfCode);
                                             //populateAdapter(unlistedDrModelArray);
                                         }
@@ -963,8 +956,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                                     }
                                 } catch (Exception e) {
                                 }
-                            }
-                            else{
+                            } else {
                                 activityProfilingBinding.btnSave.setEnabled(true);
                                 progressDialog.dismiss();
                                 commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.something_wrong));
@@ -979,37 +971,36 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                         }
                     });
                 }
-            }
-            else {
+            } else {
                 activityProfilingBinding.btnSave.setEnabled(true);
                 progressDialog.dismiss();
                 commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
             }
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             activityProfilingBinding.btnSave.setEnabled(true);
             progressDialog.dismiss();
             throw new RuntimeException(e);
         }
     }
+
     @SuppressLint("NotifyDataSetChanged")
     public void populateAdapter(ArrayList<MasterSyncItemModel> masterSyncItemModels) {
-        try{
+        try {
             for (int i = 0; i < masterSyncItemModels.size(); i++) {
                 MasterSyncItemModel item = masterSyncItemModels.get(i);
                 sync(item.getMasterOf(), item.getRemoteTableName(), masterSyncItemModels, i);
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     public void sync(String masterOf, String remoteTableName, ArrayList<MasterSyncItemModel> masterSyncItemModels, int position) {
 
         try {
             apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getCallApiUrl(this));
-            JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(this);
+            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
             jsonObject.put("tableName", remoteTableName);
             jsonObject.put("sfcode", SharedPref.getSfCode(this));
             jsonObject.put("division_code", SharedPref.getDivisionCode(this));
@@ -1019,7 +1010,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             Map<String, String> mapString = new HashMap<>();
             Log.e("API Object", "master sync obj : " + jsonObject);
             Call<JsonElement> call = null;
-            if (masterOf.equalsIgnoreCase(Constants.DOCTOR)) {
+            if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS)) {    // previously it was DOCTOR
                 mapString.put("axn", "table/dcrmasterdata");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
             }
@@ -1029,10 +1020,10 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     @Override
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                         // masterSyncItemModels.get(position).setPBarVisibility(false);
-                        Log.e("response :   ",  remoteTableName + " : " + response.body().toString());
+                        Log.e("response :   ", remoteTableName + " : " + response.body().toString());
                         boolean success = false;
                         JSONArray jsonArray = new JSONArray();
-                        JSONObject jsonObject2=new JSONObject();
+                        JSONObject jsonObject2 = new JSONObject();
                         if (response.isSuccessful()) {
                             Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + response.body().toString());
                             try {
@@ -1048,8 +1039,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                                             jsonArray.put(jsonObject2);
                                             success = true;
                                             finish();
-                                        }
-                                        else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                        } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
                                             masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
                                             masterSyncItemModels.get(position).setSyncSuccess(1);
                                         }
@@ -1075,8 +1065,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                                 progressDialog.dismiss();
                                 e.printStackTrace();
                             }
-                        }
-                        else{
+                        } else {
                             progressDialog.dismiss();
                         }
                     }
@@ -1095,6 +1084,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
     }
+
     @Override
     public boolean onMarkerClick(@NonNull Marker marker) {
         return false;
@@ -1104,16 +1094,18 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
     public void onMapReady(@NonNull GoogleMap googleMap) {
 
     }
+
     private void handleCancel() {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dcr_cancel_alert);
         dialog.setCancelable(false);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
-        TextView btn_yes=dialog.findViewById(R.id.btn_yes);
-        TextView btn_no=dialog.findViewById(R.id.btn_no);
+        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+        TextView btn_no = dialog.findViewById(R.id.btn_no);
 
         btn_yes.setOnClickListener(view12 -> {
+            dialog.dismiss();
             getOnBackPressedDispatcher().onBackPressed();
         });
 
@@ -1121,6 +1113,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
             dialog.dismiss();
         });
     }
+
     private void showDatePickerDialogforDOB() {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -1147,6 +1140,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.show();
     }
+
     private void showDatePickerDialogforDOW() {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -1173,51 +1167,57 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.show();
     }
+
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) ProfilingActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
+
     public void prepareArray(String hqCode) {
         if (CustType.equalsIgnoreCase("D")) {
             doctorModelArray.clear();
-            MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, chemistStatus, false);
+//            MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, chemistStatus, false);
             // MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, Constants.DOCTOR, "getspeciality", Constants.SPECIALITY, chemistStatus, false);
             // MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, Constants.DOCTOR, "getquali", Constants.QUALIFICATION, chemistStatus, false);
             // MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
             // MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, Constants.DOCTOR, "getclass", Constants.CLASS, chemistStatus, false);
+            MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, chemistStatus, false);
             doctorModelArray.add(doctorModel);
             arrayForAdapter.clear();
             arrayForAdapter.addAll(doctorModelArray);
             populateAdapter(arrayForAdapter);
-        }
-        else if (CustType.equalsIgnoreCase("C")) {
-            chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + hqCode);
+        } else if (CustType.equalsIgnoreCase("C")) {
+//            chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + hqCode);
+//            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
+
+            chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_MAS + hqCode);
             categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
-            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this),  Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
-            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY,  Constants.DOCTOR, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
+            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, chemistStatus, false);
+            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
             chemistModelArray.add(cheModel);
             chemistModelArray.add(chemistCategory);
             arrayForAdapter.clear();
             arrayForAdapter.addAll(chemistModelArray);
             populateAdapter(arrayForAdapter);
-        }
-        else if (CustType.equalsIgnoreCase("S")) {
+        } else if (CustType.equalsIgnoreCase("S")) {
             stockiestModelArray.clear();
-            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this), Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, chemistStatus, false);
+//            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this), Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, chemistStatus, false);
+            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this), Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, chemistStatus, false);
             stockiestModelArray.add(stockModel);
             arrayForAdapter.clear();
             arrayForAdapter.addAll(stockiestModelArray);
             populateAdapter(arrayForAdapter);
-        }
-        else if (CustType.equalsIgnoreCase("U")) {
+        } else if (CustType.equalsIgnoreCase("U")) {
             unlistedDrModelArray.clear();
-            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this), Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, chemistStatus, false);
+//            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this), Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, chemistStatus, false);
+            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this), Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, chemistStatus, false);
             unlistedDrModelArray.add(unListModel);
             arrayForAdapter.clear();
             arrayForAdapter.addAll(unlistedDrModelArray);
             populateAdapter(arrayForAdapter);
         }
     }
+
     private void showDatePickerDialogforChmDOB() {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -1244,6 +1244,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.show();
     }
+
     private void showDatePickerDialogforChmDOW() {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -1270,14 +1271,15 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.show();
     }
+
     private String getChemistCategory(String chmCode) {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
-            for (int i = 0; i<jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String name = jsonObject.getString("Name");
                 String code = jsonObject.getString("Code");
-                if(code.equalsIgnoreCase(chmCode))
+                if (code.equalsIgnoreCase(chmCode))
                     return name;
             }
         } catch (Exception e) {

@@ -58,39 +58,39 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
              tiitle1.setVisibility(View.GONE);
              ImageView imageView=view1.findViewById(R.id.image);
              AlertDialog dialog1=dialog.create();
-//             dialog1.show();
-             String imageName = List.get(position).getEventimg().replace("photos/","");
-             String fileName  = imageName;
+             dialog1.show();
+//             if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+                 String imageName = List.get(position).getEventimg().replace("photos/", "");
+                 String fileName = imageName;
 
 
+                 if (Objects.requireNonNull(fileName).isEmpty()) {
 
-             if (Objects.requireNonNull(fileName).isEmpty()) {
+                 } else {
+                     File file = new File(context.getFilesDir(), fileName);
+                     Log.d("TAG", "onBindViewHolder: " + file.getAbsolutePath());
 
-             }else {
-                 File file = new File(context.getFilesDir(),fileName);
-                 Log.d("TAG", "onBindViewHolder: " + file.getAbsolutePath());
+                     /*String getFile = SharedPref.getDivisionName((Activity) context);*/
+                     new AWSBuckets(context, fileName, file, 0, "", new S3DownloadFiles() {
+                         @Override
+                         public void fileDataAdd(int pos, Bitmap bitmap) {
+                             if (bitmap != null) {
+                                 Log.d("bitmap image", "Image successfully loaded.");
+                                 holder.Imageview.setImageBitmap(bitmap);
+                                 holder.Imageview.setVisibility(View.VISIBLE);
+                                 imageView.setImageBitmap(bitmap);
+                                 dialog.show();
 
-                 /*String getFile = SharedPref.getDivisionName((Activity) context);*/
-                 new AWSBuckets(context, fileName, file, 0, "", new S3DownloadFiles() {
-                     @Override
-                     public void fileDataAdd(int pos, Bitmap bitmap) {
-                         if (bitmap != null) {
-                             Log.d("bitmap image", "Image successfully loaded.");
-                             holder.Imageview.setImageBitmap(bitmap);
-                             holder.Imageview.setVisibility(View.VISIBLE);
-                             imageView.setImageBitmap(bitmap);
-                             dialog.show();
-
-                         } else {
-                             Log.d("bitmap image", "Failed to load image, bitmap is null.");
-                             holder.Imageview.setVisibility(View.GONE);
+                             } else {
+                                 Log.d("bitmap image", "Failed to load image, bitmap is null.");
+                                 holder.Imageview.setVisibility(View.GONE);
+                             }
                          }
-                     }
-                 });
-             }
-
-
+                     });
+                 }
+//             }else {
 //             Glide.with(context).load(SharedPref.getTagImageUrl(context) + List.get(position).getEventimg()).fitCenter().into(imageView);
+//             }
          });
 
 

@@ -509,7 +509,11 @@ public class OutboxFragment extends Fragment {
                 Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getImg_name());
                 if (ecModelClass.getSynced() == 0) {
                     isCallAvailable = true;
-                    CallSendAPIImage(ParentPos, ecModelClass, ChildPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()), modelClass);
+//                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")) {
+                        CallSendAPIImageS3(ParentPos, ecModelClass, ChildPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()), modelClass);
+//                    }else {
+//                        CallSendAPIImage(ParentPos, ecModelClass, ChildPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()), modelClass);
+//                    }
                     break;
                 }
             }
@@ -600,48 +604,48 @@ public class OutboxFragment extends Fragment {
     }
 
 
-//    private void CallSendAPIImage(int parentPos, EcModelClass ecModelClass, int childPos, int CurrentPos,
-//    String jsonValues, String filePath, String id, GroupModelClass modelClass) {
-//        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
-//        MultipartBody.Part img = convertImg("EventImg", filePath);
-//        HashMap<String, RequestBody> values = field(jsonValues);
-//        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
-//        saveImgDcr.enqueue(new Callback<JsonObject>() {
-//            @Override
-//            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-//                if (response.isSuccessful()) {
-//                    try {
-//                        assert response.body() != null;
-//                        JSONObject json = new JSONObject(response.body().toString());
-//                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
-//                            DeleteCacheFile(filePath, id, CurrentPos, parentPos, childPos, modelClass);
-//                        } else {
-//                            ecModelClass.setSynced(1);
-//                            ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
-//                            callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
-//                            CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
-//                        }
-//                    } catch (Exception e) {
-//                        Log.v("SendOutboxCall", "-error---" + e);
-//                        ecModelClass.setSynced(1);
-//                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-//                        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-//                ecModelClass.setSynced(1);
-//                ecModelClass.setSync_status(Constants.CALL_FAILED);
-//                callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
-//                CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
-//            }
-//        });
-//    }
+    private void CallSendAPIImage(int parentPos, EcModelClass ecModelClass, int childPos, int CurrentPos,
+    String jsonValues, String filePath, String id, GroupModelClass modelClass) {
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
+        MultipartBody.Part img = convertImg("EventImg", filePath);
+        HashMap<String, RequestBody> values = field(jsonValues);
+        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
+        saveImgDcr.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        JSONObject json = new JSONObject(response.body().toString());
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
+                            DeleteCacheFile(filePath, id, CurrentPos, parentPos, childPos, modelClass);
+                        } else {
+                            ecModelClass.setSynced(1);
+                            ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                            callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
+                            CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+                        }
+                    } catch (Exception e) {
+                        Log.v("SendOutboxCall", "-error---" + e);
+                        ecModelClass.setSynced(1);
+                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                ecModelClass.setSynced(1);
+                ecModelClass.setSync_status(Constants.CALL_FAILED);
+                callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
+                CallOfflineImage(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getEcModelClasses(), modelClass);
+            }
+        });
+    }
 
     // Event Capture S3
-    private void CallSendAPIImage(int parentPos, EcModelClass ecModelClass, int childPos, int CurrentPos,
+    private void CallSendAPIImageS3(int parentPos, EcModelClass ecModelClass, int childPos, int CurrentPos,
                                   String jsonValues, String filePath, String id, GroupModelClass modelClass) {
         try {
 //            String accessKey = Keys.ACCESS_KEY;
