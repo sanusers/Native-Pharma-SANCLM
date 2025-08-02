@@ -2402,7 +2402,7 @@ public class SharedPref {
     public static void putAutomassync(Context context, boolean mas_sync) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putBoolean(SYNC_STATUS, mas_sync).apply();
+        editor.putBoolean(  SYNC_STATUS, mas_sync).apply();
     }
 
     public static void putSlidestatus(Context context, boolean status) {

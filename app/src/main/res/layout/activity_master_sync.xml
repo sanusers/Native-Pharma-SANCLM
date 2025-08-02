@@ -201,7 +201,7 @@
                         android:layout_alignTop="@id/listedDr"
                         android:layout_alignBottom="@id/listedDr"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="@dimen/_20sdp" />
+                        android:layout_marginEnd="@dimen/_24sdp" />
 
                     <TextView
                         android:id="@+id/chemist"
@@ -220,6 +220,15 @@
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
+                    <ImageView
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/done"
+                        android:layout_alignTop="@id/chemist"
+                        android:layout_alignBottom="@id/chemist"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp" />
+
                     <TextView
                         android:id="@+id/stockiest"
                         android:layout_width="match_parent"
@@ -236,6 +245,15 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/done"
+                        android:layout_alignTop="@id/stockiest"
+                        android:layout_alignBottom="@id/stockiest"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"/>
+
 
                     <TextView
                         android:id="@+id/unlistedDoctor"
@@ -253,6 +271,14 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/done"
+                        android:layout_alignTop="@id/unlistedDoctor"
+                        android:layout_alignBottom="@id/unlistedDoctor"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"/>
 
                     <TextView
                         android:id="@+id/hospital"

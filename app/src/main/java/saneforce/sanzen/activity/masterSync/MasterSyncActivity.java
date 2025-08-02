@@ -335,8 +335,8 @@ public class MasterSyncActivity extends AppCompatActivity {
             UtilityClass.hideKeyboard(MasterSyncActivity.this);
 
         });
-
         binding.listedDr.setOnClickListener(view -> {
+
             if (!view.isSelected()) {
                 listItemClicked(binding.listedDr);
                 binding.childSync.setText("Sync Listed Doctor");
@@ -713,6 +713,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY,  Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
         //    MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
             MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, Constants.DOCTOR, "getclass", Constants.CLASS, classStatus, false);
+
             doctorModelArray.add(doctorModel);
             doctorModelArray.add(spl);
             doctorModelArray.add(ql);
