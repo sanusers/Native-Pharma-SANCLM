@@ -9,6 +9,7 @@ public class CallCommonCheckedList implements Parcelable {
     boolean checkedItem;
     String name;
     String category;
+    String priority;
     String ActualStock;
     String CurrentStock;
 
@@ -16,6 +17,7 @@ public class CallCommonCheckedList implements Parcelable {
         checkedItem = in.readByte() != 0;
         name = in.readString();
         category = in.readString();
+        priority = in.readString();
         ActualStock = in.readString();
         CurrentStock = in.readString();
         StockCode = in.readString();
@@ -282,13 +284,14 @@ public class CallCommonCheckedList implements Parcelable {
         this.category = category;
     }
 
-    public CallCommonCheckedList(String name, String code, String stock_balance, boolean checkedItem, String category, String categoryExtra) {
+    public CallCommonCheckedList(String name, String code, String stock_balance, boolean checkedItem, String category, String categoryExtra, String priority) {
         this.checkedItem = checkedItem;
         this.name = name;
         this.code = code;
         this.stock_balance = stock_balance;
         this.category = category;
         this.categoryExtra = categoryExtra;
+        this.priority = priority;
     }
     public CallCommonCheckedList(String name, String pack, String rate,String code,String detailcode,int qty,String prdsale,String mrp,String retailor,String distributor,
                                  String nsr,String Sample,String target,String value) {
@@ -327,13 +330,14 @@ public class CallCommonCheckedList implements Parcelable {
         this.code = code;
     }
 
-    public CallCommonCheckedList(String name, String code, String town_name, String town_code, boolean checkedItem,String totalVisit) {
+    public CallCommonCheckedList(String name, String code, String town_name, String town_code, boolean checkedItem,String totalVisit, String priority) {
         this.checkedItem = checkedItem;
         this.code = code;
         this.name = name;
         this.town_code = town_code;
         this.town_name = town_name;
         this.totalVisit = totalVisit;
+        this.priority = priority;
     }
 
     public CallCommonCheckedList(String name,boolean checkedItem) {
@@ -372,6 +376,14 @@ public class CallCommonCheckedList implements Parcelable {
         this.category = category;
     }
 
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -382,6 +394,7 @@ public class CallCommonCheckedList implements Parcelable {
         dest.writeByte((byte) (checkedItem ? 1 : 0));
         dest.writeString(name);
         dest.writeString(category);
+        dest.writeString(priority);
         dest.writeString(ActualStock);
         dest.writeString(CurrentStock);
         dest.writeString(StockCode);

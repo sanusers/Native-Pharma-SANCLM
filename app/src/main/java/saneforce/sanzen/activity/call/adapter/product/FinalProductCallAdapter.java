@@ -452,7 +452,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
             try {
                 for (int j = 0; j < callCommonCheckedListArrayList.size(); j++) {
                     if (callCommonCheckedListArrayList.get(j).getCode().equalsIgnoreCase(productListArrayList.get(position).getCode())) {
-                        callCommonCheckedListArrayList.set(j, new CallCommonCheckedList(callCommonCheckedListArrayList.get(j).getName(), callCommonCheckedListArrayList.get(j).getCode(), callCommonCheckedListArrayList.get(j).getStock_balance(), false, callCommonCheckedListArrayList.get(j).getCategory(), callCommonCheckedListArrayList.get(j).getCategoryExtra()));
+                        callCommonCheckedListArrayList.set(j, new CallCommonCheckedList(callCommonCheckedListArrayList.get(j).getName(), callCommonCheckedListArrayList.get(j).getCode(), callCommonCheckedListArrayList.get(j).getStock_balance(), false, callCommonCheckedListArrayList.get(j).getCategory(), callCommonCheckedListArrayList.get(j).getCategoryExtra(), callCommonCheckedListArrayList.get(j).getPriority()));
                         break;
                     }
                 }

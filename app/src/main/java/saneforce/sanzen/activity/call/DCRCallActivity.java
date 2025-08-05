@@ -3263,18 +3263,18 @@ public class DCRCallActivity extends AppCompatActivity {
             Log.v("length", jsonArray.length() + "---" + Constants.DOCTOR + TodayPlanSfCode);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), false, jsonObject.getString("Tlvst")));
+                AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), false, jsonObject.getString("Tlvst"), jsonObject.getString("MProd")));
             }
 
             int count = AdditionalCallFragment.custListArrayList.size();
             for (int i = 0; i < count; i++) {
                 for (int j = i + 1; j < count; j++) {
                     if (AdditionalCallFragment.custListArrayList.get(i).getCode().equalsIgnoreCase(AdditionalCallFragment.custListArrayList.get(j).getCode())) {
-                        AdditionalCallFragment.custListArrayList.set(i, new CallCommonCheckedList(AdditionalCallFragment.custListArrayList.get(i).getName(), AdditionalCallFragment.custListArrayList.get(i).getCode(), AdditionalCallFragment.custListArrayList.get(i).getTown_name(), AdditionalCallFragment.custListArrayList.get(i).getTown_code(), AdditionalCallFragment.custListArrayList.get(i).isCheckedItem(), AdditionalCallFragment.custListArrayList.get(i).getTotalVisit()));
+                        AdditionalCallFragment.custListArrayList.set(i, new CallCommonCheckedList(AdditionalCallFragment.custListArrayList.get(i).getName(), AdditionalCallFragment.custListArrayList.get(i).getCode(), AdditionalCallFragment.custListArrayList.get(i).getTown_name(), AdditionalCallFragment.custListArrayList.get(i).getTown_code(), AdditionalCallFragment.custListArrayList.get(i).isCheckedItem(), AdditionalCallFragment.custListArrayList.get(i).getTotalVisit(), AdditionalCallFragment.custListArrayList.get(i).getPriority()));
                         AdditionalCallFragment.custListArrayList.remove(j--);
                         count--;
                     } else {
-                        AdditionalCallFragment.custListArrayList.set(i, new CallCommonCheckedList(AdditionalCallFragment.custListArrayList.get(i).getName(), AdditionalCallFragment.custListArrayList.get(i).getCode(), AdditionalCallFragment.custListArrayList.get(i).getTown_name(), AdditionalCallFragment.custListArrayList.get(i).getTown_code(), AdditionalCallFragment.custListArrayList.get(i).isCheckedItem(), AdditionalCallFragment.custListArrayList.get(i).getTotalVisit()));
+                        AdditionalCallFragment.custListArrayList.set(i, new CallCommonCheckedList(AdditionalCallFragment.custListArrayList.get(i).getName(), AdditionalCallFragment.custListArrayList.get(i).getCode(), AdditionalCallFragment.custListArrayList.get(i).getTown_name(), AdditionalCallFragment.custListArrayList.get(i).getTown_code(), AdditionalCallFragment.custListArrayList.get(i).isCheckedItem(), AdditionalCallFragment.custListArrayList.get(i).getTotalVisit(), AdditionalCallFragment.custListArrayList.get(i).getPriority()));
                     }
                 }
             }
@@ -3369,47 +3369,56 @@ public class DCRCallActivity extends AppCompatActivity {
         RCPASelectPrdSide.PrdFullList = new ArrayList<>();
         StockSample.clear();
         try {
-            int Priority_count = 1;
+            int Priority_count = 1, prdPriority = 1;
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray();
             JSONArray jsonArrayPrdStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray();
             Log.v("chkSample", "---size--111----" + jsonArray.length() + "----" + jsonArrayPrdStk.length());
 //            if(PrdMandatory.equalsIgnoreCase("1") && isFromActivity.equalsIgnoreCase("new")) {
-                ProductFragment.checkedPrdList.add(new CallCommonCheckedList("No Product", "-10", "", false, "", ""));
+                ProductFragment.checkedPrdList.add(new CallCommonCheckedList("No Product", "-10", "", false, "", "", ""));
 //            } else {
 //                ProductFragment.checkedPrdList.add(new CallCommonCheckedList("No Product", "-10", "", true, "", ""));
 //            }
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-
+                String priorityCode = "";
+                if(CallActivityCustDetails.get(0).getMappedSlides().contains(jsonObject.optString("Code"))) {
+                    priorityCode = "P"+prdPriority;
+                    prdPriority++;
+                }
                 if (!jsonObject.getString("Code").equalsIgnoreCase("-1")) {
                     if (!jsonObject.getString("Product_Mode").equalsIgnoreCase("Sample")) {
-                        RCPASelectPrdSide.PrdFullList.add(new SaveCallProductList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("DRate")));
+                        RCPASelectPrdSide.PrdFullList.add(new SaveCallProductList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("DRate"), jsonObject.getString("Product_Mode"), priorityCode));
                     }
 
                     if (CallActivityCustDetails.get(0).getPriorityPrdCode().contains(jsonObject.getString("Code"))) {
-                        ProductFragment.checkedPrdList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, "P" + Priority_count++, jsonObject.getString("Product_Mode")));
+                        ProductFragment.checkedPrdList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, "P" + Priority_count++, jsonObject.getString("Product_Mode"), priorityCode));
                         StockSample.add(new CallCommonCheckedList(jsonObject.getString("Code"), "0", "0"));
                         if (!jsonObject.getString("Product_Mode").equalsIgnoreCase("Sale")) {
-                            AddCallSelectPrdSide.callSampleList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, "P" + Priority_count++, jsonObject.getString("Product_Mode")));
+                            AddCallSelectPrdSide.callSampleList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, "P" + Priority_count++, jsonObject.getString("Product_Mode"), ""));
                         }
                     } else {
-                        ProductFragment.checkedPrdList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, jsonObject.getString("Product_Mode"), jsonObject.getString("Product_Mode")));
+                        ProductFragment.checkedPrdList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, jsonObject.getString("Product_Mode"), jsonObject.getString("Product_Mode"), priorityCode));
                         StockSample.add(new CallCommonCheckedList(jsonObject.getString("Code"), "0", "0"));
                         if (!jsonObject.getString("Product_Mode").equalsIgnoreCase("Sale")) {
-                            AddCallSelectPrdSide.callSampleList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, jsonObject.getString("Product_Mode"), jsonObject.getString("Product_Mode")));
+                            AddCallSelectPrdSide.callSampleList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, jsonObject.getString("Product_Mode"), jsonObject.getString("Product_Mode"), ""));
                         }
                     }
                 }
             }
 
-            if (ProductFragment.checkedPrdList.size() == 0) {
+            if (ProductFragment.checkedPrdList.isEmpty()) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String priorityCode = "";
+                    if(CallActivityCustDetails.get(0).getMappedSlides().contains(jsonObject.optString("Code"))) {
+                        priorityCode = "P"+prdPriority;
+                        prdPriority++;
+                    }
                     if (jsonObject.getString("Code").equalsIgnoreCase("-1")) {
-                        ProductFragment.checkedPrdList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, jsonObject.getString("Product_Mode"), jsonObject.getString("Product_Mode")));
+                        ProductFragment.checkedPrdList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, jsonObject.getString("Product_Mode"), jsonObject.getString("Product_Mode"), priorityCode));
                         StockSample.add(new CallCommonCheckedList(jsonObject.getString("Code"), "0", "0"));
-                        RCPASelectPrdSide.PrdFullList.add(new SaveCallProductList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("DRate")));
+                        RCPASelectPrdSide.PrdFullList.add(new SaveCallProductList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("DRate"), jsonObject.getString("Product_Mode"), priorityCode));
                     }
                 }
             }
@@ -3455,7 +3464,8 @@ public class DCRCallActivity extends AppCompatActivity {
                                     jsonObjectSample.getString("Balance_Stock"),
                                     ProductFragment.checkedPrdList.get(i).isCheckedItem(),
                                     ProductFragment.checkedPrdList.get(i).getCategory(),
-                                    ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
+                                    ProductFragment.checkedPrdList.get(i).getCategoryExtra(),
+                                    ProductFragment.checkedPrdList.get(i).getPriority()));
 
                             CallCommonCheckedList stockItem = new CallCommonCheckedList(
                                     ProductFragment.checkedPrdList.get(i).getCode(),
@@ -3477,7 +3487,8 @@ public class DCRCallActivity extends AppCompatActivity {
                                     ProductFragment.checkedPrdList.get(i).getStock_balance(),
                                     ProductFragment.checkedPrdList.get(i).isCheckedItem(),
                                     ProductFragment.checkedPrdList.get(i).getCategory(),
-                                    ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
+                                    ProductFragment.checkedPrdList.get(i).getCategoryExtra(),
+                                    ProductFragment.checkedPrdList.get(i).getPriority()));
 
                             CallCommonCheckedList stockItem = new CallCommonCheckedList(
                                     ProductFragment.checkedPrdList.get(i).getCode(),
@@ -3504,7 +3515,8 @@ public class DCRCallActivity extends AppCompatActivity {
                                     jsonObjectSample.getString("Balance_Stock"),
                                     AddCallSelectPrdSide.callSampleList.get(i).isCheckedItem(),
                                     AddCallSelectPrdSide.callSampleList.get(i).getCategory(),
-                                    AddCallSelectPrdSide.callSampleList.get(i).getCategoryExtra()));
+                                    AddCallSelectPrdSide.callSampleList.get(i).getCategoryExtra(),
+                                    AddCallSelectPrdSide.callSampleList.get(i).getPriority()));
                             break;
                         } else {
                             AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(
@@ -3513,19 +3525,77 @@ public class DCRCallActivity extends AppCompatActivity {
                                     AddCallSelectPrdSide.callSampleList.get(i).getStock_balance(),
                                     AddCallSelectPrdSide.callSampleList.get(i).isCheckedItem(),
                                     AddCallSelectPrdSide.callSampleList.get(i).getCategory(),
-                                    AddCallSelectPrdSide.callSampleList.get(i).getCategoryExtra()));
+                                    AddCallSelectPrdSide.callSampleList.get(i).getCategoryExtra(),
+                                    AddCallSelectPrdSide.callSampleList.get(i).getPriority()));
                         }
                     }
                 }
             }
 
             Log.v("chkSample", "---size---" + AddCallSelectPrdSide.callSampleList.size());
-            Collections.sort(ProductFragment.checkedPrdList, Comparator.comparing(CallCommonCheckedList::getCategory));
-            Collections.sort(AddCallSelectPrdSide.callSampleList, Comparator.comparing(CallCommonCheckedList::getCategory));
+            Collections.sort(ProductFragment.checkedPrdList, (a, b) -> {
+                boolean aIsInvalid = "-10".equals(a.getCode());
+                boolean bIsInvalid = "-10".equals(b.getCode());
 
+                if(aIsInvalid && !bIsInvalid) return -1;
+                if(!aIsInvalid && bIsInvalid) return 1;
+                if(aIsInvalid && bIsInvalid) return 0;
+
+                int priorityCompare = Integer.compare(
+                        extractPriorityNumber(a.getPriority()),
+                        extractPriorityNumber(b.getPriority())
+                );
+                if(priorityCompare != 0) return priorityCompare;
+
+                return a.getCategory().compareToIgnoreCase(b.getCategory());
+            });
+//            Collections.sort(ProductFragment.checkedPrdList, Comparator.comparing(CallCommonCheckedList::getCategory));
+            Collections.sort(AddCallSelectPrdSide.callSampleList, (a, b) -> {
+                boolean aIsInvalid = "-10".equals(a.getCode());
+                boolean bIsInvalid = "-10".equals(b.getCode());
+
+                if(aIsInvalid && !bIsInvalid) return -1;
+                if(!aIsInvalid && bIsInvalid) return 1;
+                if(aIsInvalid && bIsInvalid) return 0;
+
+                int priorityCompare = Integer.compare(
+                        extractPriorityNumber(a.getPriority()),
+                        extractPriorityNumber(b.getPriority())
+                );
+                if(priorityCompare != 0) return priorityCompare;
+
+                return a.getCategory().compareToIgnoreCase(b.getCategory());
+            });
+//            Collections.sort(AddCallSelectPrdSide.callSampleList, Comparator.comparing(CallCommonCheckedList::getCategory));
+            Collections.sort(RCPASelectPrdSide.PrdFullList, (a, b) -> {
+//                boolean aIsInvalid = "-10".equals(a.getCode());
+//                boolean bIsInvalid = "-10".equals(b.getCode());
+//
+//                if(aIsInvalid && !bIsInvalid) return -1;
+//                if(!aIsInvalid && bIsInvalid) return 1;
+//                if(aIsInvalid && bIsInvalid) return 0;
+
+                int priorityCompare = Integer.compare(
+                        extractPriorityNumber(a.getPriority()),
+                        extractPriorityNumber(b.getPriority())
+                );
+                if(priorityCompare != 0) return priorityCompare;
+
+                return a.getCategory().compareToIgnoreCase(b.getCategory());
+            });
+            Log.d("TAG", "AddProductsData: " + RCPASelectPrdSide.PrdFullList);
         } catch (Exception e) {
             Log.v("chkSample", "---error---" + e);
+            e.printStackTrace();
         }
+    }
+
+    private static int extractPriorityNumber(String priority) {
+        if (priority == null || priority.isEmpty()) return Integer.MAX_VALUE;
+        if (priority.matches("P\\d+")) {
+            return Integer.parseInt(priority.substring(1));
+        }
+        return Integer.MAX_VALUE;
     }
 
     public String extractValues(String s, String data) {

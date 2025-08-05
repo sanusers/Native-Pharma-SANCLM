@@ -136,6 +136,7 @@ public class AddCallSelectPrdSide extends Fragment {
             holder.tv_name.setText(callSampleListAdapter.get(position).getName());
             holder.tv_category.setVisibility(View.VISIBLE);
             holder.tv_category.setText(callSampleListAdapter.get(position).getCategory());
+            holder.tv_priority.setText(callSampleListAdapter.get(position).getPriority());
 
             if (callSampleListAdapter.get(position).isCheckedItem()) {
                 holder.checkBox.setChecked(true);
@@ -165,13 +166,22 @@ public class AddCallSelectPrdSide extends Fragment {
                 holder.tv_category.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_sale_sample));
             }
 
+            if(callSampleListAdapter.get(position).getPriority().isEmpty()) {
+                holder.tv_priority.setVisibility(View.GONE);
+                holder.tv_priority.setTextColor(ContextCompat.getColor(context, R.color.white));
+                holder.tv_priority.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_white_without_border));
+            } else {
+                holder.tv_priority.setVisibility(View.VISIBLE);
+                holder.tv_priority.setTextColor(ContextCompat.getColor(context, R.color.txt_priority));
+                holder.tv_priority.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_priority));
+            }
 
             holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
                 if (holder.checkBox.isPressed()) {
                     if (DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
                         for (int i = 0; i < StockSample.size(); i++) {
                             if (StockSample.get(i).getStockCode().equalsIgnoreCase(callSampleListAdapter.get(position).getCode())) {
-                                callSampleListAdapter.set(position, new CallCommonCheckedList(callSampleListAdapter.get(position).getName(), callSampleListAdapter.get(position).getCode(), StockSample.get(i).getCurrentStock(), false, callSampleListAdapter.get(position).getCategory(), callSampleListAdapter.get(position).getCategoryExtra()));
+                                callSampleListAdapter.set(position, new CallCommonCheckedList(callSampleListAdapter.get(position).getName(), callSampleListAdapter.get(position).getCode(), StockSample.get(i).getCurrentStock(), false, callSampleListAdapter.get(position).getCategory(), callSampleListAdapter.get(position).getCategoryExtra(), callSampleListAdapter.get(position).getPriority()));
                             }
                         }
                         if (callSampleListAdapter.get(position).getCategoryExtra().equalsIgnoreCase("Sale/Sample")) {
@@ -233,7 +243,7 @@ public class AddCallSelectPrdSide extends Fragment {
         }
 
         public static class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tv_name, tv_category;
+            TextView tv_name, tv_category, tv_priority;
             CheckBox checkBox;
 
             public ViewHolder(@NonNull View itemView) {
@@ -241,6 +251,7 @@ public class AddCallSelectPrdSide extends Fragment {
                 tv_name = itemView.findViewById(R.id.tv_data_name);
                 checkBox = itemView.findViewById(R.id.chk_box);
                 tv_category = itemView.findViewById(R.id.tv_tag_category);
+                tv_priority = itemView.findViewById(R.id.tv_tag_priority);
             }
         }
     }

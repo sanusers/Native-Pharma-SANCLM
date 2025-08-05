@@ -297,7 +297,7 @@ public class AdditionalCallDetailedSide extends Fragment {
 
                     for (int j = 0; j < ProductFragment.checkedPrdList.size(); j++) {
                         if (addProductAdditionalCallArrayList.get(i).getPrd_code().equalsIgnoreCase(ProductFragment.checkedPrdList.get(j).getCode())) {
-                            ProductFragment.checkedPrdList.set(j, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(j).getName(), ProductFragment.checkedPrdList.get(j).getCode(), addProductAdditionalCallArrayList.get(i).getBalance_stock(), false, ProductFragment.checkedPrdList.get(j).getCategory(), ProductFragment.checkedPrdList.get(j).getCategoryExtra()));
+                            ProductFragment.checkedPrdList.set(j, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(j).getName(), ProductFragment.checkedPrdList.get(j).getCode(), addProductAdditionalCallArrayList.get(i).getBalance_stock(), false, ProductFragment.checkedPrdList.get(j).getCategory(), ProductFragment.checkedPrdList.get(j).getCategoryExtra(), ProductFragment.checkedPrdList.get(j).getPriority()));
                         }
                     }
 
