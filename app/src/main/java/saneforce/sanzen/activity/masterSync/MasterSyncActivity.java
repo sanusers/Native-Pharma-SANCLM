@@ -106,8 +106,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> arrayForAdapter = new ArrayList<>();
     ArrayList<MasterSyncItemModel> doctorModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> stockiestModelArray = new ArrayList<>();
-    ArrayList<MasterSyncItemModel> chemistModelArray = new ArrayList<>();
-    ArrayList<MasterSyncItemModel> unlistedDrModelArray = new ArrayList<>();
+    ArrayList<MasterSyncItemModel> chemistModelArray = new ArrayList<>();ArrayList<MasterSyncItemModel> unlistedDrModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> hospitalModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> cipModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> inputModelArray = new ArrayList<>();
@@ -946,6 +945,11 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void populateAdapter(ArrayList<MasterSyncItemModel> masterSyncItemModels) {
+        masterSyncAdapter=new MasterSyncAdapter(masterSyncItemModels, getApplicationContext(), new MasterSyncItemClick() {
+            @Override
+            public void itemClick(MasterSyncItemModel masterSyncItemModel, int position) {
+            }
+        });
         masterSyncAdapter = new MasterSyncAdapter(masterSyncItemModels, getApplicationContext(), (masterSyncItemModel1, position) -> {
             if (UtilityClass.isNetworkAvailable(this)) {
                 NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, status -> {
@@ -1143,7 +1147,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             jsonObject.put("sfcode", SharedPref.getSfCode(this));
             jsonObject.put("division_code", SharedPref.getDivisionCode(this));
             jsonObject.put("Rsf", rsf);
-
             jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
             switch (remoteTableName) {
