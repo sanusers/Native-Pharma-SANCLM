@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/_2sdp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -14,6 +14,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/checkout_main"
             android:orientation="horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -466,6 +467,41 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/txt_lat_lng" />
 
+                <RelativeLayout
+                    android:id="@+id/rl_refresh_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_border_with_pink"
+                    android:padding="@dimen/_5sdp"
+                    app:layout_constraintBottom_toBottomOf="@id/txt_address_tag"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.95"
+                    app:layout_constraintStart_toEndOf="@id/txt_address_tag"
+                    app:layout_constraintTop_toTopOf="@id/txt_address_tag">
+
+                    <ImageView
+                        android:id="@+id/img_refresh"
+                        android:layout_width="@dimen/_8sdp"
+                        android:layout_height="@dimen/_8sdp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/refresh" />
+
+                    <!--            <TextView-->
+                    <!--                android:id="@+id/txt_refresh"-->
+                    <!--                android:layout_width="wrap_content"-->
+                    <!--                android:layout_height="wrap_content"-->
+                    <!--                android:layout_centerVertical="true"-->
+                    <!--                android:layout_marginStart="@dimen/_2sdp"-->
+                    <!--                android:layout_toEndOf="@id/img_refresh"-->
+                    <!--                android:fontFamily="@font/satoshi_bold"-->
+                    <!--                android:text="@string/refresh_location"-->
+                    <!--                android:textAllCaps="false"-->
+                    <!--                android:textColor="@color/dark_purple"-->
+                    <!--                android:textSize="@dimen/_6ssp"-->
+                    <!--                android:textStyle="bold" />-->
+                </RelativeLayout>
+
                 <TextView
                     android:id="@+id/txt_address"
                     android:layout_width="match_parent"
@@ -496,6 +532,7 @@
             android:id="@+id/btn_checkOut"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/checkout_main"
             android:layout_marginHorizontal="@dimen/_6sdp"
             android:layout_marginVertical="@dimen/_5sdp"
             android:background="@drawable/bg_purple"
@@ -509,5 +546,15 @@
             app:icon="@drawable/btn_check_out"
             app:iconGravity="textStart"
             app:iconPadding="@dimen/_4sdp" />
-    </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/dark_purple"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
 </androidx.cardview.widget.CardView>

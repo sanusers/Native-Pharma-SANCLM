@@ -136,7 +136,7 @@ public class AddCallSelectPrdSide extends Fragment {
             holder.tv_name.setText(callSampleListAdapter.get(position).getName());
             holder.tv_category.setVisibility(View.VISIBLE);
             holder.tv_category.setText(callSampleListAdapter.get(position).getCategory());
-            holder.tv_priority.setText(callSampleListAdapter.get(position).getPriority());
+            holder.tv_priority.setText(callSampleListAdapter.get(position).getPriorityCodes());
 
             if (callSampleListAdapter.get(position).isCheckedItem()) {
                 holder.checkBox.setChecked(true);
@@ -166,7 +166,7 @@ public class AddCallSelectPrdSide extends Fragment {
                 holder.tv_category.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_sale_sample));
             }
 
-            if(callSampleListAdapter.get(position).getPriority().isEmpty()) {
+            if(callSampleListAdapter.get(position).getPriorityCodes().isEmpty()) {
                 holder.tv_priority.setVisibility(View.GONE);
                 holder.tv_priority.setTextColor(ContextCompat.getColor(context, R.color.white));
                 holder.tv_priority.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_white_without_border));
@@ -181,7 +181,7 @@ public class AddCallSelectPrdSide extends Fragment {
                     if (DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
                         for (int i = 0; i < StockSample.size(); i++) {
                             if (StockSample.get(i).getStockCode().equalsIgnoreCase(callSampleListAdapter.get(position).getCode())) {
-                                callSampleListAdapter.set(position, new CallCommonCheckedList(callSampleListAdapter.get(position).getName(), callSampleListAdapter.get(position).getCode(), StockSample.get(i).getCurrentStock(), false, callSampleListAdapter.get(position).getCategory(), callSampleListAdapter.get(position).getCategoryExtra(), callSampleListAdapter.get(position).getPriority()));
+                                callSampleListAdapter.set(position, new CallCommonCheckedList(callSampleListAdapter.get(position).getName(), callSampleListAdapter.get(position).getCode(), StockSample.get(i).getCurrentStock(), false, callSampleListAdapter.get(position).getCategory(), callSampleListAdapter.get(position).getCategoryExtra(), callSampleListAdapter.get(position).getPriorityCodes()));
                             }
                         }
                         if (callSampleListAdapter.get(position).getCategoryExtra().equalsIgnoreCase("Sale/Sample")) {

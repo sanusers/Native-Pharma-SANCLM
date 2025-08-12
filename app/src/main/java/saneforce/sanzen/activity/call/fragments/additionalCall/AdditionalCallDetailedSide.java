@@ -1,7 +1,6 @@
 package saneforce.sanzen.activity.call.fragments.additionalCall;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.InputValidation;
-import static saneforce.sanzen.activity.call.DCRCallActivity.PrdRcpaQtyNeed;
 import static saneforce.sanzen.activity.call.DCRCallActivity.PrdSamNeed;
 import static saneforce.sanzen.activity.call.DCRCallActivity.SampleValidation;
 import static saneforce.sanzen.activity.call.DCRCallActivity.StockInput;
@@ -28,7 +27,6 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.adapter.input.CheckInputListAdapter;
 import saneforce.sanzen.activity.call.adapter.input.FinalInputCallAdapter;
 import saneforce.sanzen.activity.call.fragments.input.InputFragment;
@@ -297,7 +295,7 @@ public class AdditionalCallDetailedSide extends Fragment {
 
                     for (int j = 0; j < ProductFragment.checkedPrdList.size(); j++) {
                         if (addProductAdditionalCallArrayList.get(i).getPrd_code().equalsIgnoreCase(ProductFragment.checkedPrdList.get(j).getCode())) {
-                            ProductFragment.checkedPrdList.set(j, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(j).getName(), ProductFragment.checkedPrdList.get(j).getCode(), addProductAdditionalCallArrayList.get(i).getBalance_stock(), false, ProductFragment.checkedPrdList.get(j).getCategory(), ProductFragment.checkedPrdList.get(j).getCategoryExtra(), ProductFragment.checkedPrdList.get(j).getPriority()));
+                            ProductFragment.checkedPrdList.set(j, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(j).getName(), ProductFragment.checkedPrdList.get(j).getCode(), addProductAdditionalCallArrayList.get(i).getBalance_stock(), false, ProductFragment.checkedPrdList.get(j).getCategory(), ProductFragment.checkedPrdList.get(j).getCategoryExtra(), ProductFragment.checkedPrdList.get(j).getPriorityCodes()));
                         }
                     }
 

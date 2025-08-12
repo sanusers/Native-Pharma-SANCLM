@@ -1155,7 +1155,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     arrayList.getSessionList().get(i).setVisible(true);
                 }
 
-                populateSessionEditAdapter(modelClass1);
+                populateSessionEditAdapter(arrayList);
                 scrollToPosition(position, false);
             }
         });

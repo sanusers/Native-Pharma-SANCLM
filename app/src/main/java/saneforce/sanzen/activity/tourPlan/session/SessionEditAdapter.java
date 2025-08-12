@@ -74,7 +74,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     SessionItemAdapter sessionItemAdapter = new SessionItemAdapter();
     String sfCode = "", division_code = "", sfType = "", designation = "", state_code = "", subdivision_code = "";
     int synccount = 0;
-    String jwNeed = "", drNeed = "", chemistNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", FW_meetup_mandatory = "";
+    String jwNeed = "", drNeed = "", chemistNeed = "", stockiestNeed = "", unListedDrNeed = "", cipNeed = "", hospNeed = "", FW_meetup_mandatory = "", holidayEditable = "", weeklyOffEditable = "";
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
@@ -107,7 +107,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 cipNeed = jsonArray.getJSONObject(i).getString("Cip_Need");
                 hospNeed = jsonArray.getJSONObject(i).getString("HospNeed");
                 FW_meetup_mandatory = jsonArray.getJSONObject(i).getString("FW_meetup_mandatory");
-
+                holidayEditable = jsonArray.getJSONObject(i).getString("Holiday_Editable");
+                weeklyOffEditable = jsonArray.getJSONObject(i).getString("Weeklyoff_Editable");
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -487,37 +488,41 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 public void onClick(View view) {
                     itemPosition = holder.getLayoutPosition();
                     holder.relativeLayout.setSelected(false);
-                    if(!holder.fieldSelected) {
-                        ArrayList<EditModelClass> workDayArray = new ArrayList<>();
-                        if(holder.workDayArray.isEmpty()) {
-                            try {
-                                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
-                                if(jsonArray != null && jsonArray.length()>0) {
-                                    JSONObject jsonObject = jsonArray.optJSONObject(0);
-                                    String[] dayIDs = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_SName")).split("/");
-                                    String[] dayCaptions = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_Name")).split("/");
-                                    for (int index = 0; index<dayIDs.length; index++) {
-                                        if(!dayIDs[index].isEmpty()) {
-                                            workDayArray.add(new EditModelClass(dayIDs[index], dayCaptions[index], false));
+                    if(holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
+                    } else {
+                        if(!holder.fieldSelected) {
+                            ArrayList<EditModelClass> workDayArray = new ArrayList<>();
+                            if(holder.workDayArray.isEmpty()) {
+                                try {
+                                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STP_SETUP).getMasterSyncDataJsonArray();
+                                    if(jsonArray != null && jsonArray.length()>0) {
+                                        JSONObject jsonObject = jsonArray.optJSONObject(0);
+                                        String[] dayIDs = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_SName")).split("/");
+                                        String[] dayCaptions = CommonUtilsMethods.removeLastComma(jsonObject.optString("Plan_Name")).split("/");
+                                        for (int index = 0; index<dayIDs.length; index++) {
+                                            if(!dayIDs[index].isEmpty()) {
+                                                workDayArray.add(new EditModelClass(dayIDs[index], dayCaptions[index], false));
+                                            }
                                         }
                                     }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                STPDaySorter.sortDays(workDayArray, EditModelClass::getCode);
+                                holder.workDayArray = workDayArray;
                             }
-                            STPDaySorter.sortDays(workDayArray, EditModelClass::getCode);
-                            holder.workDayArray = workDayArray;
+                            holder.sessionItemAdapterArray = holder.workDayArray;
+                            populateSessionItemAdapter(holder, false, false);
+                            holder.fieldSelected = true;
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_DAY);
+                        }else {
+                            changeUIState(holder, holder.workDayLayout, holder.workDayArrow, true);
+                            holder.fieldSelected = false;
+                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
                         }
-                        holder.sessionItemAdapterArray = holder.workDayArray;
-                        populateSessionItemAdapter(holder, false, false);
-                        holder.fieldSelected = true;
-                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_DAY);
-                    }else {
-                        changeUIState(holder, holder.workDayLayout, holder.workDayArrow, true);
-                        holder.fieldSelected = false;
-                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
                     }
-                    TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
                 }
             });
         }
@@ -1116,6 +1121,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         for (EditModelClass list : Lister) {
             if(!IDs.contains(list.getCode())) {
                 IDs.add(list.getCode());
+                if(list.getFWFlg() != null
+                        && ((list.getFWFlg().equalsIgnoreCase("W") && weeklyOffEditable.equalsIgnoreCase("1"))
+                        || (list.getFWFlg().equalsIgnoreCase("H") && holidayEditable.equalsIgnoreCase("1")))) {
+                    continue;
+                }
                 MainList.add(list);
             }
         }
@@ -1277,7 +1287,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     }
 
     public void populateSessionItemAdapter(MyViewHolder holder, boolean checkBoxNeed, boolean isSortNeeded) {
-
         if(isSortNeeded) {
             Collections.sort(holder.sessionItemAdapterArray, new Comparator<EditModelClass>() {
                 @Override

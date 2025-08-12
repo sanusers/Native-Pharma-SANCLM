@@ -26,11 +26,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.adapter.input.CheckInputListAdapter;
 import saneforce.sanzen.activity.call.adapter.input.FinalInputCallAdapter;
+import saneforce.sanzen.activity.call.fragments.additionalCall.AddCallSelectPrdSide;
 import saneforce.sanzen.activity.call.fragments.additionalCall.AdditionalCallDetailedSide;
 import saneforce.sanzen.activity.call.fragments.additionalCall.AdditionalCallFragment;
 import saneforce.sanzen.activity.call.fragments.input.InputFragment;
@@ -244,7 +249,45 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
             AdditionalCallDetailedSide.addProductAdditionalCallArrayList.clear();
             Selected_name = saveAdditionalCalls.get(position).getName();
             Selected_code = saveAdditionalCalls.get(position).getCode();
+            String priorityCodes = "";
+            for (int i = 0; i<checked_arrayList.size(); i++) {
+                CallCommonCheckedList callCommonCheckedList = checked_arrayList.get(i);
+                if(callCommonCheckedList != null && callCommonCheckedList.getCode().equalsIgnoreCase(Selected_code)) {
+                    priorityCodes = callCommonCheckedList.getPriorityCodes();
+                    break;
+                }
+            }
+            ArrayList<String> priorityCodeList = new ArrayList<>(Arrays.asList(priorityCodes.split(",")));
+            Map<String, CallCommonCheckedList> codeToSampleMap = new HashMap<>();
+            for (CallCommonCheckedList item : AddCallSelectPrdSide.callSampleList) {
+                item.setPriorityCodes("");
+                codeToSampleMap.put(item.getCode(), item);
+            }
 
+            int count = 1;
+            for (String code : priorityCodeList) {
+                CallCommonCheckedList matchedItem = codeToSampleMap.get(code);
+                if (matchedItem != null) {
+                    matchedItem.setPriorityCodes("P" + count);
+                    count++;
+                }
+            }
+            Collections.sort(AddCallSelectPrdSide.callSampleList, (a, b) -> {
+                boolean aIsInvalid = "-10".equals(a.getCode());
+                boolean bIsInvalid = "-10".equals(b.getCode());
+
+                if(aIsInvalid && !bIsInvalid) return -1;
+                if(!aIsInvalid && bIsInvalid) return 1;
+                if(aIsInvalid && bIsInvalid) return 0;
+
+                int priorityCompare = Integer.compare(
+                        extractPriorityNumber(a.getPriorityCodes()),
+                        extractPriorityNumber(b.getPriorityCodes())
+                );
+                if(priorityCompare != 0) return priorityCompare;
+
+                return a.getCategory().compareToIgnoreCase(b.getCategory());
+            });
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
             AdditionalCallDetailedSide.callDetailsSideBinding.rvAddInputsAdditional.setLayoutManager(mLayoutManager);
             commonUtilsMethods.recycleTestWithoutDivider(AdditionalCallDetailedSide.callDetailsSideBinding.rvAddInputsAdditional);
@@ -320,6 +363,13 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
         });
     }
 
+    private int extractPriorityNumber(String priority) {
+        if (priority == null || priority.isEmpty()) return Integer.MAX_VALUE;
+        if (priority.matches("P\\d+")) {
+            return Integer.parseInt(priority.substring(1));
+        }
+        return Integer.MAX_VALUE;
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     private void updateProductStock(int adapterPosition) {
