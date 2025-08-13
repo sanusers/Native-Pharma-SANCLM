@@ -949,45 +949,27 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             workType_list1.add(object);
                         }
                     }
-//                }else {
-//                    if(EditSession.equalsIgnoreCase("2") || DayPlanCount.equalsIgnoreCase("2")) {
-//                        if(mWTCode1.equalsIgnoreCase(object.getString("Code"))) {
-//                            if(object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
-//                                IsFeildWorkFlag = "2";
-//                                workType_list1.add(object);
-//                            }
-//                        }else {
-//                            workType_list1.add(object);
-//                        }
-//                    } else if(EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
-//                        if(mWTCode2.equalsIgnoreCase(object.getString("Code"))) {
-//                            if(object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
-//                                IsFeildWorkFlag = "F1";
-//                                workType_list1.add(object);
-//                            }
-//                        }else {
-//                            workType_list1.add(object);
-//                }else {
-//                    if(EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) {
-//                        if(mWTCode2.equalsIgnoreCase(object.getString("Code"))) {
-//                            if(object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
-//                                IsFeildWorkFlag = "F1";
-//                                workType_list1.add(object);
-//                            }
-//                        }else {
-//                            workType_list1.add(object);
-//                        }
-//                    }else {
-//                        if(mWTCode1.equalsIgnoreCase(object.getString("Code"))) {
-//                            if(object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
-//                                IsFeildWorkFlag = "2";
-//                                workType_list1.add(object);
-//                            }
-//                        }else {
-//                            workType_list1.add(object);
-//                        }
-//                    }
-//
+                } else {
+                    if(EditSession.equalsIgnoreCase("2") || DayPlanCount.equalsIgnoreCase("2")) {
+                        if(!mWTCode1.equalsIgnoreCase(object.getString("Code"))) {
+                            if(object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
+                                IsFeildWorkFlag = "F2";
+                                workType_list1.add(object);
+                            }else {
+                                workType_list1.add(object);
+                            }
+                        }
+                    }else {
+                        if(!mWTCode2.equalsIgnoreCase(object.getString("Code"))) {
+                            if(object.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
+                                IsFeildWorkFlag = "F1";
+                                workType_list1.add(object);
+                            }else {
+                                workType_list1.add(object);
+                            }
+                        }
+                    }
+
                 }
             }
         } catch (Exception e) {
@@ -2507,7 +2489,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
-            jsonObject.put("tableName", "dayplan");
+            jsonObject.put("tableName", "dayplanmultihq");
             jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
             jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
             if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
@@ -2528,6 +2510,21 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("WT_code2", mWTCode2);
             jsonObject.put("WTName2", mWTName2);
             jsonObject.put("FwFlg2", mFwFlg2);
+
+            String sfMem = "", sfMem2 = "", planName = "", planName2 = "", planCode = "", planCode2 = "";
+            sfMem = mHQCode1.split(",")[0];
+            sfMem2 = mHQCode2.split(",")[0];
+            planName = mTownname1.split("\\$")[0];
+            planName2 = mTownname2.split("\\$")[0];
+            planCode = mTowncode1.split("\\$")[0];
+            planCode2 = mTowncode2.split("\\$")[0];
+
+            jsonObject.put("SfMem", sfMem);
+            jsonObject.put("SfMem2", sfMem2);
+            jsonObject.put("plan_code", planCode);
+            jsonObject.put("plan_code2", planCode2);
+            jsonObject.put("plan_name", planName);
+            jsonObject.put("plan_name2", planName2);
 
             jsonObject.put("Remarks", mRemarks1);
             jsonObject.put("location", gpsTrack.getLatitude() + ":" + gpsTrack.getLongitude());

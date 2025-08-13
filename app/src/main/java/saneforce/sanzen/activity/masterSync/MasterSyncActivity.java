@@ -2344,7 +2344,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
         builder.setView(dialogView);
-        if(welcomeSlideDialog != null && welcomeSlideDialog.isShowing()) {
+        if(welcomeSlideDialog != null && welcomeSlideDialog.isShowing() && !isFinishing()) {
             welcomeSlideDialog.dismiss();
         }
         welcomeSlideDialog = builder.create();
