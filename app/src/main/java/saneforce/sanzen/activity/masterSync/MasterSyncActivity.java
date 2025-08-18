@@ -900,6 +900,8 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     }
 
+
+
     public void listItemClicked(TextView view) {
         binding.listedDr.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.unlistedDoctor.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
