@@ -296,14 +296,6 @@
                         android:textStyle="bold"
                         app:drawableEndCompat="@drawable/arrow_down"
                         tools:ignore="SpUsage" />
-                    <ImageView
-                        android:layout_width="@dimen/_7sdp"
-                        android:layout_height="@dimen/_7sdp"
-                        android:src="@drawable/done"
-                        android:layout_alignTop="@id/hospital"
-                        android:layout_alignBottom="@id/hospital"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="@dimen/_23sdp"/>
 
                     <TextView
                         android:id="@+id/cip"
@@ -321,14 +313,6 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
-                    <ImageView
-                        android:layout_width="@dimen/_7sdp"
-                        android:layout_height="@dimen/_7sdp"
-                        android:src="@drawable/done"
-                        android:layout_alignTop="@id/cip"
-                        android:layout_alignBottom="@id/cip"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="@dimen/_23sdp"/>
 
                     <TextView
                         android:id="@+id/cluster"
@@ -346,6 +330,15 @@
                         android:textStyle="bold"
                         app:drawableEndCompat="@drawable/arrow_down"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/done"
+                        android:layout_alignTop="@id/cluster"
+                        android:layout_alignBottom="@id/cluster"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"/>
+
 
                     <TextView
                         android:id="@+id/input"
@@ -363,6 +356,15 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/done"
+                        android:layout_alignTop="@id/input"
+                        android:layout_alignBottom="@id/input"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"/>
+
 
                     <TextView
                         android:id="@+id/product"
@@ -380,6 +382,15 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/done"
+                        android:layout_alignTop="@id/product"
+                        android:layout_alignBottom="@id/product"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"/>
+
 
                     <TextView
                         android:id="@+id/leave"
@@ -397,6 +408,15 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/done"
+                        android:layout_alignTop="@id/leave"
+                        android:layout_alignBottom="@id/leave"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"/>
+
 
                     <TextView
                         android:id="@+id/dcr"
