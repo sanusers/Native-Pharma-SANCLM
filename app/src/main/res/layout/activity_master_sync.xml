@@ -296,6 +296,14 @@
                         android:textStyle="bold"
                         app:drawableEndCompat="@drawable/arrow_down"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/done"
+                        android:layout_alignTop="@id/hospital"
+                        android:layout_alignBottom="@id/hospital"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"/>
 
                     <TextView
                         android:id="@+id/cip"
@@ -313,6 +321,14 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/done"
+                        android:layout_alignTop="@id/cip"
+                        android:layout_alignBottom="@id/cip"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"/>
 
                     <TextView
                         android:id="@+id/cluster"
