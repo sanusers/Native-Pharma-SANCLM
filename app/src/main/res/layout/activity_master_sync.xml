@@ -197,11 +197,12 @@
                         android:id="@+id/done"
                         android:layout_width="@dimen/_7sdp"
                         android:layout_height="@dimen/_7sdp"
-                        android:src="@drawable/done"
+                        android:src="@drawable/icon_sync_failed"
                         android:layout_alignTop="@id/listedDr"
                         android:layout_alignBottom="@id/listedDr"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="@dimen/_24sdp" />
+                        android:layout_marginEnd="@dimen/_24sdp"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/chemist"
@@ -223,7 +224,7 @@
                     <ImageView
                         android:layout_width="@dimen/_7sdp"
                         android:layout_height="@dimen/_7sdp"
-                        android:src="@drawable/done"
+                        android:src="@drawable/icon_sync_failed"
                         android:layout_alignTop="@id/chemist"
                         android:layout_alignBottom="@id/chemist"
                         android:layout_alignParentEnd="true"

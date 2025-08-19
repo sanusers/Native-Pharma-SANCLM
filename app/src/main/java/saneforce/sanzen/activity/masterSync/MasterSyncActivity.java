@@ -1239,7 +1239,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                         masterSyncItemModels.get(position).setPBarVisibility(false);
                         ++apiSuccessCount;
                         Log.e("response :   ",  remoteTableName + " : " + response.body().toString());
-
                         boolean success = false;
                         JSONArray jsonArray = new JSONArray();
                         JSONObject jsonObject2=new JSONObject();
@@ -1260,6 +1259,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
                                             masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
                                             masterSyncItemModels.get(position).setSyncSuccess(1);
+
                                         }
                                     }
 

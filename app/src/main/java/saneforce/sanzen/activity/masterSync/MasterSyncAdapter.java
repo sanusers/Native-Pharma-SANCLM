@@ -64,11 +64,10 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
                 holder.syncErrorIcon.setImageResource(R.drawable.icon_sync_failed);
             else if (data.syncSuccess == 2) holder.syncErrorIcon.setImageResource(R.drawable.done);
             else holder.syncErrorIcon.setVisibility(View.GONE);
-
         }
 
-        holder.itemView.setOnClickListener(view -> {
 
+        holder.itemView.setOnClickListener(view -> {
             holder.progressBar.setVisibility(View.VISIBLE);
             holder.syncErrorIcon.setVisibility(View.GONE);
             masterSyncItemClick.itemClick(data, holder.getBindingAdapterPosition());
@@ -85,12 +84,14 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
         ProgressBar progressBar;
         ImageView syncErrorIcon;
 
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
             count = itemView.findViewById(R.id.count);
             progressBar = itemView.findViewById(R.id.progressBar);
             syncErrorIcon = itemView.findViewById(R.id.syncFailedImage);
+
         }
     }
 }
