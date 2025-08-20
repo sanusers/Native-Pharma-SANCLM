@@ -13,11 +13,14 @@ public class SaveCallProductList {
     String rcpa_qty;
     String promoted;
     String rate;
+    String priority;
 
-    public SaveCallProductList(String name, String code, String rate) {
+    public SaveCallProductList(String name, String code, String rate, String category, String priority) {
         this.name = name;
         this.code = code;
         this.rate = rate;
+        this.category = category;
+        this.priority = priority;
     }
 
     public String getRate() {
@@ -35,6 +38,7 @@ public class SaveCallProductList {
         this.rx_qty = rx_qty;
         this.rcpa_qty = rcpa_qty;
         this.promoted = promoted;
+        this.priority = "";
     }
 
     public SaveCallProductList(String name, String code, String category, String balance_sam_stk, String last_stock, String sample_qty, String rx_qty, String rcpa_qty, String promoted, boolean isClicked) {
@@ -48,6 +52,7 @@ public class SaveCallProductList {
         this.rcpa_qty = rcpa_qty;
         this.promoted = promoted;
         this.isClicked = isClicked;
+        this.priority = "";
     }
 
     public String getPromoted() {
@@ -137,6 +142,14 @@ public class SaveCallProductList {
 
     public void setRcpa_qty(String rcpa_qty) {
         this.rcpa_qty = rcpa_qty;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 
     @Override

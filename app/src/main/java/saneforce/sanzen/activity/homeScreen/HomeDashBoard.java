@@ -228,7 +228,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         outState.putBoolean("isSaved", true);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onResume() {
         if(!isFakeLocationDetected) {
@@ -256,14 +255,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             }
 
-        Menu menu = binding.navView.getMenu();
-        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
-            menu.findItem(R.id.approval).setVisible(SharedPref.getApproveNeed(this).equalsIgnoreCase("0"));
-            menu.findItem(R.id.stp).setVisible(false);
-        } else {
-            menu.findItem(R.id.approval).setVisible(false);
-            menu.findItem(R.id.stp).setVisible(SharedPref.getStpNeed(this).equalsIgnoreCase("0"));
-        }
+            Menu menu = binding.navView.getMenu();
+            if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+                menu.findItem(R.id.approval).setVisible(SharedPref.getApproveNeed(this).equalsIgnoreCase("0"));
+                menu.findItem(R.id.stp).setVisible(false);
+            }else {
+                menu.findItem(R.id.approval).setVisible(false);
+                menu.findItem(R.id.stp).setVisible(SharedPref.getStpNeed(this).equalsIgnoreCase("0"));
+            }
 
             if(SharedPref.getTpdcrMgrappr(this).equalsIgnoreCase("0")) {
                 binding.viewCalerderLayout.txtTpDeviation.setVisibility(View.VISIBLE);
@@ -283,7 +282,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.viewPager.setCurrentItem(1);
                 isDcrFrom = false;
             }
-        } else{
+        }else {
             super.onResume();
         }
 

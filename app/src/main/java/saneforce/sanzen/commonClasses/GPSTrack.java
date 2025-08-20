@@ -62,6 +62,19 @@ public class GPSTrack implements LocationListener {
     private static AlertDialog dialog;
     private LocationCallback locationCallback;
     private FusedLocationProviderClient fusedLocationClient;
+    private LocationChangeListener locationChangeListener;
+
+    public LocationChangeListener getLocationChangeListener() {
+        return locationChangeListener;
+    }
+
+    public void setLocationChangeListener(LocationChangeListener locationChangeListener) {
+        this.locationChangeListener = locationChangeListener;
+    }
+
+    public interface LocationChangeListener {
+        void onLocationChanged(Location location);
+    }
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
@@ -97,6 +110,9 @@ public class GPSTrack implements LocationListener {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        if(locationChangeListener != null) {
+            locationChangeListener.onLocationChanged(location);
         }
 
     }
@@ -197,6 +213,9 @@ public class GPSTrack implements LocationListener {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                    }
+                    if(locationChangeListener != null) {
+                        locationChangeListener.onLocationChanged(location);
                     }
 
                 }
