@@ -17,6 +17,7 @@ public class CheckInOutManager {
     public static boolean isCheckInAvailable(Context context) {
         return SharedPref.getSrtNd(context).equalsIgnoreCase("0")
                 && HomeDashBoard.selectedDate != null
+                && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))
                 && SharedPref.getCheckTodayCheckInOut(context).equalsIgnoreCase(HomeDashBoard.selectedDate.toString());
     }
 }

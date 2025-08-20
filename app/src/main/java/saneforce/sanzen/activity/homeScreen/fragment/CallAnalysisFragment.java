@@ -60,13 +60,14 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     public static String key;
     public static JSONArray Doctor_list, Chemist_list, Stockiest_list, unlistered_list, cip_list, hos_list;
     public static ArrayList<String> count_list = new ArrayList<>();
+    @SuppressLint("StaticFieldLeak")
     public static Context context;
-    CommonUtilsMethods commonUtilsMethods;
+    private CommonUtilsMethods commonUtilsMethods;
     public static String Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
     public static int DrCallsCount, CheCallsCount, StkCallsCount, UnlCallSCount, CipCallsCount, HosCallsCount;
-
-    static CallTableDao callTableDao;
-    RoomDB db;
+    private String previousDate = "";
+    private static CallTableDao callTableDao;
+    private RoomDB db;
     private MasterDataDao masterDataDao;
 
     @Override
@@ -78,6 +79,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
     private final Handler handler = new Handler();
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.getDefault());
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(TimeUtils.FORMAT_4, Locale.getDefault());
     private final Runnable updateClock = new Runnable() {
         @Override
         public void run() {
@@ -93,7 +95,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                             previousDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, (LocalDate.now().minusDays(1)).toString()),
                             homeDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, HomeDashBoard.selectedDate.toString()),
                             checkInDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_5, checkInObj.optString("DateTime"));
-                    if(checkInDate.equalsIgnoreCase(previousDate) && homeDate.equalsIgnoreCase(previousDate) && !SharedPref.getCheckInSkipDate(requireContext()).equalsIgnoreCase(currentDate)) {
+                    if(checkInDate.equalsIgnoreCase(previousDate) && homeDate.equalsIgnoreCase(previousDate) && !SharedPref.getCheckInSkipDate(requireContext()).equalsIgnoreCase(currentDate) && !SharedPref.getCheckTodayCheckInOut(requireContext()).isEmpty()) {
                         SharedPref.setCheckInSkipDate(requireContext(), currentDate);
                         Log.d("Clock", "run: log out");
                         SharedPref.saveLoginState(requireContext(), false);
@@ -103,6 +105,16 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                         requireActivity().finishAffinity();
                     }
                 }
+                String currentDate = dateFormat.format(new Date());
+                if(!previousDate.equals(currentDate)) {
+                    if(masterDataDao != null) {
+                        JSONArray workPlanArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
+                        if(workPlanArray.toString().equals("[]")) {
+                            HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
+                        }
+                    }
+                }
+                previousDate = currentDate;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -115,7 +127,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("Fragment_STATUS", "OnResume");
         callAnalysisBinding = CallAnalysisFagmentBinding.inflate(inflater);
-        handler.post(updateClock);
         View v = callAnalysisBinding.getRoot();
 //        setScreenDesign();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -124,6 +135,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         db = RoomDB.getDatabase(getActivity());
         callTableDao = db.callTableDao();
         masterDataDao = db.masterDataDao();
+        previousDate = dateFormat.format(new Date());
+        handler.post(updateClock);
         return v;
     }
 

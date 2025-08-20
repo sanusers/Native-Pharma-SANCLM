@@ -465,6 +465,14 @@ public class WorkPlanEntriesNeeded {
                 }
             }
             Log.v("TAG 2", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
+
+
+            if(SharedPref.getSeqDlyCtrl(context).equalsIgnoreCase("1")
+                    && SharedPref.getDcrSequential(context).equalsIgnoreCase("0")
+                    && dayFlagMap.containsKey(SharedPref.getSelectedDateCal(context))) {
+                SharedPref.setSelectedDateCal(context, "");
+            }
+
             List<String> offlineDaySubmitDates = offlineDaySubmitDao.getAllOfflineDaySubmitDates();
             if(!offlineDaySubmitDates.isEmpty()) {
                 for (String date : offlineDaySubmitDates) {
@@ -547,7 +555,7 @@ public class WorkPlanEntriesNeeded {
                 WorkPlanFragment.dayStatus = dayFlagMap.get(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, date));
                 syncTaskStatus.datesFound();
             }else {
-                SharedPref.setSelectedDateCal(context, null);
+                SharedPref.setSelectedDateCal(context, "");
                 syncTaskStatus.noDatesFound();
             }
         }else {
@@ -555,7 +563,7 @@ public class WorkPlanEntriesNeeded {
                 WorkPlanFragment.dayStatus = dayFlagMap.get(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)));
                 syncTaskStatus.datesFound();
             }else {
-                SharedPref.setSelectedDateCal(context, null);
+                SharedPref.setSelectedDateCal(context, "");
                 syncTaskStatus.noDatesFound();
             }
         }

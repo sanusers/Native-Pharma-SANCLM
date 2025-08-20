@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -103,6 +104,8 @@ public class ReportsActivity extends AppCompatActivity {
                             jsonObject.put("tableName", "getdayrpt_edet");
 
                         }
+
+                        Log.d("Report", "getData: " + jsonObject);
 
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");

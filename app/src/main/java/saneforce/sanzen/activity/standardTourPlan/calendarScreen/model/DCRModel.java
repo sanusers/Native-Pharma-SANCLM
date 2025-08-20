@@ -12,6 +12,19 @@ public class DCRModel {
     private String plannedForCode;
     private boolean isSelected;
 
+    public DCRModel(DCRModel dcrModel) {
+        this.name = dcrModel.getName();
+        this.code = dcrModel.getCode();
+        this.category = dcrModel.getCategory();
+        this.speciality = dcrModel.getSpeciality();
+        this.townName = dcrModel.getTownName();
+        this.townCode = dcrModel.getTownCode();
+        this.visitFrequency = dcrModel.getVisitFrequency();
+        this.plannedForName = dcrModel.getPlannedForName();
+        this.plannedForCode = dcrModel.getPlannedForCode();
+        this.isSelected = dcrModel.isSelected();
+    }
+
     public DCRModel(String name, String code, String category, String speciality, String townName, String townCode, int visitFrequency, String plannedForName, String plannedForCode, boolean isSelected) {
         this.name = name;
         this.code = code;

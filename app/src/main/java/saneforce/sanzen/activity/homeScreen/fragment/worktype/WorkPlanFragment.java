@@ -1666,6 +1666,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             stopClock();
             dialogCheckInOut.dismiss();
             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+            SharedPref.setDayCheckInData(requireContext(), "");
         });
 
         ProgressBar progressBar = dialogCheckInOut.findViewById(R.id.progress_bar);
@@ -1803,7 +1804,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.should_have_a_call));
             }else if(isFromTP) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-            }else {
+            }else if((mFwFlg1.equalsIgnoreCase("L") || mFwFlg2.equalsIgnoreCase("L")) && !rejectedReason.isEmpty()){
+                String leaveName = findWTName("L");
+                if(leaveName.isEmpty()) {
+                    leaveName = "Leave";
+                }
+                commonUtilsMethods.showToastMessage(requireContext(), leaveName + " has been rejected, Kindly select other Work Type and Save Work Plan");
+            } else {
 //                SharedPref.setCheckTodayCheckInOut(requireContext(), HomeDashBoard.selectedDate.toString());
                 if(CheckInOutManager.isCheckInAvailable(requireContext())) {
                     CallDialogCheckOut();
@@ -1839,6 +1846,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         }else if(isEmpty(txtWorkType)) {
             showToast(R.string.select_worktype);
+            return;
+        }
+
+        if(FWFlag.equalsIgnoreCase("L")) {
+            showToast("Apply Leave in the Leave Application");
             return;
         }
 
@@ -2315,6 +2327,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             if(CheckInOutStatus.equalsIgnoreCase("1")) {
                                 SharedPref.setCheckInTime(requireContext(), "");
                                 SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+                                SharedPref.setDayCheckInData(requireContext(), "");
                                 dialogAfterCheckOut.dismiss();
                                 CallFinalSubmitAPI();
 //                            remarksAlertBox();
@@ -2361,6 +2374,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             SharedPref.setLastCallDate(requireContext(), "");
                             SharedPref.setSelectedDateCal(requireContext(), "");
                             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+                            SharedPref.setDayCheckInData(requireContext(), "");
                             JSONObject jsonObject = new JSONObject(response.body().toString());
                             previousWTCode1 = "";
                             previousWTCode2 = "";
@@ -3802,6 +3816,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }else {
             if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
                 SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+                SharedPref.setDayCheckInData(requireContext(), "");
                 SharedPref.setCheckInTime(requireContext(), "");
                 SharedPref.setCheckDateTodayPlan(requireContext(), "");
                 offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
@@ -3823,6 +3838,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             SharedPref.setSelectedDateCal(requireContext(), "");
             SharedPref.setDayPlanStartedDate(requireContext(), "");
             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+            SharedPref.setDayCheckInData(requireContext(), "");
             previousWTCode1 = "";
             previousWTCode2 = "";
             SetupOutBoxAdapter(requireActivity(), requireContext());

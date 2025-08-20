@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.homeScreen.adapters;
 
-import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.tpDataObj;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -32,7 +30,6 @@ import java.util.TreeSet;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
-import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.EventCalenderModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -44,7 +41,6 @@ import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOffline
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
-
 public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.CalendarViewHolder> {
     private final ArrayList<EventCalenderModelClass> days;
     private final Context context;
@@ -55,7 +51,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private TourPlanOfflineDataDao tourPlanOfflineDataDao;
-    private String  STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPMandatory, TPBasedDCR, TPDCRDeviation, TPDCRMGRApprNeed;
+    private String STPNeed, STPBasedMTP, STPBasedDCR, TPNeed, TPMandatory, TPBasedDCR, TPDCRDeviation, TPDCRMGRApprNeed;
 
     public Callstatusadapter(ArrayList<EventCalenderModelClass> days, Context context, LocalDate selectedMonth) {
         this.days = days;
@@ -102,12 +98,10 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         EventCalenderModelClass list = days.get(position);
         holder.dayTextView.setText(list.getDateID());
 
-        if(list.getYear().equalsIgnoreCase(String.valueOf(HomeDashBoard.JoiningYear))
-                && list.getMonth().equalsIgnoreCase(String.valueOf(HomeDashBoard.JoiningMonth))
-                && !list.getDateID().isEmpty() && Integer.parseInt(list.getDateID())<HomeDashBoard.JoiningDate) {
+        if(list.getYear().equalsIgnoreCase(String.valueOf(HomeDashBoard.JoiningYear)) && list.getMonth().equalsIgnoreCase(String.valueOf(HomeDashBoard.JoiningMonth)) && !list.getDateID().isEmpty() && Integer.parseInt(list.getDateID())<HomeDashBoard.JoiningDate) {
             holder.relativeLayout.setAlpha(0.5f);
             holder.relativeLayout.setEnabled(false);
-        } else {
+        }else {
             holder.relativeLayout.setAlpha(1f);
             holder.relativeLayout.setEnabled(true);
         }
@@ -120,36 +114,34 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         // set Event
         GradientDrawable drawable = (GradientDrawable) context.getResources().getDrawable(R.drawable.event_point_background);
         holder.slashImageView.setVisibility(View.GONE);
-        if (list.getWorkTypeFlag().equalsIgnoreCase("F")) {
+        if(list.getWorkTypeFlag().equalsIgnoreCase("F")) {
             drawable.setColor(context.getResources().getColor(R.color.green_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorkTypeFlag().equalsIgnoreCase("L")) {
+        }else if(list.getWorkTypeFlag().equalsIgnoreCase("L")) {
             drawable.setColor(context.getResources().getColor(R.color.red_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorkTypeFlag().equalsIgnoreCase("N")) {
+        }else if(list.getWorkTypeFlag().equalsIgnoreCase("N")) {
             drawable.setColor(context.getResources().getColor(R.color.blue_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorkTypeFlag().equalsIgnoreCase("M")) {
+        }else if(list.getWorkTypeFlag().equalsIgnoreCase("M")) {
             drawable.setColor(context.getResources().getColor(R.color.Hilo_bay_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorkTypeFlag().equalsIgnoreCase("RE")) {
+        }else if(list.getWorkTypeFlag().equalsIgnoreCase("RE")) {
             drawable.setColor(context.getResources().getColor(R.color.pink_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorkTypeFlag().equalsIgnoreCase("R")) {
+        }else if(list.getWorkTypeFlag().equalsIgnoreCase("R")) {
             drawable.setColor(context.getResources().getColor(R.color.brown_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorkTypeFlag().equalsIgnoreCase("W")) {
+        }else if(list.getWorkTypeFlag().equalsIgnoreCase("W")) {
             drawable.setColor(context.getResources().getColor(R.color.yellow_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else if (list.getWorkTypeFlag().equalsIgnoreCase("H")) {
+        }else if(list.getWorkTypeFlag().equalsIgnoreCase("H")) {
             drawable.setColor(context.getResources().getColor(R.color.lustylavender_60));
             holder.imageView.setVisibility(View.VISIBLE);
-        } else {
+        }else {
             holder.imageView.setVisibility(View.GONE);
             try {
-                if(!list.getDateID().isEmpty() && !list.getMonth().isEmpty()
-                        && SharedPref.getSeqDlyCtrl(context).equalsIgnoreCase("1")
-                        && SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+                if(!list.getDateID().isEmpty() && !list.getMonth().isEmpty() && SharedPref.getSeqDlyCtrl(context).equalsIgnoreCase("1") && SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
                     try {
                         if(!SharedPref.getSeqDcrLockDays(context).isEmpty()) {
 //                            int dcrLockDays = Integer.parseInt(SharedPref.getSeqDcrLockDays(context));
@@ -173,17 +165,17 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         holder.imageView.setImageDrawable(drawable);
 
         // set SquareBox for background
-        if (position == 0) {
+        if(position == 0) {
             holder.relativeLayout.setBackgroundResource(R.drawable.calender_background_a);
-        } else if (position <= 6) {
+        }else if(position<=6) {
             holder.relativeLayout.setBackgroundResource(R.drawable.calender_background_b);
-        } else if (position == 7 || position == 14 || position == 21 || position == 28 || position == 35) {
+        }else if(position == 7 || position == 14 || position == 21 || position == 28 || position == 35) {
             holder.relativeLayout.setBackgroundResource(R.drawable.calender_background_c);
-        } else {
+        }else {
             holder.relativeLayout.setBackgroundResource(R.drawable.calender_background_d);
         }
 
-        if (selectedDate.equalsIgnoreCase(String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()))) {
+        if(selectedDate.equalsIgnoreCase(String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()))) {
             holder.relativeLayout.setBackgroundColor(Color.parseColor("#282A3C"));
             holder.dayTextView.setTextColor(context.getColor(R.color.white));
             holder.slashImageView.setVisibility(View.GONE);
@@ -191,7 +183,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         }
 
         holder.relativeLayout.setOnClickListener(v -> {
-            if (!list.getDateID().equalsIgnoreCase("")) {
+            if(!list.getDateID().equalsIgnoreCase("")) {
                 ModelClass modelClass = null;
                 String chosenDate = "";
                 try {
@@ -199,8 +191,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")
-                        || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
+                if(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
                     try {
                         String monthYear = CommonUtilsMethods.setConvertDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, chosenDate);
                         TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(monthYear);
@@ -222,75 +213,73 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                         e.printStackTrace();
                     }
                 }
-                if(list.getWorkTypeFlag().equalsIgnoreCase("W")
-                        && SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
+                if(list.getWorkTypeFlag().equalsIgnoreCase("W") && SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1")) {
                     if(modelClass != null && !modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("W")) {
                         WorkPlanEntriesNeeded.datesNeeded.add(chosenDate);
                         WorkPlanEntriesNeeded.addedDatesNeeded.clear();
                         WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
-                    } else {
+                    }else {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Weekly off auto post is enabled");
                         return;
                     }
-                }else if(list.getWorkTypeFlag().equalsIgnoreCase("H")
-                        && SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
+                }else if(list.getWorkTypeFlag().equalsIgnoreCase("H") && SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
                     if(modelClass != null && !modelClass.getSessionList().get(0).getWorkType().getFWFlg().equalsIgnoreCase("H")) {
                         WorkPlanEntriesNeeded.datesNeeded.add(chosenDate);
                         WorkPlanEntriesNeeded.addedDatesNeeded.clear();
                         WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
-                    } else {
+                    }else {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + " Holiday auto post is enabled");
                         return;
                     }
                 }
 //                else {
-                    boolean isApplicableDate = false;
-                    String monthConverted = "";
-                    if(!list.getMonth().isEmpty()) {
-                        monthConverted = list.getMonth();
-                        if(Integer.parseInt(list.getMonth())<10) {
-                            monthConverted = "0" + monthConverted;
-                        }
+                boolean isApplicableDate = false;
+                String monthConverted = "";
+                if(!list.getMonth().isEmpty()) {
+                    monthConverted = list.getMonth();
+                    if(Integer.parseInt(list.getMonth())<10) {
+                        monthConverted = "0" + monthConverted;
                     }
+                }
 
-                    String dayConverted = "";
-                    if(!list.getDateID().isEmpty()) {
-                        dayConverted = list.getDateID();
-                        if(Integer.parseInt(list.getDateID())<10) {
-                            dayConverted = "0" + dayConverted;
-                        }
+                String dayConverted = "";
+                if(!list.getDateID().isEmpty()) {
+                    dayConverted = list.getDateID();
+                    if(Integer.parseInt(list.getDateID())<10) {
+                        dayConverted = "0" + dayConverted;
                     }
+                }
 
-                    String selectedDate = String.format("%s-%s-%s", list.getYear(), monthConverted, dayConverted);
-                    if(selectedDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && WorkPlanEntriesNeeded.datesNeeded != null && WorkPlanEntriesNeeded.datesNeeded.contains(selectedDate)) {
+                String selectedDate = String.format("%s-%s-%s", list.getYear(), monthConverted, dayConverted);
+                if(selectedDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && WorkPlanEntriesNeeded.datesNeeded != null && WorkPlanEntriesNeeded.datesNeeded.contains(selectedDate)) {
+                    isApplicableDate = true;
+                }
+                for (String date : dateStrings) {
+                    if(selectedDate.equalsIgnoreCase(date)) {
                         isApplicableDate = true;
+                        break;
                     }
-                    for (String date : dateStrings) {
-                        if(selectedDate.equalsIgnoreCase(date)) {
-                            isApplicableDate = true;
-                            break;
-                        }
-                    }
-                    
-                    if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date));
-                    }else if(!SharedPref.getDayPlanStartedDate(context).isEmpty() && WorkPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.complete_day));
-                    }else if(WorkPlanEntriesNeeded.datesNeeded.isEmpty() && SharedPref.getSelectedDateCal(context).isEmpty()) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_pending_dates_to_select));
-                    }else if(isApplicableDate) {
-                        SharedPref.setSelectedDateCal(context, String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()));
-                        HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
-                        HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
-                        HomeDashBoard.binding.tabLayout.setVisibility(View.VISIBLE);
-                        HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
-                        HomeDashBoard.binding.viewDummy.setVisibility(View.VISIBLE);
-                        HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
-                        HomeDashBoard.checkAndSetEntryDate(context, true);
-                    }else {
-                        Log.e("call status", "onBindViewHolder: ");
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
-                    }
+                }
+
+                if(SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date));
+                }else if(!SharedPref.getDayPlanStartedDate(context).isEmpty() && WorkPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.complete_day));
+                }else if(WorkPlanEntriesNeeded.datesNeeded.isEmpty() && SharedPref.getSelectedDateCal(context).isEmpty()) {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_pending_dates_to_select));
+                }else if(isApplicableDate) {
+                    SharedPref.setSelectedDateCal(context, String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()));
+                    HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
+                    HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
+                    HomeDashBoard.binding.tabLayout.setVisibility(View.VISIBLE);
+                    HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
+                    HomeDashBoard.binding.viewDummy.setVisibility(View.VISIBLE);
+                    HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
+                    HomeDashBoard.checkAndSetEntryDate(context, true);
+                }else {
+                    Log.e("call status", "onBindViewHolder: ");
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
+                }
 //                }
 
               /*  if (new Date().equals(strDate)) {

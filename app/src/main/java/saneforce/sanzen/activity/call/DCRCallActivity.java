@@ -505,6 +505,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         && !isFromActivity.equalsIgnoreCase("edit_local")
                         && !isFromActivity.equalsIgnoreCase("edit_online")) {
                     dialogCheckOut();
+                    progressDialog.dismiss();
                 } else {
                     callSubmit();
                 }
@@ -878,7 +879,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     tv_dateTime.setText(currentTime);
                     handler1.postDelayed(this, 1000);
                     limit++;
-                    if(limit == 60) {
+                    if(limit == 120) {
                         stopClock();
                         handleIdleTime();
                         dialogCheckOut.dismiss();
@@ -903,7 +904,7 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     private void handleIdleTime() {
-        Dialog dialog = new Dialog(context);
+        Dialog dialog = new Dialog(DCRCallActivity.this);
         dialog.setContentView(R.layout.dcr_cancel_alert);
         dialog.setCancelable(false);
         if(dialog.getWindow() != null) {
@@ -916,8 +917,8 @@ public class DCRCallActivity extends AppCompatActivity {
         TextView btn_yes = dialog.findViewById(R.id.btn_yes);
         TextView btn_no = dialog.findViewById(R.id.btn_no);
         btn_no.setVisibility(View.GONE);
-        btn_yes.setText(content.getResources().getString(R.string.ok));
-        content.setText("You have been idle for a minute. Kindly Re-Check-Out");
+        btn_yes.setText(getResources().getString(R.string.ok));
+        content.setText("You have been idle for 2 minutes. Kindly Re-Check-Out");
 
         btn_yes.setOnClickListener(view -> {
             dialog.dismiss();
