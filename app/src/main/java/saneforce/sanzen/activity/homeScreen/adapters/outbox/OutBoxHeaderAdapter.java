@@ -272,7 +272,11 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
 
     private void CallSendWorkPlan(GroupModelClass groupModelClass, WorkPlanModelClass workPlanModelClass, int childPos, String jsonValues) {
         Map<String, String> mapString = new HashMap<>();
-        mapString.put("axn", "edetsave/dayplan");
+        if(SharedPref.getSfType(context).equalsIgnoreCase("1")) {
+            mapString.put("axn", "edetsave/dayplan");
+        } else {
+            mapString.put("axn", "multihqsave/dayplan");
+        }
         Call<JsonElement> saveMyDayPlan = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonValues);
         saveMyDayPlan.enqueue(new Callback<JsonElement>() {
             @SuppressLint("NotifyDataSetChanged")

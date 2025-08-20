@@ -1189,7 +1189,11 @@ public class OutboxFragment extends Fragment {
 
     private void CallSendWorkPlan(int ParentPos, WorkPlanModelClass workPlanModelClass, int ChildPos, String jsonValues, GroupModelClass modelClass) {
         Map<String, String> mapString = new HashMap<>();
-        mapString.put("axn", "edetsave/dayplan");
+        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+            mapString.put("axn", "edetsave/dayplan");
+        } else {
+            mapString.put("axn", "multihqsave/dayplan");
+        }
         Call<JsonElement> saveMyDayPlan = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonValues);
         saveMyDayPlan.enqueue(new Callback<JsonElement>() {
             @SuppressLint("NotifyDataSetChanged")

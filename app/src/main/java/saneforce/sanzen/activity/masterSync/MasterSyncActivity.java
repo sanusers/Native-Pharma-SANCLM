@@ -222,7 +222,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 mgrInitialSync = true;
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
                    /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
-                    sync(Constants.DOCTOR, "gettodaydcr", dcrModelArray, 2);
+                    sync(Constants.DOCTOR, "gettodaydcrmultihq", dcrModelArray, 2);
                     // to get all the HQ list initially only for MGR
 // to get all the HQ list initially only for MGR
                 } else {
@@ -582,7 +582,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                         for (int i = 0; i < arrayList.size(); i++) {
                             arrayForAdapter.get(i).setPBarVisibility(true);
                             masterSyncAdapter.notifyDataSetChanged();
-                            if(arrayList.get(i).getRemoteTableName().equalsIgnoreCase("gettodaydcr")){
+                            if(arrayList.get(i).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || arrayList.get(i).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
                                 setDelayForDayPlanSync(arrayList, i);
                             }else {
                                 sync(arrayList.get(i).getMasterOf(), arrayList.get(i).getRemoteTableName(), arrayList, i);
@@ -795,6 +795,11 @@ public class MasterSyncActivity extends AppCompatActivity {
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC,  "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC,  "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
         MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+        if(SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
+            myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+        } else {
+            myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcrmultihq", Constants.WORK_PLAN, myDayPlanStatus, false);
+        }
 
         //   MasterSyncItemModel EventCallSync = new MasterSyncItemModel("Status", -1, "AdditionalDcr", "gettodycalls", Constants.CALENDER_EVENT_STATUS, calenderEventStaus, false);
         dcrModelArray.add(callSyncModel);
@@ -1090,7 +1095,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                         ArrayList<MasterSyncItemModel> childArray = new ArrayList<>(masterSyncAllModel.get(i));
                         itemCount += childArray.size();
                         for (int j = 0; j < childArray.size(); j++) {
-                            if(childArray.get(j).getRemoteTableName().equalsIgnoreCase("gettodaydcr")){
+                            if(childArray.get(j).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || childArray.get(j).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")){
                                 setDelayForDayPlanSync(childArray, j);
                             }else {
                                 if(hqChanged) {
@@ -1159,6 +1164,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     break;
                 }
                 case "getquiz":
+                case "gettodaydcrmultihq":
                 case "gettodaydcr": {
                     if(HomeDashBoard.selectedDate != null) {
                         jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
@@ -1309,7 +1315,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                 SharedPref.setTpSyncStaus(MasterSyncActivity.this,true);
                                             }
                                         }
-                                        else if (masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr")) {
+                                        else if (masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
                                             if (mgrInitialSync) {
                                                 setHq(jsonArray);
                                                 return;
