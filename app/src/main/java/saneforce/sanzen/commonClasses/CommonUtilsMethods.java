@@ -352,7 +352,7 @@ public class CommonUtilsMethods {
         }
         toast = new Toast(activity.getApplicationContext());
 //        Toast toast = Toast.makeText(activity.getApplicationContext(), message, Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+//        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
         toast.show();
@@ -372,7 +372,7 @@ public class CommonUtilsMethods {
             toast.cancel();
         }
         toast = new Toast(context);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+//        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
         toast.show();
@@ -472,6 +472,13 @@ public class CommonUtilsMethods {
         View decorView = activity.getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
+    }
+
+    public static String removeDollar(String string) {
+        if(string.contains("$")) {
+            string = string.replaceAll("\\$", "");
+        }
+        return string;
     }
 
     public static String removeLastComma(String string) {

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/_200sdp"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/_2sdp">
@@ -37,6 +36,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_3sdp"
+            android:padding="@dimen/_5sdp"
+            android:src="@drawable/baseline_close_24"
+            app:layout_constraintBottom_toBottomOf="@id/txt_heading"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txt_heading"
+            app:tint="@color/dark_purple" />
 
         <TextView
             android:id="@+id/txt_date_time"
@@ -149,6 +159,41 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_long" />
 
+        <RelativeLayout
+            android:id="@+id/rl_refresh_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_border_with_pink"
+            android:padding="@dimen/_5sdp"
+            app:layout_constraintBottom_toBottomOf="@id/txt_address_tag"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.95"
+            app:layout_constraintStart_toEndOf="@id/txt_address_tag"
+            app:layout_constraintTop_toTopOf="@id/txt_address_tag">
+
+            <ImageView
+                android:id="@+id/img_refresh"
+                android:layout_width="@dimen/_8sdp"
+                android:layout_height="@dimen/_8sdp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/refresh" />
+
+            <!--            <TextView-->
+            <!--                android:id="@+id/txt_refresh"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_centerVertical="true"-->
+            <!--                android:layout_marginStart="@dimen/_2sdp"-->
+            <!--                android:layout_toEndOf="@id/img_refresh"-->
+            <!--                android:fontFamily="@font/satoshi_bold"-->
+            <!--                android:text="@string/refresh_location"-->
+            <!--                android:textAllCaps="false"-->
+            <!--                android:textColor="@color/dark_purple"-->
+            <!--                android:textSize="@dimen/_6ssp"-->
+            <!--                android:textStyle="bold" />-->
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/txt_address"
             android:layout_width="match_parent"
@@ -180,13 +225,13 @@
             android:layout_marginHorizontal="@dimen/_6sdp"
             android:layout_marginVertical="@dimen/_5sdp"
             android:background="@drawable/bg_purple"
+            android:drawableTint="@color/white"
             android:fontFamily="@font/satoshi_bold"
             android:text="@string/check_out"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:visibility="visible"
-            android:drawableTint="@color/white"
             app:icon="@drawable/btn_check_out"
             app:iconGravity="textStart"
             app:iconPadding="@dimen/_4sdp"
@@ -195,6 +240,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_address"
             app:layout_constraintVertical_bias="1.0" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/dark_purple"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

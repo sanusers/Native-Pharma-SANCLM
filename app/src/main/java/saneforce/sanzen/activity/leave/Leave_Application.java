@@ -386,6 +386,7 @@ public class Leave_Application extends AppCompatActivity {
             jsonObject.put("Fdt", f_date);
             jsonObject.put("Tdt", t_date);
             jsonObject.put("LTy", Lshortname);
+            jsonObject.put("Leave_type_code", Ltype_id);
             jsonObject.put("division_code", SharedPref.getDivisionCode(this));
             jsonObject.put("Rsf", SharedPref.getHqCode(this));
             Log.d("JSonobj", String.valueOf(jsonObject));

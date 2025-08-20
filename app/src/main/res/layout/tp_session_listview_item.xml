@@ -25,18 +25,35 @@
             android:layout_gravity="center"
             android:gravity="center" />
 
-        <TextView
-            android:id="@+id/tp_item_text"
-            android:layout_weight="1"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_6sdp"
-            android:textColor="@color/text_dark_65"
-            android:fontFamily="@font/satoshi_bold"
             android:layout_gravity="center"
-            android:paddingTop="@dimen/_5sdp"
-            android:paddingBottom="@dimen/_5sdp"
-            tools:ignore="SpUsage"/>
+            android:layout_weight="1"
+            android:paddingVertical="@dimen/_3sdp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tp_item_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_bold"
+                android:textColor="@color/text_dark_65"
+                android:textSize="@dimen/_6ssp"
+                tools:text="Name" />
+
+            <TextView
+                android:id="@+id/tp_item_text2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:fontFamily="@font/satoshi_bold"
+                android:textColor="@color/text_dark_65"
+                android:textSize="@dimen/_5ssp"
+                tools:text="cluster" />
+        </LinearLayout>
 
     </LinearLayout>
 

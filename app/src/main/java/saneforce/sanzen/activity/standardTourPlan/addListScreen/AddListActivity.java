@@ -79,6 +79,7 @@ public class AddListActivity extends AppCompatActivity {
     private List<String> localDocCodeList, localChmCodeList;
     private Set<String> populatedDCRList;
     private boolean isRouteSelected = false;
+    private HashMap<String, List<DCRModel>> storedSelectedDcrMap;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -107,6 +108,7 @@ public class AddListActivity extends AppCompatActivity {
             strClusterID = "";
             strClusterName = "";
             clusterChangeClearDCRSelection();
+            StandardTourPlanActivity.selectedDcrMap = storedSelectedDcrMap;
             super.onBackPressed();
         });
 
@@ -114,6 +116,7 @@ public class AddListActivity extends AppCompatActivity {
             strClusterID = "";
             strClusterName = "";
             clusterChangeClearDCRSelection();
+            StandardTourPlanActivity.selectedDcrMap = storedSelectedDcrMap;
             super.onBackPressed();
         });
 
@@ -322,6 +325,15 @@ public class AddListActivity extends AppCompatActivity {
         selectedDCR = Constants.DOCTOR;
         selectedDCRCap = drCap;
         selectedDCRMap = new HashMap<>();
+
+        storedSelectedDcrMap = new HashMap<>();
+        for (Map.Entry<String, List<DCRModel>> entry : StandardTourPlanActivity.selectedDcrMap.entrySet()) {
+            List<DCRModel> newList = new ArrayList<>();
+            for (DCRModel model : entry.getValue()) {
+                newList.add(new DCRModel(model));
+            }
+            storedSelectedDcrMap.put(entry.getKey(), newList);
+        }
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null) {

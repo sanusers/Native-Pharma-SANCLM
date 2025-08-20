@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -63,6 +65,9 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     private String address;
     private Handler handler;
     private Runnable runnable;
+    private int limit = 1;
+    private ProgressBar progressBar;
+    private RelativeLayout refreshLocation;
 
     public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList, String needCheckInOut, String isFrom) {
         this.activity = activity;
@@ -90,6 +95,9 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             tv_dateTime = dialogCheckIn.findViewById(R.id.txt_date_time);
             tvLatLong = dialogCheckIn.findViewById(R.id.txt_lat_lng);
             tvAddress = dialogCheckIn.findViewById(R.id.txt_address);
+            progressBar = dialogCheckIn.findViewById(R.id.progress_bar);
+            refreshLocation = dialogCheckIn.findViewById(R.id.rl_refresh_location);
+            progressBar.setVisibility(View.GONE);
         }
 
     }
@@ -242,11 +250,43 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                     break;
             }
             tvTitle.setText(String.format("%s %s", customerCaption, context.getString(R.string.check_in)));
+            refreshLocation.setOnClickListener(v -> {
+                try {
+                    btnCheckIN.setEnabled(false);
+                    stopClock();
+                    startClock();
+                    progressBar.setVisibility(View.VISIBLE);
+                    gpsTrack = new GPSTrack(activity);
+                    gpsTrack.setLocationChangeListener(location -> {
+                        try {
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            if(UtilityClass.isNetworkAvailable(context)) {
+                                address = CommonUtilsMethods.gettingAddress(activity, latitude, longitude, false);
+                            }else {
+                                address = activity.getString(R.string.no_address_found);
+                            }
 
+                            tvLatLong.setText(String.format(Locale.getDefault(), "%f , %f", latitude, longitude));
+                            tvAddress.setText(address);
+                            progressBar.setVisibility(View.GONE);
+                            btnCheckIN.setEnabled(true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
             dialogCheckIn.show();
-            img_Close.setOnClickListener(v -> dialogCheckIn.dismiss());
+            img_Close.setOnClickListener(v -> {
+                stopClock();
+                dialogCheckIn.dismiss();
+            });
 
             btnCheckIN.setOnClickListener(v -> {
+                stopClock();
                 commonUtilsMethods.showToastMessage(context, "Check In Successfully");
                 changeActivity(position);
             });
@@ -266,6 +306,12 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                     String currentTime = timeFormat.format(calendar.getTime());
                     tv_dateTime.setText(currentTime);
                     handler.postDelayed(this, 1000);
+                    limit++;
+                    if(limit == 120) {
+                        stopClock();
+                        handleIdleTime();
+                        dialogCheckIn.dismiss();
+                    }
                 } else {
                     stopClock();
                 }
@@ -275,11 +321,40 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     }
 
     private void stopClock() {
+        if(gpsTrack != null) {
+            gpsTrack.setLocationChangeListener(null);
+        }
         if (handler != null && runnable != null) {
             handler.removeCallbacks(runnable);
             handler = null;
             runnable = null;
         }
+    }
+
+    private void handleIdleTime() {
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dcr_cancel_alert);
+        dialog.setCancelable(false);
+        if(dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        if(!dialog.isShowing()) {
+            dialog.show();
+        }
+        TextView content = dialog.findViewById(R.id.ed_alert_msg);
+        TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+        TextView btn_no = dialog.findViewById(R.id.btn_no);
+        btn_no.setVisibility(View.GONE);
+        btn_yes.setText(content.getResources().getString(R.string.ok));
+        content.setText("You have been idle for 2 minutes. Kindly Re-Check-In");
+
+        btn_yes.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+
+        btn_no.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
     }
 
     private JSONObject prepareCheckInJsonObject() {

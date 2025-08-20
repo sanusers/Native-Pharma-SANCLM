@@ -51,7 +51,11 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
         holder.txtbrandName.setText(callDetailingLists.get(position).getProduct_Name());
         holder.TxtDuration.setText(calculateDuration(callDetailingLists.get(position).getStartTime(),callDetailingLists.get(position).getEndTime()));
         holder.TxtFeedback.setText(callDetailingLists.get(position).getFeedbk());
-        holder.rating_bar.setRating(Float.parseFloat(String.valueOf(callDetailingLists.get(position).getRating())));
+        try {
+            holder.rating_bar.setRating(Float.parseFloat(String.valueOf(callDetailingLists.get(position).getRating())));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
         holder.rating_bar.setEnabled(false);
 
         

@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -130,8 +131,21 @@ public class RCPASelectPrdSide extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull ProductAdapter.ViewHolder holder, int position) {
             holder.tv_name.setText(prdList.get(position).getName());
-            holder.tv_name.setOnClickListener(view -> {
+            holder.tv_priority.setText(prdList.get(position).getPriority());
 
+
+            if(prdList.get(position).getPriority().isEmpty()) {
+                holder.tv_priority.setVisibility(View.GONE);
+                holder.tv_priority.setTextColor(ContextCompat.getColor(context, R.color.white));
+                holder.tv_priority.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_white_without_border));
+            } else {
+                holder.tv_priority.setVisibility(View.VISIBLE);
+                holder.tv_priority.setTextColor(ContextCompat.getColor(context, R.color.txt_priority));
+                holder.tv_priority.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_priority));
+            }
+
+
+            holder.tv_name.setOnClickListener(view -> {
                 ArrayList<String> dummyCheck = new ArrayList<>();
                 if (DCRCallActivity.RcpaCompetitorAdd.equalsIgnoreCase("0")) {
                     try {
@@ -212,10 +226,11 @@ public class RCPASelectPrdSide extends Fragment {
         }
 
         public static class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView tv_name;
+            final TextView tv_name, tv_priority;
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 tv_name = itemView.findViewById(R.id.tv_name);
+                tv_priority = itemView.findViewById(R.id.tv_priority);
             }
         }
     }

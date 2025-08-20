@@ -230,10 +230,12 @@ public class MasterSyncActivity extends AppCompatActivity {
             if (SharedPref.getSfType(this).equalsIgnoreCase("2")) { //MGR
                 mgrInitialSync = true;
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
-                    /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
-                    sync(Constants.DOCTOR, "gettodaydcr", dcrModelArray, 2);
+                   /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
+                    sync(Constants.DOCTOR, "gettodaydcrmultihq", dcrModelArray, 2);
+//                    /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
+//                    sync(Constants.DOCTOR, "gettodaydcr", dcrModelArray, 2);
                     // to get all the HQ list initially only for MGR
-                    // to get all the HQ list initially only for MGR
+// to get all the HQ list initially only for MGR
                 } else {
                     commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
                 }
@@ -320,7 +322,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
                                 rsf = jsonObject.getString("id");
-                                //myresource
+                                 //myresource
 
                                 prepareArray(rsf); // replace the new rsf value
                                 masterSyncAll(true);
@@ -804,6 +806,11 @@ public class MasterSyncActivity extends AppCompatActivity {
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC,  "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC,  "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
         MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+        if(SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
+            myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+        } else {
+            myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcrmultihq", Constants.WORK_PLAN, myDayPlanStatus, false);
+        }
 
         //   MasterSyncItemModel EventCallSync = new MasterSyncItemModel("Status", -1, "AdditionalDcr", "gettodycalls", Constants.CALENDER_EVENT_STATUS, calenderEventStaus, false);
         dcrModelArray.add(callSyncModel);
@@ -815,7 +822,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE,  "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
             dcrModelArray.add(stockBalanceModel);
         }
-        if(SharedPref.getVstNd(this).equalsIgnoreCase("0")) {
+            if(SharedPref.getVstNd(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel visitControlModel = new MasterSyncItemModel(Constants.VISIT_CONTROL, "AdditionalDcr", "getvisit_contro", Constants.VISIT_CONTROL, visitControlStatus, false);
             dcrModelArray.add(visitControlModel);
         }
@@ -1181,6 +1188,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     break;
                 }
                 case "getquiz":
+                case "gettodaydcrmultihq":
                 case "gettodaydcr": {
                     if(HomeDashBoard.selectedDate != null) {
                         jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
@@ -1338,7 +1346,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                 SharedPref.setTpSyncStaus(MasterSyncActivity.this,true);
                                             }
 
-                                        } else if (masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr")) {
+                                        } else if (masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr")|| masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
                                             if (mgrInitialSync) {
                                                 setHq(jsonArray);
                                                 return;
@@ -1395,16 +1403,10 @@ public class MasterSyncActivity extends AppCompatActivity {
 //                                    if (navigateFrom.equalsIgnoreCase("Login")) {
 //                                        masterSyncAll(false);
 //                                    }
-
                                 }
-//                                    if (navigateFrom.equalsIgnoreCase("Login")) {
-//                                        masterSyncAll(false);
-//                                    }
-                                }catch (JSONException e) {
+                            } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
-
                         } else {
                             if(SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")){
                                 if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
@@ -1810,9 +1812,8 @@ public class MasterSyncActivity extends AppCompatActivity {
 
                 Log.e("weeklyOffWorkTypeModel", "" + weeklyOffWorkTypeModel.getName());
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
     }
@@ -2803,7 +2804,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
         builder.setView(dialogView);
-        if(welcomeSlideDialog != null && welcomeSlideDialog.isShowing()) {
+        if(welcomeSlideDialog != null && welcomeSlideDialog.isShowing() && !isFinishing()) {
             welcomeSlideDialog.dismiss();
         }
         welcomeSlideDialog = builder.create();

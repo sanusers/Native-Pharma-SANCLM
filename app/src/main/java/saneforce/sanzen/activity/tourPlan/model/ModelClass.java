@@ -2,7 +2,9 @@ package saneforce.sanzen.activity.tourPlan.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ModelClass implements Serializable {
 
@@ -163,6 +165,8 @@ public class ModelClass implements Serializable {
 
     private ModelClass.SessionList.SubClass HQ = new SubClass();
 
+    private List<ModelClass.SessionList.SubClass> HQs;
+
     private List<ModelClass.SessionList.SubClass> cluster = new ArrayList<>();
 
     private List<ModelClass.SessionList.SubClass> JC = new ArrayList<>();
@@ -178,6 +182,22 @@ public class ModelClass implements Serializable {
     private List<ModelClass.SessionList.SubClass> Cip;
 
     private List<ModelClass.SessionList.SubClass> hospital = new ArrayList<>();
+
+    private ArrayList<MultiHQHeaderModelClass> clusters;
+
+    private ArrayList<MultiHQHeaderModelClass> JCs;
+
+    private ArrayList<MultiHQHeaderModelClass> listedDrs;
+
+    private ArrayList<MultiHQHeaderModelClass> chemists;
+
+    private ArrayList<MultiHQHeaderModelClass> stockiests;
+
+    private ArrayList<MultiHQHeaderModelClass> unListedDrs;
+
+    private ArrayList<MultiHQHeaderModelClass> cips;
+
+    private ArrayList<MultiHQHeaderModelClass> hospitals;
 
     public SessionList () {
     }
@@ -197,8 +217,39 @@ public class ModelClass implements Serializable {
       this.chemist = chemist;
       this.stockiest = stockiest;
       this.unListedDr = unListedDr;
-      Cip = cip;
+      this.Cip = cip;
       this.hospital = hospital;
+    }
+
+    public SessionList (String layoutVisible, Boolean isVisible,String remarks, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass HQ,
+                        List<ModelClass.SessionList.SubClass> HQs, List<ModelClass.SessionList.SubClass> subClass, List<ModelClass.SessionList.SubClass> JC, List<ModelClass.SessionList.SubClass> listedDr,
+                        List<ModelClass.SessionList.SubClass> chemist, List<ModelClass.SessionList.SubClass> stockiest, List<ModelClass.SessionList.SubClass> unListedDr,
+                        List<ModelClass.SessionList.SubClass> cip, List<ModelClass.SessionList.SubClass> hospital,
+                        ArrayList<MultiHQHeaderModelClass> clusters, ArrayList<MultiHQHeaderModelClass> JCs, ArrayList<MultiHQHeaderModelClass> listedDrs,
+                        ArrayList<MultiHQHeaderModelClass> chemists, ArrayList<MultiHQHeaderModelClass> stockiests, ArrayList<MultiHQHeaderModelClass> unListedDrs,
+                        ArrayList<MultiHQHeaderModelClass> cips, ArrayList<MultiHQHeaderModelClass> hospitals) {
+      this.layoutVisible = layoutVisible;
+      this.isVisible = isVisible;
+      this.remarks = remarks;
+      this.workType = workType;
+      this.HQ = HQ;
+      this.HQs = HQs;
+      this.cluster = subClass;
+      this.JC = JC;
+      this.listedDr = listedDr;
+      this.chemist = chemist;
+      this.stockiest = stockiest;
+      this.unListedDr = unListedDr;
+      this.Cip = cip;
+      this.hospital = hospital;
+      this.clusters = clusters;
+      this.JCs = JCs;
+      this.listedDrs = listedDrs;
+      this.chemists = chemists;
+      this.stockiests = stockiests;
+      this.unListedDrs = unListedDrs;
+      this.cips = cips;
+      this.hospitals = hospitals;
     }
 
     public SessionList (SessionList sessionList) {
@@ -207,7 +258,7 @@ public class ModelClass implements Serializable {
       this.remarks = sessionList.getRemarks();
       this.workType = new WorkType(sessionList.getWorkType());
       this.HQ = new SubClass(sessionList.getHQ());
-
+      this.HQs = new ArrayList<ModelClass.SessionList.SubClass>();
       this.cluster = new ArrayList<ModelClass.SessionList.SubClass>();
       this.JC = new ArrayList<ModelClass.SessionList.SubClass>();
       this.listedDr = new ArrayList<ModelClass.SessionList.SubClass>();
@@ -216,6 +267,19 @@ public class ModelClass implements Serializable {
       this.unListedDr = new ArrayList<ModelClass.SessionList.SubClass>();
       this.Cip = new ArrayList<ModelClass.SessionList.SubClass>();
       this.hospital = new ArrayList<ModelClass.SessionList.SubClass>();
+      this.clusters = new ArrayList<>();
+      this.JCs = new ArrayList<>();
+      this.listedDrs = new ArrayList<>();
+      this.chemists = new ArrayList<>();
+      this.stockiests = new ArrayList<>();
+      this.unListedDrs = new ArrayList<>();
+      this.cips = new ArrayList<>();
+      this.hospitals = new ArrayList<>();
+
+//      for (ModelClass.SessionList.SubClass hq : sessionList.getHQs()) {
+//        ModelClass.SessionList.SubClass copyHQ = new ModelClass.SessionList.SubClass(hq);
+//        this.HQs.add(copyHQ);
+//      }
 
       for (ModelClass.SessionList.SubClass cluster : sessionList.getCluster()) {
         ModelClass.SessionList.SubClass copyCluster = new ModelClass.SessionList.SubClass(cluster);
@@ -299,6 +363,14 @@ public class ModelClass implements Serializable {
       this.HQ = HQ;
     }
 
+    public List<SubClass> getHQs() {
+      return HQs;
+    }
+
+    public void setHQs(List<SubClass> HQs) {
+      this.HQs = HQs;
+    }
+
     public List<ModelClass.SessionList.SubClass> getCluster () {
       return cluster;
     }
@@ -352,7 +424,7 @@ public class ModelClass implements Serializable {
     }
 
     public void setCip (List<ModelClass.SessionList.SubClass> cip) {
-      Cip = cip;
+      this.Cip = cip;
     }
 
     public List<ModelClass.SessionList.SubClass> getHospital () {
@@ -363,6 +435,69 @@ public class ModelClass implements Serializable {
       this.hospital = hospital;
     }
 
+    public ArrayList<MultiHQHeaderModelClass> getClusters() {
+      return clusters;
+    }
+
+    public void setClusters(ArrayList<MultiHQHeaderModelClass> clusters) {
+      this.clusters = clusters;
+    }
+
+    public ArrayList<MultiHQHeaderModelClass> getJCs() {
+      return JCs;
+    }
+
+    public void setJCs(ArrayList<MultiHQHeaderModelClass> JCs) {
+      this.JCs = JCs;
+    }
+
+    public ArrayList<MultiHQHeaderModelClass> getListedDrs() {
+      return listedDrs;
+    }
+
+    public void setListedDrs(ArrayList<MultiHQHeaderModelClass> listedDrs) {
+      this.listedDrs = listedDrs;
+    }
+
+    public ArrayList<MultiHQHeaderModelClass> getChemists() {
+      return chemists;
+    }
+
+    public void setChemists(ArrayList<MultiHQHeaderModelClass> chemists) {
+      this.chemists = chemists;
+    }
+
+    public ArrayList<MultiHQHeaderModelClass> getStockiests() {
+      return stockiests;
+    }
+
+    public void setStockiests(ArrayList<MultiHQHeaderModelClass> stockiests) {
+      this.stockiests = stockiests;
+    }
+
+    public ArrayList<MultiHQHeaderModelClass> getUnListedDrs() {
+      return unListedDrs;
+    }
+
+    public void setUnListedDrs(ArrayList<MultiHQHeaderModelClass> unListedDrs) {
+      this.unListedDrs = unListedDrs;
+    }
+
+    public ArrayList<MultiHQHeaderModelClass> getCips() {
+      return cips;
+    }
+
+    public void setCips(ArrayList<MultiHQHeaderModelClass> cips) {
+      this.cips = cips;
+    }
+
+    public ArrayList<MultiHQHeaderModelClass> getHospitals() {
+      return hospitals;
+    }
+
+    public void setHospitals(ArrayList<MultiHQHeaderModelClass> hospitals) {
+      this.hospitals = hospitals;
+    }
 
     public static class SubClass implements Serializable {
         private String name = "";

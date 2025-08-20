@@ -2594,7 +2594,7 @@ public class ActivityFragment extends Fragment {
         LabelText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LocationManager locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
+//                LocationManager locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
                 if(CommonUtilsMethods.isLocationEnabled(requireContext())) {
                     if(!CheckLocPermission()) {
                         RequestLocationPermission();

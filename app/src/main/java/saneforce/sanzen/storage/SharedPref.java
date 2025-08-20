@@ -351,6 +351,8 @@ public class SharedPref {
     //Master Sync
     public static final String MASTER_LAST_SYNC = "last_sync";
     public static final String HQ_CODE = "hq_code";
+    public static final String MULTI_HQ_CODE = "multi_hq_code";
+    public static final String MULTI_HQ_NAME = "multi_hq_name";
     //Map Activity
     public static final String TAGGED_SUCCESSFULLY = "tagged_successfully";
     public static final String CUSTOMER_POSITION = "cust_pos";
@@ -2266,6 +2268,13 @@ public class SharedPref {
         editor.putString(HQ_CODE, code).apply();
     }
 
+    public static void saveMultiHQ(Context context, String name, String code) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(MULTI_HQ_NAME, name);
+        editor.putString(MULTI_HQ_CODE, code).apply();
+    }
+
     public static void saveHqMain(Context context, String name) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2297,6 +2306,14 @@ public class SharedPref {
 
     public static String getHqCode(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(HQ_CODE, "");
+    }
+
+    public static String getMultiHQName(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(MULTI_HQ_NAME, "");
+    }
+
+    public static String getMultiHQCode(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(MULTI_HQ_CODE, "");
     }
 
     public static void setApprovalsCounts(Context context, String token) {

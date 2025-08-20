@@ -134,14 +134,14 @@ public class CIPFragment extends Fragment {
                     if(jsonArray.length()>0) {
                         for (int i = 0; i<jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            if((WorkPlanFragment.mHQCode1 != null && WorkPlanFragment.mHQCode1.equalsIgnoreCase(jsonObject.optString("id")) && WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F"))
-                                    || (WorkPlanFragment.mHQCode2 != null && WorkPlanFragment.mHQCode2.equalsIgnoreCase(jsonObject.optString("id")) && WorkPlanFragment.mFwFlg2.equalsIgnoreCase("F"))) {
+                            if(SharedPref.getMultiHQCode(requireContext()).contains(jsonObject.optString("id"))) {
                                 list.add(jsonObject.getString("name"));
                             }
                         }
                     }
 
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(requireContext());
+//                LayoutInflater inflater = requireActivity().getLayoutInflater();
                     View dialogView = inflater.inflate(R.layout.dialog_listview, null);
                     alertDialog.setView(dialogView);
                     TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
@@ -183,6 +183,8 @@ public class CIPFragment extends Fragment {
                                 e.printStackTrace();
                             }
                         }
+//                        DcrCallTabLayoutActivity.prepareClusterList(requireActivity());
+//                        SetupAdapter();
                         hqChangeListener.onHQChange();
                         dialog.dismiss();
                     });
@@ -194,6 +196,7 @@ public class CIPFragment extends Fragment {
                     e.printStackTrace();
                 }
                 UtilityClass.hideKeyboard(requireActivity());
+
             });
         }
 

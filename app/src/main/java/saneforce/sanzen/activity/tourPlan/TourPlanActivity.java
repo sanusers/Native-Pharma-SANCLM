@@ -61,6 +61,7 @@ import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPla
 import saneforce.sanzen.activity.tourPlan.calendar.CalendarAdapter;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
+import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanzen.activity.tourPlan.session.SessionEditAdapter;
 import saneforce.sanzen.activity.tourPlan.session.SessionInterface;
@@ -136,6 +137,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
         ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
         ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
+        ArrayList<ModelClass.SessionList.SubClass> hqArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
@@ -145,9 +147,16 @@ public class TourPlanActivity extends AppCompatActivity {
         ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-        return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
-    }
+        ArrayList<MultiHQHeaderModelClass> clustersArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> jcsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> drsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> chemistsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> stocksArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> unListedDrsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> cipsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> hospsArray = new ArrayList<>();
 
+        return new ModelClass.SessionList("", true, "", workType, hq, hqArray, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clustersArray, jcsArray, drsArray, chemistsArray, stocksArray, unListedDrsArray, cipsArray, hospsArray);
 
     public static OneBuildModelClass.SessionList prepareSessionListForAdapterOneBuild(ArrayList<OneBuildModelClass.SessionList.SubClass> clusterArray, ArrayList<OneBuildModelClass.SessionList.SubClass> jcArray, ArrayList<OneBuildModelClass.SessionList.SubClass> drArray, ArrayList<OneBuildModelClass.SessionList.SubClass> chemistArray, ArrayList<OneBuildModelClass.SessionList.SubClass> stockArray, ArrayList<OneBuildModelClass.SessionList.SubClass> unListedDrArray, ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray, ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray, OneBuildModelClass.SessionList.WorkType workType, OneBuildModelClass.SessionList.SubClass headquarters, String remarks) {
         return new OneBuildModelClass.SessionList("", true, remarks, "", workType, headquarters, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
@@ -174,13 +183,23 @@ public class TourPlanActivity extends AppCompatActivity {
         return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
 
+//    public static ModelClass.SessionList prepareSessionListForAdapter1(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq) {
+//        return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+//    }
+
     //To Hide the bottomNavigation When popup
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
+        if(hasFocus) {
             binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
     }
 
     @Override
@@ -976,12 +995,48 @@ public class TourPlanActivity extends AppCompatActivity {
                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
                     break;
                 }else if(modelClass.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // TerrSlFlg is "Y" (yes) means head quarter and clusters are mandatory
-                    if(modelClass.getHQ().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+//                    if(modelClass.getHQ().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+//                        isEmpty = true;
+//                        position = i;
+//                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
+//                        break;
+//                    }else if(modelClass.getCluster().size() == 0) {
+//                        isEmpty = true;
+//                        position = i;
+//                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
+//                        break;
+//                    }else if(modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+//                        if(FW_meetup_mandatory.equals("0")) {
+//                            if(drNeed.equals("0")) {
+////                                if(modelClass.getListedDr().size() == 0) {
+////                                    isEmpty = true;
+////                                    position = i;
+////                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " +SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
+////                                    break;
+////                                }else
+//                                    if((modelClass.getListedDr().size()>Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
+//                                    isEmpty = true;
+//                                    position = i;
+//                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+//                                    break;
+//                                }
+//                            }
+//
+//                            if(modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 && modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
+//                                isEmpty = true;
+//                                position = i;
+//                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + (i + 1));
+//                                break;
+//                            }
+//                        }
+//                    }
+                    if(modelClass.getHQs().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
                         isEmpty = true;
                         position = i;
                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
                         break;
-                    }else if(modelClass.getCluster().size() == 0) {
+                    }else if((modelClass.getCluster().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1"))
+                            || (modelClass.getClusters().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2"))) {
                         isEmpty = true;
                         position = i;
                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
@@ -995,7 +1050,8 @@ public class TourPlanActivity extends AppCompatActivity {
 //                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " +SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
 //                                    break;
 //                                }else
-                                    if((modelClass.getListedDr().size()>Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
+                                    if(((modelClass.getListedDr().size()>Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1"))
+                                            || ((modelClass.getListedDrs().size()>Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2"))) {
                                     isEmpty = true;
                                     position = i;
                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
@@ -1301,6 +1357,7 @@ public class TourPlanActivity extends AppCompatActivity {
         ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
         ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
 
+        ArrayList<ModelClass.SessionList.SubClass> hqArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
@@ -1309,8 +1366,16 @@ public class TourPlanActivity extends AppCompatActivity {
         ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> clustersArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> jcsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> drsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> chemistsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> stocksArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> unListedDrsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> cipsArray = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> hospsArray = new ArrayList<>();
 
-        return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+        return new ModelClass.SessionList("", true, "", workType, hq, hqArray, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clustersArray, jcsArray, drsArray, chemistsArray, stocksArray, unListedDrsArray, cipsArray, hospsArray);
     }
 
     private OneBuildModelClass.SessionList prepareSessionListForAdapterEmptyOneBuild() {
@@ -1956,6 +2021,7 @@ public class TourPlanActivity extends AppCompatActivity {
             public void fieldWorkSelected(ModelClass arrayList, int position) {
                 ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(arrayList.getSessionList().get(position).getWorkType());
                 ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
+                ArrayList<ModelClass.SessionList.SubClass> hqArray = new ArrayList<>();
                 ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
                 ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
                 ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
@@ -1965,7 +2031,16 @@ public class TourPlanActivity extends AppCompatActivity {
                 ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
                 ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-                ModelClass.SessionList modelClass = new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+                ArrayList<MultiHQHeaderModelClass> clustersArray = new ArrayList<>();
+                ArrayList<MultiHQHeaderModelClass> jcsArray = new ArrayList<>();
+                ArrayList<MultiHQHeaderModelClass> drsArray = new ArrayList<>();
+                ArrayList<MultiHQHeaderModelClass> chemistsArray = new ArrayList<>();
+                ArrayList<MultiHQHeaderModelClass> stocksArray = new ArrayList<>();
+                ArrayList<MultiHQHeaderModelClass> unListedDrsArray = new ArrayList<>();
+                ArrayList<MultiHQHeaderModelClass> cipsArray = new ArrayList<>();
+                ArrayList<MultiHQHeaderModelClass> hospsArray = new ArrayList<>();
+
+                ModelClass.SessionList modelClass = new ModelClass.SessionList("", true, "", workType, hq, hqArray, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clustersArray, jcsArray, drsArray, chemistsArray, stocksArray, unListedDrsArray, cipsArray, hospsArray);
                 arrayList.getSessionList().remove(position);
                 arrayList.getSessionList().add(position, modelClass);
 
@@ -1982,6 +2057,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 if(changed) {
                     ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(arrayList.getSessionList().get(position).getWorkType());
                     ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(arrayList.getSessionList().get(position).getHQ());
+                    ArrayList<ModelClass.SessionList.SubClass> hqArray = new ArrayList<>(arrayList.getSessionList().get(position).getHQs());
                     ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
                     ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
                     ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
@@ -1991,7 +2067,16 @@ public class TourPlanActivity extends AppCompatActivity {
                     ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
                     ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-                    ModelClass.SessionList modelClass = new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+                    ArrayList<MultiHQHeaderModelClass> clustersArray = new ArrayList<>();
+                    ArrayList<MultiHQHeaderModelClass> jcsArray = new ArrayList<>();
+                    ArrayList<MultiHQHeaderModelClass> drsArray = new ArrayList<>();
+                    ArrayList<MultiHQHeaderModelClass> chemistsArray = new ArrayList<>();
+                    ArrayList<MultiHQHeaderModelClass> stocksArray = new ArrayList<>();
+                    ArrayList<MultiHQHeaderModelClass> unListedDrsArray = new ArrayList<>();
+                    ArrayList<MultiHQHeaderModelClass> cipsArray = new ArrayList<>();
+                    ArrayList<MultiHQHeaderModelClass> hospsArray = new ArrayList<>();
+
+                    ModelClass.SessionList modelClass = new ModelClass.SessionList("", true, "", workType, hq, hqArray, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clustersArray, jcsArray, drsArray, chemistsArray, stocksArray, unListedDrsArray, cipsArray, hospsArray);
                     arrayList.getSessionList().remove(position);
                     arrayList.getSessionList().add(modelClass);
                 }
@@ -2019,7 +2104,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     arrayList.getSessionList().get(i).setVisible(true);
                 }
 
-                populateSessionEditAdapter(modelClass1);
+                populateSessionEditAdapter(arrayList);
                 scrollToPosition(position, false);
             }
         });
