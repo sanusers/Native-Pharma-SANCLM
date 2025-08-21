@@ -154,6 +154,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     @SuppressLint("StaticFieldLeak")
     public static ActivityHomeDashBoardBinding binding;
+    public static HomeDashBoard homeDashBoardActivity;
     public static int DeviceWith;
     public static Dialog dialog;
     public static Dialog dialogCheckInOut, dialogAfterCheckIn, dialogPwdChange;
@@ -330,7 +331,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        homeDashBoardActivity = this;
         Log.d("ACTIVITY_STATUS", "OnCreate");
         binding = ActivityHomeDashBoardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -1684,7 +1685,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     }
 
-    private void setUpCalendar() {
+    public void setUpCalendar() {
 //        binding.viewCalerderLayout.calendarProgressBar.setVisibility(View.VISIBLE);
 //        if(SequentialEntry.equalsIgnoreCase("0")) {
 //            commonUtilsMethods.showToastMessage(this, getString(R.string.sequential_entry_cannot_change_date));
@@ -1891,73 +1892,70 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         Menu menu = binding.navView.getMenu();
         menu.findItem(R.id.remaindercall).setTitle(SharedPref.getRemainderCallCap(this));
 
-        if (SharedPref.getTpNeed(this).equalsIgnoreCase("0")) {
+        if(SharedPref.getTpNeed(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.tp).setVisible(true);
-        } else {
+        }else {
             menu.findItem(R.id.tp).setVisible(false);
         }
 
-        if (SharedPref.getFaq(this).equalsIgnoreCase("0")) {
+        if(SharedPref.getFaq(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.faq).setVisible(true);
-        } else {
+        }else {
             menu.findItem(R.id.faq).setVisible(false);
         }
 
-        if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")){
+        if(SharedPref.getGeoChk(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.nearme).setVisible(true);
             menu.findItem(R.id.loctionrefresh).setVisible(true);
-        }
-        else{
+        }else {
             menu.findItem(R.id.loctionrefresh).setVisible(false);
             menu.findItem(R.id.nearme).setVisible(false);
         }
 
-        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
+        if(SharedPref.getSfType(this).equalsIgnoreCase("2")) {
             menu.findItem(R.id.approval).setVisible(SharedPref.getApproveNeed(this).equalsIgnoreCase("0"));
             menu.findItem(R.id.stp).setVisible(false);
-        } else {
+        }else {
             menu.findItem(R.id.approval).setVisible(false);
             menu.findItem(R.id.stp).setVisible(SharedPref.getStpNeed(this).equalsIgnoreCase("0"));
             if(SharedPref.getStpCaption(this).isEmpty()) {
                 menu.findItem(R.id.stp).setTitle(Constants.STANDARD_TOUR_PLAN);
-            } else {
+            }else {
                 menu.findItem(R.id.stp).setTitle(SharedPref.getStpCaption(this));
             }
         }
 
-        if (SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
+        if(SharedPref.getActivityNd(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.activity).setVisible(true);
             menu.findItem(R.id.activity).setTitle(SharedPref.getActivityCap(HomeDashBoard.this));
-        }
-        else {
+        }else {
             menu.findItem(R.id.activity).setVisible(false);
         }
 
-        if (SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
+        if(SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.quiz).setVisible(true);
             menu.findItem(R.id.quiz).setTitle(SharedPref.getQuizHeading(HomeDashBoard.this));
-        }
-        else {
+        }else {
             menu.findItem(R.id.quiz).setVisible(false);
         }
 
-        if (SharedPref.getSurveyNd(this).equalsIgnoreCase("0")) {
+        if(SharedPref.getSurveyNd(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.survey).setVisible(true);
-        }
-        else {
+        }else {
             menu.findItem(R.id.survey).setVisible(false);
         }
 
-        if (SharedPref.getRmdrNeed(this).equalsIgnoreCase("0"))
+        if(SharedPref.getRmdrNeed(this).equalsIgnoreCase("0")) {
             menu.findItem(R.id.remaindercall).setVisible(true);
-        else
+        }else {
             menu.findItem(R.id.remaindercall).setVisible(false);
+        }
 
-
-//        if (SharedPref.getDocBusinessProduct(this).equalsIgnoreCase("0"))
+//        if (SharedPref.getDocBusinessProduct(this).equalsIgnoreCase("0")) {
 //            menu.findItem(R.id.docbusinessentry).setVisible(true);
-//        else
-            menu.findItem(R.id.docbusinessentry).setVisible(false);
+//        } else {
+        menu.findItem(R.id.docbusinessentry).setVisible(false);
+//        }
 
         menu.findItem(R.id.form).setVisible(false);
 
