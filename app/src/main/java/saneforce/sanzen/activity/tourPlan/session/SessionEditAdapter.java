@@ -549,17 +549,33 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
         //Stockiest
         StringBuilder stockiestName = new StringBuilder();
-        for (int i = 0; i<holder.stockiestModelArray.size(); i++) {
-            if(stockiestName.length() == 0) {
-                stockiestName = new StringBuilder(holder.stockiestModelArray.get(i).getName());
-            }else {
-                stockiestName.append(", ").append(holder.stockiestModelArray.get(i).getName());
+        if(isMGR) {
+            for (int i = 0; i < holder.stockiestsModelArray.size(); i++) {
+                MultiHQHeaderModelClass multiHQHeaderModelClass = holder.stockiestsModelArray.get(i);
+                ArrayList<MultiHQItemModelClass> list = multiHQHeaderModelClass.getItemsList();
+                for (int j = 0; j < list.size(); j++) {
+                    MultiHQItemModelClass multiHQItemModelClass = list.get(j);
+                    if(stockiestName.length() == 0) {
+                        stockiestName = new StringBuilder(multiHQItemModelClass.getName());
+                    }else {
+                        stockiestName.append(", ").append(multiHQItemModelClass.getName());
+                    }
+                }
             }
+            prepareMGRInputData(holder.stockiestsModelArray, holder.mgrStockiestArray);
+        } else {
+            for (int i = 0; i<holder.stockiestModelArray.size(); i++) {
+                if(stockiestName.length() == 0) {
+                    stockiestName = new StringBuilder(holder.stockiestModelArray.get(i).getName());
+                }else {
+                    stockiestName.append(", ").append(holder.stockiestModelArray.get(i).getName());
+                }
+            }
+            prepareInputData(holder.stockiestModelArray, holder.stockiestArray);
         }
         if(stockiestName.length()>0) {
             holder.stockiestField.setText(stockiestName);
         }
-        prepareInputData(holder.stockiestModelArray, holder.stockiestArray);
 
         //UnListed Doctor
         StringBuilder unListedDrName = new StringBuilder();
@@ -905,7 +921,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                     } else {
                         if(!holder.fieldSelected) {
-                            if(holder.listedDrArray.size() == 0) {
+                            if(holder.listedDrArray.isEmpty()) {
                                 holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
                                 TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                             }else {
@@ -962,7 +978,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                         }else {
                             if(!holder.fieldSelected) {
-                                if(holder.chemistArray.size() == 0) {
+                                if(holder.chemistArray.isEmpty()) {
                                     holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + holder.selectedHq).getMasterSyncDataJsonArray());
                                     TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                                 }else {

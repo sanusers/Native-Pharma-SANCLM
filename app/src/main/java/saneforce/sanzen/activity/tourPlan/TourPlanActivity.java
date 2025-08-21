@@ -54,6 +54,7 @@ import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPla
 import saneforce.sanzen.activity.tourPlan.calendar.CalendarAdapter;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
+import saneforce.sanzen.activity.tourPlan.model.MultiHQItemModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanzen.activity.tourPlan.session.SessionEditAdapter;
 import saneforce.sanzen.activity.tourPlan.session.SessionInterface;
@@ -400,7 +401,7 @@ public class TourPlanActivity extends AppCompatActivity {
 //                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
 //                                            break;
 //                                        }else
-                                            if((modelClass1.getListedDr().size()>Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
+                                        if((modelClass1.getListedDr().size()>Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount)>0)) {
                                             isEmpty = true;
                                             position = i;
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
@@ -425,7 +426,7 @@ public class TourPlanActivity extends AppCompatActivity {
 //                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
 //                                        break;
 //                                    }else
-                                        if((modelClass1.getListedDr().size()>Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
+                                    if((modelClass1.getListedDr().size()>Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount)>0)) {
                                         isEmpty = true;
                                         position = i;
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
@@ -527,16 +528,31 @@ public class TourPlanActivity extends AppCompatActivity {
 //                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " +SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
 //                                    break;
 //                                }else
-                                    if(((modelClass.getListedDr().size()>Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1"))
-                                            || ((modelClass.getListedDrs().size()>Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2"))) {
+                                if((modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                     isEmpty = true;
                                     position = i;
                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
                                     break;
+                                } else if((Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                                    try {
+                                        int drsCount = 0;
+                                        for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getListedDrs()) {
+                                            drsCount += multiHQHeaderModelClass.getItemsList().size();
+                                        }
+                                        if(drsCount>Integer.parseInt(maxDrCount)) {
+                                            isEmpty = true;
+                                            position = i;
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                            break;
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
 
-                            if(modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 && modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
+                            if((SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && modelClass.getListedDr().isEmpty() && modelClass.getChemist().isEmpty() && modelClass.getStockiest().isEmpty() && modelClass.getUnListedDr().isEmpty() && modelClass.getCip().isEmpty() && modelClass.getHospital().isEmpty())
+                                    || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && modelClass.getListedDrs().isEmpty() && modelClass.getChemists().isEmpty() && modelClass.getStockiests().isEmpty() && modelClass.getUnListedDrs().isEmpty() && modelClass.getCips().isEmpty() && modelClass.getHospitals().isEmpty())) {
                                 isEmpty = true;
                                 position = i;
                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + (i + 1));
@@ -553,14 +569,31 @@ public class TourPlanActivity extends AppCompatActivity {
 //                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + (i + 1));
 //                                break;
 //                            }else
-                                if((modelClass.getListedDr().size()>Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) { //Selected Dr count should not be more than maxDrCount setup limit
+
+                            if((modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                 isEmpty = true;
                                 position = i;
                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
                                 break;
+                            } else if((Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                                try {
+                                    int drsCount = 0;
+                                    for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getListedDrs()) {
+                                        drsCount += multiHQHeaderModelClass.getItemsList().size();
+                                    }
+                                    if(drsCount>Integer.parseInt(maxDrCount)) {
+                                        isEmpty = true;
+                                        position = i;
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                        break;
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
-                        if(modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 && modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) { // when Dr meetup not mandatory but FW meetup mandatory.So check any of the meetup selected
+                        if((SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && modelClass.getListedDr().isEmpty() && modelClass.getChemist().isEmpty() && modelClass.getStockiest().isEmpty() && modelClass.getUnListedDr().isEmpty() && modelClass.getCip().isEmpty() && modelClass.getHospital().isEmpty())
+                                || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && modelClass.getListedDrs().isEmpty() && modelClass.getChemists().isEmpty() && modelClass.getStockiests().isEmpty() && modelClass.getUnListedDrs().isEmpty() && modelClass.getCips().isEmpty() && modelClass.getHospitals().isEmpty())) {
                             isEmpty = true;
                             position = i;
                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + (i + 1));
@@ -728,11 +761,11 @@ public class TourPlanActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Approved")){
+        if(SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Approved")) {
             String month = "current";
             try {
-                JSONArray jsonArray1  = masterDataDao.getMasterDataTableOrNew(Constants.TOUR_PLAN).getMasterSyncDataJsonArray();
-                if(jsonArray1.length() > 0) {
+                JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.TOUR_PLAN).getMasterSyncDataJsonArray();
+                if(jsonArray1.length()>0) {
                     JSONObject jsonObject1 = jsonArray1.getJSONObject(0);
                     if(LocalDate.now().getMonth() == localDate1.getMonth() && LocalDate.now().getYear() == localDate1.getYear()) {
                         month = "current";
@@ -2104,8 +2137,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                     jsonObject.put("app_version", BuildConfig.VERSION_NAME);
                                     jsonObject.put("Mode", "Android-Edet");
                                     if(isSTPBasedTP) {
-                                        jsonObject.put("STP_Code", modelClass.getSTP_Code() != null? modelClass.getSTP_Code() : "");
-                                        jsonObject.put("STP_Name", modelClass.getSTP_Name() != null? modelClass.getSTP_Name() : "");
+                                        jsonObject.put("STP_Code", modelClass.getSTP_Code() != null ? modelClass.getSTP_Code() : "");
+                                        jsonObject.put("STP_Name", modelClass.getSTP_Name() != null ? modelClass.getSTP_Name() : "");
                                     }
 
                                     String WTCode = "", WTName = "", FWFlg = "", HQCodes = "", HQNames = "", clusterCodes = "", clusterNames = "", JWCodes = "", JWNames = "", Dr_Code = "", Dr_Name = "", Chem_Code = "", Chem_Name = "", Stockist_Code = "", Stockist_Name = "", cip_code = "", cip_name = "", hosp_code = "", hosp_Name = "", DayRemarks = "";
@@ -2118,65 +2151,122 @@ public class TourPlanActivity extends AppCompatActivity {
                                             WTCode = sessionList.getWorkType().getCode();
                                             WTName = sessionList.getWorkType().getName();
                                             FWFlg = sessionList.getWorkType().getFWFlg();
-                                            HQCodes = sessionList.getHQ().getCode();
-                                            HQNames = sessionList.getHQ().getName();
-                                            clusterCodes = textBuilder(sessionList.getCluster(), true);
-                                            clusterNames = textBuilder(sessionList.getCluster(), false);
-                                            JWCodes = textBuilder(sessionList.getJC(), true);
-                                            JWNames = textBuilder(sessionList.getJC(), false);
-                                            Dr_Code = textBuilder(sessionList.getListedDr(), true);
-                                            Dr_Name = textBuilder(sessionList.getListedDr(), false);
-                                            Chem_Code = textBuilder(sessionList.getChemist(), true);
-                                            Chem_Name = textBuilder(sessionList.getChemist(), false);
-                                            Stockist_Code = textBuilder(sessionList.getStockiest(), true);
-                                            Stockist_Name = textBuilder(sessionList.getStockiest(), false);
-                                            cip_code = textBuilder(sessionList.getCip(), true);
-                                            cip_name = textBuilder(sessionList.getCip(), false);
-                                            hosp_code = textBuilder(sessionList.getHospital(), true);
-                                            hosp_Name = textBuilder(sessionList.getHospital(), false);
+                                            if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+                                                HQCodes = sessionList.getHQ().getCode();
+                                                HQNames = sessionList.getHQ().getName();
+                                                clusterCodes = textBuilder(sessionList.getCluster(), true);
+                                                clusterNames = textBuilder(sessionList.getCluster(), false);
+                                                JWCodes = textBuilder(sessionList.getJC(), true);
+                                                JWNames = textBuilder(sessionList.getJC(), false);
+                                                Dr_Code = textBuilder(sessionList.getListedDr(), true);
+                                                Dr_Name = textBuilder(sessionList.getListedDr(), false);
+                                                Chem_Code = textBuilder(sessionList.getChemist(), true);
+                                                Chem_Name = textBuilder(sessionList.getChemist(), false);
+                                                Stockist_Code = textBuilder(sessionList.getStockiest(), true);
+                                                Stockist_Name = textBuilder(sessionList.getStockiest(), false);
+                                                cip_code = textBuilder(sessionList.getCip(), true);
+                                                cip_name = textBuilder(sessionList.getCip(), false);
+                                                hosp_code = textBuilder(sessionList.getHospital(), true);
+                                                hosp_Name = textBuilder(sessionList.getHospital(), false);
+                                            } else if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                                                HQCodes = textBuilder(sessionList.getHQs(), true);
+                                                HQNames = textBuilder(sessionList.getHQs(), false);
+                                                clusterCodes = textBuilderMultiHQ(sessionList.getClusters(), true);
+                                                clusterNames = textBuilderMultiHQ(sessionList.getClusters(), false);
+                                                JWCodes = textBuilderMultiHQ(sessionList.getJCs(), true);
+                                                JWNames = textBuilderMultiHQ(sessionList.getJCs(), false);
+                                                Dr_Code = textBuilderMultiHQ(sessionList.getListedDrs(), true);
+                                                Dr_Name = textBuilderMultiHQ(sessionList.getListedDrs(), false);
+                                                Chem_Code = textBuilderMultiHQ(sessionList.getChemists(), true);
+                                                Chem_Name = textBuilderMultiHQ(sessionList.getChemists(), false);
+                                                Stockist_Code = textBuilderMultiHQ(sessionList.getStockiests(), true);
+                                                Stockist_Name = textBuilderMultiHQ(sessionList.getStockiests(), false);
+                                                cip_code = textBuilderMultiHQ(sessionList.getCips(), true);
+                                                cip_name = textBuilderMultiHQ(sessionList.getCips(), false);
+                                                hosp_code = textBuilderMultiHQ(sessionList.getHospitals(), true);
+                                                hosp_Name = textBuilderMultiHQ(sessionList.getHospitals(), false);
+                                            }
                                             DayRemarks = sessionList.getRemarks();
                                         }else if(i == 1) {
                                             WTCode2 = sessionList.getWorkType().getCode();
                                             WTName2 = sessionList.getWorkType().getName();
                                             FWFlg2 = sessionList.getWorkType().getFWFlg();
-                                            HQCodes2 = sessionList.getHQ().getCode();
-                                            HQNames2 = sessionList.getHQ().getName();
-                                            clusterCode2 = textBuilder(sessionList.getCluster(), true);
-                                            clusterName2 = textBuilder(sessionList.getCluster(), false);
-                                            JWCodes2 = textBuilder(sessionList.getJC(), true);
-                                            JWNames2 = textBuilder(sessionList.getJC(), false);
-                                            Dr_two_code = textBuilder(sessionList.getListedDr(), true);
-                                            Dr_two_name = textBuilder(sessionList.getListedDr(), false);
-                                            Chem_two_code = textBuilder(sessionList.getChemist(), true);
-                                            Chem_two_name = textBuilder(sessionList.getChemist(), false);
-                                            Stockist_two_code = textBuilder(sessionList.getStockiest(), true);
-                                            Stockist_two_name = textBuilder(sessionList.getStockiest(), false);
-                                            cip_code2 = textBuilder(sessionList.getCip(), true);
-                                            cip_name2 = textBuilder(sessionList.getCip(), false);
-                                            hosp_code2 = textBuilder(sessionList.getHospital(), true);
-                                            hosp_Name2 = textBuilder(sessionList.getHospital(), false);
+                                            if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+                                                HQCodes2 = sessionList.getHQ().getCode();
+                                                HQNames2 = sessionList.getHQ().getName();
+                                                clusterCode2 = textBuilder(sessionList.getCluster(), true);
+                                                clusterName2 = textBuilder(sessionList.getCluster(), false);
+                                                JWCodes2 = textBuilder(sessionList.getJC(), true);
+                                                JWNames2 = textBuilder(sessionList.getJC(), false);
+                                                Dr_two_code = textBuilder(sessionList.getListedDr(), true);
+                                                Dr_two_name = textBuilder(sessionList.getListedDr(), false);
+                                                Chem_two_code = textBuilder(sessionList.getChemist(), true);
+                                                Chem_two_name = textBuilder(sessionList.getChemist(), false);
+                                                Stockist_two_code = textBuilder(sessionList.getStockiest(), true);
+                                                Stockist_two_name = textBuilder(sessionList.getStockiest(), false);
+                                                cip_code2 = textBuilder(sessionList.getCip(), true);
+                                                cip_name2 = textBuilder(sessionList.getCip(), false);
+                                                hosp_code2 = textBuilder(sessionList.getHospital(), true);
+                                                hosp_Name2 = textBuilder(sessionList.getHospital(), false);
+                                            } else if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                                                HQCodes2 = textBuilder(sessionList.getHQs(), true);
+                                                HQNames2 = textBuilder(sessionList.getHQs(), false);
+                                                clusterCode2 = textBuilderMultiHQ(sessionList.getClusters(), true);
+                                                clusterName2 = textBuilderMultiHQ(sessionList.getClusters(), false);
+                                                JWCodes2 = textBuilderMultiHQ(sessionList.getJCs(), true);
+                                                JWNames2 = textBuilderMultiHQ(sessionList.getJCs(), false);
+                                                Dr_two_code = textBuilderMultiHQ(sessionList.getListedDrs(), true);
+                                                Dr_two_name = textBuilderMultiHQ(sessionList.getListedDrs(), false);
+                                                Chem_two_code = textBuilderMultiHQ(sessionList.getChemists(), true);
+                                                Chem_two_name = textBuilderMultiHQ(sessionList.getChemists(), false);
+                                                Stockist_two_code = textBuilderMultiHQ(sessionList.getStockiests(), true);
+                                                Stockist_two_name = textBuilderMultiHQ(sessionList.getStockiests(), false);
+                                                cip_code2 = textBuilderMultiHQ(sessionList.getCips(), true);
+                                                cip_name2 = textBuilderMultiHQ(sessionList.getCips(), false);
+                                                hosp_code2 = textBuilderMultiHQ(sessionList.getHospitals(), true);
+                                                hosp_Name2 = textBuilderMultiHQ(sessionList.getHospitals(), false);
+                                            }
                                             DayRemarks2 = sessionList.getRemarks();
                                         }else if(i == 2) {
                                             WTCode3 = sessionList.getWorkType().getCode();
                                             WTName3 = sessionList.getWorkType().getName();
                                             FWFlg3 = sessionList.getWorkType().getFWFlg();
-                                            HQCodes3 = sessionList.getHQ().getCode();
-                                            HQNames3 = sessionList.getHQ().getName();
-                                            clusterCode3 = textBuilder(sessionList.getCluster(), true);
-                                            clusterName3 = textBuilder(sessionList.getCluster(), false);
-                                            JWCodes3 = textBuilder(sessionList.getJC(), true);
-                                            JWNames3 = textBuilder(sessionList.getJC(), false);
-                                            Dr_three_code = textBuilder(sessionList.getListedDr(), true);
-                                            Dr_three_name = textBuilder(sessionList.getListedDr(), false);
-                                            Chem_three_code = textBuilder(sessionList.getChemist(), true);
-                                            Chem_three_name = textBuilder(sessionList.getChemist(), false);
-                                            Stockist_three_code = textBuilder(sessionList.getStockiest(), true);
-                                            Stockist_three_name = textBuilder(sessionList.getStockiest(), false);
-                                            cip_code3 = textBuilder(sessionList.getCip(), true);
-                                            cip_name3 = textBuilder(sessionList.getCip(), false);
-                                            hosp_code3 = textBuilder(sessionList.getHospital(), true);
-                                            hosp_Name3 = textBuilder(sessionList.getHospital(), false);
-                                            DayRemarks3 = sessionList.getRemarks();
+
+                                            if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+                                                HQCodes3 = sessionList.getHQ().getCode();
+                                                HQNames3 = sessionList.getHQ().getName();
+                                                clusterCode3 = textBuilder(sessionList.getCluster(), true);
+                                                clusterName3 = textBuilder(sessionList.getCluster(), false);
+                                                JWCodes3 = textBuilder(sessionList.getJC(), true);
+                                                JWNames3 = textBuilder(sessionList.getJC(), false);
+                                                Dr_three_code = textBuilder(sessionList.getListedDr(), true);
+                                                Dr_three_name = textBuilder(sessionList.getListedDr(), false);
+                                                Chem_three_code = textBuilder(sessionList.getChemist(), true);
+                                                Chem_three_name = textBuilder(sessionList.getChemist(), false);
+                                                Stockist_three_code = textBuilder(sessionList.getStockiest(), true);
+                                                Stockist_three_name = textBuilder(sessionList.getStockiest(), false);
+                                                cip_code3 = textBuilder(sessionList.getCip(), true);
+                                                cip_name3 = textBuilder(sessionList.getCip(), false);
+                                                hosp_code3 = textBuilder(sessionList.getHospital(), true);
+                                                hosp_Name3 = textBuilder(sessionList.getHospital(), false);
+                                            } else if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                                                HQCodes3 = textBuilder(sessionList.getHQs(), true);
+                                                HQNames3 = textBuilder(sessionList.getHQs(), false);
+                                                clusterCode3 = textBuilderMultiHQ(sessionList.getClusters(), true);
+                                                clusterName3 = textBuilderMultiHQ(sessionList.getClusters(), false);
+                                                JWCodes3 = textBuilderMultiHQ(sessionList.getJCs(), true);
+                                                JWNames3 = textBuilderMultiHQ(sessionList.getJCs(), false);
+                                                Dr_three_code = textBuilderMultiHQ(sessionList.getListedDrs(), true);
+                                                Dr_three_name = textBuilderMultiHQ(sessionList.getListedDrs(), false);
+                                                Chem_three_code = textBuilderMultiHQ(sessionList.getChemists(), true);
+                                                Chem_three_name = textBuilderMultiHQ(sessionList.getChemists(), false);
+                                                Stockist_three_code = textBuilderMultiHQ(sessionList.getStockiests(), true);
+                                                Stockist_three_name = textBuilderMultiHQ(sessionList.getStockiests(), false);
+                                                cip_code3 = textBuilderMultiHQ(sessionList.getCips(), true);
+                                                cip_name3 = textBuilderMultiHQ(sessionList.getCips(), false);
+                                                hosp_code3 = textBuilderMultiHQ(sessionList.getHospitals(), true);
+                                                hosp_Name3 = textBuilderMultiHQ(sessionList.getHospitals(), false);
+                                            }
                                         }
                                     }
 
@@ -2244,6 +2334,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     jsonObject.put("DayRemarks3", DayRemarks3);
 
                                     jsonArray.put(jsonObject);
+                                    Log.d("TAG", "prepare json: " + jsonArray);
                                     break;
                                 }
                             }
@@ -2275,6 +2366,26 @@ public class TourPlanActivity extends AppCompatActivity {
                 stringBuilder.append(sessionLists.get(i).getCode()).append(",");
             }else { // false -> name
                 stringBuilder.append(sessionLists.get(i).getName()).append(",");
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    public String textBuilderMultiHQ(List<MultiHQHeaderModelClass> multiHQHeaderModelClassList,
+                              boolean getCode) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i<multiHQHeaderModelClassList.size(); i++) {
+            MultiHQHeaderModelClass multiHQHeaderModelClass = multiHQHeaderModelClassList.get(i);
+            List<MultiHQItemModelClass> multiHQItemModelClassList = multiHQHeaderModelClass.getItemsList();
+            for (MultiHQItemModelClass multiHQItemModelClass : multiHQItemModelClassList) {
+                if(getCode) { // true -> code
+                    stringBuilder.append(multiHQItemModelClass.getCode()).append(",");
+                }else { // false -> name
+                    stringBuilder.append(multiHQItemModelClass.getName()).append(",");
+                }
+            }
+            if(!stringBuilder.toString().isEmpty()) {
+                stringBuilder.append("$");
             }
         }
         return stringBuilder.toString();
