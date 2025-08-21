@@ -3453,6 +3453,50 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             getData(mHQCode2, true);
                         }
                     }
+                } else {
+                    SharedPref.setTpDcrDeviatedDate(requireContext(), "");
+                    SharedPref.setDayPlanStartedDate(requireContext(), "");
+                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 2));
+                    binding.txtWorktype1.setText("");
+                    binding.txtCluster1.setText("");
+                    binding.txtheadquaters1.setText("");
+//                    HomeDashBoard.binding.textDate.setText("");
+                    binding.txtWorktype2.setText("");
+                    binding.txtCluster2.setText("");
+                    binding.txtheadquaters2.setText("");
+                    binding.cardPlan2.setVisibility(View.GONE);
+                    DayPlanCount = "1";
+//                    HomeDashBoard.binding.textDate.setText("");
+//                    SharedPref.setSelectedDateCal(requireContext(), "");
+                    if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+                        SharedPref.saveHq(requireContext(), SharedPref.getHqName(requireContext()), "");
+                        SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
+                    }else {
+                        SharedPref.saveHq(requireContext(), SharedPref.getHqName(requireContext()), SharedPref.getSfCode(requireContext()));
+                        SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
+                    }
+                    SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(), false, false);
+
+                    binding.rlworktype1.setEnabled(true);
+                    binding.rlcluster1.setEnabled(true);
+                    binding.rlheadquates1.setEnabled(true);
+                    binding.rlworktype2.setEnabled(true);
+                    binding.rlcluster2.setEnabled(true);
+                    binding.rlheadquates2.setEnabled(true);
+                    binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
+                    binding.txtAddPlan.setEnabled(false);
+                    binding.txtSave.setTextColor(getResources().getColor(R.color.black));
+                    binding.txtSave.setEnabled(true);
+                    binding.llPlan1.setBackground(null);
+                    binding.rlheadquates1.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                    binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                    binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                    binding.llPlan2.setBackground(null);
+                    binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                    binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                    binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                    binding.cardPlan2.setVisibility(View.GONE);
+                    binding.llDeviation.setVisibility(View.GONE);
                 }
             }else if(tpDataObj != null && HomeDashBoard.selectedDate != null) {
                 SharedPref.setTpDcrDeviatedDate(requireContext(), "");
