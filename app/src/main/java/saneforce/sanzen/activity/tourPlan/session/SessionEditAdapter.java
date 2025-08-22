@@ -421,7 +421,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
         if (!holder.selectedHq.isEmpty()) {
             if (isMGR) {
-                // TODO: 01-08-2025 getdatafromlocal to be done for multi HQ
+                for (String hqCode : holder.selectedHq.split(",")) {
+                    getDataFromLocal(holder, hqCode);
+                }
             } else {
                 getDataFromLocal(holder, holder.selectedHq);
             }
@@ -1427,6 +1429,14 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + hqCode).getMasterSyncDataJsonArray());
         holder.cipArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CIP + hqCode).getMasterSyncDataJsonArray());
         holder.hospArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + hqCode).getMasterSyncDataJsonArray());
+
+        if(SharedPref.getSfType(context).equalsIgnoreCase("2")) {
+            holder.mgrClusterArray = prepareModelList(holder.selectedHq, Constants.CLUSTER);
+            holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR);
+            holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST);
+            holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST);
+//            holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR);
+        }
     }
 
     public ArrayList<EditModelClass> convertJSONToModel(JSONArray jsonArray) {
@@ -1674,6 +1684,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             match.setChecked(true);
                         }
                     });
+            Log.d("TAG", "prepareMGRInputData: " + modelArray);
         }
     }
 

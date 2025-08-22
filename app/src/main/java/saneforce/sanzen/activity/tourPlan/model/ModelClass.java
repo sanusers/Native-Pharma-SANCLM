@@ -166,7 +166,7 @@ public class ModelClass implements Serializable {
 
     private ModelClass.SessionList.SubClass HQ;
 
-    private List<ModelClass.SessionList.SubClass> HQs;
+    private List<ModelClass.SessionList.SubClass> HQs = new ArrayList<>();
 
     private List<ModelClass.SessionList.SubClass> cluster;
 
@@ -184,21 +184,21 @@ public class ModelClass implements Serializable {
 
     private List<ModelClass.SessionList.SubClass> hospital;
 
-    private ArrayList<MultiHQHeaderModelClass> clusters;
+    private ArrayList<MultiHQHeaderModelClass> clusters = new ArrayList<>();
 
-    private ArrayList<MultiHQHeaderModelClass> JCs;
+    private ArrayList<MultiHQHeaderModelClass> JCs = new ArrayList<>();
 
-    private ArrayList<MultiHQHeaderModelClass> listedDrs;
+    private ArrayList<MultiHQHeaderModelClass> listedDrs = new ArrayList<>();
 
-    private ArrayList<MultiHQHeaderModelClass> chemists;
+    private ArrayList<MultiHQHeaderModelClass> chemists = new ArrayList<>();
 
-    private ArrayList<MultiHQHeaderModelClass> stockiests;
+    private ArrayList<MultiHQHeaderModelClass> stockiests = new ArrayList<>();
 
-    private ArrayList<MultiHQHeaderModelClass> unListedDrs;
+    private ArrayList<MultiHQHeaderModelClass> unListedDrs = new ArrayList<>();
 
-    private ArrayList<MultiHQHeaderModelClass> cips;
+    private ArrayList<MultiHQHeaderModelClass> cips = new ArrayList<>();
 
-    private ArrayList<MultiHQHeaderModelClass> hospitals;
+    private ArrayList<MultiHQHeaderModelClass> hospitals = new ArrayList<>();
 
     public SessionList () {
     }
@@ -281,47 +281,78 @@ public class ModelClass implements Serializable {
 //        ModelClass.SessionList.SubClass copyHQ = new ModelClass.SessionList.SubClass(hq);
 //        this.HQs.add(copyHQ);
 //      }
+//
+//      for (ModelClass.SessionList.SubClass cluster : sessionList.getCluster()) {
+//        ModelClass.SessionList.SubClass copyCluster = new ModelClass.SessionList.SubClass(cluster);
+//        this.cluster.add(copyCluster);
+//      }
+//
+//      for (ModelClass.SessionList.SubClass jc : sessionList.getJC()) {
+//        ModelClass.SessionList.SubClass copyJc = new ModelClass.SessionList.SubClass(jc);
+//        this.JC.add(copyJc);
+//      }
+//
+//      for (ModelClass.SessionList.SubClass listedDr : sessionList.getListedDr()) {
+//        ModelClass.SessionList.SubClass copyListedDr = new ModelClass.SessionList.SubClass(listedDr);
+//        this.listedDr.add(copyListedDr);
+//      }
+//
+//      for (ModelClass.SessionList.SubClass chemist : sessionList.getChemist()) {
+//        ModelClass.SessionList.SubClass copyChemist = new ModelClass.SessionList.SubClass(chemist);
+//        this.chemist.add(copyChemist);
+//      }
+//
+//      for (ModelClass.SessionList.SubClass stockiest : sessionList.getStockiest()) {
+//        ModelClass.SessionList.SubClass copyStockiest = new ModelClass.SessionList.SubClass(stockiest);
+//        this.stockiest.add(copyStockiest);
+//      }
+//
+//      for (ModelClass.SessionList.SubClass unListedDr : sessionList.getUnListedDr()) {
+//        ModelClass.SessionList.SubClass copyUnListedDr = new ModelClass.SessionList.SubClass(unListedDr);
+//        this.unListedDr.add(copyUnListedDr);
+//      }
+//
+//      for (ModelClass.SessionList.SubClass cip : sessionList.getCip()) {
+//        ModelClass.SessionList.SubClass copyCip = new ModelClass.SessionList.SubClass(cip);
+//        this.Cip.add(copyCip);
+//      }
+//
+//      for (ModelClass.SessionList.SubClass hospital : sessionList.getHospital()) {
+//        ModelClass.SessionList.SubClass copyHospital = new ModelClass.SessionList.SubClass(hospital);
+//        this.hospital.add(copyHospital);
+//      }
 
-      for (ModelClass.SessionList.SubClass cluster : sessionList.getCluster()) {
-        ModelClass.SessionList.SubClass copyCluster = new ModelClass.SessionList.SubClass(cluster);
-        this.cluster.add(copyCluster);
+      createCopy(this.cluster, sessionList.getCluster());
+      createCopy(this.JC, sessionList.getJC());
+      createCopy(this.listedDr, sessionList.getListedDr());
+      createCopy(this.chemist, sessionList.getChemist());
+      createCopy(this.stockiest, sessionList.getStockiest());
+      createCopy(this.unListedDr, sessionList.getUnListedDr());
+      createCopy(this.Cip, sessionList.getCip());
+      createCopy(this.hospital, sessionList.getHospital());
+
+      createCopy(this.HQs, sessionList.getHQs());
+      createCopyMGR(this.clusters, sessionList.getClusters());
+      createCopyMGR(this.JCs, sessionList.getJCs());
+      createCopyMGR(this.listedDrs, sessionList.getListedDrs());
+      createCopyMGR(this.chemists, sessionList.getChemists());
+      createCopyMGR(this.stockiests, sessionList.getStockiests());
+      createCopyMGR(this.unListedDrs, sessionList.getUnListedDrs());
+      createCopyMGR(this.cips, sessionList.getCips());
+      createCopyMGR(this.hospitals, sessionList.getHospitals());
+
+    }
+
+    private void createCopy(List<SubClass> resultArray, List<SubClass> data) {
+      for (SubClass subClass : data) {
+        resultArray.add(new SubClass(subClass));
       }
+    }
 
-      for (ModelClass.SessionList.SubClass jc : sessionList.getJC()) {
-        ModelClass.SessionList.SubClass copyJc = new ModelClass.SessionList.SubClass(jc);
-        this.JC.add(copyJc);
+    private void createCopyMGR(ArrayList<MultiHQHeaderModelClass> resultArray, ArrayList<MultiHQHeaderModelClass> data) {
+      for (MultiHQHeaderModelClass header : data) {
+        resultArray.add(new MultiHQHeaderModelClass(header));
       }
-
-      for (ModelClass.SessionList.SubClass listedDr : sessionList.getListedDr()) {
-        ModelClass.SessionList.SubClass copyListedDr = new ModelClass.SessionList.SubClass(listedDr);
-        this.listedDr.add(copyListedDr);
-      }
-
-      for (ModelClass.SessionList.SubClass chemist : sessionList.getChemist()) {
-        ModelClass.SessionList.SubClass copyChemist = new ModelClass.SessionList.SubClass(chemist);
-        this.chemist.add(copyChemist);
-      }
-
-      for (ModelClass.SessionList.SubClass stockiest : sessionList.getStockiest()) {
-        ModelClass.SessionList.SubClass copyStockiest = new ModelClass.SessionList.SubClass(stockiest);
-        this.stockiest.add(copyStockiest);
-      }
-
-      for (ModelClass.SessionList.SubClass unListedDr : sessionList.getUnListedDr()) {
-        ModelClass.SessionList.SubClass copyUnListedDr = new ModelClass.SessionList.SubClass(unListedDr);
-        this.unListedDr.add(copyUnListedDr);
-      }
-
-      for (ModelClass.SessionList.SubClass cip : sessionList.getCip()) {
-        ModelClass.SessionList.SubClass copyCip = new ModelClass.SessionList.SubClass(cip);
-        this.Cip.add(copyCip);
-      }
-
-      for (ModelClass.SessionList.SubClass hospital : sessionList.getHospital()) {
-        ModelClass.SessionList.SubClass copyHospital = new ModelClass.SessionList.SubClass(hospital);
-        this.hospital.add(copyHospital);
-      }
-
     }
 
     public String getLayoutVisible () {

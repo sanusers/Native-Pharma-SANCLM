@@ -13,6 +13,15 @@ public class MultiHQItemModelClass {
         this.isChecked = isChecked;
     }
 
+    public MultiHQItemModelClass(MultiHQItemModelClass multiHQItemModelClass) {
+        this.name = multiHQItemModelClass.name;
+        this.code = multiHQItemModelClass.code;
+        this.hqCode = multiHQItemModelClass.hqCode;
+        this.clusterCode = multiHQItemModelClass.clusterCode;
+        this.clusterName = multiHQItemModelClass.clusterName;
+        this.isChecked = multiHQItemModelClass.isChecked;
+    }
+
     public String getName() {
         return name;
     }

@@ -50,6 +50,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.calendar.CalendarAdapter;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
@@ -111,6 +112,13 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
         return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+    }
+
+    public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, ArrayList<ModelClass.SessionList.SubClass> hqs,
+                                                                      ArrayList<MultiHQHeaderModelClass> clusters, ArrayList<MultiHQHeaderModelClass> JCs, ArrayList<MultiHQHeaderModelClass> listedDrs,
+                                                                      ArrayList<MultiHQHeaderModelClass> chemists, ArrayList<MultiHQHeaderModelClass> stockiests, ArrayList<MultiHQHeaderModelClass> unListedDrs,
+                                                                      ArrayList<MultiHQHeaderModelClass> cips, ArrayList<MultiHQHeaderModelClass> hospitals, String remarks) {
+        return new ModelClass.SessionList("", true, remarks, workType, hq, hqs, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clusters, JCs, listedDrs, chemists, stockiests, unListedDrs, cips, hospitals);
     }
 
     public static ModelClass.SessionList prepareSessionListForAdapter() {
@@ -1501,7 +1509,11 @@ public class TourPlanActivity extends AppCompatActivity {
                 try {
                     apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
                     JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(TourPlanActivity.this);
-                    jsonObject.put("tableName", "getall_tp");
+                    if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+                        jsonObject.put("tableName", "getall_tp");
+                    } else {
+                        jsonObject.put("tableName", "getall_multitp");
+                    }
                     jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
                     jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
                     jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
@@ -1828,23 +1840,57 @@ public class TourPlanActivity extends AppCompatActivity {
         ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
+        ArrayList<ModelClass.SessionList.SubClass> hqs = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> clusters = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> JCs = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> listedDrs = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> chemists = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> stockiests = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> unListedDrs = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> cips = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> hospitals = new ArrayList<>();
+
         ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
         ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
 
         //   if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
-        if(!receiveModel.getClusterName().isEmpty())
-            clusterArray = addExtraData(receiveModel.getClusterName(), receiveModel.getClusterCode());
-        if(!receiveModel.getJWNames().isEmpty())
-            jcArray = addExtraData(receiveModel.getJWNames(), receiveModel.getJWCodes());
-        if(!receiveModel.getDr_Name().isEmpty())
-            drArray = addExtraData(receiveModel.getDr_Name(), receiveModel.getDr_Code());
-        if(!receiveModel.getChem_Name().isEmpty())
-            chemArray = addExtraData(receiveModel.getChem_Name(), receiveModel.getChem_Code());
-        if(!receiveModel.getStockist_Name().isEmpty())
-            stkArray = addExtraData(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
+        if(SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+            if(!receiveModel.getClusterName().isEmpty())
+                clusterArray = addExtraData(receiveModel.getClusterName(), receiveModel.getClusterCode());
+            if(!receiveModel.getJWNames().isEmpty())
+                jcArray = addExtraData(receiveModel.getJWNames(), receiveModel.getJWCodes());
+            if(!receiveModel.getDr_Name().isEmpty())
+                drArray = addExtraData(receiveModel.getDr_Name(), receiveModel.getDr_Code());
+            if(!receiveModel.getChem_Name().isEmpty())
+                chemArray = addExtraData(receiveModel.getChem_Name(), receiveModel.getChem_Code());
+            if(!receiveModel.getStockist_Name().isEmpty())
+                stkArray = addExtraData(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
+        }else {
+            if(!receiveModel.getHQCodes().isEmpty()) {
+                hqs = addExtraData(receiveModel.getHQNames(), receiveModel.getHQCodes());
+            }
+            if(!receiveModel.getClusterName().isEmpty()) {
+                clusters = addExtraData(hqs, receiveModel.getClusterName(), receiveModel.getClusterCode());
+            }
+            if(!receiveModel.getJWNames().isEmpty()) {
+                JCs = addExtraData(hqs, receiveModel.getJWNames(), receiveModel.getJWCodes());
+            }
+            if(!receiveModel.getDr_Name().isEmpty()) {
+                listedDrs = addExtraData(hqs, receiveModel.getDr_Name(), receiveModel.getDr_Code());
+            }
+            if(!receiveModel.getChem_Name().isEmpty()) {
+                chemists = addExtraData(hqs, receiveModel.getChem_Name(), receiveModel.getChem_Code());
+            }
+            if(!receiveModel.getStockist_Name().isEmpty()) {
+                stockiests = addExtraData(hqs, receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
+            }
+        }
         //     }
-        sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
-
+        if(SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+            sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
+        } else {
+            sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, hqs, clusters, JCs, listedDrs, chemists, stockiests, unListedDrs, cips, hospitals, remarks);
+        }
         if(!receiveModel.getWTName2().isEmpty()) {
             session2 = true;
             String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
@@ -1860,19 +1906,54 @@ public class TourPlanActivity extends AppCompatActivity {
             cipArray = new ArrayList<>();
             hospArray = new ArrayList<>();
 
-            if(!receiveModel.getClusterName2().isEmpty())
-                clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
-            if(!receiveModel.getJWNames2().isEmpty())
-                jcArray = addExtraData(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
-            if(!receiveModel.getDr_two_name().isEmpty())
-                drArray = addExtraData(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
-            if(!receiveModel.getChem_two_name().isEmpty())
-                chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
-            if(!receiveModel.getStockist_two_name().isEmpty())
-                stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
+            hqs = new ArrayList<>();
+            clusters = new ArrayList<>();
+            JCs = new ArrayList<>();
+            listedDrs = new ArrayList<>();
+            chemists = new ArrayList<>();
+            stockiests = new ArrayList<>();
+            unListedDrs = new ArrayList<>();
+            cips = new ArrayList<>();
+            hospitals = new ArrayList<>();
 
-            sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
-
+            if(receiveModel.getFWFlg2().equalsIgnoreCase("F")) {
+                if(SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+                    if(!receiveModel.getClusterName2().isEmpty())
+                        clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
+                    if(!receiveModel.getJWNames2().isEmpty())
+                        jcArray = addExtraData(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
+                    if(!receiveModel.getDr_two_name().isEmpty())
+                        drArray = addExtraData(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
+                    if(!receiveModel.getChem_two_name().isEmpty())
+                        chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
+                    if(!receiveModel.getStockist_two_name().isEmpty())
+                        stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
+                } else {
+                    if(!receiveModel.getHQCodes2().isEmpty()) {
+                        hqs = addExtraData(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
+                    }
+                    if(!receiveModel.getClusterName2().isEmpty()) {
+                        clusters = addExtraData(hqs, receiveModel.getClusterName2(), receiveModel.getClusterCode2());
+                    }
+                    if(!receiveModel.getJWNames2().isEmpty()) {
+                        JCs = addExtraData(hqs, receiveModel.getJWNames2(), receiveModel.getJWCodes2());
+                    }
+                    if(!receiveModel.getDr_two_name().isEmpty()) {
+                        listedDrs = addExtraData(hqs, receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
+                    }
+                    if(!receiveModel.getChem_two_name().isEmpty()) {
+                        chemists = addExtraData(hqs, receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
+                    }
+                    if(!receiveModel.getStockist_two_name().isEmpty()) {
+                        stockiests = addExtraData(hqs, receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
+                    }
+                }
+            }
+            if(SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+                sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
+            } else {
+                sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, hqs, clusters, JCs, listedDrs, chemists, stockiests, unListedDrs, cips, hospitals, remarks2);
+            }
         }
 
         if(!receiveModel.getWTName3().isEmpty()) {
@@ -1890,17 +1971,54 @@ public class TourPlanActivity extends AppCompatActivity {
             cipArray = new ArrayList<>();
             hospArray = new ArrayList<>();
 
-            if(!receiveModel.getClusterName3().isEmpty())
-                clusterArray = addExtraData(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
-            if(!receiveModel.getJWNames3().isEmpty())
-                jcArray = addExtraData(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
-            if(!receiveModel.getDr_three_name().isEmpty())
-                drArray = addExtraData(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
-            if(!receiveModel.getChem_three_name().isEmpty())
-                chemArray = addExtraData(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
-            if(!receiveModel.getStockist_three_name().isEmpty())
-                stkArray = addExtraData(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
-            sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
+            hqs = new ArrayList<>();
+            clusters = new ArrayList<>();
+            JCs = new ArrayList<>();
+            listedDrs = new ArrayList<>();
+            chemists = new ArrayList<>();
+            stockiests = new ArrayList<>();
+            unListedDrs = new ArrayList<>();
+            cips = new ArrayList<>();
+            hospitals = new ArrayList<>();
+
+            if(receiveModel.getFWFlg3().equalsIgnoreCase("F")) {
+                if(SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+                    if(!receiveModel.getClusterName3().isEmpty())
+                        clusterArray = addExtraData(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
+                    if(!receiveModel.getJWNames3().isEmpty())
+                        jcArray = addExtraData(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
+                    if(!receiveModel.getDr_three_name().isEmpty())
+                        drArray = addExtraData(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
+                    if(!receiveModel.getChem_three_name().isEmpty())
+                        chemArray = addExtraData(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
+                    if(!receiveModel.getStockist_three_name().isEmpty())
+                        stkArray = addExtraData(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
+                } else {
+                    if(!receiveModel.getHQCodes3().isEmpty()) {
+                        hqs = addExtraData(receiveModel.getHQNames3(), receiveModel.getHQCodes3());
+                    }
+                    if(!receiveModel.getClusterName3().isEmpty()) {
+                        clusters = addExtraData(hqs, receiveModel.getClusterName3(), receiveModel.getClusterCode3());
+                    }
+                    if(!receiveModel.getJWNames3().isEmpty()) {
+                        JCs = addExtraData(hqs, receiveModel.getJWNames3(), receiveModel.getJWCodes3());
+                    }
+                    if(!receiveModel.getDr_three_name().isEmpty()) {
+                        listedDrs = addExtraData(hqs, receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
+                    }
+                    if(!receiveModel.getChem_three_name().isEmpty()) {
+                        chemists = addExtraData(hqs, receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
+                    }
+                    if(!receiveModel.getStockist_three_name().isEmpty()) {
+                        stockiests = addExtraData(hqs, receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
+                    }
+                }
+            }
+            if(SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+                sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
+            } else {
+                sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, hqs, clusters, JCs, listedDrs, chemists, stockiests, unListedDrs, cips, hospitals, remarks3);
+            }
         }
 
         ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
@@ -1929,12 +2047,39 @@ public class TourPlanActivity extends AppCompatActivity {
         return Array;
     }
 
+    private ArrayList<MultiHQHeaderModelClass> addExtraData(ArrayList<ModelClass.SessionList.SubClass> hqs, String Name, String Code) {
+        String[] arrName = Name.split("\\$");
+        String[] arrCode = Code.split("\\$");
+        ArrayList<MultiHQHeaderModelClass> resultArray = new ArrayList<>();
+
+        for (int i = 0; i<hqs.size(); i++) {
+            ModelClass.SessionList.SubClass hq = hqs.get(i);
+            String[] names = arrName[i].split(",");
+            String[] codes = arrCode[i].split(",");
+            ArrayList<MultiHQItemModelClass> itemsList = new ArrayList<>();
+            MultiHQHeaderModelClass multiHQHeaderModelClass = new MultiHQHeaderModelClass(hq.getName(), hq.getCode(), itemsList, true);
+            for (int j = 0; j<codes.length; j++) {
+                MultiHQItemModelClass multiHQItemModelClass = new MultiHQItemModelClass(names[j], codes[j], hq.getCode(), "", "", true);
+                itemsList.add(multiHQItemModelClass);
+            }
+            multiHQHeaderModelClass.setItemsList(itemsList);
+            if(!itemsList.isEmpty()) {
+                resultArray.add(multiHQHeaderModelClass);
+            }
+        }
+
+        return resultArray;
+    }
 
     public void get1MonthRemoteTPData(LocalDate localDate1) {
         try {
             apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
             JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(TourPlanActivity.this);
-            jsonObject.put("tableName", "gettpdetail");
+            if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+                jsonObject.put("tableName", "gettpdetail");
+            } else {
+                jsonObject.put("tableName", "gettpmultihqdetail");
+            }
             jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
             jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
             jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
@@ -2397,7 +2542,11 @@ public class TourPlanActivity extends AppCompatActivity {
         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
         Log.v("tpApproval", "--json--" + jsonArray.toString());
         Map<String, String> mapString = new HashMap<>();
-        mapString.put("axn", "savenew/tp");
+        if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+            mapString.put("axn", "savenew/tp");
+        } else {
+            mapString.put("axn", "multihqsave/tp");
+        }
         Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonArray.toString());
         call.enqueue(new Callback<JsonElement>() {
             @Override

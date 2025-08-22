@@ -56,7 +56,6 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
             for (int i = 0; i<modelClasses.getSessionList().size(); i++) {
                 modelClass = modelClasses.getSessionList().get(i);
                 holder.workTypeModelArray.add(modelClass.getWorkType());
-                holder.workTypeModelArray.add(modelClass.getWorkType());
                 if(SharedPref.getSfType(context).equals("1")) {
                     holder.hqModelArray.add(modelClass.getHQ());
                     holder.clusterCount += modelClass.getCluster().size();
@@ -68,6 +67,7 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
                     holder.cipCount += modelClass.getCip().size();
                     holder.hospitalCount += modelClass.getHospital().size();
                 }else {
+                    holder.hqModelArray.add(modelClass.getHQ());
                     holder.hqsModelArray.add(modelClass.getHQs());
                     holder.clusterCount += modelClass.getClusters().stream()
                             .mapToInt(p -> p.getItemsList().size())

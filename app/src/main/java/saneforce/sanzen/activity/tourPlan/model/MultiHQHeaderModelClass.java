@@ -17,7 +17,11 @@ public class MultiHQHeaderModelClass {
     public MultiHQHeaderModelClass(MultiHQHeaderModelClass multiHQHeaderModelClass){
         this.name = multiHQHeaderModelClass.name;
         this.code = multiHQHeaderModelClass.code;
-        this.itemsList = multiHQHeaderModelClass.itemsList;
+        ArrayList<MultiHQItemModelClass> itemsList = new ArrayList<>();
+        for (MultiHQItemModelClass multiHQItemModelClass : multiHQHeaderModelClass.getItemsList()) {
+            itemsList.add(new MultiHQItemModelClass(multiHQItemModelClass));
+        }
+        this.itemsList = itemsList;
         this.isExpanded = multiHQHeaderModelClass.isExpanded;
     }
 
