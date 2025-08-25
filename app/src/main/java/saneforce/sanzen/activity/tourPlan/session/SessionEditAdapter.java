@@ -472,10 +472,21 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
         //Joint Work
         StringBuilder jcName = new StringBuilder();
-        if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
-            holder.jcLayout.setVisibility(View.GONE);
+        if (isMGR) {
+            for (int i = 0; i < holder.jcsModelArray.size(); i++) {
+                MultiHQHeaderModelClass multiHQHeaderModelClass = holder.jcsModelArray.get(i);
+                ArrayList<MultiHQItemModelClass> list = multiHQHeaderModelClass.getItemsList();
+                for (int j = 0; j < list.size(); j++) {
+                    MultiHQItemModelClass multiHQItemModelClass = list.get(j);
+                    if (jcName.length() == 0) {
+                        jcName = new StringBuilder(multiHQItemModelClass.getName());
+                    } else {
+                        jcName.append(", ").append(multiHQItemModelClass.getName());
+                    }
+                }
+            }
+            prepareMGRInputData(holder.jcsModelArray, holder.mgrJointCallArray);
         } else {
-//            holder.jcLayout.setVisibility(View.VISIBLE);
             for (int i = 0; i < holder.jcModelArray.size(); i++) {
                 if (jcName.length() == 0) {
                     jcName = new StringBuilder(holder.jcModelArray.get(i).getName());
@@ -483,11 +494,27 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     jcName.append(", ").append(holder.jcModelArray.get(i).getName());
                 }
             }
-            if (jcName.length() > 0) {
-                holder.jcField.setText(jcName);
-            }
             prepareInputData(holder.jcModelArray, holder.jointCallArray);
         }
+        if (jcName.length() > 0) {
+            holder.jcField.setText(jcName);
+        }
+//        if (SharedPref.getStpNeed(context).equalsIgnoreCase("0") && SharedPref.getStpBasedMtp(context).equalsIgnoreCase("0")) {
+//            holder.jcLayout.setVisibility(View.GONE);
+//        } else {
+//            holder.jcLayout.setVisibility(View.VISIBLE);
+//            for (int i = 0; i < holder.jcModelArray.size(); i++) {
+//                if (jcName.length() == 0) {
+//                    jcName = new StringBuilder(holder.jcModelArray.get(i).getName());
+//                } else {
+//                    jcName.append(", ").append(holder.jcModelArray.get(i).getName());
+//                }
+//            }
+//        prepareInputData(holder.jcModelArray, holder.jointCallArray);
+//        if (jcName.length() > 0) {
+//                holder.jcField.setText(jcName);
+//            }
+//        }
 
         //Dr
         StringBuilder drName = new StringBuilder();
@@ -866,22 +893,42 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
                 } else {
-                    if (!holder.fieldSelected) {
-                        if (holder.jointCallArray.size() == 0) {
-                            holder.jointCallArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + holder.selectedHq).getMasterSyncDataJsonArray());
-                            TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                    if (isMGR) {
+                        if (!holder.fieldSelected) {
+                            if (holder.mgrJointCallArray.isEmpty()) {
+                                holder.mgrJointCallArray = prepareModelList(holder.selectedHq, Constants.JOINT_WORK);
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            } else {
+                                setSelectedCountMGR(holder, holder.mgrJointCallArray, false, holder.jcField, holder.jcCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.mgrSessionItemAdapterArray = filterMasterList(holder, holder.mgrJointCallArray, false);
+                            populateSessionMultiHQItemAdapter(holder);
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.JOINT_WORK);
                         } else {
-                            setSelectedCount(holder, holder.jointCallArray, false, holder.jcField, holder.jcCount);
+                            holder.fieldSelected = false;
+                            setSelectedCountMGR(holder, holder.mgrJointCallArray, true, holder.jcField, holder.jcCount);
+                            changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
                         }
-                        holder.fieldSelected = true;
-                        holder.sessionItemAdapterArray = holder.jointCallArray;
-                        populateSessionItemAdapter(holder, true, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.JOINT_WORK);
                     } else {
-                        holder.fieldSelected = false;
-                        setSelectedCount(holder, holder.jointCallArray, true, holder.jcField, holder.jcCount);
-                        changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        if (!holder.fieldSelected) {
+                            if (holder.jointCallArray.isEmpty()) {
+                                holder.jointCallArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + holder.selectedHq).getMasterSyncDataJsonArray());
+                                TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
+                            } else {
+                                setSelectedCount(holder, holder.jointCallArray, false, holder.jcField, holder.jcCount);
+                            }
+                            holder.fieldSelected = true;
+                            holder.sessionItemAdapterArray = holder.jointCallArray;
+                            populateSessionItemAdapter(holder, true, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.JOINT_WORK);
+                        } else {
+                            holder.fieldSelected = false;
+                            setSelectedCount(holder, holder.jointCallArray, true, holder.jcField, holder.jcCount);
+                            changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
+                            onEdit(holder.getAbsoluteAdapterPosition(), true, "");
+                        }
                     }
                 }
 
@@ -912,7 +959,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     setSelectedCountMGR(holder, holder.mgrListedDrArray, false, holder.drField, holder.drCount);
                                 }
                                 holder.fieldSelected = true;
-                                holder.mgrSessionItemAdapterArray = filterMasterList(holder, holder.mgrListedDrArray);
+                                holder.mgrSessionItemAdapterArray = filterMasterList(holder, holder.mgrListedDrArray, true);
                                 populateSessionMultiHQItemAdapter(holder);
                                 onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR);
                             } else {
@@ -969,7 +1016,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     setSelectedCountMGR(holder, holder.mgrChemistArray, false, holder.chemistField, holder.chemistCount);
                                 }
                                 holder.fieldSelected = true;
-                                holder.mgrSessionItemAdapterArray = filterMasterList(holder, holder.mgrChemistArray);
+                                holder.mgrSessionItemAdapterArray = filterMasterList(holder, holder.mgrChemistArray, true);
                                 populateSessionMultiHQItemAdapter(holder);
                                 onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST);
                             } else {
@@ -1024,7 +1071,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 setSelectedCountMGR(holder, holder.mgrStockiestArray, false, holder.stockiestField, holder.stockiestCount);
                             }
                             holder.fieldSelected = true;
-                            holder.mgrSessionItemAdapterArray = filterMasterList(holder, holder.mgrStockiestArray);
+                            holder.mgrSessionItemAdapterArray = filterMasterList(holder, holder.mgrStockiestArray, false);
                             populateSessionMultiHQItemAdapter(holder);
                             onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST);
                         } else {
@@ -1432,10 +1479,10 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
         if(SharedPref.getSfType(context).equalsIgnoreCase("2")) {
             holder.mgrClusterArray = prepareModelList(holder.selectedHq, Constants.CLUSTER);
+            holder.mgrJointCallArray = prepareModelList(holder.selectedHq, Constants.JOINT_WORK);
             holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR);
             holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST);
             holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST);
-//            holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR);
         }
     }
 
@@ -1812,7 +1859,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             count++;
                         }
                     }
-
                     if (count > 0) {
                         holder.jcField.setText("Selected");
                         holder.jcCount.setVisibility(View.VISIBLE);
@@ -1955,6 +2001,15 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     holder.clusterField.setText("Select");
                     holder.clusterCount.setVisibility(View.GONE);
                 }
+            } else if (holder.jcLayout.getVisibility() == View.VISIBLE) {
+                if (count > 0) {
+                    holder.jcField.setText("Selected");
+                    holder.jcCount.setVisibility(View.VISIBLE);
+                    holder.jcCount.setText(String.valueOf(count));
+                } else {
+                    holder.jcField.setText("Select");
+                    holder.jcCount.setVisibility(View.GONE);
+                }
             } else if (holder.drLayout.getVisibility() == View.VISIBLE) {
                 if (count > 0) {
                     holder.drField.setText("Selected");
@@ -2076,7 +2131,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         return arrayList;
     }
 
-    public ArrayList<MultiHQHeaderModelClass> filterMasterList(MyViewHolder holder, ArrayList<MultiHQHeaderModelClass> dataList) { // Filters based on selected cluster
+    public ArrayList<MultiHQHeaderModelClass> filterMasterList(MyViewHolder holder, ArrayList<MultiHQHeaderModelClass> dataList, boolean isClusterCheckNeeded) { // Filters based on selected cluster
         ArrayList<MultiHQHeaderModelClass> resultHeaderList = new ArrayList<>();
         for (int i = 0; i < dataList.size(); i++) {
             MultiHQHeaderModelClass multiHQHeaderModelClass = new MultiHQHeaderModelClass(dataList.get(i));
@@ -2085,7 +2140,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             ArrayList<String> selectedClustersList = holder.selectedClusterCodeMap.get(multiHQHeaderModelClass.getCode());
             if (selectedClustersList != null && !selectedClustersList.isEmpty() && multiHQItemModelClassArrayList != null && !multiHQItemModelClassArrayList.isEmpty()) {
                 for (int j = 0; j < multiHQItemModelClassArrayList.size(); j++) {
-                    if (selectedClustersList.contains(multiHQItemModelClassArrayList.get(j).getClusterCode())) { // filtering based on selected Cluster code
+                    if(isClusterCheckNeeded) {
+                        if(selectedClustersList.contains(multiHQItemModelClassArrayList.get(j).getClusterCode())) { // filtering based on selected Cluster code
+                            resultItemList.add(multiHQItemModelClassArrayList.get(j));
+                        }
+                    } else {
                         resultItemList.add(multiHQItemModelClassArrayList.get(j));
                     }
                 }
@@ -2215,8 +2274,13 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 sessionInterface.clusterChanged(inputDataArray, holder.getLayoutPosition());
             }
         } else if (holder.jcLayout.getVisibility() == View.VISIBLE) {
-            setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.jcField, holder.jcCount);
-            changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
+            if(isMGR) {
+                setSelectedCountMGR(holder, holder.mgrSessionItemAdapterArray, true, holder.jcField, holder.jcCount);
+                changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
+            } else {
+                setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.jcField, holder.jcCount);
+                changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
+            }
         } else if (holder.drLayout.getVisibility() == View.VISIBLE) {
             if (isMGR) {
                 setSelectedCountMGR(holder, holder.mgrSessionItemAdapterArray, true, holder.drField, holder.drCount);

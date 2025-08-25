@@ -28,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -41,6 +42,8 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
+import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
+import saneforce.sanzen.activity.tourPlan.model.MultiHQItemModelClass;
 import saneforce.sanzen.activity.tourPlan.session.SessionViewAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -304,11 +307,29 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
             List<ModelClass.SessionList.SubClass> doctorList = prepareList(jsonObject.optString("Dr_Code"), jsonObject.optString("Dr_Name"));
             List<ModelClass.SessionList.SubClass> chemistList = prepareList(jsonObject.optString("Chem_Code"), jsonObject.optString("Chem_Name"));
             List<ModelClass.SessionList.SubClass> stockistList = prepareList(jsonObject.optString("Stockist_Code"), jsonObject.optString("Stockist_Name"));
+            List<ModelClass.SessionList.SubClass> hqs = prepareList(jsonObject.optString("HQCodes"), jsonObject.optString("HQNames"));
+
+            ArrayList<MultiHQHeaderModelClass> clusters = prepareList(hqs, jsonObject.optString("ClusterCode"), jsonObject.optString("ClusterName"));
+            ArrayList<MultiHQHeaderModelClass> JCs = prepareList(hqs, jsonObject.optString("JWCodes"), jsonObject.optString("JWNames"));
+            ArrayList<MultiHQHeaderModelClass> listedDrs = prepareList(hqs, jsonObject.optString("Dr_Code"), jsonObject.optString("Dr_Name"));
+            ArrayList<MultiHQHeaderModelClass> chemists = prepareList(hqs, jsonObject.optString("Chem_Code"), jsonObject.optString("Chem_Name"));
+            ArrayList<MultiHQHeaderModelClass> stockiests = prepareList(hqs, jsonObject.optString("Stockist_Code"), jsonObject.optString("Stockist_Name"));
+            ArrayList<MultiHQHeaderModelClass> unListedDrs = new ArrayList<>();
+            ArrayList<MultiHQHeaderModelClass> cips = new ArrayList<>();
+            ArrayList<MultiHQHeaderModelClass> hospitals = new ArrayList<>();
+
             sessionList.setCluster(clusterList);
             sessionList.setJC(jwList);
             sessionList.setListedDr(doctorList);
             sessionList.setChemist(chemistList);
             sessionList.setStockiest(stockistList);
+            sessionList.setHQs(hqs);
+            sessionList.setClusters(clusters);
+            sessionList.setJCs(JCs);
+            sessionList.setListedDrs(listedDrs);
+            sessionList.setChemists(chemists);
+            sessionList.setStockiests(stockiests);
+            sessionList.setUnListedDrs(unListedDrs);
 
             ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
             sessionLists.add(sessionList);
@@ -324,14 +345,26 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
 
                 clusterList = prepareList(jsonObject.optString("ClusterCode2"), jsonObject.optString("ClusterName2"));
                 jwList = prepareList(jsonObject.optString("JWCodes2"), jsonObject.optString("JWNames2"));
-                doctorList = prepareList(jsonObject.optString("Dr_Code2"), jsonObject.optString("Dr_Name2"));
-                chemistList = prepareList(jsonObject.optString("Chem_Code2"), jsonObject.optString("Chem_Name2"));
-                stockistList = prepareList(jsonObject.optString("Stockist_Code2"), jsonObject.optString("Stockist_Name2"));
+                doctorList = prepareList(jsonObject.optString("Dr_two_code"), jsonObject.optString("Dr_two_name"));
+                chemistList = prepareList(jsonObject.optString("Chem_two_code"), jsonObject.optString("Chem_two_name"));
+                stockistList = prepareList(jsonObject.optString("Stockist_two_code"), jsonObject.optString("Stockist_two_name"));
+                hqs = prepareList(jsonObject.optString("HQCodes2"), jsonObject.optString("HQNames2"));
+                clusters = prepareList(hqs, jsonObject.optString("ClusterCode2"), jsonObject.optString("ClusterName2"));
+                JCs = prepareList(hqs, jsonObject.optString("JWCodes2"), jsonObject.optString("JWNames2"));
+                listedDrs = prepareList(hqs, jsonObject.optString("Dr_two_code"), jsonObject.optString("Dr_two_name"));
+                chemists = prepareList(hqs, jsonObject.optString("Chem_two_code"), jsonObject.optString("Chem_two_name"));
+                stockiests = prepareList(hqs, jsonObject.optString("Stockist_two_code"), jsonObject.optString("Stockist_two_name"));
                 sessionList.setCluster(clusterList);
                 sessionList.setJC(jwList);
                 sessionList.setListedDr(doctorList);
                 sessionList.setChemist(chemistList);
                 sessionList.setStockiest(stockistList);
+                sessionList.setHQs(hqs);
+                sessionList.setClusters(clusters);
+                sessionList.setJCs(JCs);
+                sessionList.setListedDrs(listedDrs);
+                sessionList.setChemists(chemists);
+                sessionList.setStockiests(stockiests);
 
                 sessionLists.add(sessionList);
             }
@@ -344,14 +377,26 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
 
                 clusterList = prepareList(jsonObject.optString("ClusterCode3"), jsonObject.optString("ClusterName3"));
                 jwList = prepareList(jsonObject.optString("JWCodes3"), jsonObject.optString("JWNames3"));
-                doctorList = prepareList(jsonObject.optString("Dr_Code3"), jsonObject.optString("Dr_Name3"));
-                chemistList = prepareList(jsonObject.optString("Chem_Code3"), jsonObject.optString("Chem_Name3"));
-                stockistList = prepareList(jsonObject.optString("Stockist_Code3"), jsonObject.optString("Stockist_Name3"));
+                doctorList = prepareList(jsonObject.optString("Dr_three_code"), jsonObject.optString("Dr_three_name"));
+                chemistList = prepareList(jsonObject.optString("Chem_three_code"), jsonObject.optString("Chem_three_name"));
+                stockistList = prepareList(jsonObject.optString("Stockist_three_code"), jsonObject.optString("Stockist_three_name"));
+                hqs = prepareList(jsonObject.optString("HQCodes2"), jsonObject.optString("HQNames2"));
+                clusters = prepareList(hqs, jsonObject.optString("ClusterCode3"), jsonObject.optString("ClusterName3"));
+                JCs = prepareList(hqs, jsonObject.optString("JWCodes3"), jsonObject.optString("JWNames3"));
+                listedDrs = prepareList(hqs, jsonObject.optString("Dr_three_code"), jsonObject.optString("Dr_three_name"));
+                chemists = prepareList(hqs, jsonObject.optString("Chem_three_code"), jsonObject.optString("Chem_three_name"));
+                stockiests = prepareList(hqs, jsonObject.optString("Stockist_Code"), jsonObject.optString("Stockist_three_name"));
                 sessionList.setCluster(clusterList);
                 sessionList.setJC(jwList);
                 sessionList.setListedDr(doctorList);
                 sessionList.setChemist(chemistList);
                 sessionList.setStockiest(stockistList);
+                sessionList.setHQs(hqs);
+                sessionList.setClusters(clusters);
+                sessionList.setJCs(JCs);
+                sessionList.setListedDrs(listedDrs);
+                sessionList.setChemists(chemists);
+                sessionList.setStockiests(stockiests);
 
                 sessionLists.add(sessionList);
             }
@@ -388,5 +433,43 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         }
         return list;
     }
+
+    private ArrayList<MultiHQHeaderModelClass> prepareList(List<ModelClass.SessionList.SubClass> hqs, String Code, String Name) {
+        String[] arrName = Name.split("\\$");
+        String[] arrCode = Code.split("\\$");
+        arrName = Arrays.stream(arrName)
+                .filter(s -> s != null && !s.isEmpty())
+                .toArray(String[]::new);
+        arrCode = Arrays.stream(arrCode)
+                .filter(s -> s != null && !s.isEmpty())
+                .toArray(String[]::new);
+        ArrayList<MultiHQHeaderModelClass> resultArray = new ArrayList<>();
+        for (int i = 0; i<hqs.size(); i++) {
+            ModelClass.SessionList.SubClass hq = hqs.get(i);
+            if(arrCode.length > i) {
+                try {
+                    String[] names = arrName[i].split(",");
+                    String[] codes = arrCode[i].split(",");
+                    ArrayList<MultiHQItemModelClass> itemsList = new ArrayList<>();
+                    MultiHQHeaderModelClass multiHQHeaderModelClass = new MultiHQHeaderModelClass(hq.getName(), hq.getCode(), itemsList, true);
+                    for (int j = 0; j<codes.length; j++) {
+                        MultiHQItemModelClass multiHQItemModelClass = new MultiHQItemModelClass(names[j], codes[j], hq.getCode(), "", "", true);
+                        itemsList.add(multiHQItemModelClass);
+                    }
+                    multiHQHeaderModelClass.setItemsList(itemsList);
+                    if(!itemsList.isEmpty()) {
+                        resultArray.add(multiHQHeaderModelClass);
+                    }
+                } catch (Exception e) {
+                    Log.d("TAG", "addExtraData: " + Name + Code);
+                    Log.d("TAG", "addExtraData: " + Arrays.asList(arrName).toString() + Arrays.asList(arrCode).toString());
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return resultArray;
+    }
+
 
 }
