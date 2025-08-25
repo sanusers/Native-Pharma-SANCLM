@@ -1823,17 +1823,25 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         for (int i = 0; i<hqs.size(); i++) {
             ModelClass.SessionList.SubClass hq = hqs.get(i);
-            String[] names = arrName[i].split(",");
-            String[] codes = arrCode[i].split(",");
-            ArrayList<MultiHQItemModelClass> itemsList = new ArrayList<>();
-            MultiHQHeaderModelClass multiHQHeaderModelClass = new MultiHQHeaderModelClass(hq.getName(), hq.getCode(), itemsList, true);
-            for (int j = 0; j<codes.length; j++) {
-                MultiHQItemModelClass multiHQItemModelClass = new MultiHQItemModelClass(names[j], codes[j], hq.getCode(), "", "", true);
-                itemsList.add(multiHQItemModelClass);
-            }
-            multiHQHeaderModelClass.setItemsList(itemsList);
-            if(!itemsList.isEmpty()) {
-                resultArray.add(multiHQHeaderModelClass);
+            if(arrCode.length > i) {
+                try {
+                    String[] names = arrName[i].split(",");
+                    String[] codes = arrCode[i].split(",");
+                    ArrayList<MultiHQItemModelClass> itemsList = new ArrayList<>();
+                    MultiHQHeaderModelClass multiHQHeaderModelClass = new MultiHQHeaderModelClass(hq.getName(), hq.getCode(), itemsList, true);
+                    for (int j = 0; j<codes.length; j++) {
+                        MultiHQItemModelClass multiHQItemModelClass = new MultiHQItemModelClass(names[j], codes[j], hq.getCode(), "", "", true);
+                        itemsList.add(multiHQItemModelClass);
+                    }
+                    multiHQHeaderModelClass.setItemsList(itemsList);
+                    if(!itemsList.isEmpty()) {
+                        resultArray.add(multiHQHeaderModelClass);
+                    }
+                } catch (Exception e) {
+                    Log.d("TAG", "addExtraData: " + Name + Code);
+                    Log.d("TAG", "addExtraData: " + Arrays.asList(arrName).toString() + Arrays.asList(arrCode).toString());
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -2030,8 +2038,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                     }
                 }
             }
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

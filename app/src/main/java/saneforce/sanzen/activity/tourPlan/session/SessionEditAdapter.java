@@ -394,10 +394,10 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //                holder.selectedHq = holder.sessionData.getHQs().toString();
                 for (int i = 0; i < holder.sessionData.getHQs().size(); i++) {
                     if (holder.selectedHq.isEmpty()) {
-                        holder.selectedHq += holder.sessionData.getHQs().get(i).getCode();
+                        holder.selectedHq = holder.sessionData.getHQs().get(i).getCode();
                     } else {
-                        holder.selectedHq += holder.sessionData.getHQs().get(i).getCode();
                         holder.selectedHq += ",";
+                        holder.selectedHq += holder.sessionData.getHQs().get(i).getCode();
                     }
                 }
 
@@ -2156,6 +2156,13 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             clusterChanged(holder.selectedClusterCode, holder.unListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
             clusterChanged(holder.selectedClusterCode, holder.cipArray, holder.cipField, Constants.CIP, holder);
             clusterChanged(holder.selectedClusterCode, holder.hospArray, holder.hospField, Constants.HOSPITAL, holder);
+
+            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrListedDrArray, holder.drField, Constants.DOCTOR, holder);
+            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrChemistArray, holder.chemistField, Constants.CHEMIST, holder);
+            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrStockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
+            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrUnListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
+            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrCipArray, holder.cipField, Constants.CIP, holder);
+            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrHospArray, holder.hospField, Constants.HOSPITAL, holder);
 
             setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.hqField, holder.hqCount);
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setLayoutVisible("");

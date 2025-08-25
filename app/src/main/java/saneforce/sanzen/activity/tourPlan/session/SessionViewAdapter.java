@@ -243,7 +243,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             if (stockiestName.length() > 0) {
                 holder.stockiestTV.setText(stockiestName);
             }
-        } else if(!holder.data.getChemists().isEmpty() && isMGR) {
+        } else if(!holder.data.getStockiests().isEmpty() && isMGR) {
             holder.stockiestLayout.setVisibility(View.VISIBLE);
             StringBuilder stockiestName = new StringBuilder();
             for (int i = 0; i < holder.stockistsModelArray.size(); i++) {
