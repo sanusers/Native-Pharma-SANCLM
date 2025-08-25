@@ -106,13 +106,20 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     }
                 }
                 String currentDate = dateFormat.format(new Date());
-                if(!previousDate.equals(currentDate)) {
-                    if(masterDataDao != null) {
-                        JSONArray workPlanArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
-                        if(workPlanArray.toString().equals("[]")) {
-                            HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
+                try {
+                    if(!previousDate.equals(currentDate)) {
+                        if(masterDataDao != null) {
+                            JSONArray workPlanArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
+                            if(workPlanArray.toString().equals("[]")) {
+                                HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
+                                if(HomeDashBoard.homeDashBoardActivity != null && !HomeDashBoard.homeDashBoardActivity.isFinishing() && !HomeDashBoard.homeDashBoardActivity.isDestroyed()) {
+                                    HomeDashBoard.homeDashBoardActivity.setUpCalendar();
+                                }
+                            }
                         }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 previousDate = currentDate;
             } catch (Exception e) {

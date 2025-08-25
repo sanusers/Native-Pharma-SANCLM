@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.BuildConfig;
+import com.google.firebase.sessions.LogEnvironment;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -60,11 +61,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.calendar.CalendarAdapter;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
+import saneforce.sanzen.activity.tourPlan.model.MultiHQItemModelClass;
 import saneforce.sanzen.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanzen.activity.tourPlan.session.SessionEditAdapter;
 import saneforce.sanzen.activity.tourPlan.session.SessionInterface;
@@ -137,6 +140,13 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
         return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+    }
+
+    public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, ArrayList<ModelClass.SessionList.SubClass> hqs,
+                                                                      ArrayList<MultiHQHeaderModelClass> clusters, ArrayList<MultiHQHeaderModelClass> JCs, ArrayList<MultiHQHeaderModelClass> listedDrs,
+                                                                      ArrayList<MultiHQHeaderModelClass> chemists, ArrayList<MultiHQHeaderModelClass> stockiests, ArrayList<MultiHQHeaderModelClass> unListedDrs,
+                                                                      ArrayList<MultiHQHeaderModelClass> cips, ArrayList<MultiHQHeaderModelClass> hospitals, String remarks) {
+        return new ModelClass.SessionList("", true, remarks, workType, hq, hqs, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clusters, JCs, listedDrs, chemists, stockiests, unListedDrs, cips, hospitals);
     }
 
     public static ModelClass.SessionList prepareSessionListForAdapter() {
@@ -654,134 +664,116 @@ public class TourPlanActivity extends AppCompatActivity {
                         boolean isEmpty = false;
                         int position = 0;
 
-                        /*ModelClass modelClass = inputDataArray;
-                        ArrayList<ModelClass.SessionList> sessionLists = modelClass.getSessionList();
-                        if (sessionLists.size() < Integer.parseInt(addSessionCountLimit)) {
-                            for (int i = 0; i < sessionLists.size(); i++) {
-                                ModelClass.SessionList modelClass1 = sessionLists.get(i);
-                                if (modelClass1.getWorkType().getName().isEmpty()) {
-                                    isEmpty = true;
-                                    position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
-                                    break;
-                                } else if (modelClass1.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
-                                    if (modelClass1.getHQ().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
-                                        isEmpty = true;
-                                        position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
-                                        break;
-                                    } else if (modelClass1.getCluster().size() == 0) {
-                                        isEmpty = true;
-                                        position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
-                                        break;
-                                    } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
-                                        if (FW_meetup_mandatory.equals("0")) {
-                                            if (drNeed.equals("0")) {
-                                                if (modelClass1.getListedDr().size() == 0) {
-                                                    isEmpty = true;
-                                                    position = i;
-                                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
-                                                    break;
-                                                } else if (modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) {
-                                                    isEmpty = true;
-                                                    position = i;
-                                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + " " + maxDrCount);
-                                                    break;
-                                                }
-                                            }*/
-                        ModelClass modelClass = inputDataArray;
-                        ArrayList<ModelClass.SessionList> sessionLists = modelClass.getSessionList();
-                        if (sessionLists.size() < Integer.parseInt(addSessionCountLimit)) {
-                            for (int i = 0; i < sessionLists.size(); i++) {
-                                ModelClass.SessionList modelClass1 = sessionLists.get(i);
-                                if (modelClass1.getWorkType().getName().isEmpty()) {
-                                    isEmpty = true;
-                                    position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
-                                    break;
-                                } else if (modelClass1.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
-                                    if (modelClass1.getHQ().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
-                                        isEmpty = true;
-                                        position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
-                                        break;
-                                    } else if (modelClass1.getCluster().size() == 0) {
-                                        isEmpty = true;
-                                        position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
-                                        break;
-                                    } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
-                                        if (FW_meetup_mandatory.equals("0")) {
-                                            if (drNeed.equals("0")) {
+                ModelClass modelClass = inputDataArray;
+                ArrayList<ModelClass.SessionList> sessionLists = modelClass.getSessionList();
+                if(sessionLists.size()<Integer.parseInt(addSessionCountLimit)) {
+                    for (int i = 0; i<sessionLists.size(); i++) {
+                        ModelClass.SessionList modelClass1 = sessionLists.get(i);
+                        if(modelClass1.getWorkType().getName().isEmpty()) {
+                            isEmpty = true;
+                            position = i;
+                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
+                            break;
+                        }else if(modelClass1.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
+                            if(modelClass1.getHQs().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                                isEmpty = true;
+                                position = i;
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
+                                break;
+                            }else if((modelClass1.getCluster().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1"))
+                                    || (modelClass1.getClusters().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2"))) {
+                                isEmpty = true;
+                                position = i;
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
+                                break;
+                            }
+//                            if(modelClass1.getHQ().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+//                                isEmpty = true;
+//                                position = i;
+//                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
+//                                break;
+//                            }else if(modelClass1.getCluster().size() == 0) {
+//                                isEmpty = true;
+//                                position = i;
+//                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
+//                                break;
+//                            }
+                            else if(modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                                if(FW_meetup_mandatory.equals("0")) {
+                                    if(drNeed.equals("0")) {
 //                                        if(modelClass1.getListedDr().size() == 0) {
 //                                            isEmpty = true;
 //                                            position = i;
 //                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
 //                                            break;
 //                                        }else
-                                                if ((modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
+
+                                        if((modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+                                            isEmpty = true;
+                                            position = i;
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                            break;
+                                        } else if((Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                                            try {
+                                                int drsCount = 0;
+                                                for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass1.getListedDrs()) {
+                                                    drsCount += multiHQHeaderModelClass.getItemsList().size();
+                                                }
+                                                if(drsCount>Integer.parseInt(maxDrCount)) {
                                                     isEmpty = true;
                                                     position = i;
                                                     commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
                                                     break;
                                                 }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
                                             }
-
-                                            if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 && modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
-                                                isEmpty = true;
-                                                position = i;
-                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + " " + (i + 1));
-                                                break;
-                                            }
-                                        }
-                                    }
-                                } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
-                                    if (FW_meetup_mandatory.equals("0")) {
-                                        if (drNeed.equals("0")) {
-                                            if (modelClass1.getListedDr().size() == 0) {
-                                                isEmpty = true;
-                                                position = i;
-                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
-                                                break;
-                                            } else if (modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) {
-                                                isEmpty = true;
-                                                position = i;
-                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + " " + maxDrCount);
-                                                break;
-                                            }
-                                        }
-                                        if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 && modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
-                                            isEmpty = true;
-                                            position = i;
-                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
-                                            break;
                                         }
                                     }
                                 }
 
-                                if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 && modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
-                                    isEmpty = true;
-                                    position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + (i + 1));
-                                    break;
-                                } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
-                                    if (FW_meetup_mandatory.equals("0")) {
-                                        if (drNeed.equals("0")) {
+                                    if((SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && modelClass1.getListedDr().isEmpty() && modelClass1.getChemist().isEmpty() && modelClass1.getStockiest().isEmpty() && modelClass1.getUnListedDr().isEmpty() && modelClass1.getCip().isEmpty() && modelClass1.getHospital().isEmpty())
+                                            || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && modelClass1.getListedDrs().isEmpty() && modelClass1.getChemists().isEmpty() && modelClass1.getStockiests().isEmpty() && modelClass1.getUnListedDrs().isEmpty() && modelClass1.getCips().isEmpty() && modelClass1.getHospitals().isEmpty())) {
+                                        isEmpty = true;
+                                        position = i;
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + (i + 1));
+                                        break;
+                                    }
+                                }
+                            }
+                        }else if(modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                            if(FW_meetup_mandatory.equals("0")) {
+                                if(drNeed.equals("0")) {
 //                                    if(modelClass1.getListedDr().size() == 0) {
 //                                        isEmpty = true;
 //                                        position = i;
 //                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
 //                                        break;
 //                                    }else
-                                            if ((modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
+                                            if ((modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)&& SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                                 isEmpty = true;
                                                 position = i;
                                                 commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
                                                 break;
+                                            }else if((Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                                                try {
+                                                    int drsCount = 0;
+                                                    for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass1.getListedDrs()) {
+                                                        drsCount += multiHQHeaderModelClass.getItemsList().size();
+                                                    }
+                                                    if(drsCount>Integer.parseInt(maxDrCount)) {
+                                                        isEmpty = true;
+                                                        position = i;
+                                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                                        break;
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
                                         }
-                                        if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 && modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
+                                if((SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && modelClass1.getListedDr().isEmpty() && modelClass1.getChemist().isEmpty() && modelClass1.getStockiest().isEmpty() && modelClass1.getUnListedDr().isEmpty() && modelClass1.getCip().isEmpty() && modelClass1.getHospital().isEmpty())
+                                        || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && modelClass1.getListedDrs().isEmpty() && modelClass1.getChemists().isEmpty() && modelClass1.getStockiests().isEmpty() && modelClass1.getUnListedDrs().isEmpty() && modelClass1.getCips().isEmpty() && modelClass1.getHospitals().isEmpty())) {
                                             isEmpty = true;
                                             position = i;
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + (i + 1));
@@ -974,75 +966,146 @@ public class TourPlanActivity extends AppCompatActivity {
                     boolean isEmpty = false;
                     int position = 0;
 
-                    ModelClass dataModel = inputDataArray;
-                    ArrayList<ModelClass.SessionList> sessionLists = dataModel.getSessionList();
-                    String dayNo = dataModel.getDayNo();
-                    for (int i = 0; i < sessionLists.size(); i++) {
-                        ModelClass.SessionList modelClass = sessionLists.get(i);
-                        if (modelClass.getWorkType().getName().isEmpty()) {
-                            isEmpty = true;
-                            position = i;
-                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
-                            break;
-                        } else if (modelClass.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // TerrSlFlg is "Y" (yes) means head quarter and clusters are mandatory
-                            if (modelClass.getHQ().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
-                                isEmpty = true;
-                                position = i;
-                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
-                                break;
-                            } else if (modelClass.getCluster().size() == 0) {
-                                isEmpty = true;
-                                position = i;
-                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
-                                break;
-                            } else if (modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
-                                if (FW_meetup_mandatory.equals("0")) {
-                                    if (drNeed.equals("0")) {
-                                        if (modelClass.getListedDr().size() == 0) {
-                                            isEmpty = true;
-                                            position = i;
-                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
-                                            break;
-                                        } else if (modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) {
+            ModelClass dataModel = inputDataArray;
+            ArrayList<ModelClass.SessionList> sessionLists = dataModel.getSessionList();
+            String dayNo = dataModel.getDayNo();
+            for (int i = 0; i<sessionLists.size(); i++) {
+                ModelClass.SessionList modelClass = sessionLists.get(i);
+                if(modelClass.getWorkType().getName().isEmpty()) {
+                    isEmpty = true;
+                    position = i;
+                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
+                    break;
+                }else if(modelClass.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // TerrSlFlg is "Y" (yes) means head quarter and clusters are mandatory
+//                    if(modelClass.getHQ().getName().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+//                        isEmpty = true;
+//                        position = i;
+//                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
+//                        break;
+//                    }else if(modelClass.getCluster().size() == 0) {
+//                        isEmpty = true;
+//                        position = i;
+//                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
+//                        break;
+//                    }else if(modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+//                        if(FW_meetup_mandatory.equals("0")) {
+//                            if(drNeed.equals("0")) {
+////                                if(modelClass.getListedDr().size() == 0) {
+////                                    isEmpty = true;
+////                                    position = i;
+////                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " +SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
+////                                    break;
+////                                }else
+//                                    if((modelClass.getListedDr().size()>Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
+//                                    isEmpty = true;
+//                                    position = i;
+//                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+//                                    break;
+//                                }
+//                            }
+//
+//                            if(modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 && modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
+//                                isEmpty = true;
+//                                position = i;
+//                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + (i + 1));
+//                                break;
+//                            }
+//                        }
+//                    }
+                    if(modelClass.getHQs().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                        isEmpty = true;
+                        position = i;
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
+                        break;
+                    }else if((modelClass.getCluster().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1"))
+                            || (modelClass.getClusters().isEmpty() && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2"))) {
+                        isEmpty = true;
+                        position = i;
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
+                        break;
+                    }else if(modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                        if(FW_meetup_mandatory.equals("0")) {
+                            if(drNeed.equals("0")) {
+//                                if(modelClass.getListedDr().size() == 0) {
+//                                    isEmpty = true;
+//                                    position = i;
+//                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " +SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
+//                                    break;
+//                                }else
+                                if((modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+                                    isEmpty = true;
+                                    position = i;
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                    break;
+                                } else if((Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                                    try {
+                                        int drsCount = 0;
+                                        for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getListedDrs()) {
+                                            drsCount += multiHQHeaderModelClass.getItemsList().size();
+                                        }
+                                        if(drsCount>Integer.parseInt(maxDrCount)) {
                                             isEmpty = true;
                                             position = i;
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
                                             break;
                                         }
-                                    }
-
-                                    if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 && modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
-                                        isEmpty = true;
-                                        position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + (i + 1));
-                                        break;
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
                                 }
                             }
-                        } else if (modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) { // if the selected work type is "F" means Field Work then we need to check the FW_meetup_mandatory
-                            if (FW_meetup_mandatory.equals("0")) { // "0"-- yes
-                                if (drNeed.equals("0")) { // Dr meet up mandatory
-                                    if (modelClass.getListedDr().size() == 0) {
-                                        isEmpty = true;
-                                        position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + (i + 1));
-                                        break;
-                                    } else if (modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) { //Selected Dr count should not be more than maxDrCount setup limit
+
+                            if((SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && modelClass.getListedDr().isEmpty() && modelClass.getChemist().isEmpty() && modelClass.getStockiest().isEmpty() && modelClass.getUnListedDr().isEmpty() && modelClass.getCip().isEmpty() && modelClass.getHospital().isEmpty())
+                                    || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && modelClass.getListedDrs().isEmpty() && modelClass.getChemists().isEmpty() && modelClass.getStockiests().isEmpty() && modelClass.getUnListedDrs().isEmpty() && modelClass.getCips().isEmpty() && modelClass.getHospitals().isEmpty())) {
+                                isEmpty = true;
+                                position = i;
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + (i + 1));
+                                break;
+                            }
+                        }
+                    }
+                }else if(modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) { // if the selected work type is "F" means Field Work then we need to check the FW_meetup_mandatory
+                    if(FW_meetup_mandatory.equals("0")) { // "0"-- yes
+                        if(drNeed.equals("0")) { // Dr meet up mandatory
+//                            if(modelClass.getListedDr().size() == 0) {
+//                                isEmpty = true;
+//                                position = i;
+//                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + (i + 1));
+//                                break;
+//                            }else
+
+                            if((modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+                                isEmpty = true;
+                                position = i;
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
+                                break;
+                            } else if((Integer.parseInt(maxDrCount) > 0) && SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                                try {
+                                    int drsCount = 0;
+                                    for (MultiHQHeaderModelClass multiHQHeaderModelClass : modelClass.getListedDrs()) {
+                                        drsCount += multiHQHeaderModelClass.getItemsList().size();
+                                    }
+                                    if(drsCount>Integer.parseInt(maxDrCount)) {
                                         isEmpty = true;
                                         position = i;
                                         commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.more_than_limit) + " " + maxDrCount);
                                         break;
                                     }
-                                }
-                                if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 && modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) { // when Dr meetup not mandatory but FW meetup mandatory.So check any of the meetup selected
-                                    isEmpty = true;
-                                    position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + (i + 1));
-                                    break;
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
                             }
                         }
+                        if((SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") && modelClass.getListedDr().isEmpty() && modelClass.getChemist().isEmpty() && modelClass.getStockiest().isEmpty() && modelClass.getUnListedDr().isEmpty() && modelClass.getCip().isEmpty() && modelClass.getHospital().isEmpty())
+                                || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && modelClass.getListedDrs().isEmpty() && modelClass.getChemists().isEmpty() && modelClass.getStockiests().isEmpty() && modelClass.getUnListedDrs().isEmpty() && modelClass.getCips().isEmpty() && modelClass.getHospitals().isEmpty())) {
+                            isEmpty = true;
+                            position = i;
+                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + (i + 1));
+                            break;
+                        }
                     }
+                }
+            }
 
                     if (!isEmpty) {
                         binding.tpDrawer.closeDrawer(GravityCompat.END);
@@ -1172,68 +1235,68 @@ public class TourPlanActivity extends AppCompatActivity {
                                             SharedPref.setStpStatus(TourPlanActivity.this, "Approved");
                                         }
 
-                                        JSONObject jsonSave = new JSONObject();
-                                        jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
-                                        jsonSave.put("sfcode", SharedPref.getSfCode(this));
-                                        jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
-                                        jsonSave.put("Rsf", SharedPref.getHqCode(this));
-                                        jsonSave.put("town_code", clusterCode);
-                                        jsonSave.put("town_name", clusterName);
-                                        jsonSave.put("Doctor_Id", doctorCode);
-                                        jsonSave.put("Doctor_Name", doctorName);
-                                        jsonSave.put("Chemist_Id", chemistCode);
-                                        jsonSave.put("Chemist_Name", chemistName);
-                                        jsonSave.put("Plan_Name", dayCaption);
-                                        jsonSave.put("Plan_SName", dayID);
-                                        jsonSave.put("Plan_Code", dayPlanCode);
-                                        jsonSave.put("StpFlag", activeFlag);
-                                        jsonSave.put("tableName", "save_stp");
-                                        jsonSave.put("ReqDt", dateTime);
-                                        Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
-                                        int stpFlag = 3;
-                                        try {
-                                            stpFlag = Integer.parseInt(activeFlag);
-                                        } catch (NumberFormatException e) {
-                                            e.printStackTrace();
-                                        }
-                                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
-                                    }
-                                }
-                            }
-                        } catch (Exception e) {
+                        JSONObject jsonSave = new JSONObject();
+                        jsonSave = CommonUtilsMethods.CommonObjectParameter(this);
+                        jsonSave.put("sfcode", SharedPref.getSfCode(this));
+                        jsonSave.put("DivCode", SharedPref.getDivisionCode(this));
+                        jsonSave.put("Rsf", SharedPref.getHqCode(this));
+                        jsonSave.put("town_code", clusterCode);
+                        jsonSave.put("town_name", clusterName);
+                        jsonSave.put("Doctor_Id", doctorCode);
+                        jsonSave.put("Doctor_Name", doctorName);
+                        jsonSave.put("Chemist_Id", chemistCode);
+                        jsonSave.put("Chemist_Name", chemistName);
+                        jsonSave.put("Plan_Name", dayCaption);
+                        jsonSave.put("Plan_SName", dayID);
+                        jsonSave.put("Plan_Code", dayPlanCode);
+                        jsonSave.put("StpFlag", activeFlag);
+                        jsonSave.put("tableName", "save_stp");
+                        jsonSave.put("ReqDt", dateTime);
+                        Log.d("STP save data", "saveSTPDataToLocal: " + jsonSave);
+                        int stpFlag = 3;
+                        try {
+                            stpFlag = Integer.parseInt(activeFlag);
+                        } catch (NumberFormatException e) {
                             e.printStackTrace();
                         }
-                        if (SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Approved")) {
-                            String month = "current";
-                            try {
-                                JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.TOUR_PLAN).getMasterSyncDataJsonArray();
-                                if (jsonArray1.length() > 0) {
-                                    JSONObject jsonObject1 = jsonArray1.getJSONObject(0);
-                                    if (LocalDate.now().getMonth() == localDate1.getMonth() && LocalDate.now().getYear() == localDate1.getYear()) {
-                                        month = "current";
-                                    } else if (LocalDate.now().minusMonths(1).getMonth() == localDate1.getMonth() && LocalDate.now().minusMonths(1).getYear() == localDate1.getYear()) {
-                                        month = "previous";
-                                    } else if (LocalDate.now().plusMonths(1).getMonth() == localDate1.getMonth() && LocalDate.now().plusMonths(1).getYear() == localDate1.getYear()) {
-                                        month = "next";
-                                    }
-                                    JSONArray jsonArray = jsonObject1.getJSONArray(month);
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                        String stpCode = jsonObject.optString("STP_Code");
-                                        if (!stpCode.isEmpty()) {
-                                            isSTPdataSet = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            if (!isSTPdataSet && !month.equalsIgnoreCase("previous")) {
-                                tourPlanOfflineDataDao.deleteByMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1)));
-                            }
+                        stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, dayCaption, clusterCode, clusterName, doctorCode, doctorName, chemistCode, chemistName, jsonObject.toString(), stpFlag, "0"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(SharedPref.getStpStatus(TourPlanActivity.this).equalsIgnoreCase("Approved")) {
+            String month = "current";
+            try {
+                JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.TOUR_PLAN).getMasterSyncDataJsonArray();
+                if(jsonArray1.length()>0) {
+                    JSONObject jsonObject1 = jsonArray1.getJSONObject(0);
+                    if(LocalDate.now().getMonth() == localDate1.getMonth() && LocalDate.now().getYear() == localDate1.getYear()) {
+                        month = "current";
+                    }else if(LocalDate.now().minusMonths(1).getMonth() == localDate1.getMonth() && LocalDate.now().minusMonths(1).getYear() == localDate1.getYear()) {
+                        month = "previous";
+                    }else if(LocalDate.now().plusMonths(1).getMonth() == localDate1.getMonth() && LocalDate.now().plusMonths(1).getYear() == localDate1.getYear()) {
+                        month = "next";
+                    }
+                    JSONArray jsonArray = jsonObject1.getJSONArray(month);
+                    for (int i = 0; i<jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String stpCode = jsonObject.optString("STP_Code");
+                        if(!stpCode.isEmpty()) {
+                            isSTPdataSet = true;
+                            break;
                         }
                     }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if(!isSTPdataSet && !month.equalsIgnoreCase("previous")) {
+                tourPlanOfflineDataDao.deleteByMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1)));
+            }
+        }
+    }
 
                     private ModelClass.SessionList prepareSessionListForAdapterEmpty () {
                         ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
@@ -2511,19 +2574,23 @@ public class TourPlanActivity extends AppCompatActivity {
                         networkStatusTask.execute();
                     }
 
-                    public void get3MonthRemoteTPData (String isClickedName){
-                        NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
-                            if (status) {
-                                try {
-                                    apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
-                                    JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(TourPlanActivity.this);
-                                    jsonObject.put("tableName", "getall_tp");
-                                    jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
-                                    jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
-                                    jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
-                                    jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_31, LocalDate.now().getMonth().toString()));
-                                    jsonObject.put("tp_year", LocalDate.now().getYear());
-                                    Log.v("tpGetPlan", "--json--" + jsonObject);
+    public void get3MonthRemoteTPData(String isClickedName) {
+        NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
+            if(status) {
+                try {
+                    apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
+                    JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(TourPlanActivity.this);
+                    if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+                        jsonObject.put("tableName", "getall_tp");
+                    } else {
+                        jsonObject.put("tableName", "getall_multitp");
+                    }
+                    jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
+                    jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
+                    jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
+                    jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_31, LocalDate.now().getMonth().toString()));
+                    jsonObject.put("tp_year", LocalDate.now().getYear());
+                    Log.v("tpGetPlan", "--json--" + jsonObject);
 
                                     Map<String, String> mapString = new HashMap<>();
                                     mapString.put("axn", "get/tp");
@@ -3710,52 +3777,121 @@ public class TourPlanActivity extends AppCompatActivity {
                         ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
                         ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-                        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
-                        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
+        ArrayList<ModelClass.SessionList.SubClass> hqs = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> clusters = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> JCs = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> listedDrs = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> chemists = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> stockiests = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> unListedDrs = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> cips = new ArrayList<>();
+        ArrayList<MultiHQHeaderModelClass> hospitals = new ArrayList<>();
 
-                        //   if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
-                        if (!receiveModel.getClusterName().isEmpty())
-                            clusterArray = addExtraData(receiveModel.getClusterName(), receiveModel.getClusterCode());
-                        if (!receiveModel.getJWNames().isEmpty())
-                            jcArray = addExtraData(receiveModel.getJWNames(), receiveModel.getJWCodes());
-                        if (!receiveModel.getDr_Name().isEmpty())
-                            drArray = addExtraData(receiveModel.getDr_Name(), receiveModel.getDr_Code());
-                        if (!receiveModel.getChem_Name().isEmpty())
-                            chemArray = addExtraData(receiveModel.getChem_Name(), receiveModel.getChem_Code());
-                        if (!receiveModel.getStockist_Name().isEmpty())
-                            stkArray = addExtraData(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
-                        //     }
-                        sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
+        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
+        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
 
-                        if (!receiveModel.getWTName2().isEmpty()) {
-                            session2 = true;
-                            String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
-                            String remarks2 = receiveModel.getDayRemarks2();
-                            workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg2(), receiveModel.getWTName2(), terrSlFlag2, receiveModel.getWTCode2());
-                            hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
-                            clusterArray = new ArrayList<>();
-                            jcArray = new ArrayList<>();
-                            drArray = new ArrayList<>();
-                            chemArray = new ArrayList<>();
-                            stkArray = new ArrayList<>();
-                            unListedDrArray = new ArrayList<>();
-                            cipArray = new ArrayList<>();
-                            hospArray = new ArrayList<>();
+        //   if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
+        if(SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+            if(!receiveModel.getClusterName().isEmpty())
+                clusterArray = addExtraData(receiveModel.getClusterName(), receiveModel.getClusterCode());
+            if(!receiveModel.getJWNames().isEmpty())
+                jcArray = addExtraData(receiveModel.getJWNames(), receiveModel.getJWCodes());
+            if(!receiveModel.getDr_Name().isEmpty())
+                drArray = addExtraData(receiveModel.getDr_Name(), receiveModel.getDr_Code());
+            if(!receiveModel.getChem_Name().isEmpty())
+                chemArray = addExtraData(receiveModel.getChem_Name(), receiveModel.getChem_Code());
+            if(!receiveModel.getStockist_Name().isEmpty())
+                stkArray = addExtraData(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
+        }else {
+            if(!receiveModel.getHQCodes().isEmpty()) {
+                hqs = addExtraData(receiveModel.getHQNames(), receiveModel.getHQCodes());
+            }
+            if(!receiveModel.getClusterName().isEmpty()) {
+                clusters = addExtraData(hqs, receiveModel.getClusterName(), receiveModel.getClusterCode());
+            }
+            if(!receiveModel.getJWNames().isEmpty()) {
+                JCs = addExtraData(hqs, receiveModel.getJWNames(), receiveModel.getJWCodes());
+            }
+            if(!receiveModel.getDr_Name().isEmpty()) {
+                listedDrs = addExtraData(hqs, receiveModel.getDr_Name(), receiveModel.getDr_Code());
+            }
+            if(!receiveModel.getChem_Name().isEmpty()) {
+                chemists = addExtraData(hqs, receiveModel.getChem_Name(), receiveModel.getChem_Code());
+            }
+            if(!receiveModel.getStockist_Name().isEmpty()) {
+                stockiests = addExtraData(hqs, receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
+            }
+        }
+        //     }
+        if(SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+            sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
+        } else {
+            sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, hqs, clusters, JCs, listedDrs, chemists, stockiests, unListedDrs, cips, hospitals, remarks);
+        }
+        if(!receiveModel.getWTName2().isEmpty()) {
+            session2 = true;
+            String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
+            String remarks2 = receiveModel.getDayRemarks2();
+            workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg2(), receiveModel.getWTName2(), terrSlFlag2, receiveModel.getWTCode2());
+            hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
+            clusterArray = new ArrayList<>();
+            jcArray = new ArrayList<>();
+            drArray = new ArrayList<>();
+            chemArray = new ArrayList<>();
+            stkArray = new ArrayList<>();
+            unListedDrArray = new ArrayList<>();
+            cipArray = new ArrayList<>();
+            hospArray = new ArrayList<>();
 
-                            if (!receiveModel.getClusterName2().isEmpty())
-                                clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
-                            if (!receiveModel.getJWNames2().isEmpty())
-                                jcArray = addExtraData(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
-                            if (!receiveModel.getDr_two_name().isEmpty())
-                                drArray = addExtraData(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
-                            if (!receiveModel.getChem_two_name().isEmpty())
-                                chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
-                            if (!receiveModel.getStockist_two_name().isEmpty())
-                                stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
+            hqs = new ArrayList<>();
+            clusters = new ArrayList<>();
+            JCs = new ArrayList<>();
+            listedDrs = new ArrayList<>();
+            chemists = new ArrayList<>();
+            stockiests = new ArrayList<>();
+            unListedDrs = new ArrayList<>();
+            cips = new ArrayList<>();
+            hospitals = new ArrayList<>();
 
-                            sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
-
-                        }
+            if(receiveModel.getFWFlg2().equalsIgnoreCase("F")) {
+                if(SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+                    if(!receiveModel.getClusterName2().isEmpty())
+                        clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
+                    if(!receiveModel.getJWNames2().isEmpty())
+                        jcArray = addExtraData(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
+                    if(!receiveModel.getDr_two_name().isEmpty())
+                        drArray = addExtraData(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
+                    if(!receiveModel.getChem_two_name().isEmpty())
+                        chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
+                    if(!receiveModel.getStockist_two_name().isEmpty())
+                        stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
+                } else {
+                    if(!receiveModel.getHQCodes2().isEmpty()) {
+                        hqs = addExtraData(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
+                    }
+                    if(!receiveModel.getClusterName2().isEmpty()) {
+                        clusters = addExtraData(hqs, receiveModel.getClusterName2(), receiveModel.getClusterCode2());
+                    }
+                    if(!receiveModel.getJWNames2().isEmpty()) {
+                        JCs = addExtraData(hqs, receiveModel.getJWNames2(), receiveModel.getJWCodes2());
+                    }
+                    if(!receiveModel.getDr_two_name().isEmpty()) {
+                        listedDrs = addExtraData(hqs, receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
+                    }
+                    if(!receiveModel.getChem_two_name().isEmpty()) {
+                        chemists = addExtraData(hqs, receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
+                    }
+                    if(!receiveModel.getStockist_two_name().isEmpty()) {
+                        stockiests = addExtraData(hqs, receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
+                    }
+                }
+            }
+            if(SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+                sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
+            } else {
+                sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, hqs, clusters, JCs, listedDrs, chemists, stockiests, unListedDrs, cips, hospitals, remarks2);
+            }
+        }
 
                         if (!receiveModel.getWTName3().isEmpty()) {
                             session3 = true;
@@ -3772,18 +3908,55 @@ public class TourPlanActivity extends AppCompatActivity {
                             cipArray = new ArrayList<>();
                             hospArray = new ArrayList<>();
 
-                            if (!receiveModel.getClusterName3().isEmpty())
-                                clusterArray = addExtraData(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
-                            if (!receiveModel.getJWNames3().isEmpty())
-                                jcArray = addExtraData(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
-                            if (!receiveModel.getDr_three_name().isEmpty())
-                                drArray = addExtraData(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
-                            if (!receiveModel.getChem_three_name().isEmpty())
-                                chemArray = addExtraData(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
-                            if (!receiveModel.getStockist_three_name().isEmpty())
-                                stkArray = addExtraData(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
-                            sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
-                        }
+            hqs = new ArrayList<>();
+            clusters = new ArrayList<>();
+            JCs = new ArrayList<>();
+            listedDrs = new ArrayList<>();
+            chemists = new ArrayList<>();
+            stockiests = new ArrayList<>();
+            unListedDrs = new ArrayList<>();
+            cips = new ArrayList<>();
+            hospitals = new ArrayList<>();
+
+            if(receiveModel.getFWFlg3().equalsIgnoreCase("F")) {
+                if(SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+                    if(!receiveModel.getClusterName3().isEmpty())
+                        clusterArray = addExtraData(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
+                    if(!receiveModel.getJWNames3().isEmpty())
+                        jcArray = addExtraData(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
+                    if(!receiveModel.getDr_three_name().isEmpty())
+                        drArray = addExtraData(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
+                    if(!receiveModel.getChem_three_name().isEmpty())
+                        chemArray = addExtraData(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
+                    if(!receiveModel.getStockist_three_name().isEmpty())
+                        stkArray = addExtraData(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
+                } else {
+                    if(!receiveModel.getHQCodes3().isEmpty()) {
+                        hqs = addExtraData(receiveModel.getHQNames3(), receiveModel.getHQCodes3());
+                    }
+                    if(!receiveModel.getClusterName3().isEmpty()) {
+                        clusters = addExtraData(hqs, receiveModel.getClusterName3(), receiveModel.getClusterCode3());
+                    }
+                    if(!receiveModel.getJWNames3().isEmpty()) {
+                        JCs = addExtraData(hqs, receiveModel.getJWNames3(), receiveModel.getJWCodes3());
+                    }
+                    if(!receiveModel.getDr_three_name().isEmpty()) {
+                        listedDrs = addExtraData(hqs, receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
+                    }
+                    if(!receiveModel.getChem_three_name().isEmpty()) {
+                        chemists = addExtraData(hqs, receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
+                    }
+                    if(!receiveModel.getStockist_three_name().isEmpty()) {
+                        stockiests = addExtraData(hqs, receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
+                    }
+                }
+            }
+            if(SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+                sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
+            } else {
+                sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, hqs, clusters, JCs, listedDrs, chemists, stockiests, unListedDrs, cips, hospitals, remarks3);
+            }
+        }
 
                         ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
                         sessionLists.add(sessionList);
@@ -3939,17 +4112,52 @@ public class TourPlanActivity extends AppCompatActivity {
                         return Array;
                     }
 
+    private ArrayList<MultiHQHeaderModelClass> addExtraData(ArrayList<ModelClass.SessionList.SubClass> hqs, String Name, String Code) {
+        String[] arrName = Name.split("\\$");
+        String[] arrCode = Code.split("\\$");
+        ArrayList<MultiHQHeaderModelClass> resultArray = new ArrayList<>();
 
-                    public void get1MonthRemoteTPData (LocalDate localDate1){
-                        try {
-                            apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
-                            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(TourPlanActivity.this);
-                            jsonObject.put("tableName", "gettpdetail");
-                            jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
-                            jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
-                            jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
-                            jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
-                            jsonObject.put("Year", localDate1.getYear());
+        for (int i = 0; i<hqs.size(); i++) {
+            ModelClass.SessionList.SubClass hq = hqs.get(i);
+            if(arrCode.length > i) {
+                try {
+                    String[] names = arrName[i].split(",");
+                    String[] codes = arrCode[i].split(",");
+                    ArrayList<MultiHQItemModelClass> itemsList = new ArrayList<>();
+                    MultiHQHeaderModelClass multiHQHeaderModelClass = new MultiHQHeaderModelClass(hq.getName(), hq.getCode(), itemsList, true);
+                    for (int j = 0; j<codes.length; j++) {
+                        MultiHQItemModelClass multiHQItemModelClass = new MultiHQItemModelClass(names[j], codes[j], hq.getCode(), "", "", true);
+                        itemsList.add(multiHQItemModelClass);
+                    }
+                    multiHQHeaderModelClass.setItemsList(itemsList);
+                    if(!itemsList.isEmpty()) {
+                        resultArray.add(multiHQHeaderModelClass);
+                    }
+                } catch (Exception e) {
+                    Log.d("TAG", "addExtraData: " + Name + Code);
+                    Log.d("TAG", "addExtraData: " + Arrays.asList(arrName).toString() + Arrays.asList(arrCode).toString());
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return resultArray;
+    }
+
+    public void get1MonthRemoteTPData(LocalDate localDate1) {
+        try {
+            apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
+            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(TourPlanActivity.this);
+            if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+                jsonObject.put("tableName", "gettpdetail");
+            } else {
+                jsonObject.put("tableName", "gettpmultihqdetail");
+            }
+            jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
+            jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
+            jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
+            jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
+            jsonObject.put("Year", localDate1.getYear());
 
 
                             Map<String, String> mapString = new HashMap<>();
@@ -4321,97 +4529,154 @@ public class TourPlanActivity extends AppCompatActivity {
                                                 if (modelClass.getDayNo().equals(dateForApproval)) {
                                                     JSONObject jsonObject = new JSONObject();
 
-                                                    jsonObject.put("SFCode", SharedPref.getSfCode(TourPlanActivity.this));
-                                                    jsonObject.put("SFName", SharedPref.getSfName(TourPlanActivity.this));
-                                                    jsonObject.put("Div", SharedPref.getDivisionCode(TourPlanActivity.this));
-                                                    jsonObject.put("Mnth", modelClass.getMonth());
-                                                    jsonObject.put("Yr", modelClass.getYear());
-                                                    jsonObject.put("dayno", modelClass.getDayNo());
-                                                    jsonObject.put("Change_Status", "0");
-                                                    jsonObject.put("Rejection_Reason", "");
-                                                    jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, modelClass.getDate()) + " 00:00:00");
-                                                    jsonObject.put("submitted_time", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
-                                                    jsonObject.put("Entry_mode", "Android -Edetailing");
-                                                    jsonObject.put("Approve_mode", "");
-                                                    jsonObject.put("Approved_time", "");
-                                                    jsonObject.put("app_version", BuildConfig.VERSION_NAME);
-                                                    jsonObject.put("Mode", "Android-Edet");
-                                                    if (isSTPBasedTP) {
-                                                        jsonObject.put("STP_Code", modelClass.getSTP_Code() != null ? modelClass.getSTP_Code() : "");
-                                                        jsonObject.put("STP_Name", modelClass.getSTP_Name() != null ? modelClass.getSTP_Name() : "");
-                                                    }
+                                    jsonObject.put("SFCode", SharedPref.getSfCode(TourPlanActivity.this));
+                                    jsonObject.put("SFName", SharedPref.getSfName(TourPlanActivity.this));
+                                    jsonObject.put("Div", SharedPref.getDivisionCode(TourPlanActivity.this));
+                                    jsonObject.put("Mnth", modelClass.getMonth());
+                                    jsonObject.put("Yr", modelClass.getYear());
+                                    jsonObject.put("dayno", modelClass.getDayNo());
+                                    jsonObject.put("Change_Status", "0");
+                                    jsonObject.put("Rejection_Reason", "");
+                                    jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, modelClass.getDate()) + " 00:00:00");
+                                    jsonObject.put("submitted_time", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
+                                    jsonObject.put("Entry_mode", "Android -Edetailing");
+                                    jsonObject.put("Approve_mode", "");
+                                    jsonObject.put("Approved_time", "");
+                                    jsonObject.put("app_version", BuildConfig.VERSION_NAME);
+                                    jsonObject.put("Mode", "Android-Edet");
+                                    if(isSTPBasedTP) {
+                                        jsonObject.put("STP_Code", modelClass.getSTP_Code() != null ? modelClass.getSTP_Code() : "");
+                                        jsonObject.put("STP_Name", modelClass.getSTP_Name() != null ? modelClass.getSTP_Name() : "");
+                                    }
 
                                                     String WTCode = "", WTName = "", FWFlg = "", HQCodes = "", HQNames = "", clusterCodes = "", clusterNames = "", JWCodes = "", JWNames = "", Dr_Code = "", Dr_Name = "", Chem_Code = "", Chem_Name = "", Stockist_Code = "", Stockist_Name = "", cip_code = "", cip_name = "", hosp_code = "", hosp_Name = "", DayRemarks = "";
                                                     String WTCode2 = "", WTName2 = "", FWFlg2 = "", HQCodes2 = "", HQNames2 = "", clusterCode2 = "", clusterName2 = "", JWCodes2 = "", JWNames2 = "", Dr_two_code = "", Dr_two_name = "", Chem_two_code = "", Chem_two_name = "", Stockist_two_code = "", Stockist_two_name = "", cip_code2 = "", cip_name2 = "", hosp_code2 = "", hosp_Name2 = "", DayRemarks2 = "";
                                                     String WTCode3 = "", WTName3 = "", FWFlg3 = "", HQCodes3 = "", HQNames3 = "", clusterCode3 = "", clusterName3 = "", JWCodes3 = "", JWNames3 = "", Dr_three_code = "", Dr_three_name = "", Chem_three_code = "", Chem_three_name = "", Stockist_three_code = "", Stockist_three_name = "", cip_code3 = "", cip_name3 = "", hosp_code3 = "", hosp_Name3 = "", DayRemarks3 = "";
 
-                                                    for (int i = 0; i < modelClass.getSessionList().size(); i++) {
-                                                        ModelClass.SessionList sessionList = modelClass.getSessionList().get(i);
-                                                        if (i == 0) {
-                                                            WTCode = sessionList.getWorkType().getCode();
-                                                            WTName = sessionList.getWorkType().getName();
-                                                            FWFlg = sessionList.getWorkType().getFWFlg();
-                                                            HQCodes = sessionList.getHQ().getCode();
-                                                            HQNames = sessionList.getHQ().getName();
-                                                            clusterCodes = textBuilder(sessionList.getCluster(), true);
-                                                            clusterNames = textBuilder(sessionList.getCluster(), false);
-                                                            JWCodes = textBuilder(sessionList.getJC(), true);
-                                                            JWNames = textBuilder(sessionList.getJC(), false);
-                                                            Dr_Code = textBuilder(sessionList.getListedDr(), true);
-                                                            Dr_Name = textBuilder(sessionList.getListedDr(), false);
-                                                            Chem_Code = textBuilder(sessionList.getChemist(), true);
-                                                            Chem_Name = textBuilder(sessionList.getChemist(), false);
-                                                            Stockist_Code = textBuilder(sessionList.getStockiest(), true);
-                                                            Stockist_Name = textBuilder(sessionList.getStockiest(), false);
-                                                            cip_code = textBuilder(sessionList.getCip(), true);
-                                                            cip_name = textBuilder(sessionList.getCip(), false);
-                                                            hosp_code = textBuilder(sessionList.getHospital(), true);
-                                                            hosp_Name = textBuilder(sessionList.getHospital(), false);
-                                                            DayRemarks = sessionList.getRemarks();
-                                                        } else if (i == 1) {
-                                                            WTCode2 = sessionList.getWorkType().getCode();
-                                                            WTName2 = sessionList.getWorkType().getName();
-                                                            FWFlg2 = sessionList.getWorkType().getFWFlg();
-                                                            HQCodes2 = sessionList.getHQ().getCode();
-                                                            HQNames2 = sessionList.getHQ().getName();
-                                                            clusterCode2 = textBuilder(sessionList.getCluster(), true);
-                                                            clusterName2 = textBuilder(sessionList.getCluster(), false);
-                                                            JWCodes2 = textBuilder(sessionList.getJC(), true);
-                                                            JWNames2 = textBuilder(sessionList.getJC(), false);
-                                                            Dr_two_code = textBuilder(sessionList.getListedDr(), true);
-                                                            Dr_two_name = textBuilder(sessionList.getListedDr(), false);
-                                                            Chem_two_code = textBuilder(sessionList.getChemist(), true);
-                                                            Chem_two_name = textBuilder(sessionList.getChemist(), false);
-                                                            Stockist_two_code = textBuilder(sessionList.getStockiest(), true);
-                                                            Stockist_two_name = textBuilder(sessionList.getStockiest(), false);
-                                                            cip_code2 = textBuilder(sessionList.getCip(), true);
-                                                            cip_name2 = textBuilder(sessionList.getCip(), false);
-                                                            hosp_code2 = textBuilder(sessionList.getHospital(), true);
-                                                            hosp_Name2 = textBuilder(sessionList.getHospital(), false);
-                                                            DayRemarks2 = sessionList.getRemarks();
-                                                        } else if (i == 2) {
-                                                            WTCode3 = sessionList.getWorkType().getCode();
-                                                            WTName3 = sessionList.getWorkType().getName();
-                                                            FWFlg3 = sessionList.getWorkType().getFWFlg();
-                                                            HQCodes3 = sessionList.getHQ().getCode();
-                                                            HQNames3 = sessionList.getHQ().getName();
-                                                            clusterCode3 = textBuilder(sessionList.getCluster(), true);
-                                                            clusterName3 = textBuilder(sessionList.getCluster(), false);
-                                                            JWCodes3 = textBuilder(sessionList.getJC(), true);
-                                                            JWNames3 = textBuilder(sessionList.getJC(), false);
-                                                            Dr_three_code = textBuilder(sessionList.getListedDr(), true);
-                                                            Dr_three_name = textBuilder(sessionList.getListedDr(), false);
-                                                            Chem_three_code = textBuilder(sessionList.getChemist(), true);
-                                                            Chem_three_name = textBuilder(sessionList.getChemist(), false);
-                                                            Stockist_three_code = textBuilder(sessionList.getStockiest(), true);
-                                                            Stockist_three_name = textBuilder(sessionList.getStockiest(), false);
-                                                            cip_code3 = textBuilder(sessionList.getCip(), true);
-                                                            cip_name3 = textBuilder(sessionList.getCip(), false);
-                                                            hosp_code3 = textBuilder(sessionList.getHospital(), true);
-                                                            hosp_Name3 = textBuilder(sessionList.getHospital(), false);
-                                                            DayRemarks3 = sessionList.getRemarks();
-                                                        }
-                                                    }
+                                    for (int i = 0; i<modelClass.getSessionList().size(); i++) {
+                                        ModelClass.SessionList sessionList = modelClass.getSessionList().get(i);
+                                        if(i == 0) {
+                                            WTCode = sessionList.getWorkType().getCode();
+                                            WTName = sessionList.getWorkType().getName();
+                                            FWFlg = sessionList.getWorkType().getFWFlg();
+                                            if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+                                                HQCodes = sessionList.getHQ().getCode();
+                                                HQNames = sessionList.getHQ().getName();
+                                                clusterCodes = textBuilder(sessionList.getCluster(), true);
+                                                clusterNames = textBuilder(sessionList.getCluster(), false);
+                                                JWCodes = textBuilder(sessionList.getJC(), true);
+                                                JWNames = textBuilder(sessionList.getJC(), false);
+                                                Dr_Code = textBuilder(sessionList.getListedDr(), true);
+                                                Dr_Name = textBuilder(sessionList.getListedDr(), false);
+                                                Chem_Code = textBuilder(sessionList.getChemist(), true);
+                                                Chem_Name = textBuilder(sessionList.getChemist(), false);
+                                                Stockist_Code = textBuilder(sessionList.getStockiest(), true);
+                                                Stockist_Name = textBuilder(sessionList.getStockiest(), false);
+                                                cip_code = textBuilder(sessionList.getCip(), true);
+                                                cip_name = textBuilder(sessionList.getCip(), false);
+                                                hosp_code = textBuilder(sessionList.getHospital(), true);
+                                                hosp_Name = textBuilder(sessionList.getHospital(), false);
+                                            } else if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                                                HQCodes = textBuilder(sessionList.getHQs(), true);
+                                                HQNames = textBuilder(sessionList.getHQs(), false);
+                                                clusterCodes = textBuilderMultiHQ(sessionList.getClusters(), true);
+                                                clusterNames = textBuilderMultiHQ(sessionList.getClusters(), false);
+                                                JWCodes = textBuilderMultiHQ(sessionList.getJCs(), true);
+                                                JWNames = textBuilderMultiHQ(sessionList.getJCs(), false);
+                                                Dr_Code = textBuilderMultiHQ(sessionList.getListedDrs(), true);
+                                                Dr_Name = textBuilderMultiHQ(sessionList.getListedDrs(), false);
+                                                Chem_Code = textBuilderMultiHQ(sessionList.getChemists(), true);
+                                                Chem_Name = textBuilderMultiHQ(sessionList.getChemists(), false);
+                                                Stockist_Code = textBuilderMultiHQ(sessionList.getStockiests(), true);
+                                                Stockist_Name = textBuilderMultiHQ(sessionList.getStockiests(), false);
+                                                cip_code = textBuilderMultiHQ(sessionList.getCips(), true);
+                                                cip_name = textBuilderMultiHQ(sessionList.getCips(), false);
+                                                hosp_code = textBuilderMultiHQ(sessionList.getHospitals(), true);
+                                                hosp_Name = textBuilderMultiHQ(sessionList.getHospitals(), false);
+                                            }
+                                            DayRemarks = sessionList.getRemarks();
+                                        }else if(i == 1) {
+                                            WTCode2 = sessionList.getWorkType().getCode();
+                                            WTName2 = sessionList.getWorkType().getName();
+                                            FWFlg2 = sessionList.getWorkType().getFWFlg();
+                                            if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+                                                HQCodes2 = sessionList.getHQ().getCode();
+                                                HQNames2 = sessionList.getHQ().getName();
+                                                clusterCode2 = textBuilder(sessionList.getCluster(), true);
+                                                clusterName2 = textBuilder(sessionList.getCluster(), false);
+                                                JWCodes2 = textBuilder(sessionList.getJC(), true);
+                                                JWNames2 = textBuilder(sessionList.getJC(), false);
+                                                Dr_two_code = textBuilder(sessionList.getListedDr(), true);
+                                                Dr_two_name = textBuilder(sessionList.getListedDr(), false);
+                                                Chem_two_code = textBuilder(sessionList.getChemist(), true);
+                                                Chem_two_name = textBuilder(sessionList.getChemist(), false);
+                                                Stockist_two_code = textBuilder(sessionList.getStockiest(), true);
+                                                Stockist_two_name = textBuilder(sessionList.getStockiest(), false);
+                                                cip_code2 = textBuilder(sessionList.getCip(), true);
+                                                cip_name2 = textBuilder(sessionList.getCip(), false);
+                                                hosp_code2 = textBuilder(sessionList.getHospital(), true);
+                                                hosp_Name2 = textBuilder(sessionList.getHospital(), false);
+                                            } else if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                                                HQCodes2 = textBuilder(sessionList.getHQs(), true);
+                                                HQNames2 = textBuilder(sessionList.getHQs(), false);
+                                                clusterCode2 = textBuilderMultiHQ(sessionList.getClusters(), true);
+                                                clusterName2 = textBuilderMultiHQ(sessionList.getClusters(), false);
+                                                JWCodes2 = textBuilderMultiHQ(sessionList.getJCs(), true);
+                                                JWNames2 = textBuilderMultiHQ(sessionList.getJCs(), false);
+                                                Dr_two_code = textBuilderMultiHQ(sessionList.getListedDrs(), true);
+                                                Dr_two_name = textBuilderMultiHQ(sessionList.getListedDrs(), false);
+                                                Chem_two_code = textBuilderMultiHQ(sessionList.getChemists(), true);
+                                                Chem_two_name = textBuilderMultiHQ(sessionList.getChemists(), false);
+                                                Stockist_two_code = textBuilderMultiHQ(sessionList.getStockiests(), true);
+                                                Stockist_two_name = textBuilderMultiHQ(sessionList.getStockiests(), false);
+                                                cip_code2 = textBuilderMultiHQ(sessionList.getCips(), true);
+                                                cip_name2 = textBuilderMultiHQ(sessionList.getCips(), false);
+                                                hosp_code2 = textBuilderMultiHQ(sessionList.getHospitals(), true);
+                                                hosp_Name2 = textBuilderMultiHQ(sessionList.getHospitals(), false);
+                                            }
+                                            DayRemarks2 = sessionList.getRemarks();
+                                        }else if(i == 2) {
+                                            WTCode3 = sessionList.getWorkType().getCode();
+                                            WTName3 = sessionList.getWorkType().getName();
+                                            FWFlg3 = sessionList.getWorkType().getFWFlg();
+
+                                            if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+                                                HQCodes3 = sessionList.getHQ().getCode();
+                                                HQNames3 = sessionList.getHQ().getName();
+                                                clusterCode3 = textBuilder(sessionList.getCluster(), true);
+                                                clusterName3 = textBuilder(sessionList.getCluster(), false);
+                                                JWCodes3 = textBuilder(sessionList.getJC(), true);
+                                                JWNames3 = textBuilder(sessionList.getJC(), false);
+                                                Dr_three_code = textBuilder(sessionList.getListedDr(), true);
+                                                Dr_three_name = textBuilder(sessionList.getListedDr(), false);
+                                                Chem_three_code = textBuilder(sessionList.getChemist(), true);
+                                                Chem_three_name = textBuilder(sessionList.getChemist(), false);
+                                                Stockist_three_code = textBuilder(sessionList.getStockiest(), true);
+                                                Stockist_three_name = textBuilder(sessionList.getStockiest(), false);
+                                                cip_code3 = textBuilder(sessionList.getCip(), true);
+                                                cip_name3 = textBuilder(sessionList.getCip(), false);
+                                                hosp_code3 = textBuilder(sessionList.getHospital(), true);
+                                                hosp_Name3 = textBuilder(sessionList.getHospital(), false);
+                                            } else if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2")) {
+                                                HQCodes3 = textBuilder(sessionList.getHQs(), true);
+                                                HQNames3 = textBuilder(sessionList.getHQs(), false);
+                                                clusterCode3 = textBuilderMultiHQ(sessionList.getClusters(), true);
+                                                clusterName3 = textBuilderMultiHQ(sessionList.getClusters(), false);
+                                                JWCodes3 = textBuilderMultiHQ(sessionList.getJCs(), true);
+                                                JWNames3 = textBuilderMultiHQ(sessionList.getJCs(), false);
+                                                Dr_three_code = textBuilderMultiHQ(sessionList.getListedDrs(), true);
+                                                Dr_three_name = textBuilderMultiHQ(sessionList.getListedDrs(), false);
+                                                Chem_three_code = textBuilderMultiHQ(sessionList.getChemists(), true);
+                                                Chem_three_name = textBuilderMultiHQ(sessionList.getChemists(), false);
+                                                Stockist_three_code = textBuilderMultiHQ(sessionList.getStockiests(), true);
+                                                Stockist_three_name = textBuilderMultiHQ(sessionList.getStockiests(), false);
+                                                cip_code3 = textBuilderMultiHQ(sessionList.getCips(), true);
+                                                cip_name3 = textBuilderMultiHQ(sessionList.getCips(), false);
+                                                hosp_code3 = textBuilderMultiHQ(sessionList.getHospitals(), true);
+                                                hosp_Name3 = textBuilderMultiHQ(sessionList.getHospitals(), false);
+                                            }
+                                        }
+                                    }
 
                                                     jsonObject.put("WTCode", WTCode);
                                                     jsonObject.put("WTName", WTName);
@@ -4476,499 +4741,28 @@ public class TourPlanActivity extends AppCompatActivity {
                                                     jsonObject.put("hosp_Name3", hosp_Name3);
                                                     jsonObject.put("DayRemarks3", DayRemarks3);
 
-                                                    jsonArray.put(jsonObject);
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        sendTpForApproval(jsonArray, arrayList, dateForApproval, month, statusOffline);
-                                    } catch (JSONException ex) {
-                                        if (statusOffline) {
-                                            binding.progressBar.setVisibility(View.GONE);
-                                        }
-                                        ex.printStackTrace();
-                                    }
-                                } else {
-                                    if (statusOffline) {
-                                        binding.progressBar.setVisibility(View.GONE);
-                                    }
-                                    saveTpLocal(arrayList, dateForApproval, month, "1"); // Sync Failed
+                                    jsonArray.put(jsonObject);
+                                    Log.d("TAG", "prepare json: " + jsonArray);
+                                    break;
                                 }
                             }
-                        });
-                        networkStatusTask.execute();
-
+                        }
+                        sendTpForApproval(jsonArray, arrayList, dateForApproval, month, statusOffline);
+                    } catch (JSONException ex) {
+                        if(statusOffline) {
+                            binding.progressBar.setVisibility(View.GONE);
+                        }
+                        ex.printStackTrace();
                     }
-
-                    public void prepareObjectToSendForApprovalOneBuild (String month, String
-                    dateForApproval, ArrayList < OneBuildModelClass > arrayList,
-                    boolean statusOffline, String isClickedName){
-                        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
-                        NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
-
-
-                            @Override
-                            public void isNetworkAvailable(Boolean status) {
-                                if (status) {
-                                    try {
-                                        int id = 0;
-                                        switch (isClickedName) {
-                                            case "prev":
-                                                id = SharedPref.getTpIdPreviousMonth(TourPlanActivity.this);
-                                                break;
-                                            case "current":
-                                                id = SharedPref.getTpIdCurrentMonth(TourPlanActivity.this);
-                                                break;
-                                            case "next":
-                                                id = SharedPref.getTpIdNextMonth(TourPlanActivity.this);
-                                                break;
-                                        }
-
-
-                                        JsonObject jsonObject = new JsonObject();
-                                        jsonObject.addProperty("mode", "AndroidDetailing");
-                                        jsonObject.addProperty("tpId", id);
-
-
-                                        JsonObject tourPlan = new JsonObject();
-                                        OneBuildModelClass oneBuildModelClassTp = arrayList.get(10);
-                                        tourPlan.addProperty("SFCode", SharedPref.getSfCode(TourPlanActivity.this));
-                                        tourPlan.addProperty("SFName", SharedPref.getSfName(TourPlanActivity.this));
-                                        tourPlan.addProperty("Month", Integer.parseInt(oneBuildModelClassTp.getMonth()));
-                                        tourPlan.addProperty("Year", Integer.parseInt(oneBuildModelClassTp.getYear()));
-                                        tourPlan.addProperty("DivisionCode", SharedPref.getDivisionCode(TourPlanActivity.this).replace(",", ""));
-
-
-                                        JsonArray detailsArray = new JsonArray();
-
-                                        for (OneBuildModelClass oneBuildModelClass : arrayList) {
-                                            if (!oneBuildModelClass.getDayNo().isEmpty()) {
-                                                if (!oneBuildModelClass.getDayNo().equals(arrayList)) {
-                                                    String WorkTypeName = "", WorkTypeFlag = "", WorkTypeCode = "", SessionId = "", Remarks = "", WorkTypeName2 = "", WorkTypeFlag2 = "", WorkTypeCode2 = "", SessionId2 = "", Remarks2 = "", WorkTypeName3 = "", WorkTypeFlag3 = "", WorkTypeCode3 = "", SessionId3 = "", Remarks3 = "";
-                                                    String HeadquartersName = "", HeadquartersCode = "", TerritoriesName = "", TerritoriesCode = "", JWName = "", JWCode = "", CheName = "", CheCode = "", DrName = "", DrCode = "", UnDrName = "", UnDrCode = "", StkName = "", StkCode = "", CipName = "", CipCode = "", HospName = "", HospCode = "";
-                                                    String HeadquartersName2 = "", HeadquartersCode2 = "", TerritoriesName2 = "", TerritoriesCode2 = "", JWName2 = "", JWCode2 = "", CheName2 = "", CheCode2 = "", DrName2 = "", DrCode2 = "", UnDrName2 = "", UnDrCode2 = "", StkName2 = "", StkCode2 = "", CipName2 = "", CipCode2 = "", HospName2 = "", HospCode2 = "";
-                                                    String HeadquartersName3 = "", HeadquartersCode3 = "", TerritoriesName3 = "", TerritoriesCode3 = "", JWName3 = "", JWCode3 = "", CheName3 = "", CheCode3 = "", DrName3 = "", DrCode3 = "", UnDrName3 = "", UnDrCode3 = "", StkName3 = "", StkCode3 = "", CipName3 = "", CipCode3 = "", HospName3 = "", HospCode3 = "";
-
-                                                    for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
-                                                        OneBuildModelClass.SessionList sessionList_OneBuild = oneBuildModelClass.getSessionList().get(i);
-
-                                                        if (i == 0) {
-                                                            WorkTypeName = sessionList_OneBuild.getWorkType().getName();
-                                                            WorkTypeCode = sessionList_OneBuild.getWorkType().getCode();
-                                                            WorkTypeFlag = sessionList_OneBuild.getWorkType().getFWFlg();
-                                                            SessionId = String.valueOf(oneBuildModelClass.getSessionList().get(i));
-                                                            Remarks = sessionList_OneBuild.getRemarks();
-
-                                                            if (sessionList_OneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
-                                                                HeadquartersName = sessionList_OneBuild.getHeadquarters().getName();
-                                                                HeadquartersCode = sessionList_OneBuild.getHeadquarters().getCode();
-                                                            }
-                                                            TerritoriesName = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
-                                                            TerritoriesCode = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
-                                                            JWName = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
-                                                            JWCode = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
-
-                                                            CheName = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
-                                                            CheCode = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
-                                                            DrName = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
-                                                            DrCode = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
-                                                            UnDrName = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
-                                                            UnDrCode = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                                                            StkName = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                                                            StkCode = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
-                                                            CipName = textBuilder_OB(sessionList_OneBuild.getCip(), false);
-                                                            CipCode = textBuilder_OB(sessionList_OneBuild.getCip(), true);
-                                                            HospName = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
-                                                            HospCode = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
-
-                                                        } else if (i == 1) {
-                                                            WorkTypeName2 = sessionList_OneBuild.getWorkType().getName();
-                                                            WorkTypeCode2 = sessionList_OneBuild.getWorkType().getCode();
-                                                            WorkTypeFlag2 = sessionList_OneBuild.getWorkType().getFWFlg();
-                                                            SessionId2 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
-                                                            Remarks2 = sessionList_OneBuild.getRemarks();
-
-                                                            HeadquartersName2 = sessionList_OneBuild.getHeadquarters().getName();
-                                                            HeadquartersCode2 = sessionList_OneBuild.getHeadquarters().getCode();
-                                                            TerritoriesName2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
-                                                            TerritoriesCode2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
-                                                            JWName2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
-                                                            JWCode2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
-
-                                                            CheName2 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
-                                                            CheCode2 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
-                                                            DrName2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
-                                                            DrCode2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
-                                                            UnDrName2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
-                                                            UnDrCode2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                                                            StkName2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                                                            StkCode2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
-                                                            CipName2 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
-                                                            CipCode2 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
-                                                            HospName2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
-                                                            HospCode2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
-
-                                                        } else if (i == 2) {
-                                                            WorkTypeName3 = sessionList_OneBuild.getWorkType().getName();
-                                                            WorkTypeCode3 = sessionList_OneBuild.getWorkType().getCode();
-                                                            WorkTypeFlag3 = sessionList_OneBuild.getWorkType().getFWFlg();
-                                                            SessionId3 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
-                                                            Remarks3 = sessionList_OneBuild.getRemarks();
-
-                                                            HeadquartersName3 = sessionList_OneBuild.getHeadquarters().getName();
-                                                            HeadquartersCode3 = sessionList_OneBuild.getHeadquarters().getCode();
-                                                            TerritoriesName3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
-                                                            TerritoriesCode3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
-
-                                                            JWName3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
-                                                            JWCode3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
-                                                            CheName3 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
-                                                            CheCode3 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
-                                                            DrName3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
-                                                            DrCode3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
-                                                            UnDrName3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
-                                                            UnDrCode3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                                                            StkName3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                                                            StkCode3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
-                                                            CipName3 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
-                                                            CipCode3 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
-                                                            HospName3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
-                                                            HospCode3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
-                                                        }
-                                                    }
-
-
-                                                    //Sessions
-                                                    JsonArray Sessions = new JsonArray();
-                                                    for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
-                                                        if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
-                                                            JsonObject SessionsObj = new JsonObject();
-                                                            if (i == 0) {
-                                                                if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
-
-                                                                    SessionsObj.addProperty("WorkTypeCode", WorkTypeCode);
-                                                                    SessionsObj.addProperty("WorkTypeName", WorkTypeName);
-                                                                    SessionsObj.addProperty("Id", i);
-                                                                    SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag);
-                                                                    SessionsObj.addProperty("Remark", Remarks);
-                                                                }
-                                                            } else if (i == 1) {
-                                                                if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
-
-                                                                    SessionsObj.addProperty("WorkTypeCode", WorkTypeCode2);
-                                                                    SessionsObj.addProperty("WorkTypeName", WorkTypeName2);
-                                                                    SessionsObj.addProperty("Id", i);
-                                                                    SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag2);
-                                                                    SessionsObj.addProperty("Remark", Remarks2);
-                                                                }
-                                                            } else if (i == 2) {
-                                                                if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
-
-                                                                    SessionsObj.addProperty("WorkTypeCode", WorkTypeCode3);
-                                                                    SessionsObj.addProperty("WorkTypeName", WorkTypeName3);
-                                                                    SessionsObj.addProperty("Id", i);
-                                                                    SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag3);
-                                                                    SessionsObj.addProperty("Remark", Remarks3);
-                                                                }
-                                                            }
-
-
-                                                            JsonArray JointWorks = new JsonArray();
-
-                                                            String nameJw = "";
-                                                            String codeJw = "";
-
-                                                            if (i == 0) {
-                                                                nameJw = JWName;
-                                                                codeJw = JWCode;
-                                                            } else if (i == 1) {
-                                                                nameJw = JWName2;
-                                                                codeJw = JWCode2;
-                                                            } else if (i == 2) {
-                                                                nameJw = JWName3;
-                                                                codeJw = JWCode3;
-                                                            }
-
-                                                            if (!nameJw.isEmpty() && !codeJw.isEmpty()) {
-                                                                String[] nameArr = nameJw.split(",");
-                                                                String[] codeArr = codeJw.split(",");
-
-                                                                int length = Math.min(nameArr.length, codeArr.length);
-
-                                                                for (int j = 0; j < length; j++) {
-                                                                    JsonObject JointWorks_obj = new JsonObject();
-                                                                    JointWorks_obj.addProperty("Name", nameArr[j].trim());
-                                                                    JointWorks_obj.addProperty("Id", codeArr[j].trim());
-                                                                    JointWorks.add(JointWorks_obj);
-                                                                }
-                                                            }
-
-
-                                                            //Territories
-                                                            JsonArray Territories = new JsonArray();
-                                                            String nameTerr = "";
-                                                            String codeTerr = "";
-                                                            if (i == 0) {
-                                                                nameTerr = TerritoriesName;
-                                                                codeTerr = TerritoriesCode;
-                                                            } else if (i == 1) {
-                                                                nameTerr = TerritoriesName2;
-                                                                codeTerr = TerritoriesCode2;
-                                                            } else if (i == 2) {
-                                                                nameTerr = TerritoriesName3;
-                                                                codeTerr = TerritoriesCode3;
-                                                            }
-                                                            if (!nameTerr.isEmpty() && !codeTerr.isEmpty()) {
-                                                                String[] nameArr = nameTerr.split(",");
-                                                                String[] codeArr = codeTerr.split(",");
-
-                                                                int length = Math.min(nameArr.length, codeArr.length);
-
-                                                                for (int j = 0; j < length; j++) {
-                                                                    JsonObject Territories_obj = new JsonObject();
-                                                                    Territories_obj.addProperty("Name", nameArr[j].trim());
-                                                                    Territories_obj.addProperty("Id", codeArr[j].trim());
-                                                                    Territories.add(Territories_obj);
-                                                                }
-                                                            }
-
-
-                                                            //Headquarters
-                                                            JsonArray Headquarters = new JsonArray();
-                                                            String nameHq = "";
-                                                            String codeHq = "";
-                                                            if (i == 0) {
-                                                                nameHq = HeadquartersName;
-                                                                codeHq = HeadquartersCode;
-                                                            } else if (i == 1) {
-                                                                nameHq = HeadquartersName2;
-                                                                codeHq = HeadquartersCode2;
-                                                            } else if (i == 2) {
-                                                                nameHq = HeadquartersName3;
-                                                                codeHq = HeadquartersCode3;
-                                                            }
-                                                            if (!nameHq.isEmpty() && !codeHq.isEmpty()) {
-                                                                String[] nameArr = nameHq.split(",");
-                                                                String[] codeArr = codeHq.split(",");
-
-                                                                int length = Math.min(nameArr.length, codeArr.length);
-
-                                                                for (int j = 0; j < length; j++) {
-                                                                    JsonObject Headquarters_obj = new JsonObject();
-                                                                    Headquarters_obj.addProperty("Name", nameArr[j].trim());
-                                                                    Headquarters_obj.addProperty("Id", codeArr[j].trim());
-                                                                    Headquarters.add(Headquarters_obj);
-                                                                }
-                                                            }
-
-                                                            //Hospitals
-                                                            JsonArray Hospitals = new JsonArray();
-                                                            String nameHosp = "";
-                                                            String codeHosp = "";
-                                                            if (i == 0) {
-                                                                nameHosp = HospName;
-                                                                codeHosp = HospCode;
-                                                            } else if (i == 1) {
-                                                                nameHosp = HospName2;
-                                                                codeHosp = HospCode2;
-                                                            } else if (i == 2) {
-                                                                nameHosp = HospName3;
-                                                                codeHosp = HospCode3;
-                                                            }
-                                                            if (!nameHosp.isEmpty() && !codeHosp.isEmpty()) {
-                                                                String[] nameArr = nameHosp.split(",");
-                                                                String[] codeArr = codeHosp.split(",");
-
-                                                                int length = Math.min(nameArr.length, codeArr.length);
-                                                                for (int j = 0; j < length; j++) {
-                                                                    JsonObject Hospitals_obj = new JsonObject();
-                                                                    Hospitals_obj.addProperty("Name", nameArr[j].trim());
-                                                                    Hospitals_obj.addProperty("Id", codeArr[j].trim());
-                                                                    Hospitals.add(Hospitals_obj);
-                                                                }
-                                                            }
-
-                                                            //Chemists
-                                                            JsonArray Chemists = new JsonArray();
-                                                            String nameChe = "";
-                                                            String codeChe = "";
-                                                            if (i == 0) {
-                                                                nameChe = CheName;
-                                                                codeChe = CheCode;
-                                                            } else if (i == 1) {
-                                                                nameChe = CheName2;
-                                                                codeChe = CheCode2;
-                                                            } else if (i == 2) {
-                                                                nameChe = CheName3;
-                                                                codeChe = CheCode3;
-                                                            }
-                                                            if (!nameChe.isEmpty() && !codeChe.isEmpty()) {
-                                                                String[] nameArr = nameChe.split(",");
-                                                                String[] codeArr = codeChe.split(",");
-
-                                                                int length = Math.min(nameArr.length, codeArr.length);
-
-                                                                for (int j = 0; j < length; j++) {
-                                                                    JsonObject Chemists_obj = new JsonObject();
-                                                                    Chemists_obj.addProperty("Name", nameArr[j].trim());
-                                                                    Chemists_obj.addProperty("Id", codeArr[j].trim());
-                                                                    Chemists.add(Chemists_obj);
-                                                                }
-                                                            }
-
-                                                            //StockLists
-                                                            JsonArray Stockists = new JsonArray();
-                                                            String nameStk = "";
-                                                            String codeStk = "";
-                                                            if (i == 0) {
-                                                                nameStk = StkName;
-                                                                codeStk = StkCode;
-                                                            } else if (i == 1) {
-                                                                nameStk = StkName2;
-                                                                codeStk = StkCode2;
-                                                            } else if (i == 2) {
-                                                                nameStk = StkName3;
-                                                                codeStk = StkCode3;
-                                                            }
-                                                            if (!nameStk.isEmpty() && !codeStk.isEmpty()) {
-                                                                String[] nameArr = nameStk.split(",");
-                                                                String[] codeArr = codeStk.split(",");
-
-                                                                int length = Math.min(nameArr.length, codeArr.length);
-
-                                                                for (int j = 0; j < length; j++) {
-                                                                    JsonObject Stockists_obj = new JsonObject();
-                                                                    Stockists_obj.addProperty("Name", nameArr[j].trim());
-                                                                    Stockists_obj.addProperty("Id", codeArr[j].trim());
-                                                                    Stockists.add(Stockists_obj);
-                                                                }
-                                                            }
-
-                                                            //ListedDr
-                                                            JsonArray Doctors = new JsonArray();
-                                                            String nameDoc = "";
-                                                            String codeDoc = "";
-                                                            if (i == 0) {
-                                                                nameDoc = DrName;
-                                                                codeDoc = DrCode;
-                                                            } else if (i == 1) {
-                                                                nameDoc = DrName2;
-                                                                codeDoc = DrCode2;
-                                                            } else if (i == 2) {
-                                                                nameDoc = DrName3;
-                                                                codeDoc = DrCode3;
-                                                            }
-                                                            if (!nameDoc.isEmpty() && !codeDoc.isEmpty()) {
-                                                                String[] nameArr = nameDoc.split(",");
-                                                                String[] codeArr = codeDoc.split(",");
-
-                                                                int length = Math.min(nameArr.length, codeArr.length);
-
-                                                                for (int j = 0; j < length; j++) {
-                                                                    JsonObject Doctors_obj = new JsonObject();
-                                                                    Doctors_obj.addProperty("Name", nameArr[j].trim());
-                                                                    Doctors_obj.addProperty("Id", codeArr[j].trim());
-                                                                    Doctors.add(Doctors_obj);
-                                                                }
-                                                            }
-
-                                                            //UnlistedDr
-
-                                                            JsonArray UnlistedDoctors = new JsonArray();
-                                                            String nameUnDr = "";
-                                                            String codeUmDr = "";
-                                                            if (i == 0) {
-                                                                nameUnDr = UnDrName;
-                                                                codeUmDr = UnDrCode;
-                                                            } else if (i == 1) {
-                                                                nameUnDr = UnDrName2;
-                                                                codeUmDr = UnDrCode2;
-                                                            } else if (i == 2) {
-                                                                nameUnDr = UnDrName3;
-                                                                codeUmDr = UnDrCode3;
-                                                            }
-                                                            if (!nameUnDr.isEmpty() && !codeUmDr.isEmpty()) {
-                                                                String[] nameArr = nameUnDr.split(",");
-                                                                String[] codeArr = codeUmDr.split(",");
-
-                                                                int length = Math.min(nameArr.length, codeArr.length);
-
-                                                                for (int j = 0; j < length; j++) {
-                                                                    JsonObject UnlistedDoctors_obj = new JsonObject();
-                                                                    UnlistedDoctors_obj.addProperty("Name", nameArr[j].trim());
-                                                                    UnlistedDoctors_obj.addProperty("Id", codeArr[j].trim());
-                                                                    UnlistedDoctors.add(UnlistedDoctors_obj);
-                                                                }
-                                                            }
-
-
-                                                            //Cip
-                                   /*     JSONArray Cip = new JSONArray();
-                                        String nameCip = "";
-                                        String codeCip = "";
-                                        if (i == 0) {
-                                            nameCip = CipName;
-                                            codeCip = CipCode;
-                                        } else if (i == 1) {
-                                            nameCip = CipName2;
-                                            codeCip = CipCode2;
-                                        } else if (i == 2) {
-                                            nameCip = CipName3;
-                                            codeCip = CipCode3;
-                                        }
-                                        if (!nameCip.isEmpty() && !codeCip.isEmpty()) {
-                                            String[] nameArr = nameCip.split(",");
-                                            String[] codeArr = codeCip.split(",");
-
-                                            int length = Math.min(nameArr.length, codeArr.length);
-
-                                            for (int j = 0; j < length; j++) {
-                                                JSONObject Cip_obj = new JSONObject();
-                                                Cip_obj.put("Name", nameArr[j].trim());
-                                                Cip_obj.put("Id", codeArr[j].trim());
-                                                Cip.put(Cip_obj);
-                                            }
-                                        }*/
-
-                                                            SessionsObj.add("JointWorks", JointWorks);
-                                                            SessionsObj.add("Headquarters", Headquarters);
-                                                            SessionsObj.add("Territories", Territories);
-                                                            SessionsObj.add("Doctors", Doctors);
-                                                            SessionsObj.add("Chemists", Chemists);
-                                                            SessionsObj.add("Stockists", Stockists);
-                                                            SessionsObj.add("UnlistedDoctors", UnlistedDoctors);
-                                                            SessionsObj.add("Hospitals", Hospitals);
-//                                        SessionsObj.put("Cip", Cip);
-                                                            Sessions.add(SessionsObj);
-                                                        }
-
-                                                    }
-
-                                                    //Details
-
-                                                    JsonObject DetailsObj = new JsonObject();
-                                                    DetailsObj.addProperty("TDate", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, oneBuildModelClass.getDate()));
-                                                    DetailsObj.add("Sessions", Sessions);
-                                                    DetailsObj.add("Others", new JsonArray());
-                                                    DetailsObj.addProperty("Id", 0);
-                                                    detailsArray.add(DetailsObj);
-
-                                                }
-                                            }
-                                            tourPlan.add("Details", detailsArray);
-                                            jsonObject.add("tourPlan", tourPlan);
-
-                                        }
-
-                                        Log.d("JSON_One_Build", "isNetworkAvailable: " + jsonObject);
-                                        //sendTpForApprovalOneBuild(jsonObject, arrayList, dateForApproval, month, statusOffline, isClickedName);
-                                    } catch (JsonIOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        });
-                        networkStatusTask.execute();
+                }else {
+                    if(statusOffline) {
+                        binding.progressBar.setVisibility(View.GONE);
+                    }
+                    saveTpLocal(arrayList, dateForApproval, month, "1"); // Sync Failed
+                }
+            }
+        });
+        networkStatusTask.execute();
 
                     }
 
@@ -5000,42 +4794,67 @@ public class TourPlanActivity extends AppCompatActivity {
                         return stringBuilder.toString();
                     }
 
-                    public void sendTpForApproval (JSONArray
-                    jsonArray, ArrayList < ModelClass > modelClassArrayList, String date, String
-                    month, Boolean statusOffline){
-                        apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
-                        Log.v("tpApproval", "--json--" + jsonArray.toString());
-                        Map<String, String> mapString = new HashMap<>();
-                        mapString.put("axn", "savenew/tp");
-                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonArray.toString());
-                        call.enqueue(new Callback<JsonElement>() {
-                            @Override
-                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                                Log.v("tpApproval", "--res--" + response.body());
-                                try {
-                                    if (response.isSuccessful() && response.body() != null) {
-                                        JSONObject jsonObject1 = new JSONObject(response.body().toString());
-                                        if (jsonObject1.getBoolean("success")) {
-                                            saveTpLocal(modelClassArrayList, date, month, "0");// Sync Success
-                                            if (statusOffline) {
-                                                JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
-                                                ArrayList<ModelClass> arrayList;
-                                                ArrayList<String> dummy = new ArrayList<>();
-                                                Type type = new TypeToken<ArrayList<ModelClass>>() {
-                                                }.getType();
-                                                if (jsonArray.length() > 0) {
-                                                    arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
-                                                    for (ModelClass modelClass : arrayList) {
-                                                        if (!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
-                                                            dummy.add(modelClass.getDayNo());
-                                                            prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, modelClass.getDate()), modelClass.getDayNo(), arrayList, true);
-                                                            break;
-                                                        }
-                                                    }
-                                                    if (dummy.size() == 0) {
-                                                        binding.progressBar.setVisibility(View.GONE);
-                                                        changeApprovalBtnState(arrayList);
-                                                    }
+
+    public String textBuilderMultiHQ(List<MultiHQHeaderModelClass> multiHQHeaderModelClassList,
+                              boolean getCode) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i<multiHQHeaderModelClassList.size(); i++) {
+            MultiHQHeaderModelClass multiHQHeaderModelClass = multiHQHeaderModelClassList.get(i);
+            List<MultiHQItemModelClass> multiHQItemModelClassList = multiHQHeaderModelClass.getItemsList();
+            for (MultiHQItemModelClass multiHQItemModelClass : multiHQItemModelClassList) {
+                if(getCode) { // true -> code
+                    stringBuilder.append(multiHQItemModelClass.getCode()).append(",");
+                }else { // false -> name
+                    stringBuilder.append(multiHQItemModelClass.getName()).append(",");
+                }
+            }
+            if(!stringBuilder.toString().isEmpty()) {
+                stringBuilder.append("$");
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    public void sendTpForApproval(JSONArray
+                                          jsonArray, ArrayList<ModelClass> modelClassArrayList, String date, String month, Boolean
+                                          statusOffline) {
+        apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
+        Log.v("tpApproval", "--json--" + jsonArray.toString());
+        Map<String, String> mapString = new HashMap<>();
+        if(SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
+            mapString.put("axn", "savenew/tp");
+        } else {
+            mapString.put("axn", "multihqsave/tp");
+        }
+        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonArray.toString());
+        call.enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                Log.v("tpApproval", "--res--" + response.body());
+                try {
+                    if(response.isSuccessful() && response.body() != null) {
+                        JSONObject jsonObject1 = new JSONObject(response.body().toString());
+                        if(jsonObject1.getBoolean("success")) {
+                            saveTpLocal(modelClassArrayList, date, month, "0");// Sync Success
+                            if(statusOffline) {
+                                JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
+                                ArrayList<ModelClass> arrayList;
+                                ArrayList<String> dummy = new ArrayList<>();
+                                Type type = new TypeToken<ArrayList<ModelClass>>() {
+                                }.getType();
+                                if(jsonArray.length()>0) {
+                                    arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
+                                    for (ModelClass modelClass : arrayList) {
+                                        if(!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
+                                            dummy.add(modelClass.getDayNo());
+                                            prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, modelClass.getDate()), modelClass.getDayNo(), arrayList, true);
+                                            break;
+                                        }
+                                    }
+                                    if(dummy.size() == 0) {
+                                        binding.progressBar.setVisibility(View.GONE);
+                                        changeApprovalBtnState(arrayList);
+                                    }
 
                                                 }
                                             }
