@@ -56,6 +56,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Region;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -831,8 +832,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 btn_confirm.setEnabled(false);
                 btn_confirm.setBackground(ContextCompat.getDrawable(context, R.drawable.tagging_disable_button));
                 if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                    CallImageAPI(jsonImage.toString(), jsonObject.toString(), progressBar);
-                    tag_Image();
+                    if(SharedPref.getS3BucketNeed(MapsActivity.this).equalsIgnoreCase("1")) {
+                        CallImageAPIS3(jsonImage.toString(), jsonObject.toString(), progressBar);
+                        tag_Image();
+                    }else{
+                        CallImageAPI(jsonImage.toString(),jsonObject.toString(), progressBar);
+                    }
                 } else {
                     CallAPIGeo(jsonObject.toString(), progressBar);
                 }
@@ -1260,53 +1265,53 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-//    private void CallImageAPI(String jsonImage, String jsonTag,ProgressBar progressBar) {
-//        try {
-//            ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
-//            Call<JsonObject> callImage;
-//            HashMap<String, RequestBody> values = field(jsonImage);
-//            MultipartBody.Part img = convertImg("UploadImg", destinationFilePath);
-//            callImage = apiInterface.SaveImg(values, img);
-//
-//            callImage.enqueue(new Callback<JsonObject>() {
-//                @Override
-//                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-//                    assert response.body() != null;
-//                    Log.v("img_tag", response + "---" + response.body() + "---" + response.message() + "---" + call);
-//                    if (response.isSuccessful()) {
-//                        try {
-//                            JSONObject jsonImgRes;
-//                            jsonImgRes = new JSONObject(response.body().toString());
-//                            Log.v("img_tag", jsonImgRes.getString("success"));
-//                            if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
-//                                progressBar.setVisibility(View.VISIBLE);
-//                                CallAPIGeo(jsonTag,progressBar);
-//                            } else {
-//                                dialogTagCust.dismiss();
-//                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed));
-//                            }
-//                        } catch (Exception e) {
-//                            Log.v("img_tag", e.toString());
-//                            dialogTagCust.dismiss();
-//                        }
-//                    } else {
-//                        dialogTagCust.dismiss();
-//                        commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-//                    commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
-//                    dialogTagCust.dismiss();
-//                }
-//            });
-//        } catch (Exception e) {
-//            dialogTagCust.dismiss();
-//        }
-//    }
+    private void CallImageAPI(String jsonImage, String jsonTag,ProgressBar progressBar) {
+        try {
+            ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
+            Call<JsonObject> callImage;
+            HashMap<String, RequestBody> values = field(jsonImage);
+            MultipartBody.Part img = convertImg("UploadImg", destinationFilePath);
+            callImage = apiInterface.SaveImg(values, img);
 
-    private void CallImageAPI(String jsonImage, String jsonTag, ProgressBar progressBar) {
+            callImage.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                    assert response.body() != null;
+                    Log.v("img_tag", response + "---" + response.body() + "---" + response.message() + "---" + call);
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONObject jsonImgRes;
+                            jsonImgRes = new JSONObject(response.body().toString());
+                            Log.v("img_tag", jsonImgRes.getString("success"));
+                            if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
+                                progressBar.setVisibility(View.VISIBLE);
+                                CallAPIGeo(jsonTag,progressBar);
+                            } else {
+                                dialogTagCust.dismiss();
+                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed));
+                            }
+                        } catch (Exception e) {
+                            Log.v("img_tag", e.toString());
+                            dialogTagCust.dismiss();
+                        }
+                    } else {
+                        dialogTagCust.dismiss();
+                        commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                    dialogTagCust.dismiss();
+                }
+            });
+        } catch (Exception e) {
+            dialogTagCust.dismiss();
+        }
+    }
+
+    private void CallImageAPIS3(String jsonImage, String jsonTag, ProgressBar progressBar) {
         try {
             progressBar.setVisibility(View.VISIBLE);
 
@@ -1644,13 +1649,64 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.setInfoWindowAdapter(new MyInfoWindowAdapter(mm, MapsActivity.this));
             }
             if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                mMap.setOnInfoWindowClickListener(marker -> {
-                    try {
-                        String imageName = marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1);
-                        Log.d("marker", "AddTaggedDetails: " + marker.getSnippet());
-                        Log.d("ImageName", "image : " + imageName);
-                        String fileName = imageName;
+                if (SharedPref.getS3BucketNeed(MapsActivity.this).equalsIgnoreCase("1")){
+                    mMap.setOnInfoWindowClickListener(marker -> {
+                        try {
+                            String imageName = marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1);
+                            Log.d("marker", "AddTaggedDetails: " + marker.getSnippet());
+                            Log.d("ImageName", "image : " + imageName);
+                            String fileName = imageName;
 //                        if(fileName.isEmpty()) return;
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                            LayoutInflater inflater = getLayoutInflater();
+                            View dialogView = inflater.inflate(R.layout.dialog_fullscreen_image, null);
+
+                            ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
+                            ImageButton closeButton = dialogView.findViewById(R.id.close_button);
+                            ProgressBar progressBar = dialogView.findViewById(R.id.loading_progress);
+
+                            fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
+                            builder.setView(dialogView);
+                            AlertDialog dialog = builder.create();
+                            fullScreenImage.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.VISIBLE);
+                            dialog.show();
+                            dialog.getWindow().setLayout(
+                                    (int) (getResources().getDisplayMetrics().widthPixels * 0.5),
+                                    (int) (getResources().getDisplayMetrics().heightPixels * 0.9)
+                            );
+                            Dialog dialog_img = new Dialog(MapsActivity.this);
+                            dialog_img.setContentView(R.layout.map_img_layout);
+                            if (fileName.isEmpty()) {
+                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_no_img_found));
+                            } else {
+                                TransferNetworkLossHandler.getInstance(getApplicationContext());
+                                File MapView = new File(MapsActivity.this.getFilesDir(), fileName);
+                                Log.d("TAG", "AddTaggedDetails: " + MapView.getAbsolutePath());
+                                new AWSBucketsTag(MapsActivity.this, fileName, MapView, 0, "", new S3DownloadFiles() {
+                                    @Override
+                                    public void fileDataAdd(int pos, Bitmap bitmap) {
+                                        if (bitmap != null) {
+                                            fullScreenImage.setImageBitmap(bitmap);
+                                            fullScreenImage.setVisibility(View.VISIBLE);
+                                            progressBar.setVisibility(View.GONE);
+                                        } else {
+                                            Log.d("bitmap image", "image: " + "bitmap image is null");
+                                            fullScreenImage.setVisibility(View.GONE);
+                                        }
+                                    }
+                                });
+                            }
+                            closeButton.setOnClickListener(v -> dialog.dismiss());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }else{
+                    mMap.setOnInfoWindowClickListener(marker -> {
+
+                        String fileName = marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1);
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
                         LayoutInflater inflater = getLayoutInflater();
@@ -1659,8 +1715,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         ImageView fullScreenImage = dialogView.findViewById(R.id.fullscreen_image);
                         ImageButton closeButton = dialogView.findViewById(R.id.close_button);
                         ProgressBar progressBar = dialogView.findViewById(R.id.loading_progress);
-
-                        fullScreenImage.setImageBitmap(BitmapFactory.decodeFile(fileName));
                         builder.setView(dialogView);
                         AlertDialog dialog = builder.create();
                         fullScreenImage.setVisibility(View.GONE);
@@ -1670,33 +1724,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 (int) (getResources().getDisplayMetrics().widthPixels * 0.5),
                                 (int) (getResources().getDisplayMetrics().heightPixels * 0.9)
                         );
-                        Dialog dialog_img = new Dialog(MapsActivity.this);
-                        dialog_img.setContentView(R.layout.map_img_layout);
-                        if(fileName.isEmpty()) {
+/*                        Dialog dialog1 = new Dialog(MapsActivity.this);
+                        dialog1.setContentView(R.layout.map_img_layout);
+                        ImageView imageView = dialog.findViewById(R.id.img_dr_content);*/
+
+
+                        if(Objects.requireNonNull(marker.getSnippet()).substring(marker.getSnippet().lastIndexOf("^") + 1).isEmpty()){
                             commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_no_img_found));
-                        }else {
-                            TransferNetworkLossHandler.getInstance(getApplicationContext());
-                            File MapView = new File(MapsActivity.this.getFilesDir(), fileName);
-                            Log.d("TAG", "AddTaggedDetails: " + MapView.getAbsolutePath());
-                            new AWSBucketsTag(MapsActivity.this, fileName, MapView, 0, "", new S3DownloadFiles() {
-                                @Override
-                                public void fileDataAdd(int pos, Bitmap bitmap) {
-                                    if(bitmap != null) {
-                                        fullScreenImage.setImageBitmap(bitmap);
-                                        fullScreenImage.setVisibility(View.VISIBLE);
-                                        progressBar.setVisibility(View.GONE);
-                                    }else {
-                                        Log.d("bitmap image", "image: " + "bitmap image is null");
-                                        fullScreenImage.setVisibility(View.VISIBLE);
-                                    }
-                                }
-                            });
+                        } else {
+                            if (img_url.equalsIgnoreCase("null") || img_url.isEmpty()) {
+                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.save_settings_con_screen));
+                            } else {
+                                Glide.with(getApplicationContext()).load(img_url + "photos/" + marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1)).fitCenter().into(fullScreenImage);
+                                fullScreenImage.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.GONE);
+                                dialog.show();
+                            }
+                            closeButton.setOnClickListener(v -> dialog.dismiss());
                         }
-                        closeButton.setOnClickListener(v -> dialog.dismiss());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
+                    });
+                }
             }
 
             if (mapsBinding.rvList.getItemDecorationCount() > 0) {

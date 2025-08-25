@@ -59,6 +59,7 @@ import saneforce.sanzen.activity.homeScreen.fragment.CallsFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
+import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -66,6 +67,7 @@ import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
+import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.CallTableDetails.CallTableDao;
 import saneforce.sanzen.roomdatabase.CallsUtil;
@@ -87,6 +89,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
 
     MasterDataDao masterDataDao;
     private CallOfflineECDataDao callOfflineECDataDao;
+    private CallOfflineSignDataDao callOfflineSignDataDao;
     private CallOfflineDataDao callOfflineDataDao;
     private OfflineDaySubmitDao offlineDaySubmitDao;
     private CallTableDao callTableDao;
@@ -101,6 +104,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         roomDB=RoomDB.getDatabase(context);
         masterDataDao=roomDB.masterDataDao();
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
+        callOfflineSignDataDao = roomDB.callOfflineSignDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
         offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
         callTableDao = roomDB.callTableDao();
@@ -208,6 +212,19 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                         EcModelClass ecModelClass = listDates.get(i).getChildItems().get(3).getEcModelClasses().get(j);
                                         if (ecModelClass.getDates().equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && ecModelClass.getCusCode().equalsIgnoreCase(outBoxCallLists.get(position).getCusCode()) && ecModelClass.getCusName().equalsIgnoreCase(outBoxCallLists.get(position).getCusName())) {
                                             listDates.get(i).getChildItems().get(3).getEcModelClasses().remove(j);
+                                            j--;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (callOfflineSignDataDao.isSignDataAvailable(outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getCusCode())) {
+                            for (int i = 0; i < listDates.size(); i++) {
+                                if (listDates.get(i).getGroupName().equalsIgnoreCase(outBoxCallLists.get(position).getDates())) {
+                                    for (int j = 0; j < listDates.get(i).getChildItems().get(4).getSignModelClasses().size(); j++) {
+                                        SignModelClass signModelClass = listDates.get(i).getChildItems().get(4).getSignModelClasses().get(j);
+                                        if (signModelClass.getDates().equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && signModelClass.getCusCode().equalsIgnoreCase(outBoxCallLists.get(position).getCusCode()) && signModelClass.getCusName().equalsIgnoreCase(outBoxCallLists.get(position).getCusName())) {
+                                            listDates.get(i).getChildItems().get(4).getSignModelClasses().remove(j);
                                             j--;
                                         }
                                     }

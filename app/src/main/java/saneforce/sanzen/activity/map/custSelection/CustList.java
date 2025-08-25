@@ -165,7 +165,7 @@ public class CustList implements Parcelable {
         this.PriorityPrdCode = priorityPrdCode;
         this.isClusterAvailable = isClusterAvailable;
         this.specialistCode = specialistCode;
-        this.ClassCode = ClassCode;
+            this.ClassCode = ClassCode;
     }
 
     public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode, String MappedBrandCode, String MappedSlideCode, String totalVisitCount, String Class,String ClassCode,boolean isClusterAvailable) {

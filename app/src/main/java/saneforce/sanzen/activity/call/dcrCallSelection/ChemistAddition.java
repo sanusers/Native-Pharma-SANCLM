@@ -49,6 +49,7 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,6 +76,7 @@ import saneforce.sanzen.AWS.AWSBucketsTag;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.camera.CameraActivity;
+import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -658,8 +660,12 @@ public class ChemistAddition extends AppCompatActivity {
                                                     }
                                                 } catch (Exception ignored) {
                                                 }
-                                                tag_Image();
-                                                CallImageAPI(jsonImage.toString(), destinationFilePath);
+                                                if(SharedPref.getS3BucketNeed(getApplicationContext()).equalsIgnoreCase("1")) {
+                                                    tag_Image();
+                                                    CallImageAPIS3(jsonImage.toString(), destinationFilePath);
+                                                }else{
+                                                    CallImageAPI(jsonImage.toString(),destinationFilePath);
+                                                }
 
                                             }
 
@@ -1077,47 +1083,46 @@ public class ChemistAddition extends AppCompatActivity {
         closeButton.setOnClickListener(v -> dialog.dismiss()); // Close popup when clicked
     }
 
-    //    private void CallImageAPI(String jsonImage,String file) {
-//        try {
-//            ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
-//            Call<JsonObject> callImage;
-//            HashMap<String, RequestBody> values = field(jsonImage);
-//            MultipartBody.Part img = convertImg("UploadImg", file);
-//            callImage = apiInterface.SaveImg(values, img);
-//
-//            callImage.enqueue(new Callback<JsonObject>() {
-//                @Override
-//                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-//                    assert response.body() != null;
-//                    Log.v("img_tag", response + "---" + response.body() + "---" + response.message() + "---" + call);
-//                    if (response.isSuccessful()) {
-//                        try {
-//                            JSONObject jsonImgRes;
-//                            jsonImgRes = new JSONObject(response.body().toString());
-//                            Log.v("img_tag", jsonImgRes.getString("success"));
-//                            if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
-//                                //commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed));
-//                            }
-//                        } catch (Exception e) {
-//                            Log.v("img_tag", e.toString());
-//                        }
-//                    } else {
-//
-//                        // commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-//                    //commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
-//
-//                }
-//            });
-//        } catch (Exception e) {
-//
-//        }
-//    }
-    private void CallImageAPI(String jsonImage, String file) {
+        private void CallImageAPI(String jsonImage,String file) {
+        try {
+            ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
+            Call<JsonObject> callImage;
+            HashMap<String, RequestBody> values = field(jsonImage);
+            MultipartBody.Part img = convertImg("UploadImg", file);
+            callImage = apiInterface.SaveImg(values, img);
+
+            callImage.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                    assert response.body() != null;
+                    Log.v("img_tag", response + "---" + response.body() + "---" + response.message() + "---" + call);
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONObject jsonImgRes;
+                            jsonImgRes = new JSONObject(response.body().toString());
+                            Log.v("img_tag", jsonImgRes.getString("success"));
+                            if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
+                                //commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed));
+                            }
+                        } catch (Exception e) {
+                            Log.v("img_tag", e.toString());
+                        }
+                    } else {
+//                         commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                    //commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private void CallImageAPIS3(String jsonImage, String file) {
         if(jsonImage != null) {
 
 

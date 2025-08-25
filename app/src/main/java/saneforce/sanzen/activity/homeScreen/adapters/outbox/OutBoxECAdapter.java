@@ -121,11 +121,17 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             popup.setOnMenuItemClickListener(menuItem -> {
                 if (menuItem.getItemId() == R.id.menuSync) {
                     EcModelClass ecModelClass = ecModelClasses.get(position);
-                    CallImageApi(ecModelClass,ecModelClass.getJson_values(),ecModelClass.getFilePath(),String.valueOf(ecModelClass.getId()));
-
+                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")){
+                        CallImageApiS3(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
+                    }else {
+                        CallImageApi();
+                    }
                     if (UtilityClass.isNetworkAvailable(context)) {
-                        CallImageApi(ecModelClass,ecModelClass.getJson_values(),ecModelClass.getFilePath(),String.valueOf(ecModelClass.getId()));
-                    } else {
+                        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")) {
+                            CallImageApiS3(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
+                        }else{
+                            CallImageApi();
+                        }                    } else {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                     }
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
@@ -200,7 +206,8 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         });
     }
 
-    private void CallImageApi(EcModelClass ecModelClass,String jsonValues, String filePath, String id) {
+    private void CallImageApi(){}
+    private void CallImageApiS3(EcModelClass ecModelClass,String jsonValues, String filePath, String id) {
         Log.d("CallImageApi", "filePath received: " + filePath);
         try {
 

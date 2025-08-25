@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/signature_fragment_container">
+    <RelativeLayout
+        android:layout_width="@dimen/_250sdp"
+        android:layout_height="@dimen/_230sdp"
+        android:layout_marginStart="@dimen/_2ssp"
+        android:layout_marginTop="@dimen/_2ssp"
+        android:layout_marginBottom="@dimen/_2ssp"
+        android:background="@drawable/bg_white_without_border">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_23sdp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/sign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:padding="@dimen/_2sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="@string/Signature"
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_7ssp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/clr_btn"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_18sdp"
+                android:layout_marginHorizontal="@dimen/_140sdp"
+                android:layout_marginVertical="@dimen/_2sdp"
+                android:background="@drawable/background_button_border_black"
+                android:backgroundTint="@color/red_60"
+                android:fontFamily="@font/satoshi_bold"
+                android:text="@string/clear"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_7ssp"
+                android:textStyle="bold"
+                app:cornerRadius="@dimen/_100sdp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_23sdp">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_marginStart="@dimen/_4sdp"
+                android:layout_marginEnd="@dimen/_4sdp"
+                android:background="@color/dark_purple">
+            </View>
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <saneforce.sanzen.activity.call.fragments.signature.SignatureCanvas
+                android:id="@+id/sign_lyt"
+                android:layout_width="@dimen/_250sdp"
+                android:layout_height="@dimen/_195sdp"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_29sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_marginBottom="@dimen/_6sdp">
+            </saneforce.sanzen.activity.call.fragments.signature.SignatureCanvas>
+
+        </RelativeLayout>
+    </RelativeLayout>
+</FrameLayout>

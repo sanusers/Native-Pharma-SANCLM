@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.masterSync;
 
+import static saneforce.sanzen.activity.tourPlan.session.SessionEditAdapter.inputDataArrayOneBuild;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -25,7 +27,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -46,6 +51,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -96,8 +102,8 @@ public class MasterSyncActivity extends AppCompatActivity {
     ApiInterface apiInterface;
     MasterSyncAdapter masterSyncAdapter = new MasterSyncAdapter();
     public static Dialog dialog1;
-    String rsf="";
-    boolean retrystatus=false, isSlideDownloading = false, isWelcomeSlideDownloading = false;
+    String rsf = "";
+    boolean retrystatus = false, isSlideDownloading = false, isWelcomeSlideDownloading = false;
     //  Api call status  ======> 2 - sucesss, 1- failure ,  0- Notsync yet
     int doctorStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0;
     int apiSuccessCount = 0, itemCount = 0;
@@ -123,7 +129,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> subordinateModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> otherModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
-    public  List<String> HQCODE_SYN = new ArrayList<>();
+    public List<String> HQCODE_SYN = new ArrayList<>();
     public static ArrayList<String> SlideIds = new ArrayList<>();
     public static ArrayList<String> welcomeSlideNames = new ArrayList<>();
     SharedPreferences sharedpreferences;
@@ -134,6 +140,14 @@ public class MasterSyncActivity extends AppCompatActivity {
     ModelClass.SessionList.WorkType holidayWorkTypeModel = new ModelClass.SessionList.WorkType();
     OneBuildModelClass.SessionList.WorkType weeklyOffWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType();
     OneBuildModelClass.SessionList.WorkType holidayWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType();
+
+    ArrayList<OneBuildModelClass> dayWiseArrayCurrentMonthOneBuild1 = new ArrayList<>();
+    ArrayList<OneBuildModelClass> dayWiseArrayPrevMonthOneBuild1 = new ArrayList<>();
+    ArrayList<OneBuildModelClass> dayWiseArrayNextMonthOneBuild1 = new ArrayList<>();
+    TourPlanActivity dayWiseArrayCurrentMonthOneBuild;
+    TourPlanActivity dayWiseArrayPrevMonthOneBuild;
+    TourPlanActivity dayWiseArrayNextMonthOneBuild;
+
 
     String holidayMode = "", weeklyOffCaption = "";
     boolean isDataAvailable;
@@ -147,16 +161,19 @@ public class MasterSyncActivity extends AppCompatActivity {
     private STPOfflineDataDao stpOfflineDataDao;
     private SlidesDao SlidesDao;
     private WelcomeSlidesDao welcomeSlidesDao;
-    public static boolean isSingleSlideDowloaingStaus, isSingleWelcomeSlideDownloadingStatus ;
+    public static boolean isSingleSlideDowloaingStaus, isSingleWelcomeSlideDownloadingStatus;
     private boolean isCallSynced = false, isDateSynced = false;
     private int dayPlanDelayCount = 0;
-    public String SFTP_Date_sp="",SFTP_Date="";
-    public int JoningDate,JoiningMonth, JoinYear;
+    public String SFTP_Date_sp = "", SFTP_Date = "";
+    public int JoningDate, JoiningMonth, JoinYear;
     private Dialog slideDialog, welcomeSlideDialog;
+    JsonObject jbonj = new JsonObject();
+    String isFrom = "";
 
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
         return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
+
     public static OneBuildModelClass.SessionList prepareSessionListForAdapterOne(ArrayList<OneBuildModelClass.SessionList.SubClass> clusterArray, ArrayList<OneBuildModelClass.SessionList.SubClass> jcArray, ArrayList<OneBuildModelClass.SessionList.SubClass> drArray, ArrayList<OneBuildModelClass.SessionList.SubClass> chemistArray, ArrayList<OneBuildModelClass.SessionList.SubClass> stockArray, ArrayList<OneBuildModelClass.SessionList.SubClass> unListedDrArray, ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray, ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray, OneBuildModelClass.SessionList.WorkType workType, OneBuildModelClass.SessionList.SubClass hq, String remarks) {
         return new OneBuildModelClass.SessionList("", true, remarks, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
@@ -164,11 +181,11 @@ public class MasterSyncActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("AAAAA","OnCreate");
+        Log.d("AAAAA", "OnCreate");
         binding = ActivityMasterSyncBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        context=getApplicationContext();
+        context = getApplicationContext();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         sharedpreferences = getSharedPreferences("SLIDES", MODE_PRIVATE);
@@ -177,6 +194,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString(Constants.NAVIGATE_FROM);
         }
+        localDate = LocalDate.now();
         db = RoomDB.getDatabase(this);
         masterDataDao = db.masterDataDao();
         activityDetailsDataDao = db.activityDetailsDataDao();
@@ -194,29 +212,29 @@ public class MasterSyncActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        JoningDate=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_7,SFTP_Date));
-        JoiningMonth=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_8,SFTP_Date));
-        JoinYear=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_10,SFTP_Date));
+        JoningDate = Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_7, SFTP_Date));
+        JoiningMonth = Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_8, SFTP_Date));
+        JoinYear = Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_10, SFTP_Date));
 
         //Initializing all the data array
         uiInitialization();
         arrayForAdapter.clear();
-        if(SharedPref.getDrNeed(this).equalsIgnoreCase("0")){
+        if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
             binding.listedDr.setSelected(true);
             arrayForAdapter.addAll(doctorModelArray);
-        } else if(SharedPref.getChmNeed(this).equalsIgnoreCase("0")){
+        } else if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
             binding.chemist.setSelected(true);
             arrayForAdapter.addAll(chemistModelArray);
-        } else if(SharedPref.getStkNeed(this).equalsIgnoreCase("0")){
+        } else if (SharedPref.getStkNeed(this).equalsIgnoreCase("0")) {
             binding.stockiest.setSelected(true);
             arrayForAdapter.addAll(stockiestModelArray);
-        } else if(SharedPref.getUnlNeed(this).equalsIgnoreCase("0")){
+        } else if (SharedPref.getUnlNeed(this).equalsIgnoreCase("0")) {
             binding.unlistedDoctor.setSelected(true);
             arrayForAdapter.addAll(unlistedDrModelArray);
-        } else if(SharedPref.getCipNeed(this).equalsIgnoreCase("0")){
+        } else if (SharedPref.getCipNeed(this).equalsIgnoreCase("0")) {
             binding.cip.setSelected(true);
             arrayForAdapter.addAll(cipModelArray);
-        } else if(SharedPref.getHospNeed(this).equalsIgnoreCase("0")){
+        } else if (SharedPref.getHospNeed(this).equalsIgnoreCase("0")) {
             binding.hospital.setSelected(true);
             arrayForAdapter.addAll(hospitalModelArray);
         } else {
@@ -230,16 +248,15 @@ public class MasterSyncActivity extends AppCompatActivity {
             if (SharedPref.getSfType(this).equalsIgnoreCase("2")) { //MGR
                 mgrInitialSync = true;
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
-                   /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
+                    /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
                     sync(Constants.DOCTOR, "gettodaydcrmultihq", dcrModelArray, 2);
 //                    /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
 //                    sync(Constants.DOCTOR, "gettodaydcr", dcrModelArray, 2);
                     // to get all the HQ list initially only for MGR
-// to get all the HQ list initially only for MGR
+                    // to get all the HQ list initially only for MGR
                 } else {
                     commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
                 }
-
 
 
             } else {
@@ -322,7 +339,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
                                 rsf = jsonObject.getString("id");
-                                 //myresource
+                                //myresource
 
                                 prepareArray(rsf); // replace the new rsf value
                                 masterSyncAll(true);
@@ -593,9 +610,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                         for (int i = 0; i < arrayList.size(); i++) {
                             arrayForAdapter.get(i).setPBarVisibility(true);
                             masterSyncAdapter.notifyDataSetChanged();
-                            if(arrayList.get(i).getRemoteTableName().equalsIgnoreCase("gettodaydcr")){
+                            if (arrayList.get(i).getRemoteTableName().equalsIgnoreCase("gettodaydcr")) {
                                 setDelayForDayPlanSync(arrayList, i);
-                            }else {
+                            } else {
                                 sync(arrayList.get(i).getMasterOf(), arrayList.get(i).getRemoteTableName(), arrayList, i);
                             }
                         }
@@ -616,20 +633,19 @@ public class MasterSyncActivity extends AppCompatActivity {
     }
 
     public void uiInitialization() {
-        if (SharedPref.getWrkAreaName(this).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)){
+        if (SharedPref.getWrkAreaName(this).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)) {
             binding.cluster.setText("Cluster");
-        }else{
+        } else {
             binding.cluster.setText(SharedPref.getWrkAreaName(this));
         }
-        if(SharedPref.getSfType(this).equalsIgnoreCase("2")){
+        if (SharedPref.getSfType(this).equalsIgnoreCase("2")) {
             binding.hqName.setText(SharedPref.getHqName(MasterSyncActivity.this));
             rsf = SharedPref.getHqCode(MasterSyncActivity.this);
-        }
-        else {
+        } else {
             binding.hqName.setText(SharedPref.getHqNameMain(MasterSyncActivity.this));
             rsf = SharedPref.getSfCode(MasterSyncActivity.this);
         }
-       // Rsf is HQ code
+        // Rsf is HQ code
 
         binding.hq.setEnabled(SharedPref.getSfType(this).equalsIgnoreCase("2"));
         binding.lastSyncTime.setText(SharedPref.getLastSync(getApplicationContext()));
@@ -663,7 +679,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         dateSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DATE_SYNC);
         stockBalanceStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
         stockBalanceStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
-        calenderEventStaus=masterDataDao.getMasterSyncStatusByKey(Constants.CALENDER_EVENT_STATUS);
+        calenderEventStaus = masterDataDao.getMasterSyncStatusByKey(Constants.CALENDER_EVENT_STATUS);
 
         activityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.ACTIVITY);
         workTypeStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_TYPE);
@@ -717,24 +733,24 @@ public class MasterSyncActivity extends AppCompatActivity {
         //Listed Doctor
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
-            MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY,  Constants.DOCTOR, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
-            MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION,  Constants.DOCTOR, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
-            MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY,  Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
-        //    MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
+            MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, Constants.DOCTOR, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
+            MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, Constants.DOCTOR, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
+            MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
+            //    MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
             MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, Constants.DOCTOR, "getclass", Constants.CLASS, classStatus, false);
             doctorModelArray.add(doctorModel);
             doctorModelArray.add(spl);
             doctorModelArray.add(ql);
             doctorModelArray.add(cat);
-          //  doctorModelArray.add(dep);
+            //  doctorModelArray.add(dep);
             doctorModelArray.add(clas);
         } else binding.listedDr.setVisibility(View.GONE);
 
         //Chemist
         chemistModelArray.clear();
         if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
-            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this),  Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
-            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY,  Constants.DOCTOR, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
+            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
+            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
             chemistModelArray.add(cheModel);
             chemistModelArray.add(chemistCategory);
         } else binding.chemist.setVisibility(View.GONE);
@@ -742,21 +758,21 @@ public class MasterSyncActivity extends AppCompatActivity {
         //Stockiest
         stockiestModelArray.clear();
         if (SharedPref.getStkNeed(this).equalsIgnoreCase("0")) {
-            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this),Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, stockiestStatus, false);
+            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this), Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, stockiestStatus, false);
             stockiestModelArray.add(stockModel);
         } else binding.stockiest.setVisibility(View.GONE);
 
         //Unlisted Dr
         unlistedDrModelArray.clear();
         if (SharedPref.getUnlNeed(this).equalsIgnoreCase("0")) {
-            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this),  Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, unlistedDrStatus, false);
+            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this), Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, unlistedDrStatus, false);
             unlistedDrModelArray.add(unListModel);
         } else binding.unlistedDoctor.setVisibility(View.GONE);
 
         //Hospital
         hospitalModelArray.clear();
         if (SharedPref.getHospNeed(this).equalsIgnoreCase("0")) {
-            MasterSyncItemModel hospModel = new MasterSyncItemModel(SharedPref.getHospCaption(this),  Constants.DOCTOR, "gethospital", Constants.HOSPITAL + hqCode, hospitalStatus, false);
+            MasterSyncItemModel hospModel = new MasterSyncItemModel(SharedPref.getHospCaption(this), Constants.DOCTOR, "gethospital", Constants.HOSPITAL + hqCode, hospitalStatus, false);
             hospitalModelArray.add(hospModel);
         } else binding.hospital.setVisibility(View.GONE);
 
@@ -774,39 +790,39 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Input
         inputModelArray.clear();
-        MasterSyncItemModel inpModel = new MasterSyncItemModel(Constants.INPUT,  Constants.PRODUCT, "getinputs", Constants.INPUT, inputStatus, false);
+        MasterSyncItemModel inpModel = new MasterSyncItemModel(Constants.INPUT, Constants.PRODUCT, "getinputs", Constants.INPUT, inputStatus, false);
         inputModelArray.add(inpModel);
 
         //Product
         productModelArray.clear();
         MasterSyncItemModel proModel = new MasterSyncItemModel(Constants.PRODUCT, Constants.PRODUCT, "getproducts", Constants.PRODUCT, productStatus, false);
-     //   MasterSyncItemModel proCatModel = new MasterSyncItemModel(Constants.PRODUCT_CATEGORY, proCatCount, Constants.PRODUCT, "", Constants.PRODUCT_CATEGORY, proCatStatus, false);
+        //   MasterSyncItemModel proCatModel = new MasterSyncItemModel(Constants.PRODUCT_CATEGORY, proCatCount, Constants.PRODUCT, "", Constants.PRODUCT_CATEGORY, proCatStatus, false);
         MasterSyncItemModel brandModel = new MasterSyncItemModel(Constants.BRAND, Constants.PRODUCT, "getbrands", Constants.BRAND, brandStatus, false);
         productModelArray.add(proModel);
-   //     productModelArray.add(proCatModel);
+        //     productModelArray.add(proCatModel);
         productModelArray.add(brandModel);
         if (SharedPref.getRcpaNd(this).equalsIgnoreCase("0") || SharedPref.getChmRcpaNeed(this).equalsIgnoreCase("0")) {
-       //     MasterSyncItemModel compProductModel = new MasterSyncItemModel(Constants.COMPETITOR_PROD, compProCount, Constants.PRODUCT, "getcompdet", Constants.COMPETITOR_PROD, compProStatus, false);
+            //     MasterSyncItemModel compProductModel = new MasterSyncItemModel(Constants.COMPETITOR_PROD, compProCount, Constants.PRODUCT, "getcompdet", Constants.COMPETITOR_PROD, compProStatus, false);
             MasterSyncItemModel mapCompPrdModel = new MasterSyncItemModel(Constants.MAPPED_COMPETITOR_PROD, "AdditionalDcr", "getmapcompdet", Constants.MAPPED_COMPETITOR_PROD, mapCompPrdStatus, false);
-          //  productModelArray.add(compProductModel);
+            //  productModelArray.add(compProductModel);
             productModelArray.add(mapCompPrdModel);
         }
 
         //Leave
         leaveModelArray.clear();
-        MasterSyncItemModel leaveModel = new MasterSyncItemModel(Constants.LEAVE,  "Leave", "getleavetype", Constants.LEAVE, leaveStatus, false);
+        MasterSyncItemModel leaveModel = new MasterSyncItemModel(Constants.LEAVE, "Leave", "getleavetype", Constants.LEAVE, leaveStatus, false);
         leaveModelArray.add(leaveModel);
-        if(SharedPref.getLeaveEntitlementNeed(this).equalsIgnoreCase("0")){
+        if (SharedPref.getLeaveEntitlementNeed(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel leaveStatusModel = new MasterSyncItemModel(Constants.LEAVE_STATUS, "Leave", "getleavestatus", Constants.LEAVE_STATUS, leaveStatusStatus, false);
             leaveModelArray.add(leaveStatusModel);
         }
 
         //DCR
         dcrModelArray.clear();
-        MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC,  "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
-        MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC,  "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
+        MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC, "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
+        MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC, "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
         MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
-        if(SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
+        if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
             myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
         } else {
             myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcrmultihq", Constants.WORK_PLAN, myDayPlanStatus, false);
@@ -818,11 +834,11 @@ public class MasterSyncActivity extends AppCompatActivity {
         dcrModelArray.add(myDayPlanModel);
 
 
-        if(SharedPref.getSampleValidation(this).equalsIgnoreCase("1")||SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
-            MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE,  "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
+        if (SharedPref.getSampleValidation(this).equalsIgnoreCase("1") || SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
+            MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE, "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
             dcrModelArray.add(stockBalanceModel);
         }
-            if(SharedPref.getVstNd(this).equalsIgnoreCase("0")) {
+        if (SharedPref.getVstNd(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel visitControlModel = new MasterSyncItemModel(Constants.VISIT_CONTROL, "AdditionalDcr", "getvisit_contro", Constants.VISIT_CONTROL, visitControlStatus, false);
             dcrModelArray.add(visitControlModel);
         }
@@ -835,7 +851,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         //Work Type
         workTypeModelArray.clear();
         MasterSyncItemModel workType = new MasterSyncItemModel(Constants.WORK_TYPE, Constants.DOCTOR, "getworktype", Constants.WORK_TYPE, workTypeStatus, false);
-        MasterSyncItemModel holiday = new MasterSyncItemModel(Constants.HOLIDAY,  Constants.DOCTOR, "getholiday", Constants.HOLIDAY, holidayStatus, false);
+        MasterSyncItemModel holiday = new MasterSyncItemModel(Constants.HOLIDAY, Constants.DOCTOR, "getholiday", Constants.HOLIDAY, holidayStatus, false);
         MasterSyncItemModel weeklyOff = new MasterSyncItemModel(Constants.WEEKLY_OFF, Constants.DOCTOR, "getweeklyoff", Constants.WEEKLY_OFF, weeklyOfStatus, false);
         workTypeModelArray.add(workType);
         workTypeModelArray.add(holiday);
@@ -845,30 +861,31 @@ public class MasterSyncActivity extends AppCompatActivity {
         tpModelArray.clear();
         boolean tpNeed = SharedPref.getTpNeed(this).equalsIgnoreCase("0"), stpNeed = SharedPref.getStpNeed(this).equalsIgnoreCase("0") && !SharedPref.getSfType(this).equalsIgnoreCase("2");
         if (tpNeed) {
-            MasterSyncItemModel tpSetup = new MasterSyncItemModel(Constants.TP_SETUP, Constants.SETUP, "gettpsetup", Constants.TP_SETUP, tpSetupStatus, false);
-            if(SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")){
-                MasterSyncItemModel tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN,  Constants.TOUR_PLAN, "gettp_onebuild", Constants.TOUR_PLAN, tourPLanStatus, false);
+            if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+                MasterSyncItemModel tpSetup = new MasterSyncItemModel(Constants.TP_SETUP, Constants.SETUP, "gettpsetup", Constants.TP_SETUP, tpSetupStatus, false);
+                MasterSyncItemModel tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN, Constants.TOUR_PLAN, "gettp_onebuild", Constants.TOUR_PLAN, tourPLanStatus, false);
                 tpModelArray.add(tpSetup);
                 tpModelArray.add(tPlan);
-            }else {
+            } else {
+                MasterSyncItemModel tpSetup = new MasterSyncItemModel(Constants.TP_SETUP, Constants.SETUP, "gettpsetup", Constants.TP_SETUP, tpSetupStatus, false);
                 MasterSyncItemModel tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN, Constants.TOUR_PLAN, "getall_tp", Constants.TOUR_PLAN, tourPLanStatus, false);
                 tpModelArray.add(tpSetup);
                 tpModelArray.add(tPlan);
             }
         }
-        if(stpNeed) {
+        if (stpNeed) {
             String stpCaption = SharedPref.getStpCaption(this), stpSetupCaption = Constants.STP_SETUP;
-            if(!stpCaption.isEmpty()) {
+            if (!stpCaption.isEmpty()) {
                 stpSetupCaption = stpCaption + " Setup";
             } else {
                 stpCaption = Constants.STANDARD_TOUR_PLAN;
             }
             MasterSyncItemModel STPSetup = new MasterSyncItemModel(stpSetupCaption, Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP, stpSetupStatus, false);
-            MasterSyncItemModel STPPlan = new MasterSyncItemModel(stpCaption,  Constants.STANDARD_TOUR_PLAN, "getstp_details", Constants.STANDARD_TOUR_PLAN, standardTourPLanStatus, false);
+            MasterSyncItemModel STPPlan = new MasterSyncItemModel(stpCaption, Constants.STANDARD_TOUR_PLAN, "getstp_details", Constants.STANDARD_TOUR_PLAN, standardTourPLanStatus, false);
             tpModelArray.add(STPSetup);
             tpModelArray.add(STPPlan);
         }
-        if(!tpNeed && !stpNeed) {
+        if (!tpNeed && !stpNeed) {
             binding.tourPlan.setVisibility(View.GONE);
         }
 
@@ -876,35 +893,35 @@ public class MasterSyncActivity extends AppCompatActivity {
         slideModelArray.clear();
         MasterSyncItemModel proSlideModel = new MasterSyncItemModel(Constants.PROD_SLIDE, "Slide", "getprodslides", Constants.PROD_SLIDE, proSlideStatus, false);
         MasterSyncItemModel splSlideModel = new MasterSyncItemModel(Constants.SPL_SLIDE, "Slide", "getslidespeciality", Constants.SPL_SLIDE, proSpeSlideStatus, false);
-        MasterSyncItemModel brandSlideModel = new MasterSyncItemModel(Constants.BRAND_SLIDE,"Slide", "getslidebrand", Constants.BRAND_SLIDE, brandSlideStatus, false);
-        MasterSyncItemModel therapticSlideModel = new MasterSyncItemModel(Constants.THERAPTIC_SLIDE,  "Slide", "gettheraptic", Constants.THERAPTIC_SLIDE, therapticStatus, false);
-        MasterSyncItemModel welcomeSlideModel = new MasterSyncItemModel(Constants.WELCOME_SLIDE,  "Slide", "getwelcomepage", Constants.WELCOME_SLIDE, welcomeStatus, false);
+        MasterSyncItemModel brandSlideModel = new MasterSyncItemModel(Constants.BRAND_SLIDE, "Slide", "getslidebrand", Constants.BRAND_SLIDE, brandSlideStatus, false);
+        MasterSyncItemModel therapticSlideModel = new MasterSyncItemModel(Constants.THERAPTIC_SLIDE, "Slide", "gettheraptic", Constants.THERAPTIC_SLIDE, therapticStatus, false);
+        MasterSyncItemModel welcomeSlideModel = new MasterSyncItemModel(Constants.WELCOME_SLIDE, "Slide", "getwelcomepage", Constants.WELCOME_SLIDE, welcomeStatus, false);
         slideModelArray.add(welcomeSlideModel);
         slideModelArray.add(proSlideModel);
         slideModelArray.add(splSlideModel);
         slideModelArray.add(brandSlideModel);
-        if(SharedPref.getTherapticPresentationNeed(this).equalsIgnoreCase("0")) {
+        if (SharedPref.getTherapticPresentationNeed(this).equalsIgnoreCase("0")) {
             slideModelArray.add(therapticSlideModel);
         }
 
         //Subordinate
         subordinateModelArray.clear();
         MasterSyncItemModel subModel = new MasterSyncItemModel("Hierarchy", Constants.SUBORDINATE, "getsubordinate", Constants.SUBORDINATE, subordinateStatus, false);
-       // MasterSyncItemModel subMgrModel = new MasterSyncItemModel(Constants.SUBORDINATE_MGR, subMgrCount, Constants.SUBORDINATE, "getsubordinatemgr", Constants.SUBORDINATE_MGR, subMgrStatus, false);
+        // MasterSyncItemModel subMgrModel = new MasterSyncItemModel(Constants.SUBORDINATE_MGR, subMgrCount, Constants.SUBORDINATE, "getsubordinatemgr", Constants.SUBORDINATE_MGR, subMgrStatus, false);
         MasterSyncItemModel jWorkModel = new MasterSyncItemModel("Joint Work", Constants.SUBORDINATE, "getjointwork", Constants.JOINT_WORK + hqCode, jWorkStatus, false);
         subordinateModelArray.add(subModel);
-       // subordinateModelArray.add(subMgrModel);
+        // subordinateModelArray.add(subMgrModel);
         subordinateModelArray.add(jWorkModel);
 
         //Other
         otherModelArray.clear();
         MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, Constants.DOCTOR, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
         otherModelArray.add(feedback);
-        if(SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
-            MasterSyncItemModel Quiz = new MasterSyncItemModel(Constants.QUIZ,"AdditionalDcr", "getquiz", Constants.QUIZ, QuizStatus, false);
+        if (SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
+            MasterSyncItemModel Quiz = new MasterSyncItemModel(Constants.QUIZ, "AdditionalDcr", "getquiz", Constants.QUIZ, QuizStatus, false);
             otherModelArray.add(Quiz);
         }
-        if(SharedPref.getSurveyNd(this).equalsIgnoreCase("0")) {
+        if (SharedPref.getSurveyNd(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel Survey = new MasterSyncItemModel(Constants.SURVEY, Constants.SURVEY, "getsurveydetail", Constants.SURVEY, SurveyStatus, false);
             otherModelArray.add(Survey);
         }
@@ -1007,7 +1024,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
                         }
                     } else {
-                        if(position < masterSyncItemModels.size()) {
+                        if (position < masterSyncItemModels.size()) {
                             masterSyncItemModels.get(position).setPBarVisibility(false);
                         }
                         commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.poor_connection));
@@ -1016,7 +1033,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 });
                 networkStatusTask.execute();
             } else {
-                if(position < masterSyncItemModels.size()) {
+                if (position < masterSyncItemModels.size()) {
                     masterSyncItemModels.get(position).setPBarVisibility(false);
                 }
                 commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
@@ -1103,7 +1120,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                         masterSyncAllModel.add(slideModelArray);
                         masterSyncAllModel.add(otherModelArray);
                         masterSyncAllModel.add(tpModelArray);
-                        if(!navigateFrom.equalsIgnoreCase("Login")){
+                        if (!navigateFrom.equalsIgnoreCase("Login")) {
                             masterSyncAllModel.add(setupModelArray);
                         }
                     }
@@ -1112,16 +1129,16 @@ public class MasterSyncActivity extends AppCompatActivity {
                         ArrayList<MasterSyncItemModel> childArray = new ArrayList<>(masterSyncAllModel.get(i));
                         itemCount += childArray.size();
                         for (int j = 0; j < childArray.size(); j++) {
-                            if(childArray.get(j).getRemoteTableName().equalsIgnoreCase("gettodaydcr")){
+                            if (childArray.get(j).getRemoteTableName().equalsIgnoreCase("gettodaydcr")) {
                                 setDelayForDayPlanSync(childArray, j);
-                            }else {
-                                if(hqChanged) {
-                                    if(childArray.get(j).getLocalTableKeyName().contains(rsf)) {
+                            } else {
+                                if (hqChanged) {
+                                    if (childArray.get(j).getLocalTableKeyName().contains(rsf)) {
                                         childArray.get(j).setPBarVisibility(true);
                                         masterSyncAdapter.notifyDataSetChanged();
                                         sync(childArray.get(j).getMasterOf(), childArray.get(j).getRemoteTableName(), childArray, j);
                                     }
-                                }else {
+                                } else {
                                     childArray.get(j).setPBarVisibility(true);
                                     masterSyncAdapter.notifyDataSetChanged();
                                     sync(childArray.get(j).getMasterOf(), childArray.get(j).getRemoteTableName(), childArray, j);
@@ -1142,12 +1159,12 @@ public class MasterSyncActivity extends AppCompatActivity {
     private void setDelayForDayPlanSync(ArrayList<MasterSyncItemModel> childArray, int position) {
         new Handler().postDelayed(() -> {
             dayPlanDelayCount++;
-            if(dayPlanDelayCount == 8 || (isDateSynced && isCallSynced)) {
+            if (dayPlanDelayCount == 8 || (isDateSynced && isCallSynced)) {
                 dayPlanDelayCount = 0;
                 isCallSynced = false;
                 isDateSynced = false;
                 sync(childArray.get(position).getMasterOf(), childArray.get(position).getRemoteTableName(), childArray, position);
-            }else {
+            } else {
                 setDelayForDayPlanSync(childArray, position);
             }
         }, 5000);
@@ -1156,8 +1173,42 @@ public class MasterSyncActivity extends AppCompatActivity {
     public void sync(String masterOf, String remoteTableName, ArrayList<MasterSyncItemModel> masterSyncItemModels, int position) {
 
         try {
+            if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0") && remoteTableName.equalsIgnoreCase("gettp_oneBuild")) {
+                String TourPlanOfflineDataDao = String.valueOf(tourPlanOfflineDataDao);
+                isFrom = TourPlanOfflineDataDao;
+                OneBuildModelClass oneBuildModelClass = inputDataArrayOneBuild;
+                ArrayList<OneBuildModelClass.SessionList> sessionLists = oneBuildModelClass.getSessionList();
+                if(!sessionLists.isEmpty()) {
+                    for (int i = 0; i < sessionLists.size(); i++) {
+                        OneBuildModelClass.SessionList modelClass1 = sessionLists.get(i);
+
+
+                        if ((!modelClass1.getWorkType().getName().isEmpty()/*&& isFrom.equalsIgnoreCase(TourPlanOfflineDataDao)) || (!TourPlanActivity.dayWiseArrayCurrentMonthOneBuild.isEmpty() && isFrom.equalsIgnoreCase(TourPlanOfflineDataDao)) || (!TourPlanActivity.dayWiseArrayNextMonthOneBuild.isEmpty() && isFrom.equalsIgnoreCase(TourPlanOfflineDataDao))*/)) {
+
+                    /*NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void isNetworkAvailable(Boolean status) {*/
+                            String monthYearPrev = monthYearFromDate(localDate.minusMonths(1));
+                            String monthYearCurr = monthYearFromDate(localDate);
+                            String monthYearNext = monthYearFromDate(localDate.plusMonths(1));
+
+                            if (monthYearPrev != null && !monthYearPrev.isEmpty() && !TourPlanActivity.dayWiseArrayPrevMonthOneBuild.isEmpty()) {
+                                getDraftSaveOneBuild1("prev", TourPlanActivity.dayWiseArrayPrevMonthOneBuild, true);
+                            } else if (monthYearCurr != null && !monthYearCurr.isEmpty() && !TourPlanActivity.dayWiseArrayCurrentMonthOneBuild.isEmpty()) {
+                                getDraftSaveOneBuild1("current", TourPlanActivity.dayWiseArrayCurrentMonthOneBuild, true);
+                            } else if (monthYearNext != null && !monthYearNext.isEmpty() && !TourPlanActivity.dayWiseArrayNextMonthOneBuild.isEmpty()) {
+                                getDraftSaveOneBuild1("next", TourPlanActivity.dayWiseArrayNextMonthOneBuild, true);
+                            }
+                  /*      }
+                    });
+                    networkStatusTask.execute();*/
+                        }
+                    }
+                }
+            }
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-            JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(this);
+            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
             jsonObject.put("tableName", remoteTableName);
             jsonObject.put("sfcode", SharedPref.getSfCode(this));
             jsonObject.put("division_code", SharedPref.getDivisionCode(this));
@@ -1175,7 +1226,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                     jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
                     break;
                 }
-                case "gettp_onebuild":{
+                case "gettp_onebuild": {
+
                     if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
                         jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                         jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
@@ -1190,7 +1242,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 case "getquiz":
                 case "gettodaydcrmultihq":
                 case "gettodaydcr": {
-                    if(HomeDashBoard.selectedDate != null) {
+                    if (HomeDashBoard.selectedDate != null) {
                         jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
                     } else {
                         WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
@@ -1260,11 +1312,11 @@ public class MasterSyncActivity extends AppCompatActivity {
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                         masterSyncItemModels.get(position).setPBarVisibility(false);
                         ++apiSuccessCount;
-                        Log.e("response :   ",  remoteTableName + " : " + response.body().toString());
+                        Log.e("response :   ", remoteTableName + " : " + response.body().toString());
 
                         boolean success = false;
                         JSONArray jsonArray = new JSONArray();
-                        JSONObject jsonObject2=new JSONObject();
+                        JSONObject jsonObject2 = new JSONObject();
                         if (response.isSuccessful()) {
                             Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + response.body().toString());
                             try {
@@ -1276,7 +1328,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                     } else if (jsonElement.isJsonObject()) {
                                         jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
                                         if (!jsonObject2.has("success")) {
-                                           // response as jsonObject with {"success" : "fail" } will be received only when there are unformed object passed or there are no data in back end.
+                                            // response as jsonObject with {"success" : "fail" } will be received only when there are unformed object passed or there are no data in back end.
                                             jsonArray.put(jsonObject2);
                                             success = true;
                                         } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
@@ -1289,16 +1341,14 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         masterSyncItemModels.get(position).setCount(jsonArray.length());
                                         masterSyncItemModels.get(position).setSyncSuccess(2);
                                         masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 2));
-                                        if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)){
+                                        if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)) {
                                             isCallSynced = true;
                                             CallDataRestClass.resetcallValues(context);
                                             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC_DUP, jsonArray.toString(), 2));
-                                        }
-                                        else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.DATE_SYNC)){
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.DATE_SYNC)) {
                                             isDateSynced = true;
                                             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC_DUP, jsonArray.toString(), 2));
-                                        }
-                                        else if(!rsf.isEmpty() && masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.JOINT_WORK + rsf)) {
+                                        } else if (!rsf.isEmpty() && masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.JOINT_WORK + rsf)) {
                                             JSONObject jointWorkJsonObject = new JSONObject();
                                             jointWorkJsonObject.put("Code", SharedPref.getSfCode(MasterSyncActivity.this));
                                             jointWorkJsonObject.put("Name", Constants.INDEPENDENT);
@@ -1316,7 +1366,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
                                             JSONArray jointWorkJsonArray = new JSONArray();
                                             jointWorkJsonArray.put(jointWorkJsonObject);
-                                            for (int i = 0; i<jsonArray.length(); i++) {
+                                            for (int i = 0; i < jsonArray.length(); i++) {
                                                 jointWorkJsonObject = jsonArray.optJSONObject(i);
                                                 jointWorkJsonArray.put(jointWorkJsonObject);
                                             }
@@ -1330,45 +1380,72 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 2));
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 2));
                                             }
-                                        }
-                                        else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
-                                            if(jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")){
-                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this,false);
-                                            }else {
+                                        } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
+                                            if (jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")) {
+                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
+                                            } else {
                                                 SaveTourPlan(jsonArray.getJSONObject(0));
-                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this,true);
+                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
                                             }
-                                        } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
-                                            if(jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")){
-                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this,false);
-                                            }else {
-                                                SaveTourPlanOne(jsonArray.getJSONObject(0));
-                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this,true);
-                                            }
+                                        } else if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+                                            /*String TourPlanOfflineDataDao = String.valueOf(tourPlanOfflineDataDao);
+                                                isFrom = TourPlanOfflineDataDao;
+                                                if ((!TourPlanActivity.dayWiseArrayPrevMonthOneBuild.isEmpty()) && isFrom.equalsIgnoreCase(TourPlanOfflineDataDao) || (!TourPlanActivity.dayWiseArrayCurrentMonthOneBuild.isEmpty()) && isFrom.equalsIgnoreCase(TourPlanOfflineDataDao) || (!TourPlanActivity.dayWiseArrayNextMonthOneBuild.isEmpty() && isFrom.equalsIgnoreCase(TourPlanOfflineDataDao)) ) {
+                                                    Log.d("CheckIfBlock", "CurrentMonthOneBuild size: " + TourPlanActivity.dayWiseArrayPrevMonthOneBuild.size());
+                                                    Log.d("CheckIfBlock", "CurrentMonthOneBuild size: " + TourPlanActivity.dayWiseArrayCurrentMonthOneBuild.size());
+                                                    Log.d("CheckIfBlock", "CurrentMonthOneBuild size: " + TourPlanActivity.dayWiseArrayNextMonthOneBuild.size());
+                                                    NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
+                                                        @SuppressLint("NotifyDataSetChanged")
+                                                        @Override
+                                                        public void isNetworkAvailable(Boolean status) {
+                                                            String monthYearPrev = monthYearFromDate(localDate.minusMonths(1));
+                                                            String monthYearCurr = monthYearFromDate(localDate);
+                                                            String monthYearNext = monthYearFromDate(localDate.plusMonths(1));
 
-                                        } else if (masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr")|| masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
+                                                            if (monthYearPrev != null && !monthYearPrev.isEmpty() && !TourPlanActivity.dayWiseArrayPrevMonthOneBuild.isEmpty()) {
+                                                                getDraftSaveOneBuild1("prev", TourPlanActivity.dayWiseArrayPrevMonthOneBuild, status);
+                                                            } else if (monthYearCurr != null && !monthYearCurr.isEmpty() && !TourPlanActivity.dayWiseArrayCurrentMonthOneBuild.isEmpty()) {
+                                                                getDraftSaveOneBuild1("current", TourPlanActivity.dayWiseArrayCurrentMonthOneBuild, status);
+                                                            } else if (monthYearNext != null && !monthYearNext.isEmpty() && !TourPlanActivity.dayWiseArrayNextMonthOneBuild.isEmpty()) {
+                                                                getDraftSaveOneBuild1("next", TourPlanActivity.dayWiseArrayNextMonthOneBuild, status);
+                                                            }
+                                                        }
+                                                    });
+                                                    networkStatusTask.execute();*/
+//                                                } else {
+                                            if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
+                                                if (jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")) {
+                                                    SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
+                                                } else {
+                                                    SaveTourPlanOne(jsonArray.getJSONObject(0));
+                                                    SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
+                                                }
+                                            }
+//                                            }
+
+                                        } else if (masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
                                             if (mgrInitialSync) {
                                                 setHq(jsonArray);
                                                 return;
                                             }
                                         } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE)) {
-                                            if (jsonArray.length() > 0){
+                                            if (jsonArray.length() > 0) {
                                                 insertSlide(jsonArray);
                                                 if (!navigateFrom.equalsIgnoreCase("Login")) {
                                                     SlideAlertbox(true);
                                                 }
                                             }
                                         } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.WELCOME_SLIDE)) {
-                                            if (jsonArray.length() > 0){
+                                            if (jsonArray.length() > 0) {
                                                 insertWelcomeSlide(jsonArray);
                                                 if (!navigateFrom.equalsIgnoreCase("Login")) {
                                                     welcomeSlideAlertBox(true);
                                                 }
                                             }
-                                        } else  if(!navigateFrom.equalsIgnoreCase("Login") && masterOf.equalsIgnoreCase(Constants.SETUP) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
-                                            if (jsonArray.length() > 0){
-                                                SharedPref.InsertLogInData(MasterSyncActivity.this,jsonArray.getJSONObject(0));
-                                                if(!navigateFrom.equalsIgnoreCase("Slide")) {
+                                        } else if (!navigateFrom.equalsIgnoreCase("Login") && masterOf.equalsIgnoreCase(Constants.SETUP) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
+                                            if (jsonArray.length() > 0) {
+                                                SharedPref.InsertLogInData(MasterSyncActivity.this, jsonArray.getJSONObject(0));
+                                                if (!navigateFrom.equalsIgnoreCase("Slide")) {
                                                     Intent intent = getIntent();
                                                     overridePendingTransition(0, 0);
                                                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -1377,10 +1454,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                     startActivity(intent);
                                                 }
                                             }
-                                        } else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
                                             stpOfflineDataDao.deleteAllData("0");
                                             saveSTPDataToLocal();
-                                        } else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
                                             activityDetailsDataDao.deleteAllData();
 //                                            syncIndividualActivityDetails();
                                         }
@@ -1389,7 +1466,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                             try {
                                                 JSONObject setUpObject = input.getJSONObject(bean);
                                                 String appAccess = setUpObject.getString("sanzen_edet");
-                                                if (!appAccess.equals("1")){
+                                                if (!appAccess.equals("1")) {
                                                     CommonUtilsMethods.accessDialogBox(MasterSyncActivity.this);
                                                 }
                                             } catch (JSONException e) {
@@ -1403,16 +1480,37 @@ public class MasterSyncActivity extends AppCompatActivity {
 //                                    if (navigateFrom.equalsIgnoreCase("Login")) {
 //                                        masterSyncAll(false);
 //                                    }
+
                                 }
+//                                    if (navigateFrom.equalsIgnoreCase("Login")) {
+//                                        masterSyncAll(false);
+//                                    }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         } else {
-                            if(SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")){
+                            if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+                      /*          NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
+                                    @SuppressLint("NotifyDataSetChanged")
+                                    @Override
+                                    public void isNetworkAvailable(Boolean status) {
+                                        if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+                                            if (Boolean.parseBoolean(monthYearFromDate(localDate.minusMonths(1)))) {
+                                                getDraftSaveOneBuild1("prev", TourPlanActivity.dayWiseArrayPrevMonthOneBuild, status);
+                                            } else if (Boolean.parseBoolean(monthYearFromDate(localDate))) {
+                                                getDraftSaveOneBuild1("current", TourPlanActivity.dayWiseArrayCurrentMonthOneBuild, status);
+                                            } else if (Boolean.parseBoolean(monthYearFromDate(localDate.plusMonths(1)))) {
+                                                getDraftSaveOneBuild1("next", TourPlanActivity.dayWiseArrayNextMonthOneBuild, status);
+                                            }
+                                        }
+                                    }
+                                });
+                                networkStatusTask.execute();*/
+
                                 if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
-                                    SharedPref.setTpSyncStaus(MasterSyncActivity.this,false);
+                                    SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                                 }
-                            }else {
+                            } else {
                                 if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
                                     SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                                 }
@@ -1425,27 +1523,27 @@ public class MasterSyncActivity extends AppCompatActivity {
                         if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
                             if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
                                 SharedPref.putAutomassync(getApplicationContext(), true);
-                            //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                                //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
 //                                if(!isSlideDownloading) {
 //                                    isSlideDownloading = true;
-                                    SlideAlertbox(true);
+                                SlideAlertbox(true);
 //                                }
                             } else if (masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
 //                                SharedPref.putAutomassync(getApplicationContext(), true);
-                            //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                                //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
 //                                if(!isWelcomeSlideDownloading) {
 //                                    isWelcomeSlideDownloading = true;
-                                    welcomeSlideAlertBox(true);
+                                welcomeSlideAlertBox(true);
 //                                }
                             } else {
                                 binding.imgDownloading.setVisibility(View.VISIBLE);
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 SharedPref.putAutomassync(getApplicationContext(), true);
-                            //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                                //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
@@ -1460,11 +1558,11 @@ public class MasterSyncActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 
-                        if(SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")){
+                        if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
                             if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
-                                SharedPref.setTpSyncStaus(MasterSyncActivity.this,false);
+                                SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                             }
-                        }else {
+                        } else {
                             if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
                                 SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                             }
@@ -1514,12 +1612,12 @@ public class MasterSyncActivity extends AppCompatActivity {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.ACTIVITY).getMasterSyncDataJsonArray();
             List<String> existingIDs = activityDetailsDataDao.getAllActivityDetailsID();
             List<String> newIDs = new ArrayList<>();
-            if(jsonArray.length()>0) {
-                for (int i = 0; i<jsonArray.length(); i++) {
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String id = jsonObject.getString("Activity_SlNo");
                     newIDs.add(id);
-                    if(activityDetailsDataDao.getActivityDetailsByID(id) != null) {
+                    if (activityDetailsDataDao.getActivityDetailsByID(id) != null) {
                         activityDetailsDataDao.updateStatusByID(id, "1");
                     }
                     try {
@@ -1538,10 +1636,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                                 Log.v("Response :", "" + response);
-                                if(response.isSuccessful()) {
+                                if (response.isSuccessful()) {
                                     try {
                                         JsonElement jsonElement = response.body();
-                                        if(jsonElement != null) {
+                                        if (jsonElement != null) {
                                             JSONArray jsonArray1 = new JSONArray(jsonElement.getAsJsonArray().toString());
                                             activityDetailsDataDao.saveActivityDetailsData(new ActivityDetailsDataTable(id + "_" + SharedPref.getHqCode(MasterSyncActivity.this), jsonArray1.toString(), "0"));
                                         }
@@ -1551,6 +1649,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                     }
                                 }
                             }
+
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 t.printStackTrace();
@@ -1560,9 +1659,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                         a.printStackTrace();
                     }
                 }
-                if(!newIDs.isEmpty()) {
-                    for (String id: existingIDs) {
-                        if(!newIDs.contains(id)) {
+                if (!newIDs.isEmpty()) {
+                    for (String id : existingIDs) {
+                        if (!newIDs.contains(id)) {
                             activityDetailsDataDao.deleteByID(id);
                         }
                     }
@@ -1576,8 +1675,8 @@ public class MasterSyncActivity extends AppCompatActivity {
     private void saveSTPDataToLocal() {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray();
-            if(jsonArray.length()>0) {
-                for (int i = 0; i<jsonArray.length(); i++) {
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String dayID = jsonObject.optString("Day_Plan_ShortName");
                     String dayCaption = jsonObject.optString("Day_Plan_Name");
@@ -1592,7 +1691,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     String activeFlag = jsonObject.optString("Active_Flag");
                     Log.d("STP master data", "saveSTPDataToLocal: " + jsonObject);
 
-                    if(activeFlag.equalsIgnoreCase("0")) {
+                    if (activeFlag.equalsIgnoreCase("0")) {
                         SharedPref.setStpStatus(MasterSyncActivity.this, "Approved");
                     }
 
@@ -1686,7 +1785,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     }
 
     public void uiInitialization1() {
-        if(SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")){
+        if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
             localDate = LocalDate.now();
             try {
                 holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray(); //Holiday data
@@ -1697,8 +1796,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                     holidayMode = jsonObject.getString("Holiday_Mode");
                     weeklyOffCaption = jsonObject.getString("WTname");
                 }
-                if(holidayMode.endsWith(",")){
-                    holidayMode = holidayMode.substring(0,holidayMode.length()-1);
+                if (holidayMode.endsWith(",")) {
+                    holidayMode = holidayMode.substring(0, holidayMode.length() - 1);
                 }
                 System.out.println(holidayMode);
                 String[] holidayModeArray = holidayMode.split(",");
@@ -1745,13 +1844,13 @@ public class MasterSyncActivity extends AppCompatActivity {
                         holidayWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
                 }
 
-                Log.e("weeklyOffWorkTypeModel",""+weeklyOffWorkTypeModelOneBuild.getName());
-                Log.d("holidayWorkTypeModelOneBuild", "uiInitialization1: "+holidayWorkTypeModelOneBuild.getName());
+                Log.e("weeklyOffWorkTypeModel", "" + weeklyOffWorkTypeModelOneBuild.getName());
+                Log.d("holidayWorkTypeModelOneBuild", "uiInitialization1: " + holidayWorkTypeModelOneBuild.getName());
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }else {
+        } else {
             localDate = LocalDate.now();
             try {
                 holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray(); //Holiday data
@@ -1812,263 +1911,319 @@ public class MasterSyncActivity extends AppCompatActivity {
 
                 Log.e("weeklyOffWorkTypeModel", "" + weeklyOffWorkTypeModel.getName());
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
+        }
     }
 
 
+        private String monthYearFromDate (LocalDate date){
+            DateTimeFormatter formatter = null;
+            formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
 
-    private String monthYearFromDate(LocalDate date) {
-        DateTimeFormatter formatter = null;
-        formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
-
-        return date.format(formatter);
-    }
-
-    private ArrayList<String> daysInMonthArray(LocalDate date) {
-        ArrayList<String> daysInMonthArray = new ArrayList<>();
-        YearMonth yearMonth = YearMonth.from(date);
-        int daysInMonth = yearMonth.lengthOfMonth();
-        LocalDate firstOfMonth = date.withDayOfMonth(1);
-        int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
-
-        switch (dayOfWeek) {
-            case 1: {
-                dayOfWeek = 2;
-                break;
-            }
-            case 2: {
-                dayOfWeek = 3;
-                break;
-            }
-            case 3: {
-                dayOfWeek = 4;
-                break;
-            }
-            case 4: {
-                dayOfWeek = 5;
-                break;
-            }
-            case 5: {
-                dayOfWeek = 6;
-                break;
-            }
-            case 6: {
-                dayOfWeek = 7;
-                break;
-            }
-            case 7: {
-                dayOfWeek = 1;
-                break;
-            }
+            return date.format(formatter);
         }
 
-        for (int i = 1; i <= 42; i++) {
-            if (i < dayOfWeek) {
-                daysInMonthArray.add("");
-            } else {
-                if (i < daysInMonth + dayOfWeek) {
-                    daysInMonthArray.add(String.valueOf((i + 1) - dayOfWeek));
+        private ArrayList<String> daysInMonthArray (LocalDate date){
+            ArrayList<String> daysInMonthArray = new ArrayList<>();
+            YearMonth yearMonth = YearMonth.from(date);
+            int daysInMonth = yearMonth.lengthOfMonth();
+            LocalDate firstOfMonth = date.withDayOfMonth(1);
+            int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
+
+            switch (dayOfWeek) {
+                case 1: {
+                    dayOfWeek = 2;
+                    break;
+                }
+                case 2: {
+                    dayOfWeek = 3;
+                    break;
+                }
+                case 3: {
+                    dayOfWeek = 4;
+                    break;
+                }
+                case 4: {
+                    dayOfWeek = 5;
+                    break;
+                }
+                case 5: {
+                    dayOfWeek = 6;
+                    break;
+                }
+                case 6: {
+                    dayOfWeek = 7;
+                    break;
+                }
+                case 7: {
+                    dayOfWeek = 1;
+                    break;
                 }
             }
+
+            for (int i = 1; i <= 42; i++) {
+                if (i < dayOfWeek) {
+                    daysInMonthArray.add("");
+                } else {
+                    if (i < daysInMonth + dayOfWeek) {
+                        daysInMonthArray.add(String.valueOf((i + 1) - dayOfWeek));
+                    }
+                }
+            }
+
+            //To eliminate the excess empty dates which comes with the LocalDate library
+            if (daysInMonthArray.size() >= 22 && daysInMonthArray.size() <= 28) {
+                for (int i = daysInMonthArray.size(); i < 28; i++) {
+                    daysInMonthArray.add("");
+                }
+            } else if (daysInMonthArray.size() >= 29 && daysInMonthArray.size() <= 35) {
+                for (int i = daysInMonthArray.size(); i < 35; i++) {
+                    daysInMonthArray.add("");
+                }
+            } else if (daysInMonthArray.size() >= 36 && daysInMonthArray.size() <= 42) {
+                for (int i = daysInMonthArray.size(); i < 42; i++) {
+                    daysInMonthArray.add("");
+                }
+            }
+
+            return daysInMonthArray;
         }
 
-        //To eliminate the excess empty dates which comes with the LocalDate library
-        if (daysInMonthArray.size() >= 22 && daysInMonthArray.size() <= 28) {
-            for (int i = daysInMonthArray.size(); i < 28; i++) {
-                daysInMonthArray.add("");
+        public String findTerrSlFlag (String code){
+            try {
+                JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
+                for (int i = 0; i < workTypeArray.length(); i++) {
+                    JSONObject jsonObject = workTypeArray.getJSONObject(i);
+                    if (code.equals(jsonObject.getString("Code")))
+                        return jsonObject.getString("TerrSlFlg");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } else if (daysInMonthArray.size() >= 29 && daysInMonthArray.size() <= 35) {
-            for (int i = daysInMonthArray.size(); i < 35; i++) {
-                daysInMonthArray.add("");
+            return "";
+        }
+
+        private ArrayList<ModelClass.SessionList.SubClass> addExtraData (String Name, String Code){
+            String[] arrName = Name.split(",");
+            String[] arrCode = Code.split(",");
+            ArrayList<String> dummyName = new ArrayList<>(Arrays.asList(arrName));
+            ArrayList<String> dummyCode = new ArrayList<>(Arrays.asList(arrCode));
+            ArrayList<ModelClass.SessionList.SubClass> Array = new ArrayList<>();
+
+
+            for (int i = 0; i < dummyName.size(); i++) {
+                Array.add(new ModelClass.SessionList.SubClass(dummyName.get(i), dummyCode.get(i)));
             }
-        } else if (daysInMonthArray.size() >= 36 && daysInMonthArray.size() <= 42) {
-            for (int i = daysInMonthArray.size(); i < 42; i++) {
-                daysInMonthArray.add("");
+
+            return Array;
+        }
+        private ArrayList<OneBuildModelClass.SessionList.SubClass> addExtraDataOneBuild (String
+        Name, String Code){
+            String[] arrName = Name.split(",");
+            String[] arrCode = Code.split(",");
+            ArrayList<String> dummyName = new ArrayList<>(Arrays.asList(arrName));
+            ArrayList<String> dummyCode = new ArrayList<>(Arrays.asList(arrCode));
+            ArrayList<OneBuildModelClass.SessionList.SubClass> Array = new ArrayList<>();
+
+
+            for (int i = 0; i < dummyName.size(); i++) {
+                Array.add(new OneBuildModelClass.SessionList.SubClass(dummyName.get(i), dummyCode.get(i)));
+            }
+
+            return Array;
+        }
+
+        private void SaveTourPlan (JSONObject jsonObject1){
+
+            uiInitialization1();
+            try {
+                localDate = LocalDate.now();
+                if (jsonObject1.has("previous")) {
+                    JSONArray previousArray = new JSONArray(jsonObject1.getJSONArray("previous").toString());
+                    SaveLocalOnlineTable(localDate.minusMonths(1), previousArray);
+                }
+
+                if (jsonObject1.has("current")) {
+                    JSONArray currentArray = new JSONArray(jsonObject1.getJSONArray("current").toString());
+                    SaveLocalOnlineTable(localDate, currentArray);
+                }
+
+                if (jsonObject1.has("next")) {
+                    JSONArray nextArray = new JSONArray(jsonObject1.getJSONArray("next").toString());
+                    SaveLocalOnlineTable(localDate.plusMonths(1), nextArray);
+                }
+
+            } catch (Exception e) {
+                Log.v("getTp", "----error---" + e);
+            }
+        }
+        private void SaveTourPlanOne (JSONObject jsonObject1){
+
+            uiInitialization1();
+            try {
+                localDate = LocalDate.now();
+                if (jsonObject1.has("prev")) {
+                    JSONArray previousArray = new JSONArray(jsonObject1.getJSONArray("prev").toString());
+                    SaveLocalOnlineTableOne(localDate.minusMonths(1), previousArray);
+                }
+
+                if (jsonObject1.has("current")) {
+                    JSONArray currentArray = new JSONArray(jsonObject1.getJSONArray("current").toString());
+                    SaveLocalOnlineTableOne(localDate, currentArray);
+                }
+
+                if (jsonObject1.has("next")) {
+                    JSONArray nextArray = new JSONArray(jsonObject1.getJSONArray("next").toString());
+                    SaveLocalOnlineTableOne(localDate.plusMonths(1), nextArray);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.v("getTp", "----error---" + e);
             }
         }
 
-        return daysInMonthArray;
-    }
 
-    public String findTerrSlFlag(String code) {
-        try {
-            JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
-            for (int i = 0; i < workTypeArray.length(); i++) {
-                JSONObject jsonObject = workTypeArray.getJSONObject(i);
-                if (code.equals(jsonObject.getString("Code")))
-                    return jsonObject.getString("TerrSlFlg");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
+        private void SaveLocalOnlineTable (LocalDate localDate, JSONArray listArray){
+            try {
+                SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
+                ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
 
-    private ArrayList<ModelClass.SessionList.SubClass> addExtraData(String Name, String Code) {
-        String[] arrName = Name.split(",");
-        String[] arrCode = Code.split(",");
-        ArrayList<String> dummyName = new ArrayList<>(Arrays.asList(arrName));
-        ArrayList<String> dummyCode = new ArrayList<>(Arrays.asList(arrCode));
-        ArrayList<ModelClass.SessionList.SubClass> Array = new ArrayList<>();
+                String monthYear = monthYearFromDate(localDate);
+                String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
+                String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
+                String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
+                ArrayList<ModelClass> modelClasses = new ArrayList<>();
 
+                ArrayList<String> holidayDateArray = new ArrayList<>();
+                ArrayList<String> holidayNameArray = new ArrayList<>();
+                for (int i = 0; i < holidayJSONArray.length(); i++) { //Getting Holiday dates from Holiday master data for the selected month
+                    if (holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate.getMonthValue()))) {
+                        holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
+                        holidayNameArray.add(holidayJSONArray.getJSONObject(i).getString("Holiday_Name"));
+                    }
+                }
 
-        for (int i = 0; i < dummyName.size(); i++) {
-            Array.add(new ModelClass.SessionList.SubClass(dummyName.get(i), dummyCode.get(i)));
-        }
+                JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
+                ArrayList<ModelClass> modelClassLocal = new ArrayList<>();
+                if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
+                    Type typeLocal = new TypeToken<ArrayList<ModelClass>>() {
+                    }.getType();
+                    modelClassLocal = new Gson().fromJson(savedDataArray.toString(), typeLocal);
+                }
 
-        return Array;
-    }
-    private ArrayList<OneBuildModelClass.SessionList.SubClass> addExtraDataOneBuild(String Name, String Code) {
-        String[] arrName = Name.split(",");
-        String[] arrCode = Code.split(",");
-        ArrayList<String> dummyName = new ArrayList<>(Arrays.asList(arrName));
-        ArrayList<String> dummyCode = new ArrayList<>(Arrays.asList(arrCode));
-        ArrayList<OneBuildModelClass.SessionList.SubClass> Array = new ArrayList<>();
-
-
-        for (int i = 0; i < dummyName.size(); i++) {
-            Array.add(new OneBuildModelClass.SessionList.SubClass(dummyName.get(i), dummyCode.get(i)));
-        }
-
-        return Array;
-    }
-
-    private void SaveTourPlan(JSONObject jsonObject1) {
-
-        uiInitialization1();
-        try {
-            localDate = LocalDate.now();
-            if (jsonObject1.has("previous")) {
-                JSONArray previousArray = new JSONArray(jsonObject1.getJSONArray("previous").toString());
-                SaveLocalOnlineTable(localDate.minusMonths(1), previousArray);
-            }
-
-            if (jsonObject1.has("current")) {
-                JSONArray currentArray = new JSONArray(jsonObject1.getJSONArray("current").toString());
-                SaveLocalOnlineTable(localDate, currentArray);
-            }
-
-            if (jsonObject1.has("next")) {
-                JSONArray nextArray = new JSONArray(jsonObject1.getJSONArray("next").toString());
-                SaveLocalOnlineTable(localDate.plusMonths(1), nextArray);
-            }
-
-        } catch (Exception e) {
-            Log.v("getTp", "----error---" + e);
-        }
-    }
-    private void SaveTourPlanOne(JSONObject jsonObject1) {
-
-        uiInitialization1();
-        try {
-            localDate = LocalDate.now();
-            if (jsonObject1.has("previous")) {
-                JSONArray previousArray = new JSONArray(jsonObject1.getJSONArray("previous").toString());
-                SaveLocalOnlineTableOne(localDate.minusMonths(1), previousArray);
-            }
-
-            if (jsonObject1.has("current")) {
-                JSONArray currentArray = new JSONArray(jsonObject1.getJSONArray("current").toString());
-                SaveLocalOnlineTableOne(localDate, currentArray);
-            }
-
-            if (jsonObject1.has("next")) {
-                JSONArray nextArray = new JSONArray(jsonObject1.getJSONArray("next").toString());
-                SaveLocalOnlineTableOne(localDate.plusMonths(1), nextArray);
-            }
-
-        } catch (Exception e) {
-            Log.v("getTp", "----error---" + e);
-        }
-    }
-
-
-    private void SaveLocalOnlineTable(LocalDate localDate, JSONArray listArray) {
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
-            ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
-
-            String monthYear = monthYearFromDate(localDate);
-            String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
-            String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
-            String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
-            ArrayList<ModelClass> modelClasses = new ArrayList<>();
-
-            ArrayList<String> holidayDateArray = new ArrayList<>();
-            ArrayList<String> holidayNameArray = new ArrayList<>();
-            for (int i = 0; i < holidayJSONArray.length(); i++) { //Getting Holiday dates from Holiday master data for the selected month
-                if (holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate.getMonthValue()))){
-                    holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
-                    holidayNameArray.add(holidayJSONArray.getJSONObject(i).getString("Holiday_Name"));}
-            }
-
-            JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
-            ArrayList<ModelClass> modelClassLocal = new ArrayList<>();
-            if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
-                Type typeLocal = new TypeToken<ArrayList<ModelClass>>() {
+                Type type = new TypeToken<ArrayList<ReceiveModel>>() {
                 }.getType();
-                modelClassLocal = new Gson().fromJson(savedDataArray.toString(), typeLocal);
-            }
+                ArrayList<ReceiveModel> arrayList = new Gson().fromJson(listArray.toString(), type);
 
-            Type type = new TypeToken<ArrayList<ReceiveModel>>() {
-            }.getType();
-            ArrayList<ReceiveModel> arrayList = new Gson().fromJson(listArray.toString(), type);
+                if (listArray.length() > 0) {
+                    String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
+                    String status = listArray.getJSONObject(0).getString("Change_Status");
+                    tourPlanOnlineDataDao.saveTpData(new TourPlanOnlineDataTable(monthName, listArray.toString(), status, rejectionReason));
+                    boolean LocalWeelyHolidayFlag;
+                    for (String day : days) {
+                        if (!day.isEmpty()) {
+                            String date = day + " " + monthYear;
+                            String dayName = formatter.format(new Date(date));
+                            isDataAvailable = false;
 
-            if (listArray.length() > 0) {
-                String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
-                String status = listArray.getJSONObject(0).getString("Change_Status");
-                tourPlanOnlineDataDao.saveTpData(new TourPlanOnlineDataTable(monthName, listArray.toString(), status, rejectionReason));
-                boolean LocalWeelyHolidayFlag;
-                for (String day : days) {
-                    if (!day.isEmpty()) {
-                        String date = day + " " + monthYear;
-                        String dayName = formatter.format(new Date(date));
-                        isDataAvailable = false;
+                            if (modelClassLocal.size() > 0) {
+                                for (int j = 0; j < modelClassLocal.size(); j++) {
+                                    if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")) {
 
-                        if (modelClassLocal.size() > 0) {
-                            for (int j = 0; j < modelClassLocal.size(); j++) {
-                                if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")) {
-
-                                    for (int i = 0; i < arrayList.size(); i++) {
-                                        ReceiveModel receiveModel = arrayList.get(i);
-                                        if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(receiveModel.getDayno())) {
-                                            SaveTpLocalFull(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year);
+                                        for (int i = 0; i < arrayList.size(); i++) {
+                                            ReceiveModel receiveModel = arrayList.get(i);
+                                            if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(receiveModel.getDayno())) {
+                                                SaveTpLocalFull(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year);
+                                            }
                                         }
+                                    } else if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("1")) {
+                                        isDataAvailable = true;
+                                        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, modelClassLocal.get(j).getSessionList());
+                                        modelClasses.add(modelClass);
+                                        saveTpLocal(modelClasses, day, monthName, "1");
                                     }
-                                } else if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("1")) {
-                                    isDataAvailable = true;
-                                    ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, modelClassLocal.get(j).getSessionList());
+                                }
+                            } else {
+                                for (int i = 0; i < arrayList.size(); i++) {
+                                    ReceiveModel receiveModel = arrayList.get(i);
+                                    if (day.equalsIgnoreCase(receiveModel.getDayno())) {
+                                        SaveTpLocalFull(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year);
+                                    }
+                                }
+                            }
+
+                            if (!isDataAvailable) {
+                                ModelClass.SessionList sessionList = new ModelClass.SessionList();
+                                sessionList = prepareSessionListForAdapterEmpty();
+
+                                if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
+                                    ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                                    sessionLists.add(sessionList);
+                                    ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, false, sessionLists);
                                     modelClasses.add(modelClass);
-                                    saveTpLocal(modelClasses, day, monthName, "1");
+                                    LocalWeelyHolidayFlag = false;
+                                } else {
+                                    if (holidayDateArray.contains(day)) {
+                                        int index = holidayDateArray.indexOf(day);
+                                        sessionList.setRemarks(holidayNameArray.get(index));  // add holiday work type model object when current date is declared as holiday
+                                        sessionList.setWorkType(holidayWorkTypeModel);  // add holiday work type model object when current date is declared as holiday
+                                        LocalWeelyHolidayFlag = true;
+                                    } else if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
+                                        sessionList.setWorkType(weeklyOffWorkTypeModel);
+                                        LocalWeelyHolidayFlag = true;
+                                    } else {
+                                        LocalWeelyHolidayFlag = false;
+                                    }
+
+                                    ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                                    sessionLists.add(sessionList);
+                                    ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
+                                    modelClasses.add(modelClass);
+
+                                }
+
+                                if (LocalWeelyHolidayFlag) {
+                                    saveTpLocal(modelClasses, day, monthYear, "1");
+                                } else {
+                                    saveTpLocal(modelClasses, day, monthYear, "0");
                                 }
                             }
                         } else {
-                            for (int i = 0; i < arrayList.size(); i++) {
-                                ReceiveModel receiveModel = arrayList.get(i);
-                                if (day.equalsIgnoreCase(receiveModel.getDayno())) {
-                                    SaveTpLocalFull(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year);
-                                }
-                            }
+                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                            ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
+                            modelClasses.add(modelClass);
+                            saveTpLocal(modelClasses, day, monthName, "");
                         }
+                    }
 
-                        if (!isDataAvailable) {
+                    tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
+
+                } else {  //If tour plan table has no data
+
+                    boolean LocalWeelyHolidayFlag;
+
+                    for (String day : days) {
+                        if (!day.isEmpty()) {
+                            String date = day + " " + monthYear;
+                            String dayName = formatter.format(new Date(date));
                             ModelClass.SessionList sessionList = new ModelClass.SessionList();
                             sessionList = prepareSessionListForAdapterEmpty();
+
 
                             if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
                                 ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
                                 sessionLists.add(sessionList);
                                 ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, false, sessionLists);
                                 modelClasses.add(modelClass);
-                                LocalWeelyHolidayFlag =false;
-                            }
-                            else {
+                                LocalWeelyHolidayFlag = false;
+                            } else {
                                 if (holidayDateArray.contains(day)) {
                                     int index = holidayDateArray.indexOf(day);
-                                    sessionList.setRemarks(holidayNameArray.get(index));  // add holiday work type model object when current date is declared as holiday
+                                    sessionList.setRemarks(holidayNameArray.get(index));
                                     sessionList.setWorkType(holidayWorkTypeModel);  // add holiday work type model object when current date is declared as holiday
                                     LocalWeelyHolidayFlag = true;
                                 } else if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
@@ -2077,168 +2232,168 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 } else {
                                     LocalWeelyHolidayFlag = false;
                                 }
-
                                 ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
                                 sessionLists.add(sessionList);
                                 ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
                                 modelClasses.add(modelClass);
-
                             }
 
-                            if(LocalWeelyHolidayFlag){
+
+                            if (LocalWeelyHolidayFlag) {
                                 saveTpLocal(modelClasses, day, monthYear, "1");
-                            }else {
+                            } else {
                                 saveTpLocal(modelClasses, day, monthYear, "0");
                             }
+                        } else {
+                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                            ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
+                            modelClasses.add(modelClass);
+                            saveTpLocal(modelClasses, day, monthName, "");
                         }
-                    } else {
-                        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                        ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
-                        modelClasses.add(modelClass);
-                        saveTpLocal(modelClasses, day, monthName, "");
                     }
                 }
+            } catch (Exception ignored) {
 
-                tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
-
-            } else {  //If tour plan table has no data
-
-                boolean LocalWeelyHolidayFlag;
-
-                for (String day : days) {
-                    if (!day.isEmpty()) {
-                        String date = day + " " + monthYear;
-                        String dayName = formatter.format(new Date(date));
-                        ModelClass.SessionList sessionList = new ModelClass.SessionList();
-                        sessionList = prepareSessionListForAdapterEmpty();
-
-
-                        if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
-                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                            sessionLists.add(sessionList);
-                            ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, false, sessionLists);
-                            modelClasses.add(modelClass);
-                            LocalWeelyHolidayFlag =false;
-                        }else {
-                            if (holidayDateArray.contains(day)) {
-                                int index = holidayDateArray.indexOf(day);
-                                sessionList.setRemarks(holidayNameArray.get(index));
-                                sessionList.setWorkType(holidayWorkTypeModel);  // add holiday work type model object when current date is declared as holiday
-                                LocalWeelyHolidayFlag = true;
-                            } else if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
-                                sessionList.setWorkType(weeklyOffWorkTypeModel);
-                                LocalWeelyHolidayFlag = true;
-                            } else {
-                                LocalWeelyHolidayFlag = false;
-                            }
-                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                            sessionLists.add(sessionList);
-                            ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-                            modelClasses.add(modelClass);
-                        }
-
-
-                        if(LocalWeelyHolidayFlag){
-                            saveTpLocal(modelClasses, day, monthYear, "1");
-                        }else {
-                            saveTpLocal(modelClasses, day, monthYear, "0");
-                        }
-                    } else {
-                        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                        ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
-                        modelClasses.add(modelClass);
-                        saveTpLocal(modelClasses, day, monthName, "");
-                    }
-                }
             }
-        } catch (Exception ignored) {
-
         }
-    }
 
-    private void SaveLocalOnlineTableOne(LocalDate localDate, JSONArray listArray) {
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
-            ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
+        private void SaveLocalOnlineTableOne (LocalDate localDate, JSONArray listArray){
+            try {
+                SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
+                ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
 
-            String monthYear = monthYearFromDate(localDate);
-            String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
-            String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
-            String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
-            ArrayList<OneBuildModelClass> modelClasses = new ArrayList<>();
+                String monthYear = monthYearFromDate(localDate);
+                String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
+                String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
+                String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
+                ArrayList<OneBuildModelClass> modelClasses = new ArrayList<>();
 
-            ArrayList<String> holidayDateArray = new ArrayList<>();
-            ArrayList<String> holidayNameArray = new ArrayList<>();
-            for (int i = 0; i < holidayJSONArray.length(); i++) { //Getting Holiday dates from Holiday master data for the selected month
-                if (holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate.getMonthValue()))){
-                    holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
-                    holidayNameArray.add(holidayJSONArray.getJSONObject(i).getString("Holiday_Name"));}
-            }
+                ArrayList<String> holidayDateArray = new ArrayList<>();
+                ArrayList<String> holidayNameArray = new ArrayList<>();
+                for (int i = 0; i < holidayJSONArray.length(); i++) { //Getting Holiday dates from Holiday master data for the selected month
+                    if (holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate.getMonthValue()))) {
+                        holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
+                        holidayNameArray.add(holidayJSONArray.getJSONObject(i).getString("Holiday_Name"));
+                    }
+                }
 
-            JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
-            ArrayList<OneBuildModelClass> modelClassLocal = new ArrayList<>();
-            if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
-                Type typeLocal = new TypeToken<ArrayList<OneBuildModelClass>>() {
+                JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
+                ArrayList<OneBuildModelClass> modelClassLocal = new ArrayList<>();
+                if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
+                    Type typeLocal = new TypeToken<ArrayList<OneBuildModelClass>>() {
+                    }.getType();
+                    modelClassLocal = new Gson().fromJson(savedDataArray.toString(), typeLocal);
+                }
+
+                Type type = new TypeToken<ArrayList<ReceiveModel>>() {
                 }.getType();
-                modelClassLocal = new Gson().fromJson(savedDataArray.toString(), typeLocal);
-            }
+                ArrayList<ReceiveModel> arrayList = new Gson().fromJson(listArray.toString(), type);
 
-            Type type = new TypeToken<ArrayList<ReceiveModel>>() {
-            }.getType();
-            ArrayList<ReceiveModel> arrayList = new Gson().fromJson(listArray.toString(), type);
+                if (listArray.length() > 0) {
+                    String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
+                    String status = listArray.getJSONObject(0).getString("Change_Status");
+                    tourPlanOnlineDataDao.saveTpData(new TourPlanOnlineDataTable(monthName, listArray.toString(), status, rejectionReason));
+                    boolean LocalWeelyHolidayFlag;
+                    for (String day : days) {
+                        if (!day.isEmpty()) {
+                            String date = day + " " + monthYear;
+                            String dayName = formatter.format(new Date(date));
+                            isDataAvailable = false;
 
-            if (listArray.length() > 0) {
-                String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
-                String status = listArray.getJSONObject(0).getString("Change_Status");
-                tourPlanOnlineDataDao.saveTpData(new TourPlanOnlineDataTable(monthName, listArray.toString(), status, rejectionReason));
-                boolean LocalWeelyHolidayFlag;
-                for (String day : days) {
-                    if (!day.isEmpty()) {
-                        String date = day + " " + monthYear;
-                        String dayName = formatter.format(new Date(date));
-                        isDataAvailable = false;
+                            if (modelClassLocal.size() > 0) {
+                                for (int j = 0; j < modelClassLocal.size(); j++) {
+                                    if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")) {
 
-                        if (modelClassLocal.size() > 0) {
-                            for (int j = 0; j < modelClassLocal.size(); j++) {
-                                if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")) {
-
-                                    for (int i = 0; i < arrayList.size(); i++) {
-                                        ReceiveModel receiveModel = arrayList.get(i);
-                                        if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(receiveModel.getDayno())) {
-                                            SaveTpLocalFullOne(receiveModel,modelClasses,day, monthName, date, dayName, monthNo, year); // need to do
+                                        for (int i = 0; i < arrayList.size(); i++) {
+                                            ReceiveModel receiveModel = arrayList.get(i);
+                                            if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(receiveModel.getDayno())) {
+                                                SaveTpLocalFullOne(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year); // need to do
+                                            }
                                         }
+                                    } else if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("1")) {
+                                        isDataAvailable = true;
+                                        OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, modelClassLocal.get(j).getSessionList());
+                                        modelClasses.add(modelClass);
+                                        saveTpLocalOne(modelClasses, day, monthName, "1");  // need to do
                                     }
-                                } else if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("1")) {
-                                    isDataAvailable = true;
-                                    OneBuildModelClass modelClass = new OneBuildModelClass("0",day, date, dayName, monthNo, year, true, modelClassLocal.get(j).getSessionList());
+                                }
+                            } else {
+                                for (int i = 0; i < arrayList.size(); i++) {
+                                    ReceiveModel receiveModel = arrayList.get(i);
+                                    if (day.equalsIgnoreCase(receiveModel.getDayno())) {
+                                        SaveTpLocalFullOne(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year); // need to do
+                                    }
+                                }
+                            }
+
+                            if (!isDataAvailable) {
+                                OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
+                                sessionList = prepareSessionListForAdapterEmptyOne();  // need to do
+
+                                if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
+                                    ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
+                                    sessionLists.add(sessionList); // need to do
+                                    OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, false, sessionLists);
                                     modelClasses.add(modelClass);
-                                    saveTpLocalOne(modelClasses, day, monthName, "1");  // need to do
+                                    LocalWeelyHolidayFlag = false;
+                                } else {
+                                    if (holidayDateArray.contains(day)) {
+                                        int index = holidayDateArray.indexOf(day);
+                                        sessionList.setRemarks(holidayNameArray.get(index));  // add holiday work type model object when current date is declared as holiday
+                                        sessionList.setWorkType(holidayWorkTypeModelOneBuild);  // add holiday work type model object when current date is declared as holiday
+                                        LocalWeelyHolidayFlag = true;
+                                    } else if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
+                                        sessionList.setWorkType(weeklyOffWorkTypeModelOneBuild);
+                                        LocalWeelyHolidayFlag = true;
+                                    } else {
+                                        LocalWeelyHolidayFlag = false;
+                                    }
+
+                                    ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
+                                    sessionLists.add(sessionList);
+                                    OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, sessionLists);
+                                    modelClasses.add(modelClass);
+
+                                }
+
+                                if (LocalWeelyHolidayFlag) {
+                                    saveTpLocalOne(modelClasses, day, monthYear, "1");  // need to do
+                                } else {
+                                    saveTpLocalOne(modelClasses, day, monthYear, "0");  // need to do
                                 }
                             }
                         } else {
-                            for (int i = 0; i < arrayList.size(); i++) {
-                                ReceiveModel receiveModel = arrayList.get(i);
-                                if (day.equalsIgnoreCase(receiveModel.getDayno())) {
-                                    SaveTpLocalFullOne(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year); // need to do
-                                }
-                            }
+                            ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
+                            OneBuildModelClass modelClass = new OneBuildModelClass(day, "", "", "", "", true, sessionLists);
+                            modelClasses.add(modelClass);
+                            saveTpLocalOne(modelClasses, day, monthName, "");  // need to do
                         }
+                    }
 
-                        if (!isDataAvailable) {
+                    tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
+
+                } else {  //If tour plan table has no data
+
+                    boolean LocalWeelyHolidayFlag;
+
+                    for (String day : days) {
+                        if (!day.isEmpty()) {
+                            String date = day + " " + monthYear;
+                            String dayName = formatter.format(new Date(date));
                             OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
-                            sessionList = prepareSessionListForAdapterEmptyOne();  // need to do
+                            sessionList = prepareSessionListForAdapterEmptyOne();   // need to do
+
 
                             if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
                                 ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
-                                sessionLists.add(sessionList); // need to do
-                                OneBuildModelClass modelClass = new OneBuildModelClass("0",day, date, dayName, monthNo, year, false, sessionLists);
+                                sessionLists.add(sessionList);
+                                OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, false, sessionLists);
                                 modelClasses.add(modelClass);
-                                LocalWeelyHolidayFlag =false;
-                            }
-                            else {
+                                LocalWeelyHolidayFlag = false;
+                            } else {
                                 if (holidayDateArray.contains(day)) {
                                     int index = holidayDateArray.indexOf(day);
-                                    sessionList.setRemarks(holidayNameArray.get(index));  // add holiday work type model object when current date is declared as holiday
+                                    sessionList.setRemarks(holidayNameArray.get(index));
                                     sessionList.setWorkType(holidayWorkTypeModelOneBuild);  // add holiday work type model object when current date is declared as holiday
                                     LocalWeelyHolidayFlag = true;
                                 } else if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
@@ -2247,607 +2402,1097 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 } else {
                                     LocalWeelyHolidayFlag = false;
                                 }
-
                                 ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
                                 sessionLists.add(sessionList);
-                                OneBuildModelClass modelClass = new OneBuildModelClass("0",day, date, dayName, monthNo, year, true, sessionLists);
+                                OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, sessionLists);
                                 modelClasses.add(modelClass);
-
                             }
 
-                            if(LocalWeelyHolidayFlag){
+
+                            if (LocalWeelyHolidayFlag) {
                                 saveTpLocalOne(modelClasses, day, monthYear, "1");  // need to do
-                            }else {
+                            } else {
                                 saveTpLocalOne(modelClasses, day, monthYear, "0");  // need to do
                             }
+                        } else {
+                            ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
+                            OneBuildModelClass modelClass = new OneBuildModelClass(day, "", "", "", "", true, sessionLists);
+                            modelClasses.add(modelClass);
+                            saveTpLocalOne(modelClasses, day, monthName, "");       // need to do
                         }
-                    } else {
-                        ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
-                        OneBuildModelClass modelClass = new OneBuildModelClass("0",day, "", "", "", "", true, sessionLists);
-                        modelClasses.add(modelClass);
-                        saveTpLocalOne(modelClasses, day, monthName, "");  // need to do
                     }
                 }
+            } catch (Exception ignored) {
 
-                tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
-
-            } else {  //If tour plan table has no data
-
-                boolean LocalWeelyHolidayFlag;
-
-                for (String day : days) {
-                    if (!day.isEmpty()) {
-                        String date = day + " " + monthYear;
-                        String dayName = formatter.format(new Date(date));
-                        OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
-                        sessionList = prepareSessionListForAdapterEmptyOne();   // need to do
-
-
-                        if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
-                            ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
-                            sessionLists.add(sessionList);
-                            OneBuildModelClass modelClass = new OneBuildModelClass("0",day, date, dayName, monthNo, year, false, sessionLists);
-                            modelClasses.add(modelClass);
-                            LocalWeelyHolidayFlag =false;
-                        }else {
-                            if (holidayDateArray.contains(day)) {
-                                int index = holidayDateArray.indexOf(day);
-                                sessionList.setRemarks(holidayNameArray.get(index));
-                                sessionList.setWorkType(holidayWorkTypeModelOneBuild);  // add holiday work type model object when current date is declared as holiday
-                                LocalWeelyHolidayFlag = true;
-                            } else if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
-                                sessionList.setWorkType(weeklyOffWorkTypeModelOneBuild);
-                                LocalWeelyHolidayFlag = true;
-                            } else {
-                                LocalWeelyHolidayFlag = false;
-                            }
-                            ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
-                            sessionLists.add(sessionList);
-                            OneBuildModelClass modelClass = new OneBuildModelClass("0",day, date, dayName, monthNo, year, true, sessionLists);
-                            modelClasses.add(modelClass);
-                        }
-
-
-                        if(LocalWeelyHolidayFlag){
-                            saveTpLocalOne(modelClasses, day, monthYear, "1");  // need to do
-                        }else {
-                            saveTpLocalOne(modelClasses, day, monthYear, "0");  // need to do
-                        }
-                    } else {
-                        ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
-                        OneBuildModelClass modelClass = new OneBuildModelClass("0",day, "", "", "", "", true, sessionLists);
-                        modelClasses.add(modelClass);
-                        saveTpLocalOne(modelClasses, day, monthName, "");       // need to do
-                    }
-                }
             }
-        } catch (Exception ignored) {
-
         }
-    }
 
-    private void SaveTpLocalFull(ReceiveModel receiveModel, ArrayList<ModelClass> modelClasses, String day, String monthName, String date, String dayName, String monthNo, String year) {
-        ModelClass.SessionList sessionList = new ModelClass.SessionList();
-        ModelClass.SessionList sessionList2 = new ModelClass.SessionList();
-        ModelClass.SessionList sessionList3 = new ModelClass.SessionList();
+        private void SaveTpLocalFull (ReceiveModel
+        receiveModel, ArrayList < ModelClass > modelClasses, String day, String monthName, String
+        date, String dayName, String monthNo, String year){
+            ModelClass.SessionList sessionList = new ModelClass.SessionList();
+            ModelClass.SessionList sessionList2 = new ModelClass.SessionList();
+            ModelClass.SessionList sessionList3 = new ModelClass.SessionList();
 
-        isDataAvailable = true;
-        boolean session2 = false;
-        boolean session3 = false;
+            isDataAvailable = true;
+            boolean session2 = false;
+            boolean session3 = false;
 
-        String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
-        String remarks = receiveModel.getDayRemarks();
-        String submittedTime = receiveModel.getSubmitted_time_dt();
+            String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
+            String remarks = receiveModel.getDayRemarks();
+            String submittedTime = receiveModel.getSubmitted_time_dt();
 
-        ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> chemArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> stkArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> chemArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> stkArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
-        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
+            ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
+            ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
 
-        if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
+            if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
+                if (!receiveModel.getClusterName().isEmpty())
+                    clusterArray = addExtraData(receiveModel.getClusterName(), receiveModel.getClusterCode());
+                if (!receiveModel.getJWNames().isEmpty())
+                    jcArray = addExtraData(receiveModel.getJWNames(), receiveModel.getJWCodes());
+                if (!receiveModel.getDr_Name().isEmpty())
+                    drArray = addExtraData(receiveModel.getDr_Name(), receiveModel.getDr_Code());
+                if (!receiveModel.getChem_Name().isEmpty())
+                    chemArray = addExtraData(receiveModel.getChem_Name(), receiveModel.getChem_Code());
+                if (!receiveModel.getStockist_Name().isEmpty())
+                    stkArray = addExtraData(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
+            }
+            sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
+
+            if (!receiveModel.getWTName2().isEmpty()) {
+                session2 = true;
+                String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
+                String remarks2 = receiveModel.getDayRemarks2();
+                workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg2(), receiveModel.getWTName2(), terrSlFlag2, receiveModel.getWTCode2());
+                hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
+                clusterArray = new ArrayList<>();
+                jcArray = new ArrayList<>();
+                drArray = new ArrayList<>();
+                chemArray = new ArrayList<>();
+                stkArray = new ArrayList<>();
+                unListedDrArray = new ArrayList<>();
+                cipArray = new ArrayList<>();
+                hospArray = new ArrayList<>();
+
+                if (receiveModel.getFWFlg2().equalsIgnoreCase("F")) {
+                    if (!receiveModel.getClusterName2().isEmpty())
+                        clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
+                    if (!receiveModel.getJWNames2().isEmpty())
+                        jcArray = addExtraData(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
+                    if (!receiveModel.getDr_two_name().isEmpty())
+                        drArray = addExtraData(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
+                    if (!receiveModel.getChem_two_name().isEmpty())
+                        chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
+                    if (!receiveModel.getStockist_two_name().isEmpty())
+                        stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
+                }
+                sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
+
+            }
+
+            if (!receiveModel.getWTName3().isEmpty()) {
+                session3 = true;
+                String terrSlFlag3 = findTerrSlFlag(receiveModel.getWTCode3());
+                String remarks3 = receiveModel.getDayRemarks2();
+                workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg3(), receiveModel.getWTName3(), terrSlFlag3, receiveModel.getWTCode3());
+                hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames3(), receiveModel.getHQCodes3());
+                clusterArray = new ArrayList<>();
+                jcArray = new ArrayList<>();
+                drArray = new ArrayList<>();
+                chemArray = new ArrayList<>();
+                stkArray = new ArrayList<>();
+                unListedDrArray = new ArrayList<>();
+                cipArray = new ArrayList<>();
+                hospArray = new ArrayList<>();
+
+                if (receiveModel.getFWFlg3().equalsIgnoreCase("F")) {
+                    if (!receiveModel.getClusterName3().isEmpty())
+                        clusterArray = addExtraData(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
+                    if (!receiveModel.getJWNames3().isEmpty())
+                        jcArray = addExtraData(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
+                    if (!receiveModel.getDr_three_name().isEmpty())
+                        drArray = addExtraData(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
+                    if (!receiveModel.getChem_three_name().isEmpty())
+                        chemArray = addExtraData(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
+                    if (!receiveModel.getStockist_three_name().isEmpty())
+                        stkArray = addExtraData(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
+                }
+                sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
+            }
+
+            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+            sessionLists.add(sessionList);
+            if (session2) sessionLists.add(sessionList2);
+            if (session3) sessionLists.add(sessionList3);
+            ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists, receiveModel.getSTP_Code(), receiveModel.getSTP_Name());
+            modelClass.setSubmittedTime(submittedTime);
+            modelClasses.add(modelClass);
+            saveTpLocal(modelClasses, day, monthName, "0");
+        }
+
+        private void SaveTpLocalFullOne (ReceiveModel
+        receiveModel, ArrayList < OneBuildModelClass > modelClasses, String day, String
+        monthName, String date, String dayName, String monthNo, String year){
+            SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0");
+
+            OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
+            OneBuildModelClass.SessionList sessionList2 = new OneBuildModelClass.SessionList();
+            OneBuildModelClass.SessionList sessionList3 = new OneBuildModelClass.SessionList();
+            isDataAvailable = true;
+            boolean session2 = false;
+            boolean session3 = false;
+
+            String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
+            String remarks = receiveModel.getDayRemarks();
+            String submittedTime = receiveModel.getSubmitted_time_dt();
+
+
+            ArrayList<OneBuildModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
+            ArrayList<OneBuildModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
+            ArrayList<OneBuildModelClass.SessionList.SubClass> drArray = new ArrayList<>();
+            ArrayList<OneBuildModelClass.SessionList.SubClass> chemArray = new ArrayList<>();
+            ArrayList<OneBuildModelClass.SessionList.SubClass> stkArray = new ArrayList<>();
+            ArrayList<OneBuildModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
+            ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
+            ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
+
+            OneBuildModelClass.SessionList.WorkType workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
+            OneBuildModelClass.SessionList.SubClass hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
+
+            //   if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
             if (!receiveModel.getClusterName().isEmpty())
-                clusterArray = addExtraData(receiveModel.getClusterName(), receiveModel.getClusterCode());
+                clusterArray = addExtraDataOneBuild(receiveModel.getClusterName(), receiveModel.getClusterCode());
             if (!receiveModel.getJWNames().isEmpty())
-                jcArray = addExtraData(receiveModel.getJWNames(), receiveModel.getJWCodes());
+                jcArray = addExtraDataOneBuild(receiveModel.getJWNames(), receiveModel.getJWCodes());
             if (!receiveModel.getDr_Name().isEmpty())
-                drArray = addExtraData(receiveModel.getDr_Name(), receiveModel.getDr_Code());
+                drArray = addExtraDataOneBuild(receiveModel.getDr_Name(), receiveModel.getDr_Code());
             if (!receiveModel.getChem_Name().isEmpty())
-                chemArray = addExtraData(receiveModel.getChem_Name(), receiveModel.getChem_Code());
+                chemArray = addExtraDataOneBuild(receiveModel.getChem_Name(), receiveModel.getChem_Code());
             if (!receiveModel.getStockist_Name().isEmpty())
-                stkArray = addExtraData(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
-        }
-        sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
+                stkArray = addExtraDataOneBuild(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
+            //     }
+            sessionList = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
 
-        if (!receiveModel.getWTName2().isEmpty()) {
-            session2 = true;
-            String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
-            String remarks2 = receiveModel.getDayRemarks2();
-            workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg2(), receiveModel.getWTName2(), terrSlFlag2, receiveModel.getWTCode2());
-            hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
-            clusterArray = new ArrayList<>();
-            jcArray = new ArrayList<>();
-            drArray = new ArrayList<>();
-            chemArray = new ArrayList<>();
-            stkArray = new ArrayList<>();
-            unListedDrArray = new ArrayList<>();
-            cipArray = new ArrayList<>();
-            hospArray = new ArrayList<>();
+            if (!receiveModel.getWTName2().isEmpty()) {
+                session2 = true;
+                String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
+                String remarks2 = receiveModel.getDayRemarks2();
+                workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg2(), receiveModel.getWTName2(), terrSlFlag2, receiveModel.getWTCode2());
+                hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
+                clusterArray = new ArrayList<>();
+                jcArray = new ArrayList<>();
+                drArray = new ArrayList<>();
+                chemArray = new ArrayList<>();
+                stkArray = new ArrayList<>();
+                unListedDrArray = new ArrayList<>();
+                cipArray = new ArrayList<>();
+                hospArray = new ArrayList<>();
 
-            if (receiveModel.getFWFlg2().equalsIgnoreCase("F")) {
                 if (!receiveModel.getClusterName2().isEmpty())
-                    clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
+                    clusterArray = addExtraDataOneBuild(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
                 if (!receiveModel.getJWNames2().isEmpty())
-                    jcArray = addExtraData(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
+                    jcArray = addExtraDataOneBuild(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
                 if (!receiveModel.getDr_two_name().isEmpty())
-                    drArray = addExtraData(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
+                    drArray = addExtraDataOneBuild(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
                 if (!receiveModel.getChem_two_name().isEmpty())
-                    chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
+                    chemArray = addExtraDataOneBuild(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
                 if (!receiveModel.getStockist_two_name().isEmpty())
-                    stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
+                    stkArray = addExtraDataOneBuild(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
+
+                sessionList2 = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
+
             }
-            sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
+            if (!receiveModel.getWTName3().isEmpty()) {
+                session3 = true;
+                String terrSlFlag3 = findTerrSlFlag(receiveModel.getWTCode3());
+                String remarks3 = receiveModel.getDayRemarks2();
+                workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg3(), receiveModel.getWTName3(), terrSlFlag3, receiveModel.getWTCode3());
+                hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames3(), receiveModel.getHQCodes3());
+                clusterArray = new ArrayList<>();
+                jcArray = new ArrayList<>();
+                drArray = new ArrayList<>();
+                chemArray = new ArrayList<>();
+                stkArray = new ArrayList<>();
+                unListedDrArray = new ArrayList<>();
+                cipArray = new ArrayList<>();
+                hospArray = new ArrayList<>();
 
-        }
-
-        if (!receiveModel.getWTName3().isEmpty()) {
-            session3 = true;
-            String terrSlFlag3 = findTerrSlFlag(receiveModel.getWTCode3());
-            String remarks3 = receiveModel.getDayRemarks2();
-            workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg3(), receiveModel.getWTName3(), terrSlFlag3, receiveModel.getWTCode3());
-            hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames3(), receiveModel.getHQCodes3());
-            clusterArray = new ArrayList<>();
-            jcArray = new ArrayList<>();
-            drArray = new ArrayList<>();
-            chemArray = new ArrayList<>();
-            stkArray = new ArrayList<>();
-            unListedDrArray = new ArrayList<>();
-            cipArray = new ArrayList<>();
-            hospArray = new ArrayList<>();
-
-            if (receiveModel.getFWFlg3().equalsIgnoreCase("F")) {
                 if (!receiveModel.getClusterName3().isEmpty())
-                    clusterArray = addExtraData(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
+                    clusterArray = addExtraDataOneBuild(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
                 if (!receiveModel.getJWNames3().isEmpty())
-                    jcArray = addExtraData(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
+                    jcArray = addExtraDataOneBuild(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
                 if (!receiveModel.getDr_three_name().isEmpty())
-                    drArray = addExtraData(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
+                    drArray = addExtraDataOneBuild(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
                 if (!receiveModel.getChem_three_name().isEmpty())
-                    chemArray = addExtraData(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
+                    chemArray = addExtraDataOneBuild(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
                 if (!receiveModel.getStockist_three_name().isEmpty())
-                    stkArray = addExtraData(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
+                    stkArray = addExtraDataOneBuild(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
+                sessionList3 = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
             }
-            sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
-        }
-
-        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-        sessionLists.add(sessionList);
-        if (session2) sessionLists.add(sessionList2);
-        if (session3) sessionLists.add(sessionList3);
-        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists, receiveModel.getSTP_Code(), receiveModel.getSTP_Name());
-        modelClass.setSubmittedTime(submittedTime);
-        modelClasses.add(modelClass);
-        saveTpLocal(modelClasses, day, monthName, "0");
-    }
-
-    private void SaveTpLocalFullOne(ReceiveModel receiveModel, ArrayList<OneBuildModelClass> modelClasses, String day, String monthName, String date, String dayName, String monthNo, String year) {
-        SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0");
-
-        OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
-        OneBuildModelClass.SessionList sessionList2 = new OneBuildModelClass.SessionList();
-        OneBuildModelClass.SessionList sessionList3 = new OneBuildModelClass.SessionList();
-        isDataAvailable = true;
-        boolean session2 = false;
-        boolean session3 = false;
-
-        String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
-        String remarks = receiveModel.getDayRemarks();
-        String submittedTime = receiveModel.getSubmitted_time_dt();
-
-
-        ArrayList<OneBuildModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
-        ArrayList<OneBuildModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
-        ArrayList<OneBuildModelClass.SessionList.SubClass> drArray = new ArrayList<>();
-        ArrayList<OneBuildModelClass.SessionList.SubClass> chemArray = new ArrayList<>();
-        ArrayList<OneBuildModelClass.SessionList.SubClass> stkArray = new ArrayList<>();
-        ArrayList<OneBuildModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
-        ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
-        ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
-
-        OneBuildModelClass.SessionList.WorkType workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
-        OneBuildModelClass.SessionList.SubClass hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
-
-        //   if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
-        if (!receiveModel.getClusterName().isEmpty())
-            clusterArray = addExtraDataOneBuild(receiveModel.getClusterName(), receiveModel.getClusterCode());
-        if (!receiveModel.getJWNames().isEmpty())
-            jcArray = addExtraDataOneBuild(receiveModel.getJWNames(), receiveModel.getJWCodes());
-        if (!receiveModel.getDr_Name().isEmpty())
-            drArray = addExtraDataOneBuild(receiveModel.getDr_Name(), receiveModel.getDr_Code());
-        if (!receiveModel.getChem_Name().isEmpty())
-            chemArray = addExtraDataOneBuild(receiveModel.getChem_Name(), receiveModel.getChem_Code());
-        if (!receiveModel.getStockist_Name().isEmpty())
-            stkArray = addExtraDataOneBuild(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
-        //     }
-        sessionList = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
-
-        if (!receiveModel.getWTName2().isEmpty()) {
-            session2 = true;
-            String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
-            String remarks2 = receiveModel.getDayRemarks2();
-            workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg2(), receiveModel.getWTName2(), terrSlFlag2, receiveModel.getWTCode2());
-            hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
-            clusterArray = new ArrayList<>();
-            jcArray = new ArrayList<>();
-            drArray = new ArrayList<>();
-            chemArray = new ArrayList<>();
-            stkArray = new ArrayList<>();
-            unListedDrArray = new ArrayList<>();
-            cipArray = new ArrayList<>();
-            hospArray = new ArrayList<>();
-
-            if (!receiveModel.getClusterName2().isEmpty())
-                clusterArray = addExtraDataOneBuild(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
-            if (!receiveModel.getJWNames2().isEmpty())
-                jcArray = addExtraDataOneBuild(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
-            if (!receiveModel.getDr_two_name().isEmpty())
-                drArray = addExtraDataOneBuild(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
-            if (!receiveModel.getChem_two_name().isEmpty())
-                chemArray = addExtraDataOneBuild(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
-            if (!receiveModel.getStockist_two_name().isEmpty())
-                stkArray = addExtraDataOneBuild(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
-
-            sessionList2 = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
+            ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
+            sessionLists.add(sessionList);
+            if (session2) sessionLists.add(sessionList2);
+            if (session3) sessionLists.add(sessionList3);
+            OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, sessionLists, receiveModel.getSTP_Code(), receiveModel.getSTP_Name());
+            modelClass.setSubmittedTime(submittedTime);
+            modelClasses.add(modelClass);
+            saveTpLocalOne(modelClasses, day, monthName, "0");
 
         }
-        if (!receiveModel.getWTName3().isEmpty()) {
-            session3 = true;
-            String terrSlFlag3 = findTerrSlFlag(receiveModel.getWTCode3());
-            String remarks3 = receiveModel.getDayRemarks2();
-            workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg3(), receiveModel.getWTName3(), terrSlFlag3, receiveModel.getWTCode3());
-            hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames3(), receiveModel.getHQCodes3());
-            clusterArray = new ArrayList<>();
-            jcArray = new ArrayList<>();
-            drArray = new ArrayList<>();
-            chemArray = new ArrayList<>();
-            stkArray = new ArrayList<>();
-            unListedDrArray = new ArrayList<>();
-            cipArray = new ArrayList<>();
-            hospArray = new ArrayList<>();
 
-            if (!receiveModel.getClusterName3().isEmpty())
-                clusterArray = addExtraDataOneBuild(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
-            if (!receiveModel.getJWNames3().isEmpty())
-                jcArray = addExtraDataOneBuild(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
-            if (!receiveModel.getDr_three_name().isEmpty())
-                drArray = addExtraDataOneBuild(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
-            if (!receiveModel.getChem_three_name().isEmpty())
-                chemArray = addExtraDataOneBuild(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
-            if (!receiveModel.getStockist_three_name().isEmpty())
-                stkArray = addExtraDataOneBuild(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
-            sessionList3 = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
-        }
-        ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
-        sessionLists.add(sessionList);
-        if (session2) sessionLists.add(sessionList2);
-        if (session3) sessionLists.add(sessionList3);
-        OneBuildModelClass modelClass = new OneBuildModelClass("0", day, date, dayName, monthNo, year, true, sessionLists, receiveModel.getSTP_Code(), receiveModel.getSTP_Name());
-        modelClass.setSubmittedTime(submittedTime);
-        modelClasses.add(modelClass);
-        saveTpLocalOne(modelClasses, day, monthName, "0");
-
-    }
-
-    public void saveTpLocal(ArrayList<ModelClass> arrayList, String date, String month, String status) {
-        for (ModelClass modelClass : arrayList) {
-            if (modelClass.getDayNo().equals(date)) {
-                modelClass.setSyncStatus(status);
-                break;
-            }
-        }
-        tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month,  new Gson().toJson(arrayList)));
-    }
-    public void saveTpLocalOne(ArrayList<OneBuildModelClass> arrayList, String date, String month, String status) {
-        for (OneBuildModelClass modelClass : arrayList) {
-            if (modelClass.getDayNo().equals(date)) {
-                modelClass.setSyncStatus(status);
-                break;
-            }
-        }
-        tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month,  new Gson().toJson(arrayList)));
-    }
-
-    private ModelClass.SessionList prepareSessionListForAdapterEmpty() {
-        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
-        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
-
-        ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> chemistArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> stockArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
-
-        return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
-    }
-    private OneBuildModelClass.SessionList prepareSessionListForAdapterEmptyOne() {
-        OneBuildModelClass.SessionList.WorkType workType = new OneBuildModelClass.SessionList.WorkType("", "", "", "");
-        OneBuildModelClass.SessionList.SubClass hq = new OneBuildModelClass.SessionList.SubClass("", "");
-
-        ArrayList<OneBuildModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
-        ArrayList<OneBuildModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
-        ArrayList<OneBuildModelClass.SessionList.SubClass> drArray = new ArrayList<>();
-        ArrayList<OneBuildModelClass.SessionList.SubClass> chemistArray = new ArrayList<>();
-        ArrayList<OneBuildModelClass.SessionList.SubClass> stockArray = new ArrayList<>();
-        ArrayList<OneBuildModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
-        ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
-        ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
-
-        return new OneBuildModelClass.SessionList("", true, "", "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
-    }
-
-    public void setHq(JSONArray jsonArray) {
-        //we need to get the very first HQ id from subordinate(HQ) array to pass this in object of every api call to sync all other masters for a particular HQ
-        //only for MGR .bcz MGR has multiple HQ
-        mgrInitialSync = false;
-        apiSuccessCount = 0;
-        if (jsonArray.length() > 0) {
-            try {
-                String HqName="", Hqcode="";
-                JSONObject firstObject = jsonArray.getJSONObject(0);
-                if (firstObject.getString("FWFlg").equalsIgnoreCase("F")) {
-                    Hqcode = firstObject.getString("SFMem");
-
-                    HqName=  firstObject.getString("HQNm");
+        public void saveTpLocal (ArrayList < ModelClass > arrayList, String date, String
+        month, String status){
+            for (ModelClass modelClass : arrayList) {
+                if (modelClass.getDayNo().equals(date)) {
+                    modelClass.setSyncStatus(status);
+                    break;
                 }
-                if (jsonArray.length() == 2) {
-                    JSONObject secondObject = jsonArray.getJSONObject(1);
-                    if (secondObject.getString("FWFlg").equalsIgnoreCase("F")) {
-                        Hqcode = secondObject.getString("SFMem");
-                        HqName=  secondObject.getString("HQNm");
+            }
+            tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month, new Gson().toJson(arrayList)));
+        }
+
+        public void saveTpLocalOne (ArrayList < OneBuildModelClass > arrayList, String date, String
+        month, String status){
+            for (OneBuildModelClass modelClass : arrayList) {
+                if (modelClass.getDayNo().equals(date)) {
+                    modelClass.setSyncStatus(status);
+                    break;
+                }
+            }
+            tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month, new Gson().toJson(arrayList)));
+        }
+
+        private ModelClass.SessionList prepareSessionListForAdapterEmpty () {
+            ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
+            ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
+
+            ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> chemistArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> stockArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
+            ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
+
+            return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+        }
+        private OneBuildModelClass.SessionList prepareSessionListForAdapterEmptyOne () {
+            OneBuildModelClass.SessionList.WorkType workType = new OneBuildModelClass.SessionList.WorkType("", "", "", "");
+            OneBuildModelClass.SessionList.SubClass hq = new OneBuildModelClass.SessionList.SubClass("", "");
+
+            ArrayList<OneBuildModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
+            ArrayList<OneBuildModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
+            ArrayList<OneBuildModelClass.SessionList.SubClass> drArray = new ArrayList<>();
+            ArrayList<OneBuildModelClass.SessionList.SubClass> chemistArray = new ArrayList<>();
+            ArrayList<OneBuildModelClass.SessionList.SubClass> stockArray = new ArrayList<>();
+            ArrayList<OneBuildModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
+            ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
+            ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
+
+            return new OneBuildModelClass.SessionList("", true, "", "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+        }
+
+        public void setHq (JSONArray jsonArray){
+            //we need to get the very first HQ id from subordinate(HQ) array to pass this in object of every api call to sync all other masters for a particular HQ
+            //only for MGR .bcz MGR has multiple HQ
+            mgrInitialSync = false;
+            apiSuccessCount = 0;
+            if (jsonArray.length() > 0) {
+                try {
+                    String HqName = "", Hqcode = "";
+                    JSONObject firstObject = jsonArray.getJSONObject(0);
+                    if (firstObject.getString("FWFlg").equalsIgnoreCase("F")) {
+                        Hqcode = firstObject.getString("SFMem");
+
+                        HqName = firstObject.getString("HQNm");
+                    }
+                    if (jsonArray.length() == 2) {
+                        JSONObject secondObject = jsonArray.getJSONObject(1);
+                        if (secondObject.getString("FWFlg").equalsIgnoreCase("F")) {
+                            Hqcode = secondObject.getString("SFMem");
+                            HqName = secondObject.getString("HQNm");
+                        }
+                    }
+                    binding.hqName.setText(HqName);
+                    rsf = Hqcode;
+                    prepareArray(rsf);// to replace the new rsf values
+                    masterSyncAll(false);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                masterSyncAll(false);
+            }
+        }
+
+
+        @Override
+        public void onWindowFocusChanged ( boolean hasFocus){
+            super.onWindowFocusChanged(hasFocus);
+            if (hasFocus) {
+                binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            }
+        }
+
+        public void insertSlide (JSONArray jsonArray){
+            try {
+                List<String> mList = new ArrayList<>();
+
+                List<String> nList = SlidesDao.getAllSlideIds();
+                if (jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String FilePath = jsonObject.optString("FilePath");
+                        String id = jsonObject.optString("SlideId");
+                        mList.add(id);
+                        if (SlidesDao.getSlideName(id) != null && SlidesDao.getSlideName(id).equalsIgnoreCase(FilePath)) {
+                            SlidesDao.insert(new SlidesTableDeatils(id, FilePath, "", "1", "0", "1", String.valueOf(i)));
+                        } else {
+                            SlidesDao.saveSlideData(new SlidesTableDeatils(id, FilePath, "", "1", "0", "1", String.valueOf(i)));
+                        }
+                    }
+                    if (!nList.isEmpty()) {
+                        for (int j = 0; j < nList.size(); j++) {
+                            if (!mList.contains(nList.get(j))) {
+                                SlidesDao.deleteSlideById(nList.get(j));
+                            }
+                        }
                     }
                 }
-                binding.hqName.setText(HqName);
-                rsf = Hqcode;
-                prepareArray(rsf);// to replace the new rsf values
-                masterSyncAll(false);
             } catch (JSONException e) {
+                Log.e("MasterSync Slides", "insertSlide: " + e.getMessage());
                 e.printStackTrace();
             }
-        }else {
-            masterSyncAll(false);
+
         }
-    }
 
+        public void SlideAlertbox ( boolean servesflag){
+            SlidesDao.Changestatus("1", "0");
+            MasterSyncActivity.SlideIds.clear();
+            if (servesflag) {
+                SharedPref.putSlidestatus(MasterSyncActivity.this, false);
+                Intent intent1 = new Intent(MasterSyncActivity.this, SlideServices.class);
+                stopService(intent1);
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-    }
+                Intent startIntent = new Intent(getApplicationContext(), SlideServices.class);
+                startService(startIntent);
+            }
+            isSingleSlideDowloaingStaus = false;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View dialogView = LayoutInflater.from(this).inflate(R.layout.slide_downloader_alert_box, null);
+            RecyclerView recyclerView = dialogView.findViewById(R.id.recyelerview123);
+            TextView txt_downloadcount = dialogView.findViewById(R.id.txt_downloadcount);
+            TextView txt_total = dialogView.findViewById(R.id.txt_totaldownloadcount);
+            ImageView cancel_img = dialogView.findViewById(R.id.cancel_img);
+            Slide_adapter adapter = new Slide_adapter(this);
+            LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+            recyclerView.setNestedScrollingEnabled(false);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(manager);
+            recyclerView.setAdapter(adapter);
+            builder.setView(dialogView);
+            if (slideDialog != null && slideDialog.isShowing()) {
+                slideDialog.dismiss();
+            }
 
-    public  void insertSlide(JSONArray jsonArray){
-        try {
-            List<String> mList=new ArrayList<>();
+            slideDialog = builder.create();
+            slideDialog.setCancelable(false);
+            if (!isFinishing()) {
+                slideDialog.show();
+            }
 
-            List<String> nList =SlidesDao.getAllSlideIds();
-            if(jsonArray.length() > 0){
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String FilePath = jsonObject.optString("FilePath");
-                    String id = jsonObject.optString("SlideId");
-                    mList.add(id);
-                    if(SlidesDao.getSlideName(id) != null && SlidesDao.getSlideName(id).equalsIgnoreCase(FilePath)) {
-                        SlidesDao.insert(new SlidesTableDeatils(id, FilePath, "", "1", "0", "1", String.valueOf(i)));
-                    }else {
-                        SlidesDao.saveSlideData(new SlidesTableDeatils(id, FilePath, "", "1", "0", "1", String.valueOf(i)));
+            cancel_img.setOnClickListener(view -> {
+                slideDialog.dismiss();
+                navigateFrom = "Slide";
+            });
+
+            SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);
+            slidesViewModel.getAllSlides().observe(this, slides -> {
+                Collections.sort(slides, Comparator.comparingInt(s -> Integer.parseInt(s.getListSlidePosition())));
+                adapter.setSlides(slides);
+            });
+
+            slidesViewModel.GetDowloaingCount().observe(this, integer -> {
+                txt_downloadcount.setText(String.valueOf(integer) + " / ");
+            });
+
+            txt_total.setText(String.valueOf(SlidesDao.TotalSlidecount()));
+
+            slidesViewModel.getCountOfDownloadingProcessDone().observe(this, integer -> {
+                if (integer == (Integer.valueOf(SlidesDao.TotalSlidecount()))) {
+                    SharedPref.putSlidestatus(MasterSyncActivity.this, true);
+                    if (isSingleSlideDowloaingStaus) {
+                        isSingleSlideDowloaingStaus = false;
+                        commonUtilsMethods.showToastMessage(this, "Slide Updated ");
+                    } else {
+                        commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
                     }
+
+                    if (navigateFrom.equalsIgnoreCase("Login")) {
+                        if (welcomeSlidesDao.getTotalSlideCount() > 0) {
+                            welcomeSlideAlertBox(true);
+                        } else {
+                            Intent intent = new Intent(context, HomeDashBoard.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+                        }
+                    }
+                } else {
+                    SharedPref.putSlidestatus(MasterSyncActivity.this, false);
                 }
-                if(!nList.isEmpty()) {
-                    for (int j = 0; j<nList.size(); j++) {
-                        if(!mList.contains(nList.get(j))) {
-                            SlidesDao.deleteSlideById(nList.get(j));
+            });
+        }
+
+        public void insertWelcomeSlide (JSONArray jsonArray){
+            try {
+                List<String> mList = new ArrayList<>();
+                List<String> nList = welcomeSlidesDao.getAllSlideNames();
+                if (jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String FilePath = jsonObject.optString("Name");
+                        String name = jsonObject.optString("Name");
+                        mList.add(name);
+                        if (welcomeSlidesDao.getSlideName(name) != null && welcomeSlidesDao.getSlideName(name).equalsIgnoreCase(FilePath)) {
+                            welcomeSlidesDao.insert(new WelcomeSlidesDataTable(FilePath, "", "1", "0", "1", String.valueOf(i)));
+                        } else {
+                            welcomeSlidesDao.saveWelcomeSlideData(new WelcomeSlidesDataTable(FilePath, "", "1", "0", "1", String.valueOf(i)));
+                        }
+                    }
+                    if (!nList.isEmpty()) {
+                        for (int j = 0; j < nList.size(); j++) {
+                            if (!mList.contains(nList.get(j))) {
+                                welcomeSlidesDao.deleteSlideByName(nList.get(j));
+                            }
                         }
                     }
                 }
+            } catch (JSONException e) {
+                Log.e("MasterSync Slides", "insertSlide: " + e.getMessage());
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            Log.e("MasterSync Slides", "insertSlide: " + e.getMessage());
-            e.printStackTrace();
+
         }
 
-    }
+        public void welcomeSlideAlertBox ( boolean servesFlag){
+            welcomeSlidesDao.setChangeStatus("1", "0");
+            MasterSyncActivity.welcomeSlideNames.clear();
+            if (servesFlag) {
+                SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, false);
+                Intent intent = new Intent(MasterSyncActivity.this, WelcomeSlideService.class);
+                stopService(intent);
 
-    public void SlideAlertbox(boolean servesflag) {
-        SlidesDao.Changestatus("1", "0");
-        MasterSyncActivity.SlideIds.clear();
-        if(servesflag) {
-            SharedPref.putSlidestatus(MasterSyncActivity.this, false);
-            Intent intent1 = new Intent(MasterSyncActivity.this, SlideServices.class);
-            stopService(intent1);
+                Intent startIntent = new Intent(getApplicationContext(), WelcomeSlideService.class);
+                startService(startIntent);
+            }
+            isSingleWelcomeSlideDownloadingStatus = false;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View dialogView = LayoutInflater.from(this).inflate(R.layout.slide_downloader_alert_box, null);
+            RecyclerView recyclerView = dialogView.findViewById(R.id.recyelerview123);
+            TextView txt_alert_title = dialogView.findViewById(R.id.alert_title);
+            TextView txt_downloadCount = dialogView.findViewById(R.id.txt_downloadcount);
+            TextView txt_total = dialogView.findViewById(R.id.txt_totaldownloadcount);
+            ImageView cancel_img = dialogView.findViewById(R.id.cancel_img);
+            txt_alert_title.setText("Welcome Slide Downloader");
+            WelcomeSlideAdapter adapter = new WelcomeSlideAdapter(this);
+            LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+            recyclerView.setNestedScrollingEnabled(false);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(manager);
+            recyclerView.setAdapter(adapter);
+            builder.setView(dialogView);
+            if (welcomeSlideDialog != null && welcomeSlideDialog.isShowing() && !isFinishing()) {
+                welcomeSlideDialog.dismiss();
+            }
+            welcomeSlideDialog = builder.create();
+            welcomeSlideDialog.setCancelable(false);
+            if (!isFinishing()) {
+                welcomeSlideDialog.show();
+            }
 
-            Intent startIntent = new Intent(getApplicationContext(), SlideServices.class);
-            startService(startIntent);
-        }
-        isSingleSlideDowloaingStaus = false;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.slide_downloader_alert_box, null);
-        RecyclerView recyclerView = dialogView.findViewById(R.id.recyelerview123);
-        TextView txt_downloadcount = dialogView.findViewById(R.id.txt_downloadcount);
-        TextView txt_total = dialogView.findViewById(R.id.txt_totaldownloadcount);
-        ImageView cancel_img = dialogView.findViewById(R.id.cancel_img);
-        Slide_adapter adapter = new Slide_adapter(this);
-        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(adapter);
-        builder.setView(dialogView);
-        if(slideDialog != null && slideDialog.isShowing()) {
-            slideDialog.dismiss();
-        }
+            cancel_img.setOnClickListener(view -> {
+                welcomeSlideDialog.dismiss();
+                navigateFrom = "Slide";
+            });
 
-        slideDialog = builder.create();
-        slideDialog.setCancelable(false);
-        if(!isFinishing()) {
-            slideDialog.show();
-        }
+            WelcomeSlidesViewModel slidesViewModel = new ViewModelProvider(this).get(WelcomeSlidesViewModel.class);
+            slidesViewModel.getAllSlides().observe(this, slides -> {
+                Collections.sort(slides, Comparator.comparingInt(s -> Integer.parseInt(s.getListSlidePosition())));
+                adapter.setSlides(slides);
+            });
 
-        cancel_img.setOnClickListener(view -> {
-            slideDialog.dismiss();
-            navigateFrom = "Slide";
-        });
+            slidesViewModel.getDownloadingCount().observe(this, integer -> txt_downloadCount.setText(integer + " / "));
 
-        SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);
-        slidesViewModel.getAllSlides().observe(this, slides -> {
-            Collections.sort(slides, Comparator.comparingInt(s -> Integer.parseInt(s.getListSlidePosition())));
-            adapter.setSlides(slides);
-        });
+            txt_total.setText(String.valueOf(welcomeSlidesDao.getTotalSlideCount()));
 
-        slidesViewModel.GetDowloaingCount().observe(this, integer -> {
-            txt_downloadcount.setText(String.valueOf(integer) + " / ");
-        });
-
-        txt_total.setText(String.valueOf(SlidesDao.TotalSlidecount()));
-
-        slidesViewModel.getCountOfDownloadingProcessDone().observe(this, integer -> {
-            if(integer == (Integer.valueOf(SlidesDao.TotalSlidecount()))) {
-                SharedPref.putSlidestatus(MasterSyncActivity.this, true);
-                if(isSingleSlideDowloaingStaus) {
-                    isSingleSlideDowloaingStaus = false;
-                    commonUtilsMethods.showToastMessage(this, "Slide Updated ");
-                }else {
-                    commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
-                }
-
-                if(navigateFrom.equalsIgnoreCase("Login")) {
-                    if (welcomeSlidesDao.getTotalSlideCount() > 0) {
-                        welcomeSlideAlertBox(true);
+            slidesViewModel.getCountOfDownloadingProcessDone().observe(this, integer -> {
+                if (integer == welcomeSlidesDao.getTotalSlideCount()) {
+                    SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, true);
+                    if (isSingleWelcomeSlideDownloadingStatus) {
+                        isSingleWelcomeSlideDownloadingStatus = false;
+                        commonUtilsMethods.showToastMessage(this, "Slide Updated ");
                     } else {
+                        commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
+                    }
+
+                    if (navigateFrom.equalsIgnoreCase("Login")) {
                         Intent intent = new Intent(context, HomeDashBoard.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();
                     }
+                } else {
+                    SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, false);
                 }
-            }else {
-                SharedPref.putSlidestatus(MasterSyncActivity.this, false);
-            }
-        });
-    }
+            });
+        }
 
-    public void insertWelcomeSlide(JSONArray jsonArray){
-        try {
-            List<String> mList = new ArrayList<>();
-            List<String> nList = welcomeSlidesDao.getAllSlideNames();
-            if(jsonArray.length() > 0){
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String FilePath = jsonObject.optString("Name");
-                    String name = jsonObject.optString("Name");
-                    mList.add(name);
-                    if(welcomeSlidesDao.getSlideName(name) != null && welcomeSlidesDao.getSlideName(name).equalsIgnoreCase(FilePath)) {
-                        welcomeSlidesDao.insert(new WelcomeSlidesDataTable(FilePath, "", "1", "0", "1", String.valueOf(i)));
-                    }else {
-                        welcomeSlidesDao.saveWelcomeSlideData(new WelcomeSlidesDataTable(FilePath, "", "1", "0", "1", String.valueOf(i)));
-                    }
+        public void getDraftSaveOneBuild1 (String isClickedName, ArrayList < OneBuildModelClass > arrayList,boolean statusOffline){
+            SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0");
+//        NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
+//            if (status) {
+            try {
+
+                int id = 0;
+                switch (isClickedName) {
+                    case "prev":
+                        id = SharedPref.getTpIdPreviousMonth(MasterSyncActivity.this);
+                        break;
+                    case "current":
+                        id = SharedPref.getTpIdCurrentMonth(MasterSyncActivity.this);
+                        break;
+                    case "next":
+                        id = SharedPref.getTpIdNextMonth(MasterSyncActivity.this);
+                        break;
                 }
-                if(!nList.isEmpty()) {
-                    for (int j = 0; j<nList.size(); j++) {
-                        if(!mList.contains(nList.get(j))) {
-                            welcomeSlidesDao.deleteSlideByName(nList.get(j));
+
+
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("mode", "AndroidDetailing");
+                jsonObject.addProperty("tpId", id);
+
+
+                JsonObject tourPlan = new JsonObject();
+                OneBuildModelClass oneBuildModelClassTp = arrayList.get(10);
+                tourPlan.addProperty("SFCode", SharedPref.getSfCode(MasterSyncActivity.this));
+                tourPlan.addProperty("SFName", SharedPref.getSfName(MasterSyncActivity.this));
+                tourPlan.addProperty("Month", Integer.parseInt(oneBuildModelClassTp.getMonth()));
+                tourPlan.addProperty("Year", Integer.parseInt(oneBuildModelClassTp.getYear()));
+                tourPlan.addProperty("DivisionCode", SharedPref.getDivisionCode(MasterSyncActivity.this).replace(",", ""));
+
+
+                JsonArray detailsArray = new JsonArray();
+
+                for (OneBuildModelClass oneBuildModelClass : arrayList) {
+                    if (!oneBuildModelClass.getDayNo().isEmpty()) {
+                        if (!oneBuildModelClass.getDayNo().equals(arrayList)) {
+                            String WorkTypeName = "", WorkTypeFlag = "", WorkTypeCode = "", SessionId = "", Remarks = "", WorkTypeName2 = "", WorkTypeFlag2 = "", WorkTypeCode2 = "", SessionId2 = "", Remarks2 = "", WorkTypeName3 = "", WorkTypeFlag3 = "", WorkTypeCode3 = "", SessionId3 = "", Remarks3 = "";
+                            String HeadquartersName = "", HeadquartersCode = "", TerritoriesName = "", TerritoriesCode = "", JWName = "", JWCode = "", CheName = "", CheCode = "", DrName = "", DrCode = "", UnDrName = "", UnDrCode = "", StkName = "", StkCode = "", CipName = "", CipCode = "", HospName = "", HospCode = "";
+                            String HeadquartersName2 = "", HeadquartersCode2 = "", TerritoriesName2 = "", TerritoriesCode2 = "", JWName2 = "", JWCode2 = "", CheName2 = "", CheCode2 = "", DrName2 = "", DrCode2 = "", UnDrName2 = "", UnDrCode2 = "", StkName2 = "", StkCode2 = "", CipName2 = "", CipCode2 = "", HospName2 = "", HospCode2 = "";
+                            String HeadquartersName3 = "", HeadquartersCode3 = "", TerritoriesName3 = "", TerritoriesCode3 = "", JWName3 = "", JWCode3 = "", CheName3 = "", CheCode3 = "", DrName3 = "", DrCode3 = "", UnDrName3 = "", UnDrCode3 = "", StkName3 = "", StkCode3 = "", CipName3 = "", CipCode3 = "", HospName3 = "", HospCode3 = "";
+
+                            for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
+                                OneBuildModelClass.SessionList sessionList_OneBuild = oneBuildModelClass.getSessionList().get(i);
+
+                                if (i == 0) {
+                                    WorkTypeName = sessionList_OneBuild.getWorkType().getName();
+                                    WorkTypeCode = sessionList_OneBuild.getWorkType().getCode();
+                                    WorkTypeFlag = sessionList_OneBuild.getWorkType().getFWFlg();
+                                    SessionId = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                                    Remarks = sessionList_OneBuild.getRemarks();
+
+                                    if (sessionList_OneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
+                                        HeadquartersName = sessionList_OneBuild.getHeadquarters().getName();
+                                        HeadquartersCode = sessionList_OneBuild.getHeadquarters().getCode();
+                                    }
+                                    TerritoriesName = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                                    TerritoriesCode = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+                                    JWName = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                                    JWCode = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+
+                                    CheName = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                                    CheCode = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                                    DrName = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                                    DrCode = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                                    UnDrName = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                                    UnDrCode = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                                    StkName = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
+                                    StkCode = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                                    CipName = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                                    CipCode = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                                    HospName = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                                    HospCode = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+
+                                } else if (i == 1) {
+                                    WorkTypeName2 = sessionList_OneBuild.getWorkType().getName();
+                                    WorkTypeCode2 = sessionList_OneBuild.getWorkType().getCode();
+                                    WorkTypeFlag2 = sessionList_OneBuild.getWorkType().getFWFlg();
+                                    SessionId2 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                                    Remarks2 = sessionList_OneBuild.getRemarks();
+
+                                    HeadquartersName2 = sessionList_OneBuild.getHeadquarters().getName();
+                                    HeadquartersCode2 = sessionList_OneBuild.getHeadquarters().getCode();
+                                    TerritoriesName2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                                    TerritoriesCode2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+                                    JWName2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                                    JWCode2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+
+                                    CheName2 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                                    CheCode2 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                                    DrName2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                                    DrCode2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                                    UnDrName2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                                    UnDrCode2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                                    StkName2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
+                                    StkCode2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                                    CipName2 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                                    CipCode2 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                                    HospName2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                                    HospCode2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+
+                                } else if (i == 2) {
+                                    WorkTypeName3 = sessionList_OneBuild.getWorkType().getName();
+                                    WorkTypeCode3 = sessionList_OneBuild.getWorkType().getCode();
+                                    WorkTypeFlag3 = sessionList_OneBuild.getWorkType().getFWFlg();
+                                    SessionId3 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                                    Remarks3 = sessionList_OneBuild.getRemarks();
+
+                                    HeadquartersName3 = sessionList_OneBuild.getHeadquarters().getName();
+                                    HeadquartersCode3 = sessionList_OneBuild.getHeadquarters().getCode();
+                                    TerritoriesName3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                                    TerritoriesCode3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+
+                                    JWName3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                                    JWCode3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+                                    CheName3 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                                    CheCode3 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                                    DrName3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                                    DrCode3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                                    UnDrName3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                                    UnDrCode3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                                    StkName3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
+                                    StkCode3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                                    CipName3 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                                    CipCode3 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                                    HospName3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                                    HospCode3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+                                }
+                            }
+
+
+                            //Sessions
+                            JsonArray Sessions = new JsonArray();
+                            for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
+                                if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+                                    JsonObject SessionsObj = new JsonObject();
+                                    if (i == 0) {
+                                        if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+
+                                            SessionsObj.addProperty("WorkTypeCode", WorkTypeCode);
+                                            SessionsObj.addProperty("WorkTypeName", WorkTypeName);
+                                            SessionsObj.addProperty("Id", i);
+                                            SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag);
+                                            SessionsObj.addProperty("Remark", Remarks);
+                                        }
+                                    } else if (i == 1) {
+                                        if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+
+                                            SessionsObj.addProperty("WorkTypeCode", WorkTypeCode2);
+                                            SessionsObj.addProperty("WorkTypeName", WorkTypeName2);
+                                            SessionsObj.addProperty("Id", i);
+                                            SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag2);
+                                            SessionsObj.addProperty("Remark", Remarks2);
+                                        }
+                                    } else if (i == 2) {
+                                        if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+
+                                            SessionsObj.addProperty("WorkTypeCode", WorkTypeCode3);
+                                            SessionsObj.addProperty("WorkTypeName", WorkTypeName3);
+                                            SessionsObj.addProperty("Id", i);
+                                            SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag3);
+                                            SessionsObj.addProperty("Remark", Remarks3);
+                                        }
+                                    }
+
+
+                                    JsonArray JointWorks = new JsonArray();
+
+                                    String nameJw = "";
+                                    String codeJw = "";
+
+                                    if (i == 0) {
+                                        nameJw = JWName;
+                                        codeJw = JWCode;
+                                    } else if (i == 1) {
+                                        nameJw = JWName2;
+                                        codeJw = JWCode2;
+                                    } else if (i == 2) {
+                                        nameJw = JWName3;
+                                        codeJw = JWCode3;
+                                    }
+
+                                    if (!nameJw.isEmpty() && !codeJw.isEmpty()) {
+                                        String[] nameArr = nameJw.split(",");
+                                        String[] codeArr = codeJw.split(",");
+
+                                        int length = Math.min(nameArr.length, codeArr.length);
+
+                                        for (int j = 0; j < length; j++) {
+                                            JsonObject JointWorks_obj = new JsonObject();
+                                            JointWorks_obj.addProperty("Name", nameArr[j].trim());
+                                            JointWorks_obj.addProperty("Id", codeArr[j].trim());
+                                            JointWorks.add(JointWorks_obj);
+                                        }
+                                    }
+
+
+                                    //Territories
+                                    JsonArray Territories = new JsonArray();
+                                    String nameTerr = "";
+                                    String codeTerr = "";
+                                    if (i == 0) {
+                                        nameTerr = TerritoriesName;
+                                        codeTerr = TerritoriesCode;
+                                    } else if (i == 1) {
+                                        nameTerr = TerritoriesName2;
+                                        codeTerr = TerritoriesCode2;
+                                    } else if (i == 2) {
+                                        nameTerr = TerritoriesName3;
+                                        codeTerr = TerritoriesCode3;
+                                    }
+                                    if (!nameTerr.isEmpty() && !codeTerr.isEmpty()) {
+                                        String[] nameArr = nameTerr.split(",");
+                                        String[] codeArr = codeTerr.split(",");
+
+                                        int length = Math.min(nameArr.length, codeArr.length);
+
+                                        for (int j = 0; j < length; j++) {
+                                            JsonObject Territories_obj = new JsonObject();
+                                            Territories_obj.addProperty("Name", nameArr[j].trim());
+                                            Territories_obj.addProperty("Id", codeArr[j].trim());
+                                            Territories.add(Territories_obj);
+                                        }
+                                    }
+
+
+                                    //Headquarters
+                                    JsonArray Headquarters = new JsonArray();
+                                    String nameHq = "";
+                                    String codeHq = "";
+                                    if (i == 0) {
+                                        nameHq = HeadquartersName;
+                                        codeHq = HeadquartersCode;
+                                    } else if (i == 1) {
+                                        nameHq = HeadquartersName2;
+                                        codeHq = HeadquartersCode2;
+                                    } else if (i == 2) {
+                                        nameHq = HeadquartersName3;
+                                        codeHq = HeadquartersCode3;
+                                    }
+                                    if (!nameHq.isEmpty() && !codeHq.isEmpty()) {
+                                        String[] nameArr = nameHq.split(",");
+                                        String[] codeArr = codeHq.split(",");
+
+                                        int length = Math.min(nameArr.length, codeArr.length);
+
+                                        for (int j = 0; j < length; j++) {
+                                            JsonObject Headquarters_obj = new JsonObject();
+                                            Headquarters_obj.addProperty("Name", nameArr[j].trim());
+                                            Headquarters_obj.addProperty("Id", codeArr[j].trim());
+                                            Headquarters.add(Headquarters_obj);
+                                        }
+                                    }
+
+                                    //Hospitals
+                                    JsonArray Hospitals = new JsonArray();
+                                    String nameHosp = "";
+                                    String codeHosp = "";
+                                    if (i == 0) {
+                                        nameHosp = HospName;
+                                        codeHosp = HospCode;
+                                    } else if (i == 1) {
+                                        nameHosp = HospName2;
+                                        codeHosp = HospCode2;
+                                    } else if (i == 2) {
+                                        nameHosp = HospName3;
+                                        codeHosp = HospCode3;
+                                    }
+                                    if (!nameHosp.isEmpty() && !codeHosp.isEmpty()) {
+                                        String[] nameArr = nameHosp.split(",");
+                                        String[] codeArr = codeHosp.split(",");
+
+                                        int length = Math.min(nameArr.length, codeArr.length);
+                                        for (int j = 0; j < length; j++) {
+                                            JsonObject Hospitals_obj = new JsonObject();
+                                            Hospitals_obj.addProperty("Name", nameArr[j].trim());
+                                            Hospitals_obj.addProperty("Id", codeArr[j].trim());
+                                            Hospitals.add(Hospitals_obj);
+                                        }
+                                    }
+
+                                    //Chemists
+                                    JsonArray Chemists = new JsonArray();
+                                    String nameChe = "";
+                                    String codeChe = "";
+                                    if (i == 0) {
+                                        nameChe = CheName;
+                                        codeChe = CheCode;
+                                    } else if (i == 1) {
+                                        nameChe = CheName2;
+                                        codeChe = CheCode2;
+                                    } else if (i == 2) {
+                                        nameChe = CheName3;
+                                        codeChe = CheCode3;
+                                    }
+                                    if (!nameChe.isEmpty() && !codeChe.isEmpty()) {
+                                        String[] nameArr = nameChe.split(",");
+                                        String[] codeArr = codeChe.split(",");
+
+                                        int length = Math.min(nameArr.length, codeArr.length);
+
+                                        for (int j = 0; j < length; j++) {
+                                            JsonObject Chemists_obj = new JsonObject();
+                                            Chemists_obj.addProperty("Name", nameArr[j].trim());
+                                            Chemists_obj.addProperty("Id", codeArr[j].trim());
+                                            Chemists.add(Chemists_obj);
+                                        }
+                                    }
+
+                                    //StockLists
+                                    JsonArray Stockists = new JsonArray();
+                                    String nameStk = "";
+                                    String codeStk = "";
+                                    if (i == 0) {
+                                        nameStk = StkName;
+                                        codeStk = StkCode;
+                                    } else if (i == 1) {
+                                        nameStk = StkName2;
+                                        codeStk = StkCode2;
+                                    } else if (i == 2) {
+                                        nameStk = StkName3;
+                                        codeStk = StkCode3;
+                                    }
+                                    if (!nameStk.isEmpty() && !codeStk.isEmpty()) {
+                                        String[] nameArr = nameStk.split(",");
+                                        String[] codeArr = codeStk.split(",");
+
+                                        int length = Math.min(nameArr.length, codeArr.length);
+
+                                        for (int j = 0; j < length; j++) {
+                                            JsonObject Stockists_obj = new JsonObject();
+                                            Stockists_obj.addProperty("Name", nameArr[j].trim());
+                                            Stockists_obj.addProperty("Id", codeArr[j].trim());
+                                            Stockists.add(Stockists_obj);
+                                        }
+                                    }
+
+                                    //ListedDr
+                                    JsonArray Doctors = new JsonArray();
+                                    String nameDoc = "";
+                                    String codeDoc = "";
+                                    if (i == 0) {
+                                        nameDoc = DrName;
+                                        codeDoc = DrCode;
+                                    } else if (i == 1) {
+                                        nameDoc = DrName2;
+                                        codeDoc = DrCode2;
+                                    } else if (i == 2) {
+                                        nameDoc = DrName3;
+                                        codeDoc = DrCode3;
+                                    }
+                                    if (!nameDoc.isEmpty() && !codeDoc.isEmpty()) {
+                                        String[] nameArr = nameDoc.split(",");
+                                        String[] codeArr = codeDoc.split(",");
+
+                                        int length = Math.min(nameArr.length, codeArr.length);
+
+                                        for (int j = 0; j < length; j++) {
+                                            JsonObject Doctors_obj = new JsonObject();
+                                            Doctors_obj.addProperty("Name", nameArr[j].trim());
+                                            Doctors_obj.addProperty("Id", codeArr[j].trim());
+                                            Doctors.add(Doctors_obj);
+                                        }
+                                    }
+
+                                    //UnlistedDr
+
+                                    JsonArray UnlistedDoctors = new JsonArray();
+                                    String nameUnDr = "";
+                                    String codeUmDr = "";
+                                    if (i == 0) {
+                                        nameUnDr = UnDrName;
+                                        codeUmDr = UnDrCode;
+                                    } else if (i == 1) {
+                                        nameUnDr = UnDrName2;
+                                        codeUmDr = UnDrCode2;
+                                    } else if (i == 2) {
+                                        nameUnDr = UnDrName3;
+                                        codeUmDr = UnDrCode3;
+                                    }
+                                    if (!nameUnDr.isEmpty() && !codeUmDr.isEmpty()) {
+                                        String[] nameArr = nameUnDr.split(",");
+                                        String[] codeArr = codeUmDr.split(",");
+
+                                        int length = Math.min(nameArr.length, codeArr.length);
+
+                                        for (int j = 0; j < length; j++) {
+                                            JsonObject UnlistedDoctors_obj = new JsonObject();
+                                            UnlistedDoctors_obj.addProperty("Name", nameArr[j].trim());
+                                            UnlistedDoctors_obj.addProperty("Id", codeArr[j].trim());
+                                            UnlistedDoctors.add(UnlistedDoctors_obj);
+                                        }
+                                    }
+
+
+                                    //Cip
+                                   /*     JSONArray Cip = new JSONArray();
+                                        String nameCip = "";
+                                        String codeCip = "";
+                                        if (i == 0) {
+                                            nameCip = CipName;
+                                            codeCip = CipCode;
+                                        } else if (i == 1) {
+                                            nameCip = CipName2;
+                                            codeCip = CipCode2;
+                                        } else if (i == 2) {
+                                            nameCip = CipName3;
+                                            codeCip = CipCode3;
+                                        }
+                                        if (!nameCip.isEmpty() && !codeCip.isEmpty()) {
+                                            String[] nameArr = nameCip.split(",");
+                                            String[] codeArr = codeCip.split(",");
+
+                                            int length = Math.min(nameArr.length, codeArr.length);
+
+                                            for (int j = 0; j < length; j++) {
+                                                JSONObject Cip_obj = new JSONObject();
+                                                Cip_obj.put("Name", nameArr[j].trim());
+                                                Cip_obj.put("Id", codeArr[j].trim());
+                                                Cip.put(Cip_obj);
+                                            }
+                                        }*/
+
+                                    SessionsObj.add("JointWorks", JointWorks);
+                                    SessionsObj.add("Headquarters", Headquarters);
+                                    SessionsObj.add("Territories", Territories);
+                                    SessionsObj.add("Doctors", Doctors);
+                                    SessionsObj.add("Chemists", Chemists);
+                                    SessionsObj.add("Stockists", Stockists);
+                                    SessionsObj.add("UnlistedDoctors", UnlistedDoctors);
+                                    SessionsObj.add("Hospitals", Hospitals);
+//                                        SessionsObj.put("Cip", Cip);
+                                    Sessions.add(SessionsObj);
+                                }
+
+                            }
+
+                            //Details
+
+                            JsonObject DetailsObj = new JsonObject();
+                            DetailsObj.addProperty("Id", 0);
+                            DetailsObj.add("Others", new JsonArray());
+                            DetailsObj.addProperty("TDate", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, oneBuildModelClass.getDate()));
+                            DetailsObj.add("Sessions", Sessions);
+                            detailsArray.add(DetailsObj);
+
                         }
                     }
+                    tourPlan.add("Details", detailsArray);
+                    jsonObject.add("tourPlan", tourPlan);
+                    Gson gson = new Gson();
+
+                    jbonj = gson.fromJson(jsonObject.toString(), JsonObject.class);
+                }
+
+                Log.d("JSON_One_Build", "isNetworkAvailable: " + jsonObject);
+                apiInterface = RetrofitClient.getRetrofit(MasterSyncActivity.this, SharedPref.getBaseWebUrl(MasterSyncActivity.this));
+                Map<String, String> mapString = new HashMap<>();
+                Call<JsonElement> call = apiInterface.getJSONElementOneBuild("/MasterFiles/tourPlan/TourPlanWebService.asmx/DraftTourPlan", jsonObject);
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        Log.v("tpGetPlan", "----" + response.body());
+                        if (response.body() != null && !response.body().isJsonNull()) {
+                            SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
+                            try {
+                                JSONObject outerJsonObject = new JSONObject(response.body().getAsJsonObject().toString());
+                                if (!isFrom.equalsIgnoreCase("sendToApproval")) {
+                                /*if (outerJsonObject.has("d")) {
+                                    String innerJsonString = outerJsonObject.getString("d");
+                                    JSONObject innerJsonObject = new JSONObject(innerJsonString);
+                                    if (innerJsonObject.has("Data")) {
+                                        switch (isClickedName) {
+                                            case "prev":
+                                                int retrievedIdPm = innerJsonObject.getInt("Data");
+                                                SharedPref.saveTpId(MasterSyncActivity.this, retrievedIdPm);
+                                                Log.d("ret_Id", "onResponse: " + retrievedIdPm);
+                                                break;
+                                            case "current":
+                                                int retrievedIdCm = innerJsonObject.getInt("Data");
+                                                SharedPref.saveTpIdCm(MasterSyncActivity.this, retrievedIdCm);
+                                                Log.d("ret_Id", "onResponse: " + retrievedIdCm);
+                                                break;
+                                            case "next":
+                                                int retrievedIdNm = innerJsonObject.getInt("Data");
+                                                SharedPref.saveTpIdNm(MasterSyncActivity.this, retrievedIdNm);
+                                                Log.d("ret_Id", "onResponse: " + retrievedIdNm);
+                                                break;
+                                        }
+                                    } else {
+                                        Log.e("ret_Id", "'Data' key not found ");
+                                    }*/
+                                } else {
+                                    Log.e("outerJsonObject", "'d' key not found in the response body.");
+                                }
+                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TOUR_PLAN, (new JSONArray().put(outerJsonObject)).toString(), 2));
+//                            }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        } else {
+                            SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        commonUtilsMethods.showToastMessage(MasterSyncActivity.this, "Please Try Again !");
+                        Log.e("tpGetPlan", "error getTp : " + t);
+                    }
+                });
+
+            } catch (JsonIOException e) {
+
+                Log.v("tpGetPlan", "--error--1--" + e);
+            }
+//            }
+//        });
+//        networkStatusTask.execute();
+        }
+
+        public static String textBuilder_OB (List < OneBuildModelClass.SessionList.SubClass > sessionLists,boolean codeOrName){
+
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < sessionLists.size(); i++) {
+                if (codeOrName) { // true -> code
+                    stringBuilder.append(sessionLists.get(i).getCode()).append(",");
+                } else { // false -> name
+                    stringBuilder.append(sessionLists.get(i).getName()).append(",");
                 }
             }
-        } catch (JSONException e) {
-            Log.e("MasterSync Slides", "insertSlide: " + e.getMessage());
-            e.printStackTrace();
+            return stringBuilder.toString();
         }
 
     }
-
-    public void welcomeSlideAlertBox(boolean servesFlag) {
-        welcomeSlidesDao.setChangeStatus("1", "0");
-        MasterSyncActivity.welcomeSlideNames.clear();
-        if(servesFlag) {
-            SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, false);
-            Intent intent = new Intent(MasterSyncActivity.this, WelcomeSlideService.class);
-            stopService(intent);
-
-            Intent startIntent = new Intent(getApplicationContext(), WelcomeSlideService.class);
-            startService(startIntent);
-        }
-        isSingleWelcomeSlideDownloadingStatus = false;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.slide_downloader_alert_box, null);
-        RecyclerView recyclerView = dialogView.findViewById(R.id.recyelerview123);
-        TextView txt_alert_title = dialogView.findViewById(R.id.alert_title);
-        TextView txt_downloadCount = dialogView.findViewById(R.id.txt_downloadcount);
-        TextView txt_total = dialogView.findViewById(R.id.txt_totaldownloadcount);
-        ImageView cancel_img = dialogView.findViewById(R.id.cancel_img);
-        txt_alert_title.setText("Welcome Slide Downloader");
-        WelcomeSlideAdapter adapter = new WelcomeSlideAdapter(this);
-        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(adapter);
-        builder.setView(dialogView);
-        if(welcomeSlideDialog != null && welcomeSlideDialog.isShowing() && !isFinishing()) {
-            welcomeSlideDialog.dismiss();
-        }
-        welcomeSlideDialog = builder.create();
-        welcomeSlideDialog.setCancelable(false);
-        if(!isFinishing()) {
-            welcomeSlideDialog.show();
-        }
-
-        cancel_img.setOnClickListener(view -> {
-            welcomeSlideDialog.dismiss();
-            navigateFrom = "Slide";
-        });
-
-        WelcomeSlidesViewModel slidesViewModel = new ViewModelProvider(this).get(WelcomeSlidesViewModel.class);
-        slidesViewModel.getAllSlides().observe(this, slides -> {
-            Collections.sort(slides, Comparator.comparingInt(s -> Integer.parseInt(s.getListSlidePosition())));
-            adapter.setSlides(slides);
-        });
-
-        slidesViewModel.getDownloadingCount().observe(this, integer -> txt_downloadCount.setText(integer + " / "));
-
-        txt_total.setText(String.valueOf(welcomeSlidesDao.getTotalSlideCount()));
-
-        slidesViewModel.getCountOfDownloadingProcessDone().observe(this, integer -> {
-            if(integer == welcomeSlidesDao.getTotalSlideCount()) {
-                SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, true);
-                if(isSingleWelcomeSlideDownloadingStatus) {
-                    isSingleWelcomeSlideDownloadingStatus = false;
-                    commonUtilsMethods.showToastMessage(this, "Slide Updated ");
-                }else {
-                    commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
-                }
-
-                if(navigateFrom.equalsIgnoreCase("Login")) {
-                    Intent intent = new Intent(context, HomeDashBoard.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                }
-            }else {
-                SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, false);
-            }
-        });
-    }
-
-}

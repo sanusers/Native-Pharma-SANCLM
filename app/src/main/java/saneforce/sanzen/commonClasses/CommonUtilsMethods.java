@@ -531,7 +531,7 @@ public class CommonUtilsMethods {
         }
     }
 
-    public static JSONObject CommonObjectParameter(Context context) {
+    public static JSONObject   CommonObjectParameter(Context context) {
         JSONObject jsonObject = new JSONObject();
         try {
             BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);

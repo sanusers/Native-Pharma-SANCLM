@@ -70,44 +70,83 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         CallCaptureImageList callCaptureImageList = callCaptureImageLists.get(position);
         holder.tv_image_name.setText(callCaptureImageList.getImg_name());
         holder.ed_img_desc.setText(callCaptureImageList.getImg_description());
-        switch (isFromActivity) {
-            case "new":
-            if(callCaptureImageList.getImg_view() == null){
-                try {
-                    Bitmap photo = BitmapFactory.decodeFile(callCaptureImageList.getFilePath());
-                    holder.img_view.setImageBitmap(photo);
-                    CallCaptureImageList callCaptureImageList1 = JWOthersFragment.callCaptureImageLists.get(position);
-                    callCaptureImageList1.setImg_view(photo);
-                    JWOthersFragment.callCaptureImageLists.set(position, callCaptureImageList1);
-                } catch (Exception e) {
-                    Log.e("EC", "onBindViewHolder: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            } else {
-               holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
-            }
-            break;
-            case "edit_local":
-                File imgFile = new File(callCaptureImageList.getFilePath());
-                if (imgFile.exists()) {
-                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                    holder.img_view.setImageBitmap(myBitmap);
-                }
-                break;
-            case "edit_online":
-                if(callCaptureImageList.isShowPreview()) {
-                    if (callCaptureImageList.isNewlyAdded()) {
+        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")) {
+            switch (isFromActivity) {
+                case "new":
+                    if (callCaptureImageList.getImg_view() == null) {
+                        try {
+                            Bitmap photo = BitmapFactory.decodeFile(callCaptureImageList.getFilePath());
+                            holder.img_view.setImageBitmap(photo);
+                            CallCaptureImageList callCaptureImageList1 = JWOthersFragment.callCaptureImageLists.get(position);
+                            callCaptureImageList1.setImg_view(photo);
+                            JWOthersFragment.callCaptureImageLists.set(position, callCaptureImageList1);
+                        } catch (Exception e) {
+                            Log.e("EC", "onBindViewHolder: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    } else {
                         holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
-                    } if(callCaptureImageList.getImg_view() == null){
-
-                        Bitmap photo = BitmapFactory.decodeFile(callCaptureImageList.getFilePath());
-                        holder.img_view.setImageBitmap(photo);
-                        CallCaptureImageList callCaptureImageList1 = JWOthersFragment.callCaptureImageLists.get(position);
-                        callCaptureImageList1.setImg_view(photo);
-                        JWOthersFragment.callCaptureImageLists.set(position, callCaptureImageList1);
                     }
-                }
-                break;
+                    break;
+                case "edit_local":
+                    File imgFile = new File(callCaptureImageList.getFilePath());
+                    if (imgFile.exists()) {
+                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                        holder.img_view.setImageBitmap(myBitmap);
+                    }
+                    break;
+                case "edit_online":
+                    if (callCaptureImageList.isShowPreview()) {
+                        if (callCaptureImageList.isNewlyAdded()) {
+                            holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
+                        }
+                        if (callCaptureImageList.getImg_view() == null) {
+
+                            Bitmap photo = BitmapFactory.decodeFile(callCaptureImageList.getFilePath());
+                            holder.img_view.setImageBitmap(photo);
+                            CallCaptureImageList callCaptureImageList1 = JWOthersFragment.callCaptureImageLists.get(position);
+                            callCaptureImageList1.setImg_view(photo);
+                            JWOthersFragment.callCaptureImageLists.set(position, callCaptureImageList1);
+                        }
+                    }
+                    break;
+
+            }
+        }else{
+            switch (isFromActivity) {
+                case "new":
+                    if(callCaptureImageList.getImg_view() == null){
+                        try {
+                            Bitmap photo = BitmapFactory.decodeFile(callCaptureImageList.getFilePath());
+                            holder.img_view.setImageBitmap(photo);
+                            CallCaptureImageList callCaptureImageList1 = JWOthersFragment.callCaptureImageLists.get(position);
+                            callCaptureImageList1.setImg_view(photo);
+                            JWOthersFragment.callCaptureImageLists.set(position, callCaptureImageList1);
+                        } catch (Exception e) {
+                            Log.e("EC", "onBindViewHolder: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    } else {
+                        holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
+                    }
+                    break;
+                case "edit_local":
+                    File imgFile = new File(callCaptureImageList.getFilePath());
+                    if (imgFile.exists()) {
+                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                        holder.img_view.setImageBitmap(myBitmap);
+                    }
+                    break;
+                case "edit_online":
+                    if(callCaptureImageList.isShowPreview()) {
+                        if(callCaptureImageList.isNewlyAdded()) {
+                            holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
+                        } else {
+                            Glide.with(context).load(SharedPref.getTagImageUrl(context) + "photos/" + callCaptureImageList.getSystemImgName()).fitCenter().into(holder.img_view);
+                        }
+                    }
+                    break;
+            }
         }
 
 
@@ -141,24 +180,48 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
 
         holder.img_view.setOnClickListener(v -> {
-            switch (isFromActivity) {
-                case "new":
+            if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")) {
+                switch (isFromActivity) {
+                    case "new":
                         showImage(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view());
-                    break;
-                case "edit_local":
-                    showImageLocal(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath());
-                    break;
-                case "edit_online":
-                    if(UtilityClass.isNetworkAvailable(context)) {
+                        break;
+                    case "edit_local":
+                        showImageLocal(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath());
+                        break;
+                    case "edit_online":
+                        if (UtilityClass.isNetworkAvailable(context)) {
 //                        if(!callCaptureImageList.isShowPreview()) {
 //                            callCaptureImageList.setShowPreview(true);
 //                            notifyItemChanged(position);
 //                        }
-                        if(callCaptureImageList.isNewlyAdded())
-                            showImage(callCaptureImageList.getImg_view());
-                        else  ShowImageEdit(callCaptureImageList.getSystemImgName(),holder,position);
-                    } else new CommonUtilsMethods(context).showToastMessage(context, "No network available!");
-                    break;
+                            if (callCaptureImageList.isNewlyAdded())
+                                showImage(callCaptureImageList.getImg_view());
+                            else
+                                ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
+                        } else
+                            new CommonUtilsMethods(context).showToastMessage(context, "No network available!");
+                        break;
+                }
+            }else{
+                switch (isFromActivity) {
+                    case "new":
+                        showImage(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view());
+                        break;
+                    case "edit_local":
+                        showImageLocal(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath());
+                        break;
+                    case "edit_online":
+                        if(UtilityClass.isNetworkAvailable(context)) {
+                            if(!callCaptureImageList.isShowPreview()) {
+                                callCaptureImageList.setShowPreview(true);
+                                notifyItemChanged(position);
+                            }
+                            if(callCaptureImageList.isNewlyAdded())
+                                showImage(callCaptureImageList.getImg_view());
+                            else ShowImageEdit(callCaptureImageList.getSystemImgName());
+                        } else new CommonUtilsMethods(context).showToastMessage(context, "No network available!");
+                        break;
+                }
             }
         });
 
@@ -213,7 +276,8 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         }
     }
 
-    private void ShowImageEdit(String systemImageName,@NonNull ViewHolder holder , int position){
+    private void ShowImageEditS3(String systemImageName,@NonNull ViewHolder holder , int position){
+        SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1");
         CallCaptureImageList callCaptureImageList = callCaptureImageLists.get(position);
         Dialog builder = new Dialog(context);
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -237,6 +301,18 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                 }
             }
         });
+    }
+
+    private void ShowImageEdit(String systemImgName) {
+        Dialog builder = new Dialog(context);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.setCancelable(true);
+        Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        ImageView imageView = new ImageView(context);
+        Glide.with(context).load(SharedPref.getTagImageUrl(context) + "photos/" + systemImgName).fitCenter().into(imageView);
+        builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
+        builder.show();
     }
 
     @Override

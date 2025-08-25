@@ -164,7 +164,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String custom_name = (jsonObject.getString("Name"));
                                     String Code = (jsonObject.getString("Code"));
                                     String cluster = (jsonObject.getString("Town_Name"));
-                                    String Catcode=(jsonObject.getString("Chm_cat"));
+                                    String Catcode=(jsonObject.optString("Chm_cat"));
                                     String Lat = (jsonObject.getString("lat"));
                                     String Long = (jsonObject.getString("long"));
                                     String Tag_count = (jsonObject.getString("GEOTagCnt"));

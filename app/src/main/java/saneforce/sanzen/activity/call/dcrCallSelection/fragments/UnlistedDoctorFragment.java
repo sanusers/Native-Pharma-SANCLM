@@ -326,8 +326,8 @@ public class UnlistedDoctorFragment extends Fragment {
                 qualificationMap.put(jsonObject1.getString("Code"), jsonObject1.getString("Name"));
             }
 
-            jsonObjectDob = new JSONObject(jsonObject.getString("UnlstDOB"));
-            jsonObjectDow = new JSONObject(jsonObject.getString("UnlstDOW"));
+            jsonObjectDob = new JSONObject(jsonObject.optString("UnlstDOB"));
+            jsonObjectDow = new JSONObject(jsonObject.optString("UnlstDOW"));
             String dob="",dow="";
             if(jsonObjectDob.getString("date").equalsIgnoreCase("1900-01-01 00:00:00")){
                 dob="";

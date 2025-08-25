@@ -1,0 +1,300 @@
+package saneforce.sanzen.activity.call.fragments.signature;
+
+import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Path;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+
+import saneforce.sanzen.AWS.AWSBucketsSign;
+import saneforce.sanzen.AWS.S3DownloadFiles;
+import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.pojo.CallSignCaptureImageList;
+import saneforce.sanzen.commonClasses.UtilityClass;
+import saneforce.sanzen.databinding.FragmentSignatureBinding;
+import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
+import saneforce.sanzen.roomdatabase.RoomDB;
+
+public class SignatureFragment1 extends Fragment {
+    public SignatureCanvas signatureCanvas;
+//    public static ArrayList<CallSignCaptureImageList> callSignCaptureImageLists;
+
+    public static ArrayList<CallSignCaptureImageList> callSignCaptureImage;
+    public FragmentSignatureBinding signatureBinding;
+    public Button clearButton;
+    public static String imageName = "";
+    public static String filePath = "";
+
+    public String id;
+    public RoomDB roomDb;
+    public Context context;
+    boolean delete;
+    CallOfflineSignDataDao callOfflineSignDataDao;
+    RoomDB roomDB;
+    private boolean isNewSignature = true;
+
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context;
+        roomDB = RoomDB.getDatabase(context);
+        callOfflineSignDataDao = roomDB.callOfflineSignDataDao();
+        Log.d("SignatureFragment", "onAttach()");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d("SignatureFragment", "onCreate()");
+        if (savedInstanceState != null) {
+            callSignCaptureImage = savedInstanceState.getParcelableArrayList("Signature");
+            Log.d("SignatureFragment", "onCreate: Restored list size: " + (callSignCaptureImage != null ? callSignCaptureImage.size() : 0));
+        } else {
+            callSignCaptureImage = new ArrayList<>();
+            Log.d("SignatureFragment", "onCreate: Creating new list.");
+        }
+    }
+
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("SignatureFragment", "onCreateView()");
+        signatureBinding = FragmentSignatureBinding.inflate(inflater, container, false);
+        View v = signatureBinding.getRoot();
+
+        if (signatureCanvas == null) {
+            signatureCanvas = signatureBinding.signLyt;
+        }
+
+        clearButton = v.findViewById(R.id.clr_btn);
+        clearButton.setOnClickListener(v1 -> clearSignature());
+
+        return v;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        clearSignature();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        int position = 0;
+
+        switch (isFromActivity) {
+            case "new":
+                if (imageName == null) {
+                    signatureCanvas.clearCanvas();
+                } /*else {
+                    if (UtilityClass.isNetworkAvailable(context)) {
+                        loadImageFromS3(imageName);
+                    } else {
+                        loadImageFromLocal();
+                    }
+                }*/
+
+            case "edit_online":
+                if ((!imageName.isEmpty() || !filePath.isEmpty())) {
+                    if (UtilityClass.isNetworkAvailable(context)) {
+                        loadImageFromS3(imageName);
+                    }
+                }else{
+                    Log.d("edit_online signFrag", "onResume: "+"imageName or filePAth is empty");
+                }
+                break;
+            case "edit_local":
+                if (!filePath.isEmpty() && !imageName.isEmpty()) {
+                    loadImageFromLocal();
+                }else{
+                    Log.d("Edit local SignFrag", "onResume: "+"Filepath is empty");
+                }
+                break;
+        }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ArrayList<CallSignCaptureImageList> parcelableList = new ArrayList<>();
+        for (CallSignCaptureImageList item : callSignCaptureImage) {
+            parcelableList.add(0, new CallSignCaptureImageList(item.getId(), item.getImg_Name(), item.getFilepath(), item.getSign_view(), item.isNewlyAdded()));
+        }
+        outState.putParcelableArrayList("Signature", parcelableList);
+        Log.d("SignatureFragment", "onSaveInstanceState: Saving list size: " + callSignCaptureImage.size());
+    }
+
+
+    public void clearSignature() {
+        if (signatureCanvas != null) {
+            if(!callSignCaptureImage.isEmpty()) {
+                File fileDelete = new File(callSignCaptureImage.get(0).getFilepath());
+                if (fileDelete.exists()) {
+                    if (fileDelete.delete()) {
+                        callOfflineSignDataDao.deleteSignDataByImageName(callSignCaptureImage.get(0).getImg_Name());
+                        callSignCaptureImage.clear();
+                    }
+                }
+            }
+            signatureCanvas.clearCanvas();
+            signatureCanvas.setSignaturePath(new Path());
+            signatureCanvas.count = 0;
+        }
+    }
+
+    public void getSignatureBitmap() {
+        if (signatureCanvas != null && callSignCaptureImage != null) {
+            String newFilePath = signatureCanvas.saveSignature();
+            if (newFilePath != null && !newFilePath.isEmpty()) {
+                Bitmap newSign = BitmapFactory.decodeFile(newFilePath);
+
+                if (!callSignCaptureImage.isEmpty()) {
+                    String originalFilePath = callSignCaptureImage.get(0).getFilepath();
+
+
+                    if (originalFilePath != null && !originalFilePath.isEmpty() && !originalFilePath.equals(newFilePath)) {
+                        File originalFile = new File(originalFilePath);
+                        if (originalFile.exists()) {
+                            delete = originalFile.delete();
+                            Log.d("dao", "getSignatureBitmap: " + originalFilePath);
+                            callOfflineSignDataDao.deleteOfflineSignImage(originalFilePath);
+                            if (originalFile.delete()) {
+                                Log.d("SignatureFlow", "Original (loaded from local) signature deleted: " + originalFilePath);
+                            } else {
+                                Log.e("SignatureFlow", "Failed to delete original (loaded from local) signature: " + originalFilePath);
+                            }
+                        }
+                    }
+                }
+                callSignCaptureImage.clear();
+                callSignCaptureImage.add(0, new CallSignCaptureImageList(id, signatureCanvas.imageName, newFilePath, newSign, true));
+                Log.d("SignatureFlow", "Modified signature saved at: " + newFilePath + ", list size: " + callSignCaptureImage.size());
+
+            } else {
+                Log.d("SignatureFlow", "Modified signature save failed or returned empty path.");
+            }
+        } else {
+            Log.d("SignatureFlow", "Canvas is NULL");
+        }
+    }
+
+/*
+    public void getSignatureBitmap() {
+        if (signatureCanvas != null) {
+            String newFilePath = signatureCanvas.saveSignature();
+            if (newFilePath != null && !newFilePath.isEmpty()) {
+                Bitmap newSign = BitmapFactory.decodeFile(newFilePath);
+
+                if (!callSignCaptureImage.isEmpty()) {
+                    String originalFilePath = callSignCaptureImage.get(0).getFilepath();
+
+
+                    if (originalFilePath != null && !originalFilePath.isEmpty() && !originalFilePath.equals(newFilePath)) {
+                        File originalFile = new File(originalFilePath);
+                        if (originalFile.exists()) {
+//                            delete = originalFile.delete();
+                            Log.d("dao", "getSignatureBitmap: "+originalFilePath);
+                            callOfflineSignDataDao.deleteOfflineSignImage(originalFilePath);
+                            if (originalFile.delete()) {
+                                Log.d("SignatureFlow", "Original (loaded from local) signature deleted: " + originalFilePath);
+                            } else {
+                                Log.e("SignatureFlow", "Failed to delete original (loaded from local) signature: " + originalFilePath);
+                            }
+                        }
+                    }
+                }
+                callSignCaptureImage.clear();
+                callSignCaptureImage.add(0, new CallSignCaptureImageList(id, signatureCanvas.imageName, newFilePath, newSign,true));
+                Log.d("SignatureFlow", "Modified signature saved at: " + newFilePath + ", list size: " + callSignCaptureImage.size());
+
+            } else {
+                Log.d("SignatureFlow", "Modified signature save failed or returned empty path.");
+            }
+        }else{
+            Log.d("SignatureFlow", "Canvas is NULL");
+        }
+    }
+*/
+
+
+    public void loadImageFromS3(String fileName) {
+        if (!fileName.equalsIgnoreCase("null")) {
+            File file = new File(context.getFilesDir(), fileName);
+            new AWSBucketsSign(context, fileName, file, 0, "", new S3DownloadFiles() {
+                @Override
+                public void fileDataAdd(int pos, Bitmap bitmap) {
+
+                    if (bitmap != null && fileName != null) {
+                        Log.d("S3ImageLoad", "Image successfully loaded from S3: " + fileName);
+                        try (FileOutputStream fos = new FileOutputStream(file)) {
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
+                            Log.d("S3ImageLoad", "Image stored locally at: " + file.getAbsolutePath());
+                        } catch (Exception e) {
+                            Log.e("S3ImageLoad", "Error saving image locally: " + e.getMessage());
+                        }
+                        signatureCanvas.setBackgroundBitmap(bitmap);
+                    } else {
+                        Log.e("S3ImageLoad", "Failed to load image from S3: " + fileName + ", bitmap is null.");
+
+                    }
+
+                }
+            });
+        } else {
+            loadImageFromLocal();
+        }
+    }
+
+    public void loadImageFromLocal() {
+        if (!filePath.isEmpty() && !imageName.isEmpty()) {
+            File file = new File(filePath);
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            signatureCanvas.setBackgroundBitmap(bitmap);
+
+            callSignCaptureImage.add(0, new CallSignCaptureImageList(id, imageName, filePath, bitmap, false));
+
+            Log.d("SignatureFlow", "Loaded image from local: " + filePath);
+        } else {
+            Log.d("TAG", "instance initializer: file path is empty");
+        }
+    }
+
+
+/*    public void loadImageFromLocal() {
+        if (!filePath.isEmpty()) {
+            File file = new File(filePath);
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            signatureCanvas.setBackgroundBitmap(bitmap);
+            if (imageName != null) {
+                callSignCaptureImageLists.clear();
+                callSignCaptureImageLists.add(0, new CallSignCaptureImageList(id, imageName, filePath, bitmap, false));
+            } else {
+                callSignCaptureImageLists.get(0);
+            }
+            Log.d("SignatureFlow", "Loaded image from local: " + filePath + ", list size: " + callSignCaptureImageLists.size());
+        }else{
+            Log.d("TAG", "instance initializer: "+"the file path is empty");
+        }
+    }*/
+}
+

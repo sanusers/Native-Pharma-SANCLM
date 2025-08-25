@@ -344,6 +344,7 @@ public class SharedPref {
     public static final String GEOTAGGING = "GeoTagging";
     public static final String DCR_APPROVAL_NEED = "DcrapprvNd";
     public static final String ONE_BUILD = "one_build";
+    public static final String S3_BUCKET_NEED = "S3BucketNeed";
     //myresource
     public static final String SETSYNHQ = "SETSYNHQ";
     public static final String SETSYN_HQCODE = "SETSYN_HQCODE";
@@ -814,6 +815,7 @@ public class SharedPref {
         editor.putString(DETAILING_IDLE_DURATION, jsonObject.optString("detailing_idle_duration"));
         editor.putString(WELCOME_SLIDES_PATH, "");
         editor.putString(ONE_BUILD,jsonObject.optString("one_build"));
+        editor.putString(S3_BUCKET_NEED, jsonObject.getString("S3BucketNeed"));
         editor.apply();
 
         } catch (Exception ignore) {
@@ -2024,6 +2026,10 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(ONE_BUILD,"");
     }
 
+
+    public static String getS3BucketNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(S3_BUCKET_NEED, "");
+    }
 
     public static void setDrAddCallNeed(Context context, String drAddCallNeed) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);

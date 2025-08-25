@@ -8,7 +8,7 @@ import java.util.List;
 
 public class OneBuildModelClass implements Serializable {
 
-    private String tpId ;
+//    private String tpId ;
     private String dayNo = "";
     private String date ="";
     private String day ="";
@@ -25,8 +25,8 @@ public class OneBuildModelClass implements Serializable {
     }
 
 
-    public OneBuildModelClass(String tpId,String dayNo, String date, String day, String month, String year, boolean onEdit, ArrayList<OneBuildModelClass.SessionList> sessionList){
-        this.tpId = tpId;
+    public OneBuildModelClass(/*String tpId,*/String dayNo, String date, String day, String month, String year, boolean onEdit, ArrayList<OneBuildModelClass.SessionList> sessionList){
+//        this.tpId = tpId;
         this.dayNo = dayNo;
         this.date = date;
         this.day = day;
@@ -36,8 +36,8 @@ public class OneBuildModelClass implements Serializable {
         this.sessionList = sessionList;
 
     }
-    public OneBuildModelClass(String tpId,String dayNo, String date, String day, String month, String year, boolean onEdit, ArrayList<OneBuildModelClass.SessionList> sessionList, String STP_Code, String STP_Name) {
-        this.tpId = tpId;
+    public OneBuildModelClass(/*String tpId,*/String dayNo, String date, String day, String month, String year, boolean onEdit, ArrayList<OneBuildModelClass.SessionList> sessionList, String STP_Code, String STP_Name) {
+//        this.tpId = tpId;
         this.dayNo = dayNo;
         this.date = date;
         this.day = day;
@@ -49,7 +49,7 @@ public class OneBuildModelClass implements Serializable {
         this.STP_Name = STP_Name;
     }
     public OneBuildModelClass(OneBuildModelClass oneBuildmodelClass){
-        this.tpId = oneBuildmodelClass.getTpId();
+//        this.tpId = oneBuildmodelClass.getTpId();
         this.dayNo = oneBuildmodelClass.getDayNo();
         this.date = oneBuildmodelClass.getDate();
         this.day = oneBuildmodelClass.getDay();
@@ -67,13 +67,13 @@ public class OneBuildModelClass implements Serializable {
     }
     //id
 
-    public String getTpId() {
-        return tpId;
-    }
-
-    public void setId(String TpId) {
-        this.tpId = tpId;
-    }
+//    public String getTpId() {
+//        return tpId;
+//    }
+//
+//    public void setId(String TpId) {
+//        this.tpId = tpId;
+//    }
 
     //day no
     public String getDayNo() {
