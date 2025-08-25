@@ -51,6 +51,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.AWS.AWSBuckets;
+import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.modelClass.ActivityModelClass;
@@ -61,6 +62,7 @@ import saneforce.sanzen.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.OutBoxCallList;
 //import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
+import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.WorkPlanModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -73,6 +75,7 @@ import saneforce.sanzen.roomdatabase.ActivityUploadTableDetails.ActivityUploadDa
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 //import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
+import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
 import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -96,6 +99,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
      MasterDataDao masterDataDao;
      private final OfflineCheckInOutDataDao offlineCheckInOutDataDao;
      private final CallOfflineECDataDao callOfflineECDataDao;
+    private final CallOfflineSignDataDao callOfflineSignDataDao;
      private final CallOfflineWorkTypeDataDao offlineWorkTypeDataDao;
      private final OfflineDaySubmitDao offlineDaySubmitDao;
      private final ActivityOfflineDataDao activityOfflineDataDao;
@@ -113,6 +117,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         masterDataDao=db.masterDataDao();
         offlineCheckInOutDataDao = db.offlineCheckInOutDataDao();
         callOfflineECDataDao = db.callOfflineECDataDao();
+        callOfflineSignDataDao = db.callOfflineSignDataDao();
         offlineWorkTypeDataDao = db.callOfflineWorkTypeDataDao();
         offlineDaySubmitDao = db.offlineDaySubmitDao();
         activityOfflineDataDao = db.activityOfflineDataDao();
@@ -352,7 +357,11 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                     Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getImg_name());
                     Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getFilePath());
                     Log.v("SendOutboxCall_______", "--image--" + ecModelClass.getJson_values());
-                    CallSendAPIImage(ecModelClass, childPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()), groupModelClass);
+                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")) {
+                        CallSendAPIImageS3(ecModelClass, childPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()), groupModelClass);
+                    }else {
+                        CallSendAPIImage(groupModelClass, ecModelClass, childPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
+                    }
                     break;
                 }
             }
@@ -362,7 +371,27 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
 
         if (!isCallAvailable) {
             notifyDataSetChanged();
-            CallAPIOfflineActivity(groupModelClass, 4);
+            CallApiSignImage(groupModelClass,4);
+
+        }
+    }
+
+    public void CallApiSignImage(GroupModelClass groupModelClass, int childPos){
+        if(!groupModelClass.getChildItems().get(childPos).getSignModelClasses().isEmpty()){
+            isCallAvailable = true;
+            for(int i=0; i< groupModelClass.getChildItems().get(childPos).getSignModelClasses().size(); i++){
+                SignModelClass signModelClass = groupModelClass.getChildItems().get(childPos).getSignModelClasses().get(i);
+                if(signModelClass.getSynced()==0){
+                    isCallAvailable = true;
+                    CallSendSignImage(groupModelClass,signModelClass,childPos,i,signModelClass.getJson_values(),signModelClass.getFilePath(),String.valueOf(signModelClass.getId()));
+                    break;
+                }
+            }
+        }else{
+            isCallAvailable = false;
+        }
+        if(!isCallAvailable){
+            CallAPIOfflineActivity(groupModelClass, 5);
         }
     }
 
@@ -384,9 +413,9 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             isCallAvailable = false;
         }
         if (!isCallAvailable) {
-            CallAPIDaySubmit(groupModelClass, 4);
+            CallAPIDaySubmit(groupModelClass, 7);
             notifyDataSetChanged();
-            CallAPIActivityUpload(groupModelClass, 5);
+            CallAPIActivityUpload(groupModelClass, 6);
         }
     }
 
@@ -629,7 +658,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     }
 
     // Event Capture S3
-    private void CallSendAPIImage(EcModelClass ecModelClass, int childPos, int CurrentPos,
+    private void CallSendAPIImageS3(EcModelClass ecModelClass, int childPos, int CurrentPos,
                                   String jsonValues, String filePath, String id, GroupModelClass modelClass) {
         try {
             /*String accessKey = Keys.ACCESS_KEY;
@@ -771,62 +800,185 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         }
     }
 
-//    private void CallSendAPIImage(GroupModelClass groupModelClass, EcModelClass ecModelClass, int childPos, int i, String jsonValues, String filePath, String id) {
-//        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
-//        MultipartBody.Part img = convertImg("EventImg", filePath);
-//        HashMap<String, RequestBody> values = field(jsonValues);
-//        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
-//
-//        saveImgDcr.enqueue(new Callback<JsonObject>() {
-//            @Override
-//            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-//                if (response.isSuccessful()) {
-//                    try {
-//                        assert response.body() != null;
-//                        JSONObject json = new JSONObject(response.body().toString());
-//                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
-//                            DeleteCacheFile(groupModelClass, groupModelClass.getChildItems().get(childPos).getEcModelClasses().get(i).getFilePath(), id, i, childPos);
-//                        } else {
-//                            ecModelClass.setSynced(1);
-//                            ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
-//                            callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
-//                            CallAPIListImage(groupModelClass, childPos);
-//                        }
-//                    } catch (Exception e) {
-//                        Log.v("SendOutboxCall", "-error---" + e);
-//                        ecModelClass.setSynced(1);
-//                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-//                        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
-//                        CallAPIListImage(groupModelClass, childPos);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-//                ecModelClass.setSynced(1);
-//                ecModelClass.setSync_status(Constants.CALL_FAILED);
-//                callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
-//                CallAPIListImage(groupModelClass, childPos);
-//            }
-//        });
-//    }
-//
-//    @SuppressLint("NotifyDataSetChanged")
-//    private void DeleteCacheFile(GroupModelClass groupModelClass, String filePath, String id, int i, int childPos) {
-//        File fileDelete = new File(filePath);
-//        if (fileDelete.exists()) {
-//            if (fileDelete.delete()) {
-////                System.out.println("file Deleted :" + filePath);
-//            } else {
-////                System.out.println("file not Deleted :" + filePath);
-//            }
-//        }
-//        callOfflineECDataDao.deleteOfflineEC(id);
-//        groupModelClass.getChildItems().get(childPos).getEcModelClasses().remove(i);
-//        CallAPIListImage(groupModelClass, childPos);
-//    }
+    private void CallSendAPIImage(GroupModelClass groupModelClass, EcModelClass ecModelClass, int childPos, int i, String jsonValues, String filePath, String id) {
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
+        MultipartBody.Part img = convertImg("EventImg", filePath);
+        HashMap<String, RequestBody> values = field(jsonValues);
+        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
 
+        saveImgDcr.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        JSONObject json = new JSONObject(response.body().toString());
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
+                            DeleteCacheFile(groupModelClass, groupModelClass.getChildItems().get(childPos).getEcModelClasses().get(i).getFilePath(), id, i, childPos);
+                        } else {
+                            ecModelClass.setSynced(1);
+                            ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                            callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
+                            CallAPIListImage(groupModelClass, childPos);
+                        }
+                    } catch (Exception e) {
+                        Log.v("SendOutboxCall", "-error---" + e);
+                        ecModelClass.setSynced(1);
+                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+                        CallAPIListImage(groupModelClass, childPos);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                ecModelClass.setSynced(1);
+                ecModelClass.setSync_status(Constants.CALL_FAILED);
+                callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
+                CallAPIListImage(groupModelClass, childPos);
+            }
+        });
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void DeleteCacheFile(GroupModelClass groupModelClass, String filePath, String id, int i, int childPos) {
+        File fileDelete = new File(filePath);
+        if (fileDelete.exists()) {
+            if (fileDelete.delete()) {
+//                System.out.println("file Deleted :" + filePath);
+            } else {
+//                System.out.println("file not Deleted :" + filePath);
+            }
+        }
+        callOfflineECDataDao.deleteOfflineEC(id);
+        groupModelClass.getChildItems().get(childPos).getEcModelClasses().remove(i);
+        CallAPIListImage(groupModelClass, childPos);
+    }
+
+
+    public void CallSendSignImage(GroupModelClass groupModelClass,SignModelClass signModelClass,int childPos,int i,String jsonValues,String filePath,String id){
+        try {
+            util.getS3Client(context);
+            String bucketName = "san-edet";
+            if(!filePath.isEmpty()) {
+                File fileToUpload = new File(filePath);
+                Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
+                if (!fileToUpload.exists()) {
+                    Log.d("fileToUpload", "not exists: " + filePath);
+                } else {
+
+                    String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Signature"+"/"+ fileToUpload.getName();
+                    if(s3Key.contains(null)){
+                        Log.d("s3Key", "CallSendSignImage: "+"s3key is null");
+                    }
+                    Log.d("TAG", "CallSendAPIImage: " + s3Key);
+
+                    TransferNetworkLossHandler.getInstance(context);
+
+                    TransferUtility transferUtility = TransferUtility.builder()
+                            .context(context)
+                            .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                            .s3Client(util.getS3Client(context))
+                            .defaultBucket(bucketName)
+                            .build();
+
+                    TransferObserver uploadObserver = transferUtility.upload(
+                            bucketName,
+                            s3Key,
+                            fileToUpload);
+                    uploadObserver.setTransferListener(new TransferListener() {
+                        @Override
+                        public void onStateChanged(int idInt, TransferState state) {
+                            if (state == TransferState.COMPLETED) {
+                                Log.d("TAG", "ecModelClass: " + filePath);
+                                InsertImageSign(signModelClass.getFilePath(), context);
+                                DeleteCacheFileSign(groupModelClass,filePath, id,i, childPos );
+                                Log.d("S3 Upload", "Upload Successful: " + s3Key);
+                                try {
+                                    groupModelClass.getChildItems().get(childPos).getSignModelClasses().remove(0);
+                                    CallApiSignImage(groupModelClass, childPos);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else if (state == TransferState.FAILED) {
+
+                                Log.e("S3 Upload", "Upload Failed");
+                                InsertImageSign(signModelClass.getFilePath(), context);
+                                signModelClass.setSynced(1);
+                                signModelClass.setSync_status(Constants.CALL_FAILED);
+                                try {
+                                    callOfflineSignDataDao.updateSignStatus(id, Constants.CALL_FAILED, 1);
+                                    CallApiSignImage(groupModelClass, childPos);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        }
+
+                        @Override
+                        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                            double progress = (bytesCurrent * 100.0) / bytesTotal;
+                            Log.d("S3 Upload", "Upload Progress: " + progress + "%");
+                        }
+
+                        @Override
+                        public void onError(int idInt, Exception ex) {
+                            Log.e("S3 Upload", "Error: " + ex.getMessage());
+                            signModelClass.setSynced(1);
+                            signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                            callOfflineSignDataDao.updateSignStatus(id, Constants.EXCEPTION_ERROR, 1);
+                            try {
+                                CallApiSignImage(groupModelClass, childPos);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }else{
+                Log.d("Filepath", "CallSendAPIImage: "+"file path in adap is empty");
+            }
+        } catch(Exception e){
+            Log.v("img_tagOHA", e.toString());
+            signModelClass.setSynced(1);
+            signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+            callOfflineSignDataDao.updateSignStatus(id, Constants.EXCEPTION_ERROR, 1);
+            try {
+                CallApiSignImage(groupModelClass, childPos);
+            } catch (Exception a) {
+                a.printStackTrace();
+            }
+        }
+    }
+
+    private void InsertImageSign(final String ImageUrl, Context context) {
+        File imageFile = new File(ImageUrl);
+        Log.d("AWS_s3", "fileToUpload" + "--" + imageFile);
+        String fileName = new File(ImageUrl).getName();
+        new AWSBucketsSign(context,fileName,imageFile,"");
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void DeleteCacheFileSign(GroupModelClass groupModelClass, String filePath, String id, int i, int childPos) {
+        File fileDelete = new File(filePath);
+        if (fileDelete.exists()) {
+            if (fileDelete.delete()) {
+                System.out.println("file Deleted :" + filePath);
+            } else {
+                System.out.println("file not Deleted :" + filePath);
+            }
+        }
+        callOfflineSignDataDao.deleteOfflineSignId(id);
+        try{
+            groupModelClass.getChildItems().get(childPos).getSignModelClasses().remove(i);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        CallApiSignImage(groupModelClass, childPos);
+    }
 
     private void CallSendAPI(GroupModelClass groupModelClass, OutBoxCallList outBoxCallList, int childPos, int outBoxList, String date, String cusName, String cusCode, String jsonData, int SyncCount) {
         JSONObject jsonSaveDcr;

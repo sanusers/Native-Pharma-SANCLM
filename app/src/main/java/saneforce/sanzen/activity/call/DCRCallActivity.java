@@ -10,6 +10,9 @@ import static saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment
 //import saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1;
 
 //import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.signatureBinding;
+import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.callSignCaptureImage;
+import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.filePath;
+import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.imageName;
 import static saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment.IsFromDCR;
 
 import android.Manifest;
@@ -96,6 +99,7 @@ import saneforce.sanzen.activity.call.fragments.rcpa.RCPAFragment;
 import saneforce.sanzen.activity.call.fragments.rcpa.RCPASelectCompSide;
 import saneforce.sanzen.activity.call.fragments.rcpa.RCPASelectPrdSide;
 //import saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1;
+import saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1;
 import saneforce.sanzen.activity.call.pojo.CallCaptureImageList;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.activity.call.pojo.additionalCalls.AddInputAdditionalCall;
@@ -126,6 +130,7 @@ import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallDataRestClass;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 //import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
+import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -168,14 +173,12 @@ public class DCRCallActivity extends AppCompatActivity {
     TextView tv_address, tv_dateTime, tvLatLong;
     ImageView imgClose;
     String address, latEdit, lngEdit, VistTime, activityDate;
-    String baseUrl = "http://sanffa.info/iOSServer/db_api.php/";
     int mBatteryPercent = 0;
-//    SignatureFragment1 signatureFragment1;
-
+    SignatureFragment1 signatureFragment1;
     RoomDB roomDB;
     MasterDataDao masterDataDao;
     private CallOfflineECDataDao callOfflineECDataDao;
-//    private CallOfflineSignDataDao callOfflineSignDataDao;
+    private CallOfflineSignDataDao callOfflineSignDataDao;
     private CallOfflineDataDao callOfflineDataDao;
     private CallsUtil callsUtil;
     AlertDialog customDialog;
@@ -280,7 +283,7 @@ public class DCRCallActivity extends AppCompatActivity {
         roomDB=RoomDB.getDatabase(getApplicationContext());
         masterDataDao=roomDB.masterDataDao();
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
-//        callOfflineSignDataDao = roomDB.callOfflineSignDataDao();
+        callOfflineSignDataDao = roomDB.callOfflineSignDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
         callsUtil = new CallsUtil(this);
         gpsTrack = new GPSTrack(this);
@@ -384,11 +387,7 @@ public class DCRCallActivity extends AppCompatActivity {
         AddActivityData();
         AddSignData();
 
-//        SignatureFragment1 signatureFragment = new SignatureFragment1();
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(signatureFragment1.signatureBinding, signatureFragment, "SignatureFragment1");
-//        fragmentTransaction.commit();
+
 
         dcrCallBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -498,6 +497,9 @@ public class DCRCallActivity extends AppCompatActivity {
 //                    tv_address.setText(context.getString(R.string.no_network));
 //                }
 //            }
+            if (signatureFragment1 != null) {
+                signatureFragment1.getSignatureBitmap();
+            }
             if(checkRequiredFunctions() && checkCurrentLoc()) {
                 if(CusCheckInOutNeed.equalsIgnoreCase("0")
                         && checkInOutJsonObject != null && !checkInOutJsonObject.toString().isEmpty() && !checkInOutJsonObject.toString().equalsIgnoreCase("[]")
@@ -516,6 +518,9 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     private void callSubmit() {
+        if (signatureFragment1 != null) {
+            signatureFragment1.getSignatureBitmap();
+        }
         createJsonFileCall();
         if(isCreateJsonSuccess) {
             Log.d("CreateJsonFileCall", "submitCall: "+"JSON FIle call is successful");
@@ -540,11 +545,11 @@ public class DCRCallActivity extends AppCompatActivity {
                     callOfflineECDataDao.saveOfflineEC(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
                 }
             }
-//                    if(!SignatureFragment1.callSignCaptureImageLists.isEmpty()){
-//                        for (int i = 0; i< SignatureFragment1.callSignCaptureImageLists.size();i++){
-//                            callOfflineSignDataDao.saveOfflineSign(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), SignatureFragment1.callSignCaptureImageLists.get(i).getFilepath(),jsonImage.toString(),Constants.WAITING_FOR_SYNC,0);
-//                        }
-//                    }
+            if(SignatureFragment1.callSignCaptureImage != null){
+                for (int i = 0; i< SignatureFragment1.callSignCaptureImage.size();i++){
+                    callOfflineSignDataDao.saveOfflineSign(SignatureFragment1.callSignCaptureImage.get(i).getImg_Name() ,SignatureFragment1.callSignCaptureImage.get(i).getFilepath(),jsonImage.toString(),Constants.WAITING_FOR_SYNC,0,HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)),CallActivityCustDetails.get(i).getCode(),CallActivityCustDetails.get(i).getName());
+                }
+            }
             UpdateInputStock();
             UpdateSampleStock();
 
@@ -648,7 +653,7 @@ public class DCRCallActivity extends AppCompatActivity {
 //        }
 
 
-
+        signatureFragment1 = new SignatureFragment1();
         if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -675,8 +680,8 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-//            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
-//            pages.add("Signature");
+            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+            pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -699,8 +704,8 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-//            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
-//            pages.add("Signature");
+            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+            pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -717,8 +722,8 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-//            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
-//            pages.add("Signature");
+            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+            pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -735,8 +740,8 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-//            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
-//            pages.add("Signature");
+            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+            pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("5")) {
             viewPagerAdapter.add(new ProductFragment(), "Product");
             pages.add("Product");
@@ -749,8 +754,8 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-//            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
-//            pages.add("Signature");
+            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+            pages.add("Signature");
         }
 
         dcrCallBinding.viewPager.setAdapter(viewPagerAdapter);
@@ -2242,20 +2247,10 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
             //Signature
-//            if(json.has("Sign")){
-//                JSONArray jsonArraySign = json.getJSONArray("Sign");
-//                if(jsonArraySign.length()>0){
-//                    for (int s = 0; s<jsonArraySign.length();s++){
-//                        JSONObject jsSign = jsonArraySign.getJSONObject(s);
-//                        callSignCaptureImageLists.add(new CallSignCaptureImageList(jsSign.getString("Signature"),
-//                                jsSign.getString("Customer Signature"),
-//                                jsSign.getString("savedFilePath"),
-//                                jsSign.getString("fileName")));
-//                    }
-//                }
-//
-//            }
-
+            if (json.has("sign_path") && !json.getString("sign_path").isEmpty() && json.has("SignImage") && !json.getString("SignImage").isEmpty()) {
+                filePath = json.getString("sign_path");
+                imageName = json.getString("SignImage");
+            }
             //RCPA
             if (!json.getString("RCPAEntry").equalsIgnoreCase("[]")) {
                 JSONArray jsonArrayRcpa = new JSONArray(json.getString("RCPAEntry"));
@@ -2996,31 +2991,28 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
             //Signature
-//            jsonArray = new JSONArray();
-//            if(!callSignCaptureImageLists.isEmpty()){
-//                Log.d("Json", "CreateJsonFileCall: "+"json is not null");
-//                jsonImage = CommonUtilsMethods.CommonObjectParameter(DCRCallActivity.this);
-//                try{
-//                    jsonImage.put("table name","sign upload");
-//                    jsonImage.put("Sf code",SfCode);
-//                    jsonImage.put("sign_path",callSignCaptureImageLists.get(0).getFilepath());
-//                    jsonImage.put("SignImageName",callSignCaptureImageLists.get(0).getImg_Name());
-//                }catch (Exception e){
-//                    e.printStackTrace();
-//                }
-//                jsonSaveDcr.put("filepath","");
-//                for(int i=0;i< callSignCaptureImageLists.size();i++){
-//                    JSONObject json_signImg = new JSONObject();
-//                    json_signImg.put("Signature Upload","true");
-//                    json_signImg.put("Signature_Name",callSignCaptureImageLists.get(i).getImg_Name());
-//                    json_signImg.put("Signature_path",callSignCaptureImageLists.get(i).getFilepath());
-//                    jsonArray.put(json_signImg);
-//                }
-//                jsonSaveDcr.put("Signature",jsonArray);
-//            }else{
-//                Log.d("json", "CreateJsonFileCall: "+"json is NULL");
-//            }
 
+            if (!callSignCaptureImage.isEmpty()) {
+                Log.d("Json", "CreateJsonFileCall: " + "json is not null");
+                jsonImage = CommonUtilsMethods.CommonObjectParameter(DCRCallActivity.this);
+                try {
+                    jsonImage.put("table name", "signImg");
+                    jsonImage.put("Sf code", SfCode);
+                    jsonImage.put("division_code", DivCode);
+                    jsonImage.put("Rsf", TodayPlanSfCode);
+                    Log.d("TAG", "CreateJsonFileCall: " + jsonImage);
+
+                } catch (Exception ignored) {
+                    ignored.printStackTrace();
+                }
+                jsonSaveDcr.put("sign_path", callSignCaptureImage.get(0).getFilepath());
+                jsonSaveDcr.put("SignImage", callSignCaptureImage.get(0).getImg_Name());
+                Log.d("TAG", "CreateJsonFileCall: " + jsonSaveDcr);
+
+
+            } else {
+                Log.d("json", "CreateJsonFileCall: " + "json is NULL");
+            }
             //POB
             String pobValue = Objects.requireNonNull(jwOthersBinding.edPob.getText()).toString();
             if (PobNeed.equalsIgnoreCase("0") && !pobValue.isEmpty()) {
