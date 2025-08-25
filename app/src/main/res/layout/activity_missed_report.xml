@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.reports.missedReport.MissedReport">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/text_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="7.80dp">
+
+            <ImageView
+                android:id="@+id/image_back"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/back_arrow_white" />
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Missed Reports"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <TextView
+        android:id="@+id/calender"
+        android:layout_width="@dimen/_170sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/black_stroke"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="start|center_vertical"
+        android:paddingStart="10dp"
+        android:textColor="@color/text_dark"
+        android:textSize="@dimen/_6sdp"
+        app:layout_constraintEnd_toStartOf="@+id/cl_search_sort"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        tools:ignore="SpUsage" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:background="@color/text_dark"
+        android:padding="@dimen/_4sdp"
+        android:src="@drawable/calendar_img"
+        app:layout_constraintBottom_toBottomOf="@+id/calender"
+        app:layout_constraintEnd_toEndOf="@+id/calender"
+        app:layout_constraintTop_toTopOf="@+id/calender"
+        app:tint="@color/white" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_search_sort"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/calender"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/calender"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
+
+        <EditText
+            android:id="@+id/searchET"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/edittext_stroke"
+            android:hint="Search"
+            android:imeOptions="actionDone"
+            android:maxLines="1"
+            android:paddingStart="36dp"
+            android:paddingEnd="24dp"
+            android:singleLine="true"
+            android:textColor="@color/text_dark_65"
+            android:textColorHint="@color/text_dark_65"
+            android:textSize="@dimen/_6sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/sortIcon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SpUsage" />
+
+        <View
+            android:id="@+id/searchBkn"
+            android:layout_width="@dimen/_8sdp"
+            android:layout_height="@dimen/_8sdp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/edittext_stroke"
+            android:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/searchET"
+            app:layout_constraintStart_toStartOf="@+id/searchET"
+            app:layout_constraintTop_toTopOf="@+id/searchET" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="10dp"
+            android:src="@drawable/search_icon_gray"
+            app:layout_constraintBottom_toBottomOf="@+id/searchBkn"
+            app:layout_constraintEnd_toEndOf="@+id/searchBkn"
+            app:layout_constraintStart_toStartOf="@+id/searchBkn"
+            app:layout_constraintTop_toTopOf="@+id/searchBkn" />
+
+        <ImageView
+            android:id="@+id/searchClearIcon"
+            android:layout_width="@dimen/_8sdp"
+            android:layout_height="@dimen/_8sdp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="12dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/img_close"
+            app:layout_constraintBottom_toBottomOf="@+id/searchET"
+            app:layout_constraintEnd_toEndOf="@+id/searchET"
+            app:layout_constraintTop_toTopOf="@+id/searchET" />
+
+        <View
+            android:id="@+id/sortIcon"
+            android:layout_width="@dimen/_22sdp"
+            android:layout_height="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/black_stroke"
+            android:backgroundTint="@color/text_dark"
+            app:layout_constraintBottom_toBottomOf="@+id/searchET"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/searchET"
+            app:layout_constraintTop_toTopOf="@+id/searchET" />
+
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="@dimen/_6sdp"
+            android:src="@drawable/report_sort_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/sortIcon"
+            app:layout_constraintEnd_toEndOf="@+id/sortIcon"
+            app:layout_constraintStart_toStartOf="@+id/sortIcon"
+            app:layout_constraintTop_toTopOf="@+id/sortIcon"
+            app:tint="@color/white" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/box_small"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/edittext_stroke"
+        android:imeOptions="actionDone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_search_sort">
+
+        <TextView
+            android:id="@+id/centerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:gravity="center"
+            android:text="Wasim Jaffer Ahmeed - HQ - designation"
+            android:textColor="@color/txt_sample"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/box_large"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/edittext_stroke"
+        android:imeOptions="actionDone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/box_small">
+
+        <ImageView
+            android:id="@+id/iconName"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            android:src="@drawable/tp_dr_icon"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/textDoctor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Doctor Visit"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@id/iconName"
+            app:layout_constraintTop_toTopOf="@id/iconName"
+            app:layout_constraintBottom_toBottomOf="@id/iconName"/>
+
+        <LinearLayout
+            android:id="@+id/box1"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="80dp"
+            android:orientation="vertical"
+            android:background="@drawable/edittext_stroke"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textDoctor"
+            app:layout_constraintEnd_toStartOf="@id/box2"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/DoctorTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:id="@+id/box2"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/edittext_stroke"
+            app:layout_constraintStart_toEndOf="@id/box1"
+            app:layout_constraintEnd_toStartOf="@id/box3"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_weight="1"/>
+
+
+        <LinearLayout
+            android:id="@+id/box3"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/edittext_stroke"
+            app:layout_constraintStart_toEndOf="@id/box2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_weight="1"/>
+        
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+

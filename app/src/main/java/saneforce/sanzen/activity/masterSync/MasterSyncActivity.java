@@ -99,7 +99,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     String rsf = "";
     boolean retrystatus = false, isSlideDownloading = false, isWelcomeSlideDownloading = false;
     //  Api call status  ======> 2 - sucesss, 1- failure ,  0- Notsync yet
-    int doctorStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0;
+    int doctorStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0;
     int apiSuccessCount = 0, itemCount = 0;
     String navigateFrom = "";
     boolean mgrInitialSync = false;
@@ -193,6 +193,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         JoinYear = Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_10, SFTP_Date));
 
         //Initializing all the data array
+
         uiInitialization();
         arrayForAdapter.clear();
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
@@ -640,6 +641,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         feedbackStatus = masterDataDao.getMasterSyncStatusByKey(Constants.FEEDBACK);
         unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + rsf);
         chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + rsf);
+        chemistCategoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY_CHEMIST);
         stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST + rsf);
         hospitalStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOSPITAL + rsf);
         cipStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CIP + rsf);
@@ -680,6 +682,60 @@ public class MasterSyncActivity extends AppCompatActivity {
         QuizStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUIZ);
         SurveyStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SURVEY);
         setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
+        if (doctorStatus == 1 || specialityStatus == 1 || qualificationStatus == 1 || categoryStatus == 1 || classStatus == 1) {
+            binding.syncFailedImageDr.setVisibility(View.VISIBLE);
+        }
+        if (chemistStatus == 1 || chemistCategoryStatus == 1) {
+            binding.syncFailedImageChm.setVisibility(View.VISIBLE);
+        }
+        if (stockiestStatus == 1) {
+            binding.syncFailedImageStk.setVisibility(View.VISIBLE);
+        }
+        if (unlistedDrStatus == 1) {
+            binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
+        }
+        if (hospitalStatus == 1) {
+            binding.syncFailedImageHspl.setVisibility(View.VISIBLE);
+        }
+        if (cipStatus == 1) {
+            binding.syncFailedImageCip.setVisibility(View.VISIBLE);
+        }
+        if (clusterStatus == 1) {
+            binding.syncFailedImageClust.setVisibility(View.VISIBLE);
+        }
+        if (inputStatus == 1) {
+            binding.syncFailedImageInput.setVisibility(View.VISIBLE);
+        }
+        if (productStatus == 1 || mapCompPrdStatus == 1 || brandStatus == 1 || proCatStatus == 1 || compProStatus == 1) {
+            binding.syncFailedImageProduct.setVisibility(View.VISIBLE);
+        }
+        if (leaveStatus == 1 || leaveStatusStatus == 1) {
+            binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
+        }
+        if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1) {
+            binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
+        }
+        if (activityStatus == 1) {
+            binding.syncFailedImageAct.setVisibility(View.VISIBLE);
+        }
+        if (tourPLanStatus == 1 || standardTourPLanStatus == 1 || stpSetupStatus == 1 || tpSetupStatus == 1) {
+            binding.syncFailedImageTP.setVisibility(View.VISIBLE);
+        }
+        if (workTypeStatus == 1 || holidayStatus == 1 || weeklyOfStatus == 1) {
+            binding.syncFailedImageWP.setVisibility(View.VISIBLE);
+        }
+        if (welcomeStatus == 1 || proSpeSlideStatus == 1 || proSlideStatus == 1 || brandSlideStatus == 1 || therapticStatus == 1) {
+            binding.syncFailedImageSlide.setVisibility(View.VISIBLE);
+        }
+        if (jWorkStatus == 1 || subordinateStatus == 1 || subMgrStatus == 1) {
+            binding.syncFailedImageSub.setVisibility(View.VISIBLE);
+        }
+        if (feedbackStatus == 1 || QuizStatus == 1 || SurveyStatus == 1) {
+            binding.syncFailedImageOther.setVisibility(View.VISIBLE);
+        }
+        if (setupStatus == 1) {
+            binding.syncFailedImageSet.setVisibility(View.VISIBLE);
+        }
 //        customSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CUSTOM_SETUP);
 
 //        if(SharedPref.getDrNeed(this).equalsIgnoreCase("0")){
@@ -700,6 +756,273 @@ public class MasterSyncActivity extends AppCompatActivity {
         prepareArray(rsf);
 
     }
+
+    public void checkAndSetStatus(MasterSyncItemModel masterSyncItemModel) {
+            if (masterSyncItemModel.getSyncSuccess() == 2) {
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getspeciality") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquali") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcategorys") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getclass")) {
+                    doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR + rsf);
+                    specialityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPECIALITY );
+                    qualificationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUALIFICATION);
+                    categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
+                    departmentStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DEPARTMENT);
+                    classStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLASS);
+                    if (doctorStatus == 1 || specialityStatus == 1 || qualificationStatus == 1 || categoryStatus == 1 || classStatus == 1) {
+                        binding.syncFailedImageDr.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageDr.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
+                    chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + rsf);
+                    chemistCategoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY_CHEMIST);
+                    if (chemistStatus == 1 || chemistCategoryStatus == 1) {
+                        binding.syncFailedImageChm.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageChm.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist")) {
+                    stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST + rsf);
+                    if (stockiestStatus == 1) {
+                        binding.syncFailedImageStk.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageStk.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr")) {
+                    unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + rsf);
+                    if (unlistedDrStatus == 1) {
+                        binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageUnListdr.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethospital")) {
+                    hospitalStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOSPITAL + rsf);
+                    if (hospitalStatus == 1) {
+                        binding.syncFailedImageHspl.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageHspl.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcip")) {
+                    cipStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CIP + rsf);
+                    if (cipStatus == 1) {
+                        binding.syncFailedImageCip.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageCip.setVisibility(View.GONE);
+                    }
+
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getterritory")) {
+                    clusterStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLUSTER + rsf);
+                    if (clusterStatus == 1) {
+                        binding.syncFailedImageClust.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageClust.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getinputs")) {
+                    inputStatus = masterDataDao.getMasterSyncStatusByKey(Constants.INPUT);
+                    if (inputStatus == 1) {
+                        binding.syncFailedImageInput.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageInput.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getproducts") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getbrands") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
+                    productStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT);
+                    proCatStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
+                    brandStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND);
+                    if (productStatus == 1 || mapCompPrdStatus == 1 || brandStatus == 1 || proCatStatus == 1 || compProStatus == 1) {
+                        binding.syncFailedImageProduct.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageProduct.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavetype") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
+                    leaveStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE);
+                    leaveStatusStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
+                    if (leaveStatus == 1 || leaveStatusStatus == 1) {
+                        binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageLeave.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethome") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
+                    callSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CALL_SYNC);
+                    myDayPlanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_PLAN);
+                    visitControlStatus = masterDataDao.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
+                    dateSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DATE_SYNC);
+                    if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1) {
+                        binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
+                    } else {
+
+                        binding.syncFailedImageDcr.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdynactivity")) {
+                    activityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.ACTIVITY);
+                    if (activityStatus == 1) {
+                        binding.syncFailedImageAct.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageAct.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getworktype") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getholiday") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getweeklyoff")) {
+                    workTypeStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_TYPE);
+                    holidayStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOLIDAY);
+                    weeklyOfStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WEEKLY_OFF);
+                    if (workTypeStatus == 1 || holidayStatus == 1 || weeklyOfStatus == 1) {
+                        binding.syncFailedImageWP.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageWP.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_tp") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_details")) {
+                    tpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TP_SETUP);
+                    tourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TOUR_PLAN);
+                    stpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STP_SETUP);
+                    standardTourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STANDARD_TOUR_PLAN);
+                    if (tourPLanStatus == 1 || standardTourPLanStatus == 1 || stpSetupStatus == 1 || tpSetupStatus == 1) {
+                        binding.syncFailedImageTP.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageTP.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getprodslides") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getslidespeciality") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getslidesbrand") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettheraptic") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getwelcomepage")) {
+                    proSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PROD_SLIDE);
+                    proSpeSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPL_SLIDE);
+                    brandSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND_SLIDE);
+                    therapticStatus = masterDataDao.getMasterSyncStatusByKey(Constants.THERAPTIC_SLIDE);
+                    welcomeStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WELCOME_SLIDE);
+                    if (welcomeStatus == 1 || proSpeSlideStatus == 1 || proSlideStatus == 1 || brandSlideStatus == 1 || therapticStatus == 1) {
+                        binding.syncFailedImageSlide.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageSlide.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsubordinate") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getjointwork")) {
+                    subordinateStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SUBORDINATE);
+                    subMgrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SUBORDINATE_MGR);
+                    jWorkStatus = masterDataDao.getMasterSyncStatusByKey(Constants.JOINT_WORK + rsf);
+                    if (jWorkStatus == 1 || subordinateStatus == 1 || subMgrStatus == 1) {
+                        binding.syncFailedImageSub.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageSub.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdrfeedback") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquiz") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
+                    QuizStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUIZ);
+                    SurveyStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SURVEY);
+                    feedbackStatus = masterDataDao.getMasterSyncStatusByKey(Constants.FEEDBACK);
+                    if (feedbackStatus == 1 || QuizStatus == 1 || SurveyStatus == 1) {
+                        binding.syncFailedImageOther.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageOther.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
+                    setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
+                    if (setupStatus == 1) {
+                        binding.syncFailedImageSet.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageSet.setVisibility(View.GONE);
+                    }
+                }
+            } else if (masterSyncItemModel.getSyncSuccess() == 1) {
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getspeciality") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquali") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcategorys") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getclass")) {
+                    binding.syncFailedImageDr.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
+                    binding.syncFailedImageChm.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist")) {
+                    binding.syncFailedImageStk.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr")) {
+                    binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethospital")) {
+                    binding.syncFailedImageHspl.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcip")) {
+                    binding.syncFailedImageCip.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getterritory")) {
+                    binding.syncFailedImageClust.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getinputs")) {
+                    binding.syncFailedImageInput.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getproducts") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getbrands") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
+                    binding.syncFailedImageProduct.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavetype") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
+                    binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethome") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
+                    binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdynactivity")) {
+                    binding.syncFailedImageAct.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getworktype") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getholiday") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getweeklyoff")) {
+                    binding.syncFailedImageWP.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_tp") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_details")) {
+                    binding.syncFailedImageTP.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getprodslides") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getslidespeciality") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getslidesbrand") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettheraptic") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getwelcomepage")) {
+                    binding.syncFailedImageSlide.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsubordinate") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getjointwork")) {
+                    binding.syncFailedImageSub.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdrfeedback") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquiz") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
+                    binding.syncFailedImageOther.setVisibility(View.VISIBLE);
+                }
+                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
+                    binding.syncFailedImageSet.setVisibility(View.VISIBLE);
+                }
+
+            }
+        }
+
+
+
+
 
     public void prepareArray(String hqCode) {
         doctorModelArray.clear();
@@ -725,7 +1048,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         chemistModelArray.clear();
         if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
-            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
+            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR, "getchem_categorys", Constants.CATEGORY_CHEMIST, chemistCategoryStatus, false);
             chemistModelArray.add(cheModel);
             chemistModelArray.add(chemistCategory);
         } else binding.chemist.setVisibility(View.GONE);
@@ -997,6 +1320,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                             masterSyncItemModels.get(position).setPBarVisibility(false);
                         }
                         commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.poor_connection));
+                        checkAndSetStatus(masterSyncItemModel1);
                         masterSyncAdapter.notifyDataSetChanged();
                     }
                 });
@@ -1006,6 +1330,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     masterSyncItemModels.get(position).setPBarVisibility(false);
                 }
                 commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
+                checkAndSetStatus(masterSyncItemModel1);
                 masterSyncAdapter.notifyDataSetChanged();
             }
         });
@@ -1370,167 +1695,168 @@ public class MasterSyncActivity extends AppCompatActivity {
 //                                        masterSyncAll(false);
 //                                    }
                                 }
-                                if (masterSyncItemModels.get(position).getSyncSuccess() != 2) {
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdoctors") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getspeciality") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getquali") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getcategorys") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getclass")) {
-                                        binding.syncFailedImageDr.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getchemist") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
-                                        binding.syncFailedImageChm.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockist")) {
-                                        binding.syncFailedImageStk.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getunlisteddr")) {
-                                        binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gethospital")) {
-                                        binding.syncFailedImageHspl.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getcip")) {
-                                        binding.syncFailedImageCip.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getterritory")) {
-                                        binding.syncFailedImageClust.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getinputs")) {
-                                        binding.syncFailedImageInput.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getproducts") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getbrands") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
-                                        binding.syncFailedImageProduct.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getleave") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
-                                        binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gethome") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
-                                        binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdynactivity")) {
-                                        binding.syncFailedImageAct.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getworktype") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getholiday") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getweeklyoff")) {
-                                        binding.syncFailedImageWP.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstp_details")) {
-                                        binding.syncFailedImageTP.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getprodslides") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getslidespeciality") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getslidesbrands") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettheraptic") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getwelcomepage")) {
-                                        binding.syncFailedImageSlide.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getjointwork")) {
-                                        binding.syncFailedImageSub.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdrfeedback") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getquiz") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
-                                        binding.syncFailedImageOther.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
-                                        binding.syncFailedImageSet.setVisibility(View.VISIBLE);
-                                    }
-
-                                } else {
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdoctors") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getspeciality") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getquali") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getcategorys") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getclass")) {
-                                        binding.syncFailedImageDr.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getchemist") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
-                                        binding.syncFailedImageChm.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockist")) {
-                                        binding.syncFailedImageStk.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getunlisteddr")) {
-                                        binding.syncFailedImageUnListdr.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gethospital")) {
-                                        binding.syncFailedImageHspl.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getcip")) {
-                                        binding.syncFailedImageCip.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getterritory")) {
-                                        binding.syncFailedImageClust.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getinputs")) {
-                                        binding.syncFailedImageInput.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getproducts") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getbrands") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
-                                        binding.syncFailedImageProduct.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getleave") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
-                                        binding.syncFailedImageLeave.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gethome") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
-                                        binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdynactivity")) {
-                                        binding.syncFailedImageAct.setVisibility(View.VISIBLE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getworktype") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getholiday") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getweeklyoff")) {
-                                        binding.syncFailedImageWP.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstp_details")) {
-                                        binding.syncFailedImageTP.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getprodslides") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getslidespeciality") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getslidesbrands") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettheraptic") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getwelcomepage")) {
-                                        binding.syncFailedImageSlide.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getjointwork")) {
-                                        binding.syncFailedImageSub.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdrfeedback") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getquiz") ||
-                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
-                                        binding.syncFailedImageOther.setVisibility(View.GONE);
-                                    }
-                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
-                                        binding.syncFailedImageSet.setVisibility(View.GONE);
-                                    }
-
-                                }
+//                                if (masterSyncItemModels.get(position).getSyncSuccess() != 2) {
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdoctors") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getspeciality") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getquali") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getcategorys") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getclass")) {
+//                                        binding.syncFailedImageDr.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getchemist") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
+//                                        binding.syncFailedImageChm.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockist")) {
+//                                        binding.syncFailedImageStk.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getunlisteddr")) {
+//                                        binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gethospital")) {
+//                                        binding.syncFailedImageHspl.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getcip")) {
+//                                        binding.syncFailedImageCip.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getterritory")) {
+//                                        binding.syncFailedImageClust.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getinputs")) {
+//                                        binding.syncFailedImageInput.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getproducts") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getbrands") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
+//                                        binding.syncFailedImageProduct.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getleave") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
+//                                        binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gethome") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
+//                                        binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdynactivity")) {
+//                                        binding.syncFailedImageAct.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getworktype") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getholiday") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getweeklyoff")) {
+//                                        binding.syncFailedImageWP.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstp_details")) {
+//                                        binding.syncFailedImageTP.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getprodslides") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getslidespeciality") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getslidesbrands") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettheraptic") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getwelcomepage")) {
+//                                        binding.syncFailedImageSlide.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getjointwork")) {
+//                                        binding.syncFailedImageSub.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdrfeedback") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getquiz") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
+//                                        binding.syncFailedImageOther.setVisibility(View.VISIBLE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
+//                                        binding.syncFailedImageSet.setVisibility(View.VISIBLE);
+//                                    }
+//
+//                                } else {
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdoctors") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getspeciality") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getquali") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getcategorys") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getclass")) {
+//                                        binding.syncFailedImageDr.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getchemist") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
+//                                        binding.syncFailedImageChm.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockist")) {
+//                                        binding.syncFailedImageStk.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getunlisteddr")) {
+//                                        binding.syncFailedImageUnListdr.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gethospital")) {
+//                                        binding.syncFailedImageHspl.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getcip")) {
+//                                        binding.syncFailedImageCip.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getterritory")) {
+//                                        binding.syncFailedImageClust.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getinputs")) {
+//                                        binding.syncFailedImageInput.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getproducts") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getbrands") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
+//                                        binding.syncFailedImageProduct.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getleave") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
+//                                        binding.syncFailedImageLeave.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gethome") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
+//                                        binding.syncFailedImageDcr.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdynactivity")) {
+//                                        binding.syncFailedImageAct.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getworktype") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getholiday") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getweeklyoff")) {
+//                                        binding.syncFailedImageWP.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstp_details")) {
+//                                        binding.syncFailedImageTP.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getprodslides") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getslidespeciality") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getslidesbrands") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettheraptic") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getwelcomepage")) {
+//                                        binding.syncFailedImageSlide.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getjointwork")) {
+//                                        binding.syncFailedImageSub.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdrfeedback") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getquiz") ||
+//                                            masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
+//                                        binding.syncFailedImageOther.setVisibility(View.GONE);
+//                                    }
+//                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
+//                                        binding.syncFailedImageSet.setVisibility(View.GONE);
+//                                    }
+//
+//                                }
+                                checkAndSetStatus(masterSyncItemModels.get(position));
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -1541,6 +1867,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                             }
                             masterSyncItemModels.get(position).setSyncSuccess(1);
                             masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
+                            checkAndSetStatus(masterSyncItemModels.get(position));
                         }
 
                         // when all the masters are synced and intent from Login Activity
@@ -1592,88 +1919,89 @@ public class MasterSyncActivity extends AppCompatActivity {
                         masterSyncItemModels.get(position).setPBarVisibility(false);
                         masterSyncItemModels.get(position).setSyncSuccess(1);
                         masterSyncAdapter.notifyDataSetChanged();
-                        if (masterSyncItemModels.get(position).getSyncSuccess() == 1) {
-
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdoctors") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getspeciality") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getquali") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getcategorys") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getclass")) {
-                                binding.syncFailedImageDr.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getchemist") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
-                                binding.syncFailedImageChm.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockist")) {
-                                binding.syncFailedImageStk.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getunlisteddr")) {
-                                binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gethospital")) {
-                                binding.syncFailedImageHspl.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getcip")) {
-                                binding.syncFailedImageCip.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getterritory")) {
-                                binding.syncFailedImageClust.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getinputs")) {
-                                binding.syncFailedImageInput.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getproducts") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getbrands") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
-                                binding.syncFailedImageProduct.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getleave") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
-                                binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gethome") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
-                                binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdynactivity")) {
-                                binding.syncFailedImageAct.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getworktype") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getholiday") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getweeklyoff")) {
-                                binding.syncFailedImageWP.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstp_details")) {
-                                binding.syncFailedImageTP.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getprodslides") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getslidespeciality") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getslidesbrands") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettheraptic") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getwelcomepage")) {
-                                binding.syncFailedImageSlide.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getjointwork")) {
-                                binding.syncFailedImageSub.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdrfeedback") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getquiz") ||
-                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
-                                binding.syncFailedImageOther.setVisibility(View.VISIBLE);
-                            }
-                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
-                                binding.syncFailedImageSet.setVisibility(View.VISIBLE);
-                            }
-
-                        }
+//                        if (masterSyncItemModels.get(position).getSyncSuccess() == 1) {
+//
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdoctors") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getspeciality") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getquali") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getcategorys") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getclass")) {
+//                                binding.syncFailedImageDr.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getchemist") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
+//                                binding.syncFailedImageChm.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockist")) {
+//                                binding.syncFailedImageStk.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getunlisteddr")) {
+//                                binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gethospital")) {
+//                                binding.syncFailedImageHspl.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getcip")) {
+//                                binding.syncFailedImageCip.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getterritory")) {
+//                                binding.syncFailedImageClust.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getinputs")) {
+//                                binding.syncFailedImageInput.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getproducts") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getbrands") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
+//                                binding.syncFailedImageProduct.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getleave") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
+//                                binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gethome") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
+//                                binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdynactivity")) {
+//                                binding.syncFailedImageAct.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getworktype") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getholiday") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getweeklyoff")) {
+//                                binding.syncFailedImageWP.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstp_details")) {
+//                                binding.syncFailedImageTP.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getprodslides") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getslidespeciality") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getslidesbrands") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettheraptic") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getwelcomepage")) {
+//                                binding.syncFailedImageSlide.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getjointwork")) {
+//                                binding.syncFailedImageSub.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdrfeedback") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getquiz") ||
+//                                    masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
+//                                binding.syncFailedImageOther.setVisibility(View.VISIBLE);
+//                            }
+//                            if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
+//                                binding.syncFailedImageSet.setVisibility(View.VISIBLE);
+//                            }
+//
+//                        }
+                        checkAndSetStatus(masterSyncItemModels.get(position));
 
                         if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
                             binding.backArrow.setVisibility(View.VISIBLE);

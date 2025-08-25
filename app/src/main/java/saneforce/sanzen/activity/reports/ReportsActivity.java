@@ -5,7 +5,6 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
@@ -27,9 +26,9 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanzen.activity.reports.missedReport.MissedReport;
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityReportsBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -78,6 +77,7 @@ public class ReportsActivity extends AppCompatActivity {
         arrayList.add("Day Check In Report");
         arrayList.add("Customer Check In Report");
         arrayList.add("Visit Monitor");*/
+         arrayList.add("Missed Report");
         if (SharedPref.getDashboard(this).equals("0")){
             arrayList.add("Dash Board");
         }
@@ -93,7 +93,6 @@ public class ReportsActivity extends AppCompatActivity {
                 if (status) {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, SharedPref.getCallApiUrl(ReportsActivity.this));
-
                         JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(this);
                         jsonObject.put("sfcode", SharedPref.getSfCode(this));
                         jsonObject.put("divisionCode", SharedPref.getDivisionCode(this));
@@ -101,7 +100,6 @@ public class ReportsActivity extends AppCompatActivity {
                         jsonObject.put("rptDt", date);
                         if (report.equalsIgnoreCase("DAY REPORT")) {
                             jsonObject.put("tableName", "getdayrpt_edet");
-
                         }
 
                         Map<String, String> mapString = new HashMap<>();
@@ -119,7 +117,7 @@ public class ReportsActivity extends AppCompatActivity {
                                             jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
                                             navigate(jsonArray, report, date);
                                         }
-                                    }
+                                        }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
