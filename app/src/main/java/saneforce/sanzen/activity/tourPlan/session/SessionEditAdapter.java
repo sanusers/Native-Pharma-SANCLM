@@ -1721,7 +1721,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         if (!modelArray.isEmpty()) {
             Map<String, MultiHQItemModelClass> mgrArrayMap = mgrArray.stream()
                     .flatMap(parent -> parent.getItemsList().stream())
-                    .collect(Collectors.toMap(MultiHQItemModelClass::getCode, child -> child));
+                    .collect(Collectors.toMap(
+                            MultiHQItemModelClass::getCode,
+                            child -> child,
+                            (existing, replacement) -> existing // keep the first one
+                    ));
 
             modelArray.stream()
                     .flatMap(parent -> parent.getItemsList().stream())
