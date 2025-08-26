@@ -18,7 +18,9 @@ package saneforce.sanzen.AWS;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.graphics.Shader;
 import android.net.Uri;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.amazonaws.auth.AWSCredentials;
@@ -39,6 +41,8 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 import saneforce.sanzen.commonClasses.Keys;
+import saneforce.sanzen.commonClasses.SimpleDecrypt;
+import saneforce.sanzen.storage.SharedPref;
 
 /**
  * Handles basic helper functions used throughout the app.
@@ -101,7 +105,16 @@ public class Util {
             } catch (JSONException e) {
                 e.printStackTrace();
             }*/
-            AWSCredentials credentials = new BasicAWSCredentials(Keys.ACCESS_KEY, Keys.SECRET_KEY);
+            String accessKey = "", secretKey = "";
+            try {
+                String[] keys = SharedPref.getKeys(context).split("\\^\\^");
+                String aKey = keys[0], sKey = keys[1];
+                accessKey = SimpleDecrypt.decrypt(aKey, "zenaccess_san");
+                secretKey = SimpleDecrypt.decrypt(sKey, "zensecret_san");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
             sS3Client =  new AmazonS3Client(credentials);
             sS3Client.setRegion(Region.getRegion(Regions.fromName(REGION)));
         }

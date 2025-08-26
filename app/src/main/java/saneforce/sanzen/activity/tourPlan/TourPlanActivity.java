@@ -2331,11 +2331,11 @@ public class TourPlanActivity extends AppCompatActivity {
                                     jsonObject.put("Rejection_Reason", "");
                                     jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, modelClass.getDate()) + " 00:00:00");
                                     jsonObject.put("submitted_time", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
-                                    jsonObject.put("Entry_mode", "Android -Edetailing");
+                                    jsonObject.put("Entry_mode", Constants.APP_MODE);
                                     jsonObject.put("Approve_mode", "");
                                     jsonObject.put("Approved_time", "");
                                     jsonObject.put("app_version", BuildConfig.VERSION_NAME);
-                                    jsonObject.put("Mode", "Android-Edet");
+                                    jsonObject.put("Mode", Constants.APP_MODE);
                                     if(isSTPBasedTP) {
                                         jsonObject.put("STP_Code", modelClass.getSTP_Code() != null ? modelClass.getSTP_Code() : "");
                                         jsonObject.put("STP_Name", modelClass.getSTP_Name() != null ? modelClass.getSTP_Name() : "");
