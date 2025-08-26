@@ -1635,7 +1635,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 2));
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 2));
                                             }
-                                        } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_multitp"))) {
+                                        } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_multitp"))) {
                                             if (jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")) {
                                                 SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                                             } else {
