@@ -101,8 +101,8 @@
                 tools:ignore="SpUsage" />
 
             <ImageView
-                android:layout_width="@dimen/_6sdp"
-                android:layout_height="@dimen/_6sdp"
+                android:layout_width="7.80dp"
+                android:layout_height="7.80dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
                 android:src="@drawable/arrow_down" />
@@ -193,6 +193,16 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageDr"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/listedDr"
+                        android:layout_alignBottom="@id/listedDr"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_24sdp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/chemist"
@@ -211,6 +221,17 @@
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
+                    <ImageView
+                        android:id="@+id/syncFailedImageChm"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/chemist"
+                        android:layout_alignBottom="@id/chemist"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
+
                     <TextView
                         android:id="@+id/stockiest"
                         android:layout_width="match_parent"
@@ -227,6 +248,16 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageStk"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/stockiest"
+                        android:layout_alignBottom="@id/stockiest"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/unlistedDoctor"
@@ -244,6 +275,16 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageUnListdr"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/unlistedDoctor"
+                        android:layout_alignBottom="@id/unlistedDoctor"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/hospital"
@@ -261,6 +302,18 @@
                         android:textStyle="bold"
                         app:drawableEndCompat="@drawable/arrow_down"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageHspl"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/hospital"
+                        android:layout_alignBottom="@id/hospital"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="invisible"/>
+
+
 
                     <TextView
                         android:id="@+id/cip"
@@ -278,6 +331,18 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageCip"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/cip"
+                        android:layout_alignBottom="@id/cip"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="invisible"/>
+
+
 
                     <TextView
                         android:id="@+id/cluster"
@@ -295,6 +360,17 @@
                         android:textStyle="bold"
                         app:drawableEndCompat="@drawable/arrow_down"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageClust"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/cluster"
+                        android:layout_alignBottom="@id/cluster"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
+
 
                     <TextView
                         android:id="@+id/input"
@@ -312,6 +388,19 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageInput"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/input"
+                        android:layout_alignBottom="@id/input"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
+
+
+
 
                     <TextView
                         android:id="@+id/product"
@@ -329,6 +418,16 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageProduct"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/product"
+                        android:layout_alignBottom="@id/product"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/leave"
@@ -346,6 +445,19 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageLeave"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/leave"
+                        android:layout_alignBottom="@id/leave"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
+
+
+
 
                     <TextView
                         android:id="@+id/dcr"
@@ -363,6 +475,18 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageDcr"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/dcr"
+                        android:layout_alignBottom="@id/dcr"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
+
+
 
                     <TextView
                         android:id="@+id/activity"
@@ -380,6 +504,16 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageAct"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/activity"
+                        android:layout_alignBottom="@id/activity"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/tourPlan"
@@ -397,6 +531,16 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageTP"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/tourPlan"
+                        android:layout_alignBottom="@id/tourPlan"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/workType"
@@ -414,6 +558,17 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageWP"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/workType"
+                        android:layout_alignBottom="@id/workType"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
+
 
                     <TextView
                         android:id="@+id/slide"
@@ -431,6 +586,16 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageSlide"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/slide"
+                        android:layout_alignBottom="@id/slide"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/subordinate"
@@ -448,6 +613,16 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageSub"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/subordinate"
+                        android:layout_alignBottom="@id/subordinate"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/Other"
@@ -465,6 +640,16 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageOther"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/Other"
+                        android:layout_alignBottom="@id/Other"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/setup"
@@ -482,6 +667,16 @@
                         android:textSize="@dimen/_6sdp"
                         android:textStyle="bold"
                         tools:ignore="SpUsage" />
+                    <ImageView
+                        android:id="@+id/syncFailedImageSet"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:src="@drawable/icon_sync_failed"
+                        android:layout_alignTop="@id/setup"
+                        android:layout_alignBottom="@id/setup"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_23sdp"
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:id="@+id/masterSyncAll"

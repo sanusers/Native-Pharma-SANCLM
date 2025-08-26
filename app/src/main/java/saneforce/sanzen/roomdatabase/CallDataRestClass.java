@@ -25,7 +25,6 @@ public class CallDataRestClass {
     public static void resetcallValues(Context context){
      try {
          contextt=context;
-
          db = RoomDB.getDatabase(context);
          callTableDao = db.callTableDao();
          masterDataDao=db.masterDataDao();

@@ -452,6 +452,8 @@ public class LoginActivity extends AppCompatActivity {
                                 appAccess = responseObject.getString("sanzen_edet");
 //                                System.out.println("appAccess--->"+appAccess);
                                 if (appAccess.equals("1")) {
+
+
                                     process(responseObject);
                                     Toast.makeText(LoginActivity.this, getString(R.string.login_successfully), Toast.LENGTH_LONG).show();
 //                                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
@@ -477,7 +479,8 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void process(JSONObject jsonObject) {
+    public void
+    process(JSONObject jsonObject) {
         try {
             loginDataDao.saveLoginData(new LoginDataTable(jsonObject.toString()));
             SharedPref.InsertLogInData(LoginActivity.this,jsonObject);

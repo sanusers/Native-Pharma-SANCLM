@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:screenOrientation="landscape" >
+    android:screenOrientation="landscape">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -66,7 +66,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31" >
+        tools:targetApi="31">
+        <activity
+            android:name=".activity.reports.missedReport.MissedReport"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+
         <receiver
             android:name=".services.NotificationClickReceiver"
             android:exported="false">
@@ -84,8 +90,7 @@
             android:name=".activity.survey.SurveyActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-<!--            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />-->
+            android:windowSoftInputMode="adjustResize|stateHidden" /> <!-- android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" /> -->
         <activity
             android:name=".activity.Quiz.QuizAssertViewActivity"
             android:exported="false"
@@ -293,7 +298,7 @@
         <activity
             android:name=".activity.splash.SplashScreen"
             android:exported="true"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -307,7 +312,7 @@
 
         <service
             android:name=".services.FirebaseService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -363,6 +368,7 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -381,7 +387,7 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="saneforce.sanzen.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true" >
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
