@@ -468,6 +468,8 @@ public class SharedPref {
     public static final String DAY_CHECK_IN_DATA = "Day_Check_In_Data";
     public static final String CHECK_IN_SKIP_DATE = "Check_In_Skip_Date";
 
+    public static final String A_S_KEY = "A_S_KEY";
+
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -2893,6 +2895,16 @@ public class SharedPref {
 
     public static String getCheckInSkipDate(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CHECK_IN_SKIP_DATE, "");
+    }
+
+    public static void saveKeys(Context context, String aKey, String sKey) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(A_S_KEY, aKey + "^^" + sKey).apply();
+    }
+
+    public static String getKeys(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(A_S_KEY, "^^");
     }
 
 }
