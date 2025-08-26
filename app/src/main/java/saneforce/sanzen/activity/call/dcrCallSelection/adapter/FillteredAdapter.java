@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -47,7 +48,6 @@ public class FillteredAdapter extends BaseAdapter {
     public View getView(int i, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View itemView = inflater.inflate(R.layout.list_view_text, parent, false);
-
         LinearLayout linearLayout =itemView.findViewById(R.id.ListLayout);
         TextView textView = itemView.findViewById(R.id.itemTitle);
         if(dataList.size() > i) {
