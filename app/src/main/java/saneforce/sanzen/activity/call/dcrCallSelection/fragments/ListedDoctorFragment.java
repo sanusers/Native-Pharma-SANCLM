@@ -250,6 +250,7 @@ public class ListedDoctorFragment extends Fragment {
         Objects.requireNonNull(dialogFilter.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogFilter.setCancelable(false);
         dialogFilter.show();
+        ed_search = dialogFilter.findViewById(R.id.search_cust);
         img_close = dialogFilter.findViewById(R.id.img_close);
         img_del = dialogFilter.findViewById(R.id.img_del);
         btn_apply = dialogFilter.findViewById(R.id.btn_apply);
@@ -350,6 +351,7 @@ public class ListedDoctorFragment extends Fragment {
             lv_cate.setVisibility(View.GONE);
             lv_terr.setVisibility(View.GONE);
             if (lv_spec.getVisibility() == View.VISIBLE) {
+                ed_search.setVisibility(View.GONE);
                 lv_spec.setVisibility(View.GONE);
                 constraintLayout.setVisibility(View.VISIBLE);
                 tv_add_condition.setVisibility(View.VISIBLE);
@@ -361,11 +363,13 @@ public class ListedDoctorFragment extends Fragment {
                     specialityName = clickedItem.getName();
                     tvSpec.setText(clickedItem.getName());
                     lv_spec.setVisibility(View.GONE);
+                    ed_search.setVisibility(View.GONE);
                     tv_add_condition.setVisibility(View.VISIBLE);
                     constraintLayout.setVisibility(View.VISIBLE);
                 });
                 lv_spec.setAdapter(arrayAdapter);
                 lv_spec.setVisibility(View.VISIBLE);
+                ed_search.setVisibility(View.VISIBLE);
                 tv_add_condition.setVisibility(View.INVISIBLE);
                 constraintLayout.setVisibility(View.INVISIBLE);
             }
