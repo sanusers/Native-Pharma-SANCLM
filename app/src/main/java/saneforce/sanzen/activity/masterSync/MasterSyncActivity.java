@@ -853,6 +853,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethome") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
                     callSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CALL_SYNC);
@@ -885,6 +886,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     }
                 } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_tp") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_multitp") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_details")) {
                     tpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TP_SETUP);
@@ -982,6 +984,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethome") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
                     binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
@@ -996,6 +999,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
                 if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_tp") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_multitp") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_details")) {
                     binding.syncFailedImageTP.setVisibility(View.VISIBLE);
@@ -1464,7 +1468,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                         ArrayList<MasterSyncItemModel> childArray = new ArrayList<>(masterSyncAllModel.get(i));
                         itemCount += childArray.size();
                         for (int j = 0; j < childArray.size(); j++) {
-                            if (childArray.get(j).getRemoteTableName().equalsIgnoreCase("gettodaydcr")) {
+                            if (childArray.get(j).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || childArray.get(j).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
                                 setDelayForDayPlanSync(childArray, j);
                             } else {
                                 if (hqChanged) {
