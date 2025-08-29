@@ -18,3 +18,6 @@ local.properties
 
 # Java files
 Keys.java
+SimpleDecrypt.java
+/src/main/java/saneforce/sanzen/commonClasses/Keys.java
+/src/main/java/saneforce/sanzen/commonClasses/SimpleDecrypt.java

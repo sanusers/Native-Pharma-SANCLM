@@ -1541,7 +1541,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                         jsonObject.put("tableName", "getall_tp");
                     } else {
-                        jsonObject.put("tableName", "getall_multitp");
+                        jsonObject.put("tableName", "getall_multitpnew");
                     }
                     jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
                     jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
@@ -2111,7 +2111,7 @@ public class TourPlanActivity extends AppCompatActivity {
             if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                 jsonObject.put("tableName", "gettpdetail");
             } else {
-                jsonObject.put("tableName", "gettpmultihqdetail");
+                jsonObject.put("tableName", "gettpmultihqdetailnew");
             }
             jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
             jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
@@ -2579,7 +2579,7 @@ public class TourPlanActivity extends AppCompatActivity {
         if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
             mapString.put("axn", "savenew/tp");
         } else {
-            mapString.put("axn", "multihqsave/tp");
+            mapString.put("axn", "multihqsavenew/tp");
         }
         Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonArray.toString());
         call.enqueue(new Callback<JsonElement>() {
