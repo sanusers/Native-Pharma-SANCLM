@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHolder> {
@@ -64,6 +65,10 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
                 holder.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.report_monthly_icon));
                 break;
             }
+            case "MODULE": {
+                holder.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.report_monthly_icon));
+                break;
+            }
         }
 
         holder.itemView.setOnClickListener(view -> {
@@ -71,10 +76,16 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
                 Intent intentWeb = new Intent(context, ReportWebActivity.class);
                 context.startActivity(intentWeb);
             } else {
-                ReportsActivity activity = (ReportsActivity) context;
-
-                 activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
-                activity.getData(name, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4));
+                if(name.equalsIgnoreCase("Day Report")) {
+                    ReportsActivity activity = (ReportsActivity) context;
+                    activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
+                    activity.getData(name, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4));
+                }
+                if(name.equalsIgnoreCase(SharedPref.getDynamicOptionCaps(context))){
+                    ReportsActivity activity = (ReportsActivity) context;
+                    activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
+                    activity.getDynamicData(name,TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4));
+                }
             }
         });
     }

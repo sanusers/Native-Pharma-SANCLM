@@ -1,14 +1,17 @@
 package saneforce.sanzen.activity.reports.dayReport.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -19,54 +22,77 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.reports.DynamicSubMenuActivity;
+import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
+import saneforce.sanzen.activity.reports.dayReport.fragment.DayReportDetailFragment;
 import saneforce.sanzen.activity.reports.dayReport.model.MenuModel;
 import saneforce.sanzen.storage.SharedPref;
 
-public  class DynamicAdapter extends RecyclerView.Adapter<DynamicAdapter.MyViewHolder> {
-    ArrayList<String> arrayList;
+public class DynamicAdapter extends BaseAdapter {
+
     ArrayList<MenuModel> menuModelArrayList;
     Context context;
 
-    public DynamicAdapter(ArrayList<String> arrayList,ArrayList<MenuModel> menuModelArrayList,Context context){
-        this.arrayList = arrayList;
+    public DynamicAdapter(ArrayList<MenuModel> menuModelArrayList,Context context){
+
         this.menuModelArrayList = menuModelArrayList;
         this.context = context;
     }
 
-    @NonNull
+
     @Override
-    public DynamicAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_dynamic_link, parent, false);
-        return new DynamicAdapter.MyViewHolder(view);
+    public int getCount() {
+        return menuModelArrayList.size();
+    }
+
+    public Object getItem(int position) {
+        return menuModelArrayList.get(position);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DynamicAdapter.MyViewHolder holder, int position) {
-        String menu_Name = menuModelArrayList.get(position).getMenu_Name();
-        String img_Name = menuModelArrayList.get(position).getMenu_Icon();
-        holder.textView.setText(menu_Name);
-        String url = SharedPref.getTagImageUrl(context)+img_Name;
-
-        Picasso.get()
-                .load(url)
-                .into(holder.imageView);
-
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
-    public int getItemCount() {
-        return 0;
+    public View getView(int position, View convertView, ViewGroup parent) {
+        MyViewHolder holder;
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.adapter_dynamic_link, null);
+
+            holder = new MyViewHolder();
+            holder.cardView = convertView.findViewById(R.id.cardview_grid);
+            holder.imageView = convertView.findViewById(R.id.iv_menu_icon);
+            holder.textView = convertView.findViewById(R.id.tv_menu_title);
+            convertView.setTag(holder);
+        } else {
+            holder = (MyViewHolder) convertView.getTag();
+        }
+
+        MenuModel menuModel = menuModelArrayList.get(position);
+
+        if (!menuModel.getMenu_Icon().equalsIgnoreCase("")) {
+            Glide.with(context).load(menuModel.getMenu_Icon()).into(holder.imageView);
+        }else{
+            holder.imageView.setImageResource(R.drawable.web_icon);
+        }
+
+        holder.textView.setText(menuModel.getMenu_Name());
+
+        holder.cardView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DynamicSubMenuActivity.class);
+            intent.putExtra("title",menuModel.getMenu_Name());
+            String Data = String.valueOf(menuModel.getMenu_Sub_Details());
+            intent.putExtra("menu_sub_details",Data);
+            context.startActivity(intent);
+        });
+        return convertView;
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
-
+    public static class MyViewHolder {
+        CardView cardView;
         ImageView imageView;
         TextView textView;
-
-        public MyViewHolder(@NonNull View itemView) {
-            super(itemView);
-            imageView = itemView.findViewById(R.id.image);
-            textView = itemView.findViewById(R.id.menu_name);
-        }
     }
 }

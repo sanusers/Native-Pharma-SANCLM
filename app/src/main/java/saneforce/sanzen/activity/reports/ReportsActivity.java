@@ -9,13 +9,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +32,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+
+import saneforce.sanzen.activity.reports.dayReport.adapter.DynamicAdapter;
+import saneforce.sanzen.activity.reports.dayReport.model.MenuModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -48,6 +54,8 @@ public class ReportsActivity extends AppCompatActivity {
     CommonUtilsMethods commonUtilsMethods;
     ProgressDialog progressDialog;
     String url;
+    DynamicAdapter adapter;
+    ArrayList<MenuModel> menuModels = new ArrayList<>();
 
 
     //To Hide the bottomNavigation When popup
@@ -81,6 +89,9 @@ public class ReportsActivity extends AppCompatActivity {
         arrayList.add("Visit Monitor");*/
         if (SharedPref.getDashboard(this).equals("0")){
             arrayList.add("Dash Board");
+        }
+        if(SharedPref.getDynamicOptionNeed(this).equals("0")){
+            arrayList.add(SharedPref.getDynamicOptionCaps(context));
         }
         reportsAdapter = new ReportsAdapter(arrayList, ReportsActivity.this);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ReportsActivity.this, 4);
@@ -151,6 +162,88 @@ public class ReportsActivity extends AppCompatActivity {
         }
     }
 
+    public void getDynamicData(String report, String date){
+        if (UtilityClass.isNetworkAvailable(this)) {
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
+                if (status) {
+                    try {
+                        apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, SharedPref.getCallApiUrl(ReportsActivity.this));
+
+                        JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(this);
+                        jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                        jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                        jsonObject.put("Rsf", SharedPref.getHqCode(this));
+                        if (report.equalsIgnoreCase(SharedPref.getDynamicOptionCaps(context))) {
+                            jsonObject.put("tableName", "getdynamicmenu");
+
+                        }
+
+                        Log.d("Report", "getData: " + jsonObject);
+
+                        Map<String, String> mapString = new HashMap<>();
+                        mapString.put("axn", "get/reports");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                        call.enqueue(new Callback<JsonElement>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                progressDialog.dismiss();
+                                try {
+                                    if (response.isSuccessful() && response.body() != null) {
+                                        JsonArray jsonArray = response.body().getAsJsonArray();
+                                        if (jsonArray.size() > 0) {
+                                            for (int i = 0; i < jsonArray.size(); i++) {
+                                                JsonObject menuObject = jsonArray.get(i).getAsJsonObject();
+                                                String menu_name = menuObject.get("Menu_Name").getAsString();
+                                                String menu_icon = menuObject.get("Menu_Icon").getAsString();
+                                                JsonArray menu_sub_details = menuObject.get("Menu_Options").getAsJsonArray();
+
+                                                menu_icon = SharedPref.getTagImageUrl(ReportsActivity.this) + "/" + menu_icon;
+
+                                                MenuModel menuModel = new MenuModel(menu_name, menu_icon, menu_sub_details);
+                                                menuModels.add(menuModel);
+                                            }
+                                            adapter.notifyDataSetChanged();
+                                        }else{
+//                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_record_found), Toast.LENGTH_LONG).show();
+                                        }
+
+
+                                        JsonElement jsonElement = response.body();
+                                        JSONArray jsonArray1 = new JSONArray();
+                                        if (jsonElement.isJsonArray()) {
+                                            jsonArray1 = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                            navigateDyn(jsonArray1, report, date);
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                progressDialog.dismiss();
+
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    progressDialog.dismiss();
+                    commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.poor_connection));
+                }
+
+            });
+            networkStatusTask.execute();
+        } else {
+            progressDialog.dismiss();
+            commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.no_network));
+        }
+
+    }
+
     public void navigate(JSONArray jsonArray, String report, String date) {
         Intent intent = new Intent(ReportsActivity.this, ReportFragContainerActivity.class);
         Bundle bundle = new Bundle();
@@ -158,6 +251,16 @@ public class ReportsActivity extends AppCompatActivity {
         bundle.putString("date", date);
         bundle.putString("fragment", report);
         intent.putExtra("reportBundle", bundle);
+        startActivity(intent);
+    }
+
+    public void navigateDyn(JSONArray jsonArray, String report, String date) {
+        Intent intent = new Intent(ReportsActivity.this, DynamicMenuActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("data", jsonArray.toString());
+        bundle.putString("date", date);
+      /*  bundle.putString("fragment", report);
+        intent.putExtra("reportBundle", bundle);*/
         startActivity(intent);
     }
 }
