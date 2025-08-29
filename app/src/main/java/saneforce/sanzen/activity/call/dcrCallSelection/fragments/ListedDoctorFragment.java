@@ -663,7 +663,8 @@ public class ListedDoctorFragment extends Fragment {
     }
 */
     public void SetupAdapter() {
-
+        tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
+        custListArrayList.clear();
         if (SharedPref.getGeotagNeed(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
             try {
                 JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
