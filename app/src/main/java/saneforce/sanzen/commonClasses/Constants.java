@@ -13,7 +13,7 @@ public class Constants {
     //----------------------------------------------------
     //Master sync table key names
     public static final String DOCTOR = "Doctor_";
-    public static final String GEO = "Listed Doctor Geo";
+    public static final String DOCTOR_GEO = "Listed Doctor Geo";
     public static final String DOCTOR_MAS = "Listed Doctor Master";
     public static final String SPECIALITY = "Speciality";
     public static final String QUALIFICATION = "Qualification";

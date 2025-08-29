@@ -54,8 +54,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Region;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -67,8 +65,6 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3Client;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -100,7 +96,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -123,7 +118,6 @@ import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.GPSTrack;
-import saneforce.sanzen.commonClasses.Keys;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityMapsBinding;
 import saneforce.sanzen.databinding.DialogMasterSyncUpdateBinding;
@@ -973,7 +967,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 case "D":
                     JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + taggedHQ).getMasterSyncDataJsonArray();
-                    JSONArray masterJsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.GEO + taggedHQ).getMasterSyncDataJsonArray();
+                    JSONArray masterJsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
                     HashMap<String, JSONObject> docObj = new HashMap<>();
                     for (int i = 0; i < masterJsonArray1.length(); i++) {
                         JSONObject jsonObject = masterJsonArray1.getJSONObject(i);
@@ -1302,7 +1296,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 switch (selectedTab) {
                     case "D":
-                        JSONArray existingGeoArrayDr = masterDataDao.getMasterDataTableOrNew(Constants.GEO + taggedHQ).getMasterSyncDataJsonArray();
+                        JSONArray existingGeoArrayDr = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
                         JSONArray updatedGeoArrayDr = new JSONArray();
 
                         for (int i = 0; i < existingGeoArrayDr.length(); i++) {
@@ -1313,9 +1307,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
 
                         updatedGeoArrayDr.put(createGeoJson);
-                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.GEO + taggedHQ, updatedGeoArrayDr.toString(), 1));
+                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DOCTOR_GEO + taggedHQ, updatedGeoArrayDr.toString(), 1));
 
-                        JSONArray masterJsonArrayGeoDr = masterDataDao.getMasterDataTableOrNew(Constants.GEO + taggedHQ).getMasterSyncDataJsonArray();
+                        JSONArray masterJsonArrayGeoDr = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + taggedHQ).getMasterSyncDataJsonArray();
                         Log.d("MASter Geo", "updateMasterData: " + masterJsonArrayGeoDr);
                         break;
 
@@ -1429,7 +1423,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;*/
             case "D":
                 JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + hqCode).getMasterSyncDataJsonArray();
-                JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.GEO + hqCode).getMasterSyncDataJsonArray();
+                JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + hqCode).getMasterSyncDataJsonArray();
 
                 try {
                     HashMap<String, JSONObject> docObj = new HashMap<>();
@@ -1946,7 +1940,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case "D":
                 try {
                     JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + sfCode).getMasterSyncDataJsonArray();
-                    JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.GEO + sfCode).getMasterSyncDataJsonArray();
+                    JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + sfCode).getMasterSyncDataJsonArray();
                     HashMap<String, JSONObject> docObj = new HashMap<>();
                     for (int i = 0; i < jsonArray1.length(); i++) {
                         JSONObject jsonObject = jsonArray1.getJSONObject(i);

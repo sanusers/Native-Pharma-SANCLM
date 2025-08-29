@@ -850,10 +850,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     private void checkAndSyncMasters(String strHQCode) {
         for (String hqCode : CommonUtilsMethods.removeLastComma(strHQCode).split(",")) {
-            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR + hqCode),
-                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST + hqCode),
-                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST + hqCode),
-                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR + hqCode),
+//            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR + hqCode),
+//                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST + hqCode),
+//                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST + hqCode),
+//                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR + hqCode),
+////                        hosAvailability = masterDataDao.isDataAvailable(Constants.HOSPITAL + hqCode),
+////                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
+//                    clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode);
+            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR_MAS + hqCode),
+                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST_MAS + hqCode),
+                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST_MAS + hqCode),
+                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR_MAS + hqCode),
 //                        hosAvailability = masterDataDao.isDataAvailable(Constants.HOSPITAL + hqCode),
 //                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
                     clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode);

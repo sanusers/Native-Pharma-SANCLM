@@ -2,13 +2,10 @@ package saneforce.sanzen.activity.map.custSelection;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
-import static saneforce.sanzen.activity.myresource.MyResource_Activity.listresource;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -38,7 +35,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +48,6 @@ import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
-import saneforce.sanzen.activity.myresource.Resourcemodel_class;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -352,7 +347,7 @@ public class TagCustSelectionList extends AppCompatActivity {
         masterSyncArray.clear();
 //        MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor", "getdoctors", Constants.DOCTOR + hqCode);
         MasterSyncItemModel doctorModel_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode);
-        MasterSyncItemModel doctorModel_geo = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getdoctors_geo", Constants.GEO + hqCode);
+        MasterSyncItemModel doctorModel_geo = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getdoctors_geo", Constants.DOCTOR_GEO + hqCode);
 
 //        MasterSyncItemModel cheModel = new MasterSyncItemModel("Doctor", "getchemist", Constants.CHEMIST + hqCode);
         MasterSyncItemModel cheModel_mas = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode);
@@ -471,7 +466,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 try {
                     binding.tagSelection.setText(SharedPref.getDrCap(this));
                     JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHqCode).getMasterSyncDataJsonArray();
-                    JSONArray masterJsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.GEO + selectedHqCode).getMasterSyncDataJsonArray();
+                    JSONArray masterJsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + selectedHqCode).getMasterSyncDataJsonArray();
                     HashMap<String, JSONObject> docObj = new HashMap<>();
                     for (int i = 0; i < masterJsonArray1.length(); i++) {
                         JSONObject jsonObject = masterJsonArray1.getJSONObject(i);

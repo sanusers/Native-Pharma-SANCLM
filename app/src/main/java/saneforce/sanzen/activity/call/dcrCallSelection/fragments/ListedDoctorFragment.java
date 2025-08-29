@@ -4,7 +4,6 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.deviation;
 import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.tpDataObj;
 import static saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment.workDayCode;
-import static saneforce.sanzen.activity.myresource.MyResource_Activity.listresource;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -34,14 +33,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,12 +52,8 @@ import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
-import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.activity.map.custSelection.CustList;
-import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
-import saneforce.sanzen.activity.myresource.Resourcemodel_class;
-import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -676,7 +667,7 @@ public class ListedDoctorFragment extends Fragment {
         if (SharedPref.getGeotagNeed(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
             try {
                 JSONArray masterJsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
-                JSONArray masterJsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.GEO + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+                JSONArray masterJsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
                 HashMap<String, JSONObject> docObj = new HashMap<>();
                 for (int i = 0; i < masterJsonArray1.length(); i++) {
                     JSONObject jsonObject = masterJsonArray1.getJSONObject(i);

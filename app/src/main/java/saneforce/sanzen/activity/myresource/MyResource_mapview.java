@@ -9,7 +9,6 @@ import static java.lang.Double.valueOf;
 import static saneforce.sanzen.activity.map.MapsActivity.BitmapFromVector;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -46,7 +45,6 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.AWSBucketsTag;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
@@ -129,7 +127,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         mMap = googleMap;
 
         if (CUST_FLAG.equalsIgnoreCase("D")) {
-            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.GEO + HQ_CODE).getMasterSyncDataJsonArray().toString());
+            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + HQ_CODE).getMasterSyncDataJsonArray().toString());
             //parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + HQ_CODE).getMasterSyncDataJsonArray().toString());
         } else if (CUST_FLAG.equalsIgnoreCase("C")) {
 //            parseJsonData(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + HQ_CODE).getMasterSyncDataJsonArray().toString());

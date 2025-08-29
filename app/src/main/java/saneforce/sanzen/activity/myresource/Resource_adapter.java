@@ -1,9 +1,6 @@
 package saneforce.sanzen.activity.myresource;
 
-import static com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread;
 import static saneforce.sanzen.activity.myresource.MyResource_Activity.Valcount;
-import static saneforce.sanzen.activity.myresource.MyResource_Activity.appRecyclerView;
-import static saneforce.sanzen.activity.myresource.MyResource_Activity.binding;
 import static saneforce.sanzen.activity.myresource.MyResource_Activity.et_Custsearch;
 import static saneforce.sanzen.activity.myresource.MyResource_Activity.listresource;
 import static saneforce.sanzen.activity.myresource.MyResource_Activity.search_list;
@@ -21,7 +18,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
@@ -33,8 +29,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.forms.weekoff.weekoff_viewscreen;
@@ -47,7 +41,6 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
-import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.ViewHolder> {
@@ -158,9 +151,9 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                     case ("1"):
                         rec_val = "D";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.DOCTOR_MAS + synhqval1);
-                        MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.GEO + synhqval1);
+                        MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.DOCTOR_GEO + synhqval1);
                         JSONArray jsonArray_Mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + synhqval1).getMasterSyncDataJsonArray();
-                        JSONArray jsonArray_Geo = masterDataDao.getMasterDataTableOrNew(Constants.GEO + synhqval1).getMasterSyncDataJsonArray();
+                        JSONArray jsonArray_Geo = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_GEO + synhqval1).getMasterSyncDataJsonArray();
                         Valcount = "";
                         String docgeo_val = "";
                         pos_check = "";
