@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
@@ -72,7 +73,7 @@ public class MyResource_Activity extends AppCompatActivity {
     public ArrayList<Resourcemodel_class> listed_data = new ArrayList<>();
     Resource_adapter resourceAdapter;
     HashMap<String, Integer> idCounts = new HashMap<>();
-    String Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
+    String Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "", DocMas_count = "";
     String navigateFrom = "", input_count = "", product_count = "";
     public static ActivityMyResourceBinding binding;
     LocalDate date_n;
@@ -137,7 +138,7 @@ public class MyResource_Activity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(appAdapter != null) {
+                if (appAdapter != null) {
                     appAdapter.getFilter().filter(charSequence);
                 }
             }
@@ -153,8 +154,7 @@ public class MyResource_Activity extends AppCompatActivity {
 
     public void Resource_list(String synhqval1) {
         try {
-            JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + synhqval1).getMasterSyncDataJsonArray();
-
+        /*    JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + synhqval1).getMasterSyncDataJsonArray();
             String Doc_code = "", Chm_code = "", Stk_code = "", Cip_code = "", Hosp_code = "", Unlist_code = "";
             String doctor = String.valueOf(jsonDoc);
             if (!doctor.equals("") || !doctor.equals("null")) {
@@ -224,7 +224,82 @@ public class MyResource_Activity extends AppCompatActivity {
                 } else {
                     Unlist_count = "0";
                 }
+            }*/
+
+            JSONArray jsonDoc_mas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + synhqval1).getMasterSyncDataJsonArray();
+            String Doc_code = "", Chm_code = "", Stk_code = "", Cip_code = "", Hosp_code = "", Unlist_code = "";
+            String doctorMas = String.valueOf(jsonDoc_mas);
+            if (!doctorMas.equals("") || !doctorMas.equals("null")) {
+                count_list.clear();
+                if (jsonDoc_mas.length() > 0) {
+                    for (int i = 0; i < jsonDoc_mas.length(); i++) {
+                        JSONObject jsonObject = jsonDoc_mas.getJSONObject(i);
+                        if (!Doc_code.equals(jsonObject.getString("Code"))) {
+                            Doc_code = jsonObject.getString("Code");
+                            count_list.add(Doc_code);
+                            Doc_count = String.valueOf(count_list.size());
+                        }
+                    }
+                } else {
+                    Doc_count = "0";
+                }
             }
+
+            JSONArray jsonChm_mas = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + synhqval1).getMasterSyncDataJsonArray();
+            String chemistMas = String.valueOf(jsonChm_mas);
+            if (!chemistMas.equals("") || !chemistMas.equals("null")) {
+                count_list.clear();
+                if (jsonChm_mas.length() > 0) {
+                    for (int i = 0; i < jsonChm_mas.length(); i++) {
+                        JSONObject jsonObject = jsonChm_mas.getJSONObject(i);
+                        if (!Chm_code.equals(jsonObject.getString("Code"))) {
+                            Chm_code = jsonObject.getString("Code");
+                            count_list.add(Chm_code);
+                            Che_count = String.valueOf(count_list.size());
+                        }
+                    }
+                } else {
+                    Che_count = "0";
+                }
+            }
+
+            JSONArray jsonStock_mas = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + synhqval1).getMasterSyncDataJsonArray();
+
+            String stockistMas = String.valueOf(jsonStock_mas);
+            if (!stockistMas.equals("") || !stockistMas.equals("null")) {
+                count_list.clear();
+                if (jsonStock_mas.length() > 0) {
+                    for (int i = 0; i < jsonStock_mas.length(); i++) {
+                        JSONObject jsonObject = jsonStock_mas.getJSONObject(i);
+                        if (!Stk_code.equals(jsonObject.getString("Code"))) {
+                            Stk_code = jsonObject.getString("Code");
+                            count_list.add(Stk_code);
+                            Strck_count = String.valueOf(count_list.size());
+                        }
+                    }
+                } else {
+                    Strck_count = "0";
+                }
+            }
+            JSONArray jsonUnlisted_mas = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + synhqval1).getMasterSyncDataJsonArray();
+            String unlistedMas = String.valueOf(jsonUnlisted_mas);
+            if (!unlistedMas.equals("") || !unlistedMas.equals("null")) {
+                count_list.clear();
+                if (jsonUnlisted_mas.length() > 0) {
+                    for (int i = 0; i < jsonUnlisted_mas.length(); i++) {
+                        JSONObject jsonObject = jsonUnlisted_mas.getJSONObject(i);
+                        if (!Unlist_code.equals(jsonObject.getString("Code"))) {
+                            Stk_code = jsonObject.getString("Code");
+                            count_list.add(Stk_code);
+                            Unlist_count = String.valueOf(count_list.size());
+                        }
+                    }
+                } else {
+                    Unlist_count = "0";
+                }
+            }
+
+
 
 
             JSONArray jsoncip = masterDataDao.getMasterDataTableOrNew(Constants.CIP + synhqval1).getMasterSyncDataJsonArray();
@@ -262,6 +337,7 @@ public class MyResource_Activity extends AppCompatActivity {
                 }
             }
 
+
             Docvisit();
 
             listed_data.clear();
@@ -273,7 +349,8 @@ public class MyResource_Activity extends AppCompatActivity {
                 listed_data.add(new Resourcemodel_class(SharedPref.getStkCap(this), Strck_count, "3"));
             if (SharedPref.getUnlNeed(this).equalsIgnoreCase("0"))
                 listed_data.add(new Resourcemodel_class(SharedPref.getUNLcap(this), Unlist_count, "4"));
-//            if (SharedPref.getHospNeed(this).equalsIgnoreCase("0"))
+
+            //            if (SharedPref.getHospNeed(this).equalsIgnoreCase("0"))
 //                listed_data.add(new Resourcemodel_class(SharedPref.getHospCaption(this), Hosp_count, "5"));
 //            if (SharedPref.getCipINeed(this).equalsIgnoreCase("0"))
 //                listed_data.add(new Resourcemodel_class(SharedPref.getCipCaption(this), Cip_count, "6"));
@@ -307,7 +384,7 @@ public class MyResource_Activity extends AppCompatActivity {
 
             String dcrCaption = SharedPref.getDrCap(this);
             if (dcrCaption == null || dcrCaption.isEmpty()) {
-                dcrCaption = "Doctor";
+                dcrCaption = "Listed Doctor";
             } else {
                 dcrCaption = SharedPref.getDrCap(this);
             }
@@ -322,39 +399,38 @@ public class MyResource_Activity extends AppCompatActivity {
                     inputCount++;
                 }
             }
-            try{
+            try {
                 stkprdbalnce_count.clear();
                 stkinput_count.clear();
-                JSONArray stockbalance=masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray();
+                JSONArray stockbalance = masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray();
                 for (int i = 0; i < stockbalance.length(); i++) {
                     JSONObject jsonObject = stockbalance.getJSONObject(i);
                     stkprdbalnce_count.add(jsonObject.getString("Code"));
                 }
-                JSONArray inputbalance=masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray();
+                JSONArray inputbalance = masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray();
                 for (int i = 0; i < inputbalance.length(); i++) {
                     JSONObject jsonObject = inputbalance.getJSONObject(i);
                     stkinput_count.add(jsonObject.getString("Code"));
                 }
-            }
-            catch (Exception e){
+            } catch (Exception e) {
 
             }
             if (isInputRequested) {
-                listed_data.add(new Resourcemodel_class("Input", String.valueOf(inputCount), "7"));
+                listed_data.add(new Resourcemodel_class("Input", String.valueOf(inputCount), "7"));            //7
             }
             if (isProductRequested) {
-                listed_data.add(new Resourcemodel_class("Product", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray().length()), "8"));
+                listed_data.add(new Resourcemodel_class("Product", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray().length()), "8"));     //8
             }
-            listed_data.add(new Resourcemodel_class(SharedPref.getClusterCap(this), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + synhqval1).getMasterSyncDataJsonArray().length()), "9"));
-            listed_data.add(new Resourcemodel_class("Holiday / Weekly off", masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray().length() + " / " + masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray().length(), "10"));
-            if(SharedPref.getDrNeed(this).equalsIgnoreCase("0") && SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
-                listed_data.add(new Resourcemodel_class("Category", String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));
-            } else if(SharedPref.getDrNeed(this).equalsIgnoreCase("0")){
+            listed_data.add(new Resourcemodel_class(SharedPref.getClusterCap(this), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + synhqval1).getMasterSyncDataJsonArray().length()), "9"));          //9
+            listed_data.add(new Resourcemodel_class("Holiday / Weekly off", masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray().length() + " / " + masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray().length(), "10"));     //10
+            if (SharedPref.getDrNeed(this).equalsIgnoreCase("0") && SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
+                listed_data.add(new Resourcemodel_class("Category", String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));     //11
+            } else if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
                 listed_data.add(new Resourcemodel_class("Category", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length()), "11"));
-            } else if(SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
+            } else if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
                 listed_data.add(new Resourcemodel_class("Category", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length()), "11"));
             }
-            listed_data.add(new Resourcemodel_class("WorkType", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray().length()), "12"));
+            listed_data.add(new Resourcemodel_class("WorkType", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray().length()), "12"));     //12
             if (isLeaveEntitlementRequested) {
                 listed_data.add(new Resourcemodel_class("LeaveStatus", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length()), "13"));
             }
@@ -365,44 +441,45 @@ public class MyResource_Activity extends AppCompatActivity {
 //            listed_data.add(new Resourcemodel_class("Calls Status",  String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray().length()), "12"));
             listed_data.add(new Resourcemodel_class("Calls Summary", "", "15"));
             listed_data.add(new Resourcemodel_class("Date Summary", "", "16"));
-            if(SharedPref.getSampleValidation(this).equalsIgnoreCase("1") && SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
+            if (SharedPref.getSampleValidation(this).equalsIgnoreCase("1") && SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
                 listed_data.add(new Resourcemodel_class("Stock Balance", String.format("%s / %s", masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray().length(), masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray().length()), "17"));
-            } else if(SharedPref.getSampleValidation(this).equalsIgnoreCase("1")){
+            } else if (SharedPref.getSampleValidation(this).equalsIgnoreCase("1")) {
                 listed_data.add(new Resourcemodel_class("Stock Balance", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray().length()), "17"));
-            } else if(SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
+            } else if (SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
                 listed_data.add(new Resourcemodel_class("Stock Balance", String.format("%s", masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray().length()), "17"));
             }
 
-            Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count);
+                Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count + "---" + DocMas_count);
 
-            resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1, new MyResourceInterface() {
-                @Override
-                public void onclickItem(ArrayList<Resourcemodel_class> resourcelis, String split_val, String Hqcode) {
-                    MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-                    appAdapter = new Res_sidescreenAdapter(MyResource_Activity.this, resourcelis, split_val, Hqcode, new SidelistViewInterface() {
-                        @Override
-                        public void OnCilckItem(String HQ_CODE, String DCR_CODE, String CUST_FLAG) {
-                            if(!CheckLocPermission()){
-                                RequestLocationPermission();
-                            }else {
-                                Intent click = new Intent(MyResource_Activity.this, MyResource_mapview.class);
-                                click.putExtra("HQ_CODE", HQ_CODE);
-                                click.putExtra("DCR_CODE", DCR_CODE);
-                                click.putExtra("CUST_FLAG", CUST_FLAG);
-                                startActivity(click);
+                resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1, new MyResourceInterface() {
+                    @Override
+                    public void onclickItem(ArrayList<Resourcemodel_class> resourcelis, String split_val, String Hqcode) {
+                        MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+                        appAdapter = new Res_sidescreenAdapter(MyResource_Activity.this, resourcelis, split_val, Hqcode, new SidelistViewInterface() {
+                            @Override
+                            public void OnCilckItem(String HQ_CODE, String DCR_CODE, String CUST_FLAG) {
+                                if (!CheckLocPermission()) {
+                                    RequestLocationPermission();
+                                } else {
+                                    Intent click = new Intent(MyResource_Activity.this, MyResource_mapview.class);
+                                    click.putExtra("HQ_CODE", HQ_CODE);
+                                    click.putExtra("DCR_CODE", DCR_CODE);
+                                    click.putExtra("CUST_FLAG", CUST_FLAG);
+                                    startActivity(click);
+                                }
                             }
-                        }
-                    });
-                    appRecyclerView.setAdapter(appAdapter);
-                    appRecyclerView.setLayoutManager(new LinearLayoutManager(MyResource_Activity.this));
-                    appAdapter.notifyDataSetChanged();
-                }
-            });
-            binding.resourceId.setItemAnimator(new DefaultItemAnimator());
-            binding.resourceId.setLayoutManager(new GridLayoutManager(MyResource_Activity.this, 4, GridLayoutManager.VERTICAL, false));
-            binding.resourceId.setAdapter(resourceAdapter);
-            resourceAdapter.notifyDataSetChanged();
-        } catch (Exception e) {
+                        });
+                        appRecyclerView.setAdapter(appAdapter);
+                        appRecyclerView.setLayoutManager(new LinearLayoutManager(MyResource_Activity.this));
+                        appAdapter.notifyDataSetChanged();
+                    }
+                });
+                binding.resourceId.setItemAnimator(new DefaultItemAnimator());
+                binding.resourceId.setLayoutManager(new GridLayoutManager(MyResource_Activity.this, 4, GridLayoutManager.VERTICAL, false));
+                binding.resourceId.setAdapter(resourceAdapter);
+                resourceAdapter.notifyDataSetChanged();
+
+        } catch (JSONException e){
             e.printStackTrace();
         }
     }
@@ -474,10 +551,10 @@ public class MyResource_Activity extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (SyHqList.contains(jsonObject.getString("id")) && (!list.contains(jsonObject.getString("id")))) {
                         list.add(jsonObject.getString("id"));
-                        listresource.add(new Resourcemodel_class(jsonObject.getString("id"), jsonObject.getString("name"), "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "","","",""));
+                        listresource.add(new Resourcemodel_class(jsonObject.getString("id"), jsonObject.getString("name"), "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
                     }
 
-                    appAdapter = new Res_sidescreenAdapter(this, listresource, "1", "",null);
+                    appAdapter = new Res_sidescreenAdapter(this, listresource, "1", "", null);
                     appAdapter.setOnItemClickListener(new Res_sidescreenAdapter.OnItemClickListener() {
                         public void onItemClick(Resourcemodel_class item) {
                             binding.hqHead.setText(item.getDcr_name());
@@ -529,10 +606,11 @@ public class MyResource_Activity extends AppCompatActivity {
 
             } else {
                 // Permission denied, show a message to the user
-                CommonUtilsMethods. RequestGPSPermission(MyResource_Activity.this,"Location");
+                CommonUtilsMethods.RequestGPSPermission(MyResource_Activity.this, "Location");
             }
         }
     }
+
     //    @Override
 //    public void onResume() {
 //        super.onResume();

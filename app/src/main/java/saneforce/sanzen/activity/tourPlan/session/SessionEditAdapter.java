@@ -953,7 +953,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         if (isMGR) {
                             if (!holder.fieldSelected) {
                                 if (holder.mgrListedDrArray.isEmpty()) {
-                                    holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR);
+//                                    holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR);
+                                    holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR_MAS);
                                     TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                                 } else {
                                     setSelectedCountMGR(holder, holder.mgrListedDrArray, false, holder.drField, holder.drCount);
@@ -961,7 +962,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 holder.fieldSelected = true;
                                 holder.mgrSessionItemAdapterArray = filterMasterList(holder, holder.mgrListedDrArray, true);
                                 populateSessionMultiHQItemAdapter(holder);
-                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR);
+//                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR);
+                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR_MAS);
                             } else {
                                 holder.fieldSelected = false;
                                 setSelectedCountMGR(holder, holder.mgrListedDrArray, true, holder.drField, holder.drCount);
@@ -971,7 +973,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         } else {
                             if (!holder.fieldSelected) {
                                 if (holder.listedDrArray.isEmpty()) {
-                                    holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
+//                                    holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
+                                    holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + holder.selectedHq).getMasterSyncDataJsonArray());
                                     TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                                 } else {
                                     setSelectedCount(holder, holder.listedDrArray, false, holder.drField, holder.drCount);
@@ -979,7 +982,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 holder.fieldSelected = true;
                                 holder.sessionItemAdapterArray = filterJsonArray(holder, holder.listedDrArray);
                                 populateSessionItemAdapter(holder, true, true);
-                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR);
+//                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR);
+                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR_MAS);
                             } else {
                                 holder.fieldSelected = false;
                                 setSelectedCount(holder, holder.listedDrArray, true, holder.drField, holder.drCount);
@@ -1010,7 +1014,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         if (isMGR) {
                             if (!holder.fieldSelected) {
                                 if (holder.mgrChemistArray.isEmpty()) {
-                                    holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST);
+//                                    holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST);
+                                    holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST_MAS);
                                     TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                                 } else {
                                     setSelectedCountMGR(holder, holder.mgrChemistArray, false, holder.chemistField, holder.chemistCount);
@@ -1018,7 +1023,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 holder.fieldSelected = true;
                                 holder.mgrSessionItemAdapterArray = filterMasterList(holder, holder.mgrChemistArray, true);
                                 populateSessionMultiHQItemAdapter(holder);
-                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST);
+//                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST);
+                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST_MAS);
                             } else {
                                 holder.fieldSelected = false;
                                 setSelectedCountMGR(holder, holder.mgrChemistArray, true, holder.chemistField, holder.chemistCount);
@@ -1028,7 +1034,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         } else {
                             if (!holder.fieldSelected) {
                                 if (holder.chemistArray.isEmpty()) {
-                                    holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + holder.selectedHq).getMasterSyncDataJsonArray());
+//                                    holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + holder.selectedHq).getMasterSyncDataJsonArray());
+                                    holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + holder.selectedHq).getMasterSyncDataJsonArray());
                                     TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                                 } else {
                                     setSelectedCount(holder, holder.chemistArray, false, holder.chemistField, holder.chemistCount);
@@ -1036,7 +1043,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 holder.fieldSelected = true;
                                 holder.sessionItemAdapterArray = filterJsonArray(holder, holder.chemistArray);
                                 populateSessionItemAdapter(holder, true, true);
-                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST);
+//                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST);
+                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST_MAS);
                             } else {
                                 holder.fieldSelected = false;
                                 setSelectedCount(holder, holder.chemistArray, true, holder.chemistField, holder.chemistCount);
@@ -1065,7 +1073,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     if (isMGR) {
                         if (!holder.fieldSelected) {
                             if (holder.mgrStockiestArray.isEmpty()) {
-                                holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST);
+//                                holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST);
+                                holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST_MAS);
                                 TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                             } else {
                                 setSelectedCountMGR(holder, holder.mgrStockiestArray, false, holder.stockiestField, holder.stockiestCount);
@@ -1073,7 +1082,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             holder.fieldSelected = true;
                             holder.mgrSessionItemAdapterArray = filterMasterList(holder, holder.mgrStockiestArray, false);
                             populateSessionMultiHQItemAdapter(holder);
-                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST);
+//                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST);
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST_MAS);
                         } else {
                             holder.fieldSelected = false;
                             setSelectedCountMGR(holder, holder.mgrStockiestArray, true, holder.stockiestField, holder.stockiestCount);
@@ -1083,7 +1093,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     } else {
                         if (!holder.fieldSelected) {
                             if (holder.stockiestArray.isEmpty()) {
-                                holder.stockiestArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + holder.selectedHq).getMasterSyncDataJsonArray());
+//                                holder.stockiestArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + holder.selectedHq).getMasterSyncDataJsonArray());
+                                holder.stockiestArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + holder.selectedHq).getMasterSyncDataJsonArray());
                                 TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                             } else {
                                 setSelectedCount(holder, holder.stockiestArray, false, holder.stockiestField, holder.stockiestCount);
@@ -1091,7 +1102,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = holder.stockiestArray;
                             populateSessionItemAdapter(holder, true, true);
-                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST);
+//                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST);
+                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST_MAS);
                         } else {
                             holder.fieldSelected = false;
                             setSelectedCount(holder, holder.stockiestArray, true, holder.stockiestField, holder.stockiestCount);
@@ -1118,8 +1130,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
                 } else {
                     if (!holder.fieldSelected) {
-                        if (holder.unListedDrArray.size() == 0) {
-                            holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
+                        if (holder.unListedDrArray.isEmpty()) {
+//                            holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
+                            holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + holder.selectedHq).getMasterSyncDataJsonArray());
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                         } else {
                             setSelectedCount(holder, holder.unListedDrArray, false, holder.unListedDrField, holder.unListedDrCount);
@@ -1127,7 +1140,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         holder.fieldSelected = true;
                         holder.sessionItemAdapterArray = filterJsonArray(holder, holder.unListedDrArray);
                         populateSessionItemAdapter(holder, true, true);
-                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.UNLISTED_DOCTOR);
+//                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.UNLISTED_DOCTOR);
+                        onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.UNLISTED_DOCTOR_MAS);
                     } else {
                         holder.fieldSelected = false;
                         setSelectedCount(holder, holder.unListedDrArray, true, holder.unListedDrField, holder.unListedDrCount);
@@ -1430,19 +1444,35 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     changeUIState(holder, holder.jcLayout, holder.jcArrow, false);
                     break;
                 }
-                case Constants.DOCTOR: {
+//                case Constants.DOCTOR:{
+//                    changeUIState(holder, holder.drLayout, holder.drArrow, false);
+//                    break;
+//                }
+                case Constants.DOCTOR_MAS: {
                     changeUIState(holder, holder.drLayout, holder.drArrow, false);
                     break;
                 }
-                case Constants.CHEMIST: {
+                /*case Constants.CHEMIST:{
+                    changeUIState(holder, holder.chemistLayout, holder.chemistArrow, false);
+                    break;
+                }*/
+                case Constants.CHEMIST_MAS: {
                     changeUIState(holder, holder.chemistLayout, holder.chemistArrow, false);
                     break;
                 }
-                case Constants.STOCKIEST: {
+             /*   case Constants.STOCKIEST:{
+                    changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, false);
+                    break;
+                }*/
+                case Constants.STOCKIEST_MAS: {
                     changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, false);
                     break;
                 }
-                case Constants.UNLISTED_DOCTOR: {
+            /*    case Constants.UNLISTED_DOCTOR:{
+                    changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, false);
+                    break;
+                }*/
+                case Constants.UNLISTED_DOCTOR_MAS: {
                     changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, false);
                     break;
                 }
@@ -1470,19 +1500,28 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.hqModelArray = new ArrayList<>();
         holder.clusterArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + hqCode).getMasterSyncDataJsonArray());
         holder.jointCallArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + hqCode).getMasterSyncDataJsonArray());
-        holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + hqCode).getMasterSyncDataJsonArray());
-        holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + hqCode).getMasterSyncDataJsonArray());
-        holder.stockiestArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + hqCode).getMasterSyncDataJsonArray());
-        holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + hqCode).getMasterSyncDataJsonArray());
+//        holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + hqCode).getMasterSyncDataJsonArray());
+//        holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + hqCode).getMasterSyncDataJsonArray());
+//        holder.stockiestArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + hqCode).getMasterSyncDataJsonArray());
+//        holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + hqCode).getMasterSyncDataJsonArray());
+//        holder.cipArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CIP + hqCode).getMasterSyncDataJsonArray());
+//        holder.hospArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + hqCode).getMasterSyncDataJsonArray());
+        holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + hqCode).getMasterSyncDataJsonArray());
+        holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + hqCode).getMasterSyncDataJsonArray());
+        holder.stockiestArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + hqCode).getMasterSyncDataJsonArray());
+        holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + hqCode).getMasterSyncDataJsonArray());
         holder.cipArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CIP + hqCode).getMasterSyncDataJsonArray());
         holder.hospArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + hqCode).getMasterSyncDataJsonArray());
 
         if(SharedPref.getSfType(context).equalsIgnoreCase("2")) {
             holder.mgrClusterArray = prepareModelList(holder.selectedHq, Constants.CLUSTER);
             holder.mgrJointCallArray = prepareModelList(holder.selectedHq, Constants.JOINT_WORK);
-            holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR);
-            holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST);
-            holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST);
+//            holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR);
+//            holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST);
+//            holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST);
+            holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR_MAS);
+            holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST_MAS);
+            holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST_MAS);
         }
     }
 
@@ -1569,13 +1608,18 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.progress_hq.setVisibility(View.VISIBLE);
         synccount = 0;
         masterSyncArray.clear();
-        MasterSyncItemModel doctorModel = new MasterSyncItemModel(Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode);
-        MasterSyncItemModel cheModel = new MasterSyncItemModel(Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode);
-        MasterSyncItemModel stockModel = new MasterSyncItemModel(Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode);
-        MasterSyncItemModel unListModel = new MasterSyncItemModel(Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode);
+//        MasterSyncItemModel doctorModel = new MasterSyncItemModel(Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode);
+        MasterSyncItemModel doctorModel = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS+hqCode);
+//        MasterSyncItemModel cheModel = new MasterSyncItemModel(Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode);
+        MasterSyncItemModel cheModel = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode);
+//        MasterSyncItemModel stockModel = new MasterSyncItemModel(Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode);
+        MasterSyncItemModel stockModel = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getstockist", Constants.STOCKIEST_MAS + hqCode);
+//        MasterSyncItemModel unListModel = new MasterSyncItemModel(Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode);
+        MasterSyncItemModel unListModel = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode);
 //        MasterSyncItemModel hospModel = new MasterSyncItemModel(Constants.DOCTOR, "gethospital", Constants.HOSPITAL + hqCode);
 //        MasterSyncItemModel ciModel = new MasterSyncItemModel(Constants.DOCTOR, "getcip", Constants.CIP + hqCode);
-        MasterSyncItemModel cluster = new MasterSyncItemModel(Constants.DOCTOR, "getterritory", Constants.CLUSTER + hqCode);
+//        MasterSyncItemModel cluster = new MasterSyncItemModel(Constants.DOCTOR, "getterritory", Constants.CLUSTER + hqCode);
+        MasterSyncItemModel cluster = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getterritory", Constants.CLUSTER + hqCode);
         MasterSyncItemModel jWorkModel = new MasterSyncItemModel(Constants.SUBORDINATE, "getjointwork", Constants.JOINT_WORK + hqCode);
 
         masterSyncArray.add(doctorModel);
@@ -1586,7 +1630,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //        masterSyncArray.add(ciModel);
         masterSyncArray.add(cluster);
         masterSyncArray.add(jWorkModel);
-        for (int i = 0; i < masterSyncArray.size(); i++) {
+        for (int i = 0; i<masterSyncArray.size(); i++) {
             sync(masterSyncArray.get(i), hqCode, holder);
         }
     }
@@ -1610,7 +1654,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //                Log.e("test","master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;
                 Map<String, String> mapString = new HashMap<>();
-                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.DOCTOR)) {
+//                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.DOCTOR)) {
+                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.DOCTOR_MAS)) {
                     mapString.put("axn", "table/dcrmasterdata");
                     call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
                 } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.SUBORDINATE)) {
@@ -2213,17 +2258,31 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     holder.selectedHQCode.add(holder.sessionItemAdapterArray.get(i).getCode());
                 }
             }
-            clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR, holder);
-            clusterChanged(holder.selectedClusterCode, holder.chemistArray, holder.chemistField, Constants.CHEMIST, holder);
-            clusterChanged(holder.selectedClusterCode, holder.stockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
-            clusterChanged(holder.selectedClusterCode, holder.unListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
+//            clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR, holder);
+//            clusterChanged(holder.selectedClusterCode, holder.chemistArray, holder.chemistField, Constants.CHEMIST, holder);
+//            clusterChanged(holder.selectedClusterCode, holder.stockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
+//            clusterChanged(holder.selectedClusterCode, holder.unListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
+//            clusterChanged(holder.selectedClusterCode, holder.cipArray, holder.cipField, Constants.CIP, holder);
+//            clusterChanged(holder.selectedClusterCode, holder.hospArray, holder.hospField, Constants.HOSPITAL, holder);
+//
+//            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrListedDrArray, holder.drField, Constants.DOCTOR, holder);
+//            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrChemistArray, holder.chemistField, Constants.CHEMIST, holder);
+//            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrStockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
+//            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrUnListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
+//            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrCipArray, holder.cipField, Constants.CIP, holder);
+//            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrHospArray, holder.hospField, Constants.HOSPITAL, holder);
+
+            clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR_MAS, holder);
+            clusterChanged(holder.selectedClusterCode, holder.chemistArray, holder.chemistField, Constants.CHEMIST_MAS, holder);
+            clusterChanged(holder.selectedClusterCode, holder.stockiestArray, holder.stockiestField, Constants.STOCKIEST_MAS, holder);
+            clusterChanged(holder.selectedClusterCode, holder.unListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR_MAS, holder);
             clusterChanged(holder.selectedClusterCode, holder.cipArray, holder.cipField, Constants.CIP, holder);
             clusterChanged(holder.selectedClusterCode, holder.hospArray, holder.hospField, Constants.HOSPITAL, holder);
 
-            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrListedDrArray, holder.drField, Constants.DOCTOR, holder);
-            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrChemistArray, holder.chemistField, Constants.CHEMIST, holder);
-            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrStockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
-            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrUnListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
+            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrListedDrArray, holder.drField, Constants.DOCTOR_MAS, holder);
+            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrChemistArray, holder.chemistField, Constants.CHEMIST_MAS, holder);
+            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrStockiestArray, holder.stockiestField, Constants.STOCKIEST_MAS, holder);
+            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrUnListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR_MAS, holder);
             mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrCipArray, holder.cipField, Constants.CIP, holder);
             mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrHospArray, holder.hospField, Constants.HOSPITAL, holder);
 
@@ -2248,10 +2307,17 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     }
                 }
 
-                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrListedDrArray, holder.drField, Constants.DOCTOR, holder);
-                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrChemistArray, holder.chemistField, Constants.CHEMIST, holder);
-                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrStockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
-                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrUnListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
+//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrListedDrArray, holder.drField, Constants.DOCTOR, holder);
+//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrChemistArray, holder.chemistField, Constants.CHEMIST, holder);
+//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrStockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
+//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrUnListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
+//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrCipArray, holder.cipField, Constants.CIP, holder);
+//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrHospArray, holder.hospField, Constants.HOSPITAL, holder);
+
+                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrListedDrArray, holder.drField, Constants.DOCTOR_MAS, holder);
+                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrChemistArray, holder.chemistField, Constants.CHEMIST_MAS, holder);
+                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrStockiestArray, holder.stockiestField, Constants.STOCKIEST_MAS, holder);
+                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrUnListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR_MAS, holder);
                 mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrCipArray, holder.cipField, Constants.CIP, holder);
                 mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrHospArray, holder.hospField, Constants.HOSPITAL, holder);
 
@@ -2266,10 +2332,17 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     }
                 }
 
-                clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR, holder);
-                clusterChanged(holder.selectedClusterCode, holder.chemistArray, holder.chemistField, Constants.CHEMIST, holder);
-                clusterChanged(holder.selectedClusterCode, holder.stockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
-                clusterChanged(holder.selectedClusterCode, holder.unListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
+//                clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR, holder);
+//                clusterChanged(holder.selectedClusterCode, holder.chemistArray, holder.chemistField, Constants.CHEMIST, holder);
+//                clusterChanged(holder.selectedClusterCode, holder.stockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
+//                clusterChanged(holder.selectedClusterCode, holder.unListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
+//                clusterChanged(holder.selectedClusterCode, holder.cipArray, holder.cipField, Constants.CIP, holder);
+//                clusterChanged(holder.selectedClusterCode, holder.hospArray, holder.hospField, Constants.HOSPITAL, holder);
+
+                clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR_MAS, holder);
+                clusterChanged(holder.selectedClusterCode, holder.chemistArray, holder.chemistField, Constants.CHEMIST_MAS, holder);
+                clusterChanged(holder.selectedClusterCode, holder.stockiestArray, holder.stockiestField, Constants.STOCKIEST_MAS, holder);
+                clusterChanged(holder.selectedClusterCode, holder.unListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR_MAS, holder);
                 clusterChanged(holder.selectedClusterCode, holder.cipArray, holder.cipField, Constants.CIP, holder);
                 clusterChanged(holder.selectedClusterCode, holder.hospArray, holder.hospField, Constants.HOSPITAL, holder);
 
@@ -2362,13 +2435,29 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 subClassList.add(subClass);
             }
         }
-        if (master.equalsIgnoreCase(Constants.DOCTOR)) {
+//        if (master.equalsIgnoreCase(Constants.DOCTOR)) {
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassList);
+//        } else if (master.equalsIgnoreCase(Constants.CHEMIST)) {
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassList);
+//        } else if (master.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)) {
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnListedDr().clear();
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnListedDr(subClassList);
+//        } else if (master.equalsIgnoreCase(Constants.CIP)) {
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassList);
+//        } else if (master.equalsIgnoreCase(Constants.HOSPITAL)) {
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassList);
+//        }
+        if (master.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassList);
-        } else if (master.equalsIgnoreCase(Constants.CHEMIST)) {
+        } else if (master.equalsIgnoreCase(Constants.CHEMIST_MAS)) {
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassList);
-        } else if (master.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)) {
+        } else if (master.equalsIgnoreCase(Constants.UNLISTED_DOCTOR_MAS)) {
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnListedDr().clear();
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnListedDr(subClassList);
         } else if (master.equalsIgnoreCase(Constants.CIP)) {
@@ -2446,13 +2535,29 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //                subClassList.add(subClass);
 //            }
 //        }
-        if (master.equalsIgnoreCase(Constants.DOCTOR)) {
+//        if (master.equalsIgnoreCase(Constants.DOCTOR)) {
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDrs().clear();
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDrs(resultDataHeaderList);
+//        } else if (master.equalsIgnoreCase(Constants.CHEMIST)) {
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemists().clear();
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemists(resultDataHeaderList);
+//        } else if (master.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)) {
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnListedDrs().clear();
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnListedDrs(resultDataHeaderList);
+//        } else if (master.equalsIgnoreCase(Constants.CIP)) {
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCips().clear();
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCips(resultDataHeaderList);
+//        } else if (master.equalsIgnoreCase(Constants.HOSPITAL)) {
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospitals().clear();
+//            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospitals(resultDataHeaderList);
+//        }
+        if (master.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDrs().clear();
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDrs(resultDataHeaderList);
-        } else if (master.equalsIgnoreCase(Constants.CHEMIST)) {
+        } else if (master.equalsIgnoreCase(Constants.CHEMIST_MAS)) {
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemists().clear();
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemists(resultDataHeaderList);
-        } else if (master.equalsIgnoreCase(Constants.UNLISTED_DOCTOR)) {
+        } else if (master.equalsIgnoreCase(Constants.UNLISTED_DOCTOR_MAS)) {
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnListedDrs().clear();
             inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnListedDrs(resultDataHeaderList);
         } else if (master.equalsIgnoreCase(Constants.CIP)) {

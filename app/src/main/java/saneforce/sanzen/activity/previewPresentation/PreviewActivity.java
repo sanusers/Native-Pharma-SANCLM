@@ -338,7 +338,7 @@ public class PreviewActivity extends AppCompatActivity {
 
         String selectedCap = "";
         switch (customerType) {
-            case Constants.DOCTOR:
+    /*        case Constants.DOCTOR:
                 selectedCap = SharedPref.getDrCap(this);
                 break;
             case Constants.CHEMIST:
@@ -348,6 +348,18 @@ public class PreviewActivity extends AppCompatActivity {
                 selectedCap = SharedPref.getStkCap(this);
                 break;
             case Constants.UNLISTED_DOCTOR:
+                selectedCap = SharedPref.getUNLcap(this);
+                break;*/
+            case Constants.DOCTOR_MAS:
+                selectedCap = SharedPref.getDrCap(this);
+                break;
+            case Constants.CHEMIST_MAS:
+                selectedCap = SharedPref.getChmCap(this);
+                break;
+            case Constants.STOCKIEST_MAS:
+                selectedCap = SharedPref.getStkCap(this);
+                break;
+            case Constants.UNLISTED_DOCTOR_MAS:
                 selectedCap = SharedPref.getUNLcap(this);
                 break;
             case Constants.CIP:

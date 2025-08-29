@@ -96,16 +96,11 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
             }
         }
 */
-        if (Integer.parseInt(custListArrayList.get(position).getTag())>=1){
-            holder.tv_view.setVisibility(View.VISIBLE);
-        }else{
-            holder.tv_view.setVisibility(View.GONE);
-        }
-        /*if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
-            holder.tv_view.setVisibility(View.GONE);
-        } else {
-            holder.tv_view.setVisibility(View.VISIBLE);
-        }*/
+            if (Integer.parseInt(custListArrayList.get(position).getTag())>=1){
+                holder.tv_view.setVisibility(View.VISIBLE);
+            }else{
+                holder.tv_view.setVisibility(View.GONE);
+            }
 
         holder.tv_name.setOnClickListener(view -> {
             commonUtilsMethods.displayPopupWindow(context, view, custListArrayList.get(position).getName());

@@ -719,7 +719,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
         if(SharedPref.getSfType(context).equalsIgnoreCase("1")) {
             try {
-                JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+//                JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+                JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
 
                 String Doc_code = "", Chm_code = "", Stk_code = "", Cip_code = "", Hosp_code = "", Unlist_code = "";
                 String doctor = String.valueOf(jsonDoc);
@@ -739,7 +740,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     }
                 }
 
-                JSONArray jsonChm = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+//                JSONArray jsonChm = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+                JSONArray jsonChm = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
                 String chemist = String.valueOf(jsonChm);
                 if(!chemist.equals("") || !chemist.equals("null")) {
                     count_list.clear();
@@ -756,7 +758,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                         Che_count = "0";
                     }
                 }
-                JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+//                JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+                JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
 
                 String stockist = String.valueOf(jsonstock);
                 if(!stockist.equals("") || !stockist.equals("null")) {
@@ -774,7 +777,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                         Strck_count = "0";
                     }
                 }
-                JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+//                JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
+                JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR_MAS + SharedPref.getSfCode(context)).getMasterSyncDataJsonArray();
                 String unlisted = String.valueOf(jsonunlisted);
                 if(!unlisted.equals("") || !unlisted.equals("null")) {
                     count_list.clear();
