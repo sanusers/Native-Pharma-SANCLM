@@ -244,8 +244,8 @@ public class CreatePresentationActivity extends AppCompatActivity {
             if (!savedPresentation.isEmpty()) { //Changing image selection state if there are data in savedPresentation.same time load data of selected image to the SelectedSlideAdapter
                 for (BrandModelClass.Product savedProduct : savedPresentation) {
                     for (BrandModelClass brandModelClass : brandProductArrayList) {
-                        if (savedProduct.getBrandCode().equals(brandModelClass.brandCode)) {
-                            for (BrandModelClass.Product product : brandModelClass.productArrayList) {
+                        if (savedProduct.getBrandCode().equals(brandModelClass.getBrandCode())) {
+                            for (BrandModelClass.Product product : brandModelClass.getProductArrayList()) {
                                 if (savedProduct.getSlideId().equals(product.getSlideId())) {
                                     product.setImageSelected(true);
                                     selectedSlideArrayList.add(product); //selectedSlideArrayList is the array we pass to SelectedSlideAdapter

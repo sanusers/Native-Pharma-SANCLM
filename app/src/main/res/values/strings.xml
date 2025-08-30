@@ -599,8 +599,8 @@
     <string name="no_of_attempts_left">No of Attempts Left :</string>
     <string name="try_again">Try Again</string>
     <string name="close">Close</string>
-    <string name="customized_presentation">Customized Presentation</string>
-    <string name="custom_presentation">Custom Presentation</string>
+    <string name="customized_presentation">Customized</string>
+    <string name="custom_presentation">Custom</string>
     <string name="common">Common</string>
     <string name="are_you_sure_you_want_to_exit">Are you sure, you want to exit ?</string>
     <string name="customer_type">Customer Type</string>
