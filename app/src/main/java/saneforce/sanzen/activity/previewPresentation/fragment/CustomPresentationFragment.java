@@ -55,9 +55,9 @@ public class CustomPresentationFragment extends Fragment {
     private BrandNameAdapter brandNameAdapter;
     private SlideImageAdapter slideImageAdapter;
     private SelectedSlidesAdapter selectedSlidesAdapter;
-    private ArrayList<BrandModelClass> brandProductArrayList = new ArrayList<>();
-    private ArrayList<BrandModelClass.Product> selectedSlideArrayList = new ArrayList<>();
-    private ArrayList<BrandModelClass.Product> savedPresentation = new ArrayList<>();
+    private final ArrayList<BrandModelClass> brandProductArrayList = new ArrayList<>();
+    private final ArrayList<BrandModelClass.Product> selectedSlideArrayList = new ArrayList<>();
+    private final ArrayList<BrandModelClass.Product> savedPresentation = new ArrayList<>();
     private ImageSelectionInterface imageSelectionInterface;
     private ItemTouchHelper itemTouchHelper;
 
