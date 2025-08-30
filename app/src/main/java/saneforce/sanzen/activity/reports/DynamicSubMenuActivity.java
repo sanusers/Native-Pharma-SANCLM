@@ -3,6 +3,7 @@ package saneforce.sanzen.activity.reports;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.reports.dayReport.adapter.DynamicAdapter;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DynamicSubMenuAdapter;
 import saneforce.sanzen.activity.reports.dayReport.model.SubMenuModel;
 
@@ -20,7 +22,7 @@ public class DynamicSubMenuActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     DynamicSubMenuAdapter dynamicSubMenuAdapter;
     TextView toolbar_title;
-    ImageView backArrow;
+    LinearLayout backArrow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class DynamicSubMenuActivity extends AppCompatActivity {
         String menu_sub_details = getIntent().getStringExtra("menu_sub_details");
 
         toolbar_title.setText(title);
+        dynamicSubMenuAdapter = new DynamicSubMenuAdapter( subMenuModelArrayList, this);
 
         prepare_menu_sub_details(menu_sub_details);
     }

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.reports.ReportWebActivity;
 import saneforce.sanzen.activity.reports.dayReport.model.SubMenuModel;
 
 public class DynamicSubMenuAdapter  extends RecyclerView.Adapter<DynamicSubMenuAdapter.ViewHolder>{
@@ -24,6 +25,10 @@ public class DynamicSubMenuAdapter  extends RecyclerView.Adapter<DynamicSubMenuA
     public ArrayList<SubMenuModel> subMenuModelArrayList = new ArrayList<>();
     Context context;
 
+    public DynamicSubMenuAdapter(ArrayList<SubMenuModel> subMenuModelArrayList, Context context) {
+        this.subMenuModelArrayList = subMenuModelArrayList;
+        this.context = context;
+    }
 
     @NonNull
     @Override
@@ -39,10 +44,10 @@ public class DynamicSubMenuAdapter  extends RecyclerView.Adapter<DynamicSubMenuA
         holder.titleTextView.setText(menuSubModel.getMenuName());
         holder.itemView.setOnClickListener(v -> {
             if(isNetworkConnected()){
-                /*Intent intent = new Intent(holder.itemView.getContext(), DynamicWebActivity.class);
+                Intent intent = new Intent(holder.itemView.getContext(), ReportWebActivity.class);
                 intent.putExtra("url", menuSubModel.getMenuLink());
                 intent.putExtra("title", menuSubModel.getMenuName());
-                holder.itemView.getContext().startActivity(intent);*/
+                holder.itemView.getContext().startActivity(intent);
             }else {
 //                Toast.makeText(holder.itemView.getContext(), holder.itemView.getContext().getResources().getString(R.string.int_turn_on), Toast.LENGTH_SHORT).show();
             }

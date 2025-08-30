@@ -84,7 +84,7 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
                 if(name.equalsIgnoreCase(SharedPref.getDynamicOptionCaps(context))){
                     ReportsActivity activity = (ReportsActivity) context;
                     activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
-                    activity.getDynamicData(name,TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4));
+                    activity.getDynamicData();
                 }
             }
         });

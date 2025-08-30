@@ -159,6 +159,11 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
+            android:name=".activity.reports.DynamicSubMenuActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
             android:name=".activity.reports.ReportsActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
