@@ -25,20 +25,21 @@
             tools:layout_editor_absoluteY="0dp">
 
             <LinearLayout
-                android:id="@+id/backArrow"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:padding="@dimen/_6sdp">
 
                 <ImageView
+                    android:id="@+id/backArrow"
                     android:layout_width="@dimen/_10sdp"
                     android:layout_height="@dimen/_10sdp"
-                        android:src="@drawable/arrow_back_white"
+                    android:src="@drawable/arrow_back_white"
                     tools:ignore="ContentDescription" />
 
             </LinearLayout>
 
             <TextView
+                android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_16sdp"
