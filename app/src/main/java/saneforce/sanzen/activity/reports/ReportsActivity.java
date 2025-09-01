@@ -92,10 +92,10 @@ public class ReportsActivity extends AppCompatActivity {
         arrayList.add("Day Check In Report");
         arrayList.add("Customer Check In Report");
         arrayList.add("Visit Monitor");*/
-        if (SharedPref.getDashboard(this).equals("0")){
+        if (SharedPref.getDashboard(this).equals("0")) {
             arrayList.add("Dash Board");
         }
-        if(SharedPref.getDynamicOptionNeed(this).equals("0")){
+        if (SharedPref.getDynamicOptionNeed(this).equals("0")) {
             arrayList.add(SharedPref.getDynamicOptionCaps(context));
         }
         reportsAdapter = new ReportsAdapter(arrayList, ReportsActivity.this);
@@ -111,7 +111,7 @@ public class ReportsActivity extends AppCompatActivity {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, SharedPref.getCallApiUrl(ReportsActivity.this));
 
-                        JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(this);
+                        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
                         jsonObject.put("sfcode", SharedPref.getSfCode(this));
                         jsonObject.put("divisionCode", SharedPref.getDivisionCode(this));
                         jsonObject.put("Rsf", SharedPref.getHqCode(this));
@@ -167,105 +167,16 @@ public class ReportsActivity extends AppCompatActivity {
         }
     }
 
-    public void getDynamicData(){
-        Intent intent = new Intent(context, DynamicMenuActivity.class);
-        startActivity(intent);
+    public void getDynamicData() {
+        if (UtilityClass.isNetworkAvailable(this)) {
+            Intent intent = new Intent(context, DynamicMenuActivity.class);
+            startActivity(intent);
+        }else{
+            progressDialog.dismiss();
+            commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.no_network));
+        }
     }
 
-
-    /* public void getDynamicData(String report, String date){
-         if (UtilityClass.isNetworkAvailable(this)) {
-             NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
-                 if (status) {
-                     try {
-                         apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, SharedPref.getCallApiUrl(ReportsActivity.this));
-
-                         JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(this);
-                         jsonObject.put("sfcode", SharedPref.getSfCode(this));
-                         jsonObject.put("division_code", SharedPref.getDivisionCode(this));
-                         jsonObject.put("Rsf", SharedPref.getHqCode(this));
-                         if (report.equalsIgnoreCase(SharedPref.getDynamicOptionCaps(context))) {
-                             jsonObject.put("tableName", "getdynamicmenu");
-
-                         }
-
-                         Log.d("Report", "getData: " + jsonObject);
-
-                         Map<String, String> mapString = new HashMap<>();
-                         mapString.put("axn", "get/reports");
-                         Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-                         call.enqueue(new Callback<JsonElement>() {
-                             @Override
-                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                                 progressDialog.dismiss();
-                                 try {
-                                     if (response.isSuccessful() && response.body() != null) {
- //                                        JsonArray jsonArray = response.body().getAsJsonArray();
- //                                        if (jsonArray.size() > 0) {
- //                                            for (int i = 0; i < jsonArray.size(); i++) {
- //                                                JsonObject menuObject = jsonArray.get(i).getAsJsonObject();
- //                                                String menu_name = menuObject.get("Menu_Name").getAsString();
- //                                                String menu_icon = menuObject.get("Menu_Icon").getAsString();
- //                                                JsonArray menu_sub_details = menuObject.get("Menu_Options").getAsJsonArray();
- //
- //                                                menu_icon = SharedPref.getTagImageUrl(ReportsActivity.this) + "/" + menu_icon;
- //
- //                                                MenuModel menuModel = new MenuModel(menu_name, menu_icon, menu_sub_details);
- //                                                menuModels.add(menuModel);
- //                                            }
- //                                            if (adapter == null) {
- //                                                // 2. Initialize the adapter
- //                                                adapter = new DynamicAdapter(menuModels, ReportsActivity.this);
- //
- //                                                // 3. Set up the RecyclerView to use this new adapter
- //                                                binding.recView.setLayoutManager(new GridLayoutManager(ReportsActivity.this, 4));
- //                                                binding.recView.setAdapter(adapter);
- //                                            } else {
- //                                                // 4. If the adapter already exists, just notify it of the data change
- //                                                adapter.notifyDataSetChanged();
- //                                            }
- ////                                            adapter.notifyDataSetChanged();
- //                                        }else{
- ////                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_record_found), Toast.LENGTH_LONG).show();
- //                                        }
-
-
-                                         JsonElement jsonElement = response.body();
-                                         JSONArray jsonArray1 = new JSONArray();
-                                         if (jsonElement.isJsonArray()) {
-                                             jsonArray1 = new JSONArray(jsonElement.getAsJsonArray().toString());
-                                             navigateDyn(jsonArray1, report, date);
-                                         }
-                                     }
-                                 } catch (JSONException e) {
-                                     e.printStackTrace();
-                                 }
-
-                             }
-
-                             @Override
-                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                 progressDialog.dismiss();
-
-                             }
-                         });
-                     } catch (JSONException e) {
-                         e.printStackTrace();
-                     }
-                 } else {
-                     progressDialog.dismiss();
-                     commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.poor_connection));
-                 }
-
-             });
-             networkStatusTask.execute();
-         } else {
-             progressDialog.dismiss();
-             commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.no_network));
-         }
-
-     }
- */
     public void navigate(JSONArray jsonArray, String report, String date) {
         Intent intent = new Intent(ReportsActivity.this, ReportFragContainerActivity.class);
         Bundle bundle = new Bundle();

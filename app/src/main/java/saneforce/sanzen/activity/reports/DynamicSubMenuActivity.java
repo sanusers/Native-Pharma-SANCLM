@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -21,7 +22,10 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DynamicAdapter;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DynamicSubMenuAdapter;
 import saneforce.sanzen.activity.reports.dayReport.model.SubMenuModel;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.NetworkStatusTask;
 import saneforce.sanzen.utility.TimeUtils;
 
 public class DynamicSubMenuActivity extends AppCompatActivity {
@@ -30,12 +34,15 @@ public class DynamicSubMenuActivity extends AppCompatActivity {
     DynamicSubMenuAdapter dynamicSubMenuAdapter;
     TextView toolbar_title;
     LinearLayout backArrow;
+    String rSF, SF_Code,divCode;
+    CommonUtilsMethods commonUtilsMethods;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dynamic_submenu);
-
+        commonUtilsMethods = new CommonUtilsMethods(this);
         toolbar_title = findViewById(R.id.toolbar_title);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -51,43 +58,45 @@ public class DynamicSubMenuActivity extends AppCompatActivity {
 
         toolbar_title.setText(title);
         dynamicSubMenuAdapter = new DynamicSubMenuAdapter( subMenuModelArrayList, this);
-
-        prepare_menu_sub_details(menu_sub_details);
+        SF_Code = SharedPref.getSfCode(this);
+        divCode = SharedPref.getDivisionCode(this);
+        rSF     = SharedPref.getSfCode(this);
+        if(UtilityClass.isNetworkAvailable(this)) {
+            prepare_menu_sub_details(menu_sub_details);
+        }else{
+            commonUtilsMethods.showToastMessage(DynamicSubMenuActivity.this, getString(R.string.no_network));
+        }
     }
 
     @SuppressLint({"Range", "NotifyDataSetChanged"})
     private void prepare_menu_sub_details(String menu_sub_details) {
-        try{
-
-//            String rSF;
-//            if(!CustomerMeList.get(0).getDesigCode().equalsIgnoreCase("MR")){
-//                rSF = SharedPref.getSfCode(this);
-//            }else{
-//                rSF = "-1";
-//            }
-
-
+        try {
             JSONArray jsonArray = new JSONArray(menu_sub_details);
             if (jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject menuSubObject = jsonArray.getJSONObject(i);
-                    String formatted_URL = SharedPref.getBaseWebUrl(DynamicSubMenuActivity.this) + "/" + menuSubObject.optString("OptionMenu_Page")+ "?";
-//                    formatted_URL = formatted_URL + "sfcode=" + CustomerMeList.get(0).getSFCode() + "&" + "rSF=" + rSF + "&" + "div_code=" +
-//                            CustomerMeList.get(0).getDivisionCode().replace(",", "") + "&" + "cMnth=" +
-//                            TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_9) + "&" + "cYr=" + TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_12)+ "&doc_id=-1&IsDocView=0&cluster_code=-1";
+                    String date = CommonUtilsMethods.getCurrentInstance("yyyy-mm-dd");
+                    String mnth;
+                    if (date.substring(5, 6).equalsIgnoreCase("0"))
+                        mnth = date.substring(6, 7);
+                    else
+                        mnth = date.substring(5, 7);
+                    String formatted_URL =SharedPref.getTagImageUrl(this) + "/" + menuSubObject.optString("OptionMenu_Page")+ "?";
+                    formatted_URL = formatted_URL + "sfcode=" + SF_Code + "&" + "rSF=" + rSF + "&" + "div_code=" +
+                            divCode.replace(",", "") + "&" + "cMnth=" +
+                            mnth + "&" + "cYr=" + date.substring(0, 4)+ "&doc_id=-1&IsDocView=0&cluster_code=-1";
 
                     SubMenuModel menuSubModel = new SubMenuModel(menuSubObject.optString("OptionMenu_Id"), menuSubObject.optString("OptionMenu_Name"), formatted_URL);
                     subMenuModelArrayList.add(menuSubModel);
                 }
-                dynamicSubMenuAdapter = new DynamicSubMenuAdapter(subMenuModelArrayList,DynamicSubMenuActivity.this);
+                dynamicSubMenuAdapter = new DynamicSubMenuAdapter(subMenuModelArrayList,this);
                 recyclerView.setAdapter(dynamicSubMenuAdapter);
                 dynamicSubMenuAdapter.notifyDataSetChanged();
             } else {
-//                Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_record_found), Toast.LENGTH_LONG).show();
+                commonUtilsMethods.showToastMessage(DynamicSubMenuActivity.this,"No Record Found");
             }
-        } catch (Exception e) {
+        } catch (JSONException e) {
             e.printStackTrace();
-
         }
 
     }

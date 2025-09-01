@@ -59,7 +59,6 @@ public class DynamicWebActivity extends AppCompatActivity {
     TextView titleTextView;
     ImageView iv_back;
     String downloadURL;
-    int StorageFlag = 0;
     private ValueCallback<Uri[]> mUploadMessage;
     private ActivityResultLauncher<Intent> filePickerLauncher;
     ProgressDialog progressDialog=null;

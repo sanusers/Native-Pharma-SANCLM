@@ -20,11 +20,13 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.DynamicWebActivity;
 import saneforce.sanzen.activity.reports.ReportWebActivity;
 import saneforce.sanzen.activity.reports.dayReport.model.SubMenuModel;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
 public class DynamicSubMenuAdapter  extends RecyclerView.Adapter<DynamicSubMenuAdapter.ViewHolder>{
 
     public ArrayList<SubMenuModel> subMenuModelArrayList = new ArrayList<>();
     Context context;
+    CommonUtilsMethods commonUtilsMethods;
 
     public DynamicSubMenuAdapter(ArrayList<SubMenuModel> subMenuModelArrayList, Context context) {
         this.subMenuModelArrayList = subMenuModelArrayList;
@@ -35,6 +37,7 @@ public class DynamicSubMenuAdapter  extends RecyclerView.Adapter<DynamicSubMenuA
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_dynamic_submenu_webview, parent, false);
+        commonUtilsMethods = new CommonUtilsMethods(context);
         return new ViewHolder(view);
     }
 
@@ -50,8 +53,7 @@ public class DynamicSubMenuAdapter  extends RecyclerView.Adapter<DynamicSubMenuA
                 intent.putExtra("title", menuSubModel.getMenuName());
                 holder.itemView.getContext().startActivity(intent);
             }else {
-//                Toast.makeText(holder.itemView.getContext(), holder.itemView.getContext().getResources().getString(R.string.int_turn_on), Toast.LENGTH_SHORT).show();
-            }
+                commonUtilsMethods.showToastMessage(context, String.valueOf((R.string.no_network)));            }
         });
     }
 

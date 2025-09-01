@@ -75,11 +75,13 @@ public class DynamicMenuActivity extends AppCompatActivity {
         dynamicAdapter = new DynamicAdapter( menuList, this);
         gridView.setAdapter(dynamicAdapter);
         binding.menuRecycler.setLayoutManager(new LinearLayoutManager(this));
+        commonUtilsMethods = new CommonUtilsMethods(this);
 
         if (isNetworkConnected()) {
             loadMenuFromApi();
         } else {
-//            Toast.makeText(MenuOptionActivity.this, getResources().getString(R.string.int_turn_on), Toast.LENGTH_LONG).show();
+            commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+
         }
     }
     private boolean isNetworkConnected() {
@@ -118,6 +120,7 @@ public class DynamicMenuActivity extends AppCompatActivity {
                                     if (response.isSuccessful() && response.body() != null) {
                                         JsonArray jsonArray = response.body().getAsJsonArray();
                                         if (jsonArray.size() > 0) {
+                                            binding.noReportFoundTxt.setVisibility(View.GONE);
                                             for (int i = 0; i < jsonArray.size(); i++) {
                                                 JsonObject menuObject = jsonArray.get(i).getAsJsonObject();
                                                 String menu_name = menuObject.get("Menu_Name").getAsString();
@@ -131,28 +134,29 @@ public class DynamicMenuActivity extends AppCompatActivity {
                                             }
                                             dynamicAdapter.notifyDataSetChanged();
                                         }else{
-//                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_record_found), Toast.LENGTH_LONG).show();
+                                            commonUtilsMethods.showToastMessage(DynamicMenuActivity.this,"No Record Found");
+
                                         }
 
 
-                                        JsonElement jsonElement = response.body();
+                                       /* JsonElement jsonElement = response.body();
                                         JSONArray jsonArray1 = new JSONArray();
                                         if (jsonElement.isJsonArray()) {
                                             jsonArray1 = new JSONArray(jsonElement.getAsJsonArray().toString());
 
-                                        }
+                                        }*/
                                     }
-                                } catch (JSONException e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-
                             }
 
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 progressDialog.dismiss();
-
+                                binding.noReportFoundTxt.setVisibility(View.VISIBLE);
+                                commonUtilsMethods.showToastMessage(DynamicMenuActivity.this, getString(R.string.poor_connection)+" "+getString(R.string.please_try_again));
                             }
                         });
                     } catch (JSONException e) {
@@ -160,14 +164,14 @@ public class DynamicMenuActivity extends AppCompatActivity {
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(DynamicMenuActivity.this, getString(R.string.poor_connection));
+//                    commonUtilsMethods.showToastMessage(DynamicMenuActivity.this, getString(R.string.poor_connection));
                 }
 
             });
             networkStatusTask.execute();
         } else {
             progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(DynamicMenuActivity.this, getString(R.string.no_network));
+//            commonUtilsMethods.showToastMessage(DynamicMenuActivity.this, getString(R.string.no_network));
         }
 
     }
