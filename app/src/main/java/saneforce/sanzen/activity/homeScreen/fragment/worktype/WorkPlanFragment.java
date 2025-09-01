@@ -451,7 +451,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
     @SuppressLint("SetTextI18n")
-    public void showMultiClusterAlter() {
+    public void showMultiClusterAlert() {
         listSelectedCluster.clear();
         HomeDashBoard.binding.llNav.etSearch.setText("");
         HomeDashBoard.binding.llNav.txtClDone.setVisibility(View.VISIBLE);
@@ -553,7 +553,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
     @SuppressLint("SetTextI18n")
-    public void showMultiHQClusterAlter() {
+    public void showMultiHQClusterAlert() {
         listSelectedCluster.clear();
         mapSelectedCluster.clear();
         multiple_cluster_list.clear();
@@ -667,9 +667,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
             HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
         });
-    }
-
-    private void getUpdatedClusters() {
     }
 
     @SuppressLint("SetTextI18n")
@@ -1183,10 +1180,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if (binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
                         } else {
-                            showMultiClusterAlter();
+                            showMultiClusterAlert();
                         }
                     } else {
-                        showMultiHQClusterAlter();
+                        showMultiHQClusterAlert();
                     }
                     break;
 
@@ -1202,10 +1199,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if (binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
                         } else {
-                            showMultiClusterAlter();
+                            showMultiClusterAlert();
                         }
                     }else {
-                        showMultiHQClusterAlter();
+                        showMultiHQClusterAlert();
                     }
                     break;
 
