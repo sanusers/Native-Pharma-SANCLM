@@ -146,9 +146,7 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
 
                     TransferUtility transferUtility = TransferUtility.builder()
                             .context(context)
-                            .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
                             .s3Client(util.getS3Client(context))
-                            .defaultBucket(bucketName)
                             .build();
 
                     TransferObserver uploadObserver = transferUtility.upload(

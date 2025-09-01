@@ -680,7 +680,7 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+            viewPagerAdapter.add(signatureFragment1,"Signature");
             pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
@@ -704,7 +704,7 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+            viewPagerAdapter.add(signatureFragment1,"Signature");
             pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
@@ -722,7 +722,7 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+            viewPagerAdapter.add(signatureFragment1,"Signature");
             pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
@@ -740,7 +740,7 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+            viewPagerAdapter.add(signatureFragment1,"Signature");
             pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("5")) {
             viewPagerAdapter.add(new ProductFragment(), "Product");
@@ -754,7 +754,7 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-            viewPagerAdapter.add(new SignatureFragment1(),"Signature");
+            viewPagerAdapter.add(signatureFragment1,"Signature");
             pages.add("Signature");
         }
 
@@ -3329,7 +3329,7 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     private void AddSignData(){        // just added for reff
-//        callSignCaptureImageLists = new ArrayList<>();
+          callSignCaptureImage = new ArrayList<>();
     }
 
     private void AddRCPAData() {

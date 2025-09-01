@@ -698,7 +698,6 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
 
             TransferUtility transferUtility = TransferUtility.builder()
                     .context(context)
-                    .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
                     .s3Client(util.getS3Client(context))
                     .build();
 
@@ -823,9 +822,7 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
 
                     TransferUtility transferUtility = TransferUtility.builder()
                             .context(context)
-                            .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
                             .s3Client(util.getS3Client(context))
-                            .defaultBucket(bucketName)
                             .build();
                     TransferObserver uploadObserver = transferUtility.upload(
                             bucketName,

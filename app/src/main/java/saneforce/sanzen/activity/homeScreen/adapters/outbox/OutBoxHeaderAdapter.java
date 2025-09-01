@@ -378,7 +378,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
 
     public void CallApiSignImage(GroupModelClass groupModelClass, int childPos){
         if(!groupModelClass.getChildItems().get(childPos).getSignModelClasses().isEmpty()){
-            isCallAvailable = true;
+            isCallAvailable = false;
             for(int i=0; i< groupModelClass.getChildItems().get(childPos).getSignModelClasses().size(); i++){
                 SignModelClass signModelClass = groupModelClass.getChildItems().get(childPos).getSignModelClasses().get(i);
                 if(signModelClass.getSynced()==0){
@@ -437,7 +437,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             isCallAvailable = false;
         }
         if (!isCallAvailable) {
-            CallAPIDaySubmit(groupModelClass, 6);
+            CallAPIDaySubmit(groupModelClass,7);
         }
     }
 
@@ -686,9 +686,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
 
                     TransferUtility transferUtility = TransferUtility.builder()
                             .context(context)
-                            .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
                             .s3Client(util.getS3Client(context))
-                            .defaultBucket(bucketName)
                             .build();
 
                     TransferObserver uploadObserver = transferUtility.upload(
@@ -878,9 +876,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
 
                     TransferUtility transferUtility = TransferUtility.builder()
                             .context(context)
-                            .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
                             .s3Client(util.getS3Client(context))
-                            .defaultBucket(bucketName)
                             .build();
 
                     TransferObserver uploadObserver = transferUtility.upload(

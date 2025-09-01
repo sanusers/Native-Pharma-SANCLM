@@ -57,6 +57,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.AWS.AWSBuckets;
+import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
 //import saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1;
@@ -832,9 +833,7 @@ public class OutboxFragment extends Fragment {
 
                         TransferUtility transferUtility = TransferUtility.builder()
                                 .context(context)
-                                .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
                                 .s3Client(util.getS3Client(context))
-                                .defaultBucket(bucketName)
                                 .build();
 
                         TransferObserver uploadObserver = transferUtility.upload(
@@ -846,8 +845,8 @@ public class OutboxFragment extends Fragment {
                             public void onStateChanged(int idInt, TransferState state) {
                                 if (state == TransferState.COMPLETED) {
                                     Log.d("TAG", "signModelClass: " + filePath);
-                                    InsertImage(signModelClass.getFilePath(), context);
-//                                DeleteCacheFile(filePath, id, CurrentPos, parentPos, childPos, modelClass);
+                                    InsertImageSign(signModelClass.getFilePath(), context);
+                                    DeleteCacheFileSign(filePath, id, CurrentPos, parentPos, childPos, modelClass);
                                     Log.d("S3 Upload", "Upload Successful: " + s3Key);
                                     try {
                                         if (!listDates.isEmpty() && listDates.size() > parentPos) {
@@ -862,7 +861,7 @@ public class OutboxFragment extends Fragment {
                                 } else if (state == TransferState.FAILED) {
 
                                     Log.e("S3 Upload", "Upload Failed");
-                                    InsertImage(signModelClass.getFilePath(), context);
+                                    InsertImageSign(signModelClass.getFilePath(), context);
                                     signModelClass.setSynced(1);
                                     signModelClass.setSync_status(Constants.CALL_FAILED);
                                     try {
@@ -921,6 +920,32 @@ public class OutboxFragment extends Fragment {
             notifyedmethod();
         }
 
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void DeleteCacheFileSign(String filePath, String id, int currentPos, int parentPos, int childPos, GroupModelClass modelClass) {
+        try {
+            File fileDelete = new File(filePath);
+            if(fileDelete.exists()) {
+                if(fileDelete.delete()) {
+//                System.out.println("file Deleted :" + filePath);
+                }else {
+//                System.out.println("file not Deleted :" + filePath);
+                }
+            }
+            callOfflineSignDataDao.deleteOfflineSignId(id);
+            try {
+                if(!listDates.isEmpty() && listDates.size()>parentPos) {
+                    listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses().remove(currentPos);
+                    CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
+                }
+            } catch (Exception a) {
+                a.printStackTrace();
+            }
+            notifyedmethod();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 //   private void CallSendSignImage(int parentPos, SignModelClass signModelClass, int childPos, int CurrentPos, String jsonValues, String filePath, String id, GroupModelClass modelClass) {
@@ -1494,6 +1519,14 @@ public class OutboxFragment extends Fragment {
         Log.d("AWS_s3", "fileToUpload" + "--" + imageFile);
         String fileName = new File(ImageUrl).getName();
         new AWSBuckets(context,fileName,imageFile,"");
+        //here imageFile is the filePath & fileName is the image Name
+    }
+
+    private void InsertImageSign(final String ImageUrl, Context context) {
+        File imageFile = new File(ImageUrl);
+        Log.d("AWS_s3", "fileToUpload" + "--" + imageFile);
+        String fileName = new File(ImageUrl).getName();
+        new AWSBucketsSign(context,fileName,imageFile,"");
         //here imageFile is the filePath & fileName is the image Name
     }
 /*
