@@ -152,22 +152,24 @@
                     android:layout_margin="@dimen/_3sdp"
                     android:orientation="horizontal">
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/clearBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="@drawable/clear_btn_stroke"
                         android:fontFamily="@font/satoshi_variable"
                         android:gravity="center"
                         android:padding="@dimen/_5sdp"
                         android:text="@string/clear"
                         android:textAllCaps="false"
-                        android:textColor="@color/white"
+                        android:textColor="@color/dark_purple"
                         android:textSize="@dimen/_6ssp"
                         app:icon="@drawable/baseline_close_24"
                         app:iconGravity="textStart"
-                        app:iconSize="@dimen/_8sdp" />
+                        app:iconSize="@dimen/_8sdp"
+                        style="?attr/materialButtonOutlinedStyle"
+                        app:backgroundTint="@null"
+                        android:background="@drawable/clear_btn_stroke"/>
 
                     <View
                         android:layout_width="@dimen/_2sdp"
