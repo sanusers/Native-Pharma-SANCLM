@@ -51,7 +51,6 @@ public class CustomPresentationFragment extends Fragment {
     private CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
-    private PresentationDataDao presentationDataDao;
     private BrandNameAdapter brandNameAdapter;
     private SlideImageAdapter slideImageAdapter;
     private SelectedSlidesAdapter selectedSlidesAdapter;
@@ -69,7 +68,6 @@ public class CustomPresentationFragment extends Fragment {
         super.onCreate(savedInstanceState);
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
-        presentationDataDao = roomDB.presentationDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
     }
@@ -88,6 +86,14 @@ public class CustomPresentationFragment extends Fragment {
                 bundle.putString("position", String.valueOf(0));
                 intent.putExtra("bundle", bundle);
                 startActivity(intent);
+            }
+        });
+        binding.clearBtn.setOnClickListener(view -> {
+            if (!selectedSlideArrayList.isEmpty()) {
+                selectedSlideArrayList.clear();
+                savedPresentation.clear();
+                brandProductArrayList.clear();
+                uiInitialisation();
             }
         });
         return binding.getRoot();
@@ -272,12 +278,14 @@ public class CustomPresentationFragment extends Fragment {
 
             populateSelectedSlideAdapter(selectedSlideArrayList);
             binding.playBtn.setEnabled(!selectedSlideArrayList.isEmpty());
+            binding.clearBtn.setEnabled(!selectedSlideArrayList.isEmpty());
         };
         slideImageAdapter = new SlideImageAdapter(requireContext(), arrayList, imageSelectionInterface);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 2);
         binding.slideImageRecView.setLayoutManager(layoutManager);
         binding.slideImageRecView.setAdapter(slideImageAdapter);
         binding.playBtn.setEnabled(!selectedSlideArrayList.isEmpty());
+        binding.clearBtn.setEnabled(!selectedSlideArrayList.isEmpty());
     }
 
     public void populateSelectedSlideAdapter(ArrayList<BrandModelClass.Product> arrayList) {
