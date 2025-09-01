@@ -63,7 +63,8 @@ public class StockistPresentationFragment extends Fragment {
 
         binding.createPresentationBtn.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), CustomerSelectionActivity.class);
-            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.STOCKIEST);
+//            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.STOCKIEST);
+            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.STOCKIEST_MAS);
             startActivity(intent);
         });
 
@@ -86,7 +87,8 @@ public class StockistPresentationFragment extends Fragment {
     private final PresentationAdapter.ShowCustomersClickListener showCustomersClickListener = new PresentationAdapter.ShowCustomersClickListener() {
         @Override
         public void onClick(String presentationName) {
-            showSideScreenListener.onClick(Constants.STOCKIEST, presentationName);
+//            showSideScreenListener.onClick(Constants.STOCKIEST, presentationName);
+            showSideScreenListener.onClick(Constants.STOCKIEST_MAS, presentationName);
         }
     };
 

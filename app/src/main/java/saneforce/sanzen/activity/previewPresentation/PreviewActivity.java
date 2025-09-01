@@ -42,13 +42,11 @@ import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.pojo.detailing.CallDetailingList;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
-import saneforce.sanzen.activity.presentation.customerSelection.CustomerSelectionActivity;
 import saneforce.sanzen.activity.presentation.customerSelection.model.CustomerDataModel;
-import saneforce.sanzen.activity.presentation.presentation.PresentationActivity;
-import saneforce.sanzen.activity.presentation.presentation.ShowSideScreenListener;
 import saneforce.sanzen.activity.presentation.presentation.adapter.SideScreenAdapter;
 import saneforce.sanzen.activity.previewPresentation.fragment.BrandMatrix;
 import saneforce.sanzen.activity.previewPresentation.fragment.CustomPresentationFragment;
+import saneforce.sanzen.activity.previewPresentation.fragment.CustomizedPresentationFragment;
 import saneforce.sanzen.activity.previewPresentation.fragment.CustomPreviewFragment;
 import saneforce.sanzen.activity.previewPresentation.fragment.MyPresentation;
 import saneforce.sanzen.activity.previewPresentation.fragment.HomeBrands;
@@ -194,8 +192,10 @@ public class PreviewActivity extends AppCompatActivity {
                     viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                     headingData.add("F");
                 }
-                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
+                viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.customized_presentation));
                 headingData.add("G");
+                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
+                headingData.add("H");
             } else {
                 viewPagerAdapter.add(new WelcomePresentation(), getResources().getString(R.string.welcome));
                 headingData.add("A");
@@ -211,8 +211,10 @@ public class PreviewActivity extends AppCompatActivity {
                     viewPagerAdapter.add(new MyPresentation(), getResources().getString(R.string.my_presentation));
                     headingData.add("F");
                 }
-                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
+                viewPagerAdapter.add(new CustomizedPresentationFragment(), getResources().getString(R.string.custom_presentation));
                 headingData.add("G");
+                viewPagerAdapter.add(new CustomPresentationFragment(), getResources().getString(R.string.custom_presentation));
+                headingData.add("H");
             }
         } else {
             viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.all_brands));
@@ -338,7 +340,7 @@ public class PreviewActivity extends AppCompatActivity {
 
         String selectedCap = "";
         switch (customerType) {
-            case Constants.DOCTOR:
+    /*        case Constants.DOCTOR:
                 selectedCap = SharedPref.getDrCap(this);
                 break;
             case Constants.CHEMIST:
@@ -348,6 +350,18 @@ public class PreviewActivity extends AppCompatActivity {
                 selectedCap = SharedPref.getStkCap(this);
                 break;
             case Constants.UNLISTED_DOCTOR:
+                selectedCap = SharedPref.getUNLcap(this);
+                break;*/
+            case Constants.DOCTOR_MAS:
+                selectedCap = SharedPref.getDrCap(this);
+                break;
+            case Constants.CHEMIST_MAS:
+                selectedCap = SharedPref.getChmCap(this);
+                break;
+            case Constants.STOCKIEST_MAS:
+                selectedCap = SharedPref.getStkCap(this);
+                break;
+            case Constants.UNLISTED_DOCTOR_MAS:
                 selectedCap = SharedPref.getUNLcap(this);
                 break;
             case Constants.CIP:

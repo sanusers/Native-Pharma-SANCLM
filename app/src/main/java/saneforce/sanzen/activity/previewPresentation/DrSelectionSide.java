@@ -156,10 +156,12 @@ public class DrSelectionSide extends Fragment {
                 }
             }
 
-            if (!masterDataDao.getMasterSyncDataOfHQ(Constants.DOCTOR + TodayPlanSfCode)) {
+//            if (!masterDataDao.getMasterSyncDataOfHQ(Constants.DOCTOR + TodayPlanSfCode)) {
+            if (!masterDataDao.getMasterSyncDataOfHQ(Constants.DOCTOR_MAS + TodayPlanSfCode)) {
                 prepareMasterToSync(TodayPlanSfCode);
             } else {
-                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + TodayPlanSfCode).getMasterSyncDataJsonArray();
+//                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + TodayPlanSfCode).getMasterSyncDataJsonArray();
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + TodayPlanSfCode).getMasterSyncDataJsonArray();
             }
 
           /*  if (jsonArray.length() == 0) {
@@ -222,7 +224,8 @@ public class DrSelectionSide extends Fragment {
         masterSyncArray.clear();
 
         if (SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")) {
-            MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor", "getdoctors", Constants.DOCTOR + hqCode);
+//            MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor", "getdoctors", Constants.DOCTOR + hqCode);
+            MasterSyncItemModel doctorModel = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode);
             masterSyncArray.add(doctorModel);
         }
         for (int i = 0; i < masterSyncArray.size(); i++) {
@@ -241,7 +244,7 @@ public class DrSelectionSide extends Fragment {
                 jsonObject.put("Rsf", hqCode);
                 Call<JsonElement> call = null;
                 Map<String, String> mapString = new HashMap<>();
-                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")) {
+                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.DOCTOR_MAS)) {
                     mapString.put("axn", "table/dcrmasterdata");
                     call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
                 } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Subordinate")) {

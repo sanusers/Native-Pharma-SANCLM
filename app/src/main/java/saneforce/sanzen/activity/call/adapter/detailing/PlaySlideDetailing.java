@@ -7,7 +7,7 @@ import static saneforce.sanzen.activity.call.DCRCallActivity.arrayStore;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.slideScribble;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.SelectedPosPlay;
 import static saneforce.sanzen.activity.previewPresentation.fragment.BrandMatrix.SlideBrandMatrixList;
-import static saneforce.sanzen.activity.previewPresentation.fragment.CustomPresentationFragment.SlideCustomList;
+import static saneforce.sanzen.activity.previewPresentation.fragment.CustomizedPresentationFragment.SlideCustomList;
 import static saneforce.sanzen.activity.previewPresentation.fragment.HomeBrands.SlideHomeBrandList;
 import static saneforce.sanzen.activity.previewPresentation.fragment.MyPresentation.SlideCustomizedList;
 import static saneforce.sanzen.activity.previewPresentation.fragment.Speciality.SlideSpecialityList;
@@ -595,6 +595,9 @@ public class PlaySlideDetailing extends AppCompatActivity {
                     holder.tv_brandName.setText(context.getResources().getText(R.string.my_presentation));
                     break;
                 case "G":
+                    holder.tv_brandName.setText(context.getResources().getText(R.string.customized_presentation));
+                    break;
+                case "H":
                     holder.tv_brandName.setText(context.getResources().getText(R.string.custom_presentation));
                     break;
             }
@@ -623,6 +626,10 @@ public class PlaySlideDetailing extends AppCompatActivity {
                         break;
                     case "G":
                         populateLocalSavedData(SlideCustomList);
+                        break;
+                    case "H":
+//                        populateLocalSavedData(SlideCustomList);
+                        // TODO: 29-08-2025
                         break;
                 }
                 notifyDataSetChanged();

@@ -32,13 +32,13 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanzen.activity.reports.missedReport.MissedReport;
 import saneforce.sanzen.R;
 
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DynamicAdapter;
 import saneforce.sanzen.activity.reports.dayReport.model.MenuModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityReportsBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -92,7 +92,8 @@ public class ReportsActivity extends AppCompatActivity {
         arrayList.add("Day Check In Report");
         arrayList.add("Customer Check In Report");
         arrayList.add("Visit Monitor");*/
-        if (SharedPref.getDashboard(this).equals("0")) {
+         arrayList.add("Missed Report");
+        if (SharedPref.getDashboard(this).equals("0")){
             arrayList.add("Dash Board");
         }
         if (SharedPref.getDynamicOptionNeed(this).equals("0")) {
@@ -110,15 +111,13 @@ public class ReportsActivity extends AppCompatActivity {
                 if (status) {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, SharedPref.getCallApiUrl(ReportsActivity.this));
-
-                        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                        JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(this);
                         jsonObject.put("sfcode", SharedPref.getSfCode(this));
                         jsonObject.put("divisionCode", SharedPref.getDivisionCode(this));
                         jsonObject.put("Rsf", SharedPref.getHqCode(this));
                         jsonObject.put("rptDt", date);
                         if (report.equalsIgnoreCase("DAY REPORT")) {
                             jsonObject.put("tableName", "getdayrpt_edet");
-
                         }
 
                         Log.d("Report", "getData: " + jsonObject);
@@ -138,7 +137,7 @@ public class ReportsActivity extends AppCompatActivity {
                                             jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
                                             navigate(jsonArray, report, date);
                                         }
-                                    }
+                                        }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }

@@ -51,6 +51,7 @@ import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.setting.SettingsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.SimpleDecrypt;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityLoginBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -66,7 +67,6 @@ import saneforce.sanzen.utility.DownloaderClass;
 import saneforce.sanzen.utility.ImageStorage;
 import saneforce.sanzen.utility.LocaleHelper;
 import saneforce.sanzen.utility.TimeUtils;
-
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -452,6 +452,8 @@ public class LoginActivity extends AppCompatActivity {
                                 appAccess = responseObject.getString("sanzen_edet");
 //                                System.out.println("appAccess--->"+appAccess);
                                 if (appAccess.equals("1")) {
+
+
                                     process(responseObject);
                                     Toast.makeText(LoginActivity.this, getString(R.string.login_successfully), Toast.LENGTH_LONG).show();
 //                                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
@@ -477,10 +479,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void process(JSONObject jsonObject) {
+    public void
+    process(JSONObject jsonObject) {
         try {
             loginDataDao.saveLoginData(new LoginDataTable(jsonObject.toString()));
             SharedPref.InsertLogInData(LoginActivity.this,jsonObject);
+            SharedPref.saveKeys(LoginActivity.this, jsonObject.optString("zakey"), jsonObject.optString("zskey"));
             SharedPref.saveLoginId(LoginActivity.this, userId, userPwd);
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));

@@ -1,12 +1,16 @@
 package saneforce.sanzen.activity.presentation.presentation.adapter;
 
+import static android.provider.Settings.System.getString;
 import static saneforce.sanzen.activity.presentation.presentation.PresentationActivity.binding;
 import static saneforce.sanzen.activity.previewPresentation.PreviewActivity.from_where;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -28,9 +32,11 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
+import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.presentation.createPresentation.CreatePresentationActivity;
@@ -39,6 +45,7 @@ import saneforce.sanzen.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.sanzen.roomdatabase.PresentationTableDetails.PresentationDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 
 public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapter.MyViewHolder> {
     private Context context;
@@ -197,17 +204,36 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
                     context.startActivity(intent);
                 }else if(menuItem.getItemId() == R.id.menuDelete) {
                     popup.dismiss();
-                    removeAt(position);
-                    presentationDataDao.deletePresentation(presentation.getPresentationName());
-                    ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
-                    savedPresentation = presentationDataDao.getPresentations();
-                    if(!savedPresentation.isEmpty()) {
-                        binding.constraintNoData.setVisibility(View.GONE);
-                        binding.presentationRecView.setVisibility(View.VISIBLE);
-                    }else {
-                        binding.constraintNoData.setVisibility(View.VISIBLE);
-                        binding.presentationRecView.setVisibility(View.GONE);
-                    }
+                    Dialog dialog = new Dialog(context);
+                    dialog.setContentView(R.layout.dcr_cancel_alert);
+                    dialog.setCancelable(false);
+                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.show();
+                    TextView btn_yes = dialog.findViewById(R.id.btn_yes);
+                    TextView alertText = dialog.findViewById(R.id.ed_alert_msg);
+                    TextView btn_no = dialog.findViewById(R.id.btn_no);
+                    btn_no.setVisibility(View.VISIBLE);
+                    alertText.setText(R.string.are_you_sure_to_delete);
+                    btn_yes.setOnClickListener(view1 -> {
+                        removeAt(position);
+
+                        presentationDataDao.deletePresentation(presentation.getPresentationName());
+                        ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
+                        savedPresentation = presentationDataDao.getPresentations();
+                        if (savedPresentation.size() > 0) {
+                            binding.constraintNoData.setVisibility(View.GONE);
+                            binding.presentationRecView.setVisibility(View.VISIBLE);
+                        }else {
+                            binding.constraintNoData.setVisibility(View.VISIBLE);
+                            binding.presentationRecView.setVisibility(View.GONE);
+                        }
+                        dialog.dismiss();
+                    });
+                    btn_no.setOnClickListener((view2) -> {
+                        dialog.dismiss();
+                    });
+
+
                 }else if(menuItem.getItemId() == R.id.customer) {
                     popup.dismiss();
                     if(isClickedFrom.equalsIgnoreCase("custom")) {
@@ -248,10 +274,13 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void removeAt(int position) {
         arrayList.remove(position);
         notifyItemRemoved(position);
+//        notifyDataSetChanged();
         notifyItemRangeChanged(position, arrayList.size());
+
     }
 
     private void setPopUpWindow(View view) {

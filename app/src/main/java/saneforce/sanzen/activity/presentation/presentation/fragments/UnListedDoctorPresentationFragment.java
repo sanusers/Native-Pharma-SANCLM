@@ -62,7 +62,8 @@ public class UnListedDoctorPresentationFragment extends Fragment {
 
         binding.createPresentationBtn.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), CustomerSelectionActivity.class);
-            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.UNLISTED_DOCTOR);
+//            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.UNLISTED_DOCTOR);
+            intent.putExtra(CustomerSelectionActivity.CUSTOMER_TYPE, Constants.UNLISTED_DOCTOR_MAS);
             startActivity(intent);
         });
 
@@ -85,7 +86,8 @@ public class UnListedDoctorPresentationFragment extends Fragment {
     private final PresentationAdapter.ShowCustomersClickListener showCustomersClickListener = new PresentationAdapter.ShowCustomersClickListener() {
         @Override
         public void onClick(String presentationName) {
-            showSideScreenListener.onClick(Constants.UNLISTED_DOCTOR, presentationName);
+//            showSideScreenListener.onClick(Constants.UNLISTED_DOCTOR, presentationName);
+            showSideScreenListener.onClick(Constants.UNLISTED_DOCTOR_MAS, presentationName);
         }
     };
 

@@ -168,7 +168,31 @@ public class CustList implements Parcelable {
             this.ClassCode = ClassCode;
     }
 
-    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode, String MappedBrandCode, String MappedSlideCode, String totalVisitCount, String Class,String ClassCode,boolean isClusterAvailable) {
+
+    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String town_name, String towncode, String position, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode,String ClassCode,  String specialistCode, boolean isClusterAvailable) {
+        this.name = name;
+        this.code = code;
+        this.type = type;
+        this.category = category;
+        this.categoryCode = categoryCode;
+        this.specialist = specialist;
+        this.town_name = town_name;
+        this.town_code = towncode;
+        this.position = position;
+        this.address = address;
+        this.dob = dob;
+        this.wedding_date = wed_date;
+        this.email = email;
+        this.mobile = mobile;
+        this.phone = phone;
+        this.qualification = qualification;
+        this.PriorityPrdCode = priorityPrdCode;
+        this.isClusterAvailable = isClusterAvailable;
+        this.specialistCode = specialistCode;
+        this.ClassCode = ClassCode;
+    }
+
+    public  CustList(String name, String code, String type, String category, String categoryCode, String specialist, String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile,String phone, String qualification, String priorityPrdCode, String MappedBrandCode, String MappedSlideCode, String totalVisitCount, String Class,String ClassCode,boolean isClusterAvailable) {
         this.name = name;
         this.code = code;
         this.type = type;

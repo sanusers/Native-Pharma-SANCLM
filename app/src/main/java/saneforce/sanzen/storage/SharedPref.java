@@ -451,7 +451,7 @@ public class SharedPref {
 
     public static final String HOLIDAY_AUTOPOST_NEED = "Holiday_AutoPost_Need";
     public static final String WEEKOFF_AUTOPOST_NEED = "Weekoff_AutoPost_Need";
-//    public static final String TAGGED_ADDRESS = "tggedaddress";
+    //    public static final String TAGGED_ADDRESS = "tggedaddress";
     public static final String PROFILING_NEED = "DrProfile";
 
     public static final String QUIZ_DATE = "Quiz Date";
@@ -468,11 +468,14 @@ public class SharedPref {
     public static final String TAGGED_DCR_CUSTOMERS = "Tagged DCR Customers";
 
     public static final String DETAILING_IDLE_DURATION = "detailing_idle_duration";
+    public static final String S3_BUCKET_NEED = "S3BucketNeed";
 
     public static final String TPDCR_DEVIATED_DATE = "TPDCR_Deviated_date";
 
     public static final String DAY_CHECK_IN_DATA = "Day_Check_In_Data";
     public static final String CHECK_IN_SKIP_DATE = "Check_In_Skip_Date";
+
+    public static final String A_S_KEY = "A_S_KEY";
 
     public static String TpIdCurrent = "tpIdCurrent";
     public static String TpIdPrevious = "tpIdPrevious";
@@ -2041,6 +2044,10 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(DYNAMIC_OPTION_CAPS,"");
     }
 
+    public static String getS3BucketNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(S3_BUCKET_NEED, "");
+    }
+
     public static void setDrAddCallNeed(Context context, String drAddCallNeed) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2445,7 +2452,7 @@ public class SharedPref {
     public static void putAutomassync(Context context, boolean mas_sync) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putBoolean(SYNC_STATUS, mas_sync).apply();
+        editor.putBoolean(  SYNC_STATUS, mas_sync).apply();
     }
 
     public static void putSlidestatus(Context context, boolean status) {
@@ -2753,9 +2760,11 @@ public class SharedPref {
     public static int getSelectedCluster(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(SELECTED_CLUSTER, 0);
     }
+
     public static String getHq(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SELECT_HQ, "");
     }
+
     public static String getSaveTaggedAddress(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TAGGED_ADDRESS, "");
     }
@@ -2771,16 +2780,19 @@ public class SharedPref {
         editor = sharedPreferences.edit();
         editor.putInt(SELECTED_CLUSTER, cluster).apply();
     }
+
     public static void sethq(Context context, String hq) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(SELECT_HQ, hq).apply();
     }
+
     public static void setSelectedQualification(Context context, int quali) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putInt(SELECTED_QUALIFICATION, quali).apply();
     }
+
     public static void setSelectedSpeciality(Context context, int speciality) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2796,21 +2808,25 @@ public class SharedPref {
     public static int getSelectedClass(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getInt(SELECTED_CLASS, 0);
     }
+
     public static void setSaveLatitude(Context context, double lat) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(LATITUDE, String.valueOf(lat)).apply();
     }
+
     public static void setSaveLongitutde(Context context, double lat) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(LONGITUDE, String.valueOf(lat)).apply();
     }
+
     public static void setSaveTaggedAddress(Context context, String lat) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(TAGGED_ADDRESS, lat).apply();
     }
+
     public static String getChemistAddition(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ADD_CHM, "");
     }
@@ -2818,6 +2834,7 @@ public class SharedPref {
     public static String getUnlistAddition(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ADD_UNLST, "");
     }
+
     public static void setProfilingNeed(Context context, String profiling) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2980,5 +2997,15 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdNext,0);
     }
 
+
+    public static void saveKeys(Context context, String aKey, String sKey) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(A_S_KEY, aKey + "^^" + sKey).apply();
+    }
+
+    public static String getKeys(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(A_S_KEY, "^^");
+    }
 
 }

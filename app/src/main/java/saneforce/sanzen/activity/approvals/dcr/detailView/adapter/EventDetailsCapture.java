@@ -66,6 +66,7 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
 
 
                  if (Objects.requireNonNull(fileName).isEmpty()) {
+                 if (Objects.requireNonNull(fileName).isEmpty()) {
 
                  }else {
                      File file = new File(context.getFilesDir(),fileName);
@@ -104,6 +105,7 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
              }
 
 //             Glide.with(context).load(SharedPref.getTagImageUrl(context) + List.get(position).getEventimg()).fitCenter().into(imageView);
+//             }
          });
 
 
