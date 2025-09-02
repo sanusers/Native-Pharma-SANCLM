@@ -26,10 +26,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
@@ -132,9 +135,9 @@ public class BrandMatrix extends Fragment {
                             if(productObject != null) {
                                 String[] separated1 = mappedSlides.split(",");
                                 String[] separated2 = productObject.getString("Product_Detail_Code").split(",");
-                                for (String value : separated1) {
+//                                for (String value : separated1) {
                                     for (String s : separated2) {
-                                        if(value.equalsIgnoreCase(s)) {
+                                        if(Arrays.asList(separated1).contains(s)) {
                                             brandName = productObject.getString("Name");
                                             BrandModelClass.Product product = getProductData(productObject, priority);
                                             if(product != null) {
@@ -143,7 +146,7 @@ public class BrandMatrix extends Fragment {
                                             break;
                                         }
                                     }
-                                }
+//                                }
                             }
                         }
                     }
