@@ -670,15 +670,6 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     }
 private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,String jsonValues, String filePath, String id) {
     try {
-        /*String accessKey = Keys.ACCESS_KEY;
-        String secretKey = Keys.SECRET_KEY;
-        Regions region = Regions.EU_NORTH_1;
-        String bucketName = "san-edet";
-
-        BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey,secretKey);
-
-        AmazonS3Client s3Client = new AmazonS3Client(credentials);
-        s3Client.setRegion(Region.getRegion(region));*/
         util.getS3Client(context);
         String bucketName = "san-edet";
         File fileToUpload = new File(filePath);
@@ -807,11 +798,9 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
             if (!filePath.isEmpty()) {
                 File fileToUpload = new File(filePath);
                 Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
-                if (!fileToUpload.exists()) {
-                    Log.d("fileToUpload", "not exists: " + filePath);
+                if (fileToUpload.toString().isEmpty()) {
+                    Log.d("fileToUploadSignContent", "not exists: " + filePath);
                 } else {
-
-
                     String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
                     if (s3Key.contains(null)) {
                         Log.d("s3Key", "CallSendSignImage: " + "s3key is null");

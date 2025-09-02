@@ -2394,8 +2394,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
     }
 
-    public void changeApprovalBtnStateOneBuild
-            (ArrayList<OneBuildModelClass> arrayList) {
+    public void changeApprovalBtnStateOneBuild(ArrayList<OneBuildModelClass> arrayList) {
         SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         boolean wholeMonthTpCompleted = false, isDataAvailable = false;
         for (int i = 0; i < arrayList.size(); i++) { // to enable/disable the send to approval button
@@ -4496,8 +4495,7 @@ public class TourPlanActivity extends AppCompatActivity {
         return null;
     }
 
-    public OneBuildModelClass.SessionList.WorkType getWorkTypeOneBuild(String
-                                                                               fwFlag) {
+    public OneBuildModelClass.SessionList.WorkType getWorkTypeOneBuild(String fwFlag) {
         SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         try {
             JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
@@ -4885,8 +4883,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
     }
 
-    public void sendTpForApprovalOneBuild(JsonObject
-                                                  jsonObject, ArrayList<OneBuildModelClass> oneBuildModelClassArrayList, String
+    public void sendTpForApprovalOneBuild(JsonObject jsonObject, ArrayList<OneBuildModelClass> oneBuildModelClassArrayList, String
                                                   date, String month, Boolean statusOffline, String isClickedName) {
         SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         localDate = localDate;

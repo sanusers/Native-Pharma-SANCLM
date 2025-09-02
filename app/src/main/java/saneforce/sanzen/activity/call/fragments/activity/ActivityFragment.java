@@ -372,7 +372,7 @@ public class ActivityFragment extends Fragment {
                 fragmentActivityBinding.rlDetailsMain.setVisibility(View.GONE);
                 fragmentActivityBinding.rlNoActivity.setVisibility(View.VISIBLE);
                 fragmentActivityBinding.llMainLayout.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(requireContext(), "No " + activityCap);
+//                commonUtilsMethods.showToastMessage(requireContext(), "No " + activityCap);
             }
             fragmentActivityBinding.progressMain.setVisibility(View.GONE);
         } catch (Exception e) {

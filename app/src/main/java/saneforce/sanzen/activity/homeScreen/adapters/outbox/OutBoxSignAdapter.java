@@ -76,6 +76,7 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
         this.callOfflineSignDataDao = roomDB.callOfflineSignDataDao();
         this.callOfflineDataDao = roomDB.callOfflineDataDao();
         this.offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
+        this.util = new Util();
     }
 
 
@@ -133,11 +134,9 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
             if (!filePath.isEmpty()) {
                 File fileToUpload = new File(filePath);
                 Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
-                if (!fileToUpload.exists()) {
-                    Log.d("fileToUpload", "not exists: " + filePath);
+                if (fileToUpload.toString().isEmpty()) {
+                    Log.d("fileToUploadSignAdapter", "not exists: " + filePath);
                 } else {
-
-
                     String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
                     Log.d("TAG", "CallSendAPIImage: " + s3Key);
 

@@ -518,9 +518,7 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     private void callSubmit() {
-        if (signatureFragment1 != null) {
-            signatureFragment1.getSignatureBitmap();
-        }
+
         createJsonFileCall();
         if(isCreateJsonSuccess) {
             Log.d("CreateJsonFileCall", "submitCall: "+"JSON FIle call is successful");
@@ -680,7 +678,7 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-            viewPagerAdapter.add(signatureFragment1,"Signature");
+            viewPagerAdapter.add(signatureFragment1, "Signature");
             pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
@@ -704,7 +702,7 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-            viewPagerAdapter.add(signatureFragment1,"Signature");
+            viewPagerAdapter.add(signatureFragment1, "Signature");
             pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
@@ -722,7 +720,7 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-            viewPagerAdapter.add(signatureFragment1,"Signature");
+            viewPagerAdapter.add(signatureFragment1, "Signature");
             pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
             if(ProductNeed.equalsIgnoreCase("0")) {
@@ -740,7 +738,7 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-            viewPagerAdapter.add(signatureFragment1,"Signature");
+            viewPagerAdapter.add(signatureFragment1, "Signature");
             pages.add("Signature");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("5")) {
             viewPagerAdapter.add(new ProductFragment(), "Product");
@@ -754,7 +752,7 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
             pages.add("JFW/Others");
 
-            viewPagerAdapter.add(signatureFragment1,"Signature");
+            viewPagerAdapter.add(signatureFragment1, "Signature");
             pages.add("Signature");
         }
 
@@ -3060,7 +3058,11 @@ public class DCRCallActivity extends AppCompatActivity {
                     capInp =SharedPref.getDocInputCaption(this);
                     CapSamQty = SharedPref.getDrSmpQCap(this);
                     CapRxQty = SharedPref.getDrRxQCap(this);
-                    CapPob = SharedPref.getDocPobCaption(this);
+                    if(!SharedPref.getDocPobCaption(this).isEmpty()) {
+                        CapPob = SharedPref.getDocPobCaption(this);
+                    }else{
+                        CapPob = "Pob";
+                    }
 
                     //Need
                     ProductNeed = SharedPref.getDpNeed(this);
@@ -3095,7 +3097,11 @@ public class DCRCallActivity extends AppCompatActivity {
                     capInp = SharedPref.getChmInputCaption(this);;
                     CapSamQty = SharedPref.getChmSmpCap(this);
                     CapRxQty = SharedPref.getChmQCap(this);
-                    CapPob = SharedPref.getChmPobCaption(this);
+                    if(!SharedPref.getChmPobCaption(this).isEmpty()) {
+                        CapPob = SharedPref.getChmPobCaption(this);
+                    }else{
+                        CapPob = "Pob";
+                    }
 
                     //Need
                     ProductNeed = SharedPref.getCpNeed(this);
@@ -3124,7 +3130,11 @@ public class DCRCallActivity extends AppCompatActivity {
                     capInp = SharedPref.getStkInputCaption(this);
                     CapSamQty = "Samples";
                     CapRxQty = SharedPref.getStkQCap(this);
-                    CapPob = SharedPref.getStkPobCaption(this);
+                    if(!SharedPref.getStkPobCaption(this).isEmpty()) {
+                        CapPob = SharedPref.getStkPobCaption(this);
+                    }else{
+                        CapPob = "Pob";
+                    }
 
                     //Need
                     ProductNeed = SharedPref.getSpNeed(this);
@@ -3152,7 +3162,11 @@ public class DCRCallActivity extends AppCompatActivity {
                     capInp = SharedPref.getUlInputCaption(this);
                     CapSamQty = SharedPref.getNlSmpQCap(this);
                     CapRxQty =SharedPref.getNlRxQCap(this);
-                    CapPob = SharedPref.getUldocPobCaption(this);;
+                    if(!SharedPref.getUldocPobCaption(this).isEmpty()) {
+                        CapPob = SharedPref.getUldocPobCaption(this);
+                    }else{
+                        CapPob = "Pob";
+                    }
                     CusCheckInOutNeed = SharedPref.getUnlistSrtNd(this);;
 
                     //Need
@@ -3172,7 +3186,11 @@ public class DCRCallActivity extends AppCompatActivity {
                     break;
                 case "5"://CIP
                     //Caption
-                    CapPob = SharedPref.getCipPobCaption(this);;
+                    if(!SharedPref.getCipPobCaption(this).isEmpty()) {
+                        CapPob = SharedPref.getCipPobCaption(this);
+                    }else{
+                        CapPob = "Pob";
+                    }
 
                     //Need
                     PobNeed = SharedPref.getCipPNeed(this);
@@ -3190,7 +3208,11 @@ public class DCRCallActivity extends AppCompatActivity {
                     break;
                 case "6"://HOSPITAL
                     //Caption
-                    CapPob =  SharedPref.getHospPobCaption(this);
+                    if(!SharedPref.getHospPobCaption(this).isEmpty()) {
+                        CapPob = SharedPref.getHospPobCaption(this);
+                    }else{
+                        CapPob = "Pob";
+                    }
                     CusCheckInOutNeed = "1";
 
                     //Need
@@ -3329,7 +3351,7 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     private void AddSignData(){        // just added for reff
-          callSignCaptureImage = new ArrayList<>();
+        callSignCaptureImage = new ArrayList<>();
     }
 
     private void AddRCPAData() {

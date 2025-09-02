@@ -661,16 +661,6 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     private void CallSendAPIImageS3(EcModelClass ecModelClass, int childPos, int CurrentPos,
                                   String jsonValues, String filePath, String id, GroupModelClass modelClass) {
         try {
-            /*String accessKey = Keys.ACCESS_KEY;
-            String secretKey = Keys.SECRET_KEY;
-            Regions region = Regions.EU_NORTH_1;
-
-
-            BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey,secretKey);
-
-            AmazonS3Client s3Client = new AmazonS3Client(credentials);
-            s3Client.setRegion(Region.getRegion(region));*/
-
             util.getS3Client(context);
             String bucketName = "san-edet";
             if(!filePath.isEmpty()) {
@@ -679,8 +669,6 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 if (!fileToUpload.exists()) {
                     Log.d("fileToUpload", "not exists: " + filePath);
                 } else {
-
-
                     String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
                     TransferNetworkLossHandler.getInstance(context);
 
@@ -862,8 +850,8 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             if(!filePath.isEmpty()) {
                 File fileToUpload = new File(filePath);
                 Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
-                if (!fileToUpload.exists()) {
-                    Log.d("fileToUpload", "not exists: " + filePath);
+                if (fileToUpload.toString().isEmpty()) {
+                    Log.d("fileToUploadSignHeader", "not exists: " + filePath);
                 } else {
 
                     String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Signature"+"/"+ fileToUpload.getName();

@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
+import saneforce.sanzen.AWS.AWSBuckets;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
@@ -32,8 +33,6 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 
 public class SignatureFragment1 extends Fragment {
     public SignatureCanvas signatureCanvas;
-//    public static ArrayList<CallSignCaptureImageList> callSignCaptureImageLists;
-
     public static ArrayList<CallSignCaptureImageList> callSignCaptureImage;
     public FragmentSignatureBinding signatureBinding;
     public Button clearButton;
@@ -46,7 +45,7 @@ public class SignatureFragment1 extends Fragment {
     boolean delete;
     CallOfflineSignDataDao callOfflineSignDataDao;
     RoomDB roomDB;
-    private boolean isNewSignature = true;
+
 
 
     @Override
@@ -62,13 +61,7 @@ public class SignatureFragment1 extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("SignatureFragment", "onCreate()");
-        if (savedInstanceState != null) {
-            callSignCaptureImage = savedInstanceState.getParcelableArrayList("Signature");
-            Log.d("SignatureFragment", "onCreate: Restored list size: " + (callSignCaptureImage != null ? callSignCaptureImage.size() : 0));
-        } else {
-            callSignCaptureImage = new ArrayList<>();
-            Log.d("SignatureFragment", "onCreate: Creating new list.");
-        }
+        callSignCaptureImage = new ArrayList<>();
     }
 
 
@@ -79,21 +72,27 @@ public class SignatureFragment1 extends Fragment {
         Log.d("SignatureFragment", "onCreateView()");
         signatureBinding = FragmentSignatureBinding.inflate(inflater, container, false);
         View v = signatureBinding.getRoot();
-
         if (signatureCanvas == null) {
             signatureCanvas = signatureBinding.signLyt;
         }
-
         clearButton = v.findViewById(R.id.clr_btn);
-        clearButton.setOnClickListener(v1 -> clearSignature());
-
         return v;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        clearSignature();
+
+        clearButton.setOnClickListener(v1 -> clearSignature());
+        if (savedInstanceState != null) {
+            callSignCaptureImage = savedInstanceState.getParcelableArrayList("SIGNATURE");
+
+            Log.d("SignatureFragment", "onCreate: Restored list size: " + (callSignCaptureImage != null ? callSignCaptureImage.size() : 0));
+        } else {
+            callSignCaptureImage = new ArrayList<>();
+            Log.d("SignatureFragment", "onCreate: Creating new list.");
+        }
+
     }
 
     @Override
@@ -170,7 +169,6 @@ public class SignatureFragment1 extends Fragment {
 
                 if (!callSignCaptureImage.isEmpty()) {
                     String originalFilePath = callSignCaptureImage.get(0).getFilepath();
-
 
                     if (originalFilePath != null && !originalFilePath.isEmpty() && !originalFilePath.equals(newFilePath)) {
                         File originalFile = new File(originalFilePath);

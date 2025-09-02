@@ -28,14 +28,14 @@ import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
 public class SignatureCanvas extends View {
 
-   Paint paint;
-   Path path;
-   int count = 0;
-   Bitmap signatureBitmap;
-   CommonSharedPreference commonSharedPreference;
-   String imageName;
-   SignatureCanvas signatureCanvas;
-   String destinationFilePath;
+    Paint paint;
+    Path path;
+    int count = 0;
+    Bitmap signatureBitmap;
+    CommonSharedPreference commonSharedPreference;
+    String imageName;
+    SignatureCanvas signatureCanvas;
+    String destinationFilePath;
     private boolean isSigned = false;
 
 
@@ -90,8 +90,8 @@ public class SignatureCanvas extends View {
     public boolean onTouchEvent(MotionEvent event) {
         switch(event.getAction() & MotionEvent.ACTION_MASK){
             case MotionEvent.ACTION_DOWN:
-            path.moveTo(event.getX(),event.getY());
-            break;
+                path.moveTo(event.getX(),event.getY());
+                break;
 
             case MotionEvent.ACTION_MOVE:
                 ++count;

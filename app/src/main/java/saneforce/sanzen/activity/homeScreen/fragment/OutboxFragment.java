@@ -548,7 +548,7 @@ public class OutboxFragment extends Fragment {
             Log.d("MC", "CallOfflineSignImg: "+"is absent");
         }
         if (!isCallAvailable){
-            CallAPIOfflineActivity(ParentPos, 5, listDates.get(ParentPos).getChildItems().get(4).getActivityModelClasses(), modelClass);
+            CallAPIOfflineActivity(ParentPos, 5, listDates.get(ParentPos).getChildItems().get(5).getActivityModelClasses(), modelClass);
         }
     }
 
@@ -570,7 +570,7 @@ public class OutboxFragment extends Fragment {
             isCallAvailable = false;
         }
         if (!isCallAvailable) {
-            CallAPIActivityUpload(ParentPos, 6, listDates.get(ParentPos).getChildItems().get(5).getActivityUploadModelClasses(), modelClass);
+            CallAPIActivityUpload(ParentPos, 6, listDates.get(ParentPos).getChildItems().get(6).getActivityUploadModelClasses(), modelClass);
         }
     }
 
@@ -594,7 +594,7 @@ public class OutboxFragment extends Fragment {
             isCallAvailable = false;
         }
         if (!isCallAvailable) {
-            CallAPIDaySubmit(ParentPos, 7, listDates.get(ParentPos).getChildItems().get(6).getDaySubmitModelClass(), modelClass);
+            CallAPIDaySubmit(ParentPos, 7, listDates.get(ParentPos).getChildItems().get(7).getDaySubmitModelClass(), modelClass);
         }
     }
 
@@ -675,15 +675,6 @@ public class OutboxFragment extends Fragment {
     private void CallSendAPIImageS3(int parentPos, EcModelClass ecModelClass, int childPos, int CurrentPos,
                                   String jsonValues, String filePath, String id, GroupModelClass modelClass) {
         try {
-//            String accessKey = Keys.ACCESS_KEY;
-//            String secretKey = Keys.SECRET_KEY;
-//             Regions region = Regions.EU_NORTH_1;
-//
-//            BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey,secretKey);
-//
-//            AmazonS3Client s3Client = new AmazonS3Client(credentials);
-//            s3Client.setRegion(Region.getRegion(region));
-
             util.getS3Client(context);
             String bucketName = "san-edet";
             File fileToUpload = new File(filePath);
@@ -691,8 +682,6 @@ public class OutboxFragment extends Fragment {
             if (!fileToUpload.exists()) {
                 Log.d("fileToUpload", "not exists: " + filePath);
             } else {
-
-
                 String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/"+ fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
@@ -821,76 +810,51 @@ public class OutboxFragment extends Fragment {
             if (!filePath.isEmpty()) {
                 File fileToUpload = new File(filePath);
                 Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
-                if (!fileToUpload.exists()) {
-                    Log.d("fileToUpload", "not exists: " + filePath);
+                if (fileToUpload.toString().isEmpty()) {
+                    Log.d("fileToUploadSignObFrag", "not exists: " + filePath);
                 } else {
-                    if (fileToUpload != null) {
-                        String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
+                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
 
-                        Log.d("TAG", "CallSendAPIImage: " + s3Key);
+                    Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
-                        TransferNetworkLossHandler.getInstance(context);
+                    TransferNetworkLossHandler.getInstance(context);
 
-                        TransferUtility transferUtility = TransferUtility.builder()
-                                .context(context)
-                                .s3Client(util.getS3Client(context))
-                                .build();
+                    TransferUtility transferUtility = TransferUtility.builder()
+                            .context(context)
+                            .s3Client(util.getS3Client(context))
+                            .build();
 
-                        TransferObserver uploadObserver = transferUtility.upload(
-                                bucketName,
-                                s3Key,
-                                fileToUpload);
-                        uploadObserver.setTransferListener(new TransferListener() {
-                            @Override
-                            public void onStateChanged(int idInt, TransferState state) {
-                                if (state == TransferState.COMPLETED) {
-                                    Log.d("TAG", "signModelClass: " + filePath);
-                                    InsertImageSign(signModelClass.getFilePath(), context);
-                                    DeleteCacheFileSign(filePath, id, CurrentPos, parentPos, childPos, modelClass);
-                                    Log.d("S3 Upload", "Upload Successful: " + s3Key);
-                                    try {
-                                        if (!listDates.isEmpty() && listDates.size() > parentPos) {
-                                            listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses().remove(CurrentPos);
-                                            CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
-                                        }
-
-                                        notifyedmethod();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                } else if (state == TransferState.FAILED) {
-
-                                    Log.e("S3 Upload", "Upload Failed");
-                                    InsertImageSign(signModelClass.getFilePath(), context);
-                                    signModelClass.setSynced(1);
-                                    signModelClass.setSync_status(Constants.CALL_FAILED);
-                                    try {
-                                        if (!listDates.isEmpty() && listDates.size() > parentPos) {
-                                            callOfflineSignDataDao.updateSignStatus(id, Constants.CALL_FAILED, 1);
-                                            CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    notifyedmethod();
-                                }
-
-                            }
-
-                            @Override
-                            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                                double progress = (bytesCurrent * 100.0) / bytesTotal;
-                                Log.d("S3 Upload", "Upload Progress: " + progress + "%");
-                            }
-
-                            @Override
-                            public void onError(int idInt, Exception ex) {
-                                Log.e("S3 Upload", "Error: " + ex.getMessage());
-                                signModelClass.setSynced(1);
-                                signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-                                callOfflineSignDataDao.updateSignStatus(id, Constants.EXCEPTION_ERROR, 1);
+                    TransferObserver uploadObserver = transferUtility.upload(
+                            bucketName,
+                            s3Key,
+                            fileToUpload);
+                    uploadObserver.setTransferListener(new TransferListener() {
+                        @Override
+                        public void onStateChanged(int idInt, TransferState state) {
+                            if (state == TransferState.COMPLETED) {
+                                Log.d("TAG", "signModelClass: " + filePath);
+                                InsertImageSign(signModelClass.getFilePath(), context);
+                                DeleteCacheFileSign(filePath, id, CurrentPos, parentPos, childPos, modelClass);
+                                Log.d("S3 Upload", "Upload Successful: " + s3Key);
                                 try {
                                     if (!listDates.isEmpty() && listDates.size() > parentPos) {
+                                        listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses().remove(CurrentPos);
+                                        CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
+                                    }
+
+                                    notifyedmethod();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else if (state == TransferState.FAILED) {
+
+                                Log.e("S3 Upload", "Upload Failed");
+                                InsertImageSign(signModelClass.getFilePath(), context);
+                                signModelClass.setSynced(1);
+                                signModelClass.setSync_status(Constants.CALL_FAILED);
+                                try {
+                                    if (!listDates.isEmpty() && listDates.size() > parentPos) {
+                                        callOfflineSignDataDao.updateSignStatus(id, Constants.CALL_FAILED, 1);
                                         CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
                                     }
                                 } catch (Exception e) {
@@ -898,10 +862,31 @@ public class OutboxFragment extends Fragment {
                                 }
                                 notifyedmethod();
                             }
-                        });
-                    } else {
-                        Log.d("filetoUpload", "CallSendSignImage: " + "filetoUpload is Null");
-                    }
+
+                        }
+
+                        @Override
+                        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                            double progress = (bytesCurrent * 100.0) / bytesTotal;
+                            Log.d("S3 Upload", "Upload Progress: " + progress + "%");
+                        }
+
+                        @Override
+                        public void onError(int idInt, Exception ex) {
+                            Log.e("S3 Upload", "Error: " + ex.getMessage());
+                            signModelClass.setSynced(1);
+                            signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                            callOfflineSignDataDao.updateSignStatus(id, Constants.EXCEPTION_ERROR, 1);
+                            try {
+                                if (!listDates.isEmpty() && listDates.size() > parentPos) {
+                                    CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            notifyedmethod();
+                        }
+                    });
                 }
 
             }
@@ -933,7 +918,7 @@ public class OutboxFragment extends Fragment {
 //                System.out.println("file not Deleted :" + filePath);
                 }
             }
-            callOfflineSignDataDao.deleteOfflineSignId(id);
+            callOfflineECDataDao.deleteOfflineEC(id);
             try {
                 if(!listDates.isEmpty() && listDates.size()>parentPos) {
                     listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses().remove(currentPos);

@@ -128,12 +128,23 @@ public class CallsFragment extends Fragment {
                                                 TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
                                                 TodayCallListTwo.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
 
-                                                for (int j = 0; j<jsonArray1.length(); j++) {
-                                                    JSONObject jsonObject = jsonArray1.getJSONObject(j);
-                                                    if(json.getString("vstTime").substring(0, 10).equalsIgnoreCase(jsonObject.getString("Dcr_dt")) && jsonObject.getString("CustCode").equalsIgnoreCase(json.getString("CustCode"))) {
-                                                        TodayCallListOne.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
-                                                        jsonArray1.remove(j);
-                                                        break;
+                                                if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
+                                                    for (int j = 0; j<jsonArray1.length(); j++) {
+                                                        JSONObject jsonObject = jsonArray1.getJSONObject(j);
+                                                        if(json.getString("DCRdt").substring(0, 10).equalsIgnoreCase(jsonObject.getString("Dcr_dt")) && jsonObject.getString("CustCode").equalsIgnoreCase(json.getString("CustCode"))) {
+                                                            TodayCallListOne.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                                                            jsonArray1.remove(j);
+                                                            break;
+                                                        }
+                                                    }
+                                                }else {
+                                                    for (int j = 0; j < jsonArray1.length(); j++) {
+                                                        JSONObject jsonObject = jsonArray1.getJSONObject(j);
+                                                        if (json.getString("vstTime").substring(0, 10).equalsIgnoreCase(jsonObject.getString("Dcr_dt")) && jsonObject.getString("CustCode").equalsIgnoreCase(json.getString("CustCode"))) {
+                                                            TodayCallListOne.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType"), json.optString("Prod_Samp"), json.optString("Inputs")));
+                                                            jsonArray1.remove(j);
+                                                            break;
+                                                        }
                                                     }
                                                 }
                                             }
@@ -231,7 +242,12 @@ public class CallsFragment extends Fragment {
             boolean isDataAvailable = false;
             if(!SharedPref.getTodayCallList(context).isEmpty()) {
                 JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
-                CheckDate = jsonArray.getJSONObject(0).getString("vstTime").substring(0, 10);
+                if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
+                    CheckDate = jsonArray.getJSONObject(0).getString("DCRdt").substring(0, 10);
+
+                }else {
+                    CheckDate = jsonArray.getJSONObject(0).getString("vstTime").substring(0, 10);
+                }
 
                 if(CheckDate.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))))) {
                     isDataAvailable = true;
@@ -269,6 +285,7 @@ public class CallsFragment extends Fragment {
             jsonObject.put("SF_Code", SharedPref.getSfCode(context));
             jsonObject.put("Trans_SlNo", todayCallListTwo.get(i).getTrans_Slno());
             jsonObject.put("FW_Indicator", FwFlag);
+            jsonObject.put("WorkType_Name","");
             jsonObject.put("AMSLNo", todayCallListTwo.get(i).getADetSLNo());
             jsonObject.put("versionNo", context.getString(R.string.app_version));
             jsonObject.put("mod", Constants.APP_MODE);
