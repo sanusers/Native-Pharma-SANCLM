@@ -68,6 +68,7 @@ import saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.MultiHQClusterItem;
 import saneforce.sanzen.activity.homeScreen.modelClass.MultiHQExpandItem;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
+import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
@@ -1009,7 +1010,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
             for (int i = 0; i<jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.optJSONObject(i);
-                if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+                if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && !SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                     if((EditSession.equalsIgnoreCase("2") || DayPlanCount.equalsIgnoreCase("2")) && mHQCode2.contains(jsonObject.optString("Code"))) {
                         multiple_hq_list.add(new Multicheckclass_clust(jsonObject.optString("Code"), jsonObject.optString("name"), "", true));
                     }else if((EditSession.equalsIgnoreCase("1") || DayPlanCount.equalsIgnoreCase("1")) && mHQCode1.contains(jsonObject.optString("Code"))) {
@@ -1165,7 +1166,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 case R.id.rlcluster1:
                     if(binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
-                    }else if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                    }else if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                         if(binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
                         }else {
@@ -1184,7 +1185,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 case R.id.rlcluster2:
                     if(binding.txtheadquaters2.getText().toString().equalsIgnoreCase("") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
-                    }else if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                    }else if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                         if(binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
                         }else {
@@ -1199,7 +1200,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     if(binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
                     }else {
-                        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                             showHQ(binding.txtheadquaters1, binding.txtCluster1);
                         }else {
                             showHQMGR(binding.txtheadquaters1, binding.txtCluster1);
@@ -1211,7 +1212,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     if(binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
                     }else {
-                        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                             showHQ(binding.txtheadquaters2, binding.txtCluster2);
                         }else {
                             showHQMGR(binding.txtheadquaters2, binding.txtCluster2);
@@ -3021,7 +3022,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             Log.e("todayCallList:Object", jsonObject.toString());
 
             Map<String, String> mapString = new HashMap<>();
-            if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+            if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                 mapString.put("axn", "edetsave/dayplan");
             }else {
                 mapString.put("axn", "multihqsave/dayplan");
@@ -3222,6 +3223,25 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonArray.put(jsonObject);
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
             }
+
+            try {
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
+                JSONObject rootObject = new JSONObject();
+                rootObject.put("Sf_Code", SharedPref.getSfCode(requireContext()));
+                rootObject.put("flg", "0");
+                rootObject.put("tbname", "dcr");
+                rootObject.put("reason", "");
+                JSONObject dtObject = new JSONObject();
+                dtObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
+                dtObject.put("timezone_type", 3);
+                dtObject.put("timezone", "Asia/Kolkata");
+                rootObject.put("dt", dtObject);
+                jsonArray.put(rootObject);
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 2));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             SharedPref.setDayPlanStartedDate(requireContext(), HomeDashBoard.selectedDate.toString());
             if((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")
                     || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && (!stpOfflineDataDao.isNotApproved() && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length()>0)))
@@ -4005,7 +4025,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 ModelClass modelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
                 StringBuilder clusterName = new StringBuilder(), clusterCode = new StringBuilder(), listedDr = new StringBuilder();
                 if(modelClass.getSessionList() != null && !modelClass.getSessionList().isEmpty()) {
-                    if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                    if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                         for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(0).getListedDr()) {
                             listedDr.append(subClass.getCode());
                             listedDr.append(",");
@@ -4069,7 +4089,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         listedDr = new StringBuilder();
                         clusterCode = new StringBuilder();
                         clusterName = new StringBuilder();
-                        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                             for (ModelClass.SessionList.SubClass subClass : modelClass.getSessionList().get(1).getListedDr()) {
                                 listedDr.append(subClass.getCode());
                                 listedDr.append(",");
@@ -4207,7 +4227,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 api_interface = RetrofitClient.getRetrofit(getActivity(), SharedPref.getCallApiUrl(requireContext()));
 
                 JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
-                if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                     jsonObject.put("tableName", "gettodaydcr");
                 }else {
                     jsonObject.put("tableName", "gettodaydcrmultihq");

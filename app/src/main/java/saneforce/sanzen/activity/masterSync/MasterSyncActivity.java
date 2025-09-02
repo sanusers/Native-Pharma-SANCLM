@@ -829,7 +829,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC, "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC, "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
         MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
-        if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
+        if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1") || SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
             myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
         }else {
             myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR, "gettodaydcrmultihq", Constants.WORK_PLAN, myDayPlanStatus, false);
