@@ -468,7 +468,7 @@ public class SharedPref {
     public static final String TAGGED_DCR_CUSTOMERS = "Tagged DCR Customers";
 
     public static final String DETAILING_IDLE_DURATION = "detailing_idle_duration";
-    public static final String S3_BUCKET_NEED = "S3BucketNeed";
+//    public static final String S3_BUCKET_NEED = "S3BucketNeed";
 
     public static final String TPDCR_DEVIATED_DATE = "TPDCR_Deviated_date";
 
@@ -2044,9 +2044,6 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(DYNAMIC_OPTION_CAPS,"");
     }
 
-    public static String getS3BucketNeed(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(S3_BUCKET_NEED, "");
-    }
 
     public static void setDrAddCallNeed(Context context, String drAddCallNeed) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);

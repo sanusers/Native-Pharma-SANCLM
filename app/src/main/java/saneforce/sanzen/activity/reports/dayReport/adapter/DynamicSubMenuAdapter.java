@@ -47,13 +47,11 @@ public class DynamicSubMenuAdapter  extends RecyclerView.Adapter<DynamicSubMenuA
 
         holder.titleTextView.setText(menuSubModel.getMenuName());
         holder.itemView.setOnClickListener(v -> {
-            if(isNetworkConnected()){
+
                 Intent intent = new Intent(holder.itemView.getContext(), DynamicWebActivity.class);
                 intent.putExtra("url", menuSubModel.getMenuLink());
                 intent.putExtra("title", menuSubModel.getMenuName());
                 holder.itemView.getContext().startActivity(intent);
-            }else {
-                commonUtilsMethods.showToastMessage(context, String.valueOf((R.string.no_network)));            }
         });
     }
 

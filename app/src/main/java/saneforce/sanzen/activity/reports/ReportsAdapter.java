@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.reports.missedReport.MissedReport;
+//import saneforce.sanzen.activity.reports.missedReport.MissedReport;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
@@ -76,10 +76,10 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
             if (name.equalsIgnoreCase("Dash Board")) {
                 Intent intentWeb = new Intent(context, ReportWebActivity.class);
                 context.startActivity(intentWeb);
-            } else if (name.equalsIgnoreCase("Missed Report")) {
+            } /*else if (name.equalsIgnoreCase("Missed Report")) {
                 Intent intentWeb= new Intent(context, MissedReport.class);
                 context.startActivity(intentWeb);
-            } else {
+            }*/ else {
                 if(name.equalsIgnoreCase("Day Report")) {
                     ReportsActivity activity = (ReportsActivity) context;
                     activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);

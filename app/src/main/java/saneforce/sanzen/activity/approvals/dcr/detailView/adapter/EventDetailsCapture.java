@@ -65,7 +65,7 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
 
 
 
-                 if (Objects.requireNonNull(fileName).isEmpty()) {
+
                  if (Objects.requireNonNull(fileName).isEmpty()) {
 
                  }else {
@@ -110,6 +110,7 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
 
 
     }
+
 
     @Override
     public int getItemCount() {

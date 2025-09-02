@@ -2602,7 +2602,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         synccount = 0;
         masterSyncArray.clear();
 //        MasterSyncItemModel doctorModel = new MasterSyncItemModel(Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode);
-        MasterSyncItemModel doctorModel = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS+hqCode);
+        MasterSyncItemModel doctorModel = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode);
 //        MasterSyncItemModel cheModel = new MasterSyncItemModel(Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode);
         MasterSyncItemModel cheModel = new MasterSyncItemModel(Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode);
 //        MasterSyncItemModel stockModel = new MasterSyncItemModel(Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode);
@@ -2623,13 +2623,12 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //        masterSyncArray.add(ciModel);
         masterSyncArray.add(cluster);
         masterSyncArray.add(jWorkModel);
-        for (int i = 0; i<masterSyncArray.size(); i++) {
+        for (int i = 0; i < masterSyncArray.size(); i++) {
             sync(masterSyncArray.get(i), hqCode, holder);
         }
     }
 
-    public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode, MyViewHolder
-            holder) {
+    public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode, MyViewHolder holder) {
 
         if (UtilityClass.isNetworkAvailable(context)) {
             try {
@@ -3407,8 +3406,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     }
 
-    public ArrayList<EditModelClass> filterJsonArray(MyViewHolder
-                                                             holder, ArrayList<EditModelClass> arrayList1) { // Filters based on selected cluster
+    public ArrayList<EditModelClass> filterJsonArray(MyViewHolder holder, ArrayList<EditModelClass> arrayList1) { // Filters based on selected cluster
         ArrayList<EditModelClass> arrayList = new ArrayList<>();
         for (int i = 0; i < holder.selectedClusterCode.size(); i++) {
             for (int j = 0; j < arrayList1.size(); j++) {
@@ -3693,9 +3691,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         onEditOneBuild(holder.getAbsoluteAdapterPosition(), true, "");
     }
 
-    public void clusterChanged
-            (ArrayList<String> clusterCodes, ArrayList<EditModelClass> arrayList, TextView
-                    label, String master, MyViewHolder holder) {
+    public void clusterChanged(ArrayList<String> clusterCodes, ArrayList<EditModelClass> arrayList, TextView label, String master, MyViewHolder holder) {
 
         for (int i = 0; i < arrayList.size(); i++) {
             if (arrayList.get(i).isChecked()) {
@@ -3752,13 +3748,13 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             }
         } else {
 
-        List<ModelClass.SessionList.SubClass> subClassList = new ArrayList<>();
-        for (int i = 0; i < arrayList.size(); i++) {
-            if (arrayList.get(i).isChecked()) {
-                ModelClass.SessionList.SubClass subClass = new ModelClass.SessionList.SubClass(arrayList.get(i).getName(), arrayList.get(i).getCode());
-                subClassList.add(subClass);
+            List<ModelClass.SessionList.SubClass> subClassList = new ArrayList<>();
+            for (int i = 0; i < arrayList.size(); i++) {
+                if (arrayList.get(i).isChecked()) {
+                    ModelClass.SessionList.SubClass subClass = new ModelClass.SessionList.SubClass(arrayList.get(i).getName(), arrayList.get(i).getCode());
+                    subClassList.add(subClass);
+                }
             }
-        }
 //        if (master.equalsIgnoreCase(Constants.DOCTOR)) {
 //            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
 //            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassList);
@@ -3775,21 +3771,22 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
 //            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassList);
 //        }
-        if (master.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassList);
-        } else if (master.equalsIgnoreCase(Constants.CHEMIST_MAS)) {
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassList);
-        } else if (master.equalsIgnoreCase(Constants.UNLISTED_DOCTOR_MAS)) {
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnListedDr().clear();
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnListedDr(subClassList);
-        } else if (master.equalsIgnoreCase(Constants.CIP)) {
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassList);
-        } else if (master.equalsIgnoreCase(Constants.HOSPITAL)) {
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassList);
+            if (master.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getListedDr().clear();
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setListedDr(subClassList);
+            } else if (master.equalsIgnoreCase(Constants.CHEMIST_MAS)) {
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemist().clear();
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemist(subClassList);
+            } else if (master.equalsIgnoreCase(Constants.UNLISTED_DOCTOR_MAS)) {
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnListedDr().clear();
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnListedDr(subClassList);
+            } else if (master.equalsIgnoreCase(Constants.CIP)) {
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getCip().clear();
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setCip(subClassList);
+            } else if (master.equalsIgnoreCase(Constants.HOSPITAL)) {
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassList);
+            }
         }
     }
 

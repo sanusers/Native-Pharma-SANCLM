@@ -1,7 +1,10 @@
 package saneforce.sanzen.activity.reports.dayReport.adapter;
 
+import static android.content.Context.CONNECTIVITY_SERVICE;
+
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +29,14 @@ import saneforce.sanzen.activity.reports.DynamicSubMenuActivity;
 import saneforce.sanzen.activity.reports.ReportFragContainerActivity;
 import saneforce.sanzen.activity.reports.dayReport.fragment.DayReportDetailFragment;
 import saneforce.sanzen.activity.reports.dayReport.model.MenuModel;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.storage.SharedPref;
 
 public class DynamicAdapter extends BaseAdapter {
 
     ArrayList<MenuModel> menuModelArrayList;
     Context context;
+    CommonUtilsMethods commonUtilsMethods;
 
     public DynamicAdapter(ArrayList<MenuModel> menuModelArrayList,Context context){
 
@@ -79,15 +84,22 @@ public class DynamicAdapter extends BaseAdapter {
         }
 
         holder.textView.setText(menuModel.getMenu_Name());
+        commonUtilsMethods = new CommonUtilsMethods(context);
 
         holder.cardView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, DynamicSubMenuActivity.class);
-            intent.putExtra("title",menuModel.getMenu_Name());
-            String Data = String.valueOf(menuModel.getMenu_Sub_Details());
-            intent.putExtra("menu_sub_details",Data);
-            context.startActivity(intent);
+
+                Intent intent = new Intent(context, DynamicSubMenuActivity.class);
+                intent.putExtra("title",menuModel.getMenu_Name());
+                String Data = String.valueOf(menuModel.getMenu_Sub_Details());
+                intent.putExtra("menu_sub_details",Data);
+                context.startActivity(intent);
+
         });
         return convertView;
+    }
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
     }
 
     public static class MyViewHolder {

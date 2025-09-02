@@ -32,7 +32,7 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import saneforce.sanzen.activity.reports.missedReport.MissedReport;
+//import saneforce.sanzen.activity.reports.missedReport.MissedReport;
 import saneforce.sanzen.R;
 
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
@@ -92,7 +92,7 @@ public class ReportsActivity extends AppCompatActivity {
         arrayList.add("Day Check In Report");
         arrayList.add("Customer Check In Report");
         arrayList.add("Visit Monitor");*/
-         arrayList.add("Missed Report");
+//         arrayList.add("Missed Report");
         if (SharedPref.getDashboard(this).equals("0")){
             arrayList.add("Dash Board");
         }
