@@ -9,13 +9,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.core.processing.SurfaceProcessorNode;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,9 +32,13 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+//import saneforce.sanzen.activity.reports.missedReport.MissedReport;
 import saneforce.sanzen.R;
+
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.reports.dayReport.adapter.DynamicAdapter;
+import saneforce.sanzen.activity.reports.dayReport.model.MenuModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityReportsBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -48,6 +56,8 @@ public class ReportsActivity extends AppCompatActivity {
     CommonUtilsMethods commonUtilsMethods;
     ProgressDialog progressDialog;
     String url;
+    DynamicAdapter adapter;
+    ArrayList<MenuModel> menuModels = new ArrayList<>();
 
 
     //To Hide the bottomNavigation When popup
@@ -68,7 +78,10 @@ public class ReportsActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
         populateAdapter();
-        binding.backArrow.setOnClickListener(view -> onBackPressed());
+        binding.backArrow.setOnClickListener(view -> {
+            Intent intent = new Intent(ReportsActivity.this, HomeDashBoard.class);
+            startActivity(intent);
+        });
 
     }
 
@@ -79,8 +92,12 @@ public class ReportsActivity extends AppCompatActivity {
         arrayList.add("Day Check In Report");
         arrayList.add("Customer Check In Report");
         arrayList.add("Visit Monitor");*/
+//         arrayList.add("Missed Report");
         if (SharedPref.getDashboard(this).equals("0")){
             arrayList.add("Dash Board");
+        }
+        if (SharedPref.getDynamicOptionNeed(this).equals("0")) {
+            arrayList.add(SharedPref.getDynamicOptionCaps(context));
         }
         reportsAdapter = new ReportsAdapter(arrayList, ReportsActivity.this);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ReportsActivity.this, 4);
@@ -94,7 +111,6 @@ public class ReportsActivity extends AppCompatActivity {
                 if (status) {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, SharedPref.getCallApiUrl(ReportsActivity.this));
-
                         JSONObject jsonObject =CommonUtilsMethods.CommonObjectParameter(this);
                         jsonObject.put("sfcode", SharedPref.getSfCode(this));
                         jsonObject.put("divisionCode", SharedPref.getDivisionCode(this));
@@ -102,7 +118,6 @@ public class ReportsActivity extends AppCompatActivity {
                         jsonObject.put("rptDt", date);
                         if (report.equalsIgnoreCase("DAY REPORT")) {
                             jsonObject.put("tableName", "getdayrpt_edet");
-
                         }
 
                         Log.d("Report", "getData: " + jsonObject);
@@ -122,7 +137,7 @@ public class ReportsActivity extends AppCompatActivity {
                                             jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
                                             navigate(jsonArray, report, date);
                                         }
-                                    }
+                                        }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -146,6 +161,16 @@ public class ReportsActivity extends AppCompatActivity {
             });
             networkStatusTask.execute();
         } else {
+            progressDialog.dismiss();
+            commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.no_network));
+        }
+    }
+
+    public void getDynamicData() {
+        if (UtilityClass.isNetworkAvailable(this)) {
+            Intent intent = new Intent(context, DynamicMenuActivity.class);
+            startActivity(intent);
+        }else{
             progressDialog.dismiss();
             commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.no_network));
         }

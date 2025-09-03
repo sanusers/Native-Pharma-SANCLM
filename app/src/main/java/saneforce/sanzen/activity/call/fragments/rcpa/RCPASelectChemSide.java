@@ -92,7 +92,8 @@ public class RCPASelectChemSide extends Fragment {
     private void AddChemistData() {
         try {
             ChemFullList.clear();
-            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + DCRCallActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+//            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + DCRCallActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + DCRCallActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
 //                if(SharedPref.getGeotagNeedChe(context).equalsIgnoreCase("1")) {

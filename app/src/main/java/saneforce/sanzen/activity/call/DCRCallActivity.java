@@ -3377,8 +3377,9 @@ public class DCRCallActivity extends AppCompatActivity {
         FinalAdditionalCallAdapter.nestedInput = new ArrayList<>();
 
         try {
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + TodayPlanSfCode).getMasterSyncDataJsonArray();
-            Log.v("length", jsonArray.length() + "---" + Constants.DOCTOR + TodayPlanSfCode);
+//            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + TodayPlanSfCode).getMasterSyncDataJsonArray();
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + TodayPlanSfCode).getMasterSyncDataJsonArray();
+            Log.v("length", jsonArray.length() + "---" + Constants.DOCTOR_MAS + TodayPlanSfCode);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), false, jsonObject.getString("Tlvst"), jsonObject.getString("MProd")));

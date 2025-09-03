@@ -244,8 +244,8 @@ public class CreatePresentationActivity extends AppCompatActivity {
             if (!savedPresentation.isEmpty()) { //Changing image selection state if there are data in savedPresentation.same time load data of selected image to the SelectedSlideAdapter
                 for (BrandModelClass.Product savedProduct : savedPresentation) {
                     for (BrandModelClass brandModelClass : brandProductArrayList) {
-                        if (savedProduct.getBrandCode().equals(brandModelClass.brandCode)) {
-                            for (BrandModelClass.Product product : brandModelClass.productArrayList) {
+                        if (savedProduct.getBrandCode().equals(brandModelClass.getBrandCode())) {
+                            for (BrandModelClass.Product product : brandModelClass.getProductArrayList()) {
                                 if (savedProduct.getSlideId().equals(product.getSlideId())) {
                                     product.setImageSelected(true);
                                     selectedSlideArrayList.add(product); //selectedSlideArrayList is the array we pass to SelectedSlideAdapter
@@ -364,19 +364,35 @@ public class CreatePresentationActivity extends AppCompatActivity {
                 presentationDataDao.savePresentation(oldName, name, "", "", "", jsonObject.toString());
             } else {
                 switch (customerType){
-                    case Constants.DOCTOR:
+                 /*   case Constants.DOCTOR:
+                    case "1":
+                        presentationDataDao.savePresentation(oldName, name, "1", customerCodes, headquarterCode, jsonObject.toString());
+                        break;*/
+                    case Constants.DOCTOR_MAS:
                     case "1":
                         presentationDataDao.savePresentation(oldName, name, "1", customerCodes, headquarterCode, jsonObject.toString());
                         break;
-                    case Constants.CHEMIST:
+                    /*case Constants.CHEMIST:
+                    case "2":
+                        presentationDataDao.savePresentation(oldName, name, "2", customerCodes, headquarterCode, jsonObject.toString());
+                        break;*/
+                    case Constants.CHEMIST_MAS:
                     case "2":
                         presentationDataDao.savePresentation(oldName, name, "2", customerCodes, headquarterCode, jsonObject.toString());
                         break;
-                    case Constants.STOCKIEST:
+/*                    case Constants.STOCKIEST:
+                    case "3":
+                        presentationDataDao.savePresentation(oldName, name, "3", customerCodes, headquarterCode, jsonObject.toString());
+                        break;*/
+                    case Constants.STOCKIEST_MAS:
                     case "3":
                         presentationDataDao.savePresentation(oldName, name, "3", customerCodes, headquarterCode, jsonObject.toString());
                         break;
-                    case Constants.UNLISTED_DOCTOR:
+/*                    case Constants.UNLISTED_DOCTOR:
+                    case "4":
+                        presentationDataDao.savePresentation(oldName, name, "4", customerCodes, headquarterCode, jsonObject.toString());
+                        break;*/
+                    case Constants.UNLISTED_DOCTOR_MAS:
                     case "4":
                         presentationDataDao.savePresentation(oldName, name, "4", customerCodes, headquarterCode, jsonObject.toString());
                         break;

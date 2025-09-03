@@ -725,9 +725,14 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
 
     public void SyncUnlisted(String hqCode) {
         UnlistedModelArray.clear();
-        UnlistedStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + hqCode);
-        MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(UnlistedDoctorAddition.this), Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, UnlistedStatus, false);
+        UnlistedStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_GEO + hqCode);
+//        MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(UnlistedDoctorAddition.this), Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, UnlistedStatus, false);
+
+        MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(UnlistedDoctorAddition.this), Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, UnlistedStatus, false);
+        MasterSyncItemModel unListModel_geo = new MasterSyncItemModel(SharedPref.getUNLcap(UnlistedDoctorAddition.this), Constants.DOCTOR_MAS, "getunlisteddr_geo", Constants.UNLISTED_DOCTOR_GEO + hqCode, UnlistedStatus, false);
+
         UnlistedModelArray.add(unListModel);
+        UnlistedModelArray.add(unListModel_geo);
         arrayForAdapter.clear();
         arrayForAdapter.addAll(UnlistedModelArray);
         populateAdapter(arrayForAdapter);
@@ -759,7 +764,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
             Map<String, String> mapString = new HashMap<>();
             Log.e("API Object", "master sync obj : " + jsonObject);
             Call<JsonElement> call = null;
-            if(masterOf.equalsIgnoreCase(Constants.DOCTOR)) {
+            if(masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
                 mapString.put("axn", "table/dcrmasterdata");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
             }

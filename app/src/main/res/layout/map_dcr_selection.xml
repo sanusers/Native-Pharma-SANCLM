@@ -130,7 +130,7 @@
         android:layout_height="match_parent"
         android:background="#7A000000"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/constraint_hq_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -212,7 +212,7 @@
 
         <ListView
             android:id="@+id/hq_list_view"
-            android:layout_width="@dimen/_180sdp"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginHorizontal="@dimen/_3sdp"
             android:background="@drawable/recyclerview_shape"

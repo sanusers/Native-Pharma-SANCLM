@@ -65,6 +65,7 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
 
 
 
+
                  if (Objects.requireNonNull(fileName).isEmpty()) {
 
                  }else {
@@ -104,10 +105,12 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
              }
 
 //             Glide.with(context).load(SharedPref.getTagImageUrl(context) + List.get(position).getEventimg()).fitCenter().into(imageView);
+//             }
          });
 
 
     }
+
 
     @Override
     public int getItemCount() {

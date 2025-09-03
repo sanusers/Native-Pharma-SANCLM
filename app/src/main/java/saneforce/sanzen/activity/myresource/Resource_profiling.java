@@ -580,7 +580,7 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
     }
 
 
-    @SuppressLint("PotentialBehaviorOverride")
+    /*@SuppressLint("PotentialBehaviorOverride")
     public void DCR_Doc() {
         mMap.clear();
         listed_cust.clear();
@@ -596,6 +596,107 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
                         latitude = (jsonObject.getString("Lat"));
                         longtitue = (jsonObject.getString("Long"));
                         address = (jsonObject.getString("Addrs"));
+
+                        String custname = (jsonObject.getString("Name"));
+                        String townname = (jsonObject.getString("Town_Name"));
+                        Mapview_modelclass vals = new Mapview_modelclass(latitude, longtitue, address, custname, townname, "");
+                        listed_cust.add(vals);
+                        Log.d("listsize", String.valueOf(listed_cust) + "---" + address);
+                        if (address.equals("")) {
+                            listView.setVisibility(View.GONE);
+                        }
+                        dataList.add(new CustomModel(address));
+
+                        // Add more data as needed
+
+                        CustomAdapter adapter = new CustomAdapter(this, dataList);
+                        listView.setAdapter(adapter);
+
+                    }
+                }
+                Log.d("list_size", dataList.toString() + "---" + dataList.size());
+                if (dataList.size() == 0) {
+                    listView.setVisibility(View.GONE);
+                }
+
+                for (int i = 0; i < listed_cust.size(); i++) {
+                    if (listed_cust.get(i).getStrlat() != null && listed_cust.get(i).getStrlat().length() > 0) {
+                        LatLng sydney = new LatLng(Double.parseDouble(listed_cust.get(i).getStrlat()), Double.parseDouble(listed_cust.get(i).getStrlong()));
+                        LatLng sydney1 = new LatLng(Double.parseDouble(listed_cust.get(0).getStrlat()), Double.parseDouble(listed_cust.get(0).getStrlong()));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney1));
+                        LatLng location = new LatLng(Double.parseDouble(listed_cust.get(i).getStrlat()), Double.parseDouble(listed_cust.get(i).getStrlong())); // Replace with your desired latitude and longitude
+                        Log.e("loc_latlong", str1 + "--" + str2 + "--" + location);
+
+                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        }
+//                        mMap.setMyLocationEnabled(true);
+
+
+                        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.marker);
+
+//                        Bitmap b = BitmapDescriptorFactory.fromResource(R.drawable.marker);
+                        Bitmap smallMarker = Bitmap.createScaledBitmap(b, 30, 30, true);
+
+//
+
+
+                        Marker marker = mMap.addMarker(new MarkerOptions()
+                                .position(location)
+                                .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+
+
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, 10f);
+                        mMap.moveCamera(cameraUpdate);
+
+//                        if(latitude.equals("")&&longtitue.equals("")){
+//                            mMap.setMyLocationEnabled(true);
+//                        }else{
+//                            mMap.setMyLocationEnabled(false);
+//                            mMap.getUiSettings().setScrollGesturesEnabled(false);
+//                            mMap.getUiSettings().setZoomControlsEnabled(false);
+//                            mMap.getUiSettings().setZoomGesturesEnabled(false);
+//                            mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(false);
+//                            mMap.getUiSettings().setCompassEnabled(false);
+//                            mMap.getUiSettings().setRotateGesturesEnabled(false);
+//                        }
+
+                        mMap.setOnMarkerClickListener(this);
+
+
+//                        Dr_addrs.setText(getAddress(Double.parseDouble(listed_cust.get(i).getStrlat()), Double.parseDouble(listed_cust.get(i).getStrlong())));
+
+                        marker.setTag(listed_cust.get(i));
+                        mMap.setOnMarkerClickListener(this);
+
+                        Log.e("location_latlong", str1 + "--" + str2);
+
+
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+*/
+    @SuppressLint("PotentialBehaviorOverride")
+    public void DCR_Doc() {
+        mMap.clear();
+        listed_cust.clear();
+        dataList.clear();
+        String latitude = "", longtitue = "", address = "";
+
+        try {
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS).getMasterSyncDataJsonArray();
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    if (doc_code.equals(jsonObject.getString("Code"))) {//
+                        latitude = (jsonObject.getString("lat"));
+                        longtitue = (jsonObject.getString("long"));
+                        address = (jsonObject.getString("addrs"));
 
                         String custname = (jsonObject.getString("Name"));
                         String townname = (jsonObject.getString("Town_Name"));

@@ -98,6 +98,7 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
                             CustType = jsonObject.getString("CustType");
                             FW_Indicator = jsonObject.getString("FW_Indicator");
                             workType = jsonObject.getString("WorkType_Name");
+                            System.out.println("WorkType_Name :"+workType);
                             Mnth = jsonObject.getString("Mnth");
                             CustName = jsonObject.getString("CustName");
                             town_name = jsonObject.getString("town_name");
@@ -113,6 +114,7 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
                             CustType = jsonObject.getString("CustType");
                             FW_Indicator = jsonObject.getString("FW_Indicator");
                             workType = jsonObject.getString("WorkType_Name");
+                            System.out.println("WorkType_Name1 :"+workType);
                             Mnth = jsonObject.getString("Mnth");
                             CustName = jsonObject.getString("CustName");
                             town_name = jsonObject.getString("town_name");
@@ -133,27 +135,34 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
                             medicalPersonnel = "";
                         } else if (CustType.equals("1")) {
                             if (SharedPref.getDrCap(requireContext()).isEmpty() || SharedPref.getDrCap(requireContext()) == null) {
-                                medicalPersonnel = "Doctor";
+                                medicalPersonnel = "Listed Doctor";
                             } else {
                                 medicalPersonnel = SharedPref.getDrCap(requireContext());
+                                System.out.println("medicalPersonnelDr :"+  medicalPersonnel);
                             }
                         } else if (CustType.equals("2")) {
                             if (SharedPref.getChmCap(requireContext()).isEmpty() || SharedPref.getChmCap(requireContext()) == null) {
                                 medicalPersonnel = "Chemist";
                             } else {
                                 medicalPersonnel = SharedPref.getChmCap(requireContext());
+                                System.out.println("medicalPersonnelChe :"+  medicalPersonnel);
+
                             }
                         } else if (CustType.equals("3")) {
                             if (SharedPref.getStkCap(requireContext()).isEmpty() || SharedPref.getStkCap(requireContext()) == null) {
                                 medicalPersonnel = "StockList";
                             } else {
                                 medicalPersonnel = SharedPref.getStkCap(requireContext());
+                                System.out.println("medicalPersonnelStk :"+  medicalPersonnel);
+
                             }
                         } else if (CustType.equals("4")) {
                             if (SharedPref.getUNLcap(requireContext()).isEmpty() || SharedPref.getUNLcap(requireContext()) == null) {
                                 medicalPersonnel = "UnListed Doctor";
                             } else {
                                 medicalPersonnel = SharedPref.getUNLcap(requireContext());
+                                System.out.println("medicalPersonnelUnListed :"+  medicalPersonnel);
+
                             }
                         }
 

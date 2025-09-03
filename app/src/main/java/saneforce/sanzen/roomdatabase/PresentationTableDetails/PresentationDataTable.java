@@ -24,6 +24,7 @@ public class PresentationDataTable {
     private String presentationData = "";
 
     @ColumnInfo(name = "customer_type")
+    @NonNull
     private String customerType = "";
 
     @ColumnInfo(name = "customer_codes")

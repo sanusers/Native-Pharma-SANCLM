@@ -142,10 +142,7 @@ public class TourPlanActivity extends AppCompatActivity {
         return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
 
-    public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, ArrayList<ModelClass.SessionList.SubClass> hqs,
-                                                                      ArrayList<MultiHQHeaderModelClass> clusters, ArrayList<MultiHQHeaderModelClass> JCs, ArrayList<MultiHQHeaderModelClass> listedDrs,
-                                                                      ArrayList<MultiHQHeaderModelClass> chemists, ArrayList<MultiHQHeaderModelClass> stockiests, ArrayList<MultiHQHeaderModelClass> unListedDrs,
-                                                                      ArrayList<MultiHQHeaderModelClass> cips, ArrayList<MultiHQHeaderModelClass> hospitals, String remarks) {
+    public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, ArrayList<ModelClass.SessionList.SubClass> hqs, ArrayList<MultiHQHeaderModelClass> clusters, ArrayList<MultiHQHeaderModelClass> JCs, ArrayList<MultiHQHeaderModelClass> listedDrs, ArrayList<MultiHQHeaderModelClass> chemists, ArrayList<MultiHQHeaderModelClass> stockiests, ArrayList<MultiHQHeaderModelClass> unListedDrs, ArrayList<MultiHQHeaderModelClass> cips, ArrayList<MultiHQHeaderModelClass> hospitals, String remarks) {
         return new ModelClass.SessionList("", true, remarks, workType, hq, hqs, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clusters, JCs, listedDrs, chemists, stockiests, unListedDrs, cips, hospitals);
     }
 
@@ -2582,7 +2579,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1") || SharedPref.getOneBuild(this).equalsIgnoreCase("0")) {
                         jsonObject.put("tableName", "getall_tp");
                     } else {
-                        jsonObject.put("tableName", "getall_multitp");
+                        jsonObject.put("tableName", "getall_multitpnew");
                     }
                     jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
                     jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
@@ -3750,9 +3747,7 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
 
-    private void SaveTpLocalFull(ReceiveModel
-                                         receiveModel, ArrayList<ModelClass> modelClasses, ArrayList<ModelClass> dayWiseSaveTp, String
-                                         day, String monthName, String date, String dayName, String monthNo, String year) {
+    private void SaveTpLocalFull(ReceiveModel receiveModel, ArrayList<ModelClass> modelClasses, ArrayList<ModelClass> dayWiseSaveTp, String day, String monthName, String date, String dayName, String monthNo, String year) {
         ModelClass.SessionList sessionList = new ModelClass.SessionList();
         ModelClass.SessionList sessionList2 = new ModelClass.SessionList();
         ModelClass.SessionList sessionList3 = new ModelClass.SessionList();
@@ -4147,7 +4142,7 @@ public class TourPlanActivity extends AppCompatActivity {
             if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                 jsonObject.put("tableName", "gettpdetail");
             } else {
-                jsonObject.put("tableName", "gettpmultihqdetail");
+                jsonObject.put("tableName", "gettpmultihqdetailnew");
             }
             jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
             jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
@@ -4511,8 +4506,7 @@ public class TourPlanActivity extends AppCompatActivity {
         return null;
     }
 
-    public void prepareObjectToSendForApproval(String month, String
-            dateForApproval, ArrayList<ModelClass> arrayList, boolean statusOffline) {
+    public void prepareObjectToSendForApproval(String month, String dateForApproval, ArrayList<ModelClass> arrayList, boolean statusOffline) {
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
             @Override
             public void isNetworkAvailable(Boolean status) {
@@ -4534,7 +4528,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     jsonObject.put("Rejection_Reason", "");
                                     jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, modelClass.getDate()) + " 00:00:00");
                                     jsonObject.put("submitted_time", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_37));
-                                    jsonObject.put("Entry_mode", "Android -Edetailing");
+                                    jsonObject.put("Entry_mode", Constants.APP_MODE);
                                     jsonObject.put("Approve_mode", "");
                                     jsonObject.put("Approved_time", "");
                                     jsonObject.put("app_version", BuildConfig.VERSION_NAME);
@@ -4789,37 +4783,39 @@ public class TourPlanActivity extends AppCompatActivity {
         return stringBuilder.toString();
     }
 
-
-    public String textBuilderMultiHQ(List<MultiHQHeaderModelClass> multiHQHeaderModelClassList,
-                                     boolean getCode) {
+    public String textBuilderMultiHQ(List<MultiHQHeaderModelClass> multiHQHeaderModelClassList, boolean getCode) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < multiHQHeaderModelClassList.size(); i++) {
             MultiHQHeaderModelClass multiHQHeaderModelClass = multiHQHeaderModelClassList.get(i);
             List<MultiHQItemModelClass> multiHQItemModelClassList = multiHQHeaderModelClass.getItemsList();
+            boolean isDataFound = false;
             for (MultiHQItemModelClass multiHQItemModelClass : multiHQItemModelClassList) {
                 if (getCode) { // true -> code
                     stringBuilder.append(multiHQItemModelClass.getCode()).append(",");
+                    isDataFound = true;
                 } else { // false -> name
                     stringBuilder.append(multiHQItemModelClass.getName()).append(",");
+                    isDataFound = true;
                 }
             }
-            if (!stringBuilder.toString().isEmpty()) {
+            if (!stringBuilder.toString().isEmpty() && isDataFound) {
                 stringBuilder.append("$");
+            } else if (!isDataFound) {
+                stringBuilder.append(",$");
             }
         }
+        Log.i("TAG", "textBuilderMultiHQ: " + stringBuilder);
         return stringBuilder.toString();
     }
 
-    public void sendTpForApproval(JSONArray
-                                          jsonArray, ArrayList<ModelClass> modelClassArrayList, String date, String month, Boolean
-                                          statusOffline) {
+    public void sendTpForApproval(JSONArray jsonArray, ArrayList<ModelClass> modelClassArrayList, String date, String month, Boolean statusOffline) {
         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
         Log.v("tpApproval", "--json--" + jsonArray.toString());
         Map<String, String> mapString = new HashMap<>();
         if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
             mapString.put("axn", "savenew/tp");
         } else {
-            mapString.put("axn", "multihqsave/tp");
+            mapString.put("axn", "multihqsavenew/tp");
         }
         Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonArray.toString());
         call.enqueue(new Callback<JsonElement>() {
@@ -4990,16 +4986,12 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void checkTpApiStaus() {
-
         if (!SharedPref.getTpSyncStaus(TourPlanActivity.this)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Warning!")
-                    .setMessage("Tour plan Not sync properly. once sync again...").setCancelable(false).setIcon(getDrawable(R.drawable.icon_sync_failed)).setIcon(android.R.drawable.ic_dialog_alert)
-                    .setPositiveButton("Sync", (dialog, which) -> {
-                        syncTPSetup();
-                        get3MonthRemoteTPData("current");
-                    })
-                    .setNegativeButton(android.R.string.no, (dialog, which) -> getOnBackPressedDispatcher().onBackPressed());
+            builder.setTitle("Warning!").setMessage("Tour plan Not sync properly. once sync again...").setCancelable(false).setIcon(getDrawable(R.drawable.icon_sync_failed)).setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton("Sync", (dialog, which) -> {
+                syncTPSetup();
+                get3MonthRemoteTPData("current");
+            }).setNegativeButton(android.R.string.no, (dialog, which) -> getOnBackPressedDispatcher().onBackPressed());
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         }

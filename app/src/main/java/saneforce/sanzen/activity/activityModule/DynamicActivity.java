@@ -3151,7 +3151,7 @@ public class DynamicActivity extends AppCompatActivity {
                             JSONArray jsonArray = new JSONArray();
 
                             if (response.isSuccessful()) {
-                                Log.e("test", "response : " + masterFor + " -- " + remoteTableName + " : " + Objects.requireNonNull(response.body()));
+                                Log.e("test DA", "response : " + masterFor + " -- " + remoteTableName + " : " + Objects.requireNonNull(response.body()));
                                 try {
                                     JsonElement jsonElement = response.body();
                                     if (!jsonElement.isJsonNull()) {

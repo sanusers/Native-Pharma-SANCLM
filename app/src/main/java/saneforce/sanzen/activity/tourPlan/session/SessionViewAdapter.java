@@ -338,22 +338,40 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
                 holder.clusterLayout.setVisibility(View.GONE);
             }
 
-            //Joint Work
-            if (holder.data.getJC().size() > 0) {
-                StringBuilder jcName = new StringBuilder();
-                for (int i = 0; i < holder.jcModelArray.size(); i++) {
+        //Joint Work
+        if (!holder.data.getJC().isEmpty() && !isMGR) {
+            StringBuilder jcName = new StringBuilder();
+            for (int i = 0; i < holder.jcModelArray.size(); i++) {
+                if (jcName.length() == 0) {
+                    jcName = new StringBuilder(holder.jcModelArray.get(i).getName());
+                } else {
+                    jcName.append(", ").append(holder.jcModelArray.get(i).getName());
+                }
+            }
+            if (jcName.length() > 0) {
+                holder.jcTV.setText(jcName);
+            }
+        } else if(!holder.data.getJCs().isEmpty() && isMGR) {
+            holder.jcLayout.setVisibility(View.VISIBLE);
+            StringBuilder jcName = new StringBuilder();
+            for (int i = 0; i < holder.jcsModelArray.size(); i++) {
+                MultiHQHeaderModelClass multiHQHeaderModelClass = holder.jcsModelArray.get(i);
+                ArrayList<MultiHQItemModelClass> list = multiHQHeaderModelClass.getItemsList();
+                for (int j = 0; j < list.size(); j++) {
+                    MultiHQItemModelClass multiHQItemModelClass = list.get(j);
                     if (jcName.length() == 0) {
-                        jcName = new StringBuilder(holder.jcModelArray.get(i).getName());
+                        jcName = new StringBuilder(multiHQItemModelClass.getName());
                     } else {
-                        jcName.append(", ").append(holder.jcModelArray.get(i).getName());
+                        jcName.append(", ").append(multiHQItemModelClass.getName());
                     }
                 }
-                if (jcName.length() > 0) {
-                    holder.jcTV.setText(jcName);
-                }
-            } else {
-                holder.jcLayout.setVisibility(View.GONE);
             }
+            if (jcName.length() > 0) {
+                holder.jcTV.setText(jcName);
+            }
+        } else {
+            holder.jcLayout.setVisibility(View.GONE);
+        }
 
             //Listed Dr
             if (!holder.data.getListedDr().isEmpty() && !isMGR) {

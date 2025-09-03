@@ -679,92 +679,92 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
         } else {
 
 
-            String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/"+ fileToUpload.getName();
-            Log.d("TAG", "CallSendAPIImage: " + s3Key);
+                String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Event_Capture" + "/" + fileToUpload.getName();
+                Log.d("TAG", "CallSendAPIImage: " + s3Key);
 
             /*String UploadUrl = "https://" + "s3." +"eu-north-1." + "amazonaws.com/" + bucketName + "/" + s3Key;
             Log.d("S3UploadUrl", "CallSendAPIImage: " + UploadUrl);*/
 
-            TransferNetworkLossHandler.getInstance(context);
+                TransferNetworkLossHandler.getInstance(context);
 
             TransferUtility transferUtility = TransferUtility.builder()
                     .context(context)
                     .s3Client(util.getS3Client(context))
                     .build();
 
-            TransferObserver uploadObserver = transferUtility.upload(
-                    bucketName,
-                    s3Key,
-                    fileToUpload);
-            Log.d("uploadObserver", "CallSendAPIImage: "+uploadObserver);
+                TransferObserver uploadObserver = transferUtility.upload(
+                        bucketName,
+                        s3Key,
+                        fileToUpload);
+                Log.d("uploadObserver", "CallSendAPIImage: " + uploadObserver);
 
-            uploadObserver.setTransferListener(new TransferListener() {
-                @Override
-                public void onStateChanged(int idInt, TransferState state) {
-                    if (state == TransferState.COMPLETED) {
-                        Log.d("TAG", "ecModelClass: " + filePath);
-                        InsertImage(ecModelClass.getFilePath(), context);
-                        DeleteCacheFile(filePath, id, i, position);
-                        Log.d("S3 Upload", "Upload Successful: " + s3Key);
+                uploadObserver.setTransferListener(new TransferListener() {
+                    @Override
+                    public void onStateChanged(int idInt, TransferState state) {
+                        if (state == TransferState.COMPLETED) {
+                            Log.d("TAG", "ecModelClass: " + filePath);
+                            InsertImage(ecModelClass.getFilePath(), context);
+                            DeleteCacheFile(filePath, id, i, position);
+                            Log.d("S3 Upload", "Upload Successful: " + s3Key);
+                            try {
+                                CallAPIListImage(position);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else if (state == TransferState.FAILED) {
+
+                            Log.e("S3 Upload", "Upload Failed");
+                            InsertImage(ecModelClass.getFilePath(), context);
+
+                            ecModelClass.setSynced(1);
+                            ecModelClass.setSync_status(Constants.CALL_FAILED);
+                            try {
+                                callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
+                                CallAPIListImage(position);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            ecModelClass.setSynced(1);
+                            ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                            callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
+                            CallAPIListImage(position);
+                        }
+
+                    }
+
+                    @Override
+                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                        double progress = (bytesCurrent * 100.0) / bytesTotal;
+                        Log.d("S3 Upload", "Upload Progress: " + progress + "%");
+                    }
+
+                    @Override
+                    public void onError(int idInt, Exception ex) {
+                        Log.e("S3 Upload", "Error: " + ex.getMessage());
+                        ecModelClass.setSynced(1);
+                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
                         try {
                             CallAPIListImage(position);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    } else if (state == TransferState.FAILED) {
-
-                        Log.e("S3 Upload", "Upload Failed");
-                        InsertImage(ecModelClass.getFilePath(), context);
-
-                        ecModelClass.setSynced(1);
-                        ecModelClass.setSync_status(Constants.CALL_FAILED);
-                        try {
-                            callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
-                            CallAPIListImage(position);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }else{
-                        ecModelClass.setSynced(1);
-                        ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
-                        callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
-                        CallAPIListImage(position);
                     }
+                });
 
-                }
-
-                @Override
-                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                    double progress = (bytesCurrent * 100.0) / bytesTotal;
-                    Log.d("S3 Upload", "Upload Progress: " + progress + "%");
-                }
-
-                @Override
-                public void onError(int idInt, Exception ex) {
-                    Log.e("S3 Upload", "Error: " + ex.getMessage());
-                    ecModelClass.setSynced(1);
-                    ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-                    callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
-                    try {
-                        CallAPIListImage(position);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
+            }
+        } catch (Exception e) {
+            Log.v("img_tag", e.toString());
+            ecModelClass.setSynced(1);
+            ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+            callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+            try {
+                CallAPIListImage(position);
+            } catch (Exception a) {
+                a.printStackTrace();
+            }
         }
-    } catch(Exception e){
-        Log.v("img_tag", e.toString());
-        ecModelClass.setSynced(1);
-        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
-        try {
-            CallAPIListImage(position);
-        } catch (Exception a) {
-            a.printStackTrace();
-        }
-    }
 
 }
 

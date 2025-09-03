@@ -345,6 +345,8 @@ public class SharedPref {
     public static final String DCR_APPROVAL_NEED = "DcrapprvNd";
     public static final String ONE_BUILD = "one_build";
     public static final String S3_BUCKET_NEED = "S3BucketNeed";
+    public static final String DYNAMIC_OPTION_NEED = "dynamic_option_need";
+    public static final String DYNAMIC_OPTION_CAPS = "dynamic_option_caps";
     //myresource
     public static final String SETSYNHQ = "SETSYNHQ";
     public static final String SETSYN_HQCODE = "SETSYN_HQCODE";
@@ -471,6 +473,8 @@ public class SharedPref {
 
     public static final String DAY_CHECK_IN_DATA = "Day_Check_In_Data";
     public static final String CHECK_IN_SKIP_DATE = "Check_In_Skip_Date";
+
+    public static final String A_S_KEY = "A_S_KEY";
 
     public static String TpIdCurrent = "tpIdCurrent";
     public static String TpIdPrevious = "tpIdPrevious";
@@ -815,7 +819,9 @@ public class SharedPref {
         editor.putString(DETAILING_IDLE_DURATION, jsonObject.optString("detailing_idle_duration"));
         editor.putString(WELCOME_SLIDES_PATH, "");
         editor.putString(ONE_BUILD,jsonObject.optString("one_build"));
-        editor.putString(S3_BUCKET_NEED, jsonObject.optString("S3BucketNeed"));
+        editor.putString(S3_BUCKET_NEED, jsonObject.getString("S3BucketNeed"));
+        editor.putString(DYNAMIC_OPTION_NEED,jsonObject.getString("dynamic_option_need"));
+        editor.putString(DYNAMIC_OPTION_CAPS,jsonObject.getString("dynamic_option_caps"));
         editor.apply();
 
         } catch (Exception ignore) {
@@ -2030,6 +2036,13 @@ public class SharedPref {
     public static String getS3BucketNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(S3_BUCKET_NEED, "");
     }
+    public static String getDynamicOptionNeed(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(DYNAMIC_OPTION_NEED,"");
+    }
+    public static String getDynamicOptionCaps(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(DYNAMIC_OPTION_CAPS,"");
+    }
+
 
     public static void setDrAddCallNeed(Context context, String drAddCallNeed) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -2435,7 +2448,7 @@ public class SharedPref {
     public static void putAutomassync(Context context, boolean mas_sync) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putBoolean(SYNC_STATUS, mas_sync).apply();
+        editor.putBoolean(  SYNC_STATUS, mas_sync).apply();
     }
 
     public static void putSlidestatus(Context context, boolean status) {
@@ -2970,5 +2983,15 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getInt(TpIdNext,0);
     }
 
+
+    public static void saveKeys(Context context, String aKey, String sKey) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(A_S_KEY, aKey + "^^" + sKey).apply();
+    }
+
+    public static String getKeys(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(A_S_KEY, "^^");
+    }
 
 }
