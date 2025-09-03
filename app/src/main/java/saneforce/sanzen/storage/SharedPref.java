@@ -819,9 +819,9 @@ public class SharedPref {
         editor.putString(DETAILING_IDLE_DURATION, jsonObject.optString("detailing_idle_duration"));
         editor.putString(WELCOME_SLIDES_PATH, "");
         editor.putString(ONE_BUILD,jsonObject.optString("one_build"));
-        editor.putString(S3_BUCKET_NEED, jsonObject.getString("S3BucketNeed"));
-        editor.putString(DYNAMIC_OPTION_NEED,jsonObject.getString("dynamic_option_need"));
-        editor.putString(DYNAMIC_OPTION_CAPS,jsonObject.getString("dynamic_option_caps"));
+        editor.putString(S3_BUCKET_NEED, jsonObject.optString("S3BucketNeed"));
+        editor.putString(DYNAMIC_OPTION_NEED,jsonObject.optString("dynamic_option_need"));
+        editor.putString(DYNAMIC_OPTION_CAPS,jsonObject.optString("dynamic_option_caps"));
         editor.apply();
 
         } catch (Exception ignore) {

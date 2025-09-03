@@ -79,18 +79,21 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
             } /*else if (name.equalsIgnoreCase("Missed Report")) {
                 Intent intentWeb= new Intent(context, MissedReport.class);
                 context.startActivity(intentWeb);
-            }*/ else {
-                if(name.equalsIgnoreCase("Day Report")) {
-                    ReportsActivity activity = (ReportsActivity) context;
-                    activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
-                    activity.getData(name, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4));
-                }
-                if(name.equalsIgnoreCase(SharedPref.getDynamicOptionCaps(context))){
-                    ReportsActivity activity = (ReportsActivity) context;
-                    activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
-                    activity.getDynamicData();
-                }
+            }*/ else if (name.equalsIgnoreCase("Day Report")) {
+                ReportsActivity activity = (ReportsActivity) context;
+                activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
+                activity.getData(name, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4));
+            } else if (name.equalsIgnoreCase(SharedPref.getDynamicOptionCaps(context))) {
+                ReportsActivity activity = (ReportsActivity) context;
+                activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
+                activity.getDynamicData();
+            }else if (name.equalsIgnoreCase("Visit Control")){
+                ReportsActivity activity = (ReportsActivity) context;
+//                Intent intent = new Intent(context,VisitControl.class);
+//                context.startActivity(intent);
+
             }
+
         });
     }
 

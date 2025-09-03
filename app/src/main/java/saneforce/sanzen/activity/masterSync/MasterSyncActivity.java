@@ -200,7 +200,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         sharedpreferences = getSharedPreferences("SLIDES", MODE_PRIVATE);
         HQCODE_SYN.addAll(SharedPref.getsyn_hqcode(context));
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
+        if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString(Constants.NAVIGATE_FROM);
         }
         localDate = LocalDate.now();
@@ -650,7 +650,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             binding.hqName.setText(SharedPref.getHqNameMain(MasterSyncActivity.this));
             rsf = SharedPref.getSfCode(MasterSyncActivity.this);
         }
-       // Rsf is HQ code
+        // Rsf is HQ code
 
         binding.hq.setEnabled(SharedPref.getSfType(this).equalsIgnoreCase("2"));
         binding.lastSyncTime.setText(SharedPref.getLastSync(getApplicationContext()));
@@ -792,294 +792,291 @@ public class MasterSyncActivity extends AppCompatActivity {
     }
 
     public void checkAndSetStatus(MasterSyncItemModel masterSyncItemModel) {
-            if (masterSyncItemModel.getSyncSuccess() == 2) {
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getspeciality") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquali") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcategorys") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getclass")) {
-                    doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_MAS + rsf);
-                    doctorGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_GEO + rsf);
-                    specialityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPECIALITY );
-                    qualificationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUALIFICATION);
-                    categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
-                    departmentStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DEPARTMENT);
-                    classStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLASS);
-                    if (doctorStatus == 1 || doctorGeoStatus == 1 || specialityStatus == 1 || qualificationStatus == 1 || categoryStatus == 1 || classStatus == 1) {
-                        binding.syncFailedImageDr.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageDr.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
-                    chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_MAS + rsf);
-                    chemistGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_GEO + rsf);
-                    chemistCategoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY_CHEMIST);
-                    if (chemistStatus == 1 || chemistGeoStatus == 1 || chemistCategoryStatus == 1) {
-                        binding.syncFailedImageChm.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageChm.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_master") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")) {
-                    stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_MAS + rsf);
-                    stockiestGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_GEO + rsf);
-                    if (stockiestStatus == 1 || stockiestGeoStatus == 1) {
-                        binding.syncFailedImageStk.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageStk.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")) {
-                    unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_MAS + rsf);
-                    unlistedDrGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_GEO + rsf);
-                    if (unlistedDrStatus == 1 || unlistedDrGeoStatus == 1) {
-                        binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageUnListdr.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethospital")) {
-                    hospitalStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOSPITAL + rsf);
-                    if (hospitalStatus == 1) {
-                        binding.syncFailedImageHspl.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageHspl.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcip")) {
-                    cipStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CIP + rsf);
-                    if (cipStatus == 1) {
-                        binding.syncFailedImageCip.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageCip.setVisibility(View.GONE);
-                    }
-
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getterritory")) {
-                    clusterStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLUSTER + rsf);
-                    if (clusterStatus == 1) {
-                        binding.syncFailedImageClust.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageClust.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getinputs")) {
-                    inputStatus = masterDataDao.getMasterSyncStatusByKey(Constants.INPUT);
-                    if (inputStatus == 1) {
-                        binding.syncFailedImageInput.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageInput.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getproducts") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getbrands") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
-                    productStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT);
-                    proCatStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
-                    brandStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND);
-                    if (productStatus == 1 || mapCompPrdStatus == 1 || brandStatus == 1 || proCatStatus == 1 || compProStatus == 1) {
-                        binding.syncFailedImageProduct.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageProduct.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavetype") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
-                    leaveStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE);
-                    leaveStatusStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
-                    if (leaveStatus == 1 || leaveStatusStatus == 1) {
-                        binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageLeave.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethome") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
-                    callSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CALL_SYNC);
-                    myDayPlanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_PLAN);
-                    visitControlStatus = masterDataDao.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
-                    dateSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DATE_SYNC);
-                    if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1) {
-                        binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
-                    } else {
-
-                        binding.syncFailedImageDcr.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdynactivity")) {
-                    activityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.ACTIVITY);
-                    if (activityStatus == 1) {
-                        binding.syncFailedImageAct.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageAct.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getworktype") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getholiday") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getweeklyoff")) {
-                    workTypeStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_TYPE);
-                    holidayStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOLIDAY);
-                    weeklyOfStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WEEKLY_OFF);
-                    if (workTypeStatus == 1 || holidayStatus == 1 || weeklyOfStatus == 1) {
-                        binding.syncFailedImageWP.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageWP.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_tp") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_multitpnew") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_details")) {
-                    tpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TP_SETUP);
-                    tourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TOUR_PLAN);
-                    stpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STP_SETUP);
-                    standardTourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STANDARD_TOUR_PLAN);
-                    if (tourPLanStatus == 1 || standardTourPLanStatus == 1 || stpSetupStatus == 1 || tpSetupStatus == 1) {
-                        binding.syncFailedImageTP.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageTP.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getprodslides") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getslidespeciality") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getslidesbrand") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettheraptic") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getwelcomepage")) {
-                    proSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PROD_SLIDE);
-                    proSpeSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPL_SLIDE);
-                    brandSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND_SLIDE);
-                    therapticStatus = masterDataDao.getMasterSyncStatusByKey(Constants.THERAPTIC_SLIDE);
-                    welcomeStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WELCOME_SLIDE);
-                    if (welcomeStatus == 1 || proSpeSlideStatus == 1 || proSlideStatus == 1 || brandSlideStatus == 1 || therapticStatus == 1) {
-                        binding.syncFailedImageSlide.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageSlide.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsubordinate") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getjointwork")) {
-                    subordinateStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SUBORDINATE);
-                    subMgrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SUBORDINATE_MGR);
-                    jWorkStatus = masterDataDao.getMasterSyncStatusByKey(Constants.JOINT_WORK + rsf);
-                    if (jWorkStatus == 1 || subordinateStatus == 1 || subMgrStatus == 1) {
-                        binding.syncFailedImageSub.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageSub.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdrfeedback") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquiz") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
-                    QuizStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUIZ);
-                    SurveyStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SURVEY);
-                    feedbackStatus = masterDataDao.getMasterSyncStatusByKey(Constants.FEEDBACK);
-                    if (feedbackStatus == 1 || QuizStatus == 1 || SurveyStatus == 1) {
-                        binding.syncFailedImageOther.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageOther.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
-                    setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
-                    if (setupStatus == 1) {
-                        binding.syncFailedImageSet.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageSet.setVisibility(View.GONE);
-                    }
-                }
-            } else if (masterSyncItemModel.getSyncSuccess() == 1) {
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getspeciality") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquali") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcategorys") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getclass")) {
+        if (masterSyncItemModel.getSyncSuccess() == 2) {
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getspeciality") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquali") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcategorys") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getclass")) {
+                doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_MAS + rsf);
+                doctorGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR_GEO + rsf);
+                specialityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPECIALITY);
+                qualificationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUALIFICATION);
+                categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
+                departmentStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DEPARTMENT);
+                classStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLASS);
+                if (doctorStatus == 1 || doctorGeoStatus == 1 || specialityStatus == 1 || qualificationStatus == 1 || categoryStatus == 1 || classStatus == 1) {
                     binding.syncFailedImageDr.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageDr.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
+                chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_MAS + rsf);
+                chemistGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST_GEO + rsf);
+                chemistCategoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY_CHEMIST);
+                if (chemistStatus == 1 || chemistGeoStatus == 1 || chemistCategoryStatus == 1) {
                     binding.syncFailedImageChm.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageChm.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_master") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_master") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")) {
+                stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_MAS + rsf);
+                stockiestGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST_GEO + rsf);
+                if (stockiestStatus == 1 || stockiestGeoStatus == 1) {
                     binding.syncFailedImageStk.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageStk.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")) {
+                unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_MAS + rsf);
+                unlistedDrGeoStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR_GEO + rsf);
+                if (unlistedDrStatus == 1 || unlistedDrGeoStatus == 1) {
                     binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageUnListdr.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethospital")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethospital")) {
+                hospitalStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOSPITAL + rsf);
+                if (hospitalStatus == 1) {
                     binding.syncFailedImageHspl.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageHspl.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcip")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcip")) {
+                cipStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CIP + rsf);
+                if (cipStatus == 1) {
                     binding.syncFailedImageCip.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageCip.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getterritory")) {
+
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getterritory")) {
+                clusterStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLUSTER + rsf);
+                if (clusterStatus == 1) {
                     binding.syncFailedImageClust.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageClust.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getinputs")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getinputs")) {
+                inputStatus = masterDataDao.getMasterSyncStatusByKey(Constants.INPUT);
+                if (inputStatus == 1) {
                     binding.syncFailedImageInput.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageInput.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getproducts") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getbrands") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getproducts") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getbrands") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
+                productStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT);
+                proCatStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
+                brandStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND);
+                if (productStatus == 1 || mapCompPrdStatus == 1 || brandStatus == 1 || proCatStatus == 1 || compProStatus == 1) {
                     binding.syncFailedImageProduct.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageProduct.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavetype") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavetype") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
+                leaveStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE);
+                leaveStatusStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
+                if (leaveStatus == 1 || leaveStatusStatus == 1) {
                     binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageLeave.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethome") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethome") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
+                callSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CALL_SYNC);
+                myDayPlanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_PLAN);
+                visitControlStatus = masterDataDao.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
+                dateSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DATE_SYNC);
+                if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1) {
                     binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
+                } else {
+
+                    binding.syncFailedImageDcr.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdynactivity")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdynactivity")) {
+                activityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.ACTIVITY);
+                if (activityStatus == 1) {
                     binding.syncFailedImageAct.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageAct.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getworktype") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getholiday") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getweeklyoff")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getworktype") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getholiday") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getweeklyoff")) {
+                workTypeStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_TYPE);
+                holidayStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOLIDAY);
+                weeklyOfStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WEEKLY_OFF);
+                if (workTypeStatus == 1 || holidayStatus == 1 || weeklyOfStatus == 1) {
                     binding.syncFailedImageWP.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageWP.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_tp") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_multitpnew") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_details")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_tp") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_multitpnew") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_details")) {
+                tpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TP_SETUP);
+                tourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TOUR_PLAN);
+                stpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STP_SETUP);
+                standardTourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STANDARD_TOUR_PLAN);
+                if (tourPLanStatus == 1 || standardTourPLanStatus == 1 || stpSetupStatus == 1 || tpSetupStatus == 1) {
                     binding.syncFailedImageTP.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageTP.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getprodslides") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getslidespeciality") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getslidesbrand") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettheraptic") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getwelcomepage")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getprodslides") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getslidespeciality") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getslidesbrand") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettheraptic") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getwelcomepage")) {
+                proSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PROD_SLIDE);
+                proSpeSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPL_SLIDE);
+                brandSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND_SLIDE);
+                therapticStatus = masterDataDao.getMasterSyncStatusByKey(Constants.THERAPTIC_SLIDE);
+                welcomeStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WELCOME_SLIDE);
+                if (welcomeStatus == 1 || proSpeSlideStatus == 1 || proSlideStatus == 1 || brandSlideStatus == 1 || therapticStatus == 1) {
                     binding.syncFailedImageSlide.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageSlide.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsubordinate") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getjointwork")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsubordinate") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getjointwork")) {
+                subordinateStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SUBORDINATE);
+                subMgrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SUBORDINATE_MGR);
+                jWorkStatus = masterDataDao.getMasterSyncStatusByKey(Constants.JOINT_WORK + rsf);
+                if (jWorkStatus == 1 || subordinateStatus == 1 || subMgrStatus == 1) {
                     binding.syncFailedImageSub.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageSub.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdrfeedback") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquiz") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdrfeedback") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquiz") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
+                QuizStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUIZ);
+                SurveyStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SURVEY);
+                feedbackStatus = masterDataDao.getMasterSyncStatusByKey(Constants.FEEDBACK);
+                if (feedbackStatus == 1 || QuizStatus == 1 || SurveyStatus == 1) {
                     binding.syncFailedImageOther.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageOther.setVisibility(View.GONE);
                 }
-                if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
+                setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
+                if (setupStatus == 1) {
                     binding.syncFailedImageSet.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageSet.setVisibility(View.GONE);
                 }
-
             }
+        } else if (masterSyncItemModel.getSyncSuccess() == 1) {
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_master") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdoctors_geo") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getspeciality") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquali") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcategorys") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getclass")) {
+                binding.syncFailedImageDr.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_master") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchemist_geo") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getchem_categorys")) {
+                binding.syncFailedImageChm.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_master") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockist_geo")) {
+                binding.syncFailedImageStk.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_master") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getunlisteddr_geo")) {
+                binding.syncFailedImageUnListdr.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethospital")) {
+                binding.syncFailedImageHspl.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcip")) {
+                binding.syncFailedImageCip.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getterritory")) {
+                binding.syncFailedImageClust.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getinputs")) {
+                binding.syncFailedImageInput.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getproducts") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getbrands") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
+                binding.syncFailedImageProduct.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavetype") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
+                binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethome") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
+                binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdynactivity")) {
+                binding.syncFailedImageAct.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getworktype") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getholiday") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getweeklyoff")) {
+                binding.syncFailedImageWP.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_tp") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_multitpnew") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_details")) {
+                binding.syncFailedImageTP.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getprodslides") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getslidespeciality") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getslidesbrand") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettheraptic") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getwelcomepage")) {
+                binding.syncFailedImageSlide.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsubordinate") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getjointwork")) {
+                binding.syncFailedImageSub.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdrfeedback") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getquiz") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsurveydetail")) {
+                binding.syncFailedImageOther.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
+                binding.syncFailedImageSet.setVisibility(View.VISIBLE);
+            }
+
         }
-
-
-
+    }
 
 
     public void prepareArray(String hqCode) {
@@ -1214,9 +1211,9 @@ public class MasterSyncActivity extends AppCompatActivity {
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC, "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC, "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
         MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
-        if(SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
+        if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
             myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
-        }else {
+        } else {
             myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcrmultihq", Constants.WORK_PLAN, myDayPlanStatus, false);
         }
 
@@ -1261,7 +1258,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             } else {
                 MasterSyncItemModel tpSetup = new MasterSyncItemModel(Constants.TP_SETUP, Constants.SETUP, "gettpsetup", Constants.TP_SETUP, tpSetupStatus, false);
                 MasterSyncItemModel tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN, Constants.TOUR_PLAN, "getall_tp", Constants.TOUR_PLAN, tourPLanStatus, false);
-                if(SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("2")) {
+                if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("2")) {
                     tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN, Constants.TOUR_PLAN, "getall_multitp", Constants.TOUR_PLAN, tourPLanStatus, false);
                 }
                 tpModelArray.add(tpSetup);
@@ -1575,7 +1572,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 isFrom = TourPlanOfflineDataDao;
                 OneBuildModelClass oneBuildModelClass = inputDataArrayOneBuild;
                 ArrayList<OneBuildModelClass.SessionList> sessionLists = oneBuildModelClass.getSessionList();
-                if(!sessionLists.isEmpty()) {
+                if (!sessionLists.isEmpty()) {
                     for (int i = 0; i < sessionLists.size(); i++) {
                         OneBuildModelClass.SessionList modelClass1 = sessionLists.get(i);
 
@@ -2295,16 +2292,16 @@ public class MasterSyncActivity extends AppCompatActivity {
                     }
                 }
 
-            JSONArray workTypeArray1 = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
-            for (int i = 0; i < workTypeArray1.length(); i++) {
-                JSONObject jsonObject = workTypeArray1.getJSONObject(i);
-                if (jsonObject.getString("Name").equalsIgnoreCase("Weekly Off"))
-                    weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
-                else if (jsonObject.getString("Name").equalsIgnoreCase("Holiday"))
-                    holidayWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
-            }
+                JSONArray workTypeArray1 = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
+                for (int i = 0; i < workTypeArray1.length(); i++) {
+                    JSONObject jsonObject = workTypeArray1.getJSONObject(i);
+                    if (jsonObject.getString("Name").equalsIgnoreCase("Weekly Off"))
+                        weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
+                    else if (jsonObject.getString("Name").equalsIgnoreCase("Holiday"))
+                        holidayWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
+                }
 
-            Log.e("weeklyOffWorkTypeModel", "" + weeklyOffWorkTypeModel.getName());
+                Log.e("weeklyOffWorkTypeModel", "" + weeklyOffWorkTypeModel.getName());
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -2317,15 +2314,15 @@ public class MasterSyncActivity extends AppCompatActivity {
         DateTimeFormatter formatter = null;
         formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
 
-            return date.format(formatter);
-        }
+        return date.format(formatter);
+    }
 
-        private ArrayList<String> daysInMonthArray (LocalDate date){
-            ArrayList<String> daysInMonthArray = new ArrayList<>();
-            YearMonth yearMonth = YearMonth.from(date);
-            int daysInMonth = yearMonth.lengthOfMonth();
-            LocalDate firstOfMonth = date.withDayOfMonth(1);
-            int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
+    private ArrayList<String> daysInMonthArray(LocalDate date) {
+        ArrayList<String> daysInMonthArray = new ArrayList<>();
+        YearMonth yearMonth = YearMonth.from(date);
+        int daysInMonth = yearMonth.lengthOfMonth();
+        LocalDate firstOfMonth = date.withDayOfMonth(1);
+        int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
 
         switch (dayOfWeek) {
             case 1: {
@@ -2383,8 +2380,8 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         }
 
-            return daysInMonthArray;
-        }
+        return daysInMonthArray;
+    }
 
     public String findTerrSlFlag(String code) {
         try {
@@ -2400,35 +2397,36 @@ public class MasterSyncActivity extends AppCompatActivity {
         return "";
     }
 
-        private ArrayList<ModelClass.SessionList.SubClass> addExtraData (String Name, String Code){
-            String[] arrName = Name.split(",");
-            String[] arrCode = Code.split(",");
-            ArrayList<String> dummyName = new ArrayList<>(Arrays.asList(arrName));
-            ArrayList<String> dummyCode = new ArrayList<>(Arrays.asList(arrCode));
-            ArrayList<ModelClass.SessionList.SubClass> Array = new ArrayList<>();
+    private ArrayList<ModelClass.SessionList.SubClass> addExtraData(String Name, String Code) {
+        String[] arrName = Name.split(",");
+        String[] arrCode = Code.split(",");
+        ArrayList<String> dummyName = new ArrayList<>(Arrays.asList(arrName));
+        ArrayList<String> dummyCode = new ArrayList<>(Arrays.asList(arrCode));
+        ArrayList<ModelClass.SessionList.SubClass> Array = new ArrayList<>();
 
 
         for (int i = 0; i < dummyName.size(); i++) {
             Array.add(new ModelClass.SessionList.SubClass(dummyName.get(i), dummyCode.get(i)));
         }
 
-            return Array;
+        return Array;
+    }
+
+    private ArrayList<OneBuildModelClass.SessionList.SubClass> addExtraDataOneBuild(String
+                                                                                            Name, String Code) {
+        String[] arrName = Name.split(",");
+        String[] arrCode = Code.split(",");
+        ArrayList<String> dummyName = new ArrayList<>(Arrays.asList(arrName));
+        ArrayList<String> dummyCode = new ArrayList<>(Arrays.asList(arrCode));
+        ArrayList<OneBuildModelClass.SessionList.SubClass> Array = new ArrayList<>();
+
+
+        for (int i = 0; i < dummyName.size(); i++) {
+            Array.add(new OneBuildModelClass.SessionList.SubClass(dummyName.get(i), dummyCode.get(i)));
         }
-        private ArrayList<OneBuildModelClass.SessionList.SubClass> addExtraDataOneBuild (String
-        Name, String Code){
-            String[] arrName = Name.split(",");
-            String[] arrCode = Code.split(",");
-            ArrayList<String> dummyName = new ArrayList<>(Arrays.asList(arrName));
-            ArrayList<String> dummyCode = new ArrayList<>(Arrays.asList(arrCode));
-            ArrayList<OneBuildModelClass.SessionList.SubClass> Array = new ArrayList<>();
 
-
-            for (int i = 0; i < dummyName.size(); i++) {
-                Array.add(new OneBuildModelClass.SessionList.SubClass(dummyName.get(i), dummyCode.get(i)));
-            }
-
-            return Array;
-        }
+        return Array;
+    }
 
     private ArrayList<MultiHQHeaderModelClass> addExtraData(ArrayList<ModelClass.SessionList.SubClass> hqs, String Name, String Code) {
         String[] arrName = Name.split("\\$");
@@ -2482,47 +2480,48 @@ public class MasterSyncActivity extends AppCompatActivity {
                 SaveLocalOnlineTable(localDate.plusMonths(1), nextArray);
             }
 
-            } catch (Exception e) {
-                Log.v("getTp", "----error---" + e);
-            }
+        } catch (Exception e) {
+            Log.v("getTp", "----error---" + e);
         }
-        private void SaveTourPlanOne (JSONObject jsonObject1){
+    }
 
-            uiInitialization1();
-            try {
-                localDate = LocalDate.now();
-                if (jsonObject1.has("prev")) {
-                    JSONArray previousArray = new JSONArray(jsonObject1.getJSONArray("prev").toString());
-                    SaveLocalOnlineTableOne(localDate.minusMonths(1), previousArray);
-                }
+    private void SaveTourPlanOne(JSONObject jsonObject1) {
 
-                if (jsonObject1.has("current")) {
-                    JSONArray currentArray = new JSONArray(jsonObject1.getJSONArray("current").toString());
-                    SaveLocalOnlineTableOne(localDate, currentArray);
-                }
-
-                if (jsonObject1.has("next")) {
-                    JSONArray nextArray = new JSONArray(jsonObject1.getJSONArray("next").toString());
-                    SaveLocalOnlineTableOne(localDate.plusMonths(1), nextArray);
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.v("getTp", "----error---" + e);
+        uiInitialization1();
+        try {
+            localDate = LocalDate.now();
+            if (jsonObject1.has("prev")) {
+                JSONArray previousArray = new JSONArray(jsonObject1.getJSONArray("prev").toString());
+                SaveLocalOnlineTableOne(localDate.minusMonths(1), previousArray);
             }
+
+            if (jsonObject1.has("current")) {
+                JSONArray currentArray = new JSONArray(jsonObject1.getJSONArray("current").toString());
+                SaveLocalOnlineTableOne(localDate, currentArray);
+            }
+
+            if (jsonObject1.has("next")) {
+                JSONArray nextArray = new JSONArray(jsonObject1.getJSONArray("next").toString());
+                SaveLocalOnlineTableOne(localDate.plusMonths(1), nextArray);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.v("getTp", "----error---" + e);
         }
+    }
 
 
-        private void SaveLocalOnlineTable (LocalDate localDate, JSONArray listArray){
-            try {
-                SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
-                ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
+    private void SaveLocalOnlineTable(LocalDate localDate, JSONArray listArray) {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
+            ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
 
-                String monthYear = monthYearFromDate(localDate);
-                String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
-                String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
-                String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
-                ArrayList<ModelClass> modelClasses = new ArrayList<>();
+            String monthYear = monthYearFromDate(localDate);
+            String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
+            String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
+            String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
+            ArrayList<ModelClass> modelClasses = new ArrayList<>();
 
             ArrayList<String> holidayDateArray = new ArrayList<>();
             ArrayList<String> holidayNameArray = new ArrayList<>();
@@ -2541,9 +2540,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                 modelClassLocal = new Gson().fromJson(savedDataArray.toString(), typeLocal);
             }
 
-                Type type = new TypeToken<ArrayList<ReceiveModel>>() {
-                }.getType();
-                ArrayList<ReceiveModel> arrayList = new Gson().fromJson(listArray.toString(), type);
+            Type type = new TypeToken<ArrayList<ReceiveModel>>() {
+            }.getType();
+            ArrayList<ReceiveModel> arrayList = new Gson().fromJson(listArray.toString(), type);
 
             if (listArray.length() > 0) {
                 String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
@@ -2605,12 +2604,12 @@ public class MasterSyncActivity extends AppCompatActivity {
                                     LocalWeelyHolidayFlag = false;
                                 }
 
-                                    ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                                    sessionLists.add(sessionList);
-                                    ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-                                    modelClasses.add(modelClass);
+                                ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                                sessionLists.add(sessionList);
+                                ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
+                                modelClasses.add(modelClass);
 
-                                }
+                            }
 
                             if (LocalWeelyHolidayFlag) {
                                 saveTpLocal(modelClasses, day, monthYear, "1");
@@ -2626,11 +2625,11 @@ public class MasterSyncActivity extends AppCompatActivity {
                     }
                 }
 
-                    tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
+                tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
 
             } else {  //If tour plan table has no data
 
-                    boolean LocalWeelyHolidayFlag;
+                boolean LocalWeelyHolidayFlag;
 
                 for (String day : days) {
                     if (!day.isEmpty()) {
@@ -2683,143 +2682,89 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
     }
 
-        private void SaveLocalOnlineTableOne (LocalDate localDate, JSONArray listArray){
-            try {
-                SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
-                ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
+    private void SaveLocalOnlineTableOne(LocalDate localDate, JSONArray listArray) {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
+            ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
 
-                String monthYear = monthYearFromDate(localDate);
-                String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
-                String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
-                String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
-                ArrayList<OneBuildModelClass> modelClasses = new ArrayList<>();
+            String monthYear = monthYearFromDate(localDate);
+            String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_31, monthYear);
+            String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
+            String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
+            ArrayList<OneBuildModelClass> modelClasses = new ArrayList<>();
 
-                ArrayList<String> holidayDateArray = new ArrayList<>();
-                ArrayList<String> holidayNameArray = new ArrayList<>();
-                for (int i = 0; i < holidayJSONArray.length(); i++) { //Getting Holiday dates from Holiday master data for the selected month
-                    if (holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate.getMonthValue()))) {
-                        holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
-                        holidayNameArray.add(holidayJSONArray.getJSONObject(i).getString("Holiday_Name"));
-                    }
+            ArrayList<String> holidayDateArray = new ArrayList<>();
+            ArrayList<String> holidayNameArray = new ArrayList<>();
+            for (int i = 0; i < holidayJSONArray.length(); i++) { //Getting Holiday dates from Holiday master data for the selected month
+                if (holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate.getMonthValue()))) {
+                    holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
+                    holidayNameArray.add(holidayJSONArray.getJSONObject(i).getString("Holiday_Name"));
                 }
+            }
 
-                JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
-                ArrayList<OneBuildModelClass> modelClassLocal = new ArrayList<>();
-                if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
-                    Type typeLocal = new TypeToken<ArrayList<OneBuildModelClass>>() {
-                    }.getType();
-                    modelClassLocal = new Gson().fromJson(savedDataArray.toString(), typeLocal);
-                }
-
-                Type type = new TypeToken<ArrayList<ReceiveModel>>() {
+            JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
+            ArrayList<OneBuildModelClass> modelClassLocal = new ArrayList<>();
+            if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
+                Type typeLocal = new TypeToken<ArrayList<OneBuildModelClass>>() {
                 }.getType();
-                ArrayList<ReceiveModel> arrayList = new Gson().fromJson(listArray.toString(), type);
+                modelClassLocal = new Gson().fromJson(savedDataArray.toString(), typeLocal);
+            }
 
-                if (listArray.length() > 0) {
-                    String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
-                    String status = listArray.getJSONObject(0).getString("Change_Status");
-                    tourPlanOnlineDataDao.saveTpData(new TourPlanOnlineDataTable(monthName, listArray.toString(), status, rejectionReason));
-                    boolean LocalWeelyHolidayFlag;
-                    for (String day : days) {
-                        if (!day.isEmpty()) {
-                            String date = day + " " + monthYear;
-                            String dayName = formatter.format(new Date(date));
-                            isDataAvailable = false;
+            Type type = new TypeToken<ArrayList<ReceiveModel>>() {
+            }.getType();
+            ArrayList<ReceiveModel> arrayList = new Gson().fromJson(listArray.toString(), type);
 
-                            if (modelClassLocal.size() > 0) {
-                                for (int j = 0; j < modelClassLocal.size(); j++) {
-                                    if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")) {
+            if (listArray.length() > 0) {
+                String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
+                String status = listArray.getJSONObject(0).getString("Change_Status");
+                tourPlanOnlineDataDao.saveTpData(new TourPlanOnlineDataTable(monthName, listArray.toString(), status, rejectionReason));
+                boolean LocalWeelyHolidayFlag;
+                for (String day : days) {
+                    if (!day.isEmpty()) {
+                        String date = day + " " + monthYear;
+                        String dayName = formatter.format(new Date(date));
+                        isDataAvailable = false;
 
-                                        for (int i = 0; i < arrayList.size(); i++) {
-                                            ReceiveModel receiveModel = arrayList.get(i);
-                                            if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(receiveModel.getDayno())) {
-                                                SaveTpLocalFullOne(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year); // need to do
-                                            }
+                        if (modelClassLocal.size() > 0) {
+                            for (int j = 0; j < modelClassLocal.size(); j++) {
+                                if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")) {
+
+                                    for (int i = 0; i < arrayList.size(); i++) {
+                                        ReceiveModel receiveModel = arrayList.get(i);
+                                        if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(receiveModel.getDayno())) {
+                                            SaveTpLocalFullOne(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year); // need to do
                                         }
-                                    } else if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("1")) {
-                                        isDataAvailable = true;
-                                        OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, modelClassLocal.get(j).getSessionList());
-                                        modelClasses.add(modelClass);
-                                        saveTpLocalOne(modelClasses, day, monthName, "1");  // need to do
                                     }
-                                }
-                            } else {
-                                for (int i = 0; i < arrayList.size(); i++) {
-                                    ReceiveModel receiveModel = arrayList.get(i);
-                                    if (day.equalsIgnoreCase(receiveModel.getDayno())) {
-                                        SaveTpLocalFullOne(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year); // need to do
-                                    }
-                                }
-                            }
-
-                            if (!isDataAvailable) {
-                                OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
-                                sessionList = prepareSessionListForAdapterEmptyOne();  // need to do
-
-                                if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
-                                    ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
-                                    sessionLists.add(sessionList); // need to do
-                                    OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, false, sessionLists);
+                                } else if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("1")) {
+                                    isDataAvailable = true;
+                                    OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, modelClassLocal.get(j).getSessionList());
                                     modelClasses.add(modelClass);
-                                    LocalWeelyHolidayFlag = false;
-                                } else {
-                                    if (holidayDateArray.contains(day)) {
-                                        int index = holidayDateArray.indexOf(day);
-                                        sessionList.setRemarks(holidayNameArray.get(index));  // add holiday work type model object when current date is declared as holiday
-                                        sessionList.setWorkType(holidayWorkTypeModelOneBuild);  // add holiday work type model object when current date is declared as holiday
-                                        LocalWeelyHolidayFlag = true;
-                                    } else if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
-                                        sessionList.setWorkType(weeklyOffWorkTypeModelOneBuild);
-                                        LocalWeelyHolidayFlag = true;
-                                    } else {
-                                        LocalWeelyHolidayFlag = false;
-                                    }
-
-                                    ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
-                                    sessionLists.add(sessionList);
-                                    OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-                                    modelClasses.add(modelClass);
-
-                                }
-
-                                if (LocalWeelyHolidayFlag) {
-                                    saveTpLocalOne(modelClasses, day, monthYear, "1");  // need to do
-                                } else {
-                                    saveTpLocalOne(modelClasses, day, monthYear, "0");  // need to do
+                                    saveTpLocalOne(modelClasses, day, monthName, "1");  // need to do
                                 }
                             }
                         } else {
-                            ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
-                            OneBuildModelClass modelClass = new OneBuildModelClass(day, "", "", "", "", true, sessionLists);
-                            modelClasses.add(modelClass);
-                            saveTpLocalOne(modelClasses, day, monthName, "");  // need to do
+                            for (int i = 0; i < arrayList.size(); i++) {
+                                ReceiveModel receiveModel = arrayList.get(i);
+                                if (day.equalsIgnoreCase(receiveModel.getDayno())) {
+                                    SaveTpLocalFullOne(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year); // need to do
+                                }
+                            }
                         }
-                    }
 
-                    tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
-
-                } else {  //If tour plan table has no data
-
-                    boolean LocalWeelyHolidayFlag;
-
-                    for (String day : days) {
-                        if (!day.isEmpty()) {
-                            String date = day + " " + monthYear;
-                            String dayName = formatter.format(new Date(date));
+                        if (!isDataAvailable) {
                             OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
-                            sessionList = prepareSessionListForAdapterEmptyOne();   // need to do
-
+                            sessionList = prepareSessionListForAdapterEmptyOne();  // need to do
 
                             if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
                                 ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
-                                sessionLists.add(sessionList);
+                                sessionLists.add(sessionList); // need to do
                                 OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, false, sessionLists);
                                 modelClasses.add(modelClass);
                                 LocalWeelyHolidayFlag = false;
                             } else {
                                 if (holidayDateArray.contains(day)) {
                                     int index = holidayDateArray.indexOf(day);
-                                    sessionList.setRemarks(holidayNameArray.get(index));
+                                    sessionList.setRemarks(holidayNameArray.get(index));  // add holiday work type model object when current date is declared as holiday
                                     sessionList.setWorkType(holidayWorkTypeModelOneBuild);  // add holiday work type model object when current date is declared as holiday
                                     LocalWeelyHolidayFlag = true;
                                 } else if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
@@ -2828,54 +2773,108 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 } else {
                                     LocalWeelyHolidayFlag = false;
                                 }
+
                                 ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
                                 sessionLists.add(sessionList);
                                 OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, sessionLists);
                                 modelClasses.add(modelClass);
-                            }
 
+                            }
 
                             if (LocalWeelyHolidayFlag) {
                                 saveTpLocalOne(modelClasses, day, monthYear, "1");  // need to do
                             } else {
                                 saveTpLocalOne(modelClasses, day, monthYear, "0");  // need to do
                             }
-                        } else {
-                            ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
-                            OneBuildModelClass modelClass = new OneBuildModelClass(day, "", "", "", "", true, sessionLists);
-                            modelClasses.add(modelClass);
-                            saveTpLocalOne(modelClasses, day, monthName, "");       // need to do
                         }
+                    } else {
+                        ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
+                        OneBuildModelClass modelClass = new OneBuildModelClass(day, "", "", "", "", true, sessionLists);
+                        modelClasses.add(modelClass);
+                        saveTpLocalOne(modelClasses, day, monthName, "");  // need to do
                     }
                 }
-            } catch (Exception ignored) {
 
+                tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
+
+            } else {  //If tour plan table has no data
+
+                boolean LocalWeelyHolidayFlag;
+
+                for (String day : days) {
+                    if (!day.isEmpty()) {
+                        String date = day + " " + monthYear;
+                        String dayName = formatter.format(new Date(date));
+                        OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
+                        sessionList = prepareSessionListForAdapterEmptyOne();   // need to do
+
+
+                        if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
+                            ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
+                            sessionLists.add(sessionList);
+                            OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, false, sessionLists);
+                            modelClasses.add(modelClass);
+                            LocalWeelyHolidayFlag = false;
+                        } else {
+                            if (holidayDateArray.contains(day)) {
+                                int index = holidayDateArray.indexOf(day);
+                                sessionList.setRemarks(holidayNameArray.get(index));
+                                sessionList.setWorkType(holidayWorkTypeModelOneBuild);  // add holiday work type model object when current date is declared as holiday
+                                LocalWeelyHolidayFlag = true;
+                            } else if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
+                                sessionList.setWorkType(weeklyOffWorkTypeModelOneBuild);
+                                LocalWeelyHolidayFlag = true;
+                            } else {
+                                LocalWeelyHolidayFlag = false;
+                            }
+                            ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
+                            sessionLists.add(sessionList);
+                            OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, sessionLists);
+                            modelClasses.add(modelClass);
+                        }
+
+
+                        if (LocalWeelyHolidayFlag) {
+                            saveTpLocalOne(modelClasses, day, monthYear, "1");  // need to do
+                        } else {
+                            saveTpLocalOne(modelClasses, day, monthYear, "0");  // need to do
+                        }
+                    } else {
+                        ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
+                        OneBuildModelClass modelClass = new OneBuildModelClass(day, "", "", "", "", true, sessionLists);
+                        modelClasses.add(modelClass);
+                        saveTpLocalOne(modelClasses, day, monthName, "");       // need to do
+                    }
+                }
             }
+        } catch (Exception ignored) {
+
         }
+    }
 
-        private void SaveTpLocalFull (ReceiveModel
-        receiveModel, ArrayList < ModelClass > modelClasses, String day, String monthName, String
-        date, String dayName, String monthNo, String year){
-            ModelClass.SessionList sessionList = new ModelClass.SessionList();
-            ModelClass.SessionList sessionList2 = new ModelClass.SessionList();
-            ModelClass.SessionList sessionList3 = new ModelClass.SessionList();
+    private void SaveTpLocalFull(ReceiveModel
+                                         receiveModel, ArrayList<ModelClass> modelClasses, String day, String monthName, String
+                                         date, String dayName, String monthNo, String year) {
+        ModelClass.SessionList sessionList = new ModelClass.SessionList();
+        ModelClass.SessionList sessionList2 = new ModelClass.SessionList();
+        ModelClass.SessionList sessionList3 = new ModelClass.SessionList();
 
-            isDataAvailable = true;
-            boolean session2 = false;
-            boolean session3 = false;
+        isDataAvailable = true;
+        boolean session2 = false;
+        boolean session3 = false;
 
-            String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
-            String remarks = receiveModel.getDayRemarks();
-            String submittedTime = receiveModel.getSubmitted_time_dt();
+        String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
+        String remarks = receiveModel.getDayRemarks();
+        String submittedTime = receiveModel.getSubmitted_time_dt();
 
-            ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
-            ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
-            ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
-            ArrayList<ModelClass.SessionList.SubClass> chemArray = new ArrayList<>();
-            ArrayList<ModelClass.SessionList.SubClass> stkArray = new ArrayList<>();
-            ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
-            ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
-            ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> chemArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> stkArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
         ArrayList<ModelClass.SessionList.SubClass> hqs = new ArrayList<>();
         ArrayList<MultiHQHeaderModelClass> clusters = new ArrayList<>();
@@ -2890,46 +2889,46 @@ public class MasterSyncActivity extends AppCompatActivity {
         ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
         ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
 
-        if(receiveModel.getFWFlg().equalsIgnoreCase("F")) {
-            if(SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
-                if(!receiveModel.getClusterName().isEmpty())
+        if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
+            if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
+                if (!receiveModel.getClusterName().isEmpty())
                     clusterArray = addExtraData(receiveModel.getClusterName(), receiveModel.getClusterCode());
-                if(!receiveModel.getJWNames().isEmpty())
+                if (!receiveModel.getJWNames().isEmpty())
                     jcArray = addExtraData(receiveModel.getJWNames(), receiveModel.getJWCodes());
-                if(!receiveModel.getDr_Name().isEmpty())
+                if (!receiveModel.getDr_Name().isEmpty())
                     drArray = addExtraData(receiveModel.getDr_Name(), receiveModel.getDr_Code());
-                if(!receiveModel.getChem_Name().isEmpty())
+                if (!receiveModel.getChem_Name().isEmpty())
                     chemArray = addExtraData(receiveModel.getChem_Name(), receiveModel.getChem_Code());
-                if(!receiveModel.getStockist_Name().isEmpty())
+                if (!receiveModel.getStockist_Name().isEmpty())
                     stkArray = addExtraData(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
-            }else {
-                if(!receiveModel.getHQCodes().isEmpty()) {
+            } else {
+                if (!receiveModel.getHQCodes().isEmpty()) {
                     hqs = addExtraData(receiveModel.getHQNames(), receiveModel.getHQCodes());
                 }
-                if(!receiveModel.getClusterName().isEmpty()) {
+                if (!receiveModel.getClusterName().isEmpty()) {
                     clusters = addExtraData(hqs, receiveModel.getClusterName(), receiveModel.getClusterCode());
                 }
-                if(!receiveModel.getJWNames().isEmpty()) {
+                if (!receiveModel.getJWNames().isEmpty()) {
                     JCs = addExtraData(hqs, receiveModel.getJWNames(), receiveModel.getJWCodes());
                 }
-                if(!receiveModel.getDr_Name().isEmpty()) {
+                if (!receiveModel.getDr_Name().isEmpty()) {
                     listedDrs = addExtraData(hqs, receiveModel.getDr_Name(), receiveModel.getDr_Code());
                 }
-                if(!receiveModel.getChem_Name().isEmpty()) {
+                if (!receiveModel.getChem_Name().isEmpty()) {
                     chemists = addExtraData(hqs, receiveModel.getChem_Name(), receiveModel.getChem_Code());
                 }
-                if(!receiveModel.getStockist_Name().isEmpty()) {
+                if (!receiveModel.getStockist_Name().isEmpty()) {
                     stockiests = addExtraData(hqs, receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
                 }
             }
         }
-        if(SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+        if (SharedPref.getSfType(this).equalsIgnoreCase("1")) {
             sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
         } else {
             sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, hqs, clusters, JCs, listedDrs, chemists, stockiests, unListedDrs, cips, hospitals, remarks);
         }
 
-        if(!receiveModel.getWTName2().isEmpty()) {
+        if (!receiveModel.getWTName2().isEmpty()) {
             session2 = true;
             String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
             String remarks2 = receiveModel.getDayRemarks2();
@@ -2954,47 +2953,47 @@ public class MasterSyncActivity extends AppCompatActivity {
             cips = new ArrayList<>();
             hospitals = new ArrayList<>();
 
-            if(receiveModel.getFWFlg2().equalsIgnoreCase("F")) {
-                if(SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
-                    if(!receiveModel.getClusterName2().isEmpty())
+            if (receiveModel.getFWFlg2().equalsIgnoreCase("F")) {
+                if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
+                    if (!receiveModel.getClusterName2().isEmpty())
                         clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
-                    if(!receiveModel.getJWNames2().isEmpty())
+                    if (!receiveModel.getJWNames2().isEmpty())
                         jcArray = addExtraData(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
-                    if(!receiveModel.getDr_two_name().isEmpty())
+                    if (!receiveModel.getDr_two_name().isEmpty())
                         drArray = addExtraData(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
-                    if(!receiveModel.getChem_two_name().isEmpty())
+                    if (!receiveModel.getChem_two_name().isEmpty())
                         chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
-                    if(!receiveModel.getStockist_two_name().isEmpty())
+                    if (!receiveModel.getStockist_two_name().isEmpty())
                         stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
                 } else {
-                    if(!receiveModel.getHQCodes2().isEmpty()) {
+                    if (!receiveModel.getHQCodes2().isEmpty()) {
                         hqs = addExtraData(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
                     }
-                    if(!receiveModel.getClusterName2().isEmpty()) {
+                    if (!receiveModel.getClusterName2().isEmpty()) {
                         clusters = addExtraData(hqs, receiveModel.getClusterName2(), receiveModel.getClusterCode2());
                     }
-                    if(!receiveModel.getJWNames2().isEmpty()) {
+                    if (!receiveModel.getJWNames2().isEmpty()) {
                         JCs = addExtraData(hqs, receiveModel.getJWNames2(), receiveModel.getJWCodes2());
                     }
-                    if(!receiveModel.getDr_two_name().isEmpty()) {
+                    if (!receiveModel.getDr_two_name().isEmpty()) {
                         listedDrs = addExtraData(hqs, receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
                     }
-                    if(!receiveModel.getChem_two_name().isEmpty()) {
+                    if (!receiveModel.getChem_two_name().isEmpty()) {
                         chemists = addExtraData(hqs, receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
                     }
-                    if(!receiveModel.getStockist_two_name().isEmpty()) {
+                    if (!receiveModel.getStockist_two_name().isEmpty()) {
                         stockiests = addExtraData(hqs, receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
                     }
                 }
             }
-            if(SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
+            if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
                 sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
             } else {
                 sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, hqs, clusters, JCs, listedDrs, chemists, stockiests, unListedDrs, cips, hospitals, remarks2);
             }
         }
 
-        if(!receiveModel.getWTName3().isEmpty()) {
+        if (!receiveModel.getWTName3().isEmpty()) {
             session3 = true;
             String terrSlFlag3 = findTerrSlFlag(receiveModel.getWTCode3());
             String remarks3 = receiveModel.getDayRemarks2();
@@ -3019,40 +3018,40 @@ public class MasterSyncActivity extends AppCompatActivity {
             cips = new ArrayList<>();
             hospitals = new ArrayList<>();
 
-            if(receiveModel.getFWFlg3().equalsIgnoreCase("F")) {
-                if(SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
-                    if(!receiveModel.getClusterName3().isEmpty())
+            if (receiveModel.getFWFlg3().equalsIgnoreCase("F")) {
+                if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
+                    if (!receiveModel.getClusterName3().isEmpty())
                         clusterArray = addExtraData(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
-                    if(!receiveModel.getJWNames3().isEmpty())
+                    if (!receiveModel.getJWNames3().isEmpty())
                         jcArray = addExtraData(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
-                    if(!receiveModel.getDr_three_name().isEmpty())
+                    if (!receiveModel.getDr_three_name().isEmpty())
                         drArray = addExtraData(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
-                    if(!receiveModel.getChem_three_name().isEmpty())
+                    if (!receiveModel.getChem_three_name().isEmpty())
                         chemArray = addExtraData(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
-                    if(!receiveModel.getStockist_three_name().isEmpty())
+                    if (!receiveModel.getStockist_three_name().isEmpty())
                         stkArray = addExtraData(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
                 } else {
-                    if(!receiveModel.getHQCodes3().isEmpty()) {
+                    if (!receiveModel.getHQCodes3().isEmpty()) {
                         hqs = addExtraData(receiveModel.getHQNames3(), receiveModel.getHQCodes3());
                     }
-                    if(!receiveModel.getClusterName3().isEmpty()) {
+                    if (!receiveModel.getClusterName3().isEmpty()) {
                         clusters = addExtraData(hqs, receiveModel.getClusterName3(), receiveModel.getClusterCode3());
                     }
-                    if(!receiveModel.getJWNames3().isEmpty()) {
+                    if (!receiveModel.getJWNames3().isEmpty()) {
                         JCs = addExtraData(hqs, receiveModel.getJWNames3(), receiveModel.getJWCodes3());
                     }
-                    if(!receiveModel.getDr_three_name().isEmpty()) {
+                    if (!receiveModel.getDr_three_name().isEmpty()) {
                         listedDrs = addExtraData(hqs, receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
                     }
-                    if(!receiveModel.getChem_three_name().isEmpty()) {
+                    if (!receiveModel.getChem_three_name().isEmpty()) {
                         chemists = addExtraData(hqs, receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
                     }
-                    if(!receiveModel.getStockist_three_name().isEmpty()) {
+                    if (!receiveModel.getStockist_three_name().isEmpty()) {
                         stockiests = addExtraData(hqs, receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
                     }
                 }
             }
-            if(SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
+            if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
                 sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
             } else {
                 sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, hqs, clusters, JCs, listedDrs, chemists, stockiests, unListedDrs, cips, hospitals, remarks3);
@@ -3061,158 +3060,158 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
         sessionLists.add(sessionList);
-        if(session2) sessionLists.add(sessionList2);
-        if(session3) sessionLists.add(sessionList3);
+        if (session2) sessionLists.add(sessionList2);
+        if (session3) sessionLists.add(sessionList3);
         ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists, receiveModel.getSTP_Code(), receiveModel.getSTP_Name());
         modelClass.setSubmittedTime(submittedTime);
         modelClasses.add(modelClass);
         saveTpLocal(modelClasses, day, monthName, "0");
     }
 
-        private void SaveTpLocalFullOne (ReceiveModel
-        receiveModel, ArrayList < OneBuildModelClass > modelClasses, String day, String
-        monthName, String date, String dayName, String monthNo, String year){
-            SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0");
+    private void SaveTpLocalFullOne(ReceiveModel
+                                            receiveModel, ArrayList<OneBuildModelClass> modelClasses, String day, String
+                                            monthName, String date, String dayName, String monthNo, String year) {
+        SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0");
 
-            OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
-            OneBuildModelClass.SessionList sessionList2 = new OneBuildModelClass.SessionList();
-            OneBuildModelClass.SessionList sessionList3 = new OneBuildModelClass.SessionList();
-            isDataAvailable = true;
-            boolean session2 = false;
-            boolean session3 = false;
+        OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
+        OneBuildModelClass.SessionList sessionList2 = new OneBuildModelClass.SessionList();
+        OneBuildModelClass.SessionList sessionList3 = new OneBuildModelClass.SessionList();
+        isDataAvailable = true;
+        boolean session2 = false;
+        boolean session3 = false;
 
-            String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
-            String remarks = receiveModel.getDayRemarks();
-            String submittedTime = receiveModel.getSubmitted_time_dt();
+        String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
+        String remarks = receiveModel.getDayRemarks();
+        String submittedTime = receiveModel.getSubmitted_time_dt();
 
 
-            ArrayList<OneBuildModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
-            ArrayList<OneBuildModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
-            ArrayList<OneBuildModelClass.SessionList.SubClass> drArray = new ArrayList<>();
-            ArrayList<OneBuildModelClass.SessionList.SubClass> chemArray = new ArrayList<>();
-            ArrayList<OneBuildModelClass.SessionList.SubClass> stkArray = new ArrayList<>();
-            ArrayList<OneBuildModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
-            ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
-            ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
+        ArrayList<OneBuildModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
+        ArrayList<OneBuildModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
+        ArrayList<OneBuildModelClass.SessionList.SubClass> drArray = new ArrayList<>();
+        ArrayList<OneBuildModelClass.SessionList.SubClass> chemArray = new ArrayList<>();
+        ArrayList<OneBuildModelClass.SessionList.SubClass> stkArray = new ArrayList<>();
+        ArrayList<OneBuildModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
+        ArrayList<OneBuildModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
+        ArrayList<OneBuildModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-            OneBuildModelClass.SessionList.WorkType workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
-            OneBuildModelClass.SessionList.SubClass hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
+        OneBuildModelClass.SessionList.WorkType workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
+        OneBuildModelClass.SessionList.SubClass hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
 
-            //   if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
-            if (!receiveModel.getClusterName().isEmpty())
-                clusterArray = addExtraDataOneBuild(receiveModel.getClusterName(), receiveModel.getClusterCode());
-            if (!receiveModel.getJWNames().isEmpty())
-                jcArray = addExtraDataOneBuild(receiveModel.getJWNames(), receiveModel.getJWCodes());
-            if (!receiveModel.getDr_Name().isEmpty())
-                drArray = addExtraDataOneBuild(receiveModel.getDr_Name(), receiveModel.getDr_Code());
-            if (!receiveModel.getChem_Name().isEmpty())
-                chemArray = addExtraDataOneBuild(receiveModel.getChem_Name(), receiveModel.getChem_Code());
-            if (!receiveModel.getStockist_Name().isEmpty())
-                stkArray = addExtraDataOneBuild(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
-            //     }
-            sessionList = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
+        //   if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
+        if (!receiveModel.getClusterName().isEmpty())
+            clusterArray = addExtraDataOneBuild(receiveModel.getClusterName(), receiveModel.getClusterCode());
+        if (!receiveModel.getJWNames().isEmpty())
+            jcArray = addExtraDataOneBuild(receiveModel.getJWNames(), receiveModel.getJWCodes());
+        if (!receiveModel.getDr_Name().isEmpty())
+            drArray = addExtraDataOneBuild(receiveModel.getDr_Name(), receiveModel.getDr_Code());
+        if (!receiveModel.getChem_Name().isEmpty())
+            chemArray = addExtraDataOneBuild(receiveModel.getChem_Name(), receiveModel.getChem_Code());
+        if (!receiveModel.getStockist_Name().isEmpty())
+            stkArray = addExtraDataOneBuild(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
+        //     }
+        sessionList = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
 
-            if (!receiveModel.getWTName2().isEmpty()) {
-                session2 = true;
-                String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
-                String remarks2 = receiveModel.getDayRemarks2();
-                workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg2(), receiveModel.getWTName2(), terrSlFlag2, receiveModel.getWTCode2());
-                hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
-                clusterArray = new ArrayList<>();
-                jcArray = new ArrayList<>();
-                drArray = new ArrayList<>();
-                chemArray = new ArrayList<>();
-                stkArray = new ArrayList<>();
-                unListedDrArray = new ArrayList<>();
-                cipArray = new ArrayList<>();
-                hospArray = new ArrayList<>();
+        if (!receiveModel.getWTName2().isEmpty()) {
+            session2 = true;
+            String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
+            String remarks2 = receiveModel.getDayRemarks2();
+            workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg2(), receiveModel.getWTName2(), terrSlFlag2, receiveModel.getWTCode2());
+            hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
+            clusterArray = new ArrayList<>();
+            jcArray = new ArrayList<>();
+            drArray = new ArrayList<>();
+            chemArray = new ArrayList<>();
+            stkArray = new ArrayList<>();
+            unListedDrArray = new ArrayList<>();
+            cipArray = new ArrayList<>();
+            hospArray = new ArrayList<>();
 
-                if (!receiveModel.getClusterName2().isEmpty())
-                    clusterArray = addExtraDataOneBuild(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
-                if (!receiveModel.getJWNames2().isEmpty())
-                    jcArray = addExtraDataOneBuild(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
-                if (!receiveModel.getDr_two_name().isEmpty())
-                    drArray = addExtraDataOneBuild(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
-                if (!receiveModel.getChem_two_name().isEmpty())
-                    chemArray = addExtraDataOneBuild(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
-                if (!receiveModel.getStockist_two_name().isEmpty())
-                    stkArray = addExtraDataOneBuild(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
+            if (!receiveModel.getClusterName2().isEmpty())
+                clusterArray = addExtraDataOneBuild(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
+            if (!receiveModel.getJWNames2().isEmpty())
+                jcArray = addExtraDataOneBuild(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
+            if (!receiveModel.getDr_two_name().isEmpty())
+                drArray = addExtraDataOneBuild(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
+            if (!receiveModel.getChem_two_name().isEmpty())
+                chemArray = addExtraDataOneBuild(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
+            if (!receiveModel.getStockist_two_name().isEmpty())
+                stkArray = addExtraDataOneBuild(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
 
-                sessionList2 = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
-
-            }
-            if (!receiveModel.getWTName3().isEmpty()) {
-                session3 = true;
-                String terrSlFlag3 = findTerrSlFlag(receiveModel.getWTCode3());
-                String remarks3 = receiveModel.getDayRemarks2();
-                workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg3(), receiveModel.getWTName3(), terrSlFlag3, receiveModel.getWTCode3());
-                hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames3(), receiveModel.getHQCodes3());
-                clusterArray = new ArrayList<>();
-                jcArray = new ArrayList<>();
-                drArray = new ArrayList<>();
-                chemArray = new ArrayList<>();
-                stkArray = new ArrayList<>();
-                unListedDrArray = new ArrayList<>();
-                cipArray = new ArrayList<>();
-                hospArray = new ArrayList<>();
-
-                if (!receiveModel.getClusterName3().isEmpty())
-                    clusterArray = addExtraDataOneBuild(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
-                if (!receiveModel.getJWNames3().isEmpty())
-                    jcArray = addExtraDataOneBuild(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
-                if (!receiveModel.getDr_three_name().isEmpty())
-                    drArray = addExtraDataOneBuild(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
-                if (!receiveModel.getChem_three_name().isEmpty())
-                    chemArray = addExtraDataOneBuild(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
-                if (!receiveModel.getStockist_three_name().isEmpty())
-                    stkArray = addExtraDataOneBuild(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
-                sessionList3 = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
-            }
-            ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
-            sessionLists.add(sessionList);
-            if (session2) sessionLists.add(sessionList2);
-            if (session3) sessionLists.add(sessionList3);
-            OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, sessionLists, receiveModel.getSTP_Code(), receiveModel.getSTP_Name());
-            modelClass.setSubmittedTime(submittedTime);
-            modelClasses.add(modelClass);
-            saveTpLocalOne(modelClasses, day, monthName, "0");
+            sessionList2 = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
 
         }
+        if (!receiveModel.getWTName3().isEmpty()) {
+            session3 = true;
+            String terrSlFlag3 = findTerrSlFlag(receiveModel.getWTCode3());
+            String remarks3 = receiveModel.getDayRemarks2();
+            workType = new OneBuildModelClass.SessionList.WorkType(receiveModel.getFWFlg3(), receiveModel.getWTName3(), terrSlFlag3, receiveModel.getWTCode3());
+            hq = new OneBuildModelClass.SessionList.SubClass(receiveModel.getHQNames3(), receiveModel.getHQCodes3());
+            clusterArray = new ArrayList<>();
+            jcArray = new ArrayList<>();
+            drArray = new ArrayList<>();
+            chemArray = new ArrayList<>();
+            stkArray = new ArrayList<>();
+            unListedDrArray = new ArrayList<>();
+            cipArray = new ArrayList<>();
+            hospArray = new ArrayList<>();
 
-        public void saveTpLocal (ArrayList < ModelClass > arrayList, String date, String
-        month, String status){
-            for (ModelClass modelClass : arrayList) {
-                if (modelClass.getDayNo().equals(date)) {
-                    modelClass.setSyncStatus(status);
-                    break;
-                }
-            }
-            tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month, new Gson().toJson(arrayList)));
+            if (!receiveModel.getClusterName3().isEmpty())
+                clusterArray = addExtraDataOneBuild(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
+            if (!receiveModel.getJWNames3().isEmpty())
+                jcArray = addExtraDataOneBuild(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
+            if (!receiveModel.getDr_three_name().isEmpty())
+                drArray = addExtraDataOneBuild(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
+            if (!receiveModel.getChem_three_name().isEmpty())
+                chemArray = addExtraDataOneBuild(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
+            if (!receiveModel.getStockist_three_name().isEmpty())
+                stkArray = addExtraDataOneBuild(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
+            sessionList3 = prepareSessionListForAdapterOne(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
         }
+        ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
+        sessionLists.add(sessionList);
+        if (session2) sessionLists.add(sessionList2);
+        if (session3) sessionLists.add(sessionList3);
+        OneBuildModelClass modelClass = new OneBuildModelClass(day, date, dayName, monthNo, year, true, sessionLists, receiveModel.getSTP_Code(), receiveModel.getSTP_Name());
+        modelClass.setSubmittedTime(submittedTime);
+        modelClasses.add(modelClass);
+        saveTpLocalOne(modelClasses, day, monthName, "0");
 
-        public void saveTpLocalOne (ArrayList < OneBuildModelClass > arrayList, String date, String
-        month, String status){
-            for (OneBuildModelClass modelClass : arrayList) {
-                if (modelClass.getDayNo().equals(date)) {
-                    modelClass.setSyncStatus(status);
-                    break;
-                }
+    }
+
+    public void saveTpLocal(ArrayList<ModelClass> arrayList, String date, String
+            month, String status) {
+        for (ModelClass modelClass : arrayList) {
+            if (modelClass.getDayNo().equals(date)) {
+                modelClass.setSyncStatus(status);
+                break;
             }
-            tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month, new Gson().toJson(arrayList)));
         }
+        tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month, new Gson().toJson(arrayList)));
+    }
 
-        private ModelClass.SessionList prepareSessionListForAdapterEmpty () {
-            ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
-            ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
+    public void saveTpLocalOne(ArrayList<OneBuildModelClass> arrayList, String date, String
+            month, String status) {
+        for (OneBuildModelClass modelClass : arrayList) {
+            if (modelClass.getDayNo().equals(date)) {
+                modelClass.setSyncStatus(status);
+                break;
+            }
+        }
+        tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month, new Gson().toJson(arrayList)));
+    }
 
-            ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
-            ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
-            ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
-            ArrayList<ModelClass.SessionList.SubClass> chemistArray = new ArrayList<>();
-            ArrayList<ModelClass.SessionList.SubClass> stockArray = new ArrayList<>();
-            ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
-            ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
-            ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
+    private ModelClass.SessionList prepareSessionListForAdapterEmpty() {
+        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
+        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
+
+        ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> chemistArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> stockArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
         ArrayList<ModelClass.SessionList.SubClass> hqs = new ArrayList<>();
         ArrayList<MultiHQHeaderModelClass> clusters = new ArrayList<>();
@@ -3226,7 +3225,8 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         return new ModelClass.SessionList("", true, "", workType, hq, hqs, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clusters, JCs, listedDrs, chemists, stockiests, unListedDrs, cips, hospitals);
     }
-    private OneBuildModelClass.SessionList prepareSessionListForAdapterEmptyOne () {
+
+    private OneBuildModelClass.SessionList prepareSessionListForAdapterEmptyOne() {
         OneBuildModelClass.SessionList.WorkType workType = new OneBuildModelClass.SessionList.WorkType("", "", "", "");
         OneBuildModelClass.SessionList.SubClass hq = new OneBuildModelClass.SessionList.SubClass("", "");
 
@@ -3313,7 +3313,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        }
+    }
 
     public void SlideAlertbox(boolean servesflag) {
         SlidesDao.Changestatus("1", "0");
@@ -3350,22 +3350,22 @@ public class MasterSyncActivity extends AppCompatActivity {
             slideDialog.show();
         }
 
-            cancel_img.setOnClickListener(view -> {
-                slideDialog.dismiss();
-                navigateFrom = "Slide";
-            });
+        cancel_img.setOnClickListener(view -> {
+            slideDialog.dismiss();
+            navigateFrom = "Slide";
+        });
 
-            SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);
-            slidesViewModel.getAllSlides().observe(this, slides -> {
-                Collections.sort(slides, Comparator.comparingInt(s -> Integer.parseInt(s.getListSlidePosition())));
-                adapter.setSlides(slides);
-            });
+        SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);
+        slidesViewModel.getAllSlides().observe(this, slides -> {
+            Collections.sort(slides, Comparator.comparingInt(s -> Integer.parseInt(s.getListSlidePosition())));
+            adapter.setSlides(slides);
+        });
 
-            slidesViewModel.GetDowloaingCount().observe(this, integer -> {
-                txt_downloadcount.setText(String.valueOf(integer) + " / ");
-            });
+        slidesViewModel.GetDowloaingCount().observe(this, integer -> {
+            txt_downloadcount.setText(String.valueOf(integer) + " / ");
+        });
 
-            txt_total.setText(String.valueOf(SlidesDao.TotalSlidecount()));
+        txt_total.setText(String.valueOf(SlidesDao.TotalSlidecount()));
 
         slidesViewModel.getCountOfDownloadingProcessDone().observe(this, integer -> {
             if (integer == (Integer.valueOf(SlidesDao.TotalSlidecount()))) {
@@ -3422,7 +3422,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        }
+    }
 
     public void welcomeSlideAlertBox(boolean servesFlag) {
         welcomeSlidesDao.setChangeStatus("1", "0");
@@ -3460,20 +3460,20 @@ public class MasterSyncActivity extends AppCompatActivity {
             welcomeSlideDialog.show();
         }
 
-            cancel_img.setOnClickListener(view -> {
-                welcomeSlideDialog.dismiss();
-                navigateFrom = "Slide";
-            });
+        cancel_img.setOnClickListener(view -> {
+            welcomeSlideDialog.dismiss();
+            navigateFrom = "Slide";
+        });
 
-            WelcomeSlidesViewModel slidesViewModel = new ViewModelProvider(this).get(WelcomeSlidesViewModel.class);
-            slidesViewModel.getAllSlides().observe(this, slides -> {
-                Collections.sort(slides, Comparator.comparingInt(s -> Integer.parseInt(s.getListSlidePosition())));
-                adapter.setSlides(slides);
-            });
+        WelcomeSlidesViewModel slidesViewModel = new ViewModelProvider(this).get(WelcomeSlidesViewModel.class);
+        slidesViewModel.getAllSlides().observe(this, slides -> {
+            Collections.sort(slides, Comparator.comparingInt(s -> Integer.parseInt(s.getListSlidePosition())));
+            adapter.setSlides(slides);
+        });
 
-            slidesViewModel.getDownloadingCount().observe(this, integer -> txt_downloadCount.setText(integer + " / "));
+        slidesViewModel.getDownloadingCount().observe(this, integer -> txt_downloadCount.setText(integer + " / "));
 
-            txt_total.setText(String.valueOf(welcomeSlidesDao.getTotalSlideCount()));
+        txt_total.setText(String.valueOf(welcomeSlidesDao.getTotalSlideCount()));
 
         slidesViewModel.getCountOfDownloadingProcessDone().observe(this, integer -> {
             if (integer == welcomeSlidesDao.getTotalSlideCount()) {
@@ -3497,404 +3497,404 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
     }
 
-        public void getDraftSaveOneBuild1 (String isClickedName, ArrayList < OneBuildModelClass > arrayList,boolean statusOffline){
-            SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0");
+    public void getDraftSaveOneBuild1(String isClickedName, ArrayList<OneBuildModelClass> arrayList, boolean statusOffline) {
+        SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0");
 //        NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
 //            if (status) {
-            try {
+        try {
 
-                int id = 0;
-                switch (isClickedName) {
-                    case "prev":
-                        id = SharedPref.getTpIdPreviousMonth(MasterSyncActivity.this);
-                        break;
-                    case "current":
-                        id = SharedPref.getTpIdCurrentMonth(MasterSyncActivity.this);
-                        break;
-                    case "next":
-                        id = SharedPref.getTpIdNextMonth(MasterSyncActivity.this);
-                        break;
-                }
-
-
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("mode", "AndroidDetailing");
-                jsonObject.addProperty("tpId", id);
+            int id = 0;
+            switch (isClickedName) {
+                case "prev":
+                    id = SharedPref.getTpIdPreviousMonth(MasterSyncActivity.this);
+                    break;
+                case "current":
+                    id = SharedPref.getTpIdCurrentMonth(MasterSyncActivity.this);
+                    break;
+                case "next":
+                    id = SharedPref.getTpIdNextMonth(MasterSyncActivity.this);
+                    break;
+            }
 
 
-                JsonObject tourPlan = new JsonObject();
-                OneBuildModelClass oneBuildModelClassTp = arrayList.get(10);
-                tourPlan.addProperty("SFCode", SharedPref.getSfCode(MasterSyncActivity.this));
-                tourPlan.addProperty("SFName", SharedPref.getSfName(MasterSyncActivity.this));
-                tourPlan.addProperty("Month", Integer.parseInt(oneBuildModelClassTp.getMonth()));
-                tourPlan.addProperty("Year", Integer.parseInt(oneBuildModelClassTp.getYear()));
-                tourPlan.addProperty("DivisionCode", SharedPref.getDivisionCode(MasterSyncActivity.this).replace(",", ""));
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("mode", "AndroidDetailing");
+            jsonObject.addProperty("tpId", id);
 
 
-                JsonArray detailsArray = new JsonArray();
+            JsonObject tourPlan = new JsonObject();
+            OneBuildModelClass oneBuildModelClassTp = arrayList.get(10);
+            tourPlan.addProperty("SFCode", SharedPref.getSfCode(MasterSyncActivity.this));
+            tourPlan.addProperty("SFName", SharedPref.getSfName(MasterSyncActivity.this));
+            tourPlan.addProperty("Month", Integer.parseInt(oneBuildModelClassTp.getMonth()));
+            tourPlan.addProperty("Year", Integer.parseInt(oneBuildModelClassTp.getYear()));
+            tourPlan.addProperty("DivisionCode", SharedPref.getDivisionCode(MasterSyncActivity.this).replace(",", ""));
 
-                for (OneBuildModelClass oneBuildModelClass : arrayList) {
-                    if (!oneBuildModelClass.getDayNo().isEmpty()) {
-                        if (!oneBuildModelClass.getDayNo().equals(arrayList)) {
-                            String WorkTypeName = "", WorkTypeFlag = "", WorkTypeCode = "", SessionId = "", Remarks = "", WorkTypeName2 = "", WorkTypeFlag2 = "", WorkTypeCode2 = "", SessionId2 = "", Remarks2 = "", WorkTypeName3 = "", WorkTypeFlag3 = "", WorkTypeCode3 = "", SessionId3 = "", Remarks3 = "";
-                            String HeadquartersName = "", HeadquartersCode = "", TerritoriesName = "", TerritoriesCode = "", JWName = "", JWCode = "", CheName = "", CheCode = "", DrName = "", DrCode = "", UnDrName = "", UnDrCode = "", StkName = "", StkCode = "", CipName = "", CipCode = "", HospName = "", HospCode = "";
-                            String HeadquartersName2 = "", HeadquartersCode2 = "", TerritoriesName2 = "", TerritoriesCode2 = "", JWName2 = "", JWCode2 = "", CheName2 = "", CheCode2 = "", DrName2 = "", DrCode2 = "", UnDrName2 = "", UnDrCode2 = "", StkName2 = "", StkCode2 = "", CipName2 = "", CipCode2 = "", HospName2 = "", HospCode2 = "";
-                            String HeadquartersName3 = "", HeadquartersCode3 = "", TerritoriesName3 = "", TerritoriesCode3 = "", JWName3 = "", JWCode3 = "", CheName3 = "", CheCode3 = "", DrName3 = "", DrCode3 = "", UnDrName3 = "", UnDrCode3 = "", StkName3 = "", StkCode3 = "", CipName3 = "", CipCode3 = "", HospName3 = "", HospCode3 = "";
 
-                            for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
-                                OneBuildModelClass.SessionList sessionList_OneBuild = oneBuildModelClass.getSessionList().get(i);
+            JsonArray detailsArray = new JsonArray();
+
+            for (OneBuildModelClass oneBuildModelClass : arrayList) {
+                if (!oneBuildModelClass.getDayNo().isEmpty()) {
+                    if (!oneBuildModelClass.getDayNo().equals(arrayList)) {
+                        String WorkTypeName = "", WorkTypeFlag = "", WorkTypeCode = "", SessionId = "", Remarks = "", WorkTypeName2 = "", WorkTypeFlag2 = "", WorkTypeCode2 = "", SessionId2 = "", Remarks2 = "", WorkTypeName3 = "", WorkTypeFlag3 = "", WorkTypeCode3 = "", SessionId3 = "", Remarks3 = "";
+                        String HeadquartersName = "", HeadquartersCode = "", TerritoriesName = "", TerritoriesCode = "", JWName = "", JWCode = "", CheName = "", CheCode = "", DrName = "", DrCode = "", UnDrName = "", UnDrCode = "", StkName = "", StkCode = "", CipName = "", CipCode = "", HospName = "", HospCode = "";
+                        String HeadquartersName2 = "", HeadquartersCode2 = "", TerritoriesName2 = "", TerritoriesCode2 = "", JWName2 = "", JWCode2 = "", CheName2 = "", CheCode2 = "", DrName2 = "", DrCode2 = "", UnDrName2 = "", UnDrCode2 = "", StkName2 = "", StkCode2 = "", CipName2 = "", CipCode2 = "", HospName2 = "", HospCode2 = "";
+                        String HeadquartersName3 = "", HeadquartersCode3 = "", TerritoriesName3 = "", TerritoriesCode3 = "", JWName3 = "", JWCode3 = "", CheName3 = "", CheCode3 = "", DrName3 = "", DrCode3 = "", UnDrName3 = "", UnDrCode3 = "", StkName3 = "", StkCode3 = "", CipName3 = "", CipCode3 = "", HospName3 = "", HospCode3 = "";
+
+                        for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
+                            OneBuildModelClass.SessionList sessionList_OneBuild = oneBuildModelClass.getSessionList().get(i);
+
+                            if (i == 0) {
+                                WorkTypeName = sessionList_OneBuild.getWorkType().getName();
+                                WorkTypeCode = sessionList_OneBuild.getWorkType().getCode();
+                                WorkTypeFlag = sessionList_OneBuild.getWorkType().getFWFlg();
+                                SessionId = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                                Remarks = sessionList_OneBuild.getRemarks();
+
+                                if (sessionList_OneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
+                                    HeadquartersName = sessionList_OneBuild.getHeadquarters().getName();
+                                    HeadquartersCode = sessionList_OneBuild.getHeadquarters().getCode();
+                                }
+                                TerritoriesName = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                                TerritoriesCode = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+                                JWName = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                                JWCode = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+
+                                CheName = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                                CheCode = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                                DrName = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                                DrCode = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                                UnDrName = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                                UnDrCode = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                                StkName = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
+                                StkCode = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                                CipName = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                                CipCode = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                                HospName = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                                HospCode = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+
+                            } else if (i == 1) {
+                                WorkTypeName2 = sessionList_OneBuild.getWorkType().getName();
+                                WorkTypeCode2 = sessionList_OneBuild.getWorkType().getCode();
+                                WorkTypeFlag2 = sessionList_OneBuild.getWorkType().getFWFlg();
+                                SessionId2 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                                Remarks2 = sessionList_OneBuild.getRemarks();
+
+                                HeadquartersName2 = sessionList_OneBuild.getHeadquarters().getName();
+                                HeadquartersCode2 = sessionList_OneBuild.getHeadquarters().getCode();
+                                TerritoriesName2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                                TerritoriesCode2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+                                JWName2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                                JWCode2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+
+                                CheName2 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                                CheCode2 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                                DrName2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                                DrCode2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                                UnDrName2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                                UnDrCode2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                                StkName2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
+                                StkCode2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                                CipName2 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                                CipCode2 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                                HospName2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                                HospCode2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+
+                            } else if (i == 2) {
+                                WorkTypeName3 = sessionList_OneBuild.getWorkType().getName();
+                                WorkTypeCode3 = sessionList_OneBuild.getWorkType().getCode();
+                                WorkTypeFlag3 = sessionList_OneBuild.getWorkType().getFWFlg();
+                                SessionId3 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                                Remarks3 = sessionList_OneBuild.getRemarks();
+
+                                HeadquartersName3 = sessionList_OneBuild.getHeadquarters().getName();
+                                HeadquartersCode3 = sessionList_OneBuild.getHeadquarters().getCode();
+                                TerritoriesName3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                                TerritoriesCode3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+
+                                JWName3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                                JWCode3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+                                CheName3 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                                CheCode3 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                                DrName3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                                DrCode3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                                UnDrName3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                                UnDrCode3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                                StkName3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
+                                StkCode3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                                CipName3 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                                CipCode3 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                                HospName3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                                HospCode3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+                            }
+                        }
+
+
+                        //Sessions
+                        JsonArray Sessions = new JsonArray();
+                        for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
+                            if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+                                JsonObject SessionsObj = new JsonObject();
+                                if (i == 0) {
+                                    if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+
+                                        SessionsObj.addProperty("WorkTypeCode", WorkTypeCode);
+                                        SessionsObj.addProperty("WorkTypeName", WorkTypeName);
+                                        SessionsObj.addProperty("Id", i);
+                                        SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag);
+                                        SessionsObj.addProperty("Remark", Remarks);
+                                    }
+                                } else if (i == 1) {
+                                    if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+
+                                        SessionsObj.addProperty("WorkTypeCode", WorkTypeCode2);
+                                        SessionsObj.addProperty("WorkTypeName", WorkTypeName2);
+                                        SessionsObj.addProperty("Id", i);
+                                        SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag2);
+                                        SessionsObj.addProperty("Remark", Remarks2);
+                                    }
+                                } else if (i == 2) {
+                                    if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+
+                                        SessionsObj.addProperty("WorkTypeCode", WorkTypeCode3);
+                                        SessionsObj.addProperty("WorkTypeName", WorkTypeName3);
+                                        SessionsObj.addProperty("Id", i);
+                                        SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag3);
+                                        SessionsObj.addProperty("Remark", Remarks3);
+                                    }
+                                }
+
+
+                                JsonArray JointWorks = new JsonArray();
+
+                                String nameJw = "";
+                                String codeJw = "";
 
                                 if (i == 0) {
-                                    WorkTypeName = sessionList_OneBuild.getWorkType().getName();
-                                    WorkTypeCode = sessionList_OneBuild.getWorkType().getCode();
-                                    WorkTypeFlag = sessionList_OneBuild.getWorkType().getFWFlg();
-                                    SessionId = String.valueOf(oneBuildModelClass.getSessionList().get(i));
-                                    Remarks = sessionList_OneBuild.getRemarks();
-
-                                    if (sessionList_OneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
-                                        HeadquartersName = sessionList_OneBuild.getHeadquarters().getName();
-                                        HeadquartersCode = sessionList_OneBuild.getHeadquarters().getCode();
-                                    }
-                                    TerritoriesName = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
-                                    TerritoriesCode = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
-                                    JWName = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
-                                    JWCode = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
-
-                                    CheName = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
-                                    CheCode = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
-                                    DrName = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
-                                    DrCode = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
-                                    UnDrName = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
-                                    UnDrCode = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                                    StkName = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                                    StkCode = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
-                                    CipName = textBuilder_OB(sessionList_OneBuild.getCip(), false);
-                                    CipCode = textBuilder_OB(sessionList_OneBuild.getCip(), true);
-                                    HospName = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
-                                    HospCode = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
-
+                                    nameJw = JWName;
+                                    codeJw = JWCode;
                                 } else if (i == 1) {
-                                    WorkTypeName2 = sessionList_OneBuild.getWorkType().getName();
-                                    WorkTypeCode2 = sessionList_OneBuild.getWorkType().getCode();
-                                    WorkTypeFlag2 = sessionList_OneBuild.getWorkType().getFWFlg();
-                                    SessionId2 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
-                                    Remarks2 = sessionList_OneBuild.getRemarks();
-
-                                    HeadquartersName2 = sessionList_OneBuild.getHeadquarters().getName();
-                                    HeadquartersCode2 = sessionList_OneBuild.getHeadquarters().getCode();
-                                    TerritoriesName2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
-                                    TerritoriesCode2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
-                                    JWName2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
-                                    JWCode2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
-
-                                    CheName2 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
-                                    CheCode2 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
-                                    DrName2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
-                                    DrCode2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
-                                    UnDrName2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
-                                    UnDrCode2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                                    StkName2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                                    StkCode2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
-                                    CipName2 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
-                                    CipCode2 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
-                                    HospName2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
-                                    HospCode2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
-
+                                    nameJw = JWName2;
+                                    codeJw = JWCode2;
                                 } else if (i == 2) {
-                                    WorkTypeName3 = sessionList_OneBuild.getWorkType().getName();
-                                    WorkTypeCode3 = sessionList_OneBuild.getWorkType().getCode();
-                                    WorkTypeFlag3 = sessionList_OneBuild.getWorkType().getFWFlg();
-                                    SessionId3 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
-                                    Remarks3 = sessionList_OneBuild.getRemarks();
-
-                                    HeadquartersName3 = sessionList_OneBuild.getHeadquarters().getName();
-                                    HeadquartersCode3 = sessionList_OneBuild.getHeadquarters().getCode();
-                                    TerritoriesName3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
-                                    TerritoriesCode3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
-
-                                    JWName3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
-                                    JWCode3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
-                                    CheName3 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
-                                    CheCode3 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
-                                    DrName3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
-                                    DrCode3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
-                                    UnDrName3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
-                                    UnDrCode3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                                    StkName3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                                    StkCode3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
-                                    CipName3 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
-                                    CipCode3 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
-                                    HospName3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
-                                    HospCode3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+                                    nameJw = JWName3;
+                                    codeJw = JWCode3;
                                 }
-                            }
 
+                                if (!nameJw.isEmpty() && !codeJw.isEmpty()) {
+                                    String[] nameArr = nameJw.split(",");
+                                    String[] codeArr = codeJw.split(",");
 
-                            //Sessions
-                            JsonArray Sessions = new JsonArray();
-                            for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
-                                if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
-                                    JsonObject SessionsObj = new JsonObject();
-                                    if (i == 0) {
-                                        if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+                                    int length = Math.min(nameArr.length, codeArr.length);
 
-                                            SessionsObj.addProperty("WorkTypeCode", WorkTypeCode);
-                                            SessionsObj.addProperty("WorkTypeName", WorkTypeName);
-                                            SessionsObj.addProperty("Id", i);
-                                            SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag);
-                                            SessionsObj.addProperty("Remark", Remarks);
-                                        }
-                                    } else if (i == 1) {
-                                        if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
-
-                                            SessionsObj.addProperty("WorkTypeCode", WorkTypeCode2);
-                                            SessionsObj.addProperty("WorkTypeName", WorkTypeName2);
-                                            SessionsObj.addProperty("Id", i);
-                                            SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag2);
-                                            SessionsObj.addProperty("Remark", Remarks2);
-                                        }
-                                    } else if (i == 2) {
-                                        if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
-
-                                            SessionsObj.addProperty("WorkTypeCode", WorkTypeCode3);
-                                            SessionsObj.addProperty("WorkTypeName", WorkTypeName3);
-                                            SessionsObj.addProperty("Id", i);
-                                            SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag3);
-                                            SessionsObj.addProperty("Remark", Remarks3);
-                                        }
+                                    for (int j = 0; j < length; j++) {
+                                        JsonObject JointWorks_obj = new JsonObject();
+                                        JointWorks_obj.addProperty("Name", nameArr[j].trim());
+                                        JointWorks_obj.addProperty("Id", codeArr[j].trim());
+                                        JointWorks.add(JointWorks_obj);
                                     }
+                                }
 
 
-                                    JsonArray JointWorks = new JsonArray();
+                                //Territories
+                                JsonArray Territories = new JsonArray();
+                                String nameTerr = "";
+                                String codeTerr = "";
+                                if (i == 0) {
+                                    nameTerr = TerritoriesName;
+                                    codeTerr = TerritoriesCode;
+                                } else if (i == 1) {
+                                    nameTerr = TerritoriesName2;
+                                    codeTerr = TerritoriesCode2;
+                                } else if (i == 2) {
+                                    nameTerr = TerritoriesName3;
+                                    codeTerr = TerritoriesCode3;
+                                }
+                                if (!nameTerr.isEmpty() && !codeTerr.isEmpty()) {
+                                    String[] nameArr = nameTerr.split(",");
+                                    String[] codeArr = codeTerr.split(",");
 
-                                    String nameJw = "";
-                                    String codeJw = "";
+                                    int length = Math.min(nameArr.length, codeArr.length);
 
-                                    if (i == 0) {
-                                        nameJw = JWName;
-                                        codeJw = JWCode;
-                                    } else if (i == 1) {
-                                        nameJw = JWName2;
-                                        codeJw = JWCode2;
-                                    } else if (i == 2) {
-                                        nameJw = JWName3;
-                                        codeJw = JWCode3;
+                                    for (int j = 0; j < length; j++) {
+                                        JsonObject Territories_obj = new JsonObject();
+                                        Territories_obj.addProperty("Name", nameArr[j].trim());
+                                        Territories_obj.addProperty("Id", codeArr[j].trim());
+                                        Territories.add(Territories_obj);
                                     }
+                                }
 
-                                    if (!nameJw.isEmpty() && !codeJw.isEmpty()) {
-                                        String[] nameArr = nameJw.split(",");
-                                        String[] codeArr = codeJw.split(",");
 
-                                        int length = Math.min(nameArr.length, codeArr.length);
+                                //Headquarters
+                                JsonArray Headquarters = new JsonArray();
+                                String nameHq = "";
+                                String codeHq = "";
+                                if (i == 0) {
+                                    nameHq = HeadquartersName;
+                                    codeHq = HeadquartersCode;
+                                } else if (i == 1) {
+                                    nameHq = HeadquartersName2;
+                                    codeHq = HeadquartersCode2;
+                                } else if (i == 2) {
+                                    nameHq = HeadquartersName3;
+                                    codeHq = HeadquartersCode3;
+                                }
+                                if (!nameHq.isEmpty() && !codeHq.isEmpty()) {
+                                    String[] nameArr = nameHq.split(",");
+                                    String[] codeArr = codeHq.split(",");
 
-                                        for (int j = 0; j < length; j++) {
-                                            JsonObject JointWorks_obj = new JsonObject();
-                                            JointWorks_obj.addProperty("Name", nameArr[j].trim());
-                                            JointWorks_obj.addProperty("Id", codeArr[j].trim());
-                                            JointWorks.add(JointWorks_obj);
-                                        }
+                                    int length = Math.min(nameArr.length, codeArr.length);
+
+                                    for (int j = 0; j < length; j++) {
+                                        JsonObject Headquarters_obj = new JsonObject();
+                                        Headquarters_obj.addProperty("Name", nameArr[j].trim());
+                                        Headquarters_obj.addProperty("Id", codeArr[j].trim());
+                                        Headquarters.add(Headquarters_obj);
                                     }
+                                }
 
+                                //Hospitals
+                                JsonArray Hospitals = new JsonArray();
+                                String nameHosp = "";
+                                String codeHosp = "";
+                                if (i == 0) {
+                                    nameHosp = HospName;
+                                    codeHosp = HospCode;
+                                } else if (i == 1) {
+                                    nameHosp = HospName2;
+                                    codeHosp = HospCode2;
+                                } else if (i == 2) {
+                                    nameHosp = HospName3;
+                                    codeHosp = HospCode3;
+                                }
+                                if (!nameHosp.isEmpty() && !codeHosp.isEmpty()) {
+                                    String[] nameArr = nameHosp.split(",");
+                                    String[] codeArr = codeHosp.split(",");
 
-                                    //Territories
-                                    JsonArray Territories = new JsonArray();
-                                    String nameTerr = "";
-                                    String codeTerr = "";
-                                    if (i == 0) {
-                                        nameTerr = TerritoriesName;
-                                        codeTerr = TerritoriesCode;
-                                    } else if (i == 1) {
-                                        nameTerr = TerritoriesName2;
-                                        codeTerr = TerritoriesCode2;
-                                    } else if (i == 2) {
-                                        nameTerr = TerritoriesName3;
-                                        codeTerr = TerritoriesCode3;
+                                    int length = Math.min(nameArr.length, codeArr.length);
+                                    for (int j = 0; j < length; j++) {
+                                        JsonObject Hospitals_obj = new JsonObject();
+                                        Hospitals_obj.addProperty("Name", nameArr[j].trim());
+                                        Hospitals_obj.addProperty("Id", codeArr[j].trim());
+                                        Hospitals.add(Hospitals_obj);
                                     }
-                                    if (!nameTerr.isEmpty() && !codeTerr.isEmpty()) {
-                                        String[] nameArr = nameTerr.split(",");
-                                        String[] codeArr = codeTerr.split(",");
+                                }
 
-                                        int length = Math.min(nameArr.length, codeArr.length);
+                                //Chemists
+                                JsonArray Chemists = new JsonArray();
+                                String nameChe = "";
+                                String codeChe = "";
+                                if (i == 0) {
+                                    nameChe = CheName;
+                                    codeChe = CheCode;
+                                } else if (i == 1) {
+                                    nameChe = CheName2;
+                                    codeChe = CheCode2;
+                                } else if (i == 2) {
+                                    nameChe = CheName3;
+                                    codeChe = CheCode3;
+                                }
+                                if (!nameChe.isEmpty() && !codeChe.isEmpty()) {
+                                    String[] nameArr = nameChe.split(",");
+                                    String[] codeArr = codeChe.split(",");
 
-                                        for (int j = 0; j < length; j++) {
-                                            JsonObject Territories_obj = new JsonObject();
-                                            Territories_obj.addProperty("Name", nameArr[j].trim());
-                                            Territories_obj.addProperty("Id", codeArr[j].trim());
-                                            Territories.add(Territories_obj);
-                                        }
+                                    int length = Math.min(nameArr.length, codeArr.length);
+
+                                    for (int j = 0; j < length; j++) {
+                                        JsonObject Chemists_obj = new JsonObject();
+                                        Chemists_obj.addProperty("Name", nameArr[j].trim());
+                                        Chemists_obj.addProperty("Id", codeArr[j].trim());
+                                        Chemists.add(Chemists_obj);
                                     }
+                                }
 
+                                //StockLists
+                                JsonArray Stockists = new JsonArray();
+                                String nameStk = "";
+                                String codeStk = "";
+                                if (i == 0) {
+                                    nameStk = StkName;
+                                    codeStk = StkCode;
+                                } else if (i == 1) {
+                                    nameStk = StkName2;
+                                    codeStk = StkCode2;
+                                } else if (i == 2) {
+                                    nameStk = StkName3;
+                                    codeStk = StkCode3;
+                                }
+                                if (!nameStk.isEmpty() && !codeStk.isEmpty()) {
+                                    String[] nameArr = nameStk.split(",");
+                                    String[] codeArr = codeStk.split(",");
 
-                                    //Headquarters
-                                    JsonArray Headquarters = new JsonArray();
-                                    String nameHq = "";
-                                    String codeHq = "";
-                                    if (i == 0) {
-                                        nameHq = HeadquartersName;
-                                        codeHq = HeadquartersCode;
-                                    } else if (i == 1) {
-                                        nameHq = HeadquartersName2;
-                                        codeHq = HeadquartersCode2;
-                                    } else if (i == 2) {
-                                        nameHq = HeadquartersName3;
-                                        codeHq = HeadquartersCode3;
+                                    int length = Math.min(nameArr.length, codeArr.length);
+
+                                    for (int j = 0; j < length; j++) {
+                                        JsonObject Stockists_obj = new JsonObject();
+                                        Stockists_obj.addProperty("Name", nameArr[j].trim());
+                                        Stockists_obj.addProperty("Id", codeArr[j].trim());
+                                        Stockists.add(Stockists_obj);
                                     }
-                                    if (!nameHq.isEmpty() && !codeHq.isEmpty()) {
-                                        String[] nameArr = nameHq.split(",");
-                                        String[] codeArr = codeHq.split(",");
+                                }
 
-                                        int length = Math.min(nameArr.length, codeArr.length);
+                                //ListedDr
+                                JsonArray Doctors = new JsonArray();
+                                String nameDoc = "";
+                                String codeDoc = "";
+                                if (i == 0) {
+                                    nameDoc = DrName;
+                                    codeDoc = DrCode;
+                                } else if (i == 1) {
+                                    nameDoc = DrName2;
+                                    codeDoc = DrCode2;
+                                } else if (i == 2) {
+                                    nameDoc = DrName3;
+                                    codeDoc = DrCode3;
+                                }
+                                if (!nameDoc.isEmpty() && !codeDoc.isEmpty()) {
+                                    String[] nameArr = nameDoc.split(",");
+                                    String[] codeArr = codeDoc.split(",");
 
-                                        for (int j = 0; j < length; j++) {
-                                            JsonObject Headquarters_obj = new JsonObject();
-                                            Headquarters_obj.addProperty("Name", nameArr[j].trim());
-                                            Headquarters_obj.addProperty("Id", codeArr[j].trim());
-                                            Headquarters.add(Headquarters_obj);
-                                        }
+                                    int length = Math.min(nameArr.length, codeArr.length);
+
+                                    for (int j = 0; j < length; j++) {
+                                        JsonObject Doctors_obj = new JsonObject();
+                                        Doctors_obj.addProperty("Name", nameArr[j].trim());
+                                        Doctors_obj.addProperty("Id", codeArr[j].trim());
+                                        Doctors.add(Doctors_obj);
                                     }
+                                }
 
-                                    //Hospitals
-                                    JsonArray Hospitals = new JsonArray();
-                                    String nameHosp = "";
-                                    String codeHosp = "";
-                                    if (i == 0) {
-                                        nameHosp = HospName;
-                                        codeHosp = HospCode;
-                                    } else if (i == 1) {
-                                        nameHosp = HospName2;
-                                        codeHosp = HospCode2;
-                                    } else if (i == 2) {
-                                        nameHosp = HospName3;
-                                        codeHosp = HospCode3;
+                                //UnlistedDr
+
+                                JsonArray UnlistedDoctors = new JsonArray();
+                                String nameUnDr = "";
+                                String codeUmDr = "";
+                                if (i == 0) {
+                                    nameUnDr = UnDrName;
+                                    codeUmDr = UnDrCode;
+                                } else if (i == 1) {
+                                    nameUnDr = UnDrName2;
+                                    codeUmDr = UnDrCode2;
+                                } else if (i == 2) {
+                                    nameUnDr = UnDrName3;
+                                    codeUmDr = UnDrCode3;
+                                }
+                                if (!nameUnDr.isEmpty() && !codeUmDr.isEmpty()) {
+                                    String[] nameArr = nameUnDr.split(",");
+                                    String[] codeArr = codeUmDr.split(",");
+
+                                    int length = Math.min(nameArr.length, codeArr.length);
+
+                                    for (int j = 0; j < length; j++) {
+                                        JsonObject UnlistedDoctors_obj = new JsonObject();
+                                        UnlistedDoctors_obj.addProperty("Name", nameArr[j].trim());
+                                        UnlistedDoctors_obj.addProperty("Id", codeArr[j].trim());
+                                        UnlistedDoctors.add(UnlistedDoctors_obj);
                                     }
-                                    if (!nameHosp.isEmpty() && !codeHosp.isEmpty()) {
-                                        String[] nameArr = nameHosp.split(",");
-                                        String[] codeArr = codeHosp.split(",");
-
-                                        int length = Math.min(nameArr.length, codeArr.length);
-                                        for (int j = 0; j < length; j++) {
-                                            JsonObject Hospitals_obj = new JsonObject();
-                                            Hospitals_obj.addProperty("Name", nameArr[j].trim());
-                                            Hospitals_obj.addProperty("Id", codeArr[j].trim());
-                                            Hospitals.add(Hospitals_obj);
-                                        }
-                                    }
-
-                                    //Chemists
-                                    JsonArray Chemists = new JsonArray();
-                                    String nameChe = "";
-                                    String codeChe = "";
-                                    if (i == 0) {
-                                        nameChe = CheName;
-                                        codeChe = CheCode;
-                                    } else if (i == 1) {
-                                        nameChe = CheName2;
-                                        codeChe = CheCode2;
-                                    } else if (i == 2) {
-                                        nameChe = CheName3;
-                                        codeChe = CheCode3;
-                                    }
-                                    if (!nameChe.isEmpty() && !codeChe.isEmpty()) {
-                                        String[] nameArr = nameChe.split(",");
-                                        String[] codeArr = codeChe.split(",");
-
-                                        int length = Math.min(nameArr.length, codeArr.length);
-
-                                        for (int j = 0; j < length; j++) {
-                                            JsonObject Chemists_obj = new JsonObject();
-                                            Chemists_obj.addProperty("Name", nameArr[j].trim());
-                                            Chemists_obj.addProperty("Id", codeArr[j].trim());
-                                            Chemists.add(Chemists_obj);
-                                        }
-                                    }
-
-                                    //StockLists
-                                    JsonArray Stockists = new JsonArray();
-                                    String nameStk = "";
-                                    String codeStk = "";
-                                    if (i == 0) {
-                                        nameStk = StkName;
-                                        codeStk = StkCode;
-                                    } else if (i == 1) {
-                                        nameStk = StkName2;
-                                        codeStk = StkCode2;
-                                    } else if (i == 2) {
-                                        nameStk = StkName3;
-                                        codeStk = StkCode3;
-                                    }
-                                    if (!nameStk.isEmpty() && !codeStk.isEmpty()) {
-                                        String[] nameArr = nameStk.split(",");
-                                        String[] codeArr = codeStk.split(",");
-
-                                        int length = Math.min(nameArr.length, codeArr.length);
-
-                                        for (int j = 0; j < length; j++) {
-                                            JsonObject Stockists_obj = new JsonObject();
-                                            Stockists_obj.addProperty("Name", nameArr[j].trim());
-                                            Stockists_obj.addProperty("Id", codeArr[j].trim());
-                                            Stockists.add(Stockists_obj);
-                                        }
-                                    }
-
-                                    //ListedDr
-                                    JsonArray Doctors = new JsonArray();
-                                    String nameDoc = "";
-                                    String codeDoc = "";
-                                    if (i == 0) {
-                                        nameDoc = DrName;
-                                        codeDoc = DrCode;
-                                    } else if (i == 1) {
-                                        nameDoc = DrName2;
-                                        codeDoc = DrCode2;
-                                    } else if (i == 2) {
-                                        nameDoc = DrName3;
-                                        codeDoc = DrCode3;
-                                    }
-                                    if (!nameDoc.isEmpty() && !codeDoc.isEmpty()) {
-                                        String[] nameArr = nameDoc.split(",");
-                                        String[] codeArr = codeDoc.split(",");
-
-                                        int length = Math.min(nameArr.length, codeArr.length);
-
-                                        for (int j = 0; j < length; j++) {
-                                            JsonObject Doctors_obj = new JsonObject();
-                                            Doctors_obj.addProperty("Name", nameArr[j].trim());
-                                            Doctors_obj.addProperty("Id", codeArr[j].trim());
-                                            Doctors.add(Doctors_obj);
-                                        }
-                                    }
-
-                                    //UnlistedDr
-
-                                    JsonArray UnlistedDoctors = new JsonArray();
-                                    String nameUnDr = "";
-                                    String codeUmDr = "";
-                                    if (i == 0) {
-                                        nameUnDr = UnDrName;
-                                        codeUmDr = UnDrCode;
-                                    } else if (i == 1) {
-                                        nameUnDr = UnDrName2;
-                                        codeUmDr = UnDrCode2;
-                                    } else if (i == 2) {
-                                        nameUnDr = UnDrName3;
-                                        codeUmDr = UnDrCode3;
-                                    }
-                                    if (!nameUnDr.isEmpty() && !codeUmDr.isEmpty()) {
-                                        String[] nameArr = nameUnDr.split(",");
-                                        String[] codeArr = codeUmDr.split(",");
-
-                                        int length = Math.min(nameArr.length, codeArr.length);
-
-                                        for (int j = 0; j < length; j++) {
-                                            JsonObject UnlistedDoctors_obj = new JsonObject();
-                                            UnlistedDoctors_obj.addProperty("Name", nameArr[j].trim());
-                                            UnlistedDoctors_obj.addProperty("Id", codeArr[j].trim());
-                                            UnlistedDoctors.add(UnlistedDoctors_obj);
-                                        }
-                                    }
+                                }
 
 
-                                    //Cip
+                                //Cip
                                    /*     JSONArray Cip = new JSONArray();
                                         String nameCip = "";
                                         String codeCip = "";
@@ -3922,51 +3922,51 @@ public class MasterSyncActivity extends AppCompatActivity {
                                             }
                                         }*/
 
-                                    SessionsObj.add("JointWorks", JointWorks);
-                                    SessionsObj.add("Headquarters", Headquarters);
-                                    SessionsObj.add("Territories", Territories);
-                                    SessionsObj.add("Doctors", Doctors);
-                                    SessionsObj.add("Chemists", Chemists);
-                                    SessionsObj.add("Stockists", Stockists);
-                                    SessionsObj.add("UnlistedDoctors", UnlistedDoctors);
-                                    SessionsObj.add("Hospitals", Hospitals);
+                                SessionsObj.add("JointWorks", JointWorks);
+                                SessionsObj.add("Headquarters", Headquarters);
+                                SessionsObj.add("Territories", Territories);
+                                SessionsObj.add("Doctors", Doctors);
+                                SessionsObj.add("Chemists", Chemists);
+                                SessionsObj.add("Stockists", Stockists);
+                                SessionsObj.add("UnlistedDoctors", UnlistedDoctors);
+                                SessionsObj.add("Hospitals", Hospitals);
 //                                        SessionsObj.put("Cip", Cip);
-                                    Sessions.add(SessionsObj);
-                                }
-
+                                Sessions.add(SessionsObj);
                             }
 
-                            //Details
-
-                            JsonObject DetailsObj = new JsonObject();
-                            DetailsObj.addProperty("Id", 0);
-                            DetailsObj.add("Others", new JsonArray());
-                            DetailsObj.addProperty("TDate", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, oneBuildModelClass.getDate()));
-                            DetailsObj.add("Sessions", Sessions);
-                            detailsArray.add(DetailsObj);
-
                         }
+
+                        //Details
+
+                        JsonObject DetailsObj = new JsonObject();
+                        DetailsObj.addProperty("Id", 0);
+                        DetailsObj.add("Others", new JsonArray());
+                        DetailsObj.addProperty("TDate", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, oneBuildModelClass.getDate()));
+                        DetailsObj.add("Sessions", Sessions);
+                        detailsArray.add(DetailsObj);
+
                     }
-                    tourPlan.add("Details", detailsArray);
-                    jsonObject.add("tourPlan", tourPlan);
-                    Gson gson = new Gson();
-
-                    jbonj = gson.fromJson(jsonObject.toString(), JsonObject.class);
                 }
+                tourPlan.add("Details", detailsArray);
+                jsonObject.add("tourPlan", tourPlan);
+                Gson gson = new Gson();
 
-                Log.d("JSON_One_Build", "isNetworkAvailable: " + jsonObject);
-                apiInterface = RetrofitClient.getRetrofit(MasterSyncActivity.this, SharedPref.getBaseWebUrl(MasterSyncActivity.this));
-                Map<String, String> mapString = new HashMap<>();
-                Call<JsonElement> call = apiInterface.getJSONElementOneBuild("/MasterFiles/tourPlan/TourPlanWebService.asmx/DraftTourPlan", jsonObject);
-                call.enqueue(new Callback<JsonElement>() {
-                    @Override
-                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                        Log.v("tpGetPlan", "----" + response.body());
-                        if (response.body() != null && !response.body().isJsonNull()) {
-                            SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
-                            try {
-                                JSONObject outerJsonObject = new JSONObject(response.body().getAsJsonObject().toString());
-                                if (!isFrom.equalsIgnoreCase("sendToApproval")) {
+                jbonj = gson.fromJson(jsonObject.toString(), JsonObject.class);
+            }
+
+            Log.d("JSON_One_Build", "isNetworkAvailable: " + jsonObject);
+            apiInterface = RetrofitClient.getRetrofit(MasterSyncActivity.this, SharedPref.getBaseWebUrl(MasterSyncActivity.this));
+            Map<String, String> mapString = new HashMap<>();
+            Call<JsonElement> call = apiInterface.getJSONElementOneBuild("/MasterFiles/tourPlan/TourPlanWebService.asmx/DraftTourPlan", jsonObject);
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    Log.v("tpGetPlan", "----" + response.body());
+                    if (response.body() != null && !response.body().isJsonNull()) {
+                        SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
+                        try {
+                            JSONObject outerJsonObject = new JSONObject(response.body().getAsJsonObject().toString());
+                            if (!isFrom.equalsIgnoreCase("sendToApproval")) {
                                 /*if (outerJsonObject.has("d")) {
                                     String innerJsonString = outerJsonObject.getString("d");
                                     JSONObject innerJsonObject = new JSONObject(innerJsonString);
@@ -3991,47 +3991,47 @@ public class MasterSyncActivity extends AppCompatActivity {
                                     } else {
                                         Log.e("ret_Id", "'Data' key not found ");
                                     }*/
-                                } else {
-                                    Log.e("outerJsonObject", "'d' key not found in the response body.");
-                                }
-                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TOUR_PLAN, (new JSONArray().put(outerJsonObject)).toString(), 2));
-//                            }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                            } else {
+                                Log.e("outerJsonObject", "'d' key not found in the response body.");
                             }
-
-                        } else {
-                            SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
+                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TOUR_PLAN, (new JSONArray().put(outerJsonObject)).toString(), 2));
+//                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+
+                    } else {
+                        SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                     }
+                }
 
-                    @Override
-                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                        commonUtilsMethods.showToastMessage(MasterSyncActivity.this, "Please Try Again !");
-                        Log.e("tpGetPlan", "error getTp : " + t);
-                    }
-                });
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    commonUtilsMethods.showToastMessage(MasterSyncActivity.this, "Please Try Again !");
+                    Log.e("tpGetPlan", "error getTp : " + t);
+                }
+            });
 
-            } catch (JsonIOException e) {
+        } catch (JsonIOException e) {
 
-                Log.v("tpGetPlan", "--error--1--" + e);
-            }
+            Log.v("tpGetPlan", "--error--1--" + e);
+        }
 //            }
 //        });
 //        networkStatusTask.execute();
-        }
-
-        public static String textBuilder_OB (List < OneBuildModelClass.SessionList.SubClass > sessionLists,boolean codeOrName){
-
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < sessionLists.size(); i++) {
-                if (codeOrName) { // true -> code
-                    stringBuilder.append(sessionLists.get(i).getCode()).append(",");
-                } else { // false -> name
-                    stringBuilder.append(sessionLists.get(i).getName()).append(",");
-                }
-            }
-            return stringBuilder.toString();
-        }
-
     }
+
+    public static String textBuilder_OB(List<OneBuildModelClass.SessionList.SubClass> sessionLists, boolean codeOrName) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < sessionLists.size(); i++) {
+            if (codeOrName) { // true -> code
+                stringBuilder.append(sessionLists.get(i).getCode()).append(",");
+            } else { // false -> name
+                stringBuilder.append(sessionLists.get(i).getName()).append(",");
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+}
