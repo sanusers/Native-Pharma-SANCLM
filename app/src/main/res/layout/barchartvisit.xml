@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/rl_barchartvisit"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_height="match_parent">
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChartVisit"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/_7sdp"
+        android:layout_weight="1"
+        android:background="@color/white" />
+
+
+ <!--   <LinearLayout
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="@dimen/_35sdp"
+        android:visibility="gone"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_monthlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="@dimen/_35sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_weight="4"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:id="@+id/graph1"
+            android:layout_width="wrap_content"
+            android:layout_height="29dp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:gravity="center"
+            android:text="Visited"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/graph2"
+            android:layout_width="wrap_content"
+            android:layout_height="29dp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:gravity="center"
+            android:text="Missed"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/graph3"
+            android:layout_width="wrap_content"
+            android:layout_height="29dp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:gravity="center"
+            android:text="Average"
+            android:textColor="@color/black" />
+
+
+    </LinearLayout>-->
+</LinearLayout>

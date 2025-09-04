@@ -87,11 +87,9 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
                 ReportsActivity activity = (ReportsActivity) context;
                 activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
                 activity.getDynamicData();
-            }else if (name.equalsIgnoreCase("Visit Control")){
-                ReportsActivity activity = (ReportsActivity) context;
-//                Intent intent = new Intent(context,VisitControl.class);
-//                context.startActivity(intent);
-
+            }else if (name.equalsIgnoreCase("Visit Monitor")){
+                Intent intent = new Intent(context, VisitMonitorActivity.class);
+                context.startActivity(intent);
             }
 
         });

@@ -102,6 +102,7 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
             imageView=itemView.findViewById(R.id.image);
             ImageTittle=itemView.findViewById(R.id.tv_tittle);
             Remarks=itemView.findViewById(R.id.tv_remarks);
+            progressBar = itemView.findViewById(R.id.progress_bar);
         }
     }
 }
