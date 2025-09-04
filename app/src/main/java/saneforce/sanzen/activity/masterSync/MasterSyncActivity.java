@@ -98,7 +98,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     String rsf = "";
     boolean retrystatus = false, isSlideDownloading = false, isWelcomeSlideDownloading = false;
     //  Api call status  ======> 2 - sucesss, 1- failure ,  0- Notsync yet
-    int doctorStatus = 0, doctorGeoStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, unlistedDrGeoStatus = 0, chemistGeoStatus = 0, stockiestGeoStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0;
+    int doctorStatus = 0, doctorGeoStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, unlistedDrGeoStatus = 0, chemistGeoStatus = 0, stockiestGeoStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, checkInStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0;
     int apiSuccessCount = 0, itemCount = 0;
     String navigateFrom = "";
     boolean mgrInitialSync = false;
@@ -660,6 +660,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         myDayPlanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_PLAN);
         visitControlStatus = masterDataDao.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
         dateSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DATE_SYNC);
+        checkInStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHECK_IN);
         stockBalanceStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
         stockBalanceStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
         calenderEventStaus = masterDataDao.getMasterSyncStatusByKey(Constants.CALENDER_EVENT_STATUS);
@@ -719,7 +720,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (leaveStatus == 1 || leaveStatusStatus == 1) {
             binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
         }
-        if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1) {
+        if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1 || checkInStatus ==1) {
             binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
         }
         if (activityStatus == 1) {
@@ -871,12 +872,14 @@ public class MasterSyncActivity extends AppCompatActivity {
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcheckin_zen") ||
                         masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
                     callSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CALL_SYNC);
                     myDayPlanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_PLAN);
                     visitControlStatus = masterDataDao.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
                     dateSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DATE_SYNC);
-                    if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1) {
+                    checkInStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHECK_IN);
+                    if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1 || checkInStatus == 1) {
                         binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
                     } else {
 
@@ -1197,7 +1200,10 @@ public class MasterSyncActivity extends AppCompatActivity {
         dcrModelArray.add(callSyncModel);
         dcrModelArray.add(dateSyncModel);
         dcrModelArray.add(myDayPlanModel);
-
+        if(SharedPref.getSrtNd(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+            MasterSyncItemModel checkInModel = new MasterSyncItemModel(Constants.CHECK_IN, Constants.CHECK_IN, "getcheckin_zen", Constants.CHECK_IN, checkInStatus, false);
+            dcrModelArray.add(checkInModel);
+        }
 
         if (SharedPref.getSampleValidation(this).equalsIgnoreCase("1") || SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
             MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE, "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
@@ -1561,6 +1567,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     break;
                 }
                 case "getquiz":
+                case "getcheckin_zen":
                 case "gettodaydcrmultihq":
                 case "gettodaydcr": {
                     if (HomeDashBoard.selectedDate != null) {
@@ -1623,6 +1630,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
             } else if (masterOf.equalsIgnoreCase(Constants.SURVEY)) {
                 mapString.put("axn", "get/survey");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase(Constants.CHECK_IN)) {
+                mapString.put("axn", "get/checKin");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
             }
 
