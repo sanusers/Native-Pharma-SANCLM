@@ -2040,7 +2040,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 checkInObj.put("Activity_Date", date);
                 Log.v("CheckIn Object", checkInObj.toString());
                 JSONArray jsonArray = new JSONArray();
-                jsonArray.put(jsonObject);
+                jsonArray.put(checkInObj);
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CHECK_IN, jsonArray.toString(), 2));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -2194,7 +2194,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         }
 
-        if(!CheckInOutManager.isCheckedIn(requireContext())) {
+        if(!CheckInOutManager.isCheckedIn(requireContext())
+                && HomeDashBoard.selectedDate != null
+                && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
             CheckInDate(true);
             return;
         }

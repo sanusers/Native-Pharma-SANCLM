@@ -466,7 +466,7 @@
         It is recommended to Sync Outbox Calls</string>
     <string name="please_check_your_internet_connection">Please Check Your Internet Connection</string>
     <string name="clear_all">Clear All</string>
-    <string name="qty_must_be_greater_than_0">Qty must be greater than 0</string>
+    <string name="qty_must_be_greater_than_0">Qty must be greater than or equal to 0</string>
     <string name="select_to_date">Select To Date</string>
     <string name="select_leave_type">Select Leave Type</string>
     <string name="enter_reason_for_leave">Enter reason for leave</string>
@@ -632,4 +632,5 @@
     <string name="enter_crct_email">Please Enter the correct email before saving</string>
     <string name="work_plan_updated_successfully">Work Plan updated successfully</string>
     <string name="work_day">Work Day</string>
+    <string name="_0">0</string>
 </resources>

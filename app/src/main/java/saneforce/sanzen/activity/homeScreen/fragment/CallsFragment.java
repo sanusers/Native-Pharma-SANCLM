@@ -412,7 +412,9 @@ public class CallsFragment extends Fragment {
                 if(SharedPref.getSfCode(requireContext()).equalsIgnoreCase("0")) {
                     if(SharedPref.getHqCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getHqCode(requireContext()).isEmpty()) {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-                    }else if(!CheckInOutManager.isCheckedIn(requireContext())) {
+                    }else if(!CheckInOutManager.isCheckedIn(requireContext())
+                            && HomeDashBoard.selectedDate != null
+                            && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
 //                        WorkPlanFragment.showCheckInDialog();
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
                     }else if(WorkPlanFragment.isFromTP) {
@@ -426,7 +428,9 @@ public class CallsFragment extends Fragment {
                     JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                     try {
-                        if(!CheckInOutManager.isCheckedIn(requireContext())) {
+                        if(!CheckInOutManager.isCheckedIn(requireContext())
+                                && HomeDashBoard.selectedDate != null
+                                && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
 //                            WorkPlanFragment.showCheckInDialog();
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
                         }else if(WorkPlanFragment.isFromTP && WorkPlanFragment.binding.txtSave.isEnabled()) {

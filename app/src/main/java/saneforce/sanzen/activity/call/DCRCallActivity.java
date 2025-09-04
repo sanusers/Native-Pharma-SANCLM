@@ -1358,7 +1358,8 @@ public class DCRCallActivity extends AppCompatActivity {
 
     private boolean validateRCPACompQty() {
         for (int i = 0; i < RCPASelectCompSide.rcpa_comp_list.size(); i++) {
-            if (RCPASelectCompSide.rcpa_comp_list.get(i).getQty().isEmpty() || Integer.parseInt(RCPASelectCompSide.rcpa_comp_list.get(i).getQty()) == 0) {
+//            if (RCPASelectCompSide.rcpa_comp_list.get(i).getQty().isEmpty() || Integer.parseInt(RCPASelectCompSide.rcpa_comp_list.get(i).getQty()) == 0) {
+            if (RCPASelectCompSide.rcpa_comp_list.get(i).getQty().isEmpty()) {
                 commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.rcpa_need_qty));
                 moveToPage("RCPA");
                 return false;
@@ -1407,7 +1408,8 @@ public class DCRCallActivity extends AppCompatActivity {
             }
         }
         for (int i = 0; i < RCPASelectCompSide.rcpa_comp_list.size(); i++) {
-            if (CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().isEmpty() || CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().equalsIgnoreCase("0")) {
+//            if (CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().isEmpty() || CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().equalsIgnoreCase("0")) {
+            if (CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().isEmpty()) {
                 commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.rcpa_need_qty));
                 moveToPage("RCPA");
                 return false;

@@ -12,7 +12,7 @@
         android:layout_height="@dimen/_60sdp"
         android:layout_margin="@dimen/_2sdp"
         android:scaleType="centerCrop"
-        android:src="@drawable/blur_imge"
+        android:src="@drawable/blur_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.015"

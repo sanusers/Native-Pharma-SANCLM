@@ -213,14 +213,18 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             holder.status.setText("Draft");
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.text_dark_15)));
         } else if (status==0 && confirmStatus==1) {
-            holder.status.setText("Draft / Finished"); // blue
+            holder.status.setText("Completed"); // blue
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.bg_lite_blue)));
+            if(dayReportModel.getFWFlg().equalsIgnoreCase("L")) {
+                holder.status.setText("Pending"); // blue
+                holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.Evening_Blue_10)));
+            }
         } else if (status==0 && confirmStatus==2) {
             holder.status.setText("Rejected"); // red
-            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.red_10)));
+            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.brown_10)));
         } else if (status==0  && confirmStatus==3) {
             holder.status.setText("ReEntry");
-            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.yellow_10)));
+            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.pink_10)));
         }else if (status==1  && confirmStatus==1) {
             holder.status.setText("Approved");
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.green_10)));
@@ -233,8 +237,8 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             bundle.putString("INLong", dayReportModel.getStart_lang());
             bundle.putString("OUTLat", dayReportModel.getEnd_lat());
             bundle.putString("OUTLong", dayReportModel.getEnd_lang());
-            bundle.putString("INDateTime", dayReportModel.getRptdate() + " " + dayReportModel.getIntime());
-            bundle.putString("OUTDateTime", dayReportModel.getRptdate() + " " + dayReportModel.getOuttime());
+            bundle.putString("INDateTime", dayReportModel.getIntime());
+            bundle.putString("OUTDateTime", dayReportModel.getOuttime());
             bundle.putString("INAddress", dayReportModel.getInaddress());
             bundle.putString("OUTAddress", dayReportModel.getOutaddress());
             bundle.putString("title", context.getString(R.string.day_check_in) + " Out ( " + dayReportModel.getRptdate() + " )");
@@ -250,8 +254,8 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             bundle.putString("INLong", dayReportModel.getStart_lang());
             bundle.putString("OUTLat", dayReportModel.getEnd_lat());
             bundle.putString("OUTLong", dayReportModel.getEnd_lang());
-            bundle.putString("INDateTime", dayReportModel.getRptdate() + " " + dayReportModel.getIntime());
-            bundle.putString("OUTDateTime", dayReportModel.getRptdate() + " " + dayReportModel.getOuttime());
+            bundle.putString("INDateTime", dayReportModel.getIntime());
+            bundle.putString("OUTDateTime", dayReportModel.getOuttime());
             bundle.putString("INAddress", dayReportModel.getInaddress());
             bundle.putString("OUTAddress", dayReportModel.getOutaddress());
             bundle.putString("title", context.getString(R.string.day_check_in) + " Out ( " + dayReportModel.getRptdate() + " )");
