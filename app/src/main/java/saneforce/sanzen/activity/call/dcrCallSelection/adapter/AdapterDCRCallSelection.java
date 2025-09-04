@@ -43,7 +43,6 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
-
 public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCallSelection.ViewHolder> {
     private final Context context;
     private ArrayList<CustList> cusListArrayList;

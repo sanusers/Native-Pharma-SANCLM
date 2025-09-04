@@ -338,7 +338,7 @@ public class CommonUtilsMethods {
         return dialog;
     }
 
-    public void showToastMessage(Activity activity, String message) {
+    public static void showToastMessage(Activity activity, String message) {
 
         //ImageView image = layout.findViewById(R.id.image);
         // image.setImageResource(R.drawable.san_clm_logo);

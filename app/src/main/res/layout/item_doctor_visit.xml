@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/combined"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/dr_img"
+                    android:layout_width="45.00dp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:src="@drawable/tp_dr_icon" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/textDoctor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dr.ganapathy Ram"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:textSize="@dimen/_6ssp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textPlace"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nandanam"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_marginTop="5dp"
+                    android:textSize="@dimen/_5ssp"/>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/_18sdp"
+                        android:background="#CCCCCC" />
+
+            </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/doctorName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="4"
+                android:gravity="start"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/doctorqual"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Qualification"
+                        android:layout_marginTop="@dimen/_9sdp"
+                        android:textSize="@dimen/_5ssp" />
+
+                    <TextView
+                        android:id="@+id/Qualification"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MBBS(Ortho)"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_5ssp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/doctorcat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Category"
+                        android:textSize="@dimen/_5ssp"
+                        android:layout_marginTop="@dimen/_9sdp" />
+
+                    <TextView
+                        android:id="@+id/Category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="C"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_5ssp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/doctorspec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Speciality"
+                        android:textSize="@dimen/_5ssp"
+                        android:layout_marginTop="@dimen/_9sdp" />
+
+                    <TextView
+                        android:id="@+id/Speciality"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Co"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_5ssp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/doctorclass"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Class"
+                        android:textSize="@dimen/_5ssp"
+                        android:layout_marginTop="@dimen/_9sdp" />
+
+                    <TextView
+                        android:id="@+id/Class"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nil"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_5ssp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+                </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
