@@ -12,11 +12,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.databinding.ActivityVisitMonitorBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
 
 public class VisitMonitorActivity extends AppCompatActivity  {
+    ActivityVisitMonitorBinding binding;
 
     MasterDataDao masterDataDao;
 

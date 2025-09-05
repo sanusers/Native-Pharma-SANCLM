@@ -238,7 +238,7 @@
                             <View
                                 android:id="@+id/view_dummy"
                                 android:layout_width="match_parent"
-                                android:layout_height="0.5dp"
+                                android:layout_height="3dp"
                                 android:background="#9e9ea5"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/tablelayout"

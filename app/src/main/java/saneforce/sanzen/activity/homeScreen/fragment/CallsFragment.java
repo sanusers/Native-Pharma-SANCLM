@@ -244,7 +244,6 @@ public class CallsFragment extends Fragment {
                 JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
                 if(SharedPref.getOneBuild(context).equalsIgnoreCase("0")){
                     CheckDate = jsonArray.getJSONObject(0).getString("DCRdt").substring(0, 10);
-
                 }else {
                     CheckDate = jsonArray.getJSONObject(0).getString("vstTime").substring(0, 10);
                 }
