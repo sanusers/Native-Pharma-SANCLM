@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowInsets;
@@ -237,6 +238,7 @@ public class MissedReport extends AppCompatActivity {
                         jsonObject.put("Rsf", SharedPref.getHqCode(this));
                         jsonObject.put("rptDt", date);
                         jsonObject.put("tableName", "getmissedrpt");
+                        Log.d("TAG", "getData: "+jsonObject);
 
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
@@ -312,6 +314,7 @@ public class MissedReport extends AppCompatActivity {
                         jsonObject.put("Rsf", SharedPref.getHqCode(this));
                         jsonObject.put("report_date", date);
                         jsonObject.put("tableName", "getmissedrptview");
+                        Log.d("TAG", "getData: "+jsonObject);
 
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
