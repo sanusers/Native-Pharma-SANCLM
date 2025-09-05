@@ -43,6 +43,8 @@ public class DoctorVisitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityDoctorVisitBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        String drCaption = SharedPref.getDrCap(this);
+        binding.toolbarTitle.setText(" Missed " + drCaption);
         adapter = new DoctorVisitAdapter(this, doctorList);
         binding.recyclerDoctorVisit.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerDoctorVisit.setAdapter(adapter);

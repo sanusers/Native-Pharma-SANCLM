@@ -37,6 +37,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -54,9 +55,11 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkStatusTask;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class MissedReport extends AppCompatActivity {
-
+    public static String JoiningDate, JoiningMonth, JoiningYear;
+    public String currentmonth, currentYear;
     private String date = "";
     private ActivityResultLauncher<Intent> launcher;
     private ActivityMissedReportBinding binding;
@@ -64,6 +67,7 @@ public class MissedReport extends AppCompatActivity {
     final List<MissedReportItem> reportList = new ArrayList<>();
 
     private FrameLayout blockingOverlay;
+
     private void hideSystemBars() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API 30+
             final WindowInsetsController insetsController = getWindow().getInsetsController();
@@ -86,6 +90,7 @@ public class MissedReport extends AppCompatActivity {
         setContentView(binding.getRoot());
         blockingOverlay = findViewById(R.id.blocking_overlay);
         blockingOverlay.setVisibility(View.GONE);
+        getJoiningDate();
         adapter = new MissedReportAdapter(this, reportList, (item, position) -> {
             // Handle click — launch DoctorVisitActivity using `launcher`
             getData(date, item.getSfCode());
@@ -96,6 +101,8 @@ public class MissedReport extends AppCompatActivity {
         binding.recyclerMissedReports.setVisibility(View.GONE);
         binding.outboxEmtyImage.setVisibility(View.VISIBLE);
 
+        currentmonth = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_8);
+        currentYear = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_26);
 
 //        adapter = new MissedReportAdapter(this, reportList);
 //        binding.recyclerMissedReports.setAdapter(adapter);
@@ -119,6 +126,21 @@ public class MissedReport extends AppCompatActivity {
         monthYearTextView.setOnClickListener(v ->
 
                 showMonthYearPicker(monthYearTextView));
+    }
+
+    private void getJoiningDate() {
+        try {
+            String SFDCR_Date_sp = SharedPref.getSfDCRDate(this);
+            JSONObject obj = new JSONObject(SFDCR_Date_sp);
+            String SFDCR_Date = obj.getString("date");
+            if (!SFDCR_Date.isEmpty()) {
+                JoiningDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_7, SFDCR_Date);
+                JoiningMonth = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_8, SFDCR_Date);
+                JoiningYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_10, SFDCR_Date);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void showMonthYearPicker(TextView monthYearTextView) {
@@ -171,10 +193,21 @@ public class MissedReport extends AppCompatActivity {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
 
-        for (int i = 0; i < 4; i++) {
+        int joinMonth = Integer.parseInt(JoiningMonth); // "09" → 9
+        int joinYear = Integer.parseInt(JoiningYear); // "2025" → 2025
+
+        int count = 0; // to track max 4 months
+
+// Loop backwards until join date or 4 months are added
+        while ((cal.get(Calendar.YEAR) > joinYear ||
+                (cal.get(Calendar.YEAR) == joinYear && (cal.get(Calendar.MONTH) + 1) >= joinMonth))
+                && count < 4) {
+
             months.add(sdf.format(cal.getTime()));
             cal.add(Calendar.MONTH, -1);
+            count++;
         }
+
         return months;
     }
 

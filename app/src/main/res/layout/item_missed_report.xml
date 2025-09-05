@@ -12,7 +12,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             app:cardBackgroundColor="@android:color/white"
             app:cardCornerRadius="8dp"
@@ -75,14 +75,75 @@
                             app:layout_constraintStart_toEndOf="@id/dr_img"
                             app:layout_constraintTop_toTopOf="@id/dr_img" />
 
-                        <com.github.mikephil.charting.charts.PieChart
-                            android:id="@+id/piechart"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/_75sdp"
-                            android:layout_gravity="center_horizontal"
-                            app:layout_constraintTop_toBottomOf="@id/dr_img"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"/>
+                            android:layout_height="@dimen/_50sdp"
+                            android:orientation="horizontal"
+                            android:padding="8dp"
+                            app:layout_constraintTop_toBottomOf="@id/textDoctor"
+                            app:layout_constraintStart_toStartOf="parent"/>
+
+                            <com.github.mikephil.charting.charts.PieChart
+                                android:id="@+id/piechart"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_80sdp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/labelLayout"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="8dp" />
+
+                            <LinearLayout
+                                android:id="@+id/labelLayout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_8sdp"
+                                android:layout_marginEnd="@dimen/_120sdp"
+                                app:layout_constraintTop_toTopOf="@id/piechart"
+                                app:layout_constraintEnd_toEndOf="@id/piechart"
+                                app:layout_constraintBottom_toBottomOf="@id/piechart"
+                                tools:ignore="MissingConstraints">
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:layout_marginBottom="8dp">
+
+                                    <View
+                                        android:layout_width="15dp"
+                                        android:layout_height="15dp"
+                                        android:layout_marginEnd="6dp"
+                                        android:background="@drawable/gray_border" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Visited"
+                                        android:textColor="@color/text_dark_65"
+                                        android:textSize="14sp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <View
+                                        android:layout_width="15dp"
+                                        android:layout_height="15dp"
+                                        android:layout_marginEnd="6dp"
+                                        android:background="@drawable/bg_green_border" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Missed"
+                                        android:textColor="@color/text_dark_65"
+                                        android:textSize="14sp" />
+                                </LinearLayout>
+                            </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/doctor_stats_layout"
@@ -165,6 +226,8 @@
                                 android:layout_height="match_parent"
                                 android:background="#CCCCCC" />
 
+
+
                             <LinearLayout
                                 android:id="@+id/missedBox"
                                 android:layout_width="0dp"
@@ -198,6 +261,7 @@
                             </LinearLayout>
 
                         </LinearLayout>
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <View

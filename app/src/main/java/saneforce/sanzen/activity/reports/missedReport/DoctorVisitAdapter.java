@@ -33,24 +33,46 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         DoctorVisitItem item = doctorList.get(position);
-        holder.textDoctor.setText(item.getName());
-        holder.textPlace.setText(item.getTerritory());
-        holder.qualification.setText(item.getQualification());
-        holder.category.setText(item.getCategory());
-        holder.speciality.setText(item.getSpeciality());
-        holder.className.setText(item.getClassName());
+        holder.textDoctor.setText(checkEmpty(item.getName()));
+        holder.textPlace.setText(checkEmpty(item.getTerritory()));
+
+        holder.qualification.setText(checkEmpty(item.getQualification()));
+        holder.category.setText(checkEmpty(item.getCategory()));
+        holder.speciality.setText(checkEmpty(item.getSpeciality()));
+        holder.className.setText(checkEmpty(item.getClassName()));
+
+        holder.number.setText((position + 1) + ")");
+
         holder.itemView.setOnClickListener(v -> {
-            });
+            // Your click action here
+        });
     }
+//        holder.textDoctor.setText(item.getName());
+//        holder.textPlace.setText(item.getTerritory());
+//        holder.qualification.setText(item.getQualification());
+//        holder.category.setText(item.getCategory());
+//        holder.speciality.setText(item.getSpeciality());
+//        holder.className.setText(item.getClassName());
+//        holder.number.setText((position + 1) + ")");
+//        holder.itemView.setOnClickListener(v -> {
+//
+//            });
+//    }
+    private String checkEmpty(String value) {
+        return (value == null || value.trim().isEmpty()) ? "-" : value;
+    }
+
     @Override
     public int getItemCount() {
         return doctorList.size();
     }
 
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textDoctor, textPlace;
-        TextView qualification, category, speciality, className;
+        TextView qualification, category, speciality, className,number;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -60,6 +82,7 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
             category = itemView.findViewById(R.id.Category);
             speciality = itemView.findViewById(R.id.Speciality);
             className = itemView.findViewById(R.id.Class);
+            number = itemView.findViewById(R.id.number);
         }
     }
 }

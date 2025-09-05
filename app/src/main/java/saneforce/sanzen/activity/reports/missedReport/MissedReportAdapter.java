@@ -76,7 +76,7 @@ public class MissedReportAdapter extends RecyclerView.Adapter<MissedReportAdapte
 //            holder.visitedTextView.setText(item.getVisited());
 //        }
         String DrCap = SharedPref.getDrCap(context);
-        holder.captionTextView.setText("Missed " + SharedPref.getDrCap(context));
+        holder.captionTextView.setText(SharedPref.getDrCap(context));
         holder.box1Textview.setText("Total " + SharedPref.getDrCap(context));
 //        holder.missedBox.setOnClickListener(v -> {
 //            Log.d("MissedReportAdapter", "missedBox clicked at position: " + position);
@@ -129,6 +129,7 @@ public class MissedReportAdapter extends RecyclerView.Adapter<MissedReportAdapte
             missedTextView = itemView.findViewById(R.id.missedCount);
             missedBox = itemView.findViewById(R.id.missedBox);
             missedChart = itemView.findViewById(R.id.piechart);
+
         }
     }
 

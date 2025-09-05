@@ -8,10 +8,10 @@ public class DoctorVisitItem {
     private String category;
     private String speciality;
     private String className;
+   // private String monthKey;
+    public DoctorVisitItem(String name, String territory,String code, String qualification,
+                           String category, String speciality, String className) {
 
-
-
-    public DoctorVisitItem(String name, String territory,String code, String qualification, String category, String speciality, String className) {
         this.name = name;
         this.code = code;
         this.territory = territory;
@@ -19,6 +19,7 @@ public class DoctorVisitItem {
         this.category = category;
         this.speciality = speciality;
         this.className = className;
+//        this.monthKey =monthKey;
     }
 
     public String getName() {
@@ -47,4 +48,7 @@ public class DoctorVisitItem {
     public String getClassName() {
         return className;
     }
+//    public String getMonthKey(){
+//        return monthKey;
+//    }
 }

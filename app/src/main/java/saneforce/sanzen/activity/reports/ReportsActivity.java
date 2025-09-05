@@ -77,7 +77,12 @@ public class ReportsActivity extends AppCompatActivity {
         arrayList.add("Day Check In Report");
         arrayList.add("Customer Check In Report");
         arrayList.add("Visit Monitor");*/
-         arrayList.add("Missed Report");
+//         arrayList.add("Missed Report");
+        if (SharedPref.getSfType(this).equals("1")) {
+            arrayList.add("Missed Report");
+        }
+
+
         if (SharedPref.getDashboard(this).equals("0")){
             arrayList.add("Dash Board");
         }
