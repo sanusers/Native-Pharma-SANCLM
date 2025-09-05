@@ -267,7 +267,6 @@ public class DayReportFragment extends Fragment {
             calendarDialog.show();
         }
 
-
     }
 
     public void populateCalendarAdapter(RecyclerView recyclerView) {

@@ -85,8 +85,7 @@
         app:layout_constraintEnd_toEndOf="@+id/searchBkn"
         app:layout_constraintStart_toStartOf="@+id/searchBkn"
         app:layout_constraintTop_toTopOf="@+id/searchBkn"
-        app:layout_constraintBottom_toBottomOf="@+id/searchBkn"
-        />
+        app:layout_constraintBottom_toBottomOf="@+id/searchBkn" />
     <ImageView
         android:id="@+id/searchClearIcon"
         android:layout_width="@dimen/_8sdp"

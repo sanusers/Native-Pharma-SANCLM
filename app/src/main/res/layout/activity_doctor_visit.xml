@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".activity.reports.missedReport.MissedReport">
+    tools:context=".activity.reports.missedReport.DoctorVisitActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/my_toolbar"
+        android:id="@+id/doctorVisitScreen"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/text_dark"
@@ -36,53 +37,43 @@
                 android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Missed Reports"
+                android:text="Doctor Visit"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
-
     <TextView
-        android:id="@+id/calender"
-        android:layout_width="@dimen/_170sdp"
+        android:id="@+id/missedtittle"
+        android:layout_width="@dimen/_120sdp"
         android:layout_height="@dimen/_25sdp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/black_stroke"
+        android:background="@drawable/edittext_stroke"
         android:fontFamily="@font/satoshi_medium"
         android:gravity="start|center_vertical"
-        android:paddingStart="@dimen/_9sdp"
-        android:text="Select Month"
-        android:textColor="@color/text_dark"
+        android:paddingStart="@dimen/_10sdp"
+        android:textColor="@color/black"
+        android:text="Missed: 0"
+        android:textStyle="bold"
         android:textSize="@dimen/_7sdp"
-        app:layout_constraintEnd_toStartOf="@+id/cl_search_sort"
+        app:layout_constraintEnd_toStartOf="@id/cl_search_sort"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintTop_toBottomOf="@id/doctorVisitScreen"
         tools:ignore="SpUsage" />
-
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="0dp"
-        android:background="@color/text_dark"
-        android:padding="@dimen/_4sdp"
-        android:src="@drawable/calendar_img"
-        app:layout_constraintBottom_toBottomOf="@+id/calender"
-        app:layout_constraintEnd_toEndOf="@+id/calender"
-        app:layout_constraintTop_toTopOf="@+id/calender"
-        app:tint="@color/white" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_search_sort"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
+
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/calender"
+        app:layout_constraintBottom_toBottomOf="@id/missedtittle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/calender"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
+        app:layout_constraintStart_toEndOf="@id/missedtittle"
+        app:layout_constraintTop_toBottomOf="@id/doctorVisitScreen">
 
         <EditText
             android:id="@+id/searchET"
@@ -101,7 +92,7 @@
             android:textColorHint="@color/text_dark_65"
             android:textSize="@dimen/_6sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/sortIcon"
+            app:layout_constraintEnd_toStartOf="@id/sortIcon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="SpUsage" />
@@ -113,18 +104,18 @@
             android:layout_marginStart="8dp"
             android:background="@drawable/edittext_stroke"
             android:backgroundTint="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/searchET"
-            app:layout_constraintStart_toStartOf="@+id/searchET"
-            app:layout_constraintTop_toTopOf="@+id/searchET" />
+            app:layout_constraintBottom_toBottomOf="@id/searchET"
+            app:layout_constraintStart_toStartOf="@id/searchET"
+            app:layout_constraintTop_toTopOf="@id/searchET" />
 
         <ImageView
             android:layout_width="30dp"
             android:layout_height="10dp"
             android:src="@drawable/search_icon_gray"
-            app:layout_constraintBottom_toBottomOf="@+id/searchBkn"
-            app:layout_constraintEnd_toEndOf="@+id/searchBkn"
-            app:layout_constraintStart_toStartOf="@+id/searchBkn"
-            app:layout_constraintTop_toTopOf="@+id/searchBkn" />
+            app:layout_constraintBottom_toBottomOf="@id/searchBkn"
+            app:layout_constraintEnd_toEndOf="@id/searchBkn"
+            app:layout_constraintStart_toStartOf="@id/searchBkn"
+            app:layout_constraintTop_toTopOf="@id/searchBkn" />
 
         <ImageView
             android:id="@+id/searchClearIcon"
@@ -134,9 +125,9 @@
             android:layout_marginEnd="12dp"
             android:scaleType="centerInside"
             android:src="@drawable/img_close"
-            app:layout_constraintBottom_toBottomOf="@+id/searchET"
-            app:layout_constraintEnd_toEndOf="@+id/searchET"
-            app:layout_constraintTop_toTopOf="@+id/searchET" />
+            app:layout_constraintBottom_toBottomOf="@id/searchET"
+            app:layout_constraintEnd_toEndOf="@id/searchET"
+            app:layout_constraintTop_toTopOf="@id/searchET" />
 
         <View
             android:id="@+id/sortIcon"
@@ -146,10 +137,10 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/black_stroke"
             android:backgroundTint="@color/text_dark"
-            app:layout_constraintBottom_toBottomOf="@+id/searchET"
+            app:layout_constraintBottom_toBottomOf="@id/searchET"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/searchET"
-            app:layout_constraintTop_toTopOf="@+id/searchET" />
+            app:layout_constraintStart_toEndOf="@id/searchET"
+            app:layout_constraintTop_toTopOf="@id/searchET" />
 
 
         <ImageView
@@ -157,57 +148,26 @@
             android:layout_height="0dp"
             android:padding="@dimen/_5sdp"
             android:src="@drawable/report_sort_icon"
-            app:layout_constraintBottom_toBottomOf="@+id/sortIcon"
-            app:layout_constraintEnd_toEndOf="@+id/sortIcon"
-            app:layout_constraintStart_toStartOf="@+id/sortIcon"
-            app:layout_constraintTop_toTopOf="@+id/sortIcon"
+            app:layout_constraintBottom_toBottomOf="@id/sortIcon"
+            app:layout_constraintEnd_toEndOf="@id/sortIcon"
+            app:layout_constraintStart_toStartOf="@id/sortIcon"
+            app:layout_constraintTop_toTopOf="@id/sortIcon"
             app:tint="@color/white" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/outboxEmtyImage"
-        android:layout_width="@dimen/_70sdp"
-        android:layout_height="@dimen/_70sdp"
-        android:src="@drawable/outbox_emty_img"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerMissedReports"
+        android:id="@+id/recyclerDoctorVisit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/calender"
+        app:layout_constraintTop_toBottomOf="@id/missedtittle"
         app:layout_constraintVertical_bias="0"
-        tools:listitem="@layout/item_missed_report" />
-
-    <FrameLayout
-        android:id="@+id/blocking_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#80000000"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:id="@+id/progressBarOverlay"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/dark_purple" />
-    </FrameLayout>
+        tools:listitem="@layout/item_doctor_visit"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
