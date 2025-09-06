@@ -23,7 +23,7 @@ public class DoctorFragment extends Fragment {
 
     public FragmentDoctorVisitReportBinding binding;
 
-    TextView headerTxt, doctorVisitTxt, dateTxt, totalDr, totalDrCnt, visited, visitedCnt, missed, missedCnt, FWDays, FWDaysCnt, callAvg, callAvgCnt, callCvg, callCvgCnt;
+    TextView headerTxt,headerTxt1,headerTxt2, doctorVisitTxt, dateTxt, totalDr, totalDrCnt, visited, visitedCnt, missed, missedCnt, FWDays, FWDaysCnt, callAvg, callAvgCnt, callCvg, callCvgCnt;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
@@ -34,6 +34,8 @@ public class DoctorFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_doctor_visit_report, container, false);
         headerTxt = v.findViewById(R.id.headerTxt);
+        headerTxt1 = v.findViewById(R.id.headerTxt1);
+        headerTxt2 = v.findViewById(R.id.headerTxt2);
         doctorVisitTxt = v.findViewById(R.id.doctorVisitTxt);
         dateTxt = v.findViewById(R.id.dateTxt);
         totalDr = v.findViewById(R.id.totalDr);
@@ -54,9 +56,13 @@ public class DoctorFragment extends Fragment {
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
 
 
-        doctorVisitTxt.setText(String.format(SharedPref.getDrCap(requireContext()))+"Visit");
+        headerTxt.setText(SharedPref.getSfName(requireContext()));
+        headerTxt1.setText(SharedPref.getHqName(requireContext()));
+        headerTxt2.setText(SharedPref.getDesig(requireContext()));
+        doctorVisitTxt.setText(String.format(SharedPref.getDrCap(requireContext()))+ " "+"Visit");
         totalDr.setText(String.format(getString(R.string.total))+SharedPref.getDrCap(requireContext()));
-        dateTxt.setText(TimeUtils.FORMAT_23);
+
+
 
 
         return v;

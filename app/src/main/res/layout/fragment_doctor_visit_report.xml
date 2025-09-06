@@ -23,24 +23,29 @@
             <LinearLayout
                 android:id="@+id/linear1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_2sdp"
                 android:orientation="horizontal"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
-                
+
                 <TextView
                     android:id="@+id/headerTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
                     android:fontFamily="@font/satoshi_bold"
                     android:gravity="center"
                     android:text="MR Name "
-                    android:textColor="@color/red_60"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textColor="@color/red_60" />
+
                 <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="5dp"
+                    android:layout_height="2dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/_2sdp"
                     android:background = "@color/red_60">
 
                 </View>
@@ -52,6 +57,23 @@
                     android:fontFamily="@font/satoshi_bold"
                     android:gravity="center"
                     android:text="Hq "
+                    android:textColor="@color/red_60" />
+                <View
+                    android:layout_width="5dp"
+                    android:layout_height="2dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/_2sdp"
+                    android:background = "@color/red_60">
+
+                </View>
+
+                <TextView
+                    android:id="@+id/headerTxt2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="center"
+                    android:text="Designation "
                     android:textColor="@color/red_60" />
                 
                 

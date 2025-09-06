@@ -18,17 +18,75 @@
             android:layout_height="match_parent">
 
             <!-- Header -->
-            <TextView
-                android:id="@+id/headerTxt"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/linear1"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/_15sdp"
-                android:fontFamily="@font/satoshi_bold"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:orientation="horizontal"
                 android:gravity="center"
-                android:text="MR Name - HQ - Designation"
-                android:textColor="@color/red_60"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/headerTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="center"
+                    android:text="MR Name "
+                    android:textColor="@color/red_60" />
+
+                <View
+                    android:layout_width="5dp"
+                    android:layout_height="2dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/_2sdp"
+                    android:background = "@color/red_60">
+
+                </View>
+
+                <TextView
+                    android:id="@+id/headerTxt1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="center"
+                    android:text="Hq "
+                    android:textColor="@color/red_60" />
+                <View
+                    android:layout_width="5dp"
+                    android:layout_height="2dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/_2sdp"
+                    android:background = "@color/red_60">
+
+                </View>
+
+                <TextView
+                    android:id="@+id/headerTxt2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="center"
+                    android:text="Designation "
+                    android:textColor="@color/red_60" />
+
+
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/gray_20"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/headerTxt" />
+
+
+            </LinearLayout>
 
             <!-- Image -->
             <ImageView
@@ -36,7 +94,7 @@
                 android:layout_width="52dp"
                 android:layout_height="@dimen/_25sdp"
                 android:src="@drawable/chemist_img"
-                app:layout_constraintTop_toBottomOf="@id/headerTxt"
+                app:layout_constraintTop_toBottomOf="@id/linear1"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_7sdp"/>
@@ -256,7 +314,7 @@
                 android:layout_height="@dimen/_92sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 app:layout_constraintStart_toEndOf="@id/statsGrid"
-                app:layout_constraintTop_toBottomOf="@id/headerTxt"
+                app:layout_constraintTop_toBottomOf="@id/linear1"
                 android:layout_marginStart="@dimen/_6sdp"
                 android:layout_marginEnd="@dimen/_10sdp">
 
