@@ -164,7 +164,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             Calendar calendar = Calendar.getInstance();
             int month = calendar.get(Calendar.MONTH) + 1;
 
-            DrCallsCount = callTableDao.getCurrentMonthCallsCount(String.valueOf(month), "1");
+            DrCallsCount  = callTableDao.getCurrentMonthCallsCount(String.valueOf(month), "1");
             CheCallsCount = callTableDao.getCurrentMonthCallsCount(String.valueOf(month), "2");
             StkCallsCount = callTableDao.getCurrentMonthCallsCount(String.valueOf(month), "3");
             UnlCallSCount = callTableDao.getCurrentMonthCallsCount(String.valueOf(month), "4");

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 //import saneforce.sanzen.activity.reports.missedReport.MissedReport;
+import saneforce.sanzen.activity.reports.visitMonitor.VisitMonitorActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
@@ -83,7 +84,7 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
                 ReportsActivity activity = (ReportsActivity) context;
                 activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
                 activity.getData(name, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4));
-            } else if (name.equalsIgnoreCase(SharedPref.getDynamicOptionCaps(context))) {
+            } else if (SharedPref.getDynamicOptionNeed(context).equalsIgnoreCase("0") && name.equalsIgnoreCase(SharedPref.getDynamicOptionCaps(context))) {
                 ReportsActivity activity = (ReportsActivity) context;
                 activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
                 activity.getDynamicData();
