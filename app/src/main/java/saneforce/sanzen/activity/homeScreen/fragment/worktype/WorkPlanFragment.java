@@ -2628,7 +2628,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
-            jsonObject.put("tableName", "dayplanmultihq");
+            jsonObject.put("tableName", "dayplan");
+            if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && !SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                jsonObject.put("tableName", "dayplanmultihq");
+            }
             jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
             jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
             if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {

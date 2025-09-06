@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginVertical="@dimen/_2sdp"
     android:background="@drawable/selector_box">
 
@@ -86,6 +87,126 @@
         app:layout_constraintTop_toBottomOf="@id/constraint_top"
         app:layout_constraintVertical_bias="0.0" />
 
+    <LinearLayout
+        android:id="@+id/ll_deviation_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:paddingVertical="@dimen/_2sdp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/view_dummy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:id="@+id/ll_wt">
+
+            <TextView
+                android:id="@+id/tag_wt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_7sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:paddingVertical="@dimen/_2sdp"
+                android:text="@string/worktype"
+                android:textColor="@color/light_grey_2"
+                android:textSize="@dimen/_6ssp"/>
+
+            <TextView
+                android:id="@+id/tv_wt_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textColor="@color/cheked_txt_color"
+                android:textSize="@dimen/_6ssp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:id="@+id/ll_hq">
+
+            <TextView
+                android:id="@+id/tag_hq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_7sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:paddingVertical="@dimen/_2sdp"
+                android:text="@string/head_quarter"
+                android:textColor="@color/light_grey_2"
+                android:textSize="@dimen/_6ssp"/>
+
+            <TextView
+                android:id="@+id/tv_hq_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textColor="@color/cheked_txt_color"
+                android:textSize="@dimen/_6ssp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:id="@+id/ll_cl">
+
+            <TextView
+                android:id="@+id/tag_cl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_7sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:paddingVertical="@dimen/_2sdp"
+                android:text="@string/cluster"
+                android:textColor="@color/light_grey_2"
+                android:textSize="@dimen/_6ssp"/>
+
+            <TextView
+                android:id="@+id/tv_cl_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textColor="@color/cheked_txt_color"
+                android:textSize="@dimen/_6ssp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_dummy2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:background="@color/background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_deviation_data"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/tag_deviation_remarks"
@@ -101,7 +222,7 @@
         app:layout_constraintBottom_toTopOf="@id/tv_deviation_remarks"
         app:layout_constraintEnd_toStartOf="@id/btn_reject"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_dummy" />
+        app:layout_constraintTop_toBottomOf="@id/view_dummy2" />
 
     <TextView
         android:id="@+id/tv_deviation_remarks"
@@ -137,7 +258,7 @@
         app:layout_constraintEnd_toStartOf="@id/btn_approved"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/tag_deviation_remarks"
-        app:layout_constraintTop_toBottomOf="@id/view_dummy" />
+        app:layout_constraintTop_toBottomOf="@id/view_dummy2" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_approved"
