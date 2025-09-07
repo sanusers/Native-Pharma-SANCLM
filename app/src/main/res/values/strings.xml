@@ -633,4 +633,9 @@
     <string name="work_plan_updated_successfully">Work Plan updated successfully</string>
     <string name="work_day">Work Day</string>
     <string name="visit">Visit</string>
+    <string name="Dr">Doctor</string>
+    <string name="miss">Missed</string>
+    <string name="fwd">FWD</string>
+    <string name="avg">Average</string>
+    <string name="cvg">Coverage</string>
 </resources>

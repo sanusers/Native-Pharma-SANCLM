@@ -1,0 +1,380 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/doctor_card"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_138sdp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="16dp"
+    app:cardCornerRadius="6dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/linear1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/headerTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:gravity="center"
+                android:text="MR Name "
+                android:textColor="@color/red_60" />
+
+            <View
+                android:layout_width="5dp"
+                android:layout_height="2dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/_2sdp"
+                android:background="@color/red_60" />
+
+            <TextView
+                android:id="@+id/headerTxt1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:gravity="center"
+                android:text="Hq "
+                android:textColor="@color/red_60" />
+
+            <View
+                android:layout_width="5dp"
+                android:layout_height="2dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/_2sdp"
+                android:background="@color/red_60" />
+
+            <TextView
+                android:id="@+id/headerTxt2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:gravity="center"
+                android:text="Designation "
+                android:textColor="@color/red_60" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/gray_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/headerTxt" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/doctorImg"
+            android:layout_width="52dp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_7sdp"
+            android:src="@drawable/doctor_img"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linear1" />
+
+        <TextView
+            android:id="@+id/doctorVisitTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_9sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:text="Doctor Visit"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_6sdp"
+            app:layout_constraintStart_toEndOf="@id/doctorImg"
+            app:layout_constraintTop_toTopOf="@id/doctorImg" />
+
+        <TextView
+            android:id="@+id/dateTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:text="Oct 2025"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_6sdp"
+            app:layout_constraintStart_toStartOf="@id/doctorImg"
+            app:layout_constraintTop_toBottomOf="@id/doctorImg" />
+
+        <GridLayout
+            android:id="@+id/statsGrid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:background="@drawable/border_spinner_uneditable"
+            android:columnCount="3"
+            android:rowCount="2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dateTxt">
+
+
+            <LinearLayout
+                android:id="@+id/grid1"
+                android:layout_width="@dimen/_54sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_row="0"
+                android:layout_column="0"
+                android:layout_margin="2dp"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/totalDr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="Total Doctor" />
+
+                <TextView
+                    android:id="@+id/totalDrCnt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:text=""
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/grid2"
+                android:layout_width="@dimen/_54sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_row="0"
+                android:layout_column="1"
+                android:layout_margin="2dp"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/visited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="Visited" />
+
+                <TextView
+                    android:id="@+id/visitedCnt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:text=""
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/grid3"
+                android:layout_width="@dimen/_54sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_row="0"
+                android:layout_column="2"
+                android:layout_margin="2dp"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/missed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="Missed" />
+
+                <TextView
+                    android:id="@+id/missedCnt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:text=""
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/grid4"
+                android:layout_width="@dimen/_54sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_row="1"
+                android:layout_column="0"
+                android:layout_margin="2dp"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/FWDays"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="Field Work Days" />
+
+                <TextView
+                    android:id="@+id/FWDaysCnt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:text=""
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/grid5"
+                android:layout_width="@dimen/_54sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_row="1"
+                android:layout_column="1"
+                android:layout_margin="2dp"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/callAvg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="Call Average" />
+
+                <TextView
+                    android:id="@+id/callAvgCnt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:text=""
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/grid6"
+                android:layout_width="@dimen/_54sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_row="1"
+                android:layout_column="2"
+                android:layout_margin="2dp"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/callCvg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="Coverage" />
+
+                <TextView
+                    android:id="@+id/callCvgCnt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:text=""
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
+
+
+        </GridLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/graph"
+            android:layout_width="748dp"
+            android:layout_height="261dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.3"
+            app:layout_constraintStart_toEndOf="@+id/statsGrid"
+            app:layout_constraintTop_toBottomOf="@id/linear1"
+            app:layout_constraintVertical_bias="0.169">
+
+            <include
+                android:id="@+id/in_chart_visit"
+                layout="@layout/barchartvisit"
+                android:layout_width="@dimen/_150sdp"
+                android:layout_height="@dimen/_100sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/pieChart_visit"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pieChart_visit"
+                android:layout_width="@dimen/_150sdp"
+                android:layout_height="@dimen/_100sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/in_chart_visit"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_2sdp"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_8sdp"
+            app:layout_constraintStart_toEndOf="@+id/statsGrid"
+            app:layout_constraintTop_toBottomOf="@+id/graph">
+
+            <View
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_175sdp"
+                android:background="@color/black"
+                android:visibility="visible" />
+
+            <View
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_2sdp"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:background="@color/gray_med"
+                android:visibility="visible"/>
+
+            <View
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_2sdp"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:background="@color/gray_med"
+                android:visibility="visible"/>
+
+            <View
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_2sdp"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:background="@color/gray_med"
+                android:visibility="visible"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
