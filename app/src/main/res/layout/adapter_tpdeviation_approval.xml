@@ -114,7 +114,7 @@
                 android:layout_marginTop="@dimen/_4sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:paddingVertical="@dimen/_2sdp"
-                android:text="@string/worktype"
+                android:text="@string/submitted_date"
                 android:textColor="@color/light_grey_2"
                 android:textSize="@dimen/_6ssp" />
 
@@ -127,7 +127,7 @@
                 android:paddingVertical="@dimen/_2sdp"
                 android:textColor="@color/cheked_txt_color"
                 android:textSize="@dimen/_6ssp"
-                tools:text="Field Work" />
+                tools:text="01 Jan 2025 11:11 AM" />
 
         </LinearLayout>
 
