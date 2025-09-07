@@ -2,6 +2,7 @@ package saneforce.sanzen.activity.presentation.playPreview;
 
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -35,6 +36,7 @@ import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.databinding.ActivityPlaySlidePreviewBinding;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class PlaySlidePreviewActivity extends AppCompatActivity {
 
@@ -154,6 +156,8 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                                 binding.pdfView.setVisibility(View.VISIBLE);
                                 binding.videoView.setVisibility(View.GONE);
                                 binding.webView.setVisibility(View.GONE);
+                                binding.progressAnim.setVisibility(View.VISIBLE);
+                                binding.progressAnim.playAnimation();
                                 loadPdf(file.getAbsolutePath());
                                 break;
                             case "mp4":
@@ -170,6 +174,8 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                                 binding.pdfView.setVisibility(View.GONE);
                                 binding.videoView.setVisibility(View.GONE);
                                 binding.webView.setVisibility(View.VISIBLE);
+                                binding.progressAnim.setVisibility(View.VISIBLE);
+                                binding.progressAnim.playAnimation();
 
                                 binding.webView.getSettings().setBuiltInZoomControls(false);
                                 binding.webView.getSettings().setDisplayZoomControls(false);
@@ -202,6 +208,19 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                                             binding.webView.loadUrl(url);
                                         }
                                         return true;
+                                    }
+                                    @Override
+                                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                                        super.onPageStarted(view, url, favicon);
+                                        Log.i("webview", "onPageStarted: "  + TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+                                    }
+
+                                    @Override
+                                    public void onPageFinished(WebView view, String url) {
+                                        super.onPageFinished(view, url);
+                                        Log.i("webview", "onPageFinished: " + TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+                                        binding.progressAnim.setVisibility(View.GONE);
+                                        binding.progressAnim.cancelAnimation();
                                     }
                                 });
                         }
@@ -309,7 +328,12 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     }
 
     public void loadPdf(String fileName) {
-        binding.pdfView.fromFile(new File(fileName)).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();
+        binding.pdfView.fromFile(new File(fileName))
+                .onRender((nbPages, pageWidth, pageHeight) -> {
+                    binding.progressAnim.setVisibility(View.GONE);
+                    binding.progressAnim.cancelAnimation();
+                })
+                .defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();
     }
 
     @Override
