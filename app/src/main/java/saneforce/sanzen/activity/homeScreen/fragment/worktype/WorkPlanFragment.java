@@ -1793,8 +1793,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                 deviationJSONObject.put("Rsf", mHQCode1);
                 deviationJSONObject.put("Rsf2", mHQCode2);
+                deviationJSONObject.put("HQName", mHQName1);
+                deviationJSONObject.put("HQName2", mHQName2);
             } else {
                 deviationJSONObject.put("Rsf", SharedPref.getSfCode(requireContext()));
+                deviationJSONObject.put("HQName", "");
             }
 
             deviationJSONObject.put("town_code", mTowncode1);
