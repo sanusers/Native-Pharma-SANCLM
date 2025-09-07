@@ -41,7 +41,7 @@ import saneforce.sanzen.storage.SharedPref;
 public class DoctorFragment extends Fragment {
 
 
-    TextView headerTxt, headerTxt1, headerTxt2, doctorVisitTxt, dateTxt, totalDr, totalDrCnt, visited, visitedCnt, missed, missedCnt, FWDays, FWDaysCnt, callAvg, callAvgCnt, callCvg, callCvgCnt;
+//    TextView headerTxt, headerTxt1, headerTxt2, doctorVisitTxt, dateTxt, totalDr, totalDrCnt, visited, visitedCnt, missed, missedCnt, FWDays, FWDaysCnt, callAvg, callAvgCnt, callCvg, callCvgCnt;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
@@ -51,34 +51,6 @@ public class DoctorFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_doctor_visit_report, container, false);
-      /*  headerTxt = v.findViewById(R.id.headerTxt);
-        headerTxt1 = v.findViewById(R.id.headerTxt1);
-        headerTxt2 = v.findViewById(R.id.headerTxt2);
-        doctorVisitTxt = v.findViewById(R.id.doctorVisitTxt);
-        dateTxt = v.findViewById(R.id.dateTxt);
-        totalDr = v.findViewById(R.id.totalDr);
-        totalDrCnt = v.findViewById(R.id.totalDrCnt);
-        visited = v.findViewById(R.id.visited);
-        visitedCnt = v.findViewById(R.id.visitedCnt);
-        missed = v.findViewById(R.id.missed);
-        missedCnt = v.findViewById(R.id.missedCnt);
-        FWDays = v.findViewById(R.id.FWDays);
-        FWDaysCnt = v.findViewById(R.id.FWDaysCnt);
-        callAvg = v.findViewById(R.id.callAvg);
-        callAvgCnt = v.findViewById(R.id.callAvgCnt);
-        callCvg = v.findViewById(R.id.callCvg);
-        callCvgCnt = v.findViewById(R.id.callCvgCnt);
-
-        roomDB = RoomDB.getDatabase(requireContext());
-        masterDataDao = roomDB.masterDataDao();
-        commonUtilsMethods = new CommonUtilsMethods(requireContext());
-
-
-        headerTxt.setText(SharedPref.getSfName(requireContext()));
-        headerTxt1.setText(SharedPref.getHqName(requireContext()));
-        headerTxt2.setText(SharedPref.getDesig(requireContext()));
-        doctorVisitTxt.setText(String.format(SharedPref.getDrCap(requireContext())) + " " + "Visit");
-        totalDr.setText(String.format(getString(R.string.total))+" " + SharedPref.getDrCap(requireContext()));*/
 
 
         RecyclerView recyclerView = v.findViewById(R.id.recyclerView);
@@ -177,10 +149,6 @@ public class DoctorFragment extends Fragment {
             Map<String, Integer> doctorVisitCounts_Cm = new HashMap<>();
             Map<String, Integer> doctorVisitCounts_Pm = new HashMap<>();
             Map<String, Integer> doctorVisitCounts_Ppm = new HashMap<>();
-            /*float oneVisitCount_Cm = 0;
-            float twoVisitCount_Cm = 0;
-            float threeVisitCount_Cm = 0;
-            float threePlusVisitCount_Cm = 0;*/
 
 
             for (JSONObject callObj : currentMonthFilteredList) {
@@ -193,19 +161,6 @@ public class DoctorFragment extends Fragment {
                     doctorVisitCounts_Cm.put(doctorId, count + 1);
                 }
 
-
-
-          /*      for (int count : doctorVisitCounts.values()) {
-                    if (count == 1) {
-                        oneVisitCount_Cm++;
-                    } else if (count == 2) {
-                        twoVisitCount_Cm++;
-                    } else if (count == 3) {
-                        threeVisitCount_Cm++;
-                    } else if (count > 3) {
-                        threePlusVisitCount_Cm++;
-                    }
-                }*/
                     String FW_Code = callObj.optString("CustType");
                     String FW_Indi = callObj.optString("FW_Indicator");
                     String callDateStr = callObj.optString("Dcr_dt", "");
@@ -221,10 +176,7 @@ public class DoctorFragment extends Fragment {
                 else if (count == 3) threeVisitCount_Cm++;
                 else if (count > 3) threePlusVisitCount_Cm++;
             }
-          /*  float oneVisitCount_pm = 0;
-            float twoVisitCount_pm = 0;
-            float threeVisitCount_pm = 0;
-            float threePlusVisitCount_pm = 0;*/
+
             for (JSONObject callObj : previousMonthFilteredList) {
                 String doctorId = callObj.optString("CustCode", "");
                 if (!doctorId.isEmpty()) {
@@ -237,18 +189,6 @@ public class DoctorFragment extends Fragment {
                     Log.d("TAG", "callFilter: " + "previousMonthDoctors month ");
                 }
 
-
-             /*   for (int count : doctorVisitCounts.values()) {
-                    if (count == 1) {
-                        oneVisitCount_pm++;
-                    } else if (count == 2) {
-                        twoVisitCount_pm++;
-                    } else if (count == 3) {
-                        threeVisitCount_pm++;
-                    } else if (count > 3) {
-                        threePlusVisitCount_pm++;
-                    }
-                }*/
                 for (JSONObject callObj1 : currentMonthFilteredList) {
                     String FW_Code = callObj1.optString("CustType");
                     String FW_Indi = callObj1.optString("FW_Indicator");
@@ -267,11 +207,6 @@ public class DoctorFragment extends Fragment {
                 else if (count > 3) threePlusVisitCount_Pm++;
             }
 
-          /*  float oneVisitCount_ppm = 0;
-            float twoVisitCount_ppm = 0;
-            float threeVisitCount_ppm = 0;
-            float threePlusVisitCount_ppm = 0;*/
-
             for (JSONObject callObj : pre_PreviousMonthFilteredList) {
                 String doctorId = callObj.optString("CustCode", "");
                 if (!doctorId.isEmpty()) {
@@ -282,18 +217,6 @@ public class DoctorFragment extends Fragment {
                     doctorVisitCounts_Ppm.put(doctorId, count + 1);
                 }
 
-
-         /*       for (int count : doctorVisitCounts.values()) {
-                    if (count == 1) {
-                        oneVisitCount_ppm++;
-                    } else if (count == 2) {
-                        twoVisitCount_ppm++;
-                    } else if (count == 3) {
-                        threeVisitCount_ppm++;
-                    } else if (count > 3) {
-                        threePlusVisitCount_ppm++;
-                    }
-                }*/
                 for (JSONObject callObj1 : pre_PreviousMonthFilteredList) {
                     String FW_Code = callObj1.optString("CustType");
                     String FW_Indi = callObj1.optString("FW_Indicator");

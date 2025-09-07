@@ -182,7 +182,6 @@ public class DoctorStatsAdapter extends RecyclerView.Adapter<DoctorStatsAdapter.
 
         public DoctorStatsViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Initialize TextViews from the list_item_card.xml layout.
             mrName = itemView.findViewById(R.id.headerTxt);
             mrHq = itemView.findViewById(R.id.headerTxt1);
             mrDesignation = itemView.findViewById(R.id.headerTxt2);
