@@ -71,6 +71,30 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
     public void onBindViewHolder(@NonNull TpDeviationAdapter.ViewHolder holder, int position) {
         api_interface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
         holder.tv_Name.setText(tpDeviationModelLists.get(position).getSfName());
+        if (!tpDeviationModelLists.get(position).getRequestedDate().isEmpty()) {
+            holder.tvRequestedDate.setVisibility(View.VISIBLE);
+            holder.tvRequestedDate.setText(tpDeviationModelLists.get(position).getRequestedDate());
+        } else {
+            holder.tvRequestedDate.setVisibility(View.GONE);
+        }
+        if (!tpDeviationModelLists.get(position).getWorkTypeName().isEmpty()) {
+            holder.tvWorkType.setVisibility(View.VISIBLE);
+            holder.tvWorkType.setText(tpDeviationModelLists.get(position).getWorkTypeName());
+        } else {
+            holder.tvWorkType.setVisibility(View.GONE);
+        }
+        if (!tpDeviationModelLists.get(position).getHQName().isEmpty()) {
+            holder.tvHQName.setVisibility(View.VISIBLE);
+            holder.tvHQName.setText(tpDeviationModelLists.get(position).getHQName());
+        } else {
+            holder.tvHQName.setVisibility(View.GONE);
+        }
+        if (!tpDeviationModelLists.get(position).getClusterName().isEmpty()) {
+            holder.tvClusterName.setVisibility(View.VISIBLE);
+            holder.tvClusterName.setText(tpDeviationModelLists.get(position).getClusterName());
+        } else {
+            holder.tvClusterName.setVisibility(View.GONE);
+        }
         holder.tv_date.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, tpDeviationModelLists.get(position).getDate()));
         holder.tv_deviationRemarks.setText(tpDeviationModelLists.get(position).getDeviationRemarks());
         holder.tv_view_plan.setOnClickListener(view -> {
@@ -209,18 +233,21 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_Name, tv_date, tv_deviationRemarks, tv_view_plan;
+        TextView tv_Name, tv_date, tv_deviationRemarks, tv_view_plan, tvRequestedDate, tvWorkType, tvHQName, tvClusterName;
         Button btn_reject, btn_approve;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             tv_Name = itemView.findViewById(R.id.tv_name);
             tv_date = itemView.findViewById(R.id.tv_date);
             tv_deviationRemarks = itemView.findViewById(R.id.tv_deviation_remarks);
             tv_view_plan = itemView.findViewById(R.id.tv_view_plan);
             btn_reject = itemView.findViewById(R.id.btn_reject);
             btn_approve = itemView.findViewById(R.id.btn_approved);
+            tvRequestedDate = itemView.findViewById(R.id.tv_req_date);
+            tvWorkType = itemView.findViewById(R.id.tv_wt_name);
+            tvHQName = itemView.findViewById(R.id.tv_hq_name);
+            tvClusterName = itemView.findViewById(R.id.tv_cl_name);
         }
     }
 }
