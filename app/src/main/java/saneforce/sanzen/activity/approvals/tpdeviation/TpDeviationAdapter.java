@@ -93,6 +93,11 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
         if (!tpDeviationModelLists.get(position).getClusterName().isEmpty()) {
             holder.llClusterName.setVisibility(View.VISIBLE);
             holder.tvClusterName.setText(tpDeviationModelLists.get(position).getClusterName());
+            String clusterCaption = SharedPref.getClusterCap(context);
+            if (clusterCaption.isEmpty()) {
+                clusterCaption = "Cluster";
+            }
+            holder.tvTagClusterName.setText(clusterCaption);
         } else {
             holder.llClusterName.setVisibility(View.GONE);
         }
@@ -234,7 +239,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_Name, tv_date, tv_deviationRemarks, tv_view_plan, tvRequestedDate, tvWorkType, tvHQName, tvClusterName;
+        TextView tv_Name, tv_date, tv_deviationRemarks, tv_view_plan, tvRequestedDate, tvWorkType, tvHQName, tvClusterName, tvTagClusterName;
         Button btn_reject, btn_approve;
         LinearLayout llRequestedDate, llWorkTypeName, llHQName, llClusterName;
 
@@ -250,6 +255,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
             tvWorkType = itemView.findViewById(R.id.tv_wt_name);
             tvHQName = itemView.findViewById(R.id.tv_hq_name);
             tvClusterName = itemView.findViewById(R.id.tv_cl_name);
+            tvTagClusterName = itemView.findViewById(R.id.tag_cl);
             llRequestedDate = itemView.findViewById(R.id.ll_req_date);
             llWorkTypeName = itemView.findViewById(R.id.ll_wt);
             llHQName = itemView.findViewById(R.id.ll_hq);
