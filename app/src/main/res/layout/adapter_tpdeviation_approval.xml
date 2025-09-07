@@ -114,7 +114,7 @@
                 android:layout_marginTop="@dimen/_4sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:paddingVertical="@dimen/_2sdp"
-                android:text="@string/submitted_date"
+                android:text="@string/requested_date"
                 android:textColor="@color/light_grey_2"
                 android:textSize="@dimen/_6ssp" />
 
