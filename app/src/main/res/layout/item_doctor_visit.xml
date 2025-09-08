@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/background">
@@ -31,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="@dimen/_9sdp">
+                android:padding="@dimen/_5sdp">
 
                 <ImageView
                     android:id="@+id/dr_img"
@@ -55,11 +56,11 @@
                             android:id="@+id/number"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="1)"
+                            android:layout_marginEnd="4dp"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_5sdp"
                             android:textStyle="bold"
-                            android:layout_marginEnd="4dp" />
+                            tools:text="1)" />
 
                         <TextView
                             android:id="@+id/textDoctor"
@@ -75,7 +76,6 @@
                         android:id="@+id/textPlace"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_8sdp"
                         android:layout_marginTop="5dp"
                         android:text="Nandanam"
                         android:textSize="@dimen/_5ssp" />
@@ -96,12 +96,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="8dp"
+                android:padding="@dimen/_5sdp"
                 android:weightSum="4">
 
                 <LinearLayout
                     android:layout_width="@dimen/_25sdp"
-                    android:layout_height="@dimen/_32sdp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="start"
                     android:orientation="vertical"
@@ -127,11 +127,11 @@
 
                 <LinearLayout
                     android:layout_width="@dimen/_25sdp"
-                    android:layout_height="@dimen/_32sdp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="start"
-                    android:paddingStart="@dimen/_5sdp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/_5sdp">
 
                     <TextView
                         android:id="@+id/doctorcat"
@@ -153,11 +153,11 @@
 
                 <LinearLayout
                     android:layout_width="@dimen/_25sdp"
-                    android:layout_height="@dimen/_32sdp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="start"
-                    android:paddingStart="@dimen/_5sdp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/_5sdp">
 
                     <TextView
                         android:id="@+id/doctorspec"
@@ -179,7 +179,7 @@
 
                 <LinearLayout
                     android:layout_width="@dimen/_25sdp"
-                    android:layout_height="@dimen/_32sdp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="start"
                     android:orientation="vertical">

@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.reports.missedReport;
 
+
 public class DoctorVisitItem {
     private String name;
     private String code;

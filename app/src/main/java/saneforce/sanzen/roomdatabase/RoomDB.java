@@ -34,6 +34,10 @@ import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataDao;
 import saneforce.sanzen.roomdatabase.LoginTableDetails.LoginDataTable;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.sanzen.roomdatabase.MissedReportTableDetails.DoctorVisitTable;
+import saneforce.sanzen.roomdatabase.MissedReportTableDetails.DoctorVisitDao;
+import saneforce.sanzen.roomdatabase.MissedReportTableDetails.MissedTable;
+import saneforce.sanzen.roomdatabase.MissedReportTableDetails.MissedDao;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataDao;
 import saneforce.sanzen.roomdatabase.NotificationTableDetails.NotificationDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
@@ -57,7 +61,7 @@ import saneforce.sanzen.roomdatabase.TourPlanOfflineTableDetails.TourPlanOffline
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
 import saneforce.sanzen.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataTable;
 
-@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineSignDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class, SlidesTableDeatils.class, STPOfflineDataTable.class, WelcomeSlidesDataTable.class, ActivityDetailsDataTable.class, ActivityOfflineDataTable.class, ActivityUploadDataTable.class, QuizOfflineDataTable.class, QuizAssertsDataTable.class, NotificationDataTable.class}, version = 7   , exportSchema = false)
+@Database(entities = {MasterDataTable.class, MissedTable.class,DoctorVisitTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineSignDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class, SlidesTableDeatils.class, STPOfflineDataTable.class, WelcomeSlidesDataTable.class, ActivityDetailsDataTable.class, ActivityOfflineDataTable.class, ActivityUploadDataTable.class, QuizOfflineDataTable.class, QuizAssertsDataTable.class, NotificationDataTable.class}, version = 7   , exportSchema = false)
 public abstract class RoomDB extends RoomDatabase {
     private static final String DATABASE_NAME = "sanclmroom.dp";
     private static RoomDB database;
@@ -227,6 +231,10 @@ public abstract class RoomDB extends RoomDatabase {
 
     public abstract MasterDataDao masterDataDao();
 
+    public abstract MissedDao missedDao();
+
+    public abstract DoctorVisitDao doctorVisitDao ();
+
     public abstract CallTableDao callTableDao();
 
     public abstract LoginDataDao loginDataDao();
@@ -264,6 +272,7 @@ public abstract class RoomDB extends RoomDatabase {
     public abstract QuizAssertsDao quizAssertsDao();
 
     public abstract NotificationDataDao notificationDataDao();
+
     public abstract CallOfflineSignDataDao callOfflineSignDataDao();
 
 }

@@ -358,13 +358,13 @@ public class ListedDoctorFragment extends Fragment {
                     specialityName = clickedItem.getName();
                     tvSpec.setText(clickedItem.getName());
                     lv_spec.setVisibility(View.GONE);
-                    ed_search.setVisibility(View.GONE);
+//                    ed_search.setVisibility(View.GONE);
                     tv_add_condition.setVisibility(View.VISIBLE);
                     constraintLayout.setVisibility(View.VISIBLE);
                 });
                 lv_spec.setAdapter(arrayAdapter);
                 lv_spec.setVisibility(View.VISIBLE);
-                ed_search.setVisibility(View.VISIBLE);
+//                ed_search.setVisibility(View.VISIBLE);
                 tv_add_condition.setVisibility(View.INVISIBLE);
                 constraintLayout.setVisibility(View.INVISIBLE);
             }

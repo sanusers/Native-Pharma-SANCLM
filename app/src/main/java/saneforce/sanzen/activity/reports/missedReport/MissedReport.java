@@ -1,14 +1,18 @@
 package saneforce.sanzen.activity.reports.missedReport;
 
+
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -17,17 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
 import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
@@ -38,7 +35,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -54,6 +50,10 @@ import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityMissedReportBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
+import saneforce.sanzen.roomdatabase.MissedReportTableDetails.DoctorVisitDao;
+import saneforce.sanzen.roomdatabase.MissedReportTableDetails.DoctorVisitTable;
+import saneforce.sanzen.roomdatabase.MissedReportTableDetails.MissedDao;
+import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.NetworkStatusTask;
 import saneforce.sanzen.utility.TimeUtils;
@@ -93,17 +93,53 @@ public class MissedReport extends AppCompatActivity {
         blockingOverlay.setVisibility(View.GONE);
         getJoiningDate();
         adapter = new MissedReportAdapter(this, reportList, (item, position) -> {
-            // Handle click — launch DoctorVisitActivity using `launcher`
-            getData(date, item.getSfCode());
-
-
+//            getData(date, item.getSfCode());
+            fetchAndLoadData(date, item.getSfCode()
+            );
         });
         binding.recyclerMissedReports.setAdapter(adapter);
+
         binding.recyclerMissedReports.setVisibility(View.GONE);
         binding.outboxEmtyImage.setVisibility(View.VISIBLE);
 
         currentmonth = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_8);
         currentYear = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_26);
+
+//        adapter = new MissedReportAdapter(MissedReportAdapter.this, reportList);
+//        binding.recyclerMissedReports.setAdapter(adapter);
+
+
+        binding.searchET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (adapter != null) {
+                    adapter.getFilter().filter(charSequence.toString());
+                }
+                if (charSequence.length() > 0) {
+                    binding.searchClearIcon.setVisibility(View.VISIBLE);
+                } else {
+                    binding.searchClearIcon.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        binding.searchClearIcon.setOnClickListener(v -> {
+            binding.searchET.setText("");
+            binding.searchClearIcon.setVisibility(View.GONE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(binding.searchET.getWindowToken(), 0);
+            }
+        });
+
 
 //        adapter = new MissedReportAdapter(this, reportList);
 //        binding.recyclerMissedReports.setAdapter(adapter);
@@ -111,10 +147,20 @@ public class MissedReport extends AppCompatActivity {
 
 //        binding.boxCombined.setVisibility(View.GONE);
         binding.imageBack.setOnClickListener(v -> {
-            binding.calender.setText("");
-            showMonthYearPicker(binding.calender);
-            finish();
+            RoomDB.databaseWriteExecutor.execute(() -> {
+                RoomDB db = RoomDB.getDatabase(MissedReport.this);
+                db.missedDao().deleteAll();        // Clear missed data
+                db.doctorVisitDao().deleteAll();   // Clear doctor visit data
+
+                runOnUiThread(this::finish);       // Close the activity after clearing
+            });
         });
+
+//        binding.imageBack.setOnClickListener(v -> {
+//            binding.calender.setText("");
+//            showMonthYearPicker(binding.calender);
+//            finish();
+//        });
         binding.calender.setOnClickListener(v -> showMonthYearPicker(binding.calender));
 //        binding.doctorStatsLayout.setOnClickListener(v -> {
 //            Intent intent = new Intent(MissedReport.this, DoctorVisitActivity.class);
@@ -178,7 +224,7 @@ public class MissedReport extends AppCompatActivity {
                 binding.outboxEmtyImage.setVisibility(View.GONE);
                 binding.recyclerMissedReports.setVisibility(View.VISIBLE);
 //                binding.boxCombined.setVisibility(View.VISIBLE);
-                getData(date);
+                fetchAndLoadMonthlyData(date);
             } catch (ParseException e) {
                 e.printStackTrace();
 
@@ -224,6 +270,42 @@ public class MissedReport extends AppCompatActivity {
             blockingOverlay.setVisibility(View.GONE);
         }
     }
+    public void fetchAndLoadMonthlyData(String date) {
+        RoomDB.databaseWriteExecutor.execute(() -> {
+            RoomDB db = RoomDB.getDatabase(MissedReport.this);
+            MissedDao missedDao = db.missedDao();
+            String storedJson = missedDao.getMissedValues(date);
+
+            runOnUiThread(() -> {
+                if (storedJson != null && !storedJson.isEmpty()) {
+                    try {
+                        JSONArray storedArray = new JSONArray(storedJson);
+                        reportList.clear();
+                        for (int i = 0; i < storedArray.length(); i++) {
+                            JSONObject obj = storedArray.optJSONObject(i);
+                            String name = obj.optString("Name");
+                            String hq = obj.optString("Cluster");
+                            String totalDoctor = obj.optString("Dcnt", "0");
+                            String visited = obj.optString("Dmet", "0");
+                            String missed = obj.optString("Dmis", "0");
+                            String sfCode = obj.optString("sf_code");
+
+                            MissedReportItem missedReportItem = new MissedReportItem(name, hq, totalDoctor, visited, missed, sfCode);
+                            reportList.add(missedReportItem);
+                        }
+
+                        adapter.updateData(reportList);
+                        binding.recyclerMissedReports.setVisibility(View.VISIBLE);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    getData(date);
+                }
+            });
+        });
+    }
 
     public void getData(String date) {
         showLoadingOverlay();
@@ -238,7 +320,7 @@ public class MissedReport extends AppCompatActivity {
                         jsonObject.put("Rsf", SharedPref.getHqCode(this));
                         jsonObject.put("rptDt", date);
                         jsonObject.put("tableName", "getmissedrpt");
-                        Log.d("TAG", "getData: "+jsonObject);
+                        Log.d("TAG", "getData: " + jsonObject);
 
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
@@ -256,28 +338,51 @@ public class MissedReport extends AppCompatActivity {
                                             JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
 
                                             if (jsonArray.length() > 0) {
-                                                reportList.clear();
-                                                for (int i = 0; i < jsonArray.length(); i++) {
-                                                    JSONObject obj = jsonArray.optJSONObject(i);
-                                                    String name = obj.optString("Name");
-                                                    String hq = obj.optString("Cluster");
-                                                    String totalDoctor = obj.optString("Dcnt", "0");
-                                                    String visited = obj.optString("Dmet", "0");
-                                                    String missed = obj.optString("Dmis", "0");
-                                                    String sfCode = obj.optString("sf_code");
-                                                    MissedReportItem missedReportItem = new MissedReportItem(name, hq, totalDoctor, visited, missed, sfCode);
-                                                    reportList.add(missedReportItem);
-                                                }
-                                                adapter.notifyDataSetChanged();
-                                                binding.recyclerMissedReports.setVisibility(View.VISIBLE);
+                                                String jsonString = jsonArray.toString();
+
+                                                // Save and retrieve from Room
+                                                RoomDB.databaseWriteExecutor.execute(() -> {
+                                                    RoomDB db = RoomDB.getDatabase(MissedReport.this);
+                                                    MissedDao missedDao = db.missedDao();
+                                                    missedDao.saveMissedJson(date, jsonString);
+
+                                                    String storedJson = missedDao.getMissedValues(date); // retrieve
+
+                                                    try {
+                                                        JSONArray storedArray = new JSONArray(storedJson);
+
+                                                        reportList.clear();
+                                                        for (int i = 0; i < storedArray.length(); i++) {
+                                                            JSONObject obj = storedArray.optJSONObject(i);
+                                                            String name = obj.optString("Name");
+                                                            String hq = obj.optString("Cluster");
+                                                            String totalDoctor = obj.optString("Dcnt", "0");
+                                                            String visited = obj.optString("Dmet", "0");
+                                                            String missed = obj.optString("Dmis", "0");
+                                                            String sfCode = obj.optString("sf_code");
+
+                                                            MissedReportItem missedReportItem = new MissedReportItem(name, hq, totalDoctor, visited, missed, sfCode);
+                                                            reportList.add(missedReportItem);
+                                                        }
+
+                                                        runOnUiThread(() -> {
+                                                            adapter.
+                                                                    updateData(reportList);
+                                                            binding.recyclerMissedReports.setVisibility(View.VISIBLE);
+                                                        });
+
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                });
                                             }
                                         }
                                     }
-
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
+
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
@@ -314,7 +419,7 @@ public class MissedReport extends AppCompatActivity {
                         jsonObject.put("Rsf", SharedPref.getHqCode(this));
                         jsonObject.put("report_date", date);
                         jsonObject.put("tableName", "getmissedrptview");
-                        Log.d("TAG", "getData: "+jsonObject);
+                        Log.d("TAG", "getData: " + jsonObject);
 
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
@@ -333,9 +438,17 @@ public class MissedReport extends AppCompatActivity {
 
                                             if (jsonArray.length() > 0) {
                                                 String arrayAsString = jsonArray.toString();
-                                                Intent intent = new Intent(MissedReport.this, DoctorVisitActivity.class);
-                                                intent.putExtra("doctor_array", arrayAsString);
-                                                startActivity(intent);
+                                                RoomDB.databaseWriteExecutor.execute(() -> {
+                                                    Intent intent = new Intent(MissedReport.this, DoctorVisitActivity.class);
+//                                                    intent.putExtra("doctor_array", arrayAsString);
+//                                                    startActivity(intent);
+                                                    RoomDB db = RoomDB.getDatabase(MissedReport.this);  // context = MissedReport.this or your Activity context
+                                                    DoctorVisitDao visitDao = db.doctorVisitDao();
+                                                     visitDao.saveVisitJson(sfcode, date,jsonArray.toString());
+                                                    intent.putExtra("sfcode", sfcode);
+                                                    intent.putExtra("date",date);
+                                                    startActivity(intent);
+                                                });
 
                                             }
                                         }
@@ -367,6 +480,27 @@ public class MissedReport extends AppCompatActivity {
             CommonUtilsMethods.showToastMessage(MissedReport.this, getString(R.string.no_network));
         }
     }
+    public void fetchAndLoadData(String date, String sfcode) {
+
+        RoomDB.databaseWriteExecutor.execute(() -> {
+            RoomDB db = RoomDB.getDatabase(MissedReport.this);
+            DoctorVisitDao visitDao = db.doctorVisitDao();
+            String doctorArrayString = visitDao.getVisitValues(sfcode, date);
+
+            runOnUiThread(() -> {
+                if (doctorArrayString != null && !doctorArrayString.isEmpty()) {
+                    Intent intent = new Intent(MissedReport.this, DoctorVisitActivity.class);
+//                    intent.putExtra("doctor_array", doctorArrayString);
+                    intent.putExtra("sfcode", sfcode);
+                    intent.putExtra("date", date);
+                    startActivity(intent);
+                } else {
+                    getData(date, sfcode);
+                }
+            });
+        });
+    }
+
 }
 
 

@@ -68,7 +68,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
-
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/missedtittle"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,7 +91,7 @@
             android:textColorHint="@color/text_dark_65"
             android:textSize="@dimen/_6sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/sortIcon"
+            app:layout_constraintEnd_toStartOf="@id/missedfilter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="SpUsage" />
@@ -125,12 +124,13 @@
             android:layout_marginEnd="12dp"
             android:scaleType="centerInside"
             android:src="@drawable/img_close"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/searchET"
             app:layout_constraintEnd_toEndOf="@id/searchET"
             app:layout_constraintTop_toTopOf="@id/searchET" />
 
         <View
-            android:id="@+id/sortIcon"
+            android:id="@+id/missedfilter"
             android:layout_width="@dimen/_22sdp"
             android:layout_height="0dp"
             android:layout_marginStart="10dp"
@@ -146,13 +146,28 @@
         <ImageView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:padding="@dimen/_5sdp"
-            android:src="@drawable/report_sort_icon"
-            app:layout_constraintBottom_toBottomOf="@id/sortIcon"
-            app:layout_constraintEnd_toEndOf="@id/sortIcon"
-            app:layout_constraintStart_toStartOf="@id/sortIcon"
-            app:layout_constraintTop_toTopOf="@id/sortIcon"
-            app:tint="@color/white" />
+            android:src="@drawable/iv_filter"
+            android:background="@drawable/bg_purple"
+            app:layout_constraintBottom_toBottomOf="@id/missedfilter"
+            app:layout_constraintEnd_toEndOf="@id/missedfilter"
+            app:layout_constraintStart_toStartOf="@id/missedfilter"
+            app:layout_constraintTop_toTopOf="@id/missedfilter" />
+        <TextView
+            android:id="@+id/tv_filter_count"
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:layout_marginEnd="@dimen/_3sdp"
+            android:background="@drawable/bg_green_round"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_4ssp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:ignore="HardcodedText,TextSizeCheck,TextContrastCheck" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -169,5 +184,16 @@
         app:layout_constraintTop_toBottomOf="@id/missedtittle"
         app:layout_constraintVertical_bias="0"
         tools:listitem="@layout/item_doctor_visit"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/no_doctor"
+        android:text="No Doctor Available"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

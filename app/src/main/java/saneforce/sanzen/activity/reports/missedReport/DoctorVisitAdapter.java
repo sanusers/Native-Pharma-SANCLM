@@ -1,27 +1,35 @@
 package saneforce.sanzen.activity.reports.missedReport;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.map.custSelection.CustList;
 
 public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.ViewHolder> {
 
     private final Context context;
-    private final List<DoctorVisitItem> doctorList;
+    private  List<DoctorVisitItem> doctorList;
+    private  List<DoctorVisitItem> fullList;
+
 
     public DoctorVisitAdapter(Context context, List<DoctorVisitItem> doctorList) {
         this.context = context;
         this.doctorList = doctorList;
+        this.fullList = new ArrayList<>(doctorList);
     }
 
     @NonNull
@@ -37,7 +45,6 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
         DoctorVisitItem item = doctorList.get(position);
         holder.textDoctor.setText(checkEmpty(item.getName()));
         holder.textPlace.setText(checkEmpty(item.getTerritory()));
-
         holder.qualification.setText(checkEmpty(item.getQualification()));
         holder.category.setText(checkEmpty(item.getCategory()));
         holder.speciality.setText(checkEmpty(item.getSpeciality()));
@@ -69,6 +76,11 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
         return doctorList.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    public void filterList(ArrayList<DoctorVisitItem> filteredNames) {
+        this.doctorList = filteredNames;
+        notifyDataSetChanged();
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textDoctor, textPlace;
@@ -85,4 +97,52 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
             number = itemView.findViewById(R.id.number);
         }
     }
+    public void updateData(List<DoctorVisitItem> newList) {
+        Log.d("AdapterUpdate", "updateData called. Size: " + newList.size());
+
+        fullList.clear();
+        fullList = new ArrayList<>(newList);
+
+        notifyDataSetChanged();
+    }
+
+
+
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                Log.d("FILTER", "Filtering with: " + constraint);
+
+                List<DoctorVisitItem> filteredResults = new ArrayList<>();
+
+                if (constraint == null || constraint.length() == 0) {
+                    filteredResults.addAll(fullList);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
+
+                    for (DoctorVisitItem item : fullList) {
+                        if (item.getName() != null && item.getName().toLowerCase().contains(filterPattern)) {
+                            filteredResults.add(item);
+                        }
+                    }
+
+                }
+
+                FilterResults results = new FilterResults();
+                results.values = filteredResults;
+                results.count = filteredResults.size();
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                doctorList.clear();
+                doctorList.addAll((List<DoctorVisitItem>) results.values);
+                notifyDataSetChanged();
+            }
+        };
+    }
+
 }
+
