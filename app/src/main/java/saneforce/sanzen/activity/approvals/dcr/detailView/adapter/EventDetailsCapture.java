@@ -49,7 +49,7 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
 
          holder.Imageview.setOnClickListener(view -> {
 
-             if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")){
+             if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
                  AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                  View view1  = LayoutInflater.from(context).inflate(R.layout.eventimageitem, null);
                  dialog.setView(view1);

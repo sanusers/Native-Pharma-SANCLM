@@ -52,7 +52,7 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
         holder.ImageTittle.setText(EventList.get(position).getTitle());
         holder.Remarks.setText(EventList.get(position).getRemarks());
 
-        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")) {
+        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
 
             String imageName = EventList.get(position).getEventimg().replace("photos/", "");
             String fileName = imageName;

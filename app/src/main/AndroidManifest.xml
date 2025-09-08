@@ -84,7 +84,11 @@
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-
+        <activity
+            android:name=".activity.reports.missedReport.MissedReportGraph"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <receiver
             android:name=".services.NotificationClickReceiver"
             android:exported="false">

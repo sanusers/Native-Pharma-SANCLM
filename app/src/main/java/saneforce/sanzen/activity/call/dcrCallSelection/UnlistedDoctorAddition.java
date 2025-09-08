@@ -678,7 +678,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                                                 } catch (Exception ignored) {
 
                                                 }
-                                                if(SharedPref.getS3BucketNeed(getApplicationContext()).equalsIgnoreCase("1")) {
+                                                if(SharedPref.getS3BucketNeed(getApplicationContext()).equalsIgnoreCase("0")) {
                                                     tag_Image();
                                                     CallImageAPIS3(jsonImage.toString(), destinationFilePath);
                                                 }else{
