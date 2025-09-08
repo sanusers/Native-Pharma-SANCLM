@@ -110,6 +110,7 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/_2sdp"
                 android:background="@color/background"
+                tools:listitem="@layout/adapter_tpdeviation_approval"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

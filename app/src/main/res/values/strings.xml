@@ -633,4 +633,5 @@
     <string name="work_plan_updated_successfully">Work Plan updated successfully</string>
     <string name="work_day">Work Day</string>
     <string name="_0">0</string>
+    <string name="requested_date">Requested Date</string>
 </resources>
