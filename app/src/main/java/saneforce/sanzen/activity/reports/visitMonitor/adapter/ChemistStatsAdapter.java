@@ -50,6 +50,7 @@ public class ChemistStatsAdapter extends RecyclerView.Adapter<ChemistStatsAdapte
         holder.mrHq.setText(SharedPref.getHqName(context));
         holder.mrDesignation.setText(SharedPref.getDesig(context));
 //        holder.dateTxt.setText();
+
         holder.totalCheCnt.setText(String.valueOf(model.getTotalChemists()));
         holder.visitedCnt.setText(String.valueOf(model.getVisitedChemists()));
         holder.missedCnt.setText(String.valueOf(model.getMissedChemists()));
@@ -64,34 +65,26 @@ public class ChemistStatsAdapter extends RecyclerView.Adapter<ChemistStatsAdapte
         Context context = holder.itemView.getContext();
         List<BarEntry> entries = new ArrayList<>();
         ArrayList<String> xVals = new ArrayList<>();
-//        xVals.add(holder.itemView.getContext().getResources().getString(R.string.Dr));
+        xVals.add(holder.itemView.getContext().getResources().getString(R.string.total));
         xVals.add(holder.itemView.getContext().getResources().getString(R.string.visit));
         xVals.add(holder.itemView.getContext().getResources().getString(R.string.miss));
-//        xVals.add(holder.itemView.getContext().getResources().getString(R.string.fwd));
         xVals.add(holder.itemView.getContext().getResources().getString(R.string.avg));
-//        xVals.add(holder.itemView.getContext().getResources().getString(R.string.cvg));
+        entries.add(new BarEntry(0f, Integer.parseInt(model.getTotalChemists())));
+        entries.add(new BarEntry(1f, Integer.parseInt(model.getVisitedChemists())));
+        entries.add(new BarEntry(2f, Integer.parseInt(model.getMissedChemists())));
 
-        // Get data from the model
-//        entries.add(new BarEntry(0f, Integer.parseInt(model.getTotalDoctors())));
-//        entries.add(new BarEntry(1f, Integer.parseInt(model.getFwDays())));
-        entries.add(new BarEntry(0f, Integer.parseInt(model.getVisitedChemists())));
-        entries.add(new BarEntry(1f, Integer.parseInt(model.getMissedChemists())));
-
-        if (model.getCallAvg() != null && model.getCallAvg().equalsIgnoreCase(".00"))
-            entries.add(new BarEntry(2f, 0));
+        if (model.getCallAvg() != null && model.getCallAvg().equalsIgnoreCase(""))
+            entries.add(new BarEntry(3f, 0));
         else
-            entries.add(new BarEntry(2f, Float.parseFloat(model.getCallAvg())));
+            entries.add(new BarEntry(3f, Float.parseFloat(model.getCallAvg())));
 
-        /*if (model.getCoverage() != null && model.getCoverage().equalsIgnoreCase(".00"))
-            entries.add(new BarEntry(5f, 0));
-        else
-            entries.add(new BarEntry(5f, Float.parseFloat(model.getCoverage())));*/
+
 
         BarDataSet set = new BarDataSet(entries, "Visit Data");
-        // set.setValueFormatter(new IntegerFormatter()); // Use a proper formatter
+
         set.setColors(ColorTemplate.COLORFUL_COLORS);
         BarData data = new BarData(set);
-        data.setBarWidth(0.9f);
+        data.setBarWidth(0.3f);
 
         holder.barChart.setData(data);
         holder.barChart.getDescription().setEnabled(false);
@@ -101,7 +94,7 @@ public class ChemistStatsAdapter extends RecyclerView.Adapter<ChemistStatsAdapte
         XAxis xAxis = holder.barChart.getXAxis();
         xAxis.setDrawGridLines(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setLabelCount(xVals.size() - 1);
+        xAxis.setLabelCount(xVals.size());
         xAxis.setValueFormatter(new IndexAxisValueFormatter(xVals));
 
         holder.barChart.animateY(1000);

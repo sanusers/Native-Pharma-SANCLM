@@ -29,8 +29,10 @@ import java.util.Map;
 import java.util.Set;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.reports.visitMonitor.adapter.DoctorStatsAdapter;
+//import saneforce.sanzen.activity.reports.visitMonitor.adapter.DoctorStatsAdapter;
+import saneforce.sanzen.activity.reports.visitMonitor.adapter.VisitStatsAdapter;
 import saneforce.sanzen.activity.reports.visitMonitor.model.DoctorStatsModel;
+import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentDoctorVisitReportBinding;
@@ -40,11 +42,28 @@ import saneforce.sanzen.storage.SharedPref;
 
 public class DoctorFragment extends Fragment {
 
-
-//    TextView headerTxt, headerTxt1, headerTxt2, doctorVisitTxt, dateTxt, totalDr, totalDrCnt, visited, visitedCnt, missed, missedCnt, FWDays, FWDaysCnt, callAvg, callAvgCnt, callCvg, callCvgCnt;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+
+    private static final String ARG_MONTH_DATA = "monthData";
+    private List<String> monthData;
+
+    public static DoctorFragment newInstance(List<String> monthData) {
+        DoctorFragment fragment = new DoctorFragment();
+        Bundle args = new Bundle();
+        args.putStringArrayList(ARG_MONTH_DATA, new ArrayList<>(monthData));
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            this.monthData = getArguments().getStringArrayList(ARG_MONTH_DATA);
+        }
+    }
 
     @SuppressLint("SetTextI18n")
     @Nullable
@@ -65,6 +84,7 @@ public class DoctorFragment extends Fragment {
 
     public void callFilter(RecyclerView recyclerView) {
         try {
+            //Call Filter
             JSONArray jsonArray_call = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
             JSONArray jsonArray_date = new JSONArray(masterDataDao.getDataByKey(Constants.DATE_SYNC));
 
@@ -118,9 +138,12 @@ public class DoctorFragment extends Fragment {
             int prePreviousMonth = prePrevCal.get(Calendar.MONTH);
             int prePreviousYear = prePrevCal.get(Calendar.YEAR);
 
+            //Month Wise Filter
+
             for (JSONObject callObj : filteredCallList) {
                 String callDateStr = callObj.optString("Dcr_dt", "");
-                if (!callDateStr.isEmpty()) {
+
+                if (!callDateStr.isEmpty() ) {
                     Date callDate = sdf.parse(callDateStr);
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(callDate);
@@ -138,6 +161,7 @@ public class DoctorFragment extends Fragment {
                 }
             }
 
+
             Set<String> currentMonthDoctors = new HashSet<>();
             Set<String> previousMonthDoctors = new HashSet<>();
             Set<String> prePreviousMonthDoctors = new HashSet<>();
@@ -153,9 +177,9 @@ public class DoctorFragment extends Fragment {
 
             for (JSONObject callObj : currentMonthFilteredList) {
                 String doctorId = callObj.optString("CustCode", "");
-                if (!doctorId.isEmpty()) {
+                String custType = callObj.optString("CustType", "");
+                if (!doctorId.isEmpty() && custType.equalsIgnoreCase("1")) {
                     currentMonthDoctors.add(doctorId);
-                    currentMonthDoctors.size();
 
                     int count = doctorVisitCounts_Cm.getOrDefault(doctorId, 0);
                     doctorVisitCounts_Cm.put(doctorId, count + 1);
@@ -179,7 +203,8 @@ public class DoctorFragment extends Fragment {
 
             for (JSONObject callObj : previousMonthFilteredList) {
                 String doctorId = callObj.optString("CustCode", "");
-                if (!doctorId.isEmpty()) {
+                String custType = callObj.optString("CustType", "");
+                if (!doctorId.isEmpty() && custType.equalsIgnoreCase("1")) {
                     previousMonthDoctors.add(doctorId);
                     previousMonthDoctors.size();
 
@@ -209,7 +234,8 @@ public class DoctorFragment extends Fragment {
 
             for (JSONObject callObj : pre_PreviousMonthFilteredList) {
                 String doctorId = callObj.optString("CustCode", "");
-                if (!doctorId.isEmpty()) {
+                String custType = callObj.optString("CustType", "");
+                if (!doctorId.isEmpty() && custType.equalsIgnoreCase("1")) {
                     prePreviousMonthDoctors.add(doctorId);
                     prePreviousMonthDoctors.size();
 
@@ -236,18 +262,22 @@ public class DoctorFragment extends Fragment {
             }
 
 
+            //Total Customer Count
             String doctorData = masterDataDao.getDataByKey(Constants.DOCTOR_MAS + SharedPref.getHqCode(requireContext()));
             JSONArray doctorArray = new JSONArray(doctorData);
             int totalDoctors = doctorArray.length();
 
+            //Missed Customer Count
             int currentMonthMissed = totalDoctors - currentMonthDoctors.size();
             int previousMonthMissed = totalDoctors - previousMonthDoctors.size();
             int prePreviousMonthMissed = totalDoctors - prePreviousMonthDoctors.size();
 
+            //Call Avg
             double currentMonthCallAvg = (double) currentMonthFilteredList.size() / currentMonthFWDays.size();
             double previousMonthCallAvg = (double) previousMonthFilteredList.size() / previousMonthFWDays.size();
             double pre_PreviousMonthCallAvg = (double) pre_PreviousMonthFilteredList.size() / prePreviousMonthFWDays.size();
 
+            //Call Cvg
             double currentMonthCvg = (double) currentMonthDoctors.size() / totalDoctors * 100;
             double previousMonthCvg = (double) previousMonthDoctors.size() / totalDoctors * 100;
             double prePreviousMonthCvg = (double) prePreviousMonthDoctors.size() / totalDoctors * 100;
@@ -286,8 +316,9 @@ public class DoctorFragment extends Fragment {
             System.out.println("Pre_Previous Month Coverage: " + prePreviousMonthCvg);
 
 
-            List<DoctorStatsModel> dataList = new ArrayList<>();
-            DoctorStatsModel currentMonthStats = new DoctorStatsModel(
+
+            List<VisitStatsModel> dataList = new ArrayList<>();
+            VisitStatsModel currentMonthStats = new VisitStatsModel(
                     String.valueOf(totalDoctors),
                     String.valueOf(currentMonthDoctors.size()),
                     String.valueOf(currentMonthMissed),
@@ -301,7 +332,8 @@ public class DoctorFragment extends Fragment {
 
             );
 
-            DoctorStatsModel previousMonthStats = new DoctorStatsModel(
+
+            VisitStatsModel previousMonthStats = new VisitStatsModel(
                     String.valueOf(totalDoctors),
                     String.valueOf(previousMonthDoctors.size()),
                     String.valueOf(previousMonthMissed),
@@ -314,7 +346,8 @@ public class DoctorFragment extends Fragment {
                     threePlusVisitCount_Pm
             );
 
-            DoctorStatsModel prePreviousMonthStats = new DoctorStatsModel(
+
+            VisitStatsModel prePreviousMonthStats = new VisitStatsModel(
                     String.valueOf(totalDoctors),
                     String.valueOf(prePreviousMonthDoctors.size()),
                     String.valueOf(prePreviousMonthMissed),
@@ -331,7 +364,7 @@ public class DoctorFragment extends Fragment {
             dataList.add(currentMonthStats);
             dataList.add(previousMonthStats);
             dataList.add(prePreviousMonthStats);
-            DoctorStatsAdapter adapter = new DoctorStatsAdapter(dataList);
+            VisitStatsAdapter adapter = new VisitStatsAdapter(dataList);
             recyclerView.setAdapter(adapter);
 
         } catch (Exception e) {

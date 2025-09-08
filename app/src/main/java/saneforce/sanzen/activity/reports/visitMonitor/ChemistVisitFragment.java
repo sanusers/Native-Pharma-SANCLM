@@ -39,6 +39,25 @@ public class ChemistVisitFragment extends Fragment {
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
 
+    private static final String ARG_MONTH_DATA = "monthData";
+    private List<String> monthData;
+
+    public static ChemistVisitFragment newInstance(List<String> monthData) {
+        ChemistVisitFragment fragment = new ChemistVisitFragment();
+        Bundle args = new Bundle();
+        args.putStringArrayList(ARG_MONTH_DATA, new ArrayList<>(monthData));
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            this.monthData = getArguments().getStringArrayList(ARG_MONTH_DATA);
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     @Nullable
     @Override
@@ -141,10 +160,10 @@ public class ChemistVisitFragment extends Fragment {
 
             for (JSONObject callObj : currentMonthFilteredList) {
                 String chemistId = callObj.optString("CustCode", "");
-                if (!chemistId.isEmpty()) {
+                String custType = callObj.optString("CustType", "");
+                if (!chemistId.isEmpty() && custType.equalsIgnoreCase("2")) {
                     currentMonthChemists.add(chemistId);
                     currentMonthChemists.size();
-
                 }
 
                 String FW_Code = callObj.optString("CustType");
@@ -158,7 +177,8 @@ public class ChemistVisitFragment extends Fragment {
 
             for (JSONObject callObj : previousMonthFilteredList) {
                 String chemistId = callObj.optString("CustCode", "");
-                if (!chemistId.isEmpty()) {
+                String custType = callObj.optString("CustType", "");
+                if (!chemistId.isEmpty() && custType.equalsIgnoreCase("2")) {
                     previousMonthChemists.add(chemistId);
                     previousMonthChemists.size();
                 } else {
@@ -178,7 +198,8 @@ public class ChemistVisitFragment extends Fragment {
 
             for (JSONObject callObj : pre_PreviousMonthFilteredList) {
                 String chemistId = callObj.optString("CustCode", "");
-                if (!chemistId.isEmpty()) {
+                String custType = callObj.optString("CustType", "");
+                if (!chemistId.isEmpty() && custType.equalsIgnoreCase("2")) {
                     prePreviousMonthChemists.add(chemistId);
                     prePreviousMonthChemists.size();
                 }

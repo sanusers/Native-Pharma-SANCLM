@@ -26,7 +26,9 @@ import java.util.Set;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.visitMonitor.adapter.ChemistStatsAdapter;
+import saneforce.sanzen.activity.reports.visitMonitor.adapter.UnlistedDoctorStatsAdapter;
 import saneforce.sanzen.activity.reports.visitMonitor.model.ChemistStatsModel;
+import saneforce.sanzen.activity.reports.visitMonitor.model.UnlistedStatsModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -38,6 +40,25 @@ public class UnlistedVisitFragment extends Fragment {
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+
+    private static final String ARG_MONTH_DATA = "monthData";
+    private List<String> monthData;
+
+    public static UnlistedVisitFragment newInstance(List<String> monthData) {
+        UnlistedVisitFragment fragment = new UnlistedVisitFragment();
+        Bundle args = new Bundle();
+        args.putStringArrayList(ARG_MONTH_DATA, new ArrayList<>(monthData));
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            this.monthData = getArguments().getStringArrayList(ARG_MONTH_DATA);
+        }
+    }
 
     @SuppressLint("SetTextI18n")
     @Nullable
@@ -138,7 +159,8 @@ public class UnlistedVisitFragment extends Fragment {
 
             for (JSONObject callObj : currentMonthFilteredList) {
                 String chemistId = callObj.optString("CustCode", "");
-                if (!chemistId.isEmpty()) {
+                String custType = callObj.optString("CustType", "");
+                if (!chemistId.isEmpty() && custType.equalsIgnoreCase("4")) {
                     currentMonthUnlisted.add(chemistId);
                     currentMonthUnlisted.size();
 
@@ -155,7 +177,8 @@ public class UnlistedVisitFragment extends Fragment {
 
             for (JSONObject callObj : previousMonthFilteredList) {
                 String chemistId = callObj.optString("CustCode", "");
-                if (!chemistId.isEmpty()) {
+                String custType = callObj.optString("CustType", "");
+                if (!chemistId.isEmpty() && custType.equalsIgnoreCase("4")) {
                     previousMonthUnlisted.add(chemistId);
                     previousMonthUnlisted.size();
                 } else {
@@ -175,7 +198,8 @@ public class UnlistedVisitFragment extends Fragment {
 
             for (JSONObject callObj : pre_PreviousMonthFilteredList) {
                 String chemistId = callObj.optString("CustCode", "");
-                if (!chemistId.isEmpty()) {
+                String custType = callObj.optString("CustType", "");
+                if (!chemistId.isEmpty() && custType.equalsIgnoreCase("4")) {
                     prePreviousMonthUnlisted.add(chemistId);
                     prePreviousMonthUnlisted.size();
                 }
@@ -207,8 +231,8 @@ public class UnlistedVisitFragment extends Fragment {
             double previousMonthCvg = (double) previousMonthUnlisted.size() / totalUnlisted * 100;
             double prePreviousMonthCvg = (double) prePreviousMonthUnlisted.size() / totalUnlisted * 100;
 
-            List<ChemistStatsModel> dataList = new ArrayList<>();
-            ChemistStatsModel currentMonthStats = new ChemistStatsModel(
+            List<UnlistedStatsModel> dataList = new ArrayList<>();
+            UnlistedStatsModel currentMonthStats = new UnlistedStatsModel(
                     String.valueOf(totalUnlisted),
                     String.valueOf(currentMonthUnlisted.size()),
                     String.valueOf(currentMonthMissed),
@@ -218,7 +242,7 @@ public class UnlistedVisitFragment extends Fragment {
 
             );
 
-            ChemistStatsModel previousMonthStats = new ChemistStatsModel(
+            UnlistedStatsModel previousMonthStats = new UnlistedStatsModel(
                     String.valueOf(totalUnlisted),
                     String.valueOf(previousMonthUnlisted.size()),
                     String.valueOf(previousMonthMissed),
@@ -228,7 +252,7 @@ public class UnlistedVisitFragment extends Fragment {
 
             );
 
-            ChemistStatsModel prePreviousMonthStats = new ChemistStatsModel(
+            UnlistedStatsModel prePreviousMonthStats = new UnlistedStatsModel(
                     String.valueOf(totalUnlisted),
                     String.valueOf(prePreviousMonthUnlisted.size()),
                     String.valueOf(prePreviousMonthMissed),
@@ -240,7 +264,7 @@ public class UnlistedVisitFragment extends Fragment {
             dataList.add(currentMonthStats);
             dataList.add(previousMonthStats);
             dataList.add(prePreviousMonthStats);
-            ChemistStatsAdapter adapter = new ChemistStatsAdapter(dataList);
+            UnlistedDoctorStatsAdapter adapter = new UnlistedDoctorStatsAdapter(dataList);
             recyclerView.setAdapter(adapter);
 
         } catch (Exception e) {

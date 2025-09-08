@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Set;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.reports.visitMonitor.adapter.ChemistStatsAdapter;
-import saneforce.sanzen.activity.reports.visitMonitor.model.ChemistStatsModel;
+import saneforce.sanzen.activity.reports.visitMonitor.adapter.StockiestStatsAdapter;
+import saneforce.sanzen.activity.reports.visitMonitor.model.StockiestStatsModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -38,6 +38,25 @@ public class StockiestVisitFragment extends Fragment {
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+
+    private static final String ARG_MONTH_DATA = "monthData";
+    private List<String> monthData;
+
+    public static StockiestVisitFragment newInstance(List<String> monthData) {
+        StockiestVisitFragment fragment = new StockiestVisitFragment();
+        Bundle args = new Bundle();
+        args.putStringArrayList(ARG_MONTH_DATA, new ArrayList<>(monthData));
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            this.monthData = getArguments().getStringArrayList(ARG_MONTH_DATA);
+        }
+    }
 
     @SuppressLint("SetTextI18n")
     @Nullable
@@ -138,9 +157,10 @@ public class StockiestVisitFragment extends Fragment {
             Set<String> prePreviousMonthFWDays = new HashSet<>();
 
             for (JSONObject callObj : currentMonthFilteredList) {
-                String chemistId = callObj.optString("CustCode", "");
-                if (!chemistId.isEmpty()) {
-                    currentMonthStockiest.add(chemistId);
+                String stockiestId = callObj.optString("CustCode", "");
+                String custType = callObj.optString("CustType", "");
+                if (!stockiestId.isEmpty() && custType.equalsIgnoreCase("3")) {
+                    currentMonthStockiest.add(stockiestId);
                     currentMonthStockiest.size();
 
                 }
@@ -155,9 +175,10 @@ public class StockiestVisitFragment extends Fragment {
             }
 
             for (JSONObject callObj : previousMonthFilteredList) {
-                String chemistId = callObj.optString("CustCode", "");
-                if (!chemistId.isEmpty()) {
-                    previousMonthStockiest.add(chemistId);
+                String stockiestId = callObj.optString("CustCode", "");
+                String custType = callObj.optString("CustType", "");
+                if (!stockiestId.isEmpty() && custType.equalsIgnoreCase("3")) {
+                    previousMonthStockiest.add(stockiestId);
                     previousMonthStockiest.size();
                 } else {
                     Log.d("TAG", "callFilter: " + "previousMonthChemist month is 0");
@@ -175,9 +196,10 @@ public class StockiestVisitFragment extends Fragment {
             }
 
             for (JSONObject callObj : pre_PreviousMonthFilteredList) {
-                String chemistId = callObj.optString("CustCode", "");
-                if (!chemistId.isEmpty()) {
-                    prePreviousMonthStockiest.add(chemistId);
+                String stockiestId = callObj.optString("CustCode", "");
+                String custType = callObj.optString("CustType", "");
+                if (!stockiestId.isEmpty() && custType.equalsIgnoreCase("3")) {
+                    prePreviousMonthStockiest.add(stockiestId);
                     prePreviousMonthStockiest.size();
                 }
 
@@ -208,8 +230,8 @@ public class StockiestVisitFragment extends Fragment {
             double previousMonthCvg = (double) previousMonthStockiest.size() / totalStockiest * 100;
             double prePreviousMonthCvg = (double) prePreviousMonthStockiest.size() / totalStockiest * 100;
 
-            List<ChemistStatsModel> dataList = new ArrayList<>();
-            ChemistStatsModel currentMonthStats = new ChemistStatsModel(
+            List<StockiestStatsModel> dataList = new ArrayList<>();
+            StockiestStatsModel currentMonthStats = new StockiestStatsModel(
                     String.valueOf(totalStockiest),
                     String.valueOf(currentMonthStockiest.size()),
                     String.valueOf(currentMonthMissed),
@@ -219,7 +241,7 @@ public class StockiestVisitFragment extends Fragment {
 
             );
 
-            ChemistStatsModel previousMonthStats = new ChemistStatsModel(
+            StockiestStatsModel previousMonthStats = new StockiestStatsModel(
                     String.valueOf(totalStockiest),
                     String.valueOf(previousMonthStockiest.size()),
                     String.valueOf(previousMonthMissed),
@@ -229,7 +251,7 @@ public class StockiestVisitFragment extends Fragment {
 
             );
 
-            ChemistStatsModel prePreviousMonthStats = new ChemistStatsModel(
+            StockiestStatsModel prePreviousMonthStats = new StockiestStatsModel(
                     String.valueOf(totalStockiest),
                     String.valueOf(prePreviousMonthStockiest.size()),
                     String.valueOf(prePreviousMonthMissed),
@@ -241,7 +263,7 @@ public class StockiestVisitFragment extends Fragment {
             dataList.add(currentMonthStats);
             dataList.add(previousMonthStats);
             dataList.add(prePreviousMonthStats);
-            ChemistStatsAdapter adapter = new ChemistStatsAdapter(dataList);
+            StockiestStatsAdapter adapter = new StockiestStatsAdapter(dataList);
             recyclerView.setAdapter(adapter);
 
         } catch (Exception e) {
