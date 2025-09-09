@@ -335,7 +335,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             int lastAction;
 
             @Override public boolean onTouch(View v, MotionEvent event) {
-                View root = findViewById(R.id.main); // <-- your root container id
+                View root = binding.getRoot(); // <-- your root container id
                 if (root == null) return false;
 
                 switch (event.getActionMasked()) {

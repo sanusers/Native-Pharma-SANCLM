@@ -69,21 +69,27 @@ public abstract class RoomDB extends RoomDatabase {
         if (database == null) {
             database = Room.databaseBuilder(context.getApplicationContext(), RoomDB.class, DATABASE_NAME)
                     .allowMainThreadQueries()
+                    .addMigrations(MIGRATION_1_7)
                     .addMigrations(MIGRATION_1_6)
                     .addMigrations(MIGRATION_1_5)
                     .addMigrations(MIGRATION_1_4)
                     .addMigrations(MIGRATION_1_3)
                     .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_2_7)
                     .addMigrations(MIGRATION_2_6)
                     .addMigrations(MIGRATION_2_5)
                     .addMigrations(MIGRATION_2_4)
                     .addMigrations(MIGRATION_2_3)
+                    .addMigrations(MIGRATION_3_7)
                     .addMigrations(MIGRATION_3_6)
                     .addMigrations(MIGRATION_3_5)
                     .addMigrations(MIGRATION_3_4)
+                    .addMigrations(MIGRATION_4_7)
                     .addMigrations(MIGRATION_4_6)
                     .addMigrations(MIGRATION_4_5)
+                    .addMigrations(MIGRATION_5_7)
                     .addMigrations(MIGRATION_5_6)
+                    .addMigrations(MIGRATION_6_7)
 //                    .fallbackToDestructiveMigration()
                     .build();
         }
@@ -137,6 +143,13 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    public static final Migration MIGRATION_6_7 = new Migration(6, 7) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS `call_offline_sign_table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `call_image_name_sign` TEXT, `call_file_path_sign` TEXT, `call_json_values_sign` TEXT, `call_status_sign` TEXT, `call_sync_status_sign` TEXT, `call_date_sign` TEXT, `call_cus_code_sign` TEXT, `call_cus_name_sign` TEXT)");
+        }
+    };
+
     public static final Migration MIGRATION_1_3 = new Migration(1, 3) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -175,6 +188,18 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    public static final Migration MIGRATION_1_7 = new Migration(1, 7) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_1_2.migrate(database);
+            MIGRATION_2_3.migrate(database);
+            MIGRATION_3_4.migrate(database);
+            MIGRATION_4_5.migrate(database);
+            MIGRATION_5_6.migrate(database);
+            MIGRATION_6_7.migrate(database);
+        }
+    };
+
     public static final Migration MIGRATION_2_4 = new Migration(2, 4) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -202,6 +227,17 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    public static final Migration MIGRATION_2_7 = new Migration(2, 7) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_2_3.migrate(database);
+            MIGRATION_3_4.migrate(database);
+            MIGRATION_4_5.migrate(database);
+            MIGRATION_5_6.migrate(database);
+            MIGRATION_6_7.migrate(database);
+        }
+    };
+
     public static final Migration MIGRATION_3_5 = new Migration(3, 5) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -219,11 +255,38 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    public static final Migration MIGRATION_3_7 = new Migration(3, 7) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_3_4.migrate(database);
+            MIGRATION_4_5.migrate(database);
+            MIGRATION_5_6.migrate(database);
+            MIGRATION_6_7.migrate(database);
+        }
+    };
+
     public static final Migration MIGRATION_4_6 = new Migration(4, 6) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             MIGRATION_4_5.migrate(database);
             MIGRATION_5_6.migrate(database);
+        }
+    };
+
+    public static final Migration MIGRATION_4_7 = new Migration(4, 7) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_4_5.migrate(database);
+            MIGRATION_5_6.migrate(database);
+            MIGRATION_6_7.migrate(database);
+        }
+    };
+
+    public static final Migration MIGRATION_5_7 = new Migration(5, 7) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            MIGRATION_5_6.migrate(database);
+            MIGRATION_6_7.migrate(database);
         }
     };
 
