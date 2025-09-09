@@ -3357,19 +3357,11 @@ public class ActivityFragment extends Fragment {
     private void RequestStoragePermission() {
         if(android.os.Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU) {
             if((ActivityCompat.checkSelfPermission(requireActivity(), READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) || ActivityCompat.checkSelfPermission(requireActivity(), READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(requireActivity(), READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                if(ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), READ_MEDIA_IMAGES)) {
-                    ActivityCompat.requestPermissions(requireActivity(), new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
-                }else {
-                    ActivityCompat.requestPermissions(requireActivity(), new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
-                }
+                ActivityCompat.requestPermissions(requireActivity(), new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO}, 101);
             }
         }else {
             if(ActivityCompat.checkSelfPermission(requireActivity(), WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if((ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), READ_EXTERNAL_STORAGE))) {
-                    ActivityCompat.requestPermissions(requireActivity(), new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
-                }else {
-                    ActivityCompat.requestPermissions(requireActivity(), new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
-                }
+                ActivityCompat.requestPermissions(requireActivity(), new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, 101);
             }
         }
     }
@@ -3381,11 +3373,7 @@ public class ActivityFragment extends Fragment {
 
     private void RequestLocationPermission() {
         if(ContextCompat.checkSelfPermission(requireActivity(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(requireActivity(), new String[]{ACCESS_FINE_LOCATION}, 102);
-            }else {
-                ActivityCompat.requestPermissions(requireActivity(), new String[]{ACCESS_FINE_LOCATION}, 102);
-            }
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{ACCESS_FINE_LOCATION}, 102);
         }
     }
 

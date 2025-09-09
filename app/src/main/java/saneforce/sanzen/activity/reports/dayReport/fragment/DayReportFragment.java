@@ -93,6 +93,7 @@ public class DayReportFragment extends Fragment {
         binding = FragmentDayReportBinding.inflate(inflater, container, false);
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
+        OneBuildSetup = SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")?0:1;
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
         dataViewModel.getDate().observe(getViewLifecycleOwner(), s -> binding.calender.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_19, s)));
@@ -265,7 +266,6 @@ public class DayReportFragment extends Fragment {
             calendarDialog = alertDialog.create();
             calendarDialog.show();
         }
-
 
     }
 

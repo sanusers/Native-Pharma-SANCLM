@@ -107,7 +107,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     String rsf = "";
     boolean retrystatus = false, isSlideDownloading = false, isWelcomeSlideDownloading = false;
     //  Api call status  ======> 2 - sucesss, 1- failure ,  0- Notsync yet
-    int doctorStatus = 0, doctorGeoStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, unlistedDrGeoStatus = 0, chemistGeoStatus = 0, stockiestGeoStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0;
+    int doctorStatus = 0, doctorGeoStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, chemistCategoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0, unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, unlistedDrGeoStatus = 0, chemistGeoStatus = 0, stockiestGeoStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, stpSetupStatus = 0, standardTourPLanStatus = 0, clusterStatus = 0, callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, checkInStatus = 0, stockBalanceStatus = 0, calenderEventStaus = 0, productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0, activityStatus = 0, workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0, proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0, welcomeStatus = 0, subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0, QuizStatus = 0, SurveyStatus = 0, setupStatus = 0;
     int apiSuccessCount = 0, itemCount = 0;
     String navigateFrom = "";
     boolean mgrInitialSync = false;
@@ -687,6 +687,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         myDayPlanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_PLAN);
         visitControlStatus = masterDataDao.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
         dateSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DATE_SYNC);
+        checkInStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHECK_IN);
         stockBalanceStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
         stockBalanceStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
         calenderEventStaus = masterDataDao.getMasterSyncStatusByKey(Constants.CALENDER_EVENT_STATUS);
@@ -746,7 +747,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (leaveStatus == 1 || leaveStatusStatus == 1) {
             binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
         }
-        if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1) {
+        if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1 || checkInStatus ==1) {
             binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
         }
         if (activityStatus == 1) {
@@ -859,53 +860,55 @@ public class MasterSyncActivity extends AppCompatActivity {
                     binding.syncFailedImageCip.setVisibility(View.GONE);
                 }
 
-            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getterritory")) {
-                clusterStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLUSTER + rsf);
-                if (clusterStatus == 1) {
-                    binding.syncFailedImageClust.setVisibility(View.VISIBLE);
-                } else {
-                    binding.syncFailedImageClust.setVisibility(View.GONE);
-                }
-            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getinputs")) {
-                inputStatus = masterDataDao.getMasterSyncStatusByKey(Constants.INPUT);
-                if (inputStatus == 1) {
-                    binding.syncFailedImageInput.setVisibility(View.VISIBLE);
-                } else {
-                    binding.syncFailedImageInput.setVisibility(View.GONE);
-                }
-            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getproducts") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getbrands") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
-                productStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT);
-                proCatStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
-                brandStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND);
-                if (productStatus == 1 || mapCompPrdStatus == 1 || brandStatus == 1 || proCatStatus == 1 || compProStatus == 1) {
-                    binding.syncFailedImageProduct.setVisibility(View.VISIBLE);
-                } else {
-                    binding.syncFailedImageProduct.setVisibility(View.GONE);
-                }
-            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavetype") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
-                leaveStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE);
-                leaveStatusStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
-                if (leaveStatus == 1 || leaveStatusStatus == 1) {
-                    binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
-                } else {
-                    binding.syncFailedImageLeave.setVisibility(View.GONE);
-                }
-            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethome") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
-                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
-                callSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CALL_SYNC);
-                myDayPlanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_PLAN);
-                visitControlStatus = masterDataDao.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
-                dateSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DATE_SYNC);
-                if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1) {
-                    binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
-                } else {
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getterritory")) {
+                    clusterStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLUSTER + rsf);
+                    if (clusterStatus == 1) {
+                        binding.syncFailedImageClust.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageClust.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getinputs")) {
+                    inputStatus = masterDataDao.getMasterSyncStatusByKey(Constants.INPUT);
+                    if (inputStatus == 1) {
+                        binding.syncFailedImageInput.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageInput.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getproducts") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getbrands") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
+                    productStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT);
+                    proCatStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
+                    brandStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND);
+                    if (productStatus == 1 || mapCompPrdStatus == 1 || brandStatus == 1 || proCatStatus == 1 || compProStatus == 1) {
+                        binding.syncFailedImageProduct.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageProduct.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavetype") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
+                    leaveStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE);
+                    leaveStatusStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
+                    if (leaveStatus == 1 || leaveStatusStatus == 1) {
+                        binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.syncFailedImageLeave.setVisibility(View.GONE);
+                    }
+                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethome") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcheckin_zen") ||
+                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
+                    callSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CALL_SYNC);
+                    myDayPlanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_PLAN);
+                    visitControlStatus = masterDataDao.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
+                    dateSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DATE_SYNC);
+                    checkInStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHECK_IN);
+                    if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1 || checkInStatus == 1) {
+                        binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
+                    } else {
 
                     binding.syncFailedImageDcr.setVisibility(View.GONE);
                 }
@@ -1211,7 +1214,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC, "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC, "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
         MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
-        if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1")) {
+        if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1") || SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
             myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
         } else {
             myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcrmultihq", Constants.WORK_PLAN, myDayPlanStatus, false);
@@ -1221,7 +1224,10 @@ public class MasterSyncActivity extends AppCompatActivity {
         dcrModelArray.add(callSyncModel);
         dcrModelArray.add(dateSyncModel);
         dcrModelArray.add(myDayPlanModel);
-
+        if(SharedPref.getSrtNd(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+            MasterSyncItemModel checkInModel = new MasterSyncItemModel(Constants.CHECK_IN, Constants.CHECK_IN, "getcheckin_zen", Constants.CHECK_IN, checkInStatus, false);
+            dcrModelArray.add(checkInModel);
+        }
 
         if (SharedPref.getSampleValidation(this).equalsIgnoreCase("1") || SharedPref.getInputValidation(this).equalsIgnoreCase("1")) {
             MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE, "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
@@ -1634,6 +1640,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     break;
                 }
                 case "getquiz":
+                case "getcheckin_zen":
                 case "gettodaydcrmultihq":
                 case "gettodaydcr": {
                     if (HomeDashBoard.selectedDate != null) {
@@ -1696,6 +1703,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
             } else if (masterOf.equalsIgnoreCase(Constants.SURVEY)) {
                 mapString.put("axn", "get/survey");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase(Constants.CHECK_IN)) {
+                mapString.put("axn", "get/checKin");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
             }
 

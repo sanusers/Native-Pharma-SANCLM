@@ -121,13 +121,13 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             popup.setOnMenuItemClickListener(menuItem -> {
                 if (menuItem.getItemId() == R.id.menuSync) {
                     EcModelClass ecModelClass = ecModelClasses.get(position);
-                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")){
+                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
                         CallImageApiS3(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
                     }else {
                         CallImageApi();
                     }
                     if (UtilityClass.isNetworkAvailable(context)) {
-                        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")) {
+                        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                             CallImageApiS3(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
                         }else{
                             CallImageApi();

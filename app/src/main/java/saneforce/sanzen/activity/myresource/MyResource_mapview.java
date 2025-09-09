@@ -255,7 +255,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         if (fileName.isEmpty()) {
             return;
         }
-        if(SharedPref.getS3BucketNeed(getApplicationContext()).equalsIgnoreCase("1")) {
+        if(SharedPref.getS3BucketNeed(getApplicationContext()).equalsIgnoreCase("0")) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             LayoutInflater inflater = getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.dialog_fullscreen_image, null);

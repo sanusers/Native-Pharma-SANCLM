@@ -2993,5 +2993,8 @@ public class SharedPref {
     public static String getKeys(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(A_S_KEY, "^^");
     }
-
+    public static String getSfcode(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(SF_CODE, "");
+    }
 }

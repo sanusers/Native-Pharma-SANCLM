@@ -77,7 +77,7 @@ public class RCPAFragment extends Fragment {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_prd));
             } else if (rcpaBinding.edQty.getText() == null || (rcpaBinding.edQty.getText().toString().isEmpty())) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.enter_qty));
-            } else if(Integer.parseInt(rcpaBinding.edQty.getText().toString()) < 1) {
+            } else if(Integer.parseInt(rcpaBinding.edQty.getText().toString()) < 0) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.qty_must_be_greater_than_0));
             } else {
                 rcpaBinding.llNoRcpa.setVisibility(View.GONE);
@@ -87,7 +87,7 @@ public class RCPAFragment extends Fragment {
 
                 double getTotalValue = 0.0;
                 ArrayList<Double> double_data = new ArrayList<>();
-                if (ProductSelectedList.size() > 0) {
+                if (!ProductSelectedList.isEmpty()) {
                     for (int i = 0; i < ProductSelectedList.size(); i++) {
                         if (ProductSelectedList.get(i).getChe_codes().equalsIgnoreCase(CheCode)) {
                             double_data.add(Double.parseDouble(ProductSelectedList.get(i).getTotalPrdValue()));
@@ -97,7 +97,7 @@ public class RCPAFragment extends Fragment {
                     ChemistSelectedList.add(new CustList(cheName, CheCode, rcpaBinding.tvValue.getText().toString(), ""));
                 }
 
-                if (double_data.size() > 0) {
+                if (!double_data.isEmpty()) {
                     for (int i = 0; i < double_data.size(); i++) {
                         getTotalValue = getTotalValue + double_data.get(i);
                     }
@@ -137,6 +137,7 @@ public class RCPAFragment extends Fragment {
         });
 
         rcpaBinding.edQty.addTextChangedListener(new TextWatcher() {
+            boolean isUpdating = false;
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -149,6 +150,21 @@ public class RCPAFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                if (editable != null && ! editable.toString().isEmpty()) {
+                    try {
+                        if (isUpdating) return;
+                        String text = editable.toString();
+                        if (text.length() > 1 && text.startsWith("0")) {
+                            isUpdating = true;
+                            String corrected = text.replaceFirst("^0+(?!$)", "");
+                            rcpaBinding.edQty.setText(corrected);
+                            rcpaBinding.edQty.setSelection(corrected.length());
+                            isUpdating = false;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
                 if (!editable.toString().isEmpty() && !editable.toString().equalsIgnoreCase("0") && !rcpaBinding.tvRate.getText().toString().isEmpty()) {
                     getQty = Double.parseDouble(editable.toString()) * Double.parseDouble(rcpaBinding.tvRate.getText().toString());
                     double valueRounded = Math.round(getQty * 100D) / 100D;

@@ -88,23 +88,23 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             handler.postDelayed(this, 1000);
             try {
                 String checkInData = SharedPref.getDayCheckInData(requireContext());
-                if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && !checkInData.isEmpty() && HomeDashBoard.selectedDate != null) {
-                    JSONObject checkInObj = new JSONObject(checkInData);
-//                    SharedPref.setCheckInSkipDate(requireContext(), "");
-                    String currentDate = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5),
-                            previousDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, (LocalDate.now().minusDays(1)).toString()),
-                            homeDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, HomeDashBoard.selectedDate.toString()),
-                            checkInDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_5, checkInObj.optString("DateTime"));
-                    if(checkInDate.equalsIgnoreCase(previousDate) && homeDate.equalsIgnoreCase(previousDate) && !SharedPref.getCheckInSkipDate(requireContext()).equalsIgnoreCase(currentDate) && !SharedPref.getCheckTodayCheckInOut(requireContext()).isEmpty()) {
-                        SharedPref.setCheckInSkipDate(requireContext(), currentDate);
-                        Log.d("Clock", "run: log out");
-                        SharedPref.saveLoginState(requireContext(), false);
-                        Intent intent = new Intent(requireActivity(), LoginActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        requireActivity().finishAffinity();
-                    }
-                }
+//                if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && !checkInData.isEmpty() && HomeDashBoard.selectedDate != null) {
+//                    JSONObject checkInObj = new JSONObject(checkInData);
+////                    SharedPref.setCheckInSkipDate(requireContext(), "");
+//                    String currentDate = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5),
+//                            previousDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, (LocalDate.now().minusDays(1)).toString()),
+//                            homeDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, HomeDashBoard.selectedDate.toString()),
+//                            checkInDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_5, checkInObj.optString("DateTime"));
+//                    if(checkInDate.equalsIgnoreCase(previousDate) && homeDate.equalsIgnoreCase(previousDate) && !SharedPref.getCheckInSkipDate(requireContext()).equalsIgnoreCase(currentDate) && !SharedPref.getCheckTodayCheckInOut(requireContext()).isEmpty()) {
+//                        SharedPref.setCheckInSkipDate(requireContext(), currentDate);
+//                        Log.d("Clock", "run: log out");
+//                        SharedPref.saveLoginState(requireContext(), false);
+//                        Intent intent = new Intent(requireActivity(), LoginActivity.class);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        startActivity(intent);
+//                        requireActivity().finishAffinity();
+//                    }
+//                }
                 String currentDate = dateFormat.format(new Date());
                 try {
                     if(!previousDate.equals(currentDate)) {

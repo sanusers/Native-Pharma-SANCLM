@@ -53,6 +53,7 @@
                 android:layout_height="0dp"
                 android:layout_marginHorizontal="@dimen/_1sdp"
                 android:layout_marginTop="@dimen/_2sdp"
+                tools:listitem="@layout/adapter_checked_data"
                 android:windowSoftInputMode="adjustResize|adjustPan"
                 android:background="@drawable/bg_white_without_border"
                 app:layout_constraintBottom_toBottomOf="parent"

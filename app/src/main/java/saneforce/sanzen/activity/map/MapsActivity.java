@@ -830,7 +830,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 btn_confirm.setEnabled(false);
                 btn_confirm.setBackground(ContextCompat.getDrawable(context, R.drawable.tagging_disable_button));
                 if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                    if(SharedPref.getS3BucketNeed(MapsActivity.this).equalsIgnoreCase("1")) {
+                    if(SharedPref.getS3BucketNeed(MapsActivity.this).equalsIgnoreCase("0")) {
                         CallImageAPIS3(jsonImage.toString(), jsonObject.toString(), progressBar);
                         tag_Image();
                     }else{
@@ -2264,7 +2264,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.setInfoWindowAdapter(new MyInfoWindowAdapter(mm, MapsActivity.this));
             }
             if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                if (SharedPref.getS3BucketNeed(MapsActivity.this).equalsIgnoreCase("1")){
+                if (SharedPref.getS3BucketNeed(MapsActivity.this).equalsIgnoreCase("0")){
                     mMap.setOnInfoWindowClickListener(marker -> {
                         try {
                             String imageName = marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/_2sdp"
@@ -50,8 +51,8 @@
             android:textColor="@color/pink"
             android:textSize="@dimen/_7ssp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -67,9 +68,9 @@
             android:text="@string/view_actual_plan"
             android:textColor="@color/white"
             android:textSize="@dimen/_7ssp"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -86,6 +87,156 @@
         app:layout_constraintTop_toBottomOf="@id/constraint_top"
         app:layout_constraintVertical_bias="0.0" />
 
+    <LinearLayout
+        android:id="@+id/ll_deviation_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/_2sdp"
+        app:layout_constraintBottom_toTopOf="@id/view_dummy2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_dummy">
+
+        <LinearLayout
+            android:id="@+id/ll_req_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tag_req_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:paddingVertical="@dimen/_2sdp"
+                android:text="@string/requested_date"
+                android:textColor="@color/light_grey_2"
+                android:textSize="@dimen/_6ssp" />
+
+            <TextView
+                android:id="@+id/tv_req_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textColor="@color/cheked_txt_color"
+                android:textSize="@dimen/_6ssp"
+                tools:text="01 Jan 2025 11:11 AM" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_wt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tag_wt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:paddingVertical="@dimen/_2sdp"
+                android:text="@string/worktype"
+                android:textColor="@color/light_grey_2"
+                android:textSize="@dimen/_6ssp" />
+
+            <TextView
+                android:id="@+id/tv_wt_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textColor="@color/cheked_txt_color"
+                android:textSize="@dimen/_6ssp"
+                tools:text="Field Work" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_hq"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tag_hq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:paddingVertical="@dimen/_2sdp"
+                android:text="@string/head_quarter"
+                android:textColor="@color/light_grey_2"
+                android:textSize="@dimen/_6ssp" />
+
+            <TextView
+                android:id="@+id/tv_hq_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textColor="@color/cheked_txt_color"
+                android:textSize="@dimen/_6ssp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tag_cl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:paddingVertical="@dimen/_2sdp"
+                android:text="@string/cluster"
+                android:textColor="@color/light_grey_2"
+                android:textSize="@dimen/_6ssp" />
+
+            <TextView
+                android:id="@+id/tv_cl_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textColor="@color/cheked_txt_color"
+                android:textSize="@dimen/_6ssp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_dummy2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:background="@color/background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_deviation_data"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/tag_deviation_remarks"
@@ -101,7 +252,7 @@
         app:layout_constraintBottom_toTopOf="@id/tv_deviation_remarks"
         app:layout_constraintEnd_toStartOf="@id/btn_reject"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_dummy" />
+        app:layout_constraintTop_toBottomOf="@id/view_dummy2" />
 
     <TextView
         android:id="@+id/tv_deviation_remarks"
@@ -137,7 +288,7 @@
         app:layout_constraintEnd_toStartOf="@id/btn_approved"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/tag_deviation_remarks"
-        app:layout_constraintTop_toBottomOf="@id/view_dummy" />
+        app:layout_constraintTop_toBottomOf="@id/view_dummy2" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_approved"

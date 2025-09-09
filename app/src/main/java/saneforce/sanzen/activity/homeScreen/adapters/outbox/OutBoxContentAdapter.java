@@ -580,7 +580,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 if (ecModelClass.getSynced() == 0) {
                     Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getImg_name());
                     Log.v("SendOutboxCall-----", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getJson_values());
-                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")) {
+                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                         CallSendAPIImageS3(position, i, ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
                     }else{
                         CallSendAPIImage(position, i, ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));

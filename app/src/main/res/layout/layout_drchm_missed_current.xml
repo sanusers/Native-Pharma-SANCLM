@@ -1,0 +1,906 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/layoutDrChmCurrent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <!-- Doctor Card -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="#fff"
+            android:visibility="visible"
+            android:id="@+id/doctor_missed_current"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <ImageView
+                    android:id="@+id/img_cust"
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:layout_margin="@dimen/_4sdp"
+                    android:src="@drawable/map_dr_img" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_toRightOf="@+id/img_cust"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:padding="@dimen/_2sdp"
+                    android:singleLine="true"
+                    android:text="Doctor"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_7ssp" />
+            </RelativeLayout>
+            <FrameLayout
+                android:layout_width="@dimen/pie_chart_w"
+                android:layout_height="@dimen/pie_chart_h"
+                android:layout_gravity="center">
+
+                <ProgressBar
+                    android:id="@+id/pBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:background="@drawable/progress_drawable"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/progress_overlay" />
+
+                <TextView
+                    android:id="@+id/pbar_percentage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="0%"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/satoshi_bold"/>
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:weightSum="2"
+                android:padding="4dp">
+
+                <!-- Visited -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:orientation="horizontal">
+
+                    <!-- Colored Box -->
+                    <View
+                        android:id="@+id/visitedcheck"
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/square_grey_border" />
+
+                    <!-- Label -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:singleLine="true"
+                        android:text="Visited"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_6ssp" />
+                </LinearLayout>
+
+                <!-- Missed -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <!-- Colored Box -->
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:id="@+id/missedcheck"
+                        android:background="@drawable/square_grey_border"
+                        android:layout_marginEnd="6dp" />
+
+                    <!-- Label -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:singleLine="true"
+                        android:text="Missed"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_6ssp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <GridLayout
+                android:id="@+id/statsGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:background="@drawable/border_spinner_uneditable"
+                android:columnCount="3">
+
+                <!-- Total -->
+                <LinearLayout
+                    android:id="@+id/grid1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/totalDr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Total Doctor" />
+
+                    <TextView
+                        android:id="@+id/totalDrCnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:text="20"
+                        android:layout_marginTop="3dp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <!-- Visited -->
+                <LinearLayout
+                    android:id="@+id/grid2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/visited"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Visited" />
+
+                    <TextView
+                        android:id="@+id/visitedCnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:text="20"
+                        android:layout_marginTop="3dp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <!-- Missed -->
+                <LinearLayout
+                    android:id="@+id/grid3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/missed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Missed" />
+
+                    <TextView
+                        android:id="@+id/missedCnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:text="20"
+                        android:layout_marginTop="3dp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+            </GridLayout>
+        </LinearLayout>
+        <!-- Divider line -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/bg_grey_2" />
+        <!-- Chemist Card -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:visibility="visible"
+            android:background="@color/white"
+            android:id="@+id/chemist_missed_current"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <ImageView
+                    android:id="@+id/img_chmcust"
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:layout_margin="@dimen/_4sdp"
+                    android:src="@drawable/map_chemist_img" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_toRightOf="@+id/img_chmcust"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:padding="@dimen/_2sdp"
+                    android:singleLine="true"
+                    android:text="Chemist"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_7ssp" />
+            </RelativeLayout>
+            <FrameLayout
+                android:layout_width="@dimen/pie_chart_w"
+                android:layout_height="@dimen/pie_chart_h"
+                android:layout_gravity="center">
+
+                <ProgressBar
+                    android:id="@+id/pBarchm"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:background="@drawable/progress_drawable"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/progress_overlay" />
+
+                <TextView
+                    android:id="@+id/pbar_chmpercentage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="0%"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/satoshi_bold"/>
+            </FrameLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:weightSum="2"
+                android:padding="4dp">
+                <!-- Visited -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:orientation="horizontal">
+                    <!-- Colored Box -->
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:id="@+id/check_box_chmvisted"
+                        android:background="@drawable/square_grey_border"
+                        android:layout_marginEnd="6dp" />
+                    <!-- Label -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:singleLine="true"
+                        android:text="Visited"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_6ssp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <!-- Colored Box -->
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:id="@+id/check_box_chmmissed"
+                        android:background="@drawable/square_grey_border"
+                        android:layout_marginEnd="6dp" />
+                    <!-- Label -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:singleLine="true"
+                        android:text="Missed"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_6ssp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <GridLayout
+                android:id="@+id/chmstatsGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:background="@drawable/border_spinner_uneditable"
+                android:columnCount="3">
+
+                <!-- Total -->
+                <LinearLayout
+                    android:id="@+id/chmgrid1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/totalchm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Total Chemist" />
+
+                    <TextView
+                        android:id="@+id/totalchmCnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:text="20"
+                        android:layout_marginTop="3dp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <!-- Visited -->
+                <LinearLayout
+                    android:id="@+id/chmgrid2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/chmvisited"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Visited" />
+
+                    <TextView
+                        android:id="@+id/chmvisitedCnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:text="20"
+                        android:layout_marginTop="3dp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <!-- Missed -->
+                <LinearLayout
+                    android:id="@+id/chmgrid3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/chmmissed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Missed" />
+                    <TextView
+                        android:id="@+id/chmmissedCnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:text="20"
+                        android:layout_marginTop="3dp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+            </GridLayout>
+        </LinearLayout>
+        <!-- Stockist Card -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="#fff"
+            android:visibility="gone"
+            android:id="@+id/stk_missed_current"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <ImageView
+                    android:id="@+id/img_custstk"
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:layout_margin="@dimen/_4sdp"
+                    android:src="@drawable/map_stockist_img" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_toRightOf="@+id/img_custstk"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:padding="@dimen/_2sdp"
+                    android:singleLine="true"
+                    android:text="Stockist"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_7ssp" />
+            </RelativeLayout>
+            <FrameLayout
+                android:layout_width="@dimen/pie_chart_w"
+                android:layout_height="@dimen/pie_chart_h"
+                android:layout_gravity="center">
+
+                <ProgressBar
+                    android:id="@+id/pBarstk"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:background="@drawable/progress_drawable"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/progress_overlay" />
+
+                <TextView
+                    android:id="@+id/pbar_stkpercentage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="0%"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/satoshi_bold"/>
+            </FrameLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:weightSum="2"
+                android:padding="4dp">
+
+                <!-- Visited -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:orientation="horizontal">
+
+                    <!-- Colored Box -->
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:id="@+id/stkvisitedcheck"
+                        android:background="@drawable/square_grey_border"
+                        android:layout_marginEnd="6dp" />
+
+                    <!-- Label -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:singleLine="true"
+                        android:text="Visited"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_6ssp" />
+                </LinearLayout>
+
+                <!-- Missed -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <!-- Colored Box -->
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:id="@+id/stkmissedcheck"
+                        android:background="@drawable/square_grey_border"
+                        android:layout_marginEnd="6dp" />
+
+                    <!-- Label -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:singleLine="true"
+                        android:text="Missed"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_6ssp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <GridLayout
+                android:id="@+id/stkstatsGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:background="@drawable/border_spinner_uneditable"
+                android:columnCount="3">
+
+                <!-- Total -->
+                <LinearLayout
+                    android:id="@+id/stkgrid1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/totalstk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Total Stockist" />
+
+                    <TextView
+                        android:id="@+id/totalstkCnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:text="20"
+                        android:layout_marginTop="3dp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <!-- Visited -->
+                <LinearLayout
+                    android:id="@+id/stkgrid2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/stkvisited"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Visited" />
+
+                    <TextView
+                        android:id="@+id/stkvisitedCnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:text="20"
+                        android:layout_marginTop="3dp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <!-- Missed -->
+                <LinearLayout
+                    android:id="@+id/stkgrid3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/stkmissed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Missed" />
+
+                    <TextView
+                        android:id="@+id/stkmissedCnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:text="20"
+                        android:layout_marginTop="3dp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+            </GridLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:id="@+id/unlst_missed_current"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <ImageView
+                    android:id="@+id/img_unlstcust"
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:layout_margin="@dimen/_4sdp"
+                    android:src="@drawable/map_chemist_img" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_toRightOf="@+id/img_unlstcust"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:padding="@dimen/_2sdp"
+                    android:singleLine="true"
+                    android:text="Unlisted Doctor"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_7ssp" />
+            </RelativeLayout>
+            <FrameLayout
+                android:layout_width="@dimen/pie_chart_w"
+                android:layout_height="@dimen/pie_chart_h"
+                android:layout_gravity="center">
+
+                <ProgressBar
+                    android:id="@+id/pBarunlst"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:background="@drawable/progress_drawable"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/progress_overlay" />
+
+                <TextView
+                    android:id="@+id/pbar_unlstpercentage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="0%"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/satoshi_bold"/>
+            </FrameLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:weightSum="2"
+                android:padding="4dp">
+                <!-- Visited -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:orientation="horizontal">
+                    <!-- Colored Box -->
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:id="@+id/check_box_unlstvisted"
+                        android:background="@drawable/square_grey_border"
+                        android:layout_marginEnd="6dp" />
+                    <!-- Label -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:singleLine="true"
+                        android:text="Visited"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_6ssp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <!-- Colored Box -->
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:id="@+id/check_box_unlstmissed"
+                        android:background="@drawable/square_grey_border"
+                        android:layout_marginEnd="6dp" />
+                    <!-- Label -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:singleLine="true"
+                        android:text="Missed"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_6ssp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <GridLayout
+                android:id="@+id/unlststatsGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:background="@drawable/border_spinner_uneditable"
+                android:columnCount="3">
+
+                <!-- Total -->
+                <LinearLayout
+                    android:id="@+id/unlstgrid1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/totalunlst"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Total Unlisted Doctor" />
+
+                    <TextView
+                        android:id="@+id/totalunlstCnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:text="20"
+                        android:layout_marginTop="3dp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <!-- Visited -->
+                <LinearLayout
+                    android:id="@+id/unlstgrid2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/unlstvisited"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Visited" />
+
+                    <TextView
+                        android:id="@+id/unlstvisitedCnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:text="20"
+                        android:layout_marginTop="3dp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <!-- Missed -->
+                <LinearLayout
+                    android:id="@+id/unlstgrid3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/unlstmissed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Missed" />
+                    <TextView
+                        android:id="@+id/unlstmissedCnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:text="20"
+                        android:layout_marginTop="3dp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+            </GridLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

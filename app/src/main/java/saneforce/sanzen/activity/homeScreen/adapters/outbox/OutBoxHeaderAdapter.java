@@ -357,7 +357,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                     Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getImg_name());
                     Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getFilePath());
                     Log.v("SendOutboxCall_______", "--image--" + ecModelClass.getJson_values());
-                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")) {
+                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                         CallSendAPIImageS3(ecModelClass, childPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()), groupModelClass);
                     }else {
                         CallSendAPIImage(groupModelClass, ecModelClass, childPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));

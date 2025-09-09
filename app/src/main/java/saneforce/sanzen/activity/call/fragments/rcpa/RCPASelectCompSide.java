@@ -130,7 +130,7 @@ public class RCPASelectCompSide extends Fragment {
                 }
             }
 
-            if (SelectedChk.size() > 0) {
+            if (!SelectedChk.isEmpty()) {
                 for (int j = 0; j < RCPAFragment.ProductSelectedList.size(); j++) {
                     CompQty = new ArrayList<>();
                     for (int i = 0; i < rcpa_comp_list.size(); i++) {
@@ -142,7 +142,7 @@ public class RCPASelectCompSide extends Fragment {
                         }
                     }
 
-                    if (CompQty.size() > 0) {
+                    if (!CompQty.isEmpty()) {
                         for (int i = 0; i < CompQty.size(); i++) {
                             getTotalValue = getTotalValue + CompQty.get(i);
                         }
@@ -165,7 +165,7 @@ public class RCPASelectCompSide extends Fragment {
                         }
                     }
 
-                    if (CompQty.size() > 0) {
+                    if (!CompQty.isEmpty()) {
                         for (int i = 0; i < CompQty.size(); i++) {
                             getTotalValue = getTotalValue + CompQty.get(i);
                         }

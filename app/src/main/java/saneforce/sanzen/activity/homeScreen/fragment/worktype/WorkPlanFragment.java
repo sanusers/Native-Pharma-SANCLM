@@ -129,8 +129,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     CommonUtilsMethods commonUtilsMethods;
     double latitude, longitude;
     GPSTrack gpsTrack;
-    Dialog dialogAfterCheckOut, dialogCheckInOut;
+    Dialog dialogCheckOut, dialogCheckIn;
     TextView tvDateTimeAfter, tvLat, tvLong, tvAddress, tvHeading, tvName, tvDateTime;
+    TextView tv_address_in, tv_dateTime_in, tvLatLong_in;
+    TextView tv_address, tv_dateTime, tvLatLong;
     ImageView imgClose;
     Button btnCheckOut, btnCheckIn;
     String address;
@@ -1791,8 +1793,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                 deviationJSONObject.put("Rsf", mHQCode1);
                 deviationJSONObject.put("Rsf2", mHQCode2);
+                deviationJSONObject.put("HQName", mHQName1);
+                deviationJSONObject.put("HQName2", mHQName2);
             } else {
                 deviationJSONObject.put("Rsf", SharedPref.getSfCode(requireContext()));
+                deviationJSONObject.put("HQName", "");
             }
 
             deviationJSONObject.put("town_code", mTowncode1);
@@ -1919,13 +1924,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //        }
     }
 
-    public static void showCheckInDialog() {
-        if(CheckInOutManager.isCheckedId(context)) {
-            workPlanFragment.CheckInOutDate(false);
-        }
-    }
-
-    private void CheckInOutDate(boolean saveWorkPlan) {
+    private void CheckInDate(boolean saveWorkPlan) {
         try {
             gpsTrack = new GPSTrack(requireActivity());
             latitude = gpsTrack.getLatitude();
@@ -1940,48 +1939,48 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
 
-        dialogCheckInOut = new Dialog(requireActivity());
-        dialogCheckInOut.setContentView(R.layout.dialog_day_check_in);
-        dialogCheckInOut.setCancelable(false);
-        if (dialogCheckInOut.getWindow() != null) {
-            dialogCheckInOut.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogCheckIn = new Dialog(requireActivity());
+        dialogCheckIn.setContentView(R.layout.dialog_day_check_in);
+        dialogCheckIn.setCancelable(false);
+        if (dialogCheckIn.getWindow() != null) {
+            dialogCheckIn.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
 
-        tvName = dialogCheckInOut.findViewById(R.id.txt_cus_name);
+        tvName = dialogCheckIn.findViewById(R.id.txt_cus_name);
         tvName.setText(String.format("%s%s", getResources().getString(R.string.hi), SharedPref.getSfName(requireContext())));
 
-        tvDateTime = dialogCheckInOut.findViewById(R.id.txt_date_time);
+        tvDateTime = dialogCheckIn.findViewById(R.id.txt_date_time);
         tvDateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
-        startClock(tvDateTime, dialogCheckInOut, "Check-In");
+        startClock(tvDateTime, dialogCheckIn, "Check-In");
 
-        tvLat = dialogCheckInOut.findViewById(R.id.txt_lat);
+        tvLat = dialogCheckIn.findViewById(R.id.txt_lat);
         tvLat.setText(String.valueOf(latitude));
 
-        tvLong = dialogCheckInOut.findViewById(R.id.txt_long);
+        tvLong = dialogCheckIn.findViewById(R.id.txt_long);
         tvLong.setText(String.valueOf(longitude));
 
-        tvAddress = dialogCheckInOut.findViewById(R.id.txt_address);
+        tvAddress = dialogCheckIn.findViewById(R.id.txt_address);
         tvAddress.setText(address);
 
-        imgClose = dialogCheckInOut.findViewById(R.id.img_close);
-        btnCheckIn = dialogCheckInOut.findViewById(R.id.btn_checkin);
+        imgClose = dialogCheckIn.findViewById(R.id.img_close);
+        btnCheckIn = dialogCheckIn.findViewById(R.id.btn_checkin);
 
         imgClose.setOnClickListener(v -> {
             stopClock();
-            dialogCheckInOut.dismiss();
+            dialogCheckIn.dismiss();
             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
             SharedPref.setDayCheckInData(requireContext(), "");
         });
 
-        ProgressBar progressBar = dialogCheckInOut.findViewById(R.id.progress_bar);
+        ProgressBar progressBar = dialogCheckIn.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
 
-        RelativeLayout refreshLocation = dialogCheckInOut.findViewById(R.id.rl_refresh_location);
+        RelativeLayout refreshLocation = dialogCheckIn.findViewById(R.id.rl_refresh_location);
         refreshLocation.setOnClickListener(v -> {
             try {
                 btnCheckIn.setEnabled(false);
                 stopClock();
-                startClock(tvDateTime, dialogCheckInOut, "Check-In");
+                startClock(tvDateTime, dialogCheckIn, "Check-In");
                 progressBar.setVisibility(View.VISIBLE);
                 gpsTrack = new GPSTrack(requireActivity());
                 gpsTrack.setLocationChangeListener(location -> {
@@ -2029,6 +2028,26 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 e.printStackTrace();
             }
             SharedPref.setDayCheckInData(requireContext(), jsonCheck.toString());
+            try {
+                JSONObject checkInObj = new JSONObject();
+                checkInObj.put("id", "");
+                checkInObj.put("status", "1");
+                checkInObj.put("Start_Lat", latitude);
+                checkInObj.put("Start_Long", longitude);
+                checkInObj.put("Start_addres", address);
+                JSONObject date = new JSONObject();
+                date.put("date", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                checkInObj.put("Start_Time", date);
+                date = new JSONObject();
+                date.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
+                checkInObj.put("Activity_Date", date);
+                Log.v("CheckIn Object", checkInObj.toString());
+                JSONArray jsonArray = new JSONArray();
+                jsonArray.put(checkInObj);
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CHECK_IN, jsonArray.toString(), 2));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             if(UtilityClass.isNetworkAvailable(requireContext())) {
                 progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
                 CallCheckInAPI(saveWorkPlan);
@@ -2036,13 +2055,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 SharedPref.setCheckTodayCheckInOut(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
                 offlineCheckInOutDataDao.saveCheckIn(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
                 SetupOutBoxAdapter(requireActivity(), requireContext());
-                dialogCheckInOut.dismiss();
+                dialogCheckIn.dismiss();
                 onSaveClicked();
 //                CallDialogAfterCheckIn();
             }
         });
         if (!requireActivity().isFinishing()) {
-            dialogCheckInOut.show();
+            dialogCheckIn.show();
         }
     }
 
@@ -2064,7 +2083,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
 
                         if(CheckInOutStatus.equalsIgnoreCase("1")) {
-                            dialogCheckInOut.dismiss();
+                            dialogCheckIn.dismiss();
                             SharedPref.setCheckTodayCheckInOut(requireContext(), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
                             if (saveWorkPlan) {
                                 onSaveClicked();
@@ -2178,8 +2197,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         }
 
-        if(CheckInOutManager.isCheckedId(requireContext())) {
-            CheckInOutDate(true);
+        if(!CheckInOutManager.isCheckedIn(requireContext())
+                && HomeDashBoard.selectedDate != null
+                && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
+            CheckInDate(true);
             return;
         }
 
@@ -2610,7 +2631,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
-            jsonObject.put("tableName", "dayplanmultihq");
+            jsonObject.put("tableName", "dayplan");
+            if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2") && !SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                jsonObject.put("tableName", "dayplanmultihq");
+            }
             jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
             jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
             if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
@@ -2704,7 +2728,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 SharedPref.setCheckInTime(requireContext(), "");
                                 SharedPref.setCheckTodayCheckInOut(requireContext(), "");
                                 SharedPref.setDayCheckInData(requireContext(), "");
-                                dialogAfterCheckOut.dismiss();
+                                dialogCheckOut.dismiss();
                                 CallFinalSubmitAPI();
 //                            remarksAlertBox();
                             } else {
@@ -2744,6 +2768,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     if (response.isSuccessful()) {
                         try {
                             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 2));
+                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CHECK_IN, "[]", 2));
 //                            MyDayPlanEntriesNeeded.syncCallAndDate(requireContext());
                             updateLocalData();
                             SharedPref.setDayPlanStartedDate(requireContext(), "");
@@ -2869,34 +2894,49 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
 
-        dialogAfterCheckOut = new Dialog(requireContext());
-        dialogAfterCheckOut.setContentView(R.layout.dialog_day_check_out);
-        dialogAfterCheckOut.setCancelable(false);
-        if (dialogAfterCheckOut.getWindow() != null) {
-            dialogAfterCheckOut.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogCheckOut = new Dialog(requireContext());
+        dialogCheckOut.setContentView(R.layout.dialog_day_check_out);
+        dialogCheckOut.setCancelable(false);
+        if (dialogCheckOut.getWindow() != null) {
+            dialogCheckOut.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHECK_IN).getMasterSyncDataJsonArray();
+        if(jsonArray.length() > 0) {
+            JSONObject checkInOutJsonObject = jsonArray.optJSONObject(0);
+            if(checkInOutJsonObject != null) {
+                tv_address_in = dialogCheckOut.findViewById(R.id.txt_address_in);
+                tv_dateTime_in = dialogCheckOut.findViewById(R.id.txt_date_time_in);
+                tvLatLong_in = dialogCheckOut.findViewById(R.id.txt_lat_lng_in);
+                try {
+                    tv_address_in.setText(checkInOutJsonObject.optString("Start_addres"));
+                    JSONObject dateObj = checkInOutJsonObject.optJSONObject("Start_Time");
+                    tv_dateTime_in.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_16, dateObj.optString("date")));
+                    tvLatLong_in.setText(String.format(Locale.getDefault(), "%s , %s", checkInOutJsonObject.optString("Start_Lat"), checkInOutJsonObject.optString("Start_Long")));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
-        btnCheckOut = dialogAfterCheckOut.findViewById(R.id.btn_close);
-        tvHeading = dialogAfterCheckOut.findViewById(R.id.txt_heading);
-        tvDateTimeAfter = dialogAfterCheckOut.findViewById(R.id.txt_date_time);
-        tvAddress = dialogAfterCheckOut.findViewById(R.id.txt_address);
-        tvLat = dialogAfterCheckOut.findViewById(R.id.txt_lat);
-        tvLong = dialogAfterCheckOut.findViewById(R.id.txt_long);
-        ImageView imgClose = dialogAfterCheckOut.findViewById(R.id.img_close);
+        btnCheckOut = dialogCheckOut.findViewById(R.id.btn_close);
+        tv_address = dialogCheckOut.findViewById(R.id.txt_address);
+        tv_dateTime = dialogCheckOut.findViewById(R.id.txt_date_time);
+        tvLatLong = dialogCheckOut.findViewById(R.id.txt_lat_lng);
+        ImageView imgClose = dialogCheckOut.findViewById(R.id.img_close);
         imgClose.setOnClickListener(v -> {
             stopClock();
-            dialogAfterCheckOut.dismiss();
+            dialogCheckOut.dismiss();
         });
 
-        ProgressBar progressBar = dialogAfterCheckOut.findViewById(R.id.progress_bar);
+        ProgressBar progressBar = dialogCheckOut.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
 
-        RelativeLayout refreshLocation = dialogAfterCheckOut.findViewById(R.id.rl_refresh_location);
+        RelativeLayout refreshLocation = dialogCheckOut.findViewById(R.id.rl_refresh_location);
         refreshLocation.setOnClickListener(v -> {
             try {
                 btnCheckOut.setEnabled(false);
                 stopClock();
-                startClock(tvDateTimeAfter, dialogAfterCheckOut, "Check-Out");
+                startClock(tv_dateTime, dialogCheckOut, "Check-Out");
                 progressBar.setVisibility(View.VISIBLE);
                 gpsTrack = new GPSTrack(requireActivity());
                 gpsTrack.setLocationChangeListener(location -> {
@@ -2909,9 +2949,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             address = getString(R.string.no_address_found);
                         }
 
-                        tvLat.setText(String.valueOf(latitude));
-                        tvLong.setText(String.valueOf(longitude));
-                        tvAddress.setText(address);
+                        tvLatLong.setText(String.format(Locale.getDefault(), "%f , %f", latitude, longitude));
+                        tv_address.setText(address);
                         btnCheckOut.setEnabled(true);
                         progressBar.setVisibility(View.GONE);
                     } catch (Exception e) {
@@ -2923,12 +2962,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        tvHeading.setText(getResources().getString(R.string.check_out));
-        tvDateTimeAfter.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
-        startClock(tvDateTimeAfter, dialogAfterCheckOut, "Check-Out");
-        tvLat.setText(String.valueOf(latitude));
-        tvLong.setText(String.valueOf(longitude));
-        tvAddress.setText(address);
+//        tvHeading.setText(getResources().getString(R.string.check_out));
+        tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
+        startClock(tv_dateTime, dialogCheckOut, "Check-Out");
+        tvLatLong.setText(String.format(Locale.getDefault(), "%f , %f", latitude, longitude));
+        tv_address.setText(address);
 
         btnCheckOut.setOnClickListener(v -> {
             try {
@@ -2956,12 +2994,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                SharedPref.setCheckDateTodayPlan(requireContext(), "");
 //                offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
             stopClock();
-            dialogAfterCheckOut.dismiss();
+            dialogCheckOut.dismiss();
             remarksAlertBox();
 //            }
         });
 
-        dialogAfterCheckOut.show();
+        dialogCheckOut.show();
     }
 
     private void startClock(TextView textView, Dialog dialog, String text) {
@@ -4442,11 +4480,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 CallFinalSubmitAPI();
             }
         } else {
-            if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
+            if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+//            if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
                 SharedPref.setCheckTodayCheckInOut(requireContext(), "");
                 SharedPref.setDayCheckInData(requireContext(), "");
                 SharedPref.setCheckInTime(requireContext(), "");
                 SharedPref.setCheckDateTodayPlan(requireContext(), "");
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CHECK_IN, "[]", 2));
                 offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
             }
             if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")) {

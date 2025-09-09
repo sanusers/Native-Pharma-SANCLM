@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import saneforce.sanzen.R;
 //import saneforce.sanzen.activity.reports.missedReport.MissedReport;
 import saneforce.sanzen.activity.reports.visitMonitor.VisitMonitorActivity;
+import saneforce.sanzen.activity.reports.missedReport.MissedReport;
+import saneforce.sanzen.activity.reports.missedReport.MissedReportGraph;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
@@ -71,16 +73,21 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
                 holder.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.report_monthly_icon));
                 break;
             }
+            case "Missed Report" : {
+                holder.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.report_day_icon));
+                break;
+            }
         }
 
         holder.itemView.setOnClickListener(view -> {
             if (name.equalsIgnoreCase("Dash Board")) {
                 Intent intentWeb = new Intent(context, ReportWebActivity.class);
                 context.startActivity(intentWeb);
-            } /*else if (name.equalsIgnoreCase("Missed Report")) {
-                Intent intentWeb= new Intent(context, MissedReport.class);
+            } else if (name.equalsIgnoreCase("Missed Report")) {
+                //Intent intentWeb= new Intent(context, MissedReport.class);
+                Intent intentWeb= new Intent(context, MissedReportGraph.class);
                 context.startActivity(intentWeb);
-            }*/ else if (name.equalsIgnoreCase("Day Report")) {
+            } else if (name.equalsIgnoreCase("Day Report")) {
                 ReportsActivity activity = (ReportsActivity) context;
                 activity.progressDialog = CommonUtilsMethods.createProgressDialog(context);
                 activity.getData(name, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4));

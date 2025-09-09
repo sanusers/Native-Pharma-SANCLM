@@ -51,6 +51,7 @@ public class Constants {
     public static final String STOCK_BALANCE_MASTER = "Stock_Balance_Master";
     public static final String STOCK_BALANCE = "Stock Balance";
     public static final String INPUT_BALANCE = "Input Balance";
+    public static final String CHECK_IN = "Check In";
 
     public static final String CALENDER_EVENT_STATUS = "Calender Event Status";
 

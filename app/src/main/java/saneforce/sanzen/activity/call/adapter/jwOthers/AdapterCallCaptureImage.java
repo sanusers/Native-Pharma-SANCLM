@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         CallCaptureImageList callCaptureImageList = callCaptureImageLists.get(position);
         holder.tv_image_name.setText(callCaptureImageList.getImg_name());
         holder.ed_img_desc.setText(callCaptureImageList.getImg_description());
-        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")) {
+        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
             switch (isFromActivity) {
                 case "new":
                     if (callCaptureImageList.getImg_view() == null) {
@@ -142,7 +143,13 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                         if(callCaptureImageList.isNewlyAdded()) {
                             holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
                         } else {
-                            Glide.with(context).load(SharedPref.getTagImageUrl(context) + "photos/" + callCaptureImageList.getSystemImgName()).fitCenter().into(holder.img_view);
+                          //  Glide.with(context).load(SharedPref.getTagImageUrl(context) + "photos/" + callCaptureImageList.getSystemImgName()).fitCenter().into(holder.img_view);
+                            Glide.with(context)
+                                    .load(SharedPref.getTagImageUrl(context) + "photos/" + callCaptureImageList.getSystemImgName())
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL) // cache both original & resized
+                                    .skipMemoryCache(false) // allow memory caching
+                                    .fitCenter()
+                                    .into(holder.img_view);
                         }
                     }
                     break;
@@ -180,7 +187,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
 
         holder.img_view.setOnClickListener(v -> {
-            if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")) {
+            if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                 switch (isFromActivity) {
                     case "new":
                         showImage(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view());
@@ -277,7 +284,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
     }
 
     private void ShowImageEditS3(String systemImageName,@NonNull ViewHolder holder , int position){
-        SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1");
+        SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0");
         CallCaptureImageList callCaptureImageList = callCaptureImageLists.get(position);
         Dialog builder = new Dialog(context);
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraint_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -32,26 +33,8 @@
         android:textColor="@color/bg_txt_color"
         android:textSize="@dimen/_7ssp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tv_tag_priority"
-        app:layout_constraintStart_toEndOf="@id/chk_box"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_tag_priority"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_4sdp"
-        android:fontFamily="@font/satoshi_regular"
-        android:paddingHorizontal="@dimen/_2sdp"
-        android:paddingVertical="@dimen/_2sdp"
-        android:textColor="@color/green_60"
-        android:textSize="@dimen/_6ssp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_tag_category"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/tv_data_name"
+        app:layout_constraintStart_toEndOf="@id/chk_box"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -65,11 +48,30 @@
         android:textColor="@color/dark_purple"
         android:textSize="@dimen/_6ssp"
         android:textStyle="bold"
+        tools:text="SL/SM"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_tag_priority"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/tv_data_name"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_tag_priority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_4sdp"
+        android:fontFamily="@font/satoshi_regular"
+        android:paddingHorizontal="@dimen/_2sdp"
+        android:paddingVertical="@dimen/_2sdp"
+        android:textColor="@color/green_60"
+        android:textSize="@dimen/_6ssp"
+        android:textStyle="bold"
+        tools:text="P1"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/tv_tag_priority"
+        app:layout_constraintStart_toEndOf="@id/tv_tag_category"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

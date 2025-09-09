@@ -62,8 +62,6 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-
-
         if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
             holder.tv_input_stk.setVisibility(View.VISIBLE);
             if (Integer.parseInt(saveCallInputLists.get(position).getLast_inp_stk()) > 0) {
@@ -83,14 +81,14 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
         if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
             if (holder.ed_inpQty.getText().toString().equalsIgnoreCase("1")) {
                 //holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("0", finalValue)});
-                    int final_value = Integer.parseInt(saveCallInputLists.get(position).getLast_inp_stk()) - Integer.parseInt(holder.ed_inpQty.getText().toString());
-                    holder.tv_input_stk.setText(String.valueOf(final_value));
-                    saveCallInputLists.set(holder.getBindingAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getBindingAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getInp_code(), holder.ed_inpQty.getText().toString(), String.valueOf(final_value), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk()));
-                    for (int i = 0; i < StockInput.size(); i++) {
-                        if (StockInput.get(i).getStockCode().equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
-                            StockInput.set(i, new CallCommonCheckedList(StockInput.get(i).getStockCode(), StockInput.get(i).getActualStock(), String.valueOf(final_value)));
-                        }
+                int final_value = Integer.parseInt(saveCallInputLists.get(position).getLast_inp_stk()) - Integer.parseInt(holder.ed_inpQty.getText().toString());
+                holder.tv_input_stk.setText(String.valueOf(final_value));
+                saveCallInputLists.set(holder.getBindingAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getBindingAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getInp_code(), holder.ed_inpQty.getText().toString(), String.valueOf(final_value), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk()));
+                for (int i = 0; i < StockInput.size(); i++) {
+                    if (StockInput.get(i).getStockCode().equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
+                        StockInput.set(i, new CallCommonCheckedList(StockInput.get(i).getStockCode(), StockInput.get(i).getActualStock(), String.valueOf(final_value)));
                     }
+                }
             }
         }
         holder.tv_inp_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(context, view, saveCallInputLists.get(position).getInput_name()));
@@ -99,7 +97,7 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
             if (InputValidation.equalsIgnoreCase("1")) {
                 if (InpQtyRestriction.equalsIgnoreCase("0")) {
                     //  Log.v("asdasds", (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) + "----" + SamQtyRestrictValue + "----" + productListArrayList.get(position).getLast_stock());
-                    if(SamQtyRestrictValue.equalsIgnoreCase("0")) {
+                    if (SamQtyRestrictValue.equalsIgnoreCase("0")) {
                         finalValue = saveCallInputLists.get(position).getLast_inp_stk();
                         holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", saveCallInputLists.get(position).getLast_inp_stk())});
                     } else if (Integer.parseInt(InpQtyRestrictValue) >= Integer.parseInt(saveCallInputLists.get(position).getLast_inp_stk())) {
@@ -126,6 +124,8 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
 
 
         holder.ed_inpQty.addTextChangedListener(new TextWatcher() {
+            boolean isUpdating = false;
+
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -139,22 +139,37 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
             @Override
             public void afterTextChanged(Editable editable) {
                 try {
+                    if (editable != null && ! editable.toString().isEmpty()) {
+                        try {
+                            if (isUpdating) return;
+                            String text = editable.toString();
+                            if (text.length() > 1 && text.startsWith("0")) {
+                                isUpdating = true;
+                                String corrected = text.replaceFirst("^0+(?!$)", "");
+                                holder.ed_inpQty.setText(corrected);
+                                holder.ed_inpQty.setSelection(corrected.length());
+                                isUpdating = false;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                     if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
                         holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", finalValue)});
-                        if (!editable.toString().isEmpty()) {
+                        if (! editable.toString().isEmpty()) {
                             int final_value = Integer.parseInt(saveCallInputLists.get(position).getLast_inp_stk()) - Integer.parseInt(editable.toString());
-                            if(final_value >= 0) {
+                            if (final_value >= 0) {
                                 holder.tv_input_stk.setText(String.valueOf(final_value));
                                 saveCallInputLists.set(holder.getBindingAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getBindingAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getInp_code(), editable.toString(), String.valueOf(final_value), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk()));
-                                for (int i = 0; i<StockInput.size(); i++) {
-                                    if(StockInput.get(i).getStockCode().equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
+                                for (int i = 0; i < StockInput.size(); i++) {
+                                    if (StockInput.get(i).getStockCode().equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
                                         StockInput.set(i, new CallCommonCheckedList(StockInput.get(i).getStockCode(), StockInput.get(i).getActualStock(), String.valueOf(final_value)));
                                         break;
                                     }
                                 }
                             } else {
                                 String data = editable.toString();
-                                if(data.length() > 1) {
+                                if (data.length() > 1) {
                                     data = data.substring(1);
                                     holder.ed_inpQty.setText(data);
                                 } else {
@@ -177,15 +192,15 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
                         } else {
                             holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", "9999")});
                         }
-                        if(!editable.toString().isEmpty()) {
+                        if (! editable.toString().isEmpty()) {
                             int value = Integer.parseInt(editable.toString());
-                            if(value > 0) {
-                                saveCallInputLists.set(holder.getBindingAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getBindingAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getInp_code(), editable.toString() , saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk()));
+                            if (value > 0) {
+                                saveCallInputLists.set(holder.getBindingAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getBindingAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getInp_code(), editable.toString(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk()));
                             } else {
                                 holder.ed_inpQty.setText("1");
                             }
                         } else {
-                            saveCallInputLists.set(holder.getBindingAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getBindingAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getInp_code(), editable.toString() , saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk()));
+                            saveCallInputLists.set(holder.getBindingAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getBindingAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getInp_code(), editable.toString(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk()));
                         }
                     }
 
@@ -195,7 +210,7 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
             }
         });
 
-        if (CheckInputListAdapter.isCheckedInp && !CheckInputListAdapter.UnSelectedInpCode.isEmpty()) {
+        if (CheckInputListAdapter.isCheckedInp && ! CheckInputListAdapter.UnSelectedInpCode.isEmpty()) {
             for (int i = 0; i < saveCallInputLists.size(); i++) {
                 if (CheckInputListAdapter.UnSelectedInpCode.equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
                     new CountDownTimer(80, 80) {

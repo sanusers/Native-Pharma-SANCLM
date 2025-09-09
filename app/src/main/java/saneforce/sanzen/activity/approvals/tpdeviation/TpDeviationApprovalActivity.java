@@ -221,7 +221,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         for (int i = 0; i<jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
-                            tpDeviationModelLists.add(new TpDeviationModelList(json.getString("sf_name"), json.getString("sf_code"), json.getString("sl_no"), json.getString("missed_date"), json.getString("Deviation_Reason")));
+                            tpDeviationModelLists.add(new TpDeviationModelList(json.optString("sf_name"), json.optString("sf_code"), json.optString("sl_no"), json.optString("missed_date"), json.optString("Deviation_Reason"), json.optString("WorkType_Name"), json.optString("HQ_Name"), json.optString("Cluster_Name"), json.optString("Req_date")));
                         }
                         sortData(SortType.NAME_ASCENDING);
                         tpDeviationAdapter = new TpDeviationAdapter(TpDeviationApprovalActivity.this, tpDeviationModelLists, viewPlanClickListener);

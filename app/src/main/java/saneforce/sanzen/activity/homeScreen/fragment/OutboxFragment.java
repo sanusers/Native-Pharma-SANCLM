@@ -513,7 +513,7 @@ public class OutboxFragment extends Fragment {
                 Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getImg_name());
                 if (ecModelClass.getSynced() == 0) {
                     isCallAvailable = true;
-                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("1")) {
+                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                         CallSendAPIImageS3(ParentPos, ecModelClass, ChildPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()), modelClass);
                     }else {
                         CallSendAPIImage(ParentPos, ecModelClass, ChildPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()), modelClass);

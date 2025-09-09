@@ -24,7 +24,8 @@ import saneforce.sanzen.storage.SharedPref;
 import saneforce.sanzen.utility.TimeUtils;
 
 
-public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
+public class
+CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
 
     ArrayList<String> arrayList = new ArrayList<>();
     int id;
@@ -96,6 +97,18 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
                 }
             }
         });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = holder.getAbsoluteAdapterPosition();
+                String selectedDay = arrayList.get(position);
+
+                if (!selectedDay.equals("")) {
+                    onDayClickInterface.onDayClicked(position, selectedDay, new ModelClass());
+                }
+            }
+        });
+
     }
 
     @Override

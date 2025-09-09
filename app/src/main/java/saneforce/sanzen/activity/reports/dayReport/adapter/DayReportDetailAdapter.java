@@ -123,10 +123,10 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         holder.jointWork.setText(dataModel.getWWith());
         holder.nextVisit.setText(dataModel.getNextVstDate());
         holder.overAllRemark.setText(dataModel.getRemarks());
-        String inDateTime = String.format(Locale.getDefault(), "%s %s", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, dataModel.getDcr_dt()), dataModel.getCheckin()),
-                outDateTime = String.format(Locale.getDefault(), "%s %s", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, dataModel.getDcr_dt()), dataModel.getCheckout());
-        holder.checkInTime.setText(inDateTime);
-        holder.checkOutTime.setText(outDateTime);
+//        String inDateTime = String.format(Locale.getDefault(), "%s %s", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, dataModel.getDcr_dt()), dataModel.getCheckin()),
+//                outDateTime = String.format(Locale.getDefault(), "%s %s", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, dataModel.getDcr_dt()), dataModel.getCheckout());
+        holder.checkInTime.setText(dataModel.getCheckin());
+        holder.checkOutTime.setText(dataModel.getCheckout());
         holder.checkInAddress.setText(dataModel.getCheckin_addrs());
         holder.checkOutAddress.setText(dataModel.getCheckout_addrs());
 
@@ -406,8 +406,8 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 bundle.putString("OUTLat", outLatLng[0]);
                 bundle.putString("OUTLong", outLatLng[1]);
             }
-            bundle.putString("INDateTime", inDateTime);
-            bundle.putString("OUTDateTime", outDateTime);
+            bundle.putString("INDateTime", dataModel.getCheckin());
+            bundle.putString("OUTDateTime", dataModel.getCheckout());
             bundle.putString("INAddress", dataModel.getCheckin_addrs());
             bundle.putString("OUTAddress", dataModel.getCheckout_addrs());
             bundle.putString("title", dataModel.getName());
@@ -429,8 +429,8 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 bundle.putString("OUTLat", outLatLng[0]);
                 bundle.putString("OUTLong", outLatLng[1]);
             }
-            bundle.putString("INDateTime", inDateTime);
-            bundle.putString("OUTDateTime", outDateTime);
+            bundle.putString("INDateTime", dataModel.getCheckin());
+            bundle.putString("OUTDateTime", dataModel.getCheckout());
             bundle.putString("INAddress", dataModel.getCheckin_addrs());
             bundle.putString("OUTAddress", dataModel.getCheckout_addrs());
             bundle.putString("title", dataModel.getName());

@@ -37,7 +37,6 @@ import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.adapters.Call_adapter;
-import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.sanzen.commonClasses.CheckInOutManager;
@@ -412,7 +411,9 @@ public class CallsFragment extends Fragment {
                 if(SharedPref.getSfCode(requireContext()).equalsIgnoreCase("0")) {
                     if(SharedPref.getHqCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getHqCode(requireContext()).isEmpty()) {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
-                    }else if(CheckInOutManager.isCheckedId(requireContext())) {
+                    }else if(!CheckInOutManager.isCheckedIn(requireContext())
+                            && HomeDashBoard.selectedDate != null
+                            && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
 //                        WorkPlanFragment.showCheckInDialog();
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
                     }else if(WorkPlanFragment.isFromTP) {
@@ -426,7 +427,9 @@ public class CallsFragment extends Fragment {
                     JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                     try {
-                        if(CheckInOutManager.isCheckedId(requireContext())) {
+                        if(!CheckInOutManager.isCheckedIn(requireContext())
+                                && HomeDashBoard.selectedDate != null
+                                && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
 //                            WorkPlanFragment.showCheckInDialog();
                             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
                         }else if(WorkPlanFragment.isFromTP && WorkPlanFragment.binding.txtSave.isEnabled()) {

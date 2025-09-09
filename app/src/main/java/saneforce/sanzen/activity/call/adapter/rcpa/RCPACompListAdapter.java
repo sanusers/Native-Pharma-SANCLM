@@ -113,6 +113,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
         });
 
         holder.ed_qty.addTextChangedListener(new TextWatcher() {
+            boolean isUpdating = false;
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -125,10 +126,25 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
             @Override
             public void afterTextChanged(Editable editable) {
                 try {
+                    if (editable != null && ! editable.toString().isEmpty()) {
+                        try {
+                            if (isUpdating) return;
+                            String text = editable.toString();
+                            if (text.length() > 1 && text.startsWith("0")) {
+                                isUpdating = true;
+                                String corrected = text.replaceFirst("^0+(?!$)", "");
+                                holder.ed_qty.setText(corrected);
+                                holder.ed_qty.setSelection(corrected.length());
+                                isUpdating = false;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                     valueTotal = 0.0;
                     finalValuePrd = 0.0;
 
-                    if (!editable.toString().isEmpty() && !editable.toString().equalsIgnoreCase("0") && !holder.tv_rate.getText().toString().isEmpty()) {
+                    if (!editable.toString().isEmpty() && !(Integer.parseInt(editable.toString()) < 0) && !holder.tv_rate.getText().toString().isEmpty()) {
                         getQty = Double.parseDouble(editable.toString()) * Double.parseDouble(holder.tv_rate.getText().toString());
                         double valueRounded = Math.round(getQty * 100D) / 100D;
                         holder.tv_value.setText(String.valueOf(valueRounded));
@@ -146,7 +162,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
                         finalValuePrd = valueTotal;
                         Log.v("total", "---after---" + valueRounded);
 
-                    } else {
+                    } else if (!editable.toString().isEmpty()) {
 //                        if (editable.toString().equalsIgnoreCase("0")) {
 //                        CompetitorList.set(holder.getBindingAdapterPosition(), new RCPAAddedCompList(CompetitorList.get(holder.getBindingAdapterPosition()).getChem_names(), CompetitorList.get(holder.getBindingAdapterPosition()).getChem_Code(), CompetitorList.get(holder.getBindingAdapterPosition()).getPrd_name(), CompetitorList.get(holder.getBindingAdapterPosition()).getPrd_code(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_company_name(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_company_code(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_product(), CompetitorList.get(holder.getBindingAdapterPosition()).getComp_product_code(), editable.toString(), CompetitorList.get(holder.getBindingAdapterPosition()).getRate(), "0", CompetitorList.get(holder.getBindingAdapterPosition()).getRemarks(), CompetitorList.get(holder.getBindingAdapterPosition()).getTotalPrdValue()));
 //                        for (int i = 0; i < rcpa_comp_list.size(); i++) {
@@ -165,9 +181,9 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
 //                            }
 //                        }
 //
-                        holder.tv_value.setText("1");
+                        holder.tv_value.setText("0");
 //                        finalValuePrd = getPrdTotalStatic;
-                        commonUtilsMethods.showToastMessage(context, "Qty must be greater than 0");
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.qty_must_be_greater_than_0));
                     }
                 } catch (Exception e) {
                     Log.e("deleting_comb", "--refresh--" + e);
@@ -260,7 +276,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
                 }
             }
 
-            if (CompQty.size() > 0) {
+            if (!CompQty.isEmpty()) {
                 for (int i = 0; i < CompQty.size(); i++) {
                     getTotalValue = getTotalValue + CompQty.get(i);
                 }
@@ -283,7 +299,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
                 }
             }
 
-            if (CompQty.size() > 0) {
+            if (!CompQty.isEmpty()) {
                 for (int i = 0; i < CompQty.size(); i++) {
                     getTotalValue = getTotalValue + CompQty.get(i);
                 }
