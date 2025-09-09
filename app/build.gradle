@@ -178,5 +178,9 @@ dependencies {
 
     //Apache commons IO
     implementation 'commons-io:commons-io:2.18.0'
+
+    //youtube player
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.2'
+
 }
 

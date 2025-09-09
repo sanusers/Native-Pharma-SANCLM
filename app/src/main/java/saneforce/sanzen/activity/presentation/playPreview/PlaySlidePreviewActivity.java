@@ -165,10 +165,16 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                                 binding.pdfView.setVisibility(View.GONE);
                                 binding.videoView.setVisibility(View.VISIBLE);
                                 binding.webView.setVisibility(View.GONE);
+                                binding.progressAnim.setVisibility(View.VISIBLE);
+                                binding.progressAnim.playAnimation();
                                 Uri uri = Uri.parse(file.getAbsolutePath());
                                 binding.videoView.setVideoURI(uri);
                                 binding.videoView.setMediaController(mediaController);
-                                binding.videoView.start();
+                                binding.videoView.setOnPreparedListener(mp -> {
+                                    binding.progressAnim.setVisibility(View.GONE);
+                                    mp.start();
+                                });
+//                                binding.videoView.start();
                                 break;
                             case "zip":
                                 binding.pdfView.setVisibility(View.GONE);
@@ -209,11 +215,6 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                                         }
                                         return true;
                                     }
-                                    @Override
-                                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                                        super.onPageStarted(view, url, favicon);
-                                        Log.i("webview", "onPageStarted: "  + TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-                                    }
 
                                     @Override
                                     public void onPageFinished(WebView view, String url) {
@@ -223,6 +224,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                                         binding.progressAnim.cancelAnimation();
                                     }
                                 });
+                                break;
                         }
                     }
                 }else {
@@ -236,6 +238,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                     binding.videoView.setVisibility(View.GONE);
                     binding.webView.setVisibility(View.GONE);
                     binding.upArrow.setVisibility(View.VISIBLE);
+                    binding.progressAnim.setVisibility(View.GONE);
                     binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_pause_24);
                     startTimer();
                 }
@@ -332,8 +335,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                 .onRender((nbPages, pageWidth, pageHeight) -> {
                     binding.progressAnim.setVisibility(View.GONE);
                     binding.progressAnim.cancelAnimation();
-                })
-                .defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();
+                }).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();
     }
 
     @Override
