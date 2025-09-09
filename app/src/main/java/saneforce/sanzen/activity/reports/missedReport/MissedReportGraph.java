@@ -539,103 +539,103 @@ public class MissedReportGraph  extends AppCompatActivity {
     }
     public void LoadDrChmStkUnlstValues(){
         //Dr Current Month
-        pBardrcurrent.setMax(maxCount);
-        pbarcurrentpercentage.setText(String.valueOf(currentCount)+"%");
+        pBardrcurrent.setMax(100);
+        pbarcurrentpercentage.setText(String.valueOf(25)+"%");
         pBardrcurrent.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBardrcurrent);
-        totaldrcur.setText("");
-        totaldrvisited.setText("");
-        totaldrmissed.setText("");
+        progressBarAnimation(25,pBardrcurrent);
+        totaldrcur.setText("100");
+        totaldrvisited.setText("75");
+        totaldrmissed.setText("25");
         //Dr Prev Month
-        pBardrprev.setMax(maxCount);
-        pbarprevpercentage.setText(String.valueOf(currentCount)+"%");
+        pBardrprev.setMax(100);
+        pbarprevpercentage.setText(String.valueOf(50)+"%");
         pBardrprev.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBardrprev);
-        prevtotaldr.setText("");
-        prevtotaldrvisited.setText("");
-        prevtotaldrmissed.setText("");
+        progressBarAnimation(50,pBardrprev);
+        prevtotaldr.setText("100");
+        prevtotaldrvisited.setText("50");
+        prevtotaldrmissed.setText("50");
         //Dr Prev Month
-        pBardrprev1.setMax(maxCount);
-        pbarprev1percentage.setText(String.valueOf(currentCount)+"%");
+        pBardrprev1.setMax(100);
+        pbarprev1percentage.setText(String.valueOf(25)+"%");
         pBardrprev1.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBardrprev1);
-        prev1totaldr.setText("");
-        prev1totaldrvisited.setText("");
-        prev1totaldrmissed.setText("");
+        progressBarAnimation(25,pBardrprev1);
+        prev1totaldr.setText("100");
+        prev1totaldrvisited.setText("25");
+        prev1totaldrmissed.setText("75");
 
         //Chm Current Month
-        pBarchmcurrent.setMax(maxCount);
-        pBarchmcurrentpercentage.setText(String.valueOf(currentCount)+"%");
+        pBarchmcurrent.setMax(100);
+        pBarchmcurrentpercentage.setText(String.valueOf(56)+"%");
         pBarchmcurrent.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarchmcurrent);
-        totalchmcur.setText("");
-        totalchmvisited.setText("");
-        totalchmmissed.setText("");
+        progressBarAnimation(56,pBarchmcurrent);
+        totalchmcur.setText("114");
+        totalchmvisited.setText("4");
+        totalchmmissed.setText("110");
         //Chm Prev Month
-        pBarchmprev.setMax(maxCount);
-        pBarchmprevpercentage.setText(String.valueOf(currentCount)+"%");
+        pBarchmprev.setMax(100);
+        pBarchmprevpercentage.setText(String.valueOf(60)+"%");
         pBarchmprev.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
         progressBarAnimation(currentCount,pBarchmprev);
-        prevtotalchmcur.setText("");
-        prevtotalchmvisited.setText("");
-        prevtotalchmmissed.setText("");
+        prevtotalchmcur.setText("114");
+        prevtotalchmvisited.setText("56");
+        prevtotalchmmissed.setText("58");
         //Chm Prev Month
-        pBarchmprev1.setMax(maxCount);
-        pBarchmprev1percentage.setText(String.valueOf(currentCount)+"%");
+        pBarchmprev1.setMax(100);
+        pBarchmprev1percentage.setText(String.valueOf(35)+"%");
         pBarchmprev1.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarchmprev1);
-        prev1totalchmcur.setText("");
-        prev1totalchmvisited.setText("");
-        prev1totalchmmissed.setText("");
+        progressBarAnimation(35,pBarchmprev1);
+        prev1totalchmcur.setText("114");
+        prev1totalchmvisited.setText("100");
+        prev1totalchmmissed.setText("14");
 
         //Stk Current Month
-        pBarstkcurrent.setMax(maxCount);
-        pBarstkcurrentpercentage.setText(String.valueOf(currentCount)+"%");
+        pBarstkcurrent.setMax(100);
+        pBarstkcurrentpercentage.setText(String.valueOf(45)+"%");
         pBarstkcurrent.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarstkcurrent);
-        totalstkcur.setText("");
-        totalstkvisited.setText("");
-        totalstkmissed.setText("");
+        progressBarAnimation(45,pBarstkcurrent);
+        totalstkcur.setText("75");
+        totalstkvisited.setText("5");
+        totalstkmissed.setText("70");
         //Stk Prev Month
-        pBarstkprev.setMax(maxCount);
-        pBarstkprevpercentage.setText(String.valueOf(currentCount)+"%");
+        pBarstkprev.setMax(100);
+        pBarstkprevpercentage.setText(String.valueOf(90)+"%");
         pBarstkprev.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarstkprev);
-        prevtotalstkcur.setText("");
-        prevtotalstkvisited.setText("");
-        prevtotalstkmissed.setText("");
+        progressBarAnimation(90,pBarstkprev);
+        prevtotalstkcur.setText("75");
+        prevtotalstkvisited.setText("50");
+        prevtotalstkmissed.setText("20");
         //Stk Prev Month
-        pBarstkprev1.setMax(maxCount);
-        pBarstkprev1percentage.setText(String.valueOf(currentCount)+"%");
+        pBarstkprev1.setMax(100);
+        pBarstkprev1percentage.setText(String.valueOf(80)+"%");
         pBarstkprev1.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarstkprev1);
-        prev1totalstkcur.setText("");
-        prev1totalstkvisited.setText("");
-        prev1totalstkmissed.setText("");
+        progressBarAnimation(80,pBarstkprev1);
+        prev1totalstkcur.setText("75");
+        prev1totalstkvisited.setText("75");
+        prev1totalstkmissed.setText("0");
 
         //Unlst Current Month
-        pBarunlstcurrent.setMax(maxCount);
-        pBarunlstcurrentpercentage.setText(String.valueOf(currentCount)+"%");
+        pBarunlstcurrent.setMax(100);
+        pBarunlstcurrentpercentage.setText(String.valueOf(20)+"%");
         pBarunlstcurrent.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarunlstcurrent);
-        totalunlstcur.setText("");
-        totalunlstvisited.setText("");
-        totalunlstmissed.setText("");
+        progressBarAnimation(20,pBarunlstcurrent);
+        totalunlstcur.setText("80");
+        totalunlstvisited.setText("15");
+        totalunlstmissed.setText("65");
         //Unlst Prev Month
-        pBarunlstprev.setMax(maxCount);
-        pBarunlstprevpercentage.setText(String.valueOf(currentCount)+"%");
+        pBarunlstprev.setMax(100);
+        pBarunlstprevpercentage.setText(String.valueOf(50)+"%");
         pBarunlstprev.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarunlstprev);
-        prevtotalunlstcur.setText("");
-        prevtotalunlstvisited.setText("");
-        prevtotalunlstmissed.setText("");
+        progressBarAnimation(50,pBarunlstprev);
+        prevtotalunlstcur.setText("80");
+        prevtotalunlstvisited.setText("75");
+        prevtotalunlstmissed.setText("5");
         //Unlst Prev Month
-        pBarunlstprev1.setMax(maxCount);
-        pBarunlstprev1percentage.setText(String.valueOf(currentCount)+"%");
+        pBarunlstprev1.setMax(100);
+        pBarunlstprev1percentage.setText(String.valueOf(60)+"%");
         pBarunlstprev1.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarunlstprev1);
-        prev1totalunlstcur.setText("");
-        prev1totalunlstvisited.setText("");
-        prev1totalunlstmissed.setText("");
+        progressBarAnimation(60,pBarunlstprev1);
+        prev1totalunlstcur.setText("80");
+        prev1totalunlstvisited.setText("70");
+        prev1totalunlstmissed.setText("10");
     }
 }
