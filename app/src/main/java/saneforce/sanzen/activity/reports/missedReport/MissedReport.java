@@ -165,7 +165,6 @@ public class MissedReport extends AppCompatActivity {
                 RoomDB db = RoomDB.getDatabase(MissedReport.this);
                 db.missedDao().deleteAll();        // Clear missed data
                 db.doctorVisitDao().deleteAll();   // Clear doctor visit data
-
                 runOnUiThread(this::finish);       // Close the activity after clearing
             });
         });
