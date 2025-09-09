@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.reports.visitMonitor.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,18 +23,25 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.visitMonitor.DoctorFragment;
+import saneforce.sanzen.activity.reports.visitMonitor.VisitFilter;
 import saneforce.sanzen.activity.reports.visitMonitor.model.DoctorStatsModel;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
+import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.storage.SharedPref;
 
 public class VisitStatsAdapter extends RecyclerView.Adapter<VisitStatsAdapter.VisitStatsViewHolder>{
     private final List<VisitStatsModel> dataList;
-    DoctorFragment doctorFragment;
+    MasterDataDao masterDataDao;
+    Context context;
 
     public VisitStatsAdapter(List<VisitStatsModel> dataList) {
         this.dataList = dataList;
@@ -64,7 +72,7 @@ public class VisitStatsAdapter extends RecyclerView.Adapter<VisitStatsAdapter.Vi
         holder.FWDaysCnt.setText(String.valueOf(model.getFwDays()));
         holder.callAvgCnt.setText(String.valueOf(model.getCallAvg()));
         holder.callCvgCnt.setText(String.valueOf(model.getCoverage()));
-
+        custDet();
         barReport(holder, model);
         setPieChart(holder, model);
     }
@@ -149,7 +157,7 @@ public class VisitStatsAdapter extends RecyclerView.Adapter<VisitStatsAdapter.Vi
         colors.add(context.getResources().getColor(R.color.green_2));
         dataSet.setColors(colors);
 
-//     dataSet.setDrawValues(false);
+     dataSet.setDrawValues(false);
 
         PieData data = new PieData(dataSet);
         chart.setData(data);
@@ -166,6 +174,13 @@ public class VisitStatsAdapter extends RecyclerView.Adapter<VisitStatsAdapter.Vi
         chart.animateY(1400);
         chart.invalidate();
     }
+
+    public void custDet() {
+
+    }
+
+
+
     @Override
     public int getItemCount() {
         return dataList.size();

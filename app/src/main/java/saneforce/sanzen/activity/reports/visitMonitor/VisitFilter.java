@@ -15,61 +15,11 @@ import java.util.Calendar;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 
-/*public class VisitFilter {
-    MasterDataDao masterDataDao;
-
-    public void callFilter(){
-
-        try {
-            JSONArray jsonArray_call = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
-            JSONArray jsonArray_date = new JSONArray(masterDataDao.getDataByKey(Constants.DATE_SYNC));
-
-            Set<String> rejectedDates = new HashSet<>();
-            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-            for (int i = 0; i < jsonArray_date.length(); i++) {
-                JSONObject dateObj = jsonArray_date.getJSONObject(i);
-                String flg = dateObj.optString("flg", "");
-                if ("0".equals(flg)) continue;
-                String fullDate = dateObj.getJSONObject("dt").getString("date");
-                Date parsedDate = inputFormat.parse(fullDate);
-                String formattedDate = outputFormat.format(parsedDate);
-                rejectedDates.add(formattedDate);
-            }
-            JSONArray filteredCalls = new JSONArray();
-            List<JSONObject> filteredCallList = new ArrayList<>();
-
-            for (int i = 0; i < jsonArray_call.length(); i++) {
-                JSONObject callObj = jsonArray_call.getJSONObject(i);
-                String callDate = callObj.getString("Dcr_dt");
-                if (!rejectedDates.contains(callDate)) {
-                    filteredCalls.put(callObj);
-                    filteredCallList.add(callObj);
-                }
-
-
-                Set<String> FWDays = new HashSet<>();
-                String CustCode =callObj.optString("CustCode","");
-                String FW_Indi = callObj.optString("FW_Indicator","");
-
-                if(CustCode.equalsIgnoreCase("0") && FW_Indi.equalsIgnoreCase("F")){
-                    FWDays.add("Current");
-                }
-            }
-
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-}*/
 
 public class VisitFilter {
     private MasterDataDao masterDataDao;
 
-    static class MonthlyStats {
+    public static class MonthlyStats {
         public List<JSONObject> callList = new ArrayList<>();
         public List<String> visitedDoctors = new ArrayList<>();
         public List<String> visitedChemists = new ArrayList<>();
@@ -81,6 +31,12 @@ public class VisitFilter {
         public Set<String> uniqueUnlisted = new HashSet<>();
         public Set<String> FWDays = new HashSet<>();
         public Map<String, Integer> customerVisitCounts = new HashMap<>();
+
+        // Buckets
+        public int oneVisitCount = 0;
+        public int twoVisitCount = 0;
+        public int threeVisitCount = 0;
+        public int threePlusVisitCount = 0;
     }
 
     public VisitFilter(MasterDataDao masterDataDao) {
@@ -190,6 +146,21 @@ public class VisitFilter {
 
                         if (custType.equalsIgnoreCase("0") && fwIndicator.equalsIgnoreCase("F")) {
                             stats.FWDays.add(callDateStr);
+                        }
+                    }
+                    for (Map.Entry<String, MonthlyStats> entry : monthlyStatsMap.entrySet()) {
+                        MonthlyStats stats = entry.getValue();
+
+                        for (int visitCount : stats.customerVisitCounts.values()) {
+                            if (visitCount == 1) {
+                                stats.oneVisitCount++;
+                            } else if (visitCount == 2) {
+                                stats.twoVisitCount++;
+                            } else if (visitCount == 3) {
+                                stats.threeVisitCount++;
+                            } else if (visitCount > 3) {
+                                stats.threePlusVisitCount++;
+                            }
                         }
                     }
                 }

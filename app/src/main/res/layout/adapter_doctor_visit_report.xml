@@ -1,7 +1,6 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/doctor_card"
     android:layout_width="match_parent"
     android:layout_height="@dimen/_138sdp"
@@ -378,5 +377,6 @@
                 android:background="@color/gray_med"
                 android:visibility="visible"/>
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
