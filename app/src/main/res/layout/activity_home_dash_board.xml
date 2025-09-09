@@ -770,7 +770,7 @@
                 android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
                 android:layout_margin="4dp"
-                android:background="@android:color/transparent"
+                android:background="@drawable/round_back_gray"
                 android:src="@android:drawable/ic_menu_close_clear_cancel"
                 app:tint="@android:color/white" />
 
@@ -784,7 +784,6 @@
                 android:src="@android:drawable/ic_media_pause"
                 app:tint="@android:color/white"/>
         </RelativeLayout>
-
 
     </RelativeLayout>
 

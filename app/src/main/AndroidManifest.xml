@@ -339,11 +339,12 @@
         <activity
             android:name=".activity.homeScreen.HomeDashBoard"
             android:exported="false"
-            android:resizeableActivity="true"
-            android:supportsPictureInPicture="true"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:screenOrientation="landscape" />
-
+<!--
+            android:resizeableActivity="true"
+            android:supportsPictureInPicture="true"
+            -->
         <service
             android:name=".services.FirebaseService"
             android:exported="false">
