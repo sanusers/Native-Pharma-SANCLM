@@ -9,15 +9,18 @@ import static saneforce.sanzen.commonClasses.Constants.CONNECTIVITY_ACTION;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.PictureInPictureParams;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,10 +33,12 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Rational;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -43,11 +48,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -70,6 +77,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -214,12 +223,126 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private NotificationViewModel notificationViewModel;
     private PopupWindow notificationPopupWindow;
     private HomeNavigationFooterBinding navigationFooterBinding;
+    private MediaController mediaController;
+    private String videoUrl = "";
+    YouTubePlayer youTubePlayer;
+    boolean isPlaying = true;
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        mediaController = new MediaController(this);
+        binding.videoView.setMediaController(mediaController);
+        String jsonStr = "{ \"video_url\" : \"https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm\" }";
+        try {
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            videoUrl = jsonObject.getString("video_url");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+//        if (!videoUrl.isEmpty()) {
+//            playVideo(videoUrl);
+//        }
+
+//        binding.youtubePlayerView.getPlayerUiController().showUi(false);
+        binding.youtubePlayerView.setEnableAutomaticInitialization(true);
+        getLifecycle().addObserver(binding.youtubePlayerView);
+
+        binding.youtubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+            @Override
+            public void onReady(@NonNull YouTubePlayer player) {
+                youTubePlayer = player;
+                youTubePlayer.loadVideo("jZwyEuVrUKA", 0);
+            }
+        });
+
+        // Play / Pause
+        binding.btnPlayPause.setOnClickListener(v -> {
+            if (youTubePlayer != null) {
+                if (isPlaying) {
+                    youTubePlayer.pause();
+                    binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                } else {
+                    youTubePlayer.play();
+                    binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                }
+                isPlaying = !isPlaying;
+            }
+        });
+
+        // Close
+        binding.btnClose.setOnClickListener(v -> binding.floatingPlayer.setVisibility(View.GONE));
+
+        // Dragging
+        binding.floatingPlayer.setOnTouchListener(new View.OnTouchListener() {
+            private int lastX, lastY;
+            private int paramsX, paramsY;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        lastX = (int) event.getRawX();
+                        lastY = (int) event.getRawY();
+                        paramsX = (int) v.getX();
+                        paramsY = (int) v.getY();
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        int dx = (int) event.getRawX() - lastX;
+                        int dy = (int) event.getRawY() - lastY;
+                        v.setX(paramsX + dx);
+                        v.setY(paramsY + dy);
+                        return true;
+                }
+                return false;
+            }
+        });
+
+        // Show floating player initially
+        binding.floatingPlayer.setVisibility(View.VISIBLE);
     }
 
+    private void playVideo(String url) {
+        binding.videoView.setVideoURI(Uri.parse(url));
+        binding.videoView.setVisibility(VideoView.VISIBLE);
+        binding.videoView.start();
+    }
+
+    @Override
+    public void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        enterPipMode();
+    }
+
+    private void enterPipMode() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Rational aspectRatio = new Rational(16, 9);
+            PictureInPictureParams params = new PictureInPictureParams.Builder()
+                    .setAspectRatio(aspectRatio)
+                    .build();
+            enterPictureInPictureMode(params);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                enterPictureInPictureMode();
+            }
+        }
+    }
+
+    @Override
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+
+        if (isInPictureInPictureMode) {
+            // Hide extra dashboard UI if needed
+            mediaController.hide();
+        } else {
+            // Restore full UI when back
+            mediaController.show();
+        }
+    }
+    
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
