@@ -372,7 +372,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:background="@drawable/square_box"
-                                        android:visibility="visible">
+                                        android:visibility="invisible">
 
                                         <TextView
                                             android:id="@+id/txt_Attachement"

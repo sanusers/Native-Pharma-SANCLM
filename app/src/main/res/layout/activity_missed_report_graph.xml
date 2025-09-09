@@ -178,6 +178,7 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         android:padding="8dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@id/my_toolbar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -243,7 +244,8 @@
                 <ViewFlipper
                     android:id="@+id/viewFlipper"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp">
                     <include layout="@layout/layout_drchm_missed_current" />
                     <include layout="@layout/layout_stkunlst_missed_current" />
                 </ViewFlipper>
@@ -251,6 +253,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/bg_grey"
+                    android:layout_marginTop="5dp"
                     android:padding="@dimen/_1sdp">
                         <!-- Name TextView -->
                         <TextView
@@ -291,7 +294,8 @@
                 <ViewFlipper
                     android:id="@+id/viewFlipper2"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp">
                     <include layout="@layout/layout_drchm_missed_previous" />
                     <include layout="@layout/layout_stkunlst_missed_previous" />
                 </ViewFlipper>
@@ -299,6 +303,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/bg_grey"
+                    android:layout_marginTop="5dp"
                     android:padding="@dimen/_1sdp">
                     <!-- Name TextView -->
                     <TextView
@@ -339,7 +344,8 @@
                 <ViewFlipper
                     android:id="@+id/viewFlipper3"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp">
                     <include layout="@layout/layout_drchm_missed_previous2" />
                     <include layout="@layout/layout_stkunlst_missed_previous2" />
                 </ViewFlipper>

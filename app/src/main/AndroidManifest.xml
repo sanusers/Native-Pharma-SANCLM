@@ -344,6 +344,9 @@
         <activity
             android:name=".activity.homeScreen.HomeDashBoard"
             android:exported="false"
+            android:resizeableActivity="true"
+            android:supportsPictureInPicture="true"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:screenOrientation="landscape" />
 
         <service

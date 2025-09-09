@@ -481,7 +481,7 @@ public class Leave_Application extends AppCompatActivity {
     public void removeFile(String fileName) {
         File file = null;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            file = new File(context.getExternalFilesDir(null) + "/ActivityUpload/" + fileName);
+            file = new File(context.getExternalFilesDir(null) + "/LeaveAttachment/" + fileName);
         } else {
             Log.e("File Deletion", "captureFile: No media mounted");
         }
@@ -1011,7 +1011,7 @@ public class Leave_Application extends AppCompatActivity {
                     jsonImage.put("division_code",  SharedPref.getDivisionCode(this));
                     File file = null;
                     if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                        file = new File(context.getExternalFilesDir(null) + "/ActivityUpload/");
+                        file = new File(context.getExternalFilesDir(null) + "/LeaveAttachment/");
                     }else {
                         Log.e("File Creation", "captureFile: No media mounted");
                     }

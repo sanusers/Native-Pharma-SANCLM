@@ -1,10 +1,12 @@
 package saneforce.sanzen.activity.reports.missedReport;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
@@ -17,17 +19,18 @@ import android.widget.ViewFlipper;
 import androidx.appcompat.app.AppCompatActivity;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.dcrCallSelection.ChemistAddition;
 import saneforce.sanzen.databinding.ActivityMissedReportGraphBinding;
 import saneforce.sanzen.storage.SharedPref;
 
 public class MissedReportGraph  extends AppCompatActivity {
     private ActivityMissedReportGraphBinding binding;
-    ProgressBar pBardrcurrent,pBarchmcurrent,pBarstkcurrent,pBarunlstcurrent;
-    ProgressBar pBardrprev,pBarchmprev,pBarstkprev,pBarunlstprev;
-    ProgressBar pBardrprev1,pBarchmprev1,pBarstkprev1,pBarunlstprev1;
-    TextView pbarcurrentpercentage,pBarchmcurrentpercentage,pBarstkcurrentpercentage,pBarunlstcurrentpercentage;
-    TextView pbarprevpercentage,pBarchmprevpercentage,pBarstkprevpercentage,pBarunlstprevpercentage;
-    TextView pbarprev1percentage,pBarchmprev1percentage,pBarstkprev1percentage,pBarunlstprev1percentage;
+    ProgressBar pBardrcurrent,pBarchmcurrent,pBarstkcurrent,pBarunlstcurrent,pBarstknewcurrent,pBarunlstnewcurrent;
+    ProgressBar pBardrprev,pBarchmprev,pBarstkprev,pBarunlstprev,pBarstknewprev,pBarunlstnewprev;
+    ProgressBar pBardrprev1,pBarchmprev1,pBarstkprev1,pBarunlstprev1,pBarstknewprev1,pBarunlstnewprev1;
+    TextView pbarcurrentpercentage,pBarchmcurrentpercentage,pBarstkcurrentpercentage,pBarunlstcurrentpercentage,pBarstknewcurrentpercentage,pBarunlstnewcurrentpercentage;
+    TextView pbarprevpercentage,pBarchmprevpercentage,pBarstkprevpercentage,pBarunlstprevpercentage,pBarstknewprevpercentage,pBarunlstnewprevpercentage;
+    TextView pbarprev1percentage,pBarchmprev1percentage,pBarstkprev1percentage,pBarunlstprev1percentage,pBarstknewprev1percentage,pBarunlstnewprev1percentage;
     LinearLayout DrMissedCurrent,DrMissedCurrentprev,DrMissedCurrentprev1;
     LinearLayout ChmMissedCurrent,ChmMissedprev,ChmMissedprev1;
     LinearLayout StkMissedCurrent,StkMissedCurrentnew,StkMissedprev,StkMissedprevnew,StkMissedprev1,StkMissedprev1new;
@@ -188,31 +191,43 @@ public class MissedReportGraph  extends AppCompatActivity {
         pBarchmcurrent=findViewById(R.id.pBarchm);
         pBarstkcurrent=findViewById(R.id.pBarstk);
         pBarunlstcurrent=findViewById(R.id.pBarunlst);
+        pBarstknewcurrent=findViewById(R.id.pBarstknew);
+        pBarunlstnewcurrent=findViewById(R.id.pBarunlstnew);
 
         pBardrprev=findViewById(R.id.pBar_prev);
         pBarchmprev=findViewById(R.id.pBarchm_prev);
         pBarstkprev=findViewById(R.id.pBarstk_prev);
         pBarunlstprev=findViewById(R.id.pBarunlst_prev);
+        pBarstknewprev=findViewById(R.id.pBarstknew_prev);
+        pBarunlstnewprev=findViewById(R.id.pBarunlstnew_prev);
 
         pBardrprev1=findViewById(R.id.pBar_prev1);
         pBarchmprev1=findViewById(R.id.pBarchm_prev1);
         pBarstkprev1=findViewById(R.id.pBarstk_prev1);
         pBarunlstprev1=findViewById(R.id.pBarunlst_prev1);
+        pBarstknewprev1=findViewById(R.id.pBarstknew_prev1);
+        pBarunlstnewprev1=findViewById(R.id.pBarunlstnew_prev1);
 
         pbarcurrentpercentage =findViewById(R.id.pbar_percentage);
         pBarchmcurrentpercentage =findViewById(R.id.pbar_chmpercentage);
         pBarstkcurrentpercentage =findViewById(R.id.pbar_stkpercentage);
         pBarunlstcurrentpercentage =findViewById(R.id.pbar_unlstpercentage);
+        pBarstknewcurrentpercentage =findViewById(R.id.pbar_stknewpercentage);
+        pBarunlstnewcurrentpercentage =findViewById(R.id.pbar_unlstnewpercentage);
 
         pbarprevpercentage =findViewById(R.id.pbar_percentageprev);
         pBarchmprevpercentage =findViewById(R.id.pbar_chmpercentageprev);
         pBarstkprevpercentage =findViewById(R.id.pbar_stkpercentageprev);
         pBarunlstprevpercentage =findViewById(R.id.pbar_unlstpercentageprev);
+        pBarstknewprevpercentage =findViewById(R.id.pbar_stknewpercentageprev);
+        pBarunlstnewprevpercentage =findViewById(R.id.pbar_unlstnewpercentageprev);
 
         pbarprev1percentage =findViewById(R.id.pbar_percentageprev1);
         pBarchmprev1percentage =findViewById(R.id.pbar_chmpercentageprev1);
         pBarstkprev1percentage =findViewById(R.id.pbar_stkpercentageprev1);
         pBarunlstprev1percentage =findViewById(R.id.pbar_unlstpercentageprev1);
+        pBarstknewprev1percentage =findViewById(R.id.pbar_stknewpercentageprev1);
+        pBarunlstnewprev1percentage =findViewById(R.id.pbar_unlstnewpercentageprev1);
 
         String dr  = SharedPref.getDrNeed(this);
         String chm = SharedPref.getChmNeed(this);
@@ -538,104 +553,133 @@ public class MissedReportGraph  extends AppCompatActivity {
         StkMissedprev1new.setVisibility(View.GONE);
     }
     public void LoadDrChmStkUnlstValues(){
-        //Dr Current Month
-        pBardrcurrent.setMax(maxCount);
-        pbarcurrentpercentage.setText(String.valueOf(currentCount)+"%");
-        pBardrcurrent.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBardrcurrent);
-        totaldrcur.setText("");
-        totaldrvisited.setText("");
-        totaldrmissed.setText("");
-        //Dr Prev Month
-        pBardrprev.setMax(maxCount);
-        pbarprevpercentage.setText(String.valueOf(currentCount)+"%");
-        pBardrprev.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBardrprev);
-        prevtotaldr.setText("");
-        prevtotaldrvisited.setText("");
-        prevtotaldrmissed.setText("");
-        //Dr Prev Month
-        pBardrprev1.setMax(maxCount);
-        pbarprev1percentage.setText(String.valueOf(currentCount)+"%");
-        pBardrprev1.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBardrprev1);
-        prev1totaldr.setText("");
-        prev1totaldrvisited.setText("");
-        prev1totaldrmissed.setText("");
+        new Handler().postDelayed(() -> {
+            //Dr Current Month
+            pBardrcurrent.setMax(100);
+            pbarcurrentpercentage.setText(String.valueOf(25) + "%");
+            pBardrcurrent.setProgressTintList(ColorStateList.valueOf(getColor(R.color.green_2)));
+            progressBarAnimation(25, pBardrcurrent);
+            totaldrcur.setText("100");
+            totaldrvisited.setText("75");
+            totaldrmissed.setText("25");
+            drvisitcur.setBackgroundColor(getColor(R.color.green_2));
+            drmissedcur.setBackgroundColor(getColor(R.color.backround_graey));
+            //Chm Current Month
+            pBarchmcurrent.setMax(100);
+            pBarchmcurrentpercentage.setText(String.valueOf(56) + "%");
+            pBarchmcurrent.setProgressTintList(ColorStateList.valueOf(getColor(R.color.blue_60)));
+            progressBarAnimation(56, pBarchmcurrent);
+            totalchmcur.setText("114");
+            totalchmvisited.setText("4");
+            totalchmmissed.setText("110");
+            chmvisitcur.setBackgroundColor(getColor(R.color.blue_60));
+            chmmissedcur.setBackgroundColor(getColor(R.color.backround_graey));
+            //Stk Current Month
+            pBarstknewcurrent.setMax(100);
+            pBarstknewcurrentpercentage.setText(String.valueOf(45) + "%");
+            pBarstknewcurrent.setProgressTintList(ColorStateList.valueOf(getColor(R.color.red_60)));
+            progressBarAnimation(45, pBarstknewcurrent);
+            totalstknewcur.setText("75");
+            totalstknewvisited.setText("5");
+            totalstknewmissed.setText("70");
+            stknewvisitcur.setBackgroundColor(getColor(R.color.red_60));
+            stknewmissedcur.setBackgroundColor(getColor(R.color.backround_graey));
+            //Unlst Current Month
+            pBarunlstnewcurrent.setMax(100);
+            pBarunlstnewcurrentpercentage.setText(String.valueOf(20) + "%");
+            pBarunlstnewcurrent.setProgressTintList(ColorStateList.valueOf(getColor(R.color.gray_med)));
+            progressBarAnimation(20, pBarunlstnewcurrent);
+            totalunlstnewcur.setText("80");
+            totalunlstnewvisited.setText("15");
+            totalunlstnewmissed.setText("65");
+            unlstnewvisitcur.setBackgroundColor(getColor(R.color.gray_med));
+            unlstnewmissedcur.setBackgroundColor(getColor(R.color.backround_graey));
+        }, 200);
 
-        //Chm Current Month
-        pBarchmcurrent.setMax(maxCount);
-        pBarchmcurrentpercentage.setText(String.valueOf(currentCount)+"%");
-        pBarchmcurrent.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarchmcurrent);
-        totalchmcur.setText("");
-        totalchmvisited.setText("");
-        totalchmmissed.setText("");
-        //Chm Prev Month
-        pBarchmprev.setMax(maxCount);
-        pBarchmprevpercentage.setText(String.valueOf(currentCount)+"%");
-        pBarchmprev.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarchmprev);
-        prevtotalchmcur.setText("");
-        prevtotalchmvisited.setText("");
-        prevtotalchmmissed.setText("");
-        //Chm Prev Month
-        pBarchmprev1.setMax(maxCount);
-        pBarchmprev1percentage.setText(String.valueOf(currentCount)+"%");
-        pBarchmprev1.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarchmprev1);
-        prev1totalchmcur.setText("");
-        prev1totalchmvisited.setText("");
-        prev1totalchmmissed.setText("");
+        new Handler().postDelayed(() -> {
+            //Dr Prev Month
+            pBardrprev.setMax(100);
+            pbarprevpercentage.setText(String.valueOf(50) + "%");
+            pBardrprev.setProgressTintList(ColorStateList.valueOf(getColor(R.color.green_2)));
+            progressBarAnimation(50, pBardrprev);
+            prevtotaldr.setText("100");
+            prevtotaldrvisited.setText("50");
+            prevtotaldrmissed.setText("50");
+            drvisitprev.setBackgroundColor(getColor(R.color.green_2));
+            drmissedprev.setBackgroundColor(getColor(R.color.backround_graey));
+            //Chm Prev Month
+            pBarchmprev.setMax(100);
+            pBarchmprevpercentage.setText(String.valueOf(60) + "%");
+            pBarchmprev.setProgressTintList(ColorStateList.valueOf(getColor(R.color.blue_60)));
+            progressBarAnimation(60, pBarchmprev);
+            prevtotalchmcur.setText("114");
+            prevtotalchmvisited.setText("56");
+            prevtotalchmmissed.setText("58");
+            chmvisitprev.setBackgroundColor(getColor(R.color.blue_60));
+            chmmissedprev.setBackgroundColor(getColor(R.color.backround_graey));
+            //Stk Prev Month
+            pBarstknewprev.setMax(100);
+            pBarstknewprevpercentage.setText(String.valueOf(90) + "%");
+            pBarstknewprev.setProgressTintList(ColorStateList.valueOf(getColor(R.color.red_60)));
+            progressBarAnimation(90, pBarstknewprev);
+            totalstkprevcur.setText("75");
+            totalstkprevvisited.setText("50");
+            totalstkprevmissed.setText("20");
+            stkprevvisitcur.setBackgroundColor(getColor(R.color.red_60));
+            stkprevmissedcur.setBackgroundColor(getColor(R.color.backround_graey));
+            //Unlst Prev Month
+            pBarunlstnewprev.setMax(100);
+            pBarunlstnewprevpercentage.setText(String.valueOf(50) + "%");
+            pBarunlstnewprev.setProgressTintList(ColorStateList.valueOf(getColor(R.color.gray_med)));
+            progressBarAnimation(50, pBarunlstnewprev);
+            totalunlstprevcur.setText("80");
+            totalunlstprevvisited.setText("75");
+            totalunlstprevmissed.setText("5");
+            unlstprevvisitcur.setBackgroundColor(getColor(R.color.gray_med));
+            unlstprevmissedcur.setBackgroundColor(getColor(R.color.backround_graey));
+        }, 500);
 
-        //Stk Current Month
-        pBarstkcurrent.setMax(maxCount);
-        pBarstkcurrentpercentage.setText(String.valueOf(currentCount)+"%");
-        pBarstkcurrent.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarstkcurrent);
-        totalstkcur.setText("");
-        totalstkvisited.setText("");
-        totalstkmissed.setText("");
-        //Stk Prev Month
-        pBarstkprev.setMax(maxCount);
-        pBarstkprevpercentage.setText(String.valueOf(currentCount)+"%");
-        pBarstkprev.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarstkprev);
-        prevtotalstkcur.setText("");
-        prevtotalstkvisited.setText("");
-        prevtotalstkmissed.setText("");
-        //Stk Prev Month
-        pBarstkprev1.setMax(maxCount);
-        pBarstkprev1percentage.setText(String.valueOf(currentCount)+"%");
-        pBarstkprev1.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarstkprev1);
-        prev1totalstkcur.setText("");
-        prev1totalstkvisited.setText("");
-        prev1totalstkmissed.setText("");
-
-        //Unlst Current Month
-        pBarunlstcurrent.setMax(maxCount);
-        pBarunlstcurrentpercentage.setText(String.valueOf(currentCount)+"%");
-        pBarunlstcurrent.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarunlstcurrent);
-        totalunlstcur.setText("");
-        totalunlstvisited.setText("");
-        totalunlstmissed.setText("");
-        //Unlst Prev Month
-        pBarunlstprev.setMax(maxCount);
-        pBarunlstprevpercentage.setText(String.valueOf(currentCount)+"%");
-        pBarunlstprev.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarunlstprev);
-        prevtotalunlstcur.setText("");
-        prevtotalunlstvisited.setText("");
-        prevtotalunlstmissed.setText("");
-        //Unlst Prev Month
-        pBarunlstprev1.setMax(maxCount);
-        pBarunlstprev1percentage.setText(String.valueOf(currentCount)+"%");
-        pBarunlstprev1.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        progressBarAnimation(currentCount,pBarunlstprev1);
-        prev1totalunlstcur.setText("");
-        prev1totalunlstvisited.setText("");
-        prev1totalunlstmissed.setText("");
+        new Handler().postDelayed(() -> {
+            //Dr Pre-Prev Month
+            pBardrprev1.setMax(100);
+            pbarprev1percentage.setText(String.valueOf(25) + "%");
+            pBardrprev1.setProgressTintList(ColorStateList.valueOf(getColor(R.color.green_2)));
+            progressBarAnimation(25, pBardrprev1);
+            prev1totaldr.setText("100");
+            prev1totaldrvisited.setText("25");
+            prev1totaldrmissed.setText("75");
+            drvisitprev1.setBackgroundColor(getColor(R.color.green_2));
+            drmissedprev1.setBackgroundColor(getColor(R.color.backround_graey));
+            //Chm Pre-Prev Month
+            pBarchmprev1.setMax(100);
+            pBarchmprev1percentage.setText(String.valueOf(35) + "%");
+            pBarchmprev1.setProgressTintList(ColorStateList.valueOf(getColor(R.color.blue_60)));
+            progressBarAnimation(35, pBarchmprev1);
+            prev1totalchmcur.setText("114");
+            prev1totalchmvisited.setText("100");
+            prev1totalchmmissed.setText("14");
+            chmvisitprev1.setBackgroundColor(getColor(R.color.blue_60));
+            chmmissedprev1.setBackgroundColor(getColor(R.color.backround_graey));
+            //Stk Pre-Prev Month
+            pBarstknewprev1.setMax(100);
+            pBarstknewprev1percentage.setText(String.valueOf(80) + "%");
+            pBarstknewprev1.setProgressTintList(ColorStateList.valueOf(getColor(R.color.red_60)));
+            progressBarAnimation(80, pBarstknewprev1);
+            totalstkprev1cur.setText("75");
+            totalstkprev1visited.setText("75");
+            totalstkprev1missed.setText("0");
+            stkprev1visitcur.setBackgroundColor(getColor(R.color.red_60));
+            stkprev1missedcur.setBackgroundColor(getColor(R.color.backround_graey));
+            //Unlst Pre-Prev Month
+            pBarunlstnewprev1.setMax(100);
+            pBarunlstnewprev1percentage.setText(String.valueOf(60) + "%");
+            pBarunlstnewprev1.setProgressTintList(ColorStateList.valueOf(getColor(R.color.gray_med)));
+            progressBarAnimation(60, pBarunlstnewprev1);
+            totalunlstprev1cur.setText("80");
+            totalunlstprev1visited.setText("70");
+            totalunlstprev1missed.setText("10");
+            unlstprev1visitcur.setBackgroundColor(getColor(R.color.gray_med));
+            unlstprev1missedcur.setBackgroundColor(getColor(R.color.backround_graey));
+        }, 800);
     }
 }
