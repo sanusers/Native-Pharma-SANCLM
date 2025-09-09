@@ -54,7 +54,7 @@
                 android:layout_gravity="center">
 
                 <ProgressBar
-                    android:id="@+id/pBarstk"
+                    android:id="@+id/pBarstknew"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -65,7 +65,7 @@
                     android:progressDrawable="@drawable/progress_overlay" />
 
                 <TextView
-                    android:id="@+id/pbar_stkpercentage"
+                    android:id="@+id/pbar_stknewpercentage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -265,7 +265,7 @@
                     android:layout_width="@dimen/_18sdp"
                     android:layout_height="@dimen/_18sdp"
                     android:layout_margin="@dimen/_4sdp"
-                    android:src="@drawable/map_chemist_img" />
+                    android:src="@drawable/map_unlistdr_img" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -285,7 +285,7 @@
                 android:layout_gravity="center">
 
                 <ProgressBar
-                    android:id="@+id/pBarunlst"
+                    android:id="@+id/pBarunlstnew"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -296,7 +296,7 @@
                     android:progressDrawable="@drawable/progress_overlay" />
 
                 <TextView
-                    android:id="@+id/pbar_unlstpercentage"
+                    android:id="@+id/pbar_unlstnewpercentage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"

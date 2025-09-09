@@ -706,7 +706,7 @@
                     android:layout_width="@dimen/_18sdp"
                     android:layout_height="@dimen/_18sdp"
                     android:layout_margin="@dimen/_4sdp"
-                    android:src="@drawable/map_chemist_img" />
+                    android:src="@drawable/map_unlistdr_img" />
 
                 <TextView
                     android:layout_width="match_parent"

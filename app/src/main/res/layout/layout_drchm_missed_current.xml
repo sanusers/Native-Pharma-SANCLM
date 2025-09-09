@@ -91,15 +91,13 @@
                     android:gravity="center"
                     android:layout_marginLeft="15dp"
                     android:orientation="horizontal">
-
                     <!-- Colored Box -->
                     <View
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
                         android:id="@+id/visitedcheck"
-                        android:layout_width="10dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="6dp"
-                        android:background="@drawable/square_grey_border" />
-
+                        android:background="@drawable/square_grey_border"
+                        android:layout_marginEnd="6dp" />
                     <!-- Label -->
                     <TextView
                         android:layout_width="wrap_content"
@@ -707,7 +705,7 @@
                     android:layout_width="@dimen/_18sdp"
                     android:layout_height="@dimen/_18sdp"
                     android:layout_margin="@dimen/_4sdp"
-                    android:src="@drawable/map_chemist_img" />
+                    android:src="@drawable/map_unlistdr_img" />
 
                 <TextView
                     android:layout_width="match_parent"
