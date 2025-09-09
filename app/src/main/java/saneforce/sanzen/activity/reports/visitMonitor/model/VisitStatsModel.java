@@ -9,13 +9,13 @@ public class VisitStatsModel {
     public String coverage;
     public String monthName;
 
-    private float oneVisitCount;
-    private float twoVisitCount;
-    private float threeVisitCount;
-    private float threePlusVisitCount;
+    private int oneVisitCount;
+    private int twoVisitCount;
+    private int threeVisitCount;
+    private int threePlusVisitCount;
 
 
-    public VisitStatsModel(String totalCustomers, String visitedCustomers, String missedCustomers, String fwDays, String callAvg, String coverage, float oneVisitCount, float twoVisitCount, float threeVisitCount, float threePlusVisitCount) {
+    public VisitStatsModel(String totalCustomers, String visitedCustomers, String missedCustomers, String fwDays, String callAvg, String coverage, int oneVisitCount, int twoVisitCount, int threeVisitCount, int threePlusVisitCount) {
         this.totalCustomers = totalCustomers;
         this.visitedCustomers = visitedCustomers;
         this.missedCustomers = missedCustomers;
@@ -86,35 +86,35 @@ public class VisitStatsModel {
         this.coverage = coverage;
     }
 
-    public float getOneVisitCount() {
+    public int getOneVisitCount() {
         return oneVisitCount;
     }
 
-    public void setOneVisitCount(float oneVisitCount) {
+    public void setOneVisitCount(int oneVisitCount) {
         this.oneVisitCount = oneVisitCount;
     }
 
-    public float getTwoVisitCount() {
+    public int getTwoVisitCount() {
         return twoVisitCount;
     }
 
-    public void setTwoVisitCount(float twoVisitCount) {
+    public void setTwoVisitCount(int twoVisitCount) {
         this.twoVisitCount = twoVisitCount;
     }
 
-    public float getThreeVisitCount() {
+    public int getThreeVisitCount() {
         return threeVisitCount;
     }
 
-    public void setThreeVisitCount(float threeVisitCount) {
+    public void setThreeVisitCount(int threeVisitCount) {
         this.threeVisitCount = threeVisitCount;
     }
 
-    public float getThreePlusVisitCount() {
+    public int getThreePlusVisitCount() {
         return threePlusVisitCount;
     }
 
-    public void setThreePlusVisitCount(float threePlusVisitCount) {
+    public void setThreePlusVisitCount(int threePlusVisitCount) {
         this.threePlusVisitCount = threePlusVisitCount;
     }
 }

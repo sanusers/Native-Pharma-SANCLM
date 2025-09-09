@@ -44,10 +44,8 @@ public class UnlistedDoctorStatsAdapter extends RecyclerView.Adapter<UnlistedDoc
         UnlistedStatsModel model = dataList.get(position);
 
         Context context = holder.itemView.getContext();
-        holder.mrName.setText(SharedPref.getSfName(context));
-        holder.mrHq.setText(SharedPref.getHqName(context));
-        holder.mrDesignation.setText(SharedPref.getDesig(context));
-//        holder.dateTxt.setText();
+        holder.unlistedVisitTxt.setText(SharedPref.getUNLcap(context));
+        holder.totalUnlisted.setText("Total"+" "+SharedPref.getUNLcap(context));
         holder.totalunlistedCnt.setText(String.valueOf(model.getTotalUnlisted()));
         holder.visitedCnt.setText(String.valueOf(model.getVisitedUnlisted()));
         holder.missedCnt.setText(String.valueOf(model.getMissedUnlisted()));
@@ -76,7 +74,13 @@ public class UnlistedDoctorStatsAdapter extends RecyclerView.Adapter<UnlistedDoc
 
         BarDataSet set = new BarDataSet(entries, "Visit Data");
 
-        set.setColors(ColorTemplate.COLORFUL_COLORS);
+        int[] colors = new int[] {
+                context.getResources().getColor(R.color.bg_orange),
+                context.getResources().getColor(R.color.green_60),
+                context.getResources().getColor(R.color.purple_200),
+                context.getResources().getColor(R.color.blue_60)
+        };
+        set.setColors(colors);
         BarData data = new BarData(set);
         data.setBarWidth(0.3f);
 
@@ -101,7 +105,7 @@ public class UnlistedDoctorStatsAdapter extends RecyclerView.Adapter<UnlistedDoc
     }
 
     public static class UnlistedStatsViewHolder extends RecyclerView.ViewHolder {
-        final TextView unlistedVisitTxt,totalunlistedCnt,mrName,mrHq,mrDesignation,dateTxt;
+        final TextView unlistedVisitTxt,totalUnlisted,totalunlistedCnt,monthTxt,yearTxt;
         final TextView visitedCnt;
         final TextView missedCnt;
         final TextView FWDaysCnt;
@@ -112,11 +116,10 @@ public class UnlistedDoctorStatsAdapter extends RecyclerView.Adapter<UnlistedDoc
         public UnlistedStatsViewHolder(@NonNull View itemView) {
             super(itemView);
             // Initialize TextViews from the list_item_card.xml layout.
-            mrName = itemView.findViewById(R.id.headerTxt);
-            mrHq = itemView.findViewById(R.id.headerTxt1);
-            mrDesignation = itemView.findViewById(R.id.headerTxt2);
-            dateTxt = itemView.findViewById(R.id.dateTxt);
+            monthTxt = itemView.findViewById(R.id.monthTxt);
+            yearTxt = itemView.findViewById(R.id.yearTxt);
             unlistedVisitTxt = itemView.findViewById(R.id.unlistedDrVisitTxt);
+            totalUnlisted = itemView.findViewById(R.id.totalUnlistedVisit);
             totalunlistedCnt = itemView.findViewById(R.id.totalUnlistedVisitCnt);
             visitedCnt = itemView.findViewById(R.id.UnlistedVistedCnt);
             missedCnt = itemView.findViewById(R.id.UnlistedMissedCnt);

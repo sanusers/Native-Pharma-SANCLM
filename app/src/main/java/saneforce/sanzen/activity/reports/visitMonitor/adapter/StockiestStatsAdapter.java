@@ -46,10 +46,9 @@ public class StockiestStatsAdapter extends RecyclerView.Adapter<StockiestStatsAd
         StockiestStatsModel model = dataList.get(position);
 
         Context context = holder.itemView.getContext();
-        holder.mrName.setText(SharedPref.getSfName(context));
-        holder.mrHq.setText(SharedPref.getHqName(context));
-        holder.mrDesignation.setText(SharedPref.getDesig(context));
-//        holder.dateTxt.setText();
+
+        holder.stockiestVisitTxt.setText(SharedPref.getStkCap(context));
+        holder.totalStk.setText("Total"+" "+SharedPref.getStkCap(context));
         holder.totalStkCnt.setText(String.valueOf(model.getTotalStockiest()));
         holder.visitedCnt.setText(String.valueOf(model.getVisitedStockiest()));
         holder.missedCnt.setText(String.valueOf(model.getMissedStockiest()));
@@ -78,7 +77,13 @@ public class StockiestStatsAdapter extends RecyclerView.Adapter<StockiestStatsAd
 
         BarDataSet set = new BarDataSet(entries, "Visit Data");
 
-        set.setColors(ColorTemplate.COLORFUL_COLORS);
+        int[] colors = new int[] {
+                context.getResources().getColor(R.color.bg_orange),
+                context.getResources().getColor(R.color.green_60),
+                context.getResources().getColor(R.color.purple_200),
+                context.getResources().getColor(R.color.blue_60)
+        };
+        set.setColors(colors);
         BarData data = new BarData(set);
         data.setBarWidth(0.3f);
 
@@ -103,7 +108,7 @@ public class StockiestStatsAdapter extends RecyclerView.Adapter<StockiestStatsAd
     }
 
     public static class StockiestStatsViewHolder extends RecyclerView.ViewHolder {
-        final TextView stockiestVisitTxt,totalStkCnt,mrName,mrHq,mrDesignation,dateTxt;
+        final TextView stockiestVisitTxt,totalStk,totalStkCnt,monthTxt,yearTxt;
         final TextView visitedCnt;
         final TextView missedCnt;
         final TextView FWDaysCnt;
@@ -114,11 +119,10 @@ public class StockiestStatsAdapter extends RecyclerView.Adapter<StockiestStatsAd
         public StockiestStatsViewHolder(@NonNull View itemView) {
             super(itemView);
             // Initialize TextViews from the list_item_card.xml layout.
-            mrName = itemView.findViewById(R.id.headerTxt);
-            mrHq = itemView.findViewById(R.id.headerTxt1);
-            mrDesignation = itemView.findViewById(R.id.headerTxt2);
-            dateTxt = itemView.findViewById(R.id.dateTxt);
+            monthTxt = itemView.findViewById(R.id.monthTxt);
+            yearTxt = itemView.findViewById(R.id.yearTxt);
             stockiestVisitTxt = itemView.findViewById(R.id.stockiestVisitTxt);
+            totalStk = itemView.findViewById(R.id.totalStkVisit);
             totalStkCnt = itemView.findViewById(R.id.totalStkVisitCnt);
             visitedCnt = itemView.findViewById(R.id.stkVisitedCnt);
             missedCnt = itemView.findViewById(R.id.stkMissedCnt);

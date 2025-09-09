@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.reports.visitMonitor.adapter.ChemistStatsAdapter;
+
 import saneforce.sanzen.activity.reports.visitMonitor.adapter.UnlistedDoctorStatsAdapter;
 import saneforce.sanzen.activity.reports.visitMonitor.model.ChemistStatsModel;
 import saneforce.sanzen.activity.reports.visitMonitor.model.UnlistedStatsModel;

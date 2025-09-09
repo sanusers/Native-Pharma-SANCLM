@@ -1,5 +1,8 @@
 package saneforce.sanzen.activity.reports.missedReport;
 
+import static saneforce.sanzen.R.*;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
