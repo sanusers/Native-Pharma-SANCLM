@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +47,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.masterSync.MasterSyncActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
+import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityMissedReportBinding;
 import saneforce.sanzen.network.ApiInterface;
@@ -86,9 +90,20 @@ public class MissedReport extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityMissedReportBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        if (SharedPref.getSfType(this).equals("2")) {
+            binding.headquarters.setVisibility(View.VISIBLE);
+
+            binding.headquarters.setOnClickListener(v -> {
+                showHeadquartersPicker();
+            });
+        } else {
+            binding.headquarters.setVisibility(View.GONE);
+        }
+
+
         blockingOverlay = findViewById(R.id.blocking_overlay);
         blockingOverlay.setVisibility(View.GONE);
         getJoiningDate();
@@ -107,8 +122,6 @@ public class MissedReport extends AppCompatActivity {
 
 //        adapter = new MissedReportAdapter(MissedReportAdapter.this, reportList);
 //        binding.recyclerMissedReports.setAdapter(adapter);
-
-
         binding.searchET.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -146,6 +159,7 @@ public class MissedReport extends AppCompatActivity {
 //        binding.recyclerMissedReports.setVisibility(View.GONE);
 
 //        binding.boxCombined.setVisibility(View.GONE);
+
         binding.imageBack.setOnClickListener(v -> {
             RoomDB.databaseWriteExecutor.execute(() -> {
                 RoomDB db = RoomDB.getDatabase(MissedReport.this);
@@ -167,6 +181,7 @@ public class MissedReport extends AppCompatActivity {
 //            startActivity(intent);
 //        });
 
+
         hideSystemBars();
         TextView monthYearTextView = findViewById(R.id.calender);
 
@@ -174,6 +189,81 @@ public class MissedReport extends AppCompatActivity {
 
                 showMonthYearPicker(monthYearTextView));
     }
+
+    private void showHeadquartersPicker() {
+        try {
+            RoomDB db = RoomDB.getDatabase(this);
+            MissedDao missedDao = db.missedDao();
+
+            String jsonString = missedDao.getMissedValues(Constants.SUBORDINATE);
+
+            if (jsonString == null || jsonString.isEmpty()) {
+                Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            JSONArray jsonArray = new JSONArray(jsonString);
+            ArrayList<String> list = new ArrayList<>();
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                list.add(jsonObject.getString("name"));
+            }
+
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(MissedReport.this);
+            LayoutInflater inflater = MissedReport.this.getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.dialog_listview, null);
+            alertDialog.setView(dialogView);
+            TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
+            ListView listView = dialogView.findViewById(R.id.listView);
+            SearchView searchView = dialogView.findViewById(R.id.searchET);
+
+            headerTxt.setText(getResources().getText(R.string.select_hq));
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(MissedReport.this, android.R.layout.simple_list_item_1, list);
+            listView.setAdapter(adapter);
+            AlertDialog dialog = alertDialog.create();
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String s) {
+                    adapter.getFilter().filter(s);
+                    return false;
+                }
+                @Override
+                public boolean onQueryTextChange(String s) {
+                    adapter.getFilter().filter(s);
+                    return false;
+                }
+            });
+
+            listView.setOnItemClickListener((adapterView, view1, position, l) -> {
+                String selectedHq = listView.getItemAtPosition(position).toString();
+                binding.headquarters.setText(selectedHq);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    try {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
+                            String date = jsonObject.getString("id");
+                            getData(date);  // Your API call method with selected HQ id
+                            break;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                dialog.dismiss();
+            });
+
+            alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
+
+            dialog.show();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        UtilityClass.hideKeyboard(MissedReport.this);
+    }
+
 
     private void getJoiningDate() {
         try {
@@ -387,6 +477,9 @@ public class MissedReport extends AppCompatActivity {
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 hideLoadingOverlay();
+                                runOnUiThread(() -> {
+                                    CommonUtilsMethods.showToastMessage(MissedReport.this, "Failed to load data");//fails
+                                });
                                 // Handle failure here if needed
                             }
                         });
@@ -461,7 +554,9 @@ public class MissedReport extends AppCompatActivity {
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 hideLoadingOverlay();
-
+                                runOnUiThread(() -> {
+                                    CommonUtilsMethods.showToastMessage(MissedReport.this, "Failed to load data");//fails
+                                });
                             }
                         });
                     } catch (JSONException e) {
@@ -500,7 +595,6 @@ public class MissedReport extends AppCompatActivity {
             });
         });
     }
-
 }
 
 

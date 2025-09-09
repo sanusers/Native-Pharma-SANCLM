@@ -46,7 +46,7 @@
 
     <TextView
         android:id="@+id/calender"
-        android:layout_width="@dimen/_170sdp"
+        android:layout_width="@dimen/_120sdp"
         android:layout_height="@dimen/_25sdp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
@@ -57,7 +57,6 @@
         android:text="Select Month"
         android:textColor="@color/text_dark"
         android:textSize="@dimen/_7sdp"
-        app:layout_constraintEnd_toStartOf="@+id/cl_search_sort"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         tools:ignore="SpUsage" />
@@ -73,6 +72,25 @@
         app:layout_constraintTop_toTopOf="@+id/calender"
         app:tint="@color/white" />
 
+    <TextView
+        android:id="@+id/headquarters"
+        android:layout_width="@dimen/_140sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/black_stroke"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="start|center_vertical"
+        android:paddingStart="@dimen/_9sdp"
+        android:text="Select HeadQuarters"
+        android:textColor="@color/text_dark"
+        android:textSize="@dimen/_7sdp"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@id/calender"
+        app:layout_constraintTop_toTopOf="@id/calender"
+        app:layout_constraintBottom_toBottomOf="@id/calender"
+        app:layout_constraintEnd_toStartOf="@id/cl_search_sort" />
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_search_sort"
         android:layout_width="0dp"
@@ -81,7 +99,7 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/calender"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/calender"
+        app:layout_constraintStart_toEndOf="@+id/headquarters"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
 
         <EditText
