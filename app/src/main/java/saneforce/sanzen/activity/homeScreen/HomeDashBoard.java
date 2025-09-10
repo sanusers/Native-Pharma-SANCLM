@@ -45,11 +45,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -376,7 +378,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
-        // Show floating player initially
+        // Show binding.floatingPlayer player initially
         binding.floatingPlayer.setVisibility(View.VISIBLE);
     }
 
