@@ -1,21 +1,26 @@
 package saneforce.sanzen.activity.reports.visitMonitor.model;
 
-public class VisitStatsModel {
-    public String totalCustomers;
-    public String visitedCustomers;
-    public String missedCustomers;
-    public String fwDays;
-    public String callAvg;
-    public String coverage;
-    public String monthName;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class VisitStatsModel implements Parcelable {
+    private String totalCustomers;
+    private String visitedCustomers;
+    private String missedCustomers;
+    private String fwDays;
+    private String callAvg;
+    private String coverage;
+    private String monthName;
 
     private int oneVisitCount;
     private int twoVisitCount;
     private int threeVisitCount;
     private int threePlusVisitCount;
 
-
-    public VisitStatsModel(String totalCustomers, String visitedCustomers, String missedCustomers, String fwDays, String callAvg, String coverage, int oneVisitCount, int twoVisitCount, int threeVisitCount, int threePlusVisitCount) {
+    // Full constructor
+    public VisitStatsModel(String totalCustomers, String visitedCustomers, String missedCustomers,
+                           String fwDays, String callAvg, String coverage,
+                           int oneVisitCount, int twoVisitCount, int threeVisitCount, int threePlusVisitCount) {
         this.totalCustomers = totalCustomers;
         this.visitedCustomers = visitedCustomers;
         this.missedCustomers = missedCustomers;
@@ -28,16 +33,61 @@ public class VisitStatsModel {
         this.threePlusVisitCount = threePlusVisitCount;
     }
 
-    public VisitStatsModel(String totalCustomers, String visitedCustomers, String missedCustomers, String fwDays, String callAvg, String coverage,String monthName) {
-        this.totalCustomers = totalCustomers;
-        this.visitedCustomers = visitedCustomers;
-        this.missedCustomers = missedCustomers;
-        this.fwDays = fwDays;
-        this.callAvg = callAvg;
-        this.coverage = coverage;
-        this.monthName = monthName;
+    // Constructor without visit counts
+    public VisitStatsModel(String totalCustomers, String visitedCustomers, String missedCustomers,
+                           String fwDays, String callAvg, String coverage) {
+        this(totalCustomers, visitedCustomers, missedCustomers, fwDays, callAvg, coverage,
+                0, 0, 0, 0);
     }
 
+    // Parcelable constructor
+    protected VisitStatsModel(Parcel in) {
+        totalCustomers = in.readString();
+        visitedCustomers = in.readString();
+        missedCustomers = in.readString();
+        fwDays = in.readString();
+        callAvg = in.readString();
+        coverage = in.readString();
+        monthName = in.readString();
+        oneVisitCount = in.readInt();
+        twoVisitCount = in.readInt();
+        threeVisitCount = in.readInt();
+        threePlusVisitCount = in.readInt();
+    }
+
+    public static final Creator<VisitStatsModel> CREATOR = new Creator<VisitStatsModel>() {
+        @Override
+        public VisitStatsModel createFromParcel(Parcel in) {
+            return new VisitStatsModel(in);
+        }
+
+        @Override
+        public VisitStatsModel[] newArray(int size) {
+            return new VisitStatsModel[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(totalCustomers);
+        dest.writeString(visitedCustomers);
+        dest.writeString(missedCustomers);
+        dest.writeString(fwDays);
+        dest.writeString(callAvg);
+        dest.writeString(coverage);
+        dest.writeString(monthName);
+        dest.writeInt(oneVisitCount);
+        dest.writeInt(twoVisitCount);
+        dest.writeInt(threeVisitCount);
+        dest.writeInt(threePlusVisitCount);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    // Getters and setters
     public String getTotalCustomers() {
         return totalCustomers;
     }
@@ -84,6 +134,14 @@ public class VisitStatsModel {
 
     public void setCoverage(String coverage) {
         this.coverage = coverage;
+    }
+
+    public String getMonthName() {
+        return monthName;
+    }
+
+    public void setMonthName(String monthName) {
+        this.monthName = monthName;
     }
 
     public int getOneVisitCount() {

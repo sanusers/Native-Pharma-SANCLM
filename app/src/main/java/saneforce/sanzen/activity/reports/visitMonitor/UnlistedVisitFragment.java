@@ -29,6 +29,7 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.visitMonitor.adapter.UnlistedDoctorStatsAdapter;
 import saneforce.sanzen.activity.reports.visitMonitor.model.ChemistStatsModel;
 import saneforce.sanzen.activity.reports.visitMonitor.model.UnlistedStatsModel;
+import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -44,10 +45,11 @@ public class UnlistedVisitFragment extends Fragment {
     private static final String ARG_MONTH_DATA = "monthData";
     private List<String> monthData;
 
-    public static UnlistedVisitFragment newInstance(List<String> monthData) {
+    public static UnlistedVisitFragment newInstance(List<String> monthData/*, List<VisitStatsModel> unlistedStats*/) {
         UnlistedVisitFragment fragment = new UnlistedVisitFragment();
         Bundle args = new Bundle();
-        args.putStringArrayList(ARG_MONTH_DATA, new ArrayList<>(monthData));
+        args.putStringArrayList("monthData", new ArrayList<>(monthData));
+//        args.putParcelableArrayList("doctorStats", new ArrayList<>(unlistedStats));
         fragment.setArguments(args);
         return fragment;
     }

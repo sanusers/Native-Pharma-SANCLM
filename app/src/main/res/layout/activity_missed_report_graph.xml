@@ -229,15 +229,15 @@
                         android:id="@+id/monthYear"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@color/white"
                         android:fontFamily="@font/satoshi_bold"
                         android:padding="@dimen/_5sdp"
                         android:text="Sep 2025"
-                        android:background="@color/white"
                         android:textColor="@color/txt_sample"
                         android:textSize="@dimen/_6sdp"
+                        app:layout_constraintBottom_toBottomOf="@id/name"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/name"
-                        app:layout_constraintBottom_toBottomOf="@id/name"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

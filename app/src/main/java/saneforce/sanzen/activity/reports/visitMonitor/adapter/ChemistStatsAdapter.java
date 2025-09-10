@@ -46,11 +46,9 @@ public class ChemistStatsAdapter extends RecyclerView.Adapter<ChemistStatsAdapte
         ChemistStatsModel model = dataList.get(position);
 
         Context context = holder.itemView.getContext();
-        holder.mrName.setText(SharedPref.getSfName(context));
-        holder.mrHq.setText(SharedPref.getHqName(context));
-        holder.mrDesignation.setText(SharedPref.getDesig(context));
 //        holder.dateTxt.setText();
-
+        holder.chemistVisitTxt.setText(SharedPref.getChmCap(context));
+        holder.totalChe.setText("Total"+" "+SharedPref.getChmCap(context));
         holder.totalCheCnt.setText(String.valueOf(model.getTotalChemists()));
         holder.visitedCnt.setText(String.valueOf(model.getVisitedChemists()));
         holder.missedCnt.setText(String.valueOf(model.getMissedChemists()));
@@ -79,10 +77,15 @@ public class ChemistStatsAdapter extends RecyclerView.Adapter<ChemistStatsAdapte
             entries.add(new BarEntry(3f, Float.parseFloat(model.getCallAvg())));
 
 
-
         BarDataSet set = new BarDataSet(entries, "Visit Data");
 
-        set.setColors(ColorTemplate.COLORFUL_COLORS);
+        int[] colors = new int[] {
+                context.getResources().getColor(R.color.bg_orange),
+                context.getResources().getColor(R.color.green_60),
+                context.getResources().getColor(R.color.purple_200),
+                context.getResources().getColor(R.color.blue_60)
+        };
+        set.setColors(colors);
         BarData data = new BarData(set);
         data.setBarWidth(0.3f);
 
@@ -107,7 +110,7 @@ public class ChemistStatsAdapter extends RecyclerView.Adapter<ChemistStatsAdapte
     }
 
     public static class ChemistStatsViewHolder extends RecyclerView.ViewHolder {
-        final TextView chemistVisitTxt,totalCheCnt,mrName,mrHq,mrDesignation,dateTxt;
+        final TextView chemistVisitTxt,totalChe, totalCheCnt, monthTxt, yearTxt;
         final TextView visitedCnt;
         final TextView missedCnt;
         final TextView FWDaysCnt;
@@ -118,10 +121,9 @@ public class ChemistStatsAdapter extends RecyclerView.Adapter<ChemistStatsAdapte
         public ChemistStatsViewHolder(@NonNull View itemView) {
             super(itemView);
             // Initialize TextViews from the list_item_card.xml layout.
-            mrName = itemView.findViewById(R.id.headerTxt);
-            mrHq = itemView.findViewById(R.id.headerTxt1);
-            mrDesignation = itemView.findViewById(R.id.headerTxt2);
-            dateTxt = itemView.findViewById(R.id.dateTxt);
+            monthTxt = itemView.findViewById(R.id.monthTxt);
+            yearTxt = itemView.findViewById(R.id.yearTxt);
+            totalChe = itemView.findViewById(R.id.totalCheTxt);
             chemistVisitTxt = itemView.findViewById(R.id.chemistVisitTxt);
             totalCheCnt = itemView.findViewById(R.id.totalCheCnt);
             visitedCnt = itemView.findViewById(R.id.cheVisitCnt);

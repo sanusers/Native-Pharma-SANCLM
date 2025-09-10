@@ -27,6 +27,7 @@ import java.util.Set;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.visitMonitor.adapter.ChemistStatsAdapter;
 import saneforce.sanzen.activity.reports.visitMonitor.model.ChemistStatsModel;
+import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -42,10 +43,11 @@ public class ChemistVisitFragment extends Fragment {
     private static final String ARG_MONTH_DATA = "monthData";
     private List<String> monthData;
 
-    public static ChemistVisitFragment newInstance(List<String> monthData) {
-        ChemistVisitFragment fragment = new ChemistVisitFragment();
+    public static ChemistVisitFragment newInstance(List<String> monthData/*, List<VisitStatsModel> chemistStats*/) {
+       ChemistVisitFragment fragment = new ChemistVisitFragment();
         Bundle args = new Bundle();
-        args.putStringArrayList(ARG_MONTH_DATA, new ArrayList<>(monthData));
+        args.putStringArrayList("monthData", new ArrayList<>(monthData));
+//        args.putParcelableArrayList("doctorStats", new ArrayList<>(chemistStats));
         fragment.setArguments(args);
         return fragment;
     }

@@ -1,6 +1,7 @@
 package saneforce.sanzen.activity.reports.visitMonitor;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,6 +43,7 @@ import java.util.Set;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.visitMonitor.adapter.DoctorStatsAdapter;
 import saneforce.sanzen.activity.reports.visitMonitor.model.DoctorStatsModel;
+import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentDoctorVisitReportBinding;
@@ -41,15 +54,17 @@ import saneforce.sanzen.storage.SharedPref;
 public class DoctorVisitFragment extends Fragment {
 
 
-
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
     private static final String ARG_MONTH_DATA = "monthData";
+    int position;
+
     public static DoctorVisitFragment newInstance(List<String> monthData) {
         DoctorVisitFragment fragment = new DoctorVisitFragment();
         Bundle args = new Bundle();
-        args.putStringArrayList(ARG_MONTH_DATA, new ArrayList<>(monthData));
+        args.putStringArrayList("monthData", new ArrayList<>(monthData));
+//        args.putParcelableArrayList("doctorStats", new ArrayList<>(doctorStats));
         fragment.setArguments(args);
         return fragment;
     }
@@ -95,7 +110,10 @@ public class DoctorVisitFragment extends Fragment {
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         callFilter(recyclerView);
-
+        /*VisitMonitorActivity activity = (VisitMonitorActivity) getActivity();
+        if (activity != null) {
+            activity.custFilter();
+        }*/
         return v;
     }
 
@@ -185,10 +203,6 @@ public class DoctorVisitFragment extends Fragment {
             Map<String, Integer> doctorVisitCounts_Cm = new HashMap<>();
             Map<String, Integer> doctorVisitCounts_Pm = new HashMap<>();
             Map<String, Integer> doctorVisitCounts_Ppm = new HashMap<>();
-            /*float oneVisitCount_Cm = 0;
-            float twoVisitCount_Cm = 0;
-            float threeVisitCount_Cm = 0;
-            float threePlusVisitCount_Cm = 0;*/
 
 
             for (JSONObject callObj : currentMonthFilteredList) {
@@ -231,7 +245,6 @@ public class DoctorVisitFragment extends Fragment {
                 }
 
 
-
                 for (JSONObject callObj1 : currentMonthFilteredList) {
                     String FW_Code = callObj1.optString("CustType");
                     String FW_Indi = callObj1.optString("FW_Indicator");
@@ -251,7 +264,6 @@ public class DoctorVisitFragment extends Fragment {
             }
 
 
-
             for (JSONObject callObj : pre_PreviousMonthFilteredList) {
                 String doctorId = callObj.optString("CustCode", "");
                 if (!doctorId.isEmpty()) {
@@ -261,7 +273,6 @@ public class DoctorVisitFragment extends Fragment {
                     int count = doctorVisitCounts_Ppm.getOrDefault(doctorId, 0);
                     doctorVisitCounts_Ppm.put(doctorId, count + 1);
                 }
-
 
 
                 for (JSONObject callObj1 : pre_PreviousMonthFilteredList) {
@@ -298,41 +309,6 @@ public class DoctorVisitFragment extends Fragment {
             double currentMonthCvg = (double) currentMonthDoctors.size() / totalDoctors * 100;
             double previousMonthCvg = (double) previousMonthDoctors.size() / totalDoctors * 100;
             double prePreviousMonthCvg = (double) prePreviousMonthDoctors.size() / totalDoctors * 100;
-
-
-            // Debug
-            System.out.println("Filtered JSONArray size: " + filteredCalls.length());
-            System.out.println("Filtered List size: " + filteredCallList.size());
-            //Month
-            System.out.println("Month Filtered List size: " + currentMonthFilteredList.size());
-            System.out.println("Month Filtered List size: " + previousMonthFilteredList.size());
-            System.out.println("Month Filtered List size: " + pre_PreviousMonthFilteredList.size());
-
-            //Doc
-            System.out.println("Unique Doctors Current Month: " + currentMonthDoctors.size());
-            System.out.println("Unique Doctors Previous Month: " + previousMonthDoctors.size());
-            System.out.println("Unique Doctors Pre-Previous Month: " + prePreviousMonthDoctors.size());
-
-            //total Doctors
-            System.out.println("Total Doctors: " + totalDoctors);
-            //Missed Doctors
-            System.out.println("Doctors Missed CurrentMonth: " + currentMonthMissed);
-            System.out.println("Doctors Missed PreviousMonth: " + previousMonthMissed);
-            System.out.println("Doctors Missed Pre_PreviousMonth: " + prePreviousMonthMissed);
-            //Field Work Days
-            System.out.println("Field Work Days Current Month: " + currentMonthFWDays.size());
-            System.out.println("Field Work Days Previous Month: " + previousMonthFWDays.size());
-            System.out.println("Field Work Days Pre_Previous Month: " + prePreviousMonthFWDays.size());
-            //Call Average
-            System.out.println("Current Month Call Average: " + currentMonthCallAvg);
-            System.out.println("Previous Month Call Average: " + previousMonthCallAvg);
-            System.out.println("Pre Previous Month Call Average: " + pre_PreviousMonthCallAvg);
-            //Call Coverage
-            System.out.println("Current Month Coverage: " + currentMonthCvg);
-            System.out.println("Previous Month Coverage: " + previousMonthCvg);
-            System.out.println("Pre_Previous Month Coverage: " + prePreviousMonthCvg);
-
-
             List<DoctorStatsModel> dataList = new ArrayList<>();
             DoctorStatsModel currentMonthStats = new DoctorStatsModel(
                     String.valueOf(totalDoctors),
@@ -384,6 +360,112 @@ public class DoctorVisitFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+   /* public void barReport(DoctorStatsAdapter.DoctorStatsViewHolder holder, VisitStatsModel model) {
+        Context context = holder.itemView.getContext();
+        List<BarEntry> entries = new ArrayList<>();
+        ArrayList<String> xVals = new ArrayList<>();
+        xVals.add(holder.itemView.getContext().getResources().getString(R.string.total));
+        xVals.add(holder.itemView.getContext().getResources().getString(R.string.visit));
+        xVals.add(holder.itemView.getContext().getResources().getString(R.string.miss));
+        xVals.add(holder.itemView.getContext().getResources().getString(R.string.avg));
+        entries.add(new BarEntry(0f, Integer.parseInt(model.getTotalCustomers())));
+        entries.add(new BarEntry(1f, Integer.parseInt(model.getVisitedCustomers())));
+        entries.add(new BarEntry(2f, Integer.parseInt(model.getMissedCustomers())));
+
+        if (model.getCallAvg() != null && model.getCallAvg().equalsIgnoreCase(""))
+            entries.add(new BarEntry(3f, 0));
+        else
+            entries.add(new BarEntry(3f, Float.parseFloat(model.getCallAvg())));
+
+
+        BarDataSet set = new BarDataSet(entries, "Visit Data");
+        int[] colors = new int[] {
+                context.getResources().getColor(R.color.indigo),
+                context.getResources().getColor(R.color.green_60),
+                context.getResources().getColor(R.color.pink_45),
+                context.getResources().getColor(R.color.blue_60)
+        };
+        set.setColors(colors);
+        BarData data = new BarData(set);
+        data.setBarWidth(0.5f);
+
+        holder.barChart.setData(data);
+        holder.barChart.getDescription().setEnabled(false);
+        holder.barChart.getLegend().setEnabled(false);
+        holder.barChart.setFitBars(true);
+
+        XAxis xAxis = holder.barChart.getXAxis();
+        xAxis.setDrawGridLines(false);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setLabelCount(xVals.size());
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(xVals));
+
+        holder.barChart.animateY(1000);
+        holder.barChart.invalidate();
     }
 
+    private void setPieChart(DoctorStatsAdapter.DoctorStatsViewHolder holder, VisitStatsModel model) {
+        Context context = holder.itemView.getContext();
+        PieChart chart = holder.pieChart;
+
+        chart.setCenterText("Visits");
+        chart.setCenterTextSize(15f);
+        chart.setCenterTextColor(context.getResources().getColor(R.color.black));
+
+        chart.setUsePercentValues(false);
+        chart.getDescription().setEnabled(false);
+        chart.setExtraOffsets(5f, 10f, 5f, 5f);
+        chart.setDragDecelerationFrictionCoef(0.95f);
+        chart.setDrawHoleEnabled(true);
+        chart.setHoleColor(context.getResources().getColor(R.color.white));
+        chart.setTransparentCircleColor(context.getResources().getColor(R.color.white));
+        chart.setTransparentCircleAlpha(110);
+        chart.setHoleRadius(63f);
+        chart.setTransparentCircleRadius(61f);
+        chart.setRotationAngle(0);
+        chart.setRotationEnabled(true);
+        chart.setHighlightPerTapEnabled(true);
+
+        chart.setDrawEntryLabels(false);
+
+        ArrayList<PieEntry> entries = new ArrayList<>();
+
+        entries.add(new PieEntry(model.getOneVisitCount(), "1 Visit"));
+        entries.add(new PieEntry(model.getTwoVisitCount(), "2 Visits"));
+        entries.add(new PieEntry(model.getThreeVisitCount(), "3 Visits"));
+        entries.add(new PieEntry(model.getThreePlusVisitCount(), "3+ Visits"));
+
+        PieDataSet dataSet = new PieDataSet(entries, "");
+        dataSet.setSliceSpace(3f);
+        dataSet.setSelectionShift(5f);
+
+        ArrayList<Integer> colors = new ArrayList<>();
+        colors.add(context.getResources().getColor(R.color.blue_60));
+        colors.add(context.getResources().getColor(R.color.yellow_45));
+        colors.add(context.getResources().getColor(R.color.red_60));
+        colors.add(context.getResources().getColor(R.color.green_2));
+        dataSet.setColors(colors);
+
+//     dataSet.setDrawValues(false);
+
+        PieData data = new PieData(dataSet);
+        chart.setData(data);
+
+        Legend l = chart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setDrawInside(false);
+        l.setXEntrySpace(7f);
+        l.setYEntrySpace(0f);
+        l.setYOffset(0f);
+
+        chart.animateY(1400);
+        chart.invalidate();
+    }*/
+
+    }
 }
+
+
