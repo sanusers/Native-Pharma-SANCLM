@@ -391,7 +391,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     public void onUserLeaveHint() {
         super.onUserLeaveHint();
-        enterPipMode();
+//        enterPipMode();
     }
 
     private void enterPipMode() {

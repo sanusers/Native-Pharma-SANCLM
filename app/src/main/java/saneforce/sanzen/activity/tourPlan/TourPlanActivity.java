@@ -1721,8 +1721,7 @@ public class TourPlanActivity extends AppCompatActivity {
         return modelClasses;
     }
 
-    public ArrayList<OneBuildModelClass> prepareModelClassForMonthOneBuild
-            (LocalDate localDate2) {
+    public ArrayList<OneBuildModelClass> prepareModelClassForMonthOneBuild(LocalDate localDate2) {
         SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
 
         ArrayList<OneBuildModelClass> oneBuildModelClasses = new ArrayList<>();
@@ -2742,14 +2741,11 @@ public class TourPlanActivity extends AppCompatActivity {
         networkStatusTask.execute();
     }
 
-    public void getDraftSaveOneBuild(String
-                                             isClickedName, ArrayList<OneBuildModelClass> arrayList, String isFrom,
-                                     boolean statusOffline) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
+    public void getDraftSaveOneBuild(String isClickedName, ArrayList<OneBuildModelClass> arrayList, String isFrom,boolean statusOffline) {
+//        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
             if (status) {
                 try {
-
                     int id = 0;
                     switch (isClickedName) {
                         case "prev":
@@ -2777,371 +2773,379 @@ public class TourPlanActivity extends AppCompatActivity {
                     tourPlan.addProperty("Year", Integer.parseInt(oneBuildModelClassTp.getYear()));
                     tourPlan.addProperty("DivisionCode", SharedPref.getDivisionCode(TourPlanActivity.this).replace(",", ""));
 
+                /*    JsonObject tourPlan = new JsonObject();
+                    for(OneBuildModelClass oneBuildModelClassTp : arrayList) {
+                        tourPlan.addProperty("SFCode", SharedPref.getSfCode(TourPlanActivity.this));
+                        tourPlan.addProperty("SFName", SharedPref.getSfName(TourPlanActivity.this));
+                        tourPlan.addProperty("Month", oneBuildModelClassTp.getMonth());
+                        tourPlan.addProperty("Year", oneBuildModelClassTp.getYear());
+                        tourPlan.addProperty("DivisionCode", SharedPref.getDivisionCode(TourPlanActivity.this).replace(",", ""));
+                    }*/
 
-                    JsonArray detailsArray = new JsonArray();
+                        JsonArray detailsArray = new JsonArray();
 
-                    for (OneBuildModelClass oneBuildModelClass : arrayList) {
-                        if (!oneBuildModelClass.getDayNo().isEmpty()) {
-                            if (!oneBuildModelClass.getDayNo().equals(arrayList)) {
-                                String WorkTypeName = "", WorkTypeFlag = "", WorkTypeCode = "", SessionId = "", Remarks = "", WorkTypeName2 = "", WorkTypeFlag2 = "", WorkTypeCode2 = "", SessionId2 = "", Remarks2 = "", WorkTypeName3 = "", WorkTypeFlag3 = "", WorkTypeCode3 = "", SessionId3 = "", Remarks3 = "";
-                                String HeadquartersName = "", HeadquartersCode = "", TerritoriesName = "", TerritoriesCode = "", JWName = "", JWCode = "", CheName = "", CheCode = "", DrName = "", DrCode = "", UnDrName = "", UnDrCode = "", StkName = "", StkCode = "", CipName = "", CipCode = "", HospName = "", HospCode = "";
-                                String HeadquartersName2 = "", HeadquartersCode2 = "", TerritoriesName2 = "", TerritoriesCode2 = "", JWName2 = "", JWCode2 = "", CheName2 = "", CheCode2 = "", DrName2 = "", DrCode2 = "", UnDrName2 = "", UnDrCode2 = "", StkName2 = "", StkCode2 = "", CipName2 = "", CipCode2 = "", HospName2 = "", HospCode2 = "";
-                                String HeadquartersName3 = "", HeadquartersCode3 = "", TerritoriesName3 = "", TerritoriesCode3 = "", JWName3 = "", JWCode3 = "", CheName3 = "", CheCode3 = "", DrName3 = "", DrCode3 = "", UnDrName3 = "", UnDrCode3 = "", StkName3 = "", StkCode3 = "", CipName3 = "", CipCode3 = "", HospName3 = "", HospCode3 = "";
+                        for (OneBuildModelClass oneBuildModelClass : arrayList) {
+                            if (!oneBuildModelClass.getDayNo().isEmpty()) {
+                                if (!oneBuildModelClass.getDayNo().equals(arrayList)) {
+                                    String WorkTypeName = "", WorkTypeFlag = "", WorkTypeCode = "", SessionId = "", Remarks = "", WorkTypeName2 = "", WorkTypeFlag2 = "", WorkTypeCode2 = "", SessionId2 = "", Remarks2 = "", WorkTypeName3 = "", WorkTypeFlag3 = "", WorkTypeCode3 = "", SessionId3 = "", Remarks3 = "";
+                                    String HeadquartersName = "", HeadquartersCode = "", TerritoriesName = "", TerritoriesCode = "", JWName = "", JWCode = "", CheName = "", CheCode = "", DrName = "", DrCode = "", UnDrName = "", UnDrCode = "", StkName = "", StkCode = "", CipName = "", CipCode = "", HospName = "", HospCode = "";
+                                    String HeadquartersName2 = "", HeadquartersCode2 = "", TerritoriesName2 = "", TerritoriesCode2 = "", JWName2 = "", JWCode2 = "", CheName2 = "", CheCode2 = "", DrName2 = "", DrCode2 = "", UnDrName2 = "", UnDrCode2 = "", StkName2 = "", StkCode2 = "", CipName2 = "", CipCode2 = "", HospName2 = "", HospCode2 = "";
+                                    String HeadquartersName3 = "", HeadquartersCode3 = "", TerritoriesName3 = "", TerritoriesCode3 = "", JWName3 = "", JWCode3 = "", CheName3 = "", CheCode3 = "", DrName3 = "", DrCode3 = "", UnDrName3 = "", UnDrCode3 = "", StkName3 = "", StkCode3 = "", CipName3 = "", CipCode3 = "", HospName3 = "", HospCode3 = "";
 
-                                for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
-                                    OneBuildModelClass.SessionList sessionList_OneBuild = oneBuildModelClass.getSessionList().get(i);
+                                    for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
+                                        OneBuildModelClass.SessionList sessionList_OneBuild = oneBuildModelClass.getSessionList().get(i);
 
-                                    if (i == 0) {
-                                        WorkTypeName = sessionList_OneBuild.getWorkType().getName();
-                                        WorkTypeCode = sessionList_OneBuild.getWorkType().getCode();
-                                        WorkTypeFlag = sessionList_OneBuild.getWorkType().getFWFlg();
-                                        SessionId = String.valueOf(oneBuildModelClass.getSessionList().get(i));
-                                        Remarks = sessionList_OneBuild.getRemarks();
+                                        if (i == 0) {
+                                            WorkTypeName = sessionList_OneBuild.getWorkType().getName();
+                                            WorkTypeCode = sessionList_OneBuild.getWorkType().getCode();
+                                            WorkTypeFlag = sessionList_OneBuild.getWorkType().getFWFlg();
+                                            SessionId = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                                            Remarks = sessionList_OneBuild.getRemarks();
 
-                                        if (sessionList_OneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
-                                            HeadquartersName = sessionList_OneBuild.getHeadquarters().getName();
-                                            HeadquartersCode = sessionList_OneBuild.getHeadquarters().getCode();
+                                            if (sessionList_OneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
+                                                HeadquartersName = sessionList_OneBuild.getHeadquarters().getName();
+                                                HeadquartersCode = sessionList_OneBuild.getHeadquarters().getCode();
+                                            }
+                                            TerritoriesName = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                                            TerritoriesCode = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+                                            JWName = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                                            JWCode = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+
+                                            CheName = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                                            CheCode = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                                            DrName = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                                            DrCode = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                                            UnDrName = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                                            UnDrCode = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                                            StkName = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
+                                            StkCode = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                                            CipName = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                                            CipCode = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                                            HospName = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                                            HospCode = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+
+                                        } else if (i == 1) {
+                                            WorkTypeName2 = sessionList_OneBuild.getWorkType().getName();
+                                            WorkTypeCode2 = sessionList_OneBuild.getWorkType().getCode();
+                                            WorkTypeFlag2 = sessionList_OneBuild.getWorkType().getFWFlg();
+                                            SessionId2 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                                            Remarks2 = sessionList_OneBuild.getRemarks();
+
+                                            HeadquartersName2 = sessionList_OneBuild.getHeadquarters().getName();
+                                            HeadquartersCode2 = sessionList_OneBuild.getHeadquarters().getCode();
+                                            TerritoriesName2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                                            TerritoriesCode2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+                                            JWName2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                                            JWCode2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+
+                                            CheName2 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                                            CheCode2 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                                            DrName2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                                            DrCode2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                                            UnDrName2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                                            UnDrCode2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                                            StkName2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
+                                            StkCode2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                                            CipName2 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                                            CipCode2 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                                            HospName2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                                            HospCode2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+
+                                        } else if (i == 2) {
+                                            WorkTypeName3 = sessionList_OneBuild.getWorkType().getName();
+                                            WorkTypeCode3 = sessionList_OneBuild.getWorkType().getCode();
+                                            WorkTypeFlag3 = sessionList_OneBuild.getWorkType().getFWFlg();
+                                            SessionId3 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                                            Remarks3 = sessionList_OneBuild.getRemarks();
+
+                                            HeadquartersName3 = sessionList_OneBuild.getHeadquarters().getName();
+                                            HeadquartersCode3 = sessionList_OneBuild.getHeadquarters().getCode();
+                                            TerritoriesName3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                                            TerritoriesCode3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+
+                                            JWName3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                                            JWCode3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+                                            CheName3 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                                            CheCode3 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                                            DrName3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                                            DrCode3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                                            UnDrName3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                                            UnDrCode3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                                            StkName3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
+                                            StkCode3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                                            CipName3 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                                            CipCode3 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                                            HospName3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                                            HospCode3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
                                         }
-                                        TerritoriesName = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
-                                        TerritoriesCode = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
-                                        JWName = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
-                                        JWCode = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
-
-                                        CheName = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
-                                        CheCode = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
-                                        DrName = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
-                                        DrCode = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
-                                        UnDrName = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
-                                        UnDrCode = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                                        StkName = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                                        StkCode = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
-                                        CipName = textBuilder_OB(sessionList_OneBuild.getCip(), false);
-                                        CipCode = textBuilder_OB(sessionList_OneBuild.getCip(), true);
-                                        HospName = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
-                                        HospCode = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
-
-                                    } else if (i == 1) {
-                                        WorkTypeName2 = sessionList_OneBuild.getWorkType().getName();
-                                        WorkTypeCode2 = sessionList_OneBuild.getWorkType().getCode();
-                                        WorkTypeFlag2 = sessionList_OneBuild.getWorkType().getFWFlg();
-                                        SessionId2 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
-                                        Remarks2 = sessionList_OneBuild.getRemarks();
-
-                                        HeadquartersName2 = sessionList_OneBuild.getHeadquarters().getName();
-                                        HeadquartersCode2 = sessionList_OneBuild.getHeadquarters().getCode();
-                                        TerritoriesName2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
-                                        TerritoriesCode2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
-                                        JWName2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
-                                        JWCode2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
-
-                                        CheName2 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
-                                        CheCode2 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
-                                        DrName2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
-                                        DrCode2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
-                                        UnDrName2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
-                                        UnDrCode2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                                        StkName2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                                        StkCode2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
-                                        CipName2 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
-                                        CipCode2 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
-                                        HospName2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
-                                        HospCode2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
-
-                                    } else if (i == 2) {
-                                        WorkTypeName3 = sessionList_OneBuild.getWorkType().getName();
-                                        WorkTypeCode3 = sessionList_OneBuild.getWorkType().getCode();
-                                        WorkTypeFlag3 = sessionList_OneBuild.getWorkType().getFWFlg();
-                                        SessionId3 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
-                                        Remarks3 = sessionList_OneBuild.getRemarks();
-
-                                        HeadquartersName3 = sessionList_OneBuild.getHeadquarters().getName();
-                                        HeadquartersCode3 = sessionList_OneBuild.getHeadquarters().getCode();
-                                        TerritoriesName3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
-                                        TerritoriesCode3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
-
-                                        JWName3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
-                                        JWCode3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
-                                        CheName3 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
-                                        CheCode3 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
-                                        DrName3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
-                                        DrCode3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
-                                        UnDrName3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
-                                        UnDrCode3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                                        StkName3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                                        StkCode3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
-                                        CipName3 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
-                                        CipCode3 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
-                                        HospName3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
-                                        HospCode3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
                                     }
-                                }
 
 
-                                //Sessions
-                                JsonArray Sessions = new JsonArray();
-                                for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
-                                    if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
-                                        JsonObject SessionsObj = new JsonObject();
-                                        if (i == 0) {
-                                            if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+                                    //Sessions
+                                    JsonArray Sessions = new JsonArray();
+                                    for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
+                                        if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+                                            JsonObject SessionsObj = new JsonObject();
+                                            if (i == 0) {
+                                                if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
 
-                                                SessionsObj.addProperty("WorkTypeCode", WorkTypeCode);
-                                                SessionsObj.addProperty("WorkTypeName", WorkTypeName);
-                                                SessionsObj.addProperty("Id", i);
-                                                SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag);
-                                                SessionsObj.addProperty("Remark", Remarks);
+                                                    SessionsObj.addProperty("WorkTypeCode", WorkTypeCode);
+                                                    SessionsObj.addProperty("WorkTypeName", WorkTypeName);
+                                                    SessionsObj.addProperty("Id", i);
+                                                    SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag);
+                                                    SessionsObj.addProperty("Remark", Remarks);
+                                                }
+                                            } else if (i == 1) {
+                                                if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+
+                                                    SessionsObj.addProperty("WorkTypeCode", WorkTypeCode2);
+                                                    SessionsObj.addProperty("WorkTypeName", WorkTypeName2);
+                                                    SessionsObj.addProperty("Id", i);
+                                                    SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag2);
+                                                    SessionsObj.addProperty("Remark", Remarks2);
+                                                }
+                                            } else if (i == 2) {
+                                                if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+
+                                                    SessionsObj.addProperty("WorkTypeCode", WorkTypeCode3);
+                                                    SessionsObj.addProperty("WorkTypeName", WorkTypeName3);
+                                                    SessionsObj.addProperty("Id", i);
+                                                    SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag3);
+                                                    SessionsObj.addProperty("Remark", Remarks3);
+                                                }
                                             }
-                                        } else if (i == 1) {
-                                            if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
 
-                                                SessionsObj.addProperty("WorkTypeCode", WorkTypeCode2);
-                                                SessionsObj.addProperty("WorkTypeName", WorkTypeName2);
-                                                SessionsObj.addProperty("Id", i);
-                                                SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag2);
-                                                SessionsObj.addProperty("Remark", Remarks2);
+
+                                            JsonArray JointWorks = new JsonArray();
+
+                                            String nameJw = "";
+                                            String codeJw = "";
+
+                                            if (i == 0) {
+                                                nameJw = JWName;
+                                                codeJw = JWCode;
+                                            } else if (i == 1) {
+                                                nameJw = JWName2;
+                                                codeJw = JWCode2;
+                                            } else if (i == 2) {
+                                                nameJw = JWName3;
+                                                codeJw = JWCode3;
                                             }
-                                        } else if (i == 2) {
-                                            if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
 
-                                                SessionsObj.addProperty("WorkTypeCode", WorkTypeCode3);
-                                                SessionsObj.addProperty("WorkTypeName", WorkTypeName3);
-                                                SessionsObj.addProperty("Id", i);
-                                                SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag3);
-                                                SessionsObj.addProperty("Remark", Remarks3);
+                                            if (!nameJw.isEmpty() && !codeJw.isEmpty()) {
+                                                String[] nameArr = nameJw.split(",");
+                                                String[] codeArr = codeJw.split(",");
+
+                                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                                for (int j = 0; j < length; j++) {
+                                                    JsonObject JointWorks_obj = new JsonObject();
+                                                    JointWorks_obj.addProperty("Name", nameArr[j].trim());
+                                                    JointWorks_obj.addProperty("Id", codeArr[j].trim());
+                                                    JointWorks.add(JointWorks_obj);
+                                                }
                                             }
-                                        }
 
 
-                                        JsonArray JointWorks = new JsonArray();
-
-                                        String nameJw = "";
-                                        String codeJw = "";
-
-                                        if (i == 0) {
-                                            nameJw = JWName;
-                                            codeJw = JWCode;
-                                        } else if (i == 1) {
-                                            nameJw = JWName2;
-                                            codeJw = JWCode2;
-                                        } else if (i == 2) {
-                                            nameJw = JWName3;
-                                            codeJw = JWCode3;
-                                        }
-
-                                        if (!nameJw.isEmpty() && !codeJw.isEmpty()) {
-                                            String[] nameArr = nameJw.split(",");
-                                            String[] codeArr = codeJw.split(",");
-
-                                            int length = Math.min(nameArr.length, codeArr.length);
-
-                                            for (int j = 0; j < length; j++) {
-                                                JsonObject JointWorks_obj = new JsonObject();
-                                                JointWorks_obj.addProperty("Name", nameArr[j].trim());
-                                                JointWorks_obj.addProperty("Id", codeArr[j].trim());
-                                                JointWorks.add(JointWorks_obj);
+                                            //Territories
+                                            JsonArray Territories = new JsonArray();
+                                            String nameTerr = "";
+                                            String codeTerr = "";
+                                            if (i == 0) {
+                                                nameTerr = TerritoriesName;
+                                                codeTerr = TerritoriesCode;
+                                            } else if (i == 1) {
+                                                nameTerr = TerritoriesName2;
+                                                codeTerr = TerritoriesCode2;
+                                            } else if (i == 2) {
+                                                nameTerr = TerritoriesName3;
+                                                codeTerr = TerritoriesCode3;
                                             }
-                                        }
+                                            if (!nameTerr.isEmpty() && !codeTerr.isEmpty()) {
+                                                String[] nameArr = nameTerr.split(",");
+                                                String[] codeArr = codeTerr.split(",");
 
+                                                int length = Math.min(nameArr.length, codeArr.length);
 
-                                        //Territories
-                                        JsonArray Territories = new JsonArray();
-                                        String nameTerr = "";
-                                        String codeTerr = "";
-                                        if (i == 0) {
-                                            nameTerr = TerritoriesName;
-                                            codeTerr = TerritoriesCode;
-                                        } else if (i == 1) {
-                                            nameTerr = TerritoriesName2;
-                                            codeTerr = TerritoriesCode2;
-                                        } else if (i == 2) {
-                                            nameTerr = TerritoriesName3;
-                                            codeTerr = TerritoriesCode3;
-                                        }
-                                        if (!nameTerr.isEmpty() && !codeTerr.isEmpty()) {
-                                            String[] nameArr = nameTerr.split(",");
-                                            String[] codeArr = codeTerr.split(",");
-
-                                            int length = Math.min(nameArr.length, codeArr.length);
-
-                                            for (int j = 0; j < length; j++) {
-                                                JsonObject Territories_obj = new JsonObject();
-                                                Territories_obj.addProperty("Name", nameArr[j].trim());
-                                                Territories_obj.addProperty("Id", codeArr[j].trim());
-                                                Territories.add(Territories_obj);
+                                                for (int j = 0; j < length; j++) {
+                                                    JsonObject Territories_obj = new JsonObject();
+                                                    Territories_obj.addProperty("Name", nameArr[j].trim());
+                                                    Territories_obj.addProperty("Id", codeArr[j].trim());
+                                                    Territories.add(Territories_obj);
+                                                }
                                             }
-                                        }
 
 
-                                        //Headquarters
-                                        JsonArray Headquarters = new JsonArray();
-                                        String nameHq = "";
-                                        String codeHq = "";
-                                        if (i == 0) {
-                                            nameHq = HeadquartersName;
-                                            codeHq = HeadquartersCode;
-                                        } else if (i == 1) {
-                                            nameHq = HeadquartersName2;
-                                            codeHq = HeadquartersCode2;
-                                        } else if (i == 2) {
-                                            nameHq = HeadquartersName3;
-                                            codeHq = HeadquartersCode3;
-                                        }
-                                        if (!nameHq.isEmpty() && !codeHq.isEmpty()) {
-                                            String[] nameArr = nameHq.split(",");
-                                            String[] codeArr = codeHq.split(",");
-
-                                            int length = Math.min(nameArr.length, codeArr.length);
-
-                                            for (int j = 0; j < length; j++) {
-                                                JsonObject Headquarters_obj = new JsonObject();
-                                                Headquarters_obj.addProperty("Name", nameArr[j].trim());
-                                                Headquarters_obj.addProperty("Id", codeArr[j].trim());
-                                                Headquarters.add(Headquarters_obj);
+                                            //Headquarters
+                                            JsonArray Headquarters = new JsonArray();
+                                            String nameHq = "";
+                                            String codeHq = "";
+                                            if (i == 0) {
+                                                nameHq = HeadquartersName;
+                                                codeHq = HeadquartersCode;
+                                            } else if (i == 1) {
+                                                nameHq = HeadquartersName2;
+                                                codeHq = HeadquartersCode2;
+                                            } else if (i == 2) {
+                                                nameHq = HeadquartersName3;
+                                                codeHq = HeadquartersCode3;
                                             }
-                                        }
+                                            if (!nameHq.isEmpty() && !codeHq.isEmpty()) {
+                                                String[] nameArr = nameHq.split(",");
+                                                String[] codeArr = codeHq.split(",");
 
-                                        //Hospitals
-                                        JsonArray Hospitals = new JsonArray();
-                                        String nameHosp = "";
-                                        String codeHosp = "";
-                                        if (i == 0) {
-                                            nameHosp = HospName;
-                                            codeHosp = HospCode;
-                                        } else if (i == 1) {
-                                            nameHosp = HospName2;
-                                            codeHosp = HospCode2;
-                                        } else if (i == 2) {
-                                            nameHosp = HospName3;
-                                            codeHosp = HospCode3;
-                                        }
-                                        if (!nameHosp.isEmpty() && !codeHosp.isEmpty()) {
-                                            String[] nameArr = nameHosp.split(",");
-                                            String[] codeArr = codeHosp.split(",");
+                                                int length = Math.min(nameArr.length, codeArr.length);
 
-                                            int length = Math.min(nameArr.length, codeArr.length);
-                                            for (int j = 0; j < length; j++) {
-                                                JsonObject Hospitals_obj = new JsonObject();
-                                                Hospitals_obj.addProperty("Name", nameArr[j].trim());
-                                                Hospitals_obj.addProperty("Id", codeArr[j].trim());
-                                                Hospitals.add(Hospitals_obj);
+                                                for (int j = 0; j < length; j++) {
+                                                    JsonObject Headquarters_obj = new JsonObject();
+                                                    Headquarters_obj.addProperty("Name", nameArr[j].trim());
+                                                    Headquarters_obj.addProperty("Id", codeArr[j].trim());
+                                                    Headquarters.add(Headquarters_obj);
+                                                }
                                             }
-                                        }
 
-                                        //Chemists
-                                        JsonArray Chemists = new JsonArray();
-                                        String nameChe = "";
-                                        String codeChe = "";
-                                        if (i == 0) {
-                                            nameChe = CheName;
-                                            codeChe = CheCode;
-                                        } else if (i == 1) {
-                                            nameChe = CheName2;
-                                            codeChe = CheCode2;
-                                        } else if (i == 2) {
-                                            nameChe = CheName3;
-                                            codeChe = CheCode3;
-                                        }
-                                        if (!nameChe.isEmpty() && !codeChe.isEmpty()) {
-                                            String[] nameArr = nameChe.split(",");
-                                            String[] codeArr = codeChe.split(",");
-
-                                            int length = Math.min(nameArr.length, codeArr.length);
-
-                                            for (int j = 0; j < length; j++) {
-                                                JsonObject Chemists_obj = new JsonObject();
-                                                Chemists_obj.addProperty("Name", nameArr[j].trim());
-                                                Chemists_obj.addProperty("Id", codeArr[j].trim());
-                                                Chemists.add(Chemists_obj);
+                                            //Hospitals
+                                            JsonArray Hospitals = new JsonArray();
+                                            String nameHosp = "";
+                                            String codeHosp = "";
+                                            if (i == 0) {
+                                                nameHosp = HospName;
+                                                codeHosp = HospCode;
+                                            } else if (i == 1) {
+                                                nameHosp = HospName2;
+                                                codeHosp = HospCode2;
+                                            } else if (i == 2) {
+                                                nameHosp = HospName3;
+                                                codeHosp = HospCode3;
                                             }
-                                        }
+                                            if (!nameHosp.isEmpty() && !codeHosp.isEmpty()) {
+                                                String[] nameArr = nameHosp.split(",");
+                                                String[] codeArr = codeHosp.split(",");
 
-                                        //StockLists
-                                        JsonArray Stockists = new JsonArray();
-                                        String nameStk = "";
-                                        String codeStk = "";
-                                        if (i == 0) {
-                                            nameStk = StkName;
-                                            codeStk = StkCode;
-                                        } else if (i == 1) {
-                                            nameStk = StkName2;
-                                            codeStk = StkCode2;
-                                        } else if (i == 2) {
-                                            nameStk = StkName3;
-                                            codeStk = StkCode3;
-                                        }
-                                        if (!nameStk.isEmpty() && !codeStk.isEmpty()) {
-                                            String[] nameArr = nameStk.split(",");
-                                            String[] codeArr = codeStk.split(",");
-
-                                            int length = Math.min(nameArr.length, codeArr.length);
-
-                                            for (int j = 0; j < length; j++) {
-                                                JsonObject Stockists_obj = new JsonObject();
-                                                Stockists_obj.addProperty("Name", nameArr[j].trim());
-                                                Stockists_obj.addProperty("Id", codeArr[j].trim());
-                                                Stockists.add(Stockists_obj);
+                                                int length = Math.min(nameArr.length, codeArr.length);
+                                                for (int j = 0; j < length; j++) {
+                                                    JsonObject Hospitals_obj = new JsonObject();
+                                                    Hospitals_obj.addProperty("Name", nameArr[j].trim());
+                                                    Hospitals_obj.addProperty("Id", codeArr[j].trim());
+                                                    Hospitals.add(Hospitals_obj);
+                                                }
                                             }
-                                        }
 
-                                        //ListedDr
-                                        JsonArray Doctors = new JsonArray();
-                                        String nameDoc = "";
-                                        String codeDoc = "";
-                                        if (i == 0) {
-                                            nameDoc = DrName;
-                                            codeDoc = DrCode;
-                                        } else if (i == 1) {
-                                            nameDoc = DrName2;
-                                            codeDoc = DrCode2;
-                                        } else if (i == 2) {
-                                            nameDoc = DrName3;
-                                            codeDoc = DrCode3;
-                                        }
-                                        if (!nameDoc.isEmpty() && !codeDoc.isEmpty()) {
-                                            String[] nameArr = nameDoc.split(",");
-                                            String[] codeArr = codeDoc.split(",");
-
-                                            int length = Math.min(nameArr.length, codeArr.length);
-
-                                            for (int j = 0; j < length; j++) {
-                                                JsonObject Doctors_obj = new JsonObject();
-                                                Doctors_obj.addProperty("Name", nameArr[j].trim());
-                                                Doctors_obj.addProperty("Id", codeArr[j].trim());
-                                                Doctors.add(Doctors_obj);
+                                            //Chemists
+                                            JsonArray Chemists = new JsonArray();
+                                            String nameChe = "";
+                                            String codeChe = "";
+                                            if (i == 0) {
+                                                nameChe = CheName;
+                                                codeChe = CheCode;
+                                            } else if (i == 1) {
+                                                nameChe = CheName2;
+                                                codeChe = CheCode2;
+                                            } else if (i == 2) {
+                                                nameChe = CheName3;
+                                                codeChe = CheCode3;
                                             }
-                                        }
+                                            if (!nameChe.isEmpty() && !codeChe.isEmpty()) {
+                                                String[] nameArr = nameChe.split(",");
+                                                String[] codeArr = codeChe.split(",");
 
-                                        //UnlistedDr
+                                                int length = Math.min(nameArr.length, codeArr.length);
 
-                                        JsonArray UnlistedDoctors = new JsonArray();
-                                        String nameUnDr = "";
-                                        String codeUmDr = "";
-                                        if (i == 0) {
-                                            nameUnDr = UnDrName;
-                                            codeUmDr = UnDrCode;
-                                        } else if (i == 1) {
-                                            nameUnDr = UnDrName2;
-                                            codeUmDr = UnDrCode2;
-                                        } else if (i == 2) {
-                                            nameUnDr = UnDrName3;
-                                            codeUmDr = UnDrCode3;
-                                        }
-                                        if (!nameUnDr.isEmpty() && !codeUmDr.isEmpty()) {
-                                            String[] nameArr = nameUnDr.split(",");
-                                            String[] codeArr = codeUmDr.split(",");
-
-                                            int length = Math.min(nameArr.length, codeArr.length);
-
-                                            for (int j = 0; j < length; j++) {
-                                                JsonObject UnlistedDoctors_obj = new JsonObject();
-                                                UnlistedDoctors_obj.addProperty("Name", nameArr[j].trim());
-                                                UnlistedDoctors_obj.addProperty("Id", codeArr[j].trim());
-                                                UnlistedDoctors.add(UnlistedDoctors_obj);
+                                                for (int j = 0; j < length; j++) {
+                                                    JsonObject Chemists_obj = new JsonObject();
+                                                    Chemists_obj.addProperty("Name", nameArr[j].trim());
+                                                    Chemists_obj.addProperty("Id", codeArr[j].trim());
+                                                    Chemists.add(Chemists_obj);
+                                                }
                                             }
-                                        }
+
+                                            //StockLists
+                                            JsonArray Stockists = new JsonArray();
+                                            String nameStk = "";
+                                            String codeStk = "";
+                                            if (i == 0) {
+                                                nameStk = StkName;
+                                                codeStk = StkCode;
+                                            } else if (i == 1) {
+                                                nameStk = StkName2;
+                                                codeStk = StkCode2;
+                                            } else if (i == 2) {
+                                                nameStk = StkName3;
+                                                codeStk = StkCode3;
+                                            }
+                                            if (!nameStk.isEmpty() && !codeStk.isEmpty()) {
+                                                String[] nameArr = nameStk.split(",");
+                                                String[] codeArr = codeStk.split(",");
+
+                                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                                for (int j = 0; j < length; j++) {
+                                                    JsonObject Stockists_obj = new JsonObject();
+                                                    Stockists_obj.addProperty("Name", nameArr[j].trim());
+                                                    Stockists_obj.addProperty("Id", codeArr[j].trim());
+                                                    Stockists.add(Stockists_obj);
+                                                }
+                                            }
+
+                                            //ListedDr
+                                            JsonArray Doctors = new JsonArray();
+                                            String nameDoc = "";
+                                            String codeDoc = "";
+                                            if (i == 0) {
+                                                nameDoc = DrName;
+                                                codeDoc = DrCode;
+                                            } else if (i == 1) {
+                                                nameDoc = DrName2;
+                                                codeDoc = DrCode2;
+                                            } else if (i == 2) {
+                                                nameDoc = DrName3;
+                                                codeDoc = DrCode3;
+                                            }
+                                            if (!nameDoc.isEmpty() && !codeDoc.isEmpty()) {
+                                                String[] nameArr = nameDoc.split(",");
+                                                String[] codeArr = codeDoc.split(",");
+
+                                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                                for (int j = 0; j < length; j++) {
+                                                    JsonObject Doctors_obj = new JsonObject();
+                                                    Doctors_obj.addProperty("Name", nameArr[j].trim());
+                                                    Doctors_obj.addProperty("Id", codeArr[j].trim());
+                                                    Doctors.add(Doctors_obj);
+                                                }
+                                            }
+
+                                            //UnlistedDr
+
+                                            JsonArray UnlistedDoctors = new JsonArray();
+                                            String nameUnDr = "";
+                                            String codeUmDr = "";
+                                            if (i == 0) {
+                                                nameUnDr = UnDrName;
+                                                codeUmDr = UnDrCode;
+                                            } else if (i == 1) {
+                                                nameUnDr = UnDrName2;
+                                                codeUmDr = UnDrCode2;
+                                            } else if (i == 2) {
+                                                nameUnDr = UnDrName3;
+                                                codeUmDr = UnDrCode3;
+                                            }
+                                            if (!nameUnDr.isEmpty() && !codeUmDr.isEmpty()) {
+                                                String[] nameArr = nameUnDr.split(",");
+                                                String[] codeArr = codeUmDr.split(",");
+
+                                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                                for (int j = 0; j < length; j++) {
+                                                    JsonObject UnlistedDoctors_obj = new JsonObject();
+                                                    UnlistedDoctors_obj.addProperty("Name", nameArr[j].trim());
+                                                    UnlistedDoctors_obj.addProperty("Id", codeArr[j].trim());
+                                                    UnlistedDoctors.add(UnlistedDoctors_obj);
+                                                }
+                                            }
 
 
-                                        //Cip
+                                            //Cip
                                    /*     JSONArray Cip = new JSONArray();
                                         String nameCip = "";
                                         String codeCip = "";
@@ -3169,145 +3173,131 @@ public class TourPlanActivity extends AppCompatActivity {
                                             }
                                         }*/
 
-                                        SessionsObj.add("JointWorks", JointWorks);
-                                        SessionsObj.add("Headquarters", Headquarters);
-                                        SessionsObj.add("Territories", Territories);
-                                        SessionsObj.add("Doctors", Doctors);
-                                        SessionsObj.add("Chemists", Chemists);
-                                        SessionsObj.add("Stockists", Stockists);
-                                        SessionsObj.add("UnlistedDoctors", UnlistedDoctors);
-                                        SessionsObj.add("Hospitals", Hospitals);
+                                            SessionsObj.add("JointWorks", JointWorks);
+                                            SessionsObj.add("Headquarters", Headquarters);
+                                            SessionsObj.add("Territories", Territories);
+                                            SessionsObj.add("Doctors", Doctors);
+                                            SessionsObj.add("Chemists", Chemists);
+                                            SessionsObj.add("Stockists", Stockists);
+                                            SessionsObj.add("UnlistedDoctors", UnlistedDoctors);
+                                            SessionsObj.add("Hospitals", Hospitals);
 //                                        SessionsObj.put("Cip", Cip);
-                                        Sessions.add(SessionsObj);
+                                            Sessions.add(SessionsObj);
+                                        }
+
                                     }
 
+                                    //Details
+
+                                    JsonObject DetailsObj = new JsonObject();
+                                    DetailsObj.addProperty("Id", 0);
+                                    DetailsObj.add("Others", new JsonArray());
+                                    DetailsObj.addProperty("TDate", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, oneBuildModelClass.getDate()));
+                                    DetailsObj.add("Sessions", Sessions);
+                                    detailsArray.add(DetailsObj);
+
                                 }
-
-                                //Details
-
-                                JsonObject DetailsObj = new JsonObject();
-                                DetailsObj.addProperty("Id", 0);
-                                DetailsObj.add("Others", new JsonArray());
-                                DetailsObj.addProperty("TDate", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, oneBuildModelClass.getDate()));
-                                DetailsObj.add("Sessions", Sessions);
-                                detailsArray.add(DetailsObj);
-
                             }
+                            tourPlan.add("Details", detailsArray);
+                            jsonObject.add("tourPlan", tourPlan);
+                            Gson gson = new Gson();
+
+                            jbonj = gson.fromJson(jsonObject.toString(), JsonObject.class);
                         }
-                        tourPlan.add("Details", detailsArray);
-                        jsonObject.add("tourPlan", tourPlan);
-                        Gson gson = new Gson();
 
-                        jbonj = gson.fromJson(jsonObject.toString(), JsonObject.class);
-                    }
-
-                    Log.d("JSON_One_Build", "isNetworkAvailable: " + jsonObject);
-                    String changeStatus = "";
-                    TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
-                    changeStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
-                    if (Objects.equals(changeStatus, "0") /*|| Objects.equals(changeStatus, "2")*/) {
-                        apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
-                        Map<String, String> mapString = new HashMap<>();
-                        Call<JsonElement> call = apiInterface.getJSONElementOneBuild("/MasterFiles/tourPlan/TourPlanWebService.asmx/DraftTourPlan", jsonObject);
-                        call.enqueue(new Callback<JsonElement>() {
-                            @Override
-                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                                Log.v("tpGetPlan", "----" + response.body());
-                                if (response.body() != null && !response.body().isJsonNull()) {
-                                    try {
-                                        //JsonObject jsonObject = new JsonObject(response.body().toString());
-                                        JSONObject jsonObject = new JSONObject(response.body().toString());
-                                        SharedPref.setTpSyncStaus(TourPlanActivity.this, true);
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Draft Saved");
-                                        binding.progressBar.setVisibility(View.GONE);
+                        Log.d("JSON_One_Build", "isNetworkAvailable: " + jsonObject);
+                        String changeStatus = "";
+                        TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+                        changeStatus = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
+                        if (Objects.equals(changeStatus, "0") || Objects.equals(changeStatus, "2")) {
+                            apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
+                            Map<String, String> mapString = new HashMap<>();
+                            Call<JsonElement> call = apiInterface.getJSONElementOneBuild("/MasterFiles/tourPlan/TourPlanWebService.asmx/DraftTourPlan", jsonObject);
+                            call.enqueue(new Callback<JsonElement>() {
+                                @Override
+                                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                    Log.v("tpGetPlan", "----" + response.body());
+                                    if (response.body() != null && !response.body().isJsonNull()) {
                                         try {
-                                            JSONObject outerJsonObject = new JSONObject(response.body().getAsJsonObject().toString());
-                                            if (!isFrom.equalsIgnoreCase("sendToApproval")) {
-                                                if (outerJsonObject.has("d")) {
-                                                    String innerJsonString = outerJsonObject.getString("d");
-                                                    JSONObject innerJsonObject = new JSONObject(innerJsonString);
-                                                    if (innerJsonObject.has("Data")) {
-                                                        switch (isClickedName) {
-                                                            case "prev":
-                                                                int retrievedIdPm = innerJsonObject.getInt("Data");
-                                                                SharedPref.saveTpId(TourPlanActivity.this, retrievedIdPm);
-                                                                Log.d("ret_Id", "onResponse: " + retrievedIdPm);
-                                                                break;
-                                                            case "current":
-                                                                int retrievedIdCm = innerJsonObject.getInt("Data");
-                                                                SharedPref.saveTpIdCm(TourPlanActivity.this, retrievedIdCm);
-                                                                Log.d("ret_Id", "onResponse: " + retrievedIdCm);
-                                                                break;
-                                                            case "next":
-                                                                int retrievedIdNm = innerJsonObject.getInt("Data");
-                                                                SharedPref.saveTpIdNm(TourPlanActivity.this, retrievedIdNm);
-                                                                Log.d("ret_Id", "onResponse: " + retrievedIdNm);
-                                                                break;
+                                            //JsonObject jsonObject = new JsonObject(response.body().toString());
+                                            JSONObject jsonObject = new JSONObject(response.body().toString());
+                                            SharedPref.setTpSyncStaus(TourPlanActivity.this, true);
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, "Draft Saved");
+                                            binding.progressBar.setVisibility(View.GONE);
+                                            try {
+                                                JSONObject outerJsonObject = new JSONObject(response.body().getAsJsonObject().toString());
+                                                if (!isFrom.equalsIgnoreCase("sendToApproval")) {
+                                                    if (outerJsonObject.has("d")) {
+                                                        String innerJsonString = outerJsonObject.getString("d");
+                                                        JSONObject innerJsonObject = new JSONObject(innerJsonString);
+                                                        if (innerJsonObject.has("Data")) {
+                                                            switch (isClickedName) {
+                                                                case "prev":
+                                                                    int retrievedIdPm = innerJsonObject.getInt("Data");
+                                                                    SharedPref.saveTpId(TourPlanActivity.this, retrievedIdPm);
+                                                                    Log.d("ret_Id", "onResponse: " + retrievedIdPm);
+                                                                    break;
+                                                                case "current":
+                                                                    int retrievedIdCm = innerJsonObject.getInt("Data");
+                                                                    SharedPref.saveTpIdCm(TourPlanActivity.this, retrievedIdCm);
+                                                                    Log.d("ret_Id", "onResponse: " + retrievedIdCm);
+                                                                    break;
+                                                                case "next":
+                                                                    int retrievedIdNm = innerJsonObject.getInt("Data");
+                                                                    SharedPref.saveTpIdNm(TourPlanActivity.this, retrievedIdNm);
+                                                                    Log.d("ret_Id", "onResponse: " + retrievedIdNm);
+                                                                    break;
+                                                            }
+                                                        } else {
+                                                            Log.e("ret_Id", "'Data' key not found ");
                                                         }
                                                     } else {
-                                                        Log.e("ret_Id", "'Data' key not found ");
+                                                        Log.e("outerJsonObject", "'d' key not found in the response body.");
                                                     }
-                                                } else {
-                                                    Log.e("outerJsonObject", "'d' key not found in the response body.");
+                                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TOUR_PLAN, (new JSONArray().put(outerJsonObject)).toString(), 2));
+                                                    binding.progressBar.setVisibility(View.GONE);
+                                                    binding.tvSync.setEnabled(true);
                                                 }
-                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.TOUR_PLAN, (new JSONArray().put(outerJsonObject)).toString(), 2));
-                                                binding.progressBar.setVisibility(View.GONE);
-                                                binding.tvSync.setEnabled(true);
-//                                                get3MonthRemoteTPDataOneBuild(isClickedName);
-//                                                get3MonthRemoteTPDataOneBuild(isClickedName);
-                                            }
-                                            if (isFrom.equalsIgnoreCase("sendToApproval")) {
+                                                if (isFrom.equalsIgnoreCase("sendToApproval")) {
 
-                                                JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
-                                                ArrayList<OneBuildModelClass> arrayList;
-//                        ArrayList<String> dummy = new ArrayList<>();
-                                                Type type = new TypeToken<ArrayList<OneBuildModelClass>>() {
-                                                }.getType();
-                                                if (jsonArray.length() >= 0) {
-                                                    arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
-                                                    sendTpForApprovalOneBuild(jbonj, arrayList, localDate.toString(), oneBuildModelClassTp.getMonth(), statusOffline, isClickedName);
-//                                                for (OneBuildModelClass oneBuildModelClass : arrayList) {
-//                                                    if (!oneBuildModelClass.getDate().equals("") && !oneBuildModelClass.getSyncStatus().equals("0")) {
-//                                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, "TourPlan Uploading…");
-//                                                        binding.progressBar.setVisibility(View.VISIBLE);
-//                                                        if (monthInAdapterFlag == -1) {
-//                                                            prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, oneBuildModelClass.getDate()), oneBuildModelClass.getDayNo(), arrayList, true, "prev");
-//                                                            Log.d("TP_sendAppr", "onCreate: "+oneBuildModelClass.getDayNo());
-//                                                        } else if (monthInAdapterFlag == 0) {
-//                                                            prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, oneBuildModelClass.getDate()), oneBuildModelClass.getDayNo(), arrayList, true, "current");
-//                                                        } else if (monthInAdapterFlag == 1) {
-//                                                            prepareObjectToSendForApprovalOneBuild(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, oneBuildModelClass.getDate()), oneBuildModelClass.getDayNo(), arrayList, true, "next");
-//                                                        }
-//                                                    }
-//                                                }
+                                                    JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
+                                                    ArrayList<OneBuildModelClass> arrayList;
+
+                                                    Type type = new TypeToken<ArrayList<OneBuildModelClass>>() {
+                                                    }.getType();
+                                                    if (jsonArray.length() >= 0) {
+                                                        arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
+                                                        sendTpForApprovalOneBuild(jbonj, arrayList, localDate.toString(), oneBuildModelClassTp.getMonth(), statusOffline, isClickedName);
+                                                    }
                                                 }
+
+
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
                                             }
 
                                         } catch (JSONException e) {
-                                            e.printStackTrace();
+                                            throw new RuntimeException(e);
                                         }
 
-                                    } catch (JSONException e) {
-                                        throw new RuntimeException(e);
+                                    } else {
+                                        SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
                                     }
 
-                                } else {
-                                    SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
+
                                 }
 
+                                @Override
+                                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                    SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
+                                    binding.progressBar.setVisibility(View.GONE);
+                                    Log.e("tpGetPlan", "error getTp : " + t);
+                                }
+                            });
+                        } else {
+                            get3MonthRemoteTPDataOneBuild(isClickedName);
+                        }
 
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                SharedPref.setTpSyncStaus(TourPlanActivity.this, false);
-                                binding.progressBar.setVisibility(View.GONE);
-                                Log.e("tpGetPlan", "error getTp : " + t);
-                            }
-                        });
-                    } else {
-                        get3MonthRemoteTPDataOneBuild(isClickedName);
-                    }
                 } catch (JsonIOException e) {
                     binding.progressBar.setVisibility(View.GONE);
                     binding.tvSync.setEnabled(true);

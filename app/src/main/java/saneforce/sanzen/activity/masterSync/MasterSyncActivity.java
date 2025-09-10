@@ -143,13 +143,6 @@ public class MasterSyncActivity extends AppCompatActivity {
     OneBuildModelClass.SessionList.WorkType weeklyOffWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType();
     OneBuildModelClass.SessionList.WorkType holidayWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType();
 
-    ArrayList<OneBuildModelClass> dayWiseArrayCurrentMonthOneBuild1 = new ArrayList<>();
-    ArrayList<OneBuildModelClass> dayWiseArrayPrevMonthOneBuild1 = new ArrayList<>();
-    ArrayList<OneBuildModelClass> dayWiseArrayNextMonthOneBuild1 = new ArrayList<>();
-    TourPlanActivity dayWiseArrayCurrentMonthOneBuild;
-    TourPlanActivity dayWiseArrayPrevMonthOneBuild;
-    TourPlanActivity dayWiseArrayNextMonthOneBuild;
-
 
     String holidayMode = "", weeklyOffCaption = "";
     boolean isDataAvailable;
@@ -1573,323 +1566,301 @@ public class MasterSyncActivity extends AppCompatActivity {
     public void sync(String masterOf, String remoteTableName, ArrayList<MasterSyncItemModel> masterSyncItemModels, int position) {
 
         try {
-            if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0") && remoteTableName.equalsIgnoreCase("gettp_oneBuild")) {
-                String TourPlanOfflineDataDao = String.valueOf(tourPlanOfflineDataDao);
-                isFrom = TourPlanOfflineDataDao;
-                OneBuildModelClass oneBuildModelClass = inputDataArrayOneBuild;
-                ArrayList<OneBuildModelClass.SessionList> sessionLists = oneBuildModelClass.getSessionList();
-                if (!sessionLists.isEmpty()) {
-                    for (int i = 0; i < sessionLists.size(); i++) {
-                        OneBuildModelClass.SessionList modelClass1 = sessionLists.get(i);
+         /*   if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0") && remoteTableName.equalsIgnoreCase("gettp_oneBuild")) {
+                TourPlanOfflineDataTable tpData = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+                if(tpData != null){
+
+                        String monthYearPrev = monthYearFromDate(localDate.minusMonths(1));
+                        String monthYearCurr = monthYearFromDate(localDate);
+                        String monthYearNext = monthYearFromDate(localDate.plusMonths(1));
+
+                        if (monthYearPrev != null && !monthYearPrev.isEmpty() && !TourPlanActivity.dayWiseArrayPrevMonthOneBuild.isEmpty()) {
+                            getDraftSaveOneBuild1("prev", TourPlanActivity.dayWiseArrayPrevMonthOneBuild, true);
+                        } else if (monthYearCurr != null && !monthYearCurr.isEmpty() && !TourPlanActivity.dayWiseArrayCurrentMonthOneBuild.isEmpty()) {
+                            getDraftSaveOneBuild1("current", TourPlanActivity.dayWiseArrayCurrentMonthOneBuild, true);
+                        } else if (monthYearNext != null && !monthYearNext.isEmpty() && !TourPlanActivity.dayWiseArrayNextMonthOneBuild.isEmpty()) {
+                            getDraftSaveOneBuild1("next", TourPlanActivity.dayWiseArrayNextMonthOneBuild, true);
+                        }
 
 
-                        if ((!modelClass1.getWorkType().getName().isEmpty()/*&& isFrom.equalsIgnoreCase(TourPlanOfflineDataDao)) || (!TourPlanActivity.dayWiseArrayCurrentMonthOneBuild.isEmpty() && isFrom.equalsIgnoreCase(TourPlanOfflineDataDao)) || (!TourPlanActivity.dayWiseArrayNextMonthOneBuild.isEmpty() && isFrom.equalsIgnoreCase(TourPlanOfflineDataDao))*/)) {
+                }else{
+                    MasterSyncItemModel tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN, Constants.TOUR_PLAN, "gettp_onebuild", Constants.TOUR_PLAN, tourPLanStatus, false);
+                    tpModelArray.add(tPlan);
+                }
+            }*/
 
-                    /*NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
-                        @SuppressLint("NotifyDataSetChanged")
-                        @Override
-                        public void isNetworkAvailable(Boolean status) {*/
-                            String monthYearPrev = monthYearFromDate(localDate.minusMonths(1));
-                            String monthYearCurr = monthYearFromDate(localDate);
-                            String monthYearNext = monthYearFromDate(localDate.plusMonths(1));
+            if(SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0") && remoteTableName.equalsIgnoreCase("gettp_onebuild")){
+                JSONArray monthYearCurr = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
+                JSONArray monthYearPrev = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate.minusMonths(1)))).getTpDataJSONArray();
+                JSONArray monthYearNext = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate.plusMonths(1)))).getTpDataJSONArray();
 
-                            if (monthYearPrev != null && !monthYearPrev.isEmpty() && !TourPlanActivity.dayWiseArrayPrevMonthOneBuild.isEmpty()) {
-                                getDraftSaveOneBuild1("prev", TourPlanActivity.dayWiseArrayPrevMonthOneBuild, true);
-                            } else if (monthYearCurr != null && !monthYearCurr.isEmpty() && !TourPlanActivity.dayWiseArrayCurrentMonthOneBuild.isEmpty()) {
-                                getDraftSaveOneBuild1("current", TourPlanActivity.dayWiseArrayCurrentMonthOneBuild, true);
-                            } else if (monthYearNext != null && !monthYearNext.isEmpty() && !TourPlanActivity.dayWiseArrayNextMonthOneBuild.isEmpty()) {
-                                getDraftSaveOneBuild1("next", TourPlanActivity.dayWiseArrayNextMonthOneBuild, true);
-                            }
-                  /*      }
-                    });
-                    networkStatusTask.execute();*/
+                    if (monthYearPrev != null && !TourPlanActivity.dayWiseArrayPrevMonthOneBuild.isEmpty()) {
+                        getDraftSaveOneBuild1("prev", TourPlanActivity.dayWiseArrayPrevMonthOneBuild, true);
+                    } else if (monthYearCurr != null  && !TourPlanActivity.dayWiseArrayCurrentMonthOneBuild.isEmpty()) {
+                        getDraftSaveOneBuild1("current", TourPlanActivity.dayWiseArrayCurrentMonthOneBuild, true);
+                    } else if (monthYearNext != null && !TourPlanActivity.dayWiseArrayNextMonthOneBuild.isEmpty()) {
+                        getDraftSaveOneBuild1("next", TourPlanActivity.dayWiseArrayNextMonthOneBuild, true);
+                    }
+
+            }
+                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+                jsonObject.put("tableName", remoteTableName);
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+                jsonObject.put("Rsf", rsf);
+                jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+                switch (remoteTableName) {
+                    case "getholiday":
+                    case "getweeklyoff": {
+                        jsonObject.put("year", Year.now().getValue());
+                        break;
+                    }
+                    case "gettodaytpnew": {
+                        jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                        break;
+                    }
+                    case "gettp_onebuild": {
+
+                        if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+                            jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                            jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                            break;
                         }
                     }
-                }
-            }
-            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
-            jsonObject.put("tableName", remoteTableName);
-            jsonObject.put("sfcode", SharedPref.getSfCode(this));
-            jsonObject.put("division_code", SharedPref.getDivisionCode(this));
-            jsonObject.put("Rsf", rsf);
-            jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-            switch (remoteTableName) {
-                case "getholiday":
-                case "getweeklyoff": {
-                    jsonObject.put("year", Year.now().getValue());
-                    break;
-                }
-                case "gettodaytpnew": {
-                    jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-                    break;
-                }
-                case "gettp_onebuild": {
-
-                    if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+                    case "getall_tp":
+                    case "getall_multitpnew": {
                         jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                         jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                         break;
                     }
-                }
-                case "getall_tp":
-                case "getall_multitpnew": {
-                    jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
-                    jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
-                    break;
-                }
-                case "getquiz":
-                case "getcheckin_zen":
-                case "gettodaydcrmultihq":
-                case "gettodaydcr": {
-                    if (HomeDashBoard.selectedDate != null) {
-                        jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
-                    } else {
-                        WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
-                            @Override
-                            public void datesFound() {
-                                try {
-                                    jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, SharedPref.getSelectedDateCal(MasterSyncActivity.this)));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                    case "getquiz":
+                    case "getcheckin_zen":
+                    case "gettodaydcrmultihq":
+                    case "gettodaydcr": {
+                        if (HomeDashBoard.selectedDate != null) {
+                            jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
+                        } else {
+                            WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
+                                @Override
+                                public void datesFound() {
+                                    try {
+                                        jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, SharedPref.getSelectedDateCal(MasterSyncActivity.this)));
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void noDatesFound() {
-                                Log.e("Master Sync", "Get MyDayPlan Call and Date Sync failed!");
-                            }
-                        });
+                                @Override
+                                public void noDatesFound() {
+                                    Log.e("Master Sync", "Get MyDayPlan Call and Date Sync failed!");
+                                }
+                            });
+                        }
                     }
                 }
-            }
 
-            Map<String, String> mapString = new HashMap<>();
-            Log.e("API Object", "master sync obj : " + jsonObject);
-            Call<JsonElement> call = null;
-            if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
-                mapString.put("axn", "table/dcrmasterdata");
-                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            } else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {
-                mapString.put("axn", "table/subordinates");
-                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            } else if (masterOf.equalsIgnoreCase(Constants.PRODUCT)) {
-                mapString.put("axn", "table/products");
-                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            } else if (masterOf.equalsIgnoreCase("Leave")) {
-                mapString.put("axn", "get/leave");
-                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            } else if (masterOf.equalsIgnoreCase("Home")) {
-                mapString.put("axn", "home");
-                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            } else if (masterOf.equalsIgnoreCase("AdditionalDcr")) {
-                mapString.put("axn", "table/additionaldcrmasterdata");
-                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            } else if (masterOf.equalsIgnoreCase("Slide")) {
-                mapString.put("axn", "table/slides");
-                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            } else if (masterOf.equalsIgnoreCase(Constants.SETUP)) {
-                mapString.put("axn", "table/setups");
-                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN)) {
-                mapString.put("axn", "get/tp");
-                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            } else if (masterOf.equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
-                mapString.put("axn", "get/stp");
-                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            } else if (masterOf.equalsIgnoreCase(Constants.ACTIVITY)) {
-                mapString.put("axn", "get/activity");
-                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            } else if (masterOf.equalsIgnoreCase(Constants.SURVEY)) {
-                mapString.put("axn", "get/survey");
-                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            } else if (masterOf.equalsIgnoreCase(Constants.CHECK_IN)) {
-                mapString.put("axn", "get/checKin");
-                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            }
+                Map<String, String> mapString = new HashMap<>();
+                Log.e("API Object", "master sync obj : " + jsonObject);
+                Call<JsonElement> call = null;
+                if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
+                    mapString.put("axn", "table/dcrmasterdata");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+                } else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {
+                    mapString.put("axn", "table/subordinates");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+                } else if (masterOf.equalsIgnoreCase(Constants.PRODUCT)) {
+                    mapString.put("axn", "table/products");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+                } else if (masterOf.equalsIgnoreCase("Leave")) {
+                    mapString.put("axn", "get/leave");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+                } else if (masterOf.equalsIgnoreCase("Home")) {
+                    mapString.put("axn", "home");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+                } else if (masterOf.equalsIgnoreCase("AdditionalDcr")) {
+                    mapString.put("axn", "table/additionaldcrmasterdata");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+                } else if (masterOf.equalsIgnoreCase("Slide")) {
+                    mapString.put("axn", "table/slides");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+                } else if (masterOf.equalsIgnoreCase(Constants.SETUP)) {
+                    mapString.put("axn", "table/setups");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+                } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN)) {
+                    mapString.put("axn", "get/tp");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+                } else if (masterOf.equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
+                    mapString.put("axn", "get/stp");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+                } else if (masterOf.equalsIgnoreCase(Constants.ACTIVITY)) {
+                    mapString.put("axn", "get/activity");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+                } else if (masterOf.equalsIgnoreCase(Constants.SURVEY)) {
+                    mapString.put("axn", "get/survey");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+                } else if (masterOf.equalsIgnoreCase(Constants.CHECK_IN)) {
+                    mapString.put("axn", "get/checKin");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+                }
 
-            if (call != null) {
-                call.enqueue(new Callback<JsonElement>() {
-                    @SuppressLint("NotifyDataSetChanged")
-                    @Override
-                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                        masterSyncItemModels.get(position).setPBarVisibility(false);
-                        ++apiSuccessCount;
-                        Log.e("response :   ", remoteTableName + " : " + response.body().toString());
-                        boolean success = false;
-                        JSONArray jsonArray = new JSONArray();
-                        JSONObject jsonObject2 = new JSONObject();
-                        if (response.isSuccessful()) {
-                            Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + response.body().toString());
-                            try {
-                                JsonElement jsonElement = response.body();
-                                if (!jsonElement.isJsonNull()) {
-                                    if (jsonElement.isJsonArray()) {
-                                        jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-                                        success = true;
-                                    } else if (jsonElement.isJsonObject()) {
-                                        jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
-                                        if (!jsonObject2.has("success")) {
-                                            // response as jsonObject with {"success" : "fail" } will be received only when there are unformed object passed or there are no data in back end.
-                                            jsonArray.put(jsonObject2);
+                if (call != null) {
+                    call.enqueue(new Callback<JsonElement>() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                            masterSyncItemModels.get(position).setPBarVisibility(false);
+                            ++apiSuccessCount;
+                            Log.e("response :   ", remoteTableName + " : " + response.body().toString());
+                            boolean success = false;
+                            JSONArray jsonArray = new JSONArray();
+                            JSONObject jsonObject2 = new JSONObject();
+                            if (response.isSuccessful()) {
+                                Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + response.body().toString());
+                                try {
+                                    JsonElement jsonElement = response.body();
+                                    if (!jsonElement.isJsonNull()) {
+                                        if (jsonElement.isJsonArray()) {
+                                            jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
                                             success = true;
-                                        } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
-                                            masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
-                                            masterSyncItemModels.get(position).setSyncSuccess(1);
+                                        } else if (jsonElement.isJsonObject()) {
+                                            jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
+                                            if (!jsonObject2.has("success")) {
+                                                // response as jsonObject with {"success" : "fail" } will be received only when there are unformed object passed or there are no data in back end.
+                                                jsonArray.put(jsonObject2);
+                                                success = true;
+                                            } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                                masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
+                                                masterSyncItemModels.get(position).setSyncSuccess(1);
+                                            }
                                         }
-                                    }
 
-                                    if (success) {
-                                        masterSyncItemModels.get(position).setCount(jsonArray.length());
-                                        masterSyncItemModels.get(position).setSyncSuccess(2);
-                                        masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 2));
-                                        if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)) {
-                                            isCallSynced = true;
-                                            CallDataRestClass.resetcallValues(context);
-                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC_DUP, jsonArray.toString(), 2));
-                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.DATE_SYNC)) {
-                                            isDateSynced = true;
-                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC_DUP, jsonArray.toString(), 2));
-                                        } else if (!rsf.isEmpty() && masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.JOINT_WORK + rsf)) {
-                                            JSONObject jointWorkJsonObject = new JSONObject();
-                                            jointWorkJsonObject.put("Code", SharedPref.getSfCode(MasterSyncActivity.this));
-                                            jointWorkJsonObject.put("Name", Constants.INDEPENDENT);
-                                            jointWorkJsonObject.put("SfName", Constants.INDEPENDENT);
-                                            jointWorkJsonObject.put("Reporting_To_SF", "");
-                                            jointWorkJsonObject.put("OwnDiv", "");
-                                            jointWorkJsonObject.put("Division_Code", SharedPref.getDivisionCode(MasterSyncActivity.this));
-                                            jointWorkJsonObject.put("SF_Status", "");
-                                            jointWorkJsonObject.put("ActFlg", "");
-                                            jointWorkJsonObject.put("UsrDfd_UserName", "");
-                                            jointWorkJsonObject.put("DS_name", "");
-                                            jointWorkJsonObject.put("sf_type", SharedPref.getSfType(MasterSyncActivity.this));
-                                            jointWorkJsonObject.put("Desig", SharedPref.getDesig(MasterSyncActivity.this));
-                                            jointWorkJsonObject.put("steps", "");
+                                        if (success) {
+                                            masterSyncItemModels.get(position).setCount(jsonArray.length());
+                                            masterSyncItemModels.get(position).setSyncSuccess(2);
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 2));
+                                            if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)) {
+                                                isCallSynced = true;
+                                                CallDataRestClass.resetcallValues(context);
+                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC_DUP, jsonArray.toString(), 2));
+                                            } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.DATE_SYNC)) {
+                                                isDateSynced = true;
+                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC_DUP, jsonArray.toString(), 2));
+                                            } else if (!rsf.isEmpty() && masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.JOINT_WORK + rsf)) {
+                                                JSONObject jointWorkJsonObject = new JSONObject();
+                                                jointWorkJsonObject.put("Code", SharedPref.getSfCode(MasterSyncActivity.this));
+                                                jointWorkJsonObject.put("Name", Constants.INDEPENDENT);
+                                                jointWorkJsonObject.put("SfName", Constants.INDEPENDENT);
+                                                jointWorkJsonObject.put("Reporting_To_SF", "");
+                                                jointWorkJsonObject.put("OwnDiv", "");
+                                                jointWorkJsonObject.put("Division_Code", SharedPref.getDivisionCode(MasterSyncActivity.this));
+                                                jointWorkJsonObject.put("SF_Status", "");
+                                                jointWorkJsonObject.put("ActFlg", "");
+                                                jointWorkJsonObject.put("UsrDfd_UserName", "");
+                                                jointWorkJsonObject.put("DS_name", "");
+                                                jointWorkJsonObject.put("sf_type", SharedPref.getSfType(MasterSyncActivity.this));
+                                                jointWorkJsonObject.put("Desig", SharedPref.getDesig(MasterSyncActivity.this));
+                                                jointWorkJsonObject.put("steps", "");
 
-                                            JSONArray jointWorkJsonArray = new JSONArray();
-                                            jointWorkJsonArray.put(jointWorkJsonObject);
-                                            for (int i = 0; i < jsonArray.length(); i++) {
-                                                jointWorkJsonObject = jsonArray.optJSONObject(i);
+                                                JSONArray jointWorkJsonArray = new JSONArray();
                                                 jointWorkJsonArray.put(jointWorkJsonObject);
+                                                for (int i = 0; i < jsonArray.length(); i++) {
+                                                    jointWorkJsonObject = jsonArray.optJSONObject(i);
+                                                    jointWorkJsonArray.put(jointWorkJsonObject);
+                                                }
+                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.JOINT_WORK + rsf, jointWorkJsonArray.toString(), 2));
                                             }
-                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.JOINT_WORK + rsf, jointWorkJsonArray.toString(), 2));
-                                        }
-                                        if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
-                                            if (jsonArray.length() > 0) {
-                                                JSONObject jsonObject1 = jsonArray.getJSONObject(0);
-                                                JSONArray stockBalanceArray = jsonObject1.getJSONArray("Sample_Stock");
-                                                JSONArray inputBalanceArray = jsonObject1.getJSONArray("Input_Stock");
-                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 2));
-                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 2));
-                                            }
-                                        } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_multitpnew"))) {
-                                            if (jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")) {
-                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
-                                            } else {
-                                                SaveTourPlan(jsonArray.getJSONObject(0));
-                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
-                                            }
-                                        } else if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
-                                            /*String TourPlanOfflineDataDao = String.valueOf(tourPlanOfflineDataDao);
-                                                isFrom = TourPlanOfflineDataDao;
-                                                if ((!TourPlanActivity.dayWiseArrayPrevMonthOneBuild.isEmpty()) && isFrom.equalsIgnoreCase(TourPlanOfflineDataDao) || (!TourPlanActivity.dayWiseArrayCurrentMonthOneBuild.isEmpty()) && isFrom.equalsIgnoreCase(TourPlanOfflineDataDao) || (!TourPlanActivity.dayWiseArrayNextMonthOneBuild.isEmpty() && isFrom.equalsIgnoreCase(TourPlanOfflineDataDao)) ) {
-                                                    Log.d("CheckIfBlock", "CurrentMonthOneBuild size: " + TourPlanActivity.dayWiseArrayPrevMonthOneBuild.size());
-                                                    Log.d("CheckIfBlock", "CurrentMonthOneBuild size: " + TourPlanActivity.dayWiseArrayCurrentMonthOneBuild.size());
-                                                    Log.d("CheckIfBlock", "CurrentMonthOneBuild size: " + TourPlanActivity.dayWiseArrayNextMonthOneBuild.size());
-                                                    NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
-                                                        @SuppressLint("NotifyDataSetChanged")
-                                                        @Override
-                                                        public void isNetworkAvailable(Boolean status) {
-                                                            String monthYearPrev = monthYearFromDate(localDate.minusMonths(1));
-                                                            String monthYearCurr = monthYearFromDate(localDate);
-                                                            String monthYearNext = monthYearFromDate(localDate.plusMonths(1));
-
-                                                            if (monthYearPrev != null && !monthYearPrev.isEmpty() && !TourPlanActivity.dayWiseArrayPrevMonthOneBuild.isEmpty()) {
-                                                                getDraftSaveOneBuild1("prev", TourPlanActivity.dayWiseArrayPrevMonthOneBuild, status);
-                                                            } else if (monthYearCurr != null && !monthYearCurr.isEmpty() && !TourPlanActivity.dayWiseArrayCurrentMonthOneBuild.isEmpty()) {
-                                                                getDraftSaveOneBuild1("current", TourPlanActivity.dayWiseArrayCurrentMonthOneBuild, status);
-                                                            } else if (monthYearNext != null && !monthYearNext.isEmpty() && !TourPlanActivity.dayWiseArrayNextMonthOneBuild.isEmpty()) {
-                                                                getDraftSaveOneBuild1("next", TourPlanActivity.dayWiseArrayNextMonthOneBuild, status);
-                                                            }
-                                                        }
-                                                    });
-                                                    networkStatusTask.execute();*/
-//                                                } else {
-                                            if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
+                                            if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
+                                                if (jsonArray.length() > 0) {
+                                                    JSONObject jsonObject1 = jsonArray.getJSONObject(0);
+                                                    JSONArray stockBalanceArray = jsonObject1.getJSONArray("Sample_Stock");
+                                                    JSONArray inputBalanceArray = jsonObject1.getJSONArray("Input_Stock");
+                                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 2));
+                                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 2));
+                                                }
+                                            } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_multitpnew"))) {
                                                 if (jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")) {
                                                     SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                                                 } else {
-                                                    SaveTourPlanOne(jsonArray.getJSONObject(0));
+                                                    SaveTourPlan(jsonArray.getJSONObject(0));
                                                     SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
                                                 }
-                                            }
+                                            } else if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+                                                if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
+                                                    if (jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")) {
+                                                        SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
+                                                    } else {
+                                                        SaveTourPlanOne(jsonArray.getJSONObject(0));
+                                                        SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
+                                                    }
+                                                }
 //                                            }
 
-                                        } else if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
-                                            if (mgrInitialSync) {
-                                                setHq(jsonArray);
-                                                return;
-                                            }
-                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE)) {
-                                            if (jsonArray.length() > 0) {
-                                                insertSlide(jsonArray);
-                                                if (!navigateFrom.equalsIgnoreCase("Login")) {
-                                                    SlideAlertbox(true);
+                                            } else if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
+                                                if (mgrInitialSync) {
+                                                    setHq(jsonArray);
+                                                    return;
                                                 }
-                                            }
-                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.WELCOME_SLIDE)) {
-                                            if (jsonArray.length() > 0) {
-                                                insertWelcomeSlide(jsonArray);
-                                                if (!navigateFrom.equalsIgnoreCase("Login")) {
-                                                    welcomeSlideAlertBox(true);
+                                            } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE)) {
+                                                if (jsonArray.length() > 0) {
+                                                    insertSlide(jsonArray);
+                                                    if (!navigateFrom.equalsIgnoreCase("Login")) {
+                                                        SlideAlertbox(true);
+                                                    }
                                                 }
-                                            }
-                                        } else if (!navigateFrom.equalsIgnoreCase("Login") && masterOf.equalsIgnoreCase(Constants.SETUP) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
-                                            if (jsonArray.length() > 0) {
-                                                SharedPref.InsertLogInData(MasterSyncActivity.this, jsonArray.getJSONObject(0));
-                                                if (!navigateFrom.equalsIgnoreCase("Slide")) {
-                                                    Intent intent = getIntent();
-                                                    overridePendingTransition(0, 0);
-                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                                    finish();
-                                                    overridePendingTransition(0, 0);
-                                                    startActivity(intent);
+                                            } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.WELCOME_SLIDE)) {
+                                                if (jsonArray.length() > 0) {
+                                                    insertWelcomeSlide(jsonArray);
+                                                    if (!navigateFrom.equalsIgnoreCase("Login")) {
+                                                        welcomeSlideAlertBox(true);
+                                                    }
                                                 }
-                                            }
-                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
-                                            stpOfflineDataDao.deleteAllData("0");
-                                            saveSTPDataToLocal();
-                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
-                                            activityDetailsDataDao.deleteAllData();
+                                            } else if (!navigateFrom.equalsIgnoreCase("Login") && masterOf.equalsIgnoreCase(Constants.SETUP) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
+                                                if (jsonArray.length() > 0) {
+                                                    SharedPref.InsertLogInData(MasterSyncActivity.this, jsonArray.getJSONObject(0));
+                                                    if (!navigateFrom.equalsIgnoreCase("Slide")) {
+                                                        Intent intent = getIntent();
+                                                        overridePendingTransition(0, 0);
+                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                                        finish();
+                                                        overridePendingTransition(0, 0);
+                                                        startActivity(intent);
+                                                    }
+                                                }
+                                            } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
+                                                stpOfflineDataDao.deleteAllData("0");
+                                                saveSTPDataToLocal();
+                                            } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
+                                                activityDetailsDataDao.deleteAllData();
 //                                            syncIndividualActivityDetails();
-                                        }
-                                        JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
-                                        for (int bean = 0; bean < input.length(); bean++) {
-                                            try {
-                                                JSONObject setUpObject = input.getJSONObject(bean);
-                                                String appAccess = setUpObject.getString("sanzen_edet");
-                                                if (!appAccess.equals("1")) {
-                                                    CommonUtilsMethods.accessDialogBox(MasterSyncActivity.this);
+                                            }
+                                            JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
+                                            for (int bean = 0; bean < input.length(); bean++) {
+                                                try {
+                                                    JSONObject setUpObject = input.getJSONObject(bean);
+                                                    String appAccess = setUpObject.getString("sanzen_edet");
+                                                    if (!appAccess.equals("1")) {
+                                                        CommonUtilsMethods.accessDialogBox(MasterSyncActivity.this);
+                                                    }
+                                                } catch (JSONException e) {
+                                                    throw new RuntimeException(e);
                                                 }
-                                            } catch (JSONException e) {
-                                                throw new RuntimeException(e);
                                             }
                                         }
-                                    }
-                                } else {
-                                    masterSyncItemModels.get(position).setSyncSuccess(1);
-                                    masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
+                                    } else {
+                                        masterSyncItemModels.get(position).setSyncSuccess(1);
+                                        masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
 //                                    if (navigateFrom.equalsIgnoreCase("Login")) {
 //                                        masterSyncAll(false);
 //                                    }
+                                    }
+                                    checkAndSetStatus(masterSyncItemModels.get(position));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                                checkAndSetStatus(masterSyncItemModels.get(position));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+                            } else {
+                                if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
                       /*          NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
                                     @SuppressLint("NotifyDataSetChanged")
                                     @Override
@@ -1907,6 +1878,59 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 });
                                 networkStatusTask.execute();*/
 
+                                    if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
+                                        SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
+                                    }
+                                } else {
+                                    if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_multitp"))) {
+                                        SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
+                                    }
+                                }
+                                masterSyncItemModels.get(position).setSyncSuccess(1);
+                                masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
+                                checkAndSetStatus(masterSyncItemModels.get(position));
+                            }
+
+                            // when all the masters are synced and intent from Login Activity
+                            if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
+                                if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
+                                    SharedPref.putAutomassync(getApplicationContext(), true);
+                                    //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                                    binding.backArrow.setVisibility(View.VISIBLE);
+                                    binding.imgDownloading.setVisibility(View.VISIBLE);
+//                                if(!isSlideDownloading) {
+//                                    isSlideDownloading = true;
+                                    SlideAlertbox(true);
+//                                }
+                                } else if (masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
+//                                SharedPref.putAutomassync(getApplicationContext(), true);
+                                    //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                                    binding.backArrow.setVisibility(View.VISIBLE);
+                                    binding.imgDownloading.setVisibility(View.VISIBLE);
+//                                if(!isWelcomeSlideDownloading) {
+//                                    isWelcomeSlideDownloading = true;
+                                    welcomeSlideAlertBox(true);
+//                                }
+                                } else {
+                                    binding.imgDownloading.setVisibility(View.VISIBLE);
+                                    binding.backArrow.setVisibility(View.VISIBLE);
+                                    SharedPref.putAutomassync(getApplicationContext(), true);
+                                    //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                                    Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }
+                            masterSyncAdapter.notifyDataSetChanged();
+                            Log.e("test", "success count : " + apiSuccessCount);
+                        }
+
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+                            if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
                                 if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
                                     SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                                 }
@@ -1915,93 +1939,41 @@ public class MasterSyncActivity extends AppCompatActivity {
                                     SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                                 }
                             }
-                            masterSyncItemModels.get(position).setSyncSuccess(1);
+                            Log.e("test", "failed : " + t);
+                            ++apiSuccessCount;
+                            Log.d("SyncStatus", "API success count (after failure): " + apiSuccessCount);
                             masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
+                            masterSyncItemModels.get(position).setPBarVisibility(false);
+                            masterSyncItemModels.get(position).setSyncSuccess(1);
+                            masterSyncAdapter.notifyDataSetChanged();
                             checkAndSetStatus(masterSyncItemModels.get(position));
-                        }
-
-                        // when all the masters are synced and intent from Login Activity
-                        if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
-                            if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
-                                SharedPref.putAutomassync(getApplicationContext(), true);
-                                //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
-                                binding.backArrow.setVisibility(View.VISIBLE);
-                                binding.imgDownloading.setVisibility(View.VISIBLE);
-//                                if(!isSlideDownloading) {
-//                                    isSlideDownloading = true;
-                                SlideAlertbox(true);
-//                                }
-                            } else if (masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
-//                                SharedPref.putAutomassync(getApplicationContext(), true);
-                                //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
-                                binding.backArrow.setVisibility(View.VISIBLE);
-                                binding.imgDownloading.setVisibility(View.VISIBLE);
-//                                if(!isWelcomeSlideDownloading) {
-//                                    isWelcomeSlideDownloading = true;
-                                welcomeSlideAlertBox(true);
-//                                }
-                            } else {
-                                binding.imgDownloading.setVisibility(View.VISIBLE);
+                            if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 SharedPref.putAutomassync(getApplicationContext(), true);
-                                //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
-                                Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish();
-                            }
-                        }
-                        masterSyncAdapter.notifyDataSetChanged();
-                        Log.e("test", "success count : " + apiSuccessCount);
-                    }
-
-                    @SuppressLint("NotifyDataSetChanged")
-                    @Override
-                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-
-                        if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
-                            if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
-                                SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
-                            }
-                        } else {
-                            if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_multitp"))) {
-                                SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
-                            }
-                        }
-                        Log.e("test", "failed : " + t);
-                        ++apiSuccessCount;
-                        Log.d("SyncStatus", "API success count (after failure): " + apiSuccessCount);
-                        masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
-                        masterSyncItemModels.get(position).setPBarVisibility(false);
-                        masterSyncItemModels.get(position).setSyncSuccess(1);
-                        masterSyncAdapter.notifyDataSetChanged();
-                        checkAndSetStatus(masterSyncItemModels.get(position));
-                        if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
-                            binding.backArrow.setVisibility(View.VISIBLE);
-                            SharedPref.putAutomassync(getApplicationContext(), true);
-                            SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
-                            if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
-                                binding.backArrow.setVisibility(View.VISIBLE);
-                                binding.imgDownloading.setVisibility(View.VISIBLE);
-                                SlideAlertbox(true);
-                            } else if (masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
-                                binding.backArrow.setVisibility(View.VISIBLE);
-                                binding.imgDownloading.setVisibility(View.VISIBLE);
-                                welcomeSlideAlertBox(true);
-                            } else {
-                                binding.backArrow.setVisibility(View.VISIBLE);
-                                binding.imgDownloading.setVisibility(View.VISIBLE);
                                 SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
-                                SharedPref.putAutomassync(getApplicationContext(), true);
-                                Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish();
+                                if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
+                                    binding.backArrow.setVisibility(View.VISIBLE);
+                                    binding.imgDownloading.setVisibility(View.VISIBLE);
+                                    SlideAlertbox(true);
+                                } else if (masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
+                                    binding.backArrow.setVisibility(View.VISIBLE);
+                                    binding.imgDownloading.setVisibility(View.VISIBLE);
+                                    welcomeSlideAlertBox(true);
+                                } else {
+                                    binding.backArrow.setVisibility(View.VISIBLE);
+                                    binding.imgDownloading.setVisibility(View.VISIBLE);
+                                    SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
+                                    SharedPref.putAutomassync(getApplicationContext(), true);
+                                    Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                    finish();
+                                }
                             }
                         }
-                    }
-                });
-            }
+                    });
+                }
+
         } catch (Exception e) {
             Log.v("masterCheck", "--error-" + e);
             e.printStackTrace();
@@ -3508,7 +3480,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     }
 
     public void getDraftSaveOneBuild1(String isClickedName, ArrayList<OneBuildModelClass> arrayList, boolean statusOffline) {
-        SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0");
+//        SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0");
 //        NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
 //            if (status) {
         try {
@@ -3533,378 +3505,379 @@ public class MasterSyncActivity extends AppCompatActivity {
 
 
             JsonObject tourPlan = new JsonObject();
+//            for (OneBuildModelClass oneBuildModelClassTp : arrayList) {
             OneBuildModelClass oneBuildModelClassTp = arrayList.get(10);
-            tourPlan.addProperty("SFCode", SharedPref.getSfCode(MasterSyncActivity.this));
-            tourPlan.addProperty("SFName", SharedPref.getSfName(MasterSyncActivity.this));
-            tourPlan.addProperty("Month", Integer.parseInt(oneBuildModelClassTp.getMonth()));
-            tourPlan.addProperty("Year", Integer.parseInt(oneBuildModelClassTp.getYear()));
-            tourPlan.addProperty("DivisionCode", SharedPref.getDivisionCode(MasterSyncActivity.this).replace(",", ""));
+                tourPlan.addProperty("SFCode", SharedPref.getSfCode(MasterSyncActivity.this));
+                tourPlan.addProperty("SFName", SharedPref.getSfName(MasterSyncActivity.this));
+                tourPlan.addProperty("Month", oneBuildModelClassTp.getMonth());
+                tourPlan.addProperty("Year", oneBuildModelClassTp.getYear());
+                tourPlan.addProperty("DivisionCode", SharedPref.getDivisionCode(MasterSyncActivity.this).replace(",", ""));
+//            }
 
 
             JsonArray detailsArray = new JsonArray();
 
             for (OneBuildModelClass oneBuildModelClass : arrayList) {
                 if (!oneBuildModelClass.getDayNo().isEmpty()) {
-                    if (!oneBuildModelClass.getDayNo().equals(arrayList)) {
-                        String WorkTypeName = "", WorkTypeFlag = "", WorkTypeCode = "", SessionId = "", Remarks = "", WorkTypeName2 = "", WorkTypeFlag2 = "", WorkTypeCode2 = "", SessionId2 = "", Remarks2 = "", WorkTypeName3 = "", WorkTypeFlag3 = "", WorkTypeCode3 = "", SessionId3 = "", Remarks3 = "";
-                        String HeadquartersName = "", HeadquartersCode = "", TerritoriesName = "", TerritoriesCode = "", JWName = "", JWCode = "", CheName = "", CheCode = "", DrName = "", DrCode = "", UnDrName = "", UnDrCode = "", StkName = "", StkCode = "", CipName = "", CipCode = "", HospName = "", HospCode = "";
-                        String HeadquartersName2 = "", HeadquartersCode2 = "", TerritoriesName2 = "", TerritoriesCode2 = "", JWName2 = "", JWCode2 = "", CheName2 = "", CheCode2 = "", DrName2 = "", DrCode2 = "", UnDrName2 = "", UnDrCode2 = "", StkName2 = "", StkCode2 = "", CipName2 = "", CipCode2 = "", HospName2 = "", HospCode2 = "";
-                        String HeadquartersName3 = "", HeadquartersCode3 = "", TerritoriesName3 = "", TerritoriesCode3 = "", JWName3 = "", JWCode3 = "", CheName3 = "", CheCode3 = "", DrName3 = "", DrCode3 = "", UnDrName3 = "", UnDrCode3 = "", StkName3 = "", StkCode3 = "", CipName3 = "", CipCode3 = "", HospName3 = "", HospCode3 = "";
+                    String WorkTypeName = "", WorkTypeFlag = "", WorkTypeCode = "", SessionId = "", Remarks = "", WorkTypeName2 = "", WorkTypeFlag2 = "", WorkTypeCode2 = "", SessionId2 = "", Remarks2 = "", WorkTypeName3 = "", WorkTypeFlag3 = "", WorkTypeCode3 = "", SessionId3 = "", Remarks3 = "";
+                    String HeadquartersName = "", HeadquartersCode = "", TerritoriesName = "", TerritoriesCode = "", JWName = "", JWCode = "", CheName = "", CheCode = "", DrName = "", DrCode = "", UnDrName = "", UnDrCode = "", StkName = "", StkCode = "", CipName = "", CipCode = "", HospName = "", HospCode = "";
+                    String HeadquartersName2 = "", HeadquartersCode2 = "", TerritoriesName2 = "", TerritoriesCode2 = "", JWName2 = "", JWCode2 = "", CheName2 = "", CheCode2 = "", DrName2 = "", DrCode2 = "", UnDrName2 = "", UnDrCode2 = "", StkName2 = "", StkCode2 = "", CipName2 = "", CipCode2 = "", HospName2 = "", HospCode2 = "";
+                    String HeadquartersName3 = "", HeadquartersCode3 = "", TerritoriesName3 = "", TerritoriesCode3 = "", JWName3 = "", JWCode3 = "", CheName3 = "", CheCode3 = "", DrName3 = "", DrCode3 = "", UnDrName3 = "", UnDrCode3 = "", StkName3 = "", StkCode3 = "", CipName3 = "", CipCode3 = "", HospName3 = "", HospCode3 = "";
 
-                        for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
-                            OneBuildModelClass.SessionList sessionList_OneBuild = oneBuildModelClass.getSessionList().get(i);
+                    for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
+                        OneBuildModelClass.SessionList sessionList_OneBuild = oneBuildModelClass.getSessionList().get(i);
+
+                        if (i == 0) {
+                            WorkTypeName = sessionList_OneBuild.getWorkType().getName();
+                            WorkTypeCode = sessionList_OneBuild.getWorkType().getCode();
+                            WorkTypeFlag = sessionList_OneBuild.getWorkType().getFWFlg();
+                            SessionId = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                            Remarks = sessionList_OneBuild.getRemarks();
+
+                            if (sessionList_OneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
+                                HeadquartersName = sessionList_OneBuild.getHeadquarters().getName();
+                                HeadquartersCode = sessionList_OneBuild.getHeadquarters().getCode();
+                            }
+                            TerritoriesName = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                            TerritoriesCode = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+                            JWName = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                            JWCode = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+
+                            CheName = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                            CheCode = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                            DrName = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                            DrCode = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                            UnDrName = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                            UnDrCode = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                            StkName = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
+                            StkCode = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                            CipName = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                            CipCode = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                            HospName = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                            HospCode = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+
+                        } else if (i == 1) {
+                            WorkTypeName2 = sessionList_OneBuild.getWorkType().getName();
+                            WorkTypeCode2 = sessionList_OneBuild.getWorkType().getCode();
+                            WorkTypeFlag2 = sessionList_OneBuild.getWorkType().getFWFlg();
+                            SessionId2 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                            Remarks2 = sessionList_OneBuild.getRemarks();
+
+                            HeadquartersName2 = sessionList_OneBuild.getHeadquarters().getName();
+                            HeadquartersCode2 = sessionList_OneBuild.getHeadquarters().getCode();
+                            TerritoriesName2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                            TerritoriesCode2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+                            JWName2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                            JWCode2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+
+                            CheName2 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                            CheCode2 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                            DrName2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                            DrCode2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                            UnDrName2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                            UnDrCode2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                            StkName2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
+                            StkCode2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                            CipName2 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                            CipCode2 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                            HospName2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                            HospCode2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+
+                        } else if (i == 2) {
+                            WorkTypeName3 = sessionList_OneBuild.getWorkType().getName();
+                            WorkTypeCode3 = sessionList_OneBuild.getWorkType().getCode();
+                            WorkTypeFlag3 = sessionList_OneBuild.getWorkType().getFWFlg();
+                            SessionId3 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
+                            Remarks3 = sessionList_OneBuild.getRemarks();
+
+                            HeadquartersName3 = sessionList_OneBuild.getHeadquarters().getName();
+                            HeadquartersCode3 = sessionList_OneBuild.getHeadquarters().getCode();
+                            TerritoriesName3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
+                            TerritoriesCode3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
+
+                            JWName3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
+                            JWCode3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
+                            CheName3 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
+                            CheCode3 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
+                            DrName3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
+                            DrCode3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
+                            UnDrName3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
+                            UnDrCode3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
+                            StkName3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
+                            StkCode3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                            CipName3 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
+                            CipCode3 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
+                            HospName3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
+                            HospCode3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+                        }
+                    }
+
+
+                    //Sessions
+                    JsonArray Sessions = new JsonArray();
+                    for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
+                        if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+                            JsonObject SessionsObj = new JsonObject();
+                            if (i == 0) {
+                                if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+
+                                    SessionsObj.addProperty("WorkTypeCode", WorkTypeCode);
+                                    SessionsObj.addProperty("WorkTypeName", WorkTypeName);
+                                    SessionsObj.addProperty("Id", i);
+                                    SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag);
+                                    SessionsObj.addProperty("Remark", Remarks);
+                                }
+                            } else if (i == 1) {
+                                if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+
+                                    SessionsObj.addProperty("WorkTypeCode", WorkTypeCode2);
+                                    SessionsObj.addProperty("WorkTypeName", WorkTypeName2);
+                                    SessionsObj.addProperty("Id", i);
+                                    SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag2);
+                                    SessionsObj.addProperty("Remark", Remarks2);
+                                }
+                            } else if (i == 2) {
+                                if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+
+                                    SessionsObj.addProperty("WorkTypeCode", WorkTypeCode3);
+                                    SessionsObj.addProperty("WorkTypeName", WorkTypeName3);
+                                    SessionsObj.addProperty("Id", i);
+                                    SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag3);
+                                    SessionsObj.addProperty("Remark", Remarks3);
+                                }
+                            }
+
+
+                            JsonArray JointWorks = new JsonArray();
+
+                            String nameJw = "";
+                            String codeJw = "";
 
                             if (i == 0) {
-                                WorkTypeName = sessionList_OneBuild.getWorkType().getName();
-                                WorkTypeCode = sessionList_OneBuild.getWorkType().getCode();
-                                WorkTypeFlag = sessionList_OneBuild.getWorkType().getFWFlg();
-                                SessionId = String.valueOf(oneBuildModelClass.getSessionList().get(i));
-                                Remarks = sessionList_OneBuild.getRemarks();
-
-                                if (sessionList_OneBuild.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
-                                    HeadquartersName = sessionList_OneBuild.getHeadquarters().getName();
-                                    HeadquartersCode = sessionList_OneBuild.getHeadquarters().getCode();
-                                }
-                                TerritoriesName = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
-                                TerritoriesCode = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
-                                JWName = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
-                                JWCode = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
-
-                                CheName = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
-                                CheCode = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
-                                DrName = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
-                                DrCode = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
-                                UnDrName = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
-                                UnDrCode = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                                StkName = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                                StkCode = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
-                                CipName = textBuilder_OB(sessionList_OneBuild.getCip(), false);
-                                CipCode = textBuilder_OB(sessionList_OneBuild.getCip(), true);
-                                HospName = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
-                                HospCode = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
-
+                                nameJw = JWName;
+                                codeJw = JWCode;
                             } else if (i == 1) {
-                                WorkTypeName2 = sessionList_OneBuild.getWorkType().getName();
-                                WorkTypeCode2 = sessionList_OneBuild.getWorkType().getCode();
-                                WorkTypeFlag2 = sessionList_OneBuild.getWorkType().getFWFlg();
-                                SessionId2 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
-                                Remarks2 = sessionList_OneBuild.getRemarks();
-
-                                HeadquartersName2 = sessionList_OneBuild.getHeadquarters().getName();
-                                HeadquartersCode2 = sessionList_OneBuild.getHeadquarters().getCode();
-                                TerritoriesName2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
-                                TerritoriesCode2 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
-                                JWName2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
-                                JWCode2 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
-
-                                CheName2 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
-                                CheCode2 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
-                                DrName2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
-                                DrCode2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
-                                UnDrName2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
-                                UnDrCode2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                                StkName2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                                StkCode2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
-                                CipName2 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
-                                CipCode2 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
-                                HospName2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
-                                HospCode2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
-
+                                nameJw = JWName2;
+                                codeJw = JWCode2;
                             } else if (i == 2) {
-                                WorkTypeName3 = sessionList_OneBuild.getWorkType().getName();
-                                WorkTypeCode3 = sessionList_OneBuild.getWorkType().getCode();
-                                WorkTypeFlag3 = sessionList_OneBuild.getWorkType().getFWFlg();
-                                SessionId3 = String.valueOf(oneBuildModelClass.getSessionList().get(i));
-                                Remarks3 = sessionList_OneBuild.getRemarks();
-
-                                HeadquartersName3 = sessionList_OneBuild.getHeadquarters().getName();
-                                HeadquartersCode3 = sessionList_OneBuild.getHeadquarters().getCode();
-                                TerritoriesName3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), false);
-                                TerritoriesCode3 = textBuilder_OB(sessionList_OneBuild.getTerritories(), true);
-
-                                JWName3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), false);
-                                JWCode3 = textBuilder_OB(sessionList_OneBuild.getJointWorks(), true);
-                                CheName3 = textBuilder_OB(sessionList_OneBuild.getChemists(), false);
-                                CheCode3 = textBuilder_OB(sessionList_OneBuild.getChemists(), true);
-                                DrName3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), false);
-                                DrCode3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
-                                UnDrName3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
-                                UnDrCode3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                                StkName3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                                StkCode3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
-                                CipName3 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
-                                CipCode3 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
-                                HospName3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
-                                HospCode3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), true);
+                                nameJw = JWName3;
+                                codeJw = JWCode3;
                             }
-                        }
 
+                            if (!nameJw.isEmpty() && !codeJw.isEmpty()) {
+                                String[] nameArr = nameJw.split(",");
+                                String[] codeArr = codeJw.split(",");
 
-                        //Sessions
-                        JsonArray Sessions = new JsonArray();
-                        for (int i = 0; i < oneBuildModelClass.getSessionList().size(); i++) {
-                            if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
-                                JsonObject SessionsObj = new JsonObject();
-                                if (i == 0) {
-                                    if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
+                                int length = Math.min(nameArr.length, codeArr.length);
 
-                                        SessionsObj.addProperty("WorkTypeCode", WorkTypeCode);
-                                        SessionsObj.addProperty("WorkTypeName", WorkTypeName);
-                                        SessionsObj.addProperty("Id", i);
-                                        SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag);
-                                        SessionsObj.addProperty("Remark", Remarks);
-                                    }
-                                } else if (i == 1) {
-                                    if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
-
-                                        SessionsObj.addProperty("WorkTypeCode", WorkTypeCode2);
-                                        SessionsObj.addProperty("WorkTypeName", WorkTypeName2);
-                                        SessionsObj.addProperty("Id", i);
-                                        SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag2);
-                                        SessionsObj.addProperty("Remark", Remarks2);
-                                    }
-                                } else if (i == 2) {
-                                    if (!WorkTypeName.isEmpty() && !WorkTypeCode.isEmpty()) {
-
-                                        SessionsObj.addProperty("WorkTypeCode", WorkTypeCode3);
-                                        SessionsObj.addProperty("WorkTypeName", WorkTypeName3);
-                                        SessionsObj.addProperty("Id", i);
-                                        SessionsObj.addProperty("WorkTypeFlag", WorkTypeFlag3);
-                                        SessionsObj.addProperty("Remark", Remarks3);
-                                    }
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject JointWorks_obj = new JsonObject();
+                                    JointWorks_obj.addProperty("Name", nameArr[j].trim());
+                                    JointWorks_obj.addProperty("Id", codeArr[j].trim());
+                                    JointWorks.add(JointWorks_obj);
                                 }
+                            }
 
 
-                                JsonArray JointWorks = new JsonArray();
+                            //Territories
+                            JsonArray Territories = new JsonArray();
+                            String nameTerr = "";
+                            String codeTerr = "";
+                            if (i == 0) {
+                                nameTerr = TerritoriesName;
+                                codeTerr = TerritoriesCode;
+                            } else if (i == 1) {
+                                nameTerr = TerritoriesName2;
+                                codeTerr = TerritoriesCode2;
+                            } else if (i == 2) {
+                                nameTerr = TerritoriesName3;
+                                codeTerr = TerritoriesCode3;
+                            }
+                            if (!nameTerr.isEmpty() && !codeTerr.isEmpty()) {
+                                String[] nameArr = nameTerr.split(",");
+                                String[] codeArr = codeTerr.split(",");
 
-                                String nameJw = "";
-                                String codeJw = "";
+                                int length = Math.min(nameArr.length, codeArr.length);
 
-                                if (i == 0) {
-                                    nameJw = JWName;
-                                    codeJw = JWCode;
-                                } else if (i == 1) {
-                                    nameJw = JWName2;
-                                    codeJw = JWCode2;
-                                } else if (i == 2) {
-                                    nameJw = JWName3;
-                                    codeJw = JWCode3;
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject Territories_obj = new JsonObject();
+                                    Territories_obj.addProperty("Name", nameArr[j].trim());
+                                    Territories_obj.addProperty("Id", codeArr[j].trim());
+                                    Territories.add(Territories_obj);
                                 }
+                            }
 
-                                if (!nameJw.isEmpty() && !codeJw.isEmpty()) {
-                                    String[] nameArr = nameJw.split(",");
-                                    String[] codeArr = codeJw.split(",");
 
-                                    int length = Math.min(nameArr.length, codeArr.length);
+                            //Headquarters
+                            JsonArray Headquarters = new JsonArray();
+                            String nameHq = "";
+                            String codeHq = "";
+                            if (i == 0) {
+                                nameHq = HeadquartersName;
+                                codeHq = HeadquartersCode;
+                            } else if (i == 1) {
+                                nameHq = HeadquartersName2;
+                                codeHq = HeadquartersCode2;
+                            } else if (i == 2) {
+                                nameHq = HeadquartersName3;
+                                codeHq = HeadquartersCode3;
+                            }
+                            if (!nameHq.isEmpty() && !codeHq.isEmpty()) {
+                                String[] nameArr = nameHq.split(",");
+                                String[] codeArr = codeHq.split(",");
 
-                                    for (int j = 0; j < length; j++) {
-                                        JsonObject JointWorks_obj = new JsonObject();
-                                        JointWorks_obj.addProperty("Name", nameArr[j].trim());
-                                        JointWorks_obj.addProperty("Id", codeArr[j].trim());
-                                        JointWorks.add(JointWorks_obj);
-                                    }
+                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject Headquarters_obj = new JsonObject();
+                                    Headquarters_obj.addProperty("Name", nameArr[j].trim());
+                                    Headquarters_obj.addProperty("Id", codeArr[j].trim());
+                                    Headquarters.add(Headquarters_obj);
                                 }
+                            }
 
+                            //Hospitals
+                            JsonArray Hospitals = new JsonArray();
+                            String nameHosp = "";
+                            String codeHosp = "";
+                            if (i == 0) {
+                                nameHosp = HospName;
+                                codeHosp = HospCode;
+                            } else if (i == 1) {
+                                nameHosp = HospName2;
+                                codeHosp = HospCode2;
+                            } else if (i == 2) {
+                                nameHosp = HospName3;
+                                codeHosp = HospCode3;
+                            }
+                            if (!nameHosp.isEmpty() && !codeHosp.isEmpty()) {
+                                String[] nameArr = nameHosp.split(",");
+                                String[] codeArr = codeHosp.split(",");
 
-                                //Territories
-                                JsonArray Territories = new JsonArray();
-                                String nameTerr = "";
-                                String codeTerr = "";
-                                if (i == 0) {
-                                    nameTerr = TerritoriesName;
-                                    codeTerr = TerritoriesCode;
-                                } else if (i == 1) {
-                                    nameTerr = TerritoriesName2;
-                                    codeTerr = TerritoriesCode2;
-                                } else if (i == 2) {
-                                    nameTerr = TerritoriesName3;
-                                    codeTerr = TerritoriesCode3;
+                                int length = Math.min(nameArr.length, codeArr.length);
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject Hospitals_obj = new JsonObject();
+                                    Hospitals_obj.addProperty("Name", nameArr[j].trim());
+                                    Hospitals_obj.addProperty("Id", codeArr[j].trim());
+                                    Hospitals.add(Hospitals_obj);
                                 }
-                                if (!nameTerr.isEmpty() && !codeTerr.isEmpty()) {
-                                    String[] nameArr = nameTerr.split(",");
-                                    String[] codeArr = codeTerr.split(",");
+                            }
 
-                                    int length = Math.min(nameArr.length, codeArr.length);
+                            //Chemists
+                            JsonArray Chemists = new JsonArray();
+                            String nameChe = "";
+                            String codeChe = "";
+                            if (i == 0) {
+                                nameChe = CheName;
+                                codeChe = CheCode;
+                            } else if (i == 1) {
+                                nameChe = CheName2;
+                                codeChe = CheCode2;
+                            } else if (i == 2) {
+                                nameChe = CheName3;
+                                codeChe = CheCode3;
+                            }
+                            if (!nameChe.isEmpty() && !codeChe.isEmpty()) {
+                                String[] nameArr = nameChe.split(",");
+                                String[] codeArr = codeChe.split(",");
 
-                                    for (int j = 0; j < length; j++) {
-                                        JsonObject Territories_obj = new JsonObject();
-                                        Territories_obj.addProperty("Name", nameArr[j].trim());
-                                        Territories_obj.addProperty("Id", codeArr[j].trim());
-                                        Territories.add(Territories_obj);
-                                    }
+                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject Chemists_obj = new JsonObject();
+                                    Chemists_obj.addProperty("Name", nameArr[j].trim());
+                                    Chemists_obj.addProperty("Id", codeArr[j].trim());
+                                    Chemists.add(Chemists_obj);
                                 }
+                            }
 
+                            //StockLists
+                            JsonArray Stockists = new JsonArray();
+                            String nameStk = "";
+                            String codeStk = "";
+                            if (i == 0) {
+                                nameStk = StkName;
+                                codeStk = StkCode;
+                            } else if (i == 1) {
+                                nameStk = StkName2;
+                                codeStk = StkCode2;
+                            } else if (i == 2) {
+                                nameStk = StkName3;
+                                codeStk = StkCode3;
+                            }
+                            if (!nameStk.isEmpty() && !codeStk.isEmpty()) {
+                                String[] nameArr = nameStk.split(",");
+                                String[] codeArr = codeStk.split(",");
 
-                                //Headquarters
-                                JsonArray Headquarters = new JsonArray();
-                                String nameHq = "";
-                                String codeHq = "";
-                                if (i == 0) {
-                                    nameHq = HeadquartersName;
-                                    codeHq = HeadquartersCode;
-                                } else if (i == 1) {
-                                    nameHq = HeadquartersName2;
-                                    codeHq = HeadquartersCode2;
-                                } else if (i == 2) {
-                                    nameHq = HeadquartersName3;
-                                    codeHq = HeadquartersCode3;
+                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject Stockists_obj = new JsonObject();
+                                    Stockists_obj.addProperty("Name", nameArr[j].trim());
+                                    Stockists_obj.addProperty("Id", codeArr[j].trim());
+                                    Stockists.add(Stockists_obj);
                                 }
-                                if (!nameHq.isEmpty() && !codeHq.isEmpty()) {
-                                    String[] nameArr = nameHq.split(",");
-                                    String[] codeArr = codeHq.split(",");
+                            }
 
-                                    int length = Math.min(nameArr.length, codeArr.length);
+                            //ListedDr
+                            JsonArray Doctors = new JsonArray();
+                            String nameDoc = "";
+                            String codeDoc = "";
+                            if (i == 0) {
+                                nameDoc = DrName;
+                                codeDoc = DrCode;
+                            } else if (i == 1) {
+                                nameDoc = DrName2;
+                                codeDoc = DrCode2;
+                            } else if (i == 2) {
+                                nameDoc = DrName3;
+                                codeDoc = DrCode3;
+                            }
+                            if (!nameDoc.isEmpty() && !codeDoc.isEmpty()) {
+                                String[] nameArr = nameDoc.split(",");
+                                String[] codeArr = codeDoc.split(",");
 
-                                    for (int j = 0; j < length; j++) {
-                                        JsonObject Headquarters_obj = new JsonObject();
-                                        Headquarters_obj.addProperty("Name", nameArr[j].trim());
-                                        Headquarters_obj.addProperty("Id", codeArr[j].trim());
-                                        Headquarters.add(Headquarters_obj);
-                                    }
+                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject Doctors_obj = new JsonObject();
+                                    Doctors_obj.addProperty("Name", nameArr[j].trim());
+                                    Doctors_obj.addProperty("Id", codeArr[j].trim());
+                                    Doctors.add(Doctors_obj);
                                 }
+                            }
 
-                                //Hospitals
-                                JsonArray Hospitals = new JsonArray();
-                                String nameHosp = "";
-                                String codeHosp = "";
-                                if (i == 0) {
-                                    nameHosp = HospName;
-                                    codeHosp = HospCode;
-                                } else if (i == 1) {
-                                    nameHosp = HospName2;
-                                    codeHosp = HospCode2;
-                                } else if (i == 2) {
-                                    nameHosp = HospName3;
-                                    codeHosp = HospCode3;
+                            //UnlistedDr
+
+                            JsonArray UnlistedDoctors = new JsonArray();
+                            String nameUnDr = "";
+                            String codeUmDr = "";
+                            if (i == 0) {
+                                nameUnDr = UnDrName;
+                                codeUmDr = UnDrCode;
+                            } else if (i == 1) {
+                                nameUnDr = UnDrName2;
+                                codeUmDr = UnDrCode2;
+                            } else if (i == 2) {
+                                nameUnDr = UnDrName3;
+                                codeUmDr = UnDrCode3;
+                            }
+                            if (!nameUnDr.isEmpty() && !codeUmDr.isEmpty()) {
+                                String[] nameArr = nameUnDr.split(",");
+                                String[] codeArr = codeUmDr.split(",");
+
+                                int length = Math.min(nameArr.length, codeArr.length);
+
+                                for (int j = 0; j < length; j++) {
+                                    JsonObject UnlistedDoctors_obj = new JsonObject();
+                                    UnlistedDoctors_obj.addProperty("Name", nameArr[j].trim());
+                                    UnlistedDoctors_obj.addProperty("Id", codeArr[j].trim());
+                                    UnlistedDoctors.add(UnlistedDoctors_obj);
                                 }
-                                if (!nameHosp.isEmpty() && !codeHosp.isEmpty()) {
-                                    String[] nameArr = nameHosp.split(",");
-                                    String[] codeArr = codeHosp.split(",");
-
-                                    int length = Math.min(nameArr.length, codeArr.length);
-                                    for (int j = 0; j < length; j++) {
-                                        JsonObject Hospitals_obj = new JsonObject();
-                                        Hospitals_obj.addProperty("Name", nameArr[j].trim());
-                                        Hospitals_obj.addProperty("Id", codeArr[j].trim());
-                                        Hospitals.add(Hospitals_obj);
-                                    }
-                                }
-
-                                //Chemists
-                                JsonArray Chemists = new JsonArray();
-                                String nameChe = "";
-                                String codeChe = "";
-                                if (i == 0) {
-                                    nameChe = CheName;
-                                    codeChe = CheCode;
-                                } else if (i == 1) {
-                                    nameChe = CheName2;
-                                    codeChe = CheCode2;
-                                } else if (i == 2) {
-                                    nameChe = CheName3;
-                                    codeChe = CheCode3;
-                                }
-                                if (!nameChe.isEmpty() && !codeChe.isEmpty()) {
-                                    String[] nameArr = nameChe.split(",");
-                                    String[] codeArr = codeChe.split(",");
-
-                                    int length = Math.min(nameArr.length, codeArr.length);
-
-                                    for (int j = 0; j < length; j++) {
-                                        JsonObject Chemists_obj = new JsonObject();
-                                        Chemists_obj.addProperty("Name", nameArr[j].trim());
-                                        Chemists_obj.addProperty("Id", codeArr[j].trim());
-                                        Chemists.add(Chemists_obj);
-                                    }
-                                }
-
-                                //StockLists
-                                JsonArray Stockists = new JsonArray();
-                                String nameStk = "";
-                                String codeStk = "";
-                                if (i == 0) {
-                                    nameStk = StkName;
-                                    codeStk = StkCode;
-                                } else if (i == 1) {
-                                    nameStk = StkName2;
-                                    codeStk = StkCode2;
-                                } else if (i == 2) {
-                                    nameStk = StkName3;
-                                    codeStk = StkCode3;
-                                }
-                                if (!nameStk.isEmpty() && !codeStk.isEmpty()) {
-                                    String[] nameArr = nameStk.split(",");
-                                    String[] codeArr = codeStk.split(",");
-
-                                    int length = Math.min(nameArr.length, codeArr.length);
-
-                                    for (int j = 0; j < length; j++) {
-                                        JsonObject Stockists_obj = new JsonObject();
-                                        Stockists_obj.addProperty("Name", nameArr[j].trim());
-                                        Stockists_obj.addProperty("Id", codeArr[j].trim());
-                                        Stockists.add(Stockists_obj);
-                                    }
-                                }
-
-                                //ListedDr
-                                JsonArray Doctors = new JsonArray();
-                                String nameDoc = "";
-                                String codeDoc = "";
-                                if (i == 0) {
-                                    nameDoc = DrName;
-                                    codeDoc = DrCode;
-                                } else if (i == 1) {
-                                    nameDoc = DrName2;
-                                    codeDoc = DrCode2;
-                                } else if (i == 2) {
-                                    nameDoc = DrName3;
-                                    codeDoc = DrCode3;
-                                }
-                                if (!nameDoc.isEmpty() && !codeDoc.isEmpty()) {
-                                    String[] nameArr = nameDoc.split(",");
-                                    String[] codeArr = codeDoc.split(",");
-
-                                    int length = Math.min(nameArr.length, codeArr.length);
-
-                                    for (int j = 0; j < length; j++) {
-                                        JsonObject Doctors_obj = new JsonObject();
-                                        Doctors_obj.addProperty("Name", nameArr[j].trim());
-                                        Doctors_obj.addProperty("Id", codeArr[j].trim());
-                                        Doctors.add(Doctors_obj);
-                                    }
-                                }
-
-                                //UnlistedDr
-
-                                JsonArray UnlistedDoctors = new JsonArray();
-                                String nameUnDr = "";
-                                String codeUmDr = "";
-                                if (i == 0) {
-                                    nameUnDr = UnDrName;
-                                    codeUmDr = UnDrCode;
-                                } else if (i == 1) {
-                                    nameUnDr = UnDrName2;
-                                    codeUmDr = UnDrCode2;
-                                } else if (i == 2) {
-                                    nameUnDr = UnDrName3;
-                                    codeUmDr = UnDrCode3;
-                                }
-                                if (!nameUnDr.isEmpty() && !codeUmDr.isEmpty()) {
-                                    String[] nameArr = nameUnDr.split(",");
-                                    String[] codeArr = codeUmDr.split(",");
-
-                                    int length = Math.min(nameArr.length, codeArr.length);
-
-                                    for (int j = 0; j < length; j++) {
-                                        JsonObject UnlistedDoctors_obj = new JsonObject();
-                                        UnlistedDoctors_obj.addProperty("Name", nameArr[j].trim());
-                                        UnlistedDoctors_obj.addProperty("Id", codeArr[j].trim());
-                                        UnlistedDoctors.add(UnlistedDoctors_obj);
-                                    }
-                                }
+                            }
 
 
-                                //Cip
+                            //Cip
                                    /*     JSONArray Cip = new JSONArray();
                                         String nameCip = "";
                                         String codeCip = "";
@@ -3932,30 +3905,29 @@ public class MasterSyncActivity extends AppCompatActivity {
                                             }
                                         }*/
 
-                                SessionsObj.add("JointWorks", JointWorks);
-                                SessionsObj.add("Headquarters", Headquarters);
-                                SessionsObj.add("Territories", Territories);
-                                SessionsObj.add("Doctors", Doctors);
-                                SessionsObj.add("Chemists", Chemists);
-                                SessionsObj.add("Stockists", Stockists);
-                                SessionsObj.add("UnlistedDoctors", UnlistedDoctors);
-                                SessionsObj.add("Hospitals", Hospitals);
+                            SessionsObj.add("JointWorks", JointWorks);
+                            SessionsObj.add("Headquarters", Headquarters);
+                            SessionsObj.add("Territories", Territories);
+                            SessionsObj.add("Doctors", Doctors);
+                            SessionsObj.add("Chemists", Chemists);
+                            SessionsObj.add("Stockists", Stockists);
+                            SessionsObj.add("UnlistedDoctors", UnlistedDoctors);
+                            SessionsObj.add("Hospitals", Hospitals);
 //                                        SessionsObj.put("Cip", Cip);
-                                Sessions.add(SessionsObj);
-                            }
-
+                            Sessions.add(SessionsObj);
                         }
 
-                        //Details
-
-                        JsonObject DetailsObj = new JsonObject();
-                        DetailsObj.addProperty("Id", 0);
-                        DetailsObj.add("Others", new JsonArray());
-                        DetailsObj.addProperty("TDate", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, oneBuildModelClass.getDate()));
-                        DetailsObj.add("Sessions", Sessions);
-                        detailsArray.add(DetailsObj);
-
                     }
+
+                    //Details
+
+                    JsonObject DetailsObj = new JsonObject();
+                    DetailsObj.addProperty("Id", 0);
+                    DetailsObj.add("Others", new JsonArray());
+                    DetailsObj.addProperty("TDate", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, oneBuildModelClass.getDate()));
+                    DetailsObj.add("Sessions", Sessions);
+                    detailsArray.add(DetailsObj);
+
                 }
                 tourPlan.add("Details", detailsArray);
                 jsonObject.add("tourPlan", tourPlan);
