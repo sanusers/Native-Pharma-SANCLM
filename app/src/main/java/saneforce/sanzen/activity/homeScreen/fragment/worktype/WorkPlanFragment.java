@@ -62,6 +62,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
+import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.fragment.CallsFragment;
 import saneforce.sanzen.activity.homeScreen.fragment.OutboxFragment;
@@ -579,7 +580,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 ArrayList<MultiHQClusterItem> multiHQClusterItems = new ArrayList<>();
                 if(mapSelectedCluster.containsKey(hqCode)) {
                     multiHQClusterItems = mapSelectedCluster.get(hqCode);
-                    multiHQClusterItems.add(multiHQClusterItem);
+                    if (multiHQClusterItems != null && !multiHQClusterItems.contains(multiHQClusterItem)) {
+                        multiHQClusterItems.add(multiHQClusterItem);
+                    }
                 }else {
                     multiHQClusterItems.add(multiHQClusterItem);
                 }
@@ -2197,7 +2200,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         }
 
-        if(!CheckInOutManager.isCheckedIn(requireContext())
+        if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")
+                && !CheckInOutManager.isCheckedIn(requireContext())
                 && HomeDashBoard.selectedDate != null
                 && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
             CheckInDate(true);
@@ -2386,14 +2390,16 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
             }
         }
+        DcrCallTabLayoutActivity.TodayPlanSfCode = "";
+        DcrCallTabLayoutActivity.TodayPlanSfName = "";
     }
 
     private void SaveWTLocal(String isWhich) {
         try {
             SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode1);
             JSONArray MydayPlanDataList = new JSONArray();
-            JSONObject FisrstSeasonObject = new JSONObject();
-            JSONObject SecondSeasonObject = new JSONObject();
+            JSONObject firstSessionObject = new JSONObject();
+            JSONObject secondSessionObject = new JSONObject();
             JSONObject jsonObjectwt = new JSONObject();
 
             if (isWhich.equalsIgnoreCase("1")) {
@@ -2459,52 +2465,52 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     jsonObjectwt.put("Others_Code", workDayCode);
                     jsonObjectwt.put("Others_Name", workDayName);
                 }
-                jsonData.put(SecondSeasonObject);
+                jsonData.put(secondSessionObject);
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, jsonData.toString(), 2));
             } else {
-                FisrstSeasonObject.put("SFCode", SharedPref.getSfCode(requireContext()));
+                firstSessionObject.put("SFCode", SharedPref.getSfCode(requireContext()));
                 JSONObject TPDtFisrstSeasonObject = new JSONObject();
                 TPDtFisrstSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
-                FisrstSeasonObject.put("TPDt", TPDtFisrstSeasonObject);
-                FisrstSeasonObject.put("WT", mWTCode1);
-                FisrstSeasonObject.put("WTNm", mWTName1);
-                FisrstSeasonObject.put("FWFlg", mFwFlg1);
-                FisrstSeasonObject.put("SFMem", mHQCode1);
-                FisrstSeasonObject.put("HQNm", mHQName1);
-                FisrstSeasonObject.put("Pl", mTowncode1);
-                FisrstSeasonObject.put("PlNm", mTownname1);
-                FisrstSeasonObject.put("Rem", "");
-                FisrstSeasonObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
+                firstSessionObject.put("TPDt", TPDtFisrstSeasonObject);
+                firstSessionObject.put("WT", mWTCode1);
+                firstSessionObject.put("WTNm", mWTName1);
+                firstSessionObject.put("FWFlg", mFwFlg1);
+                firstSessionObject.put("SFMem", mHQCode1);
+                firstSessionObject.put("HQNm", mHQName1);
+                firstSessionObject.put("Pl", mTowncode1);
+                firstSessionObject.put("PlNm", mTownname1);
+                firstSessionObject.put("Rem", "");
+                firstSessionObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
                 if(mFwFlg1.equalsIgnoreCase("F")) {
-                    FisrstSeasonObject.put("TP_Doctor", tpDoctor);
-                    FisrstSeasonObject.put("TP_cluster", tpCluster);
-                    FisrstSeasonObject.put("TP_worktype", tpWorkType);
-                    FisrstSeasonObject.put("Others_Code", workDayCode);
-                    FisrstSeasonObject.put("Others_Name", workDayName);
+                    firstSessionObject.put("TP_Doctor", tpDoctor);
+                    firstSessionObject.put("TP_cluster", tpCluster);
+                    firstSessionObject.put("TP_worktype", tpWorkType);
+                    firstSessionObject.put("Others_Code", workDayCode);
+                    firstSessionObject.put("Others_Name", workDayName);
                 }
-                MydayPlanDataList.put(FisrstSeasonObject);
+                MydayPlanDataList.put(firstSessionObject);
 
-                SecondSeasonObject.put("SFCode", SharedPref.getSfCode(requireContext()));
+                secondSessionObject.put("SFCode", SharedPref.getSfCode(requireContext()));
                 JSONObject TPDtSecondSeasonObject = new JSONObject();
                 TPDtSecondSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
-                SecondSeasonObject.put("TPDt", TPDtSecondSeasonObject);
-                SecondSeasonObject.put("WT", mWTCode2);
-                SecondSeasonObject.put("WTNm", mWTName2);
-                SecondSeasonObject.put("FWFlg", mFwFlg2);
-                SecondSeasonObject.put("SFMem", mHQCode2);
-                SecondSeasonObject.put("HQNm", mHQName2);
-                SecondSeasonObject.put("Pl", mTowncode2);
-                SecondSeasonObject.put("PlNm", mTownname2);
-                SecondSeasonObject.put("Rem", "");
-                SecondSeasonObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
+                secondSessionObject.put("TPDt", TPDtSecondSeasonObject);
+                secondSessionObject.put("WT", mWTCode2);
+                secondSessionObject.put("WTNm", mWTName2);
+                secondSessionObject.put("FWFlg", mFwFlg2);
+                secondSessionObject.put("SFMem", mHQCode2);
+                secondSessionObject.put("HQNm", mHQName2);
+                secondSessionObject.put("Pl", mTowncode2);
+                secondSessionObject.put("PlNm", mTownname2);
+                secondSessionObject.put("Rem", "");
+                secondSessionObject.put("TpVwFlg", deviation.equals("1") ? "1" : "2");
                 if(mFwFlg2.equalsIgnoreCase("F")) {
-                    SecondSeasonObject.put("TP_Doctor", tpDoctor);
-                    SecondSeasonObject.put("TP_cluster", tpCluster);
-                    SecondSeasonObject.put("TP_worktype", tpWorkType);
-                    SecondSeasonObject.put("Others_Code", workDayCode);
-                    SecondSeasonObject.put("Others_Name", workDayName);
+                    secondSessionObject.put("TP_Doctor", tpDoctor);
+                    secondSessionObject.put("TP_cluster", tpCluster);
+                    secondSessionObject.put("TP_worktype", tpWorkType);
+                    secondSessionObject.put("Others_Code", workDayCode);
+                    secondSessionObject.put("Others_Name", workDayName);
                 }
-                MydayPlanDataList.put(SecondSeasonObject);
+                MydayPlanDataList.put(secondSessionObject);
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, MydayPlanDataList.toString(), 2));
             }
 
@@ -3544,7 +3550,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             ArrayList<MultiHQClusterItem> multiHQClusterItems = new ArrayList<>();
                             if(mapSelectedCluster.containsKey(HQCode)) {
                                 multiHQClusterItems = mapSelectedCluster.get(HQCode);
-                                multiHQClusterItems.add(multiHQClusterItem);
+                                if (multiHQClusterItems != null && !multiHQClusterItems.contains(multiHQClusterItem)) {
+                                    multiHQClusterItems.add(multiHQClusterItem);
+                                }
                             }else {
                                 multiHQClusterItems.add(multiHQClusterItem);
                             }

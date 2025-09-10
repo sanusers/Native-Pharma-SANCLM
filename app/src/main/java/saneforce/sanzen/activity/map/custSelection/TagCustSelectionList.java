@@ -275,7 +275,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 hideKeyboard();
                 binding.constraintHqList.setVisibility(View.GONE);
                 binding.dummyView.setVisibility(View.GONE);
-                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew("Subordinate").getMasterSyncDataJsonArray();
+                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
@@ -312,13 +312,13 @@ public class TagCustSelectionList extends AppCompatActivity {
         SelectedHqName = MapsActivity.SelectedHqName;
         Log.v("dddd", "-1sds-" + SelectedHqCode + "---" + SelectedHqName);
         try {
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew("Subordinate").getMasterSyncDataJsonArray();
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonHQList = jsonArray.getJSONObject(i);
 //                System.out.println("jsonHQList--->"+jsonHQList);
                 String name = jsonHQList.optString("name", "");
                 String code = jsonHQList.optString("id", "");
-                if (!code.isEmpty() && code.equalsIgnoreCase(WorkPlanFragment.mHQCode1) || code.equalsIgnoreCase(WorkPlanFragment.mHQCode2)) {
+                if (!code.isEmpty() && WorkPlanFragment.mHQCode1.contains(code) || WorkPlanFragment.mHQCode2.contains(code)) {
                     HqNameList.add(name);
                     HqCodeList.add(code);
                 }
@@ -334,8 +334,8 @@ public class TagCustSelectionList extends AppCompatActivity {
             }
             AddCustList(SelectedHqCode);
 
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

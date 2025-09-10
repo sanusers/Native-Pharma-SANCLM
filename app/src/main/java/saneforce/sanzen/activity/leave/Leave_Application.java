@@ -6,7 +6,6 @@ import static android.Manifest.permission.READ_MEDIA_AUDIO;
 import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanzen.commonClasses.UtilityClass.hideKeyboard;
 
 import android.annotation.SuppressLint;
@@ -246,7 +245,41 @@ public class Leave_Application extends AppCompatActivity {
             }else if(leavebinding.tlAttachment.getVisibility() == View.VISIBLE && leavebinding.txtAttachement.getText().toString().isEmpty()){
                 CommonUtilsMethods.showToastMessage(this, "Select Attachment");
             }else {
-                Submit();
+                if (UtilityClass.isNetworkAvailable(this)) {
+                    if (leavebinding.tlAttachment.getVisibility() == View.VISIBLE && !leavebinding.txtAttachement.getText().toString().isEmpty()) {
+                        JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(this);
+                        try {
+                            jsonImage.put("tableName", "uploadphoto");
+                            jsonImage.put("sfcode", SharedPref.getSfCode(this));
+                            jsonImage.put("division_code", SharedPref.getDivisionCode(this));
+                            File file = null;
+                            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                                file = new File(this.getExternalFilesDir(null) + "/LeaveAttachment/");
+                            } else {
+                                Log.e("File Creation", "captureFile: No media mounted");
+                            }
+                            if (file != null && !file.exists()) {
+                                if (!file.mkdirs()) {
+                                    Log.e("File Creation", "Directory Creation Failed.");
+                                }
+                            }
+                            File destinationFile = new File(file, leavebinding.txtAttachement.getText().toString());
+                            try {
+                                if (!destinationFile.createNewFile()) {
+                                    Log.e("File Creation", "Destination File Creation Failed.");
+                                }
+                                attachmentFilePath = destinationFile.getAbsolutePath();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        saveAttachment(attachmentFilePath, jsonImage.toString());
+                    } else {
+                        Submit();
+                    }
+                }
             }
         });
 
@@ -299,7 +332,7 @@ public class Leave_Application extends AppCompatActivity {
 //                        }
                         File file = null;
                         if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                            file = new File(context.getExternalFilesDir(null) + "/LeaveAttachment/");
+                            file = new File(this.getExternalFilesDir(null) + "/LeaveAttachment/");
                         }else {
                             Log.e("File Creation", "captureFile: No media mounted");
                         }
@@ -481,7 +514,7 @@ public class Leave_Application extends AppCompatActivity {
     public void removeFile(String fileName) {
         File file = null;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            file = new File(context.getExternalFilesDir(null) + "/LeaveAttachment/" + fileName);
+            file = new File(this.getExternalFilesDir(null) + "/LeaveAttachment/" + fileName);
         } else {
             Log.e("File Deletion", "captureFile: No media mounted");
         }
@@ -933,7 +966,7 @@ public class Leave_Application extends AppCompatActivity {
         try {
             File file;
             if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
-                file = new Compressor(context).compressToFile(new File(path));
+                file = new Compressor(this).compressToFile(new File(path));
                 Log.d("path", tag + "-" + path);
             } else {
                 file = new File(path);
@@ -948,27 +981,31 @@ public class Leave_Application extends AppCompatActivity {
     }
 
     private void saveAttachment(String filePath, String jsonValues) {
-        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
-        MultipartBody.Part img = convertImg("EventImg", filePath);
-        HashMap<String, RequestBody> values = field(jsonValues);
-        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
-        saveImgDcr.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        
-                    } catch (Exception e) {
-                        Log.v("SendOutboxCall", "-error---" + e);
+        try {
+            ApiInterface apiInterface = RetrofitClient.getRetrofit(this, SharedPref.getTagApiImageUrl(this));
+            MultipartBody.Part img = convertImg("EventImg", filePath);
+            HashMap<String, RequestBody> values = field(jsonValues);
+            Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
+            saveImgDcr.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            Submit();
+                        } catch (Exception e) {
+                            Log.v("SendOutboxCall", "-error---" + e);
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.poor_connection));
-            }
-        });
+                @Override
+                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                    commonUtilsMethods.showToastMessage(Leave_Application.this, Leave_Application.this.getString(R.string.poor_connection));
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void Submit() {
@@ -1003,40 +1040,10 @@ public class Leave_Application extends AppCompatActivity {
                 jsonobj.put("Rsf", SharedPref.getHqCode(this));
                 jsonobj.put("leave_typ_code", Ltype_id);
 
-
-                JSONObject jsonImage = CommonUtilsMethods.CommonObjectParameter(this);
-                try {
-                    jsonImage.put("tableName", "uploadphoto"); // TODO: 08-09-2025  
-                    jsonImage.put("sfcode",  SharedPref.getSfCode(this));
-                    jsonImage.put("division_code",  SharedPref.getDivisionCode(this));
-                    File file = null;
-                    if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                        file = new File(context.getExternalFilesDir(null) + "/LeaveAttachment/");
-                    }else {
-                        Log.e("File Creation", "captureFile: No media mounted");
-                    }
-                    if(file != null && !file.exists()) {
-                        if(!file.mkdirs()) {
-                            Log.e("File Creation", "Directory Creation Failed.");
-                        }
-                    }
-                    File destinationFile = new File(file, leavebinding.txtAttachement.getText().toString());
-                    try {
-                        if(!destinationFile.createNewFile()) {
-                            Log.e("File Creation", "Destination File Creation Failed.");
-                        }
-                        attachmentFilePath = destinationFile.getAbsolutePath();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
                 Log.d("save_obj", String.valueOf(jsonobj));
                 Map<String, String> mapString = new HashMap<>();
                 mapString.put("axn", "save/leavemodule");
-                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonobj.toString());
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonobj.toString());
 
                 if(call != null) {
                     call.enqueue(new Callback<JsonElement>() {
@@ -1044,9 +1051,6 @@ public class Leave_Application extends AppCompatActivity {
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                             if(response.isSuccessful()) {
                                 Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
-                                if (leavebinding.tlAttachment.getVisibility() == View.VISIBLE) {
-                                    saveAttachment(attachmentFilePath, jsonImage.toString());
-                                }
                                 try {
                                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
                                     JSONArray wtJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
@@ -1150,7 +1154,7 @@ public class Leave_Application extends AppCompatActivity {
     }
 
     private void timeZoneVerification() {
-        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(context) && commonUtilsMethods.isTimeZoneAutomatic(context);
+        boolean isAutoTimeZoneEnabled = commonUtilsMethods.isAutoTimeEnabled(this) && commonUtilsMethods.isTimeZoneAutomatic(this);
         if(!isAutoTimeZoneEnabled) {
             CommonUtilsMethods.showCustomDialog(this);
         }

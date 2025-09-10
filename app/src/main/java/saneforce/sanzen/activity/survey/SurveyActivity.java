@@ -211,7 +211,7 @@ public class SurveyActivity extends AppCompatActivity {
                     String code = jsonObject.optString("Code");
                     mList.add(new SurveyOptionsModelClass(name, code, false));
                 }
-                ShowMasterListPopup(surveyBinding.tvHeadquarters, mList, getString(R.string.head_quarter));
+                ShowMasterListPopup(surveyBinding.tvHeadquarters, mList, getString(R.string.headquarter));
             }
         });
 
@@ -1084,7 +1084,7 @@ public class SurveyActivity extends AppCompatActivity {
                             selectedHospitalModel = hospitalModelHashMap.get(selectedCustomerCode);
                         }
                         getSurveyDetails(chosenSurveyModelClass);
-                    }else if(name.equalsIgnoreCase(getString(R.string.head_quarter))) {
+                    }else if(name.equalsIgnoreCase(getString(R.string.headquarter))) {
                         selectedHQ = surveyOptionsModelClass.getId();
                         surveyBinding.tvCustomerType.setText("");
                         surveyBinding.tvCustomer.setText("");

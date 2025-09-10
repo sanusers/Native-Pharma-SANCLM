@@ -231,31 +231,31 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        mediaController = new MediaController(this);
-        binding.videoView.setMediaController(mediaController);
-        String jsonStr = "{ \"video_url\" : \"https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm\" }";
-        try {
-            JSONObject jsonObject = new JSONObject(jsonStr);
-            videoUrl = jsonObject.getString("video_url");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        mediaController = new MediaController(this);
+//        binding.videoView.setMediaController(mediaController);
+//        String jsonStr = "{ \"video_url\" : \"https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm\" }";
+//        try {
+//            JSONObject jsonObject = new JSONObject(jsonStr);
+//            videoUrl = jsonObject.getString("video_url");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
 
 //        if (!videoUrl.isEmpty()) {
 //            playVideo(videoUrl);
 //        }
 
 //        binding.youtubePlayerView.getPlayerUiController().showUi(false);
-        binding.youtubePlayerView.setEnableAutomaticInitialization(true);
-        getLifecycle().addObserver(binding.youtubePlayerView);
+//        binding.youtubePlayerView.setEnableAutomaticInitialization(true);
+//        getLifecycle().addObserver(binding.youtubePlayerView);
 
-        binding.youtubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
-            @Override
-            public void onReady(@NonNull YouTubePlayer player) {
-                youTubePlayer = player;
-                youTubePlayer.loadVideo("jZwyEuVrUKA", 0);
-            }
-        });
+//        binding.youtubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+//            @Override
+//            public void onReady(@NonNull YouTubePlayer player) {
+//                youTubePlayer = player;
+//                youTubePlayer.loadVideo("jZwyEuVrUKA", 0);
+//            }
+//        });
 
         // Play / Pause
         binding.btnPlayPause.setOnClickListener(v -> {
@@ -276,7 +276,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             if (youTubePlayer != null) {
                 youTubePlayer.pause();
                 isPlaying = false;
+                youTubePlayer = null;
             }
+//            binding.youtubePlayerView.release();
+//            getLifecycle().removeObserver(binding.youtubePlayerView);
             binding.floatingPlayer.setVisibility(View.GONE);
         });
 
@@ -379,19 +382,27 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         });
 
         // Show binding.floatingPlayer player initially
-        binding.floatingPlayer.setVisibility(View.VISIBLE);
+        binding.floatingPlayer.setVisibility(View.GONE);
     }
 
     private void playVideo(String url) {
-        binding.videoView.setVideoURI(Uri.parse(url));
-        binding.videoView.setVisibility(VideoView.VISIBLE);
-        binding.videoView.start();
+//        binding.videoView.setVideoURI(Uri.parse(url));
+//        binding.videoView.setVisibility(VideoView.VISIBLE);
+//        binding.videoView.start();
     }
 
     @Override
     public void onUserLeaveHint() {
         super.onUserLeaveHint();
-        enterPipMode();
+//        enterPipMode();
+        if (youTubePlayer != null) {
+            youTubePlayer.pause();
+            isPlaying = false;
+            youTubePlayer = null;
+        }
+//        binding.youtubePlayerView.release();
+//        getLifecycle().removeObserver(binding.youtubePlayerView);
+        binding.floatingPlayer.setVisibility(View.GONE);
     }
 
     private void enterPipMode() {
@@ -412,13 +423,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
 
-        if (isInPictureInPictureMode) {
-            // Hide extra dashboard UI if needed
-            mediaController.hide();
-        } else {
-            // Restore full UI when back
-            mediaController.show();
-        }
+//        if (isInPictureInPictureMode) {
+//            // Hide extra dashboard UI if needed
+//            mediaController.hide();
+//        } else {
+//            // Restore full UI when back
+//            mediaController.show();
+//        }
     }
 
     @Override

@@ -16,6 +16,7 @@ import java.util.List;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
 public class MultiHQAdapter extends RecyclerView.Adapter<MultiHQAdapter.ViewHolder> {
 
@@ -24,6 +25,8 @@ public class MultiHQAdapter extends RecyclerView.Adapter<MultiHQAdapter.ViewHold
     private List<Multicheckclass_clust> filteredList;
     private final LayoutInflater inflater;
     private final MultiHQSelectListener multiHQSelectListener;
+    private int selectedHQCount = 0;
+    private CommonUtilsMethods commonUtilsMethods;
 
     public interface MultiHQSelectListener {
         void onHQSelected(Multicheckclass_clust multicheckclassClust);
@@ -36,6 +39,13 @@ public class MultiHQAdapter extends RecyclerView.Adapter<MultiHQAdapter.ViewHold
         this.itemList = itemList;
         this.multiHQSelectListener = multiHQSelectListener;
         inflater = LayoutInflater.from(context);
+        selectedHQCount = 0;
+        this.commonUtilsMethods = new CommonUtilsMethods(context);
+        for (Multicheckclass_clust hqs : itemList) {
+            if (hqs.isChecked()) {
+                selectedHQCount++;
+            }
+        }
     }
 
     @NonNull
@@ -53,10 +63,19 @@ public class MultiHQAdapter extends RecyclerView.Adapter<MultiHQAdapter.ViewHold
         holder.checkBox.setChecked(multicheckclassClust.isChecked());
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             multicheckclassClust.setChecked(isChecked);
-            if(isChecked) {
+            if(isChecked && selectedHQCount < 5) {
                 multiHQSelectListener.onHQSelected(multicheckclassClust);
-            }else {
+                selectedHQCount++;
+            } else if (!isChecked){
+                selectedHQCount--;
+                multicheckclassClust.setChecked(false);
                 multiHQSelectListener.onHQUnSelected(multicheckclassClust);
+                holder.checkBox.setChecked(false);
+            } else if(selectedHQCount == 5) {
+                commonUtilsMethods.showToastMessage(context, "Cannot select more than 5 " + context.getString(R.string.headquarter));
+                multicheckclassClust.setChecked(false);
+                multiHQSelectListener.onHQUnSelected(multicheckclassClust);
+                holder.checkBox.setChecked(false);
             }
         });
 

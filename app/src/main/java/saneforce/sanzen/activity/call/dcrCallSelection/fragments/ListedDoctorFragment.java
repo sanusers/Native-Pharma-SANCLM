@@ -52,6 +52,7 @@ import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
@@ -78,7 +79,7 @@ public class ListedDoctorFragment extends Fragment {
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
     Dialog dialogFilter;
     ImageButton iv_filter;
-    ImageView img_close, img_del;
+    ImageView img_close, img_del, img_drop_down;
     TextView tv_hqName, tv_add_condition, tv_filterCount, noDoctor;
     Button btn_apply, btn_clear;
     String specialityCode = "", categoryCode = "", territoryCode = "", classCode = "";
@@ -118,6 +119,7 @@ public class ListedDoctorFragment extends Fragment {
         ed_search = v.findViewById(R.id.search_cust);
         iv_filter = v.findViewById(R.id.iv_filter);
         tv_hqName = v.findViewById(R.id.tv_hq_name);
+        img_drop_down = v.findViewById(R.id.img_drop_down);
         filterList = v.findViewById(R.id.filter_list_view);
         constraintFilter = v.findViewById(R.id.constraint_filter_selection_list);
         tv_filterCount = v.findViewById(R.id.tv_filter_count);
@@ -154,6 +156,14 @@ public class ListedDoctorFragment extends Fragment {
         });
 
         if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
+            if (!SharedPref.getMultiHQCode(requireContext()).isEmpty()){
+                String[] hqCodes = SharedPref.getMultiHQCode(requireContext()).split(",");
+                if (hqCodes.length > 1) {
+                    img_drop_down.setVisibility(View.VISIBLE);
+                } else {
+                    img_drop_down.setVisibility(View.GONE);
+                }
+            }
             tv_hqName.setOnClickListener(view -> {
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
@@ -188,9 +198,27 @@ public class ListedDoctorFragment extends Fragment {
                         }
 
                         @Override
-                        public boolean onQueryTextChange(String s) {
-                            adapter.getFilter().filter(s);
-                            return false;
+                        public boolean onQueryTextChange(String newText) {
+                            List<String> filteredList = new ArrayList<>();
+
+                            if (newText == null || newText.trim().isEmpty()) {
+                                filteredList.addAll(list);
+                            } else {
+                                for (String item : list) {
+                                    if (item.toLowerCase().contains(newText.toLowerCase())) {
+                                        filteredList.add(item);
+                                    }
+                                }
+                            }
+
+                            ArrayAdapter<String> tempAdapter = new ArrayAdapter<>(
+                                    requireContext(),
+                                    android.R.layout.simple_list_item_1,
+                                    filteredList
+                            );
+                            listView.setAdapter(tempAdapter);
+
+                            return true;
                         }
                     });
 
