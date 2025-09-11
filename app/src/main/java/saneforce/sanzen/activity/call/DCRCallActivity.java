@@ -3544,6 +3544,8 @@ public class DCRCallActivity extends AppCompatActivity {
                 String productMode = jsonObject.optString("Product_Mode");
                 String priorityCode = codeToPriorityMap.getOrDefault(code, "");
                 String priorityCodeRCPA = codeToPriorityRCPAMap.getOrDefault(code, "");
+                priorityCode = "";
+                priorityCodeRCPA = "";
 
                 if(!code.equalsIgnoreCase("-1") && !code.isEmpty()) {
                     if(!productMode.equalsIgnoreCase("Sample")) {
