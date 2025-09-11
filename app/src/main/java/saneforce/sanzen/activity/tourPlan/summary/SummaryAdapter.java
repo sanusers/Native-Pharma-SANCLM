@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.tourPlan.summary;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -21,7 +19,6 @@ import java.util.List;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
-import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
 import saneforce.sanzen.storage.SharedPref;
 
 public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHolder> {
@@ -76,7 +73,7 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
                     holder.jwCount += oneBuildModelClass.getJointWorks().size();
                     holder.drCount += oneBuildModelClass.getDoctors().size();
                     holder.chemistCount += oneBuildModelClass.getChemists().size();
-                    holder.stockiestCount += oneBuildModelClass.getStockLists().size();
+                    holder.stockiestCount += oneBuildModelClass.getStockists().size();
                     holder.unListedDrCount += oneBuildModelClass.getUnlistedDoctors().size();
                     holder.cipCount += oneBuildModelClass.getCip().size();
                     holder.hospitalCount += oneBuildModelClass.getHospitals().size();

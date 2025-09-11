@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.masterSync;
 
-import static saneforce.sanzen.activity.tourPlan.session.SessionEditAdapter.inputDataArrayOneBuild;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -51,7 +49,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,8 +57,6 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideServices;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.Slide_adapter;
-import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
-import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.SlidesViewModel;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideAdapter;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.WelcomeSlideService;
@@ -740,7 +735,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (leaveStatus == 1 || leaveStatusStatus == 1) {
             binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
         }
-        if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1 || checkInStatus ==1) {
+        if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1 || checkInStatus == 1) {
             binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
         }
         if (activityStatus == 1) {
@@ -853,55 +848,55 @@ public class MasterSyncActivity extends AppCompatActivity {
                     binding.syncFailedImageCip.setVisibility(View.GONE);
                 }
 
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getterritory")) {
-                    clusterStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLUSTER + rsf);
-                    if (clusterStatus == 1) {
-                        binding.syncFailedImageClust.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageClust.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getinputs")) {
-                    inputStatus = masterDataDao.getMasterSyncStatusByKey(Constants.INPUT);
-                    if (inputStatus == 1) {
-                        binding.syncFailedImageInput.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageInput.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getproducts") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getbrands") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
-                    productStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT);
-                    proCatStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
-                    brandStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND);
-                    if (productStatus == 1 || mapCompPrdStatus == 1 || brandStatus == 1 || proCatStatus == 1 || compProStatus == 1) {
-                        binding.syncFailedImageProduct.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageProduct.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavetype") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
-                    leaveStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE);
-                    leaveStatusStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
-                    if (leaveStatus == 1 || leaveStatusStatus == 1) {
-                        binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.syncFailedImageLeave.setVisibility(View.GONE);
-                    }
-                } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethome") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcheckin_zen") ||
-                        masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
-                    callSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CALL_SYNC);
-                    myDayPlanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_PLAN);
-                    visitControlStatus = masterDataDao.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
-                    dateSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DATE_SYNC);
-                    checkInStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHECK_IN);
-                    if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1 || checkInStatus == 1) {
-                        binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
-                    } else {
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getterritory")) {
+                clusterStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLUSTER + rsf);
+                if (clusterStatus == 1) {
+                    binding.syncFailedImageClust.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageClust.setVisibility(View.GONE);
+                }
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getinputs")) {
+                inputStatus = masterDataDao.getMasterSyncStatusByKey(Constants.INPUT);
+                if (inputStatus == 1) {
+                    binding.syncFailedImageInput.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageInput.setVisibility(View.GONE);
+                }
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getproducts") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getbrands") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getmapcompdet")) {
+                productStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT);
+                proCatStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
+                brandStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND);
+                if (productStatus == 1 || mapCompPrdStatus == 1 || brandStatus == 1 || proCatStatus == 1 || compProStatus == 1) {
+                    binding.syncFailedImageProduct.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageProduct.setVisibility(View.GONE);
+                }
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavetype") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getleavestatus")) {
+                leaveStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE);
+                leaveStatusStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
+                if (leaveStatus == 1 || leaveStatusStatus == 1) {
+                    binding.syncFailedImageLeave.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageLeave.setVisibility(View.GONE);
+                }
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gethome") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getdcrdate") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcr") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstockbalance") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getcheckin_zen") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getvisit_contro")) {
+                callSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CALL_SYNC);
+                myDayPlanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_PLAN);
+                visitControlStatus = masterDataDao.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
+                dateSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DATE_SYNC);
+                checkInStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHECK_IN);
+                if (callSyncStatus == 1 || dateSyncStatus == 1 || myDayPlanStatus == 1 || visitControlStatus == 1 || checkInStatus == 1) {
+                    binding.syncFailedImageDcr.setVisibility(View.VISIBLE);
+                } else {
 
                     binding.syncFailedImageDcr.setVisibility(View.GONE);
                 }
@@ -937,6 +932,21 @@ public class MasterSyncActivity extends AppCompatActivity {
                 } else {
                     binding.syncFailedImageTP.setVisibility(View.GONE);
                 }
+            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettp_onebuild") ||
+//                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_multitpnew") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_details")) {
+                tpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TP_SETUP);
+                tourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TOUR_PLAN);
+                stpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STP_SETUP);
+                standardTourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STANDARD_TOUR_PLAN);
+                if (tourPLanStatus == 1 || standardTourPLanStatus == 1 || stpSetupStatus == 1 || tpSetupStatus == 1) {
+                    binding.syncFailedImageTP.setVisibility(View.VISIBLE);
+                } else {
+                    binding.syncFailedImageTP.setVisibility(View.GONE);
+                }
+
             } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getprodslides") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getslidespeciality") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getslidesbrand") ||
@@ -1047,6 +1057,13 @@ public class MasterSyncActivity extends AppCompatActivity {
             if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_tp") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_multitpnew") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_details")) {
+                binding.syncFailedImageTP.setVisibility(View.VISIBLE);
+            }
+            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettp_onebuild") ||
+//                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_multitpnew") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_details")) {
                 binding.syncFailedImageTP.setVisibility(View.VISIBLE);
@@ -1217,7 +1234,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         dcrModelArray.add(callSyncModel);
         dcrModelArray.add(dateSyncModel);
         dcrModelArray.add(myDayPlanModel);
-        if(SharedPref.getSrtNd(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+        if (SharedPref.getSrtNd(MasterSyncActivity.this).equalsIgnoreCase("0")) {
             MasterSyncItemModel checkInModel = new MasterSyncItemModel(Constants.CHECK_IN, Constants.CHECK_IN, "getcheckin_zen", Constants.CHECK_IN, checkInStatus, false);
             dcrModelArray.add(checkInModel);
         }
@@ -1589,7 +1606,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
             }*/
 
-            if(SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0") && remoteTableName.equalsIgnoreCase("gettp_onebuild")){
+            /*if(SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0") && remoteTableName.equalsIgnoreCase("gettp_onebuild")){
                 JSONArray monthYearCurr = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
                 JSONArray monthYearPrev = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate.minusMonths(1)))).getTpDataJSONArray();
                 JSONArray monthYearNext = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate.plusMonths(1)))).getTpDataJSONArray();
@@ -1602,265 +1619,265 @@ public class MasterSyncActivity extends AppCompatActivity {
                         getDraftSaveOneBuild1("next", TourPlanActivity.dayWiseArrayNextMonthOneBuild, true);
                     }
 
-            }
-                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-                JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
-                jsonObject.put("tableName", remoteTableName);
-                jsonObject.put("sfcode", SharedPref.getSfCode(this));
-                jsonObject.put("division_code", SharedPref.getDivisionCode(this));
-                jsonObject.put("Rsf", rsf);
-                jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-                switch (remoteTableName) {
-                    case "getholiday":
-                    case "getweeklyoff": {
-                        jsonObject.put("year", Year.now().getValue());
-                        break;
-                    }
-                    case "gettodaytpnew": {
-                        jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
-                        break;
-                    }
-                    case "gettp_onebuild": {
+            }*/
+            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+            JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
+            jsonObject.put("tableName", remoteTableName);
+            jsonObject.put("sfcode", SharedPref.getSfCode(this));
+            jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+            jsonObject.put("Rsf", rsf);
+            jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+            switch (remoteTableName) {
+                case "getholiday":
+                case "getweeklyoff": {
+                    jsonObject.put("year", Year.now().getValue());
+                    break;
+                }
+                case "gettodaytpnew": {
+                    jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                    break;
+                }
+                case "gettp_onebuild": {
 
-                        if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
-                            jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
-                            jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
-                            break;
-                        }
-                    }
-                    case "getall_tp":
-                    case "getall_multitpnew": {
+                    if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
                         jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                         jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                         break;
                     }
-                    case "getquiz":
-                    case "getcheckin_zen":
-                    case "gettodaydcrmultihq":
-                    case "gettodaydcr": {
-                        if (HomeDashBoard.selectedDate != null) {
-                            jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
-                        } else {
-                            WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
-                                @Override
-                                public void datesFound() {
-                                    try {
-                                        jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, SharedPref.getSelectedDateCal(MasterSyncActivity.this)));
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
+                }
+                case "getall_tp":
+                case "getall_multitpnew": {
+                    jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                    jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                    break;
+                }
+                case "getquiz":
+                case "getcheckin_zen":
+                case "gettodaydcrmultihq":
+                case "gettodaydcr": {
+                    if (HomeDashBoard.selectedDate != null) {
+                        jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
+                    } else {
+                        WorkPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new WorkPlanEntriesNeeded.SyncTaskStatus() {
+                            @Override
+                            public void datesFound() {
+                                try {
+                                    jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, SharedPref.getSelectedDateCal(MasterSyncActivity.this)));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
+                            }
 
-                                @Override
-                                public void noDatesFound() {
-                                    Log.e("Master Sync", "Get MyDayPlan Call and Date Sync failed!");
-                                }
-                            });
-                        }
+                            @Override
+                            public void noDatesFound() {
+                                Log.e("Master Sync", "Get MyDayPlan Call and Date Sync failed!");
+                            }
+                        });
                     }
                 }
+            }
 
-                Map<String, String> mapString = new HashMap<>();
-                Log.e("API Object", "master sync obj : " + jsonObject);
-                Call<JsonElement> call = null;
-                if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
-                    mapString.put("axn", "table/dcrmasterdata");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-                } else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {
-                    mapString.put("axn", "table/subordinates");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-                } else if (masterOf.equalsIgnoreCase(Constants.PRODUCT)) {
-                    mapString.put("axn", "table/products");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-                } else if (masterOf.equalsIgnoreCase("Leave")) {
-                    mapString.put("axn", "get/leave");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-                } else if (masterOf.equalsIgnoreCase("Home")) {
-                    mapString.put("axn", "home");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-                } else if (masterOf.equalsIgnoreCase("AdditionalDcr")) {
-                    mapString.put("axn", "table/additionaldcrmasterdata");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-                } else if (masterOf.equalsIgnoreCase("Slide")) {
-                    mapString.put("axn", "table/slides");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-                } else if (masterOf.equalsIgnoreCase(Constants.SETUP)) {
-                    mapString.put("axn", "table/setups");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-                } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN)) {
-                    mapString.put("axn", "get/tp");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-                } else if (masterOf.equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
-                    mapString.put("axn", "get/stp");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-                } else if (masterOf.equalsIgnoreCase(Constants.ACTIVITY)) {
-                    mapString.put("axn", "get/activity");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-                } else if (masterOf.equalsIgnoreCase(Constants.SURVEY)) {
-                    mapString.put("axn", "get/survey");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-                } else if (masterOf.equalsIgnoreCase(Constants.CHECK_IN)) {
-                    mapString.put("axn", "get/checKin");
-                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-                }
+            Map<String, String> mapString = new HashMap<>();
+            Log.e("API Object", "master sync obj : " + jsonObject);
+            Call<JsonElement> call = null;
+            if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS)) {
+                mapString.put("axn", "table/dcrmasterdata");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {
+                mapString.put("axn", "table/subordinates");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase(Constants.PRODUCT)) {
+                mapString.put("axn", "table/products");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase("Leave")) {
+                mapString.put("axn", "get/leave");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase("Home")) {
+                mapString.put("axn", "home");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase("AdditionalDcr")) {
+                mapString.put("axn", "table/additionaldcrmasterdata");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase("Slide")) {
+                mapString.put("axn", "table/slides");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase(Constants.SETUP)) {
+                mapString.put("axn", "table/setups");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN)) {
+                mapString.put("axn", "get/tp");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
+                mapString.put("axn", "get/stp");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase(Constants.ACTIVITY)) {
+                mapString.put("axn", "get/activity");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase(Constants.SURVEY)) {
+                mapString.put("axn", "get/survey");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            } else if (masterOf.equalsIgnoreCase(Constants.CHECK_IN)) {
+                mapString.put("axn", "get/checKin");
+                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
+            }
 
-                if (call != null) {
-                    call.enqueue(new Callback<JsonElement>() {
-                        @SuppressLint("NotifyDataSetChanged")
-                        @Override
-                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                            masterSyncItemModels.get(position).setPBarVisibility(false);
-                            ++apiSuccessCount;
-                            Log.e("response :   ", remoteTableName + " : " + response.body().toString());
-                            boolean success = false;
-                            JSONArray jsonArray = new JSONArray();
-                            JSONObject jsonObject2 = new JSONObject();
-                            if (response.isSuccessful()) {
-                                Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + response.body().toString());
-                                try {
-                                    JsonElement jsonElement = response.body();
-                                    if (!jsonElement.isJsonNull()) {
-                                        if (jsonElement.isJsonArray()) {
-                                            jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+            if (call != null) {
+                call.enqueue(new Callback<JsonElement>() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        masterSyncItemModels.get(position).setPBarVisibility(false);
+                        ++apiSuccessCount;
+                        Log.e("response :   ", remoteTableName + " : " + response.body().toString());
+                        boolean success = false;
+                        JSONArray jsonArray = new JSONArray();
+                        JSONObject jsonObject2 = new JSONObject();
+                        if (response.isSuccessful()) {
+                            Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + response.body().toString());
+                            try {
+                                JsonElement jsonElement = response.body();
+                                if (!jsonElement.isJsonNull()) {
+                                    if (jsonElement.isJsonArray()) {
+                                        jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                        success = true;
+                                    } else if (jsonElement.isJsonObject()) {
+                                        jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
+                                        if (!jsonObject2.has("success")) {
+                                            // response as jsonObject with {"success" : "fail" } will be received only when there are unformed object passed or there are no data in back end.
+                                            jsonArray.put(jsonObject2);
                                             success = true;
-                                        } else if (jsonElement.isJsonObject()) {
-                                            jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
-                                            if (!jsonObject2.has("success")) {
-                                                // response as jsonObject with {"success" : "fail" } will be received only when there are unformed object passed or there are no data in back end.
-                                                jsonArray.put(jsonObject2);
-                                                success = true;
-                                            } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
-                                                masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
-                                                masterSyncItemModels.get(position).setSyncSuccess(1);
-                                            }
+                                        } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                            masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
+                                            masterSyncItemModels.get(position).setSyncSuccess(1);
                                         }
+                                    }
 
-                                        if (success) {
-                                            masterSyncItemModels.get(position).setCount(jsonArray.length());
-                                            masterSyncItemModels.get(position).setSyncSuccess(2);
-                                            masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 2));
-                                            if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)) {
-                                                isCallSynced = true;
-                                                CallDataRestClass.resetcallValues(context);
-                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC_DUP, jsonArray.toString(), 2));
-                                            } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.DATE_SYNC)) {
-                                                isDateSynced = true;
-                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC_DUP, jsonArray.toString(), 2));
-                                            } else if (!rsf.isEmpty() && masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.JOINT_WORK + rsf)) {
-                                                JSONObject jointWorkJsonObject = new JSONObject();
-                                                jointWorkJsonObject.put("Code", SharedPref.getSfCode(MasterSyncActivity.this));
-                                                jointWorkJsonObject.put("Name", Constants.INDEPENDENT);
-                                                jointWorkJsonObject.put("SfName", Constants.INDEPENDENT);
-                                                jointWorkJsonObject.put("Reporting_To_SF", "");
-                                                jointWorkJsonObject.put("OwnDiv", "");
-                                                jointWorkJsonObject.put("Division_Code", SharedPref.getDivisionCode(MasterSyncActivity.this));
-                                                jointWorkJsonObject.put("SF_Status", "");
-                                                jointWorkJsonObject.put("ActFlg", "");
-                                                jointWorkJsonObject.put("UsrDfd_UserName", "");
-                                                jointWorkJsonObject.put("DS_name", "");
-                                                jointWorkJsonObject.put("sf_type", SharedPref.getSfType(MasterSyncActivity.this));
-                                                jointWorkJsonObject.put("Desig", SharedPref.getDesig(MasterSyncActivity.this));
-                                                jointWorkJsonObject.put("steps", "");
+                                    if (success) {
+                                        masterSyncItemModels.get(position).setCount(jsonArray.length());
+                                        masterSyncItemModels.get(position).setSyncSuccess(2);
+                                        masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 2));
+                                        if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)) {
+                                            isCallSynced = true;
+                                            CallDataRestClass.resetcallValues(context);
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC_DUP, jsonArray.toString(), 2));
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.DATE_SYNC)) {
+                                            isDateSynced = true;
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC_DUP, jsonArray.toString(), 2));
+                                        } else if (!rsf.isEmpty() && masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.JOINT_WORK + rsf)) {
+                                            JSONObject jointWorkJsonObject = new JSONObject();
+                                            jointWorkJsonObject.put("Code", SharedPref.getSfCode(MasterSyncActivity.this));
+                                            jointWorkJsonObject.put("Name", Constants.INDEPENDENT);
+                                            jointWorkJsonObject.put("SfName", Constants.INDEPENDENT);
+                                            jointWorkJsonObject.put("Reporting_To_SF", "");
+                                            jointWorkJsonObject.put("OwnDiv", "");
+                                            jointWorkJsonObject.put("Division_Code", SharedPref.getDivisionCode(MasterSyncActivity.this));
+                                            jointWorkJsonObject.put("SF_Status", "");
+                                            jointWorkJsonObject.put("ActFlg", "");
+                                            jointWorkJsonObject.put("UsrDfd_UserName", "");
+                                            jointWorkJsonObject.put("DS_name", "");
+                                            jointWorkJsonObject.put("sf_type", SharedPref.getSfType(MasterSyncActivity.this));
+                                            jointWorkJsonObject.put("Desig", SharedPref.getDesig(MasterSyncActivity.this));
+                                            jointWorkJsonObject.put("steps", "");
 
-                                                JSONArray jointWorkJsonArray = new JSONArray();
+                                            JSONArray jointWorkJsonArray = new JSONArray();
+                                            jointWorkJsonArray.put(jointWorkJsonObject);
+                                            for (int i = 0; i < jsonArray.length(); i++) {
+                                                jointWorkJsonObject = jsonArray.optJSONObject(i);
                                                 jointWorkJsonArray.put(jointWorkJsonObject);
-                                                for (int i = 0; i < jsonArray.length(); i++) {
-                                                    jointWorkJsonObject = jsonArray.optJSONObject(i);
-                                                    jointWorkJsonArray.put(jointWorkJsonObject);
-                                                }
-                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.JOINT_WORK + rsf, jointWorkJsonArray.toString(), 2));
                                             }
-                                            if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
-                                                if (jsonArray.length() > 0) {
-                                                    JSONObject jsonObject1 = jsonArray.getJSONObject(0);
-                                                    JSONArray stockBalanceArray = jsonObject1.getJSONArray("Sample_Stock");
-                                                    JSONArray inputBalanceArray = jsonObject1.getJSONArray("Input_Stock");
-                                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 2));
-                                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 2));
-                                                }
-                                            } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_multitpnew"))) {
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.JOINT_WORK + rsf, jointWorkJsonArray.toString(), 2));
+                                        }
+                                        if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
+                                            if (jsonArray.length() > 0) {
+                                                JSONObject jsonObject1 = jsonArray.getJSONObject(0);
+                                                JSONArray stockBalanceArray = jsonObject1.getJSONArray("Sample_Stock");
+                                                JSONArray inputBalanceArray = jsonObject1.getJSONArray("Input_Stock");
+                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 2));
+                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 2));
+                                            }
+                                        } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_multitpnew"))) {
+                                            if (jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")) {
+                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
+                                            } else {
+                                                SaveTourPlan(jsonArray.getJSONObject(0));
+                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
+                                            }
+                                        } else if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+                                            if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
                                                 if (jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")) {
                                                     SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                                                 } else {
-                                                    SaveTourPlan(jsonArray.getJSONObject(0));
+                                                    SaveTourPlanOne(jsonArray.getJSONObject(0));
                                                     SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
                                                 }
-                                            } else if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
-                                                if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
-                                                    if (jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")) {
-                                                        SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
-                                                    } else {
-                                                        SaveTourPlanOne(jsonArray.getJSONObject(0));
-                                                        SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
-                                                    }
-                                                }
+                                            }
 //                                            }
 
-                                            } else if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
-                                                if (mgrInitialSync) {
-                                                    setHq(jsonArray);
-                                                    return;
-                                                }
-                                            } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE)) {
-                                                if (jsonArray.length() > 0) {
-                                                    insertSlide(jsonArray);
-                                                    if (!navigateFrom.equalsIgnoreCase("Login")) {
-                                                        SlideAlertbox(true);
-                                                    }
-                                                }
-                                            } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.WELCOME_SLIDE)) {
-                                                if (jsonArray.length() > 0) {
-                                                    insertWelcomeSlide(jsonArray);
-                                                    if (!navigateFrom.equalsIgnoreCase("Login")) {
-                                                        welcomeSlideAlertBox(true);
-                                                    }
-                                                }
-                                            } else if (!navigateFrom.equalsIgnoreCase("Login") && masterOf.equalsIgnoreCase(Constants.SETUP) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
-                                                if (jsonArray.length() > 0) {
-                                                    SharedPref.InsertLogInData(MasterSyncActivity.this, jsonArray.getJSONObject(0));
-                                                    if (!navigateFrom.equalsIgnoreCase("Slide")) {
-                                                        Intent intent = getIntent();
-                                                        overridePendingTransition(0, 0);
-                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                                        finish();
-                                                        overridePendingTransition(0, 0);
-                                                        startActivity(intent);
-                                                    }
-                                                }
-                                            } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
-                                                stpOfflineDataDao.deleteAllData("0");
-                                                saveSTPDataToLocal();
-                                            } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
-                                                activityDetailsDataDao.deleteAllData();
-//                                            syncIndividualActivityDetails();
+                                        } else if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
+                                            if (mgrInitialSync) {
+                                                setHq(jsonArray);
+                                                return;
                                             }
-                                            JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
-                                            for (int bean = 0; bean < input.length(); bean++) {
-                                                try {
-                                                    JSONObject setUpObject = input.getJSONObject(bean);
-                                                    String appAccess = setUpObject.getString("sanzen_edet");
-                                                    if (!appAccess.equals("1")) {
-                                                        CommonUtilsMethods.accessDialogBox(MasterSyncActivity.this);
-                                                    }
-                                                } catch (JSONException e) {
-                                                    throw new RuntimeException(e);
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE)) {
+                                            if (jsonArray.length() > 0) {
+                                                insertSlide(jsonArray);
+                                                if (!navigateFrom.equalsIgnoreCase("Login")) {
+                                                    SlideAlertbox(true);
                                                 }
+                                            }
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.WELCOME_SLIDE)) {
+                                            if (jsonArray.length() > 0) {
+                                                insertWelcomeSlide(jsonArray);
+                                                if (!navigateFrom.equalsIgnoreCase("Login")) {
+                                                    welcomeSlideAlertBox(true);
+                                                }
+                                            }
+                                        } else if (!navigateFrom.equalsIgnoreCase("Login") && masterOf.equalsIgnoreCase(Constants.SETUP) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsetups_edet")) {
+                                            if (jsonArray.length() > 0) {
+                                                SharedPref.InsertLogInData(MasterSyncActivity.this, jsonArray.getJSONObject(0));
+                                                if (!navigateFrom.equalsIgnoreCase("Slide")) {
+                                                    Intent intent = getIntent();
+                                                    overridePendingTransition(0, 0);
+                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                                    finish();
+                                                    overridePendingTransition(0, 0);
+                                                    startActivity(intent);
+                                                }
+                                            }
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.STANDARD_TOUR_PLAN)) {
+                                            stpOfflineDataDao.deleteAllData("0");
+                                            saveSTPDataToLocal();
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.ACTIVITY)) {
+                                            activityDetailsDataDao.deleteAllData();
+//                                            syncIndividualActivityDetails();
+                                        }
+                                        JSONArray input = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
+                                        for (int bean = 0; bean < input.length(); bean++) {
+                                            try {
+                                                JSONObject setUpObject = input.getJSONObject(bean);
+                                                String appAccess = setUpObject.getString("sanzen_edet");
+                                                if (!appAccess.equals("1")) {
+                                                    CommonUtilsMethods.accessDialogBox(MasterSyncActivity.this);
+                                                }
+                                            } catch (JSONException e) {
+                                                throw new RuntimeException(e);
                                             }
                                         }
-                                    } else {
-                                        masterSyncItemModels.get(position).setSyncSuccess(1);
-                                        masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
+                                    }
+                                } else {
+                                    masterSyncItemModels.get(position).setSyncSuccess(1);
+                                    masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
 //                                    if (navigateFrom.equalsIgnoreCase("Login")) {
 //                                        masterSyncAll(false);
 //                                    }
-                                    }
-                                    checkAndSetStatus(masterSyncItemModels.get(position));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
                                 }
-                            } else {
-                                if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+                                checkAndSetStatus(masterSyncItemModels.get(position));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
                       /*          NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
                                     @SuppressLint("NotifyDataSetChanged")
                                     @Override
@@ -1878,59 +1895,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 });
                                 networkStatusTask.execute();*/
 
-                                    if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
-                                        SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
-                                    }
-                                } else {
-                                    if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_multitp"))) {
-                                        SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
-                                    }
-                                }
-                                masterSyncItemModels.get(position).setSyncSuccess(1);
-                                masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
-                                checkAndSetStatus(masterSyncItemModels.get(position));
-                            }
-
-                            // when all the masters are synced and intent from Login Activity
-                            if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
-                                if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
-                                    SharedPref.putAutomassync(getApplicationContext(), true);
-                                    //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
-                                    binding.backArrow.setVisibility(View.VISIBLE);
-                                    binding.imgDownloading.setVisibility(View.VISIBLE);
-//                                if(!isSlideDownloading) {
-//                                    isSlideDownloading = true;
-                                    SlideAlertbox(true);
-//                                }
-                                } else if (masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
-//                                SharedPref.putAutomassync(getApplicationContext(), true);
-                                    //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
-                                    binding.backArrow.setVisibility(View.VISIBLE);
-                                    binding.imgDownloading.setVisibility(View.VISIBLE);
-//                                if(!isWelcomeSlideDownloading) {
-//                                    isWelcomeSlideDownloading = true;
-                                    welcomeSlideAlertBox(true);
-//                                }
-                                } else {
-                                    binding.imgDownloading.setVisibility(View.VISIBLE);
-                                    binding.backArrow.setVisibility(View.VISIBLE);
-                                    SharedPref.putAutomassync(getApplicationContext(), true);
-                                    //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
-                                    Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }
-                            masterSyncAdapter.notifyDataSetChanged();
-                            Log.e("test", "success count : " + apiSuccessCount);
-                        }
-
-                        @SuppressLint("NotifyDataSetChanged")
-                        @Override
-                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-
-                            if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
                                 if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
                                     SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                                 }
@@ -1939,40 +1903,93 @@ public class MasterSyncActivity extends AppCompatActivity {
                                     SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                                 }
                             }
-                            Log.e("test", "failed : " + t);
-                            ++apiSuccessCount;
-                            Log.d("SyncStatus", "API success count (after failure): " + apiSuccessCount);
-                            masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
-                            masterSyncItemModels.get(position).setPBarVisibility(false);
                             masterSyncItemModels.get(position).setSyncSuccess(1);
-                            masterSyncAdapter.notifyDataSetChanged();
+                            masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
                             checkAndSetStatus(masterSyncItemModels.get(position));
-                            if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
+                        }
+
+                        // when all the masters are synced and intent from Login Activity
+                        if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
+                            if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
+                                SharedPref.putAutomassync(getApplicationContext(), true);
+                                //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                                binding.backArrow.setVisibility(View.VISIBLE);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+//                                if(!isSlideDownloading) {
+//                                    isSlideDownloading = true;
+                                SlideAlertbox(true);
+//                                }
+                            } else if (masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
+//                                SharedPref.putAutomassync(getApplicationContext(), true);
+                                //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                                binding.backArrow.setVisibility(View.VISIBLE);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+//                                if(!isWelcomeSlideDownloading) {
+//                                    isWelcomeSlideDownloading = true;
+                                welcomeSlideAlertBox(true);
+//                                }
+                            } else {
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 SharedPref.putAutomassync(getApplicationContext(), true);
-                                SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
-                                if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
-                                    binding.backArrow.setVisibility(View.VISIBLE);
-                                    binding.imgDownloading.setVisibility(View.VISIBLE);
-                                    SlideAlertbox(true);
-                                } else if (masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
-                                    binding.backArrow.setVisibility(View.VISIBLE);
-                                    binding.imgDownloading.setVisibility(View.VISIBLE);
-                                    welcomeSlideAlertBox(true);
-                                } else {
-                                    binding.backArrow.setVisibility(View.VISIBLE);
-                                    binding.imgDownloading.setVisibility(View.VISIBLE);
-                                    SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
-                                    SharedPref.putAutomassync(getApplicationContext(), true);
-                                    Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
-                                    finish();
-                                }
+                                //    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                                Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
                             }
                         }
-                    });
-                }
+                        masterSyncAdapter.notifyDataSetChanged();
+                        Log.e("test", "success count : " + apiSuccessCount);
+                    }
+
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+                        if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+                            if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
+                                SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
+                            }
+                        } else {
+                            if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_multitp"))) {
+                                SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
+                            }
+                        }
+                        Log.e("test", "failed : " + t);
+                        ++apiSuccessCount;
+                        Log.d("SyncStatus", "API success count (after failure): " + apiSuccessCount);
+                        masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
+                        masterSyncItemModels.get(position).setPBarVisibility(false);
+                        masterSyncItemModels.get(position).setSyncSuccess(1);
+                        masterSyncAdapter.notifyDataSetChanged();
+                        checkAndSetStatus(masterSyncItemModels.get(position));
+                        if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
+                            binding.backArrow.setVisibility(View.VISIBLE);
+                            SharedPref.putAutomassync(getApplicationContext(), true);
+                            SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
+                            if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
+                                binding.backArrow.setVisibility(View.VISIBLE);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+                                SlideAlertbox(true);
+                            } else if (masterDataDao.getMasterDataTableOrNew(Constants.WELCOME_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
+                                binding.backArrow.setVisibility(View.VISIBLE);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+                                welcomeSlideAlertBox(true);
+                            } else {
+                                binding.backArrow.setVisibility(View.VISIBLE);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+                                SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
+                                SharedPref.putAutomassync(getApplicationContext(), true);
+                                Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+                    }
+                });
+            }
 
         } catch (Exception e) {
             Log.v("masterCheck", "--error-" + e);
@@ -2218,7 +2235,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                         holidayWorkTypeModelOneBuild = new OneBuildModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
                 }
 
-                Log.e("weeklyOffWorkTypeModel", "" + weeklyOffWorkTypeModelOneBuild.getName());
+                Log.e("weeklyOffWorkTypeModel", "uiInitialization1" + weeklyOffWorkTypeModelOneBuild.getName());
                 Log.d("holidayWorkTypeModelOneBuild", "uiInitialization1: " + holidayWorkTypeModelOneBuild.getName());
 
             } catch (JSONException e) {
@@ -3050,8 +3067,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         saveTpLocal(modelClasses, day, monthName, "0");
     }
 
-    private void SaveTpLocalFullOne(ReceiveModel
-                                            receiveModel, ArrayList<OneBuildModelClass> modelClasses, String day, String
+    private void SaveTpLocalFullOne(ReceiveModel receiveModel, ArrayList<OneBuildModelClass> modelClasses, String day, String
                                             monthName, String date, String dayName, String monthNo, String year) {
         SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0");
 
@@ -3171,8 +3187,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month, new Gson().toJson(arrayList)));
     }
 
-    public void saveTpLocalOne(ArrayList<OneBuildModelClass> arrayList, String date, String
-            month, String status) {
+    public void saveTpLocalOne(ArrayList<OneBuildModelClass> arrayList, String date, String month, String status) {
         for (OneBuildModelClass modelClass : arrayList) {
             if (modelClass.getDayNo().equals(date)) {
                 modelClass.setSyncStatus(status);
@@ -3507,11 +3522,11 @@ public class MasterSyncActivity extends AppCompatActivity {
             JsonObject tourPlan = new JsonObject();
 //            for (OneBuildModelClass oneBuildModelClassTp : arrayList) {
             OneBuildModelClass oneBuildModelClassTp = arrayList.get(10);
-                tourPlan.addProperty("SFCode", SharedPref.getSfCode(MasterSyncActivity.this));
-                tourPlan.addProperty("SFName", SharedPref.getSfName(MasterSyncActivity.this));
-                tourPlan.addProperty("Month", oneBuildModelClassTp.getMonth());
-                tourPlan.addProperty("Year", oneBuildModelClassTp.getYear());
-                tourPlan.addProperty("DivisionCode", SharedPref.getDivisionCode(MasterSyncActivity.this).replace(",", ""));
+            tourPlan.addProperty("SFCode", SharedPref.getSfCode(MasterSyncActivity.this));
+            tourPlan.addProperty("SFName", SharedPref.getSfName(MasterSyncActivity.this));
+            tourPlan.addProperty("Month", oneBuildModelClassTp.getMonth());
+            tourPlan.addProperty("Year", oneBuildModelClassTp.getYear());
+            tourPlan.addProperty("DivisionCode", SharedPref.getDivisionCode(MasterSyncActivity.this).replace(",", ""));
 //            }
 
 
@@ -3549,8 +3564,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                             DrCode = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
                             UnDrName = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
                             UnDrCode = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                            StkName = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                            StkCode = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                            StkName = textBuilder_OB(sessionList_OneBuild.getStockists(), false);
+                            StkCode = textBuilder_OB(sessionList_OneBuild.getStockists(), true);
                             CipName = textBuilder_OB(sessionList_OneBuild.getCip(), false);
                             CipCode = textBuilder_OB(sessionList_OneBuild.getCip(), true);
                             HospName = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
@@ -3576,8 +3591,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                             DrCode2 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
                             UnDrName2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
                             UnDrCode2 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                            StkName2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                            StkCode2 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                            StkName2 = textBuilder_OB(sessionList_OneBuild.getStockists(), false);
+                            StkCode2 = textBuilder_OB(sessionList_OneBuild.getStockists(), true);
                             CipName2 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
                             CipCode2 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
                             HospName2 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);
@@ -3603,8 +3618,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                             DrCode3 = textBuilder_OB(sessionList_OneBuild.getDoctors(), true);
                             UnDrName3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), false);
                             UnDrCode3 = textBuilder_OB(sessionList_OneBuild.getUnlistedDoctors(), true);
-                            StkName3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), false);
-                            StkCode3 = textBuilder_OB(sessionList_OneBuild.getStockLists(), true);
+                            StkName3 = textBuilder_OB(sessionList_OneBuild.getStockists(), false);
+                            StkCode3 = textBuilder_OB(sessionList_OneBuild.getStockists(), true);
                             CipName3 = textBuilder_OB(sessionList_OneBuild.getCip(), false);
                             CipCode3 = textBuilder_OB(sessionList_OneBuild.getCip(), true);
                             HospName3 = textBuilder_OB(sessionList_OneBuild.getHospitals(), false);

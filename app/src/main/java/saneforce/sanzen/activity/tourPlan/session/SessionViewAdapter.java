@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.tourPlan.session;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,7 +56,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             holder.jcModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getJointWorks());
             holder.listedDrModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getDoctors());
             holder.chemistModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getChemists());
-            holder.stockiestModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getStockLists());
+            holder.stockiestModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getStockists());
             holder.unListedDrModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getUnlistedDoctors());
             holder.cipModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getCip());
             holder.hospitalModelArrayOneBuild = new ArrayList<>(holder.dataOneBuild.getHospitals());
@@ -165,7 +163,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             }
 
             //Stockiest
-            if (holder.dataOneBuild.getStockLists().size() > 0) {
+            if (holder.dataOneBuild.getStockists().size() > 0) {
                 StringBuilder stockiestName = new StringBuilder();
                 for (int i = 0; i < holder.stockiestModelArrayOneBuild.size(); i++) {
                     if (stockiestName.length() == 0) {

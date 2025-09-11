@@ -196,7 +196,7 @@ public class OneBuildModelClass implements Serializable {
         private List<OneBuildModelClass.SessionList.SubClass> JointWorks = new ArrayList<>() ;
         private List<OneBuildModelClass.SessionList.SubClass> Doctors = new ArrayList<>();
         private List<OneBuildModelClass.SessionList.SubClass> Chemists = new ArrayList<>();
-        private List<OneBuildModelClass.SessionList.SubClass> StockLists = new ArrayList<>();
+        private List<OneBuildModelClass.SessionList.SubClass> Stockists = new ArrayList<>();
         private List<OneBuildModelClass.SessionList.SubClass> UnlistedDoctors = new ArrayList<>();
         private List<OneBuildModelClass.SessionList.SubClass> Cip;
         private List<OneBuildModelClass.SessionList.SubClass> Hospitals = new ArrayList<>();
@@ -218,7 +218,7 @@ public class OneBuildModelClass implements Serializable {
             this.JointWorks  = JointWorks ;
             this.Doctors = Doctors;
             this.Chemists = Chemists;
-            this.StockLists = StockLists;
+            this.Stockists = StockLists;
             this.UnlistedDoctors = UnlistedDoctors;
             Cip = cip;
             this.Hospitals = Hospitals;
@@ -235,7 +235,7 @@ public class OneBuildModelClass implements Serializable {
             this.JointWorks  = new ArrayList<>();
             this.Doctors = new ArrayList<>();
             this.Chemists = new ArrayList<>();
-            this.StockLists = new ArrayList<>();
+            this.Stockists = new ArrayList<>();
             this.UnlistedDoctors = new ArrayList<>();
             this.Cip = new ArrayList<>();
             this.Hospitals = new ArrayList<>();
@@ -272,10 +272,10 @@ public class OneBuildModelClass implements Serializable {
             }else{
                 Log.d("Chemist", "SessionList: "+"Chemist is NULL");
             }
-            if(sessionList.getStockLists() != null) {
-                for (OneBuildModelClass.SessionList.SubClass stockLists : sessionList.StockLists) {
+            if(sessionList.getStockists() != null) {
+                for (OneBuildModelClass.SessionList.SubClass stockLists : sessionList.Stockists) {
                     OneBuildModelClass.SessionList.SubClass copyStockLists = new OneBuildModelClass.SessionList.SubClass(stockLists);
-                    this.StockLists.add(copyStockLists);
+                    this.Stockists.add(copyStockLists);
                 }
             }else{
                 Log.d("StockList", "SessionList: "+"StockList is NULL");
@@ -387,12 +387,12 @@ public class OneBuildModelClass implements Serializable {
             this.Chemists = Chemists;
         }
 
-        public List<OneBuildModelClass.SessionList.SubClass> getStockLists() {
-            return StockLists;
+        public List<OneBuildModelClass.SessionList.SubClass> getStockists() {
+            return Stockists;
         }
 
-        public void setStockLists(List<OneBuildModelClass.SessionList.SubClass> stockList) {
-            StockLists = stockList;
+        public void setStockists(List<OneBuildModelClass.SessionList.SubClass> stockList) {
+            Stockists = stockList;
         }
 
         public List<OneBuildModelClass.SessionList.SubClass> getUnlistedDoctors() {

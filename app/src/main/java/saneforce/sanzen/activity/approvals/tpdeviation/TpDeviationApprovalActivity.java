@@ -2,6 +2,7 @@ package saneforce.sanzen.activity.approvals.tpdeviation;
 
 
 import static saneforce.sanzen.activity.tourPlan.TourPlanActivity.prepareSessionListForAdapter;
+import static saneforce.sanzen.activity.tourPlan.TourPlanActivity.prepareSessionListForAdapterOneBuild;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -40,10 +41,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
-import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQItemModelClass;
+import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.activity.tourPlan.session.SessionViewAdapter;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -162,6 +163,21 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         return new ModelClass.SessionList.SubClass();
     }
 
+    private OneBuildModelClass.SessionList.SubClass getHQDataOneBuild(String hqCode) {
+        try {
+            JSONArray HQMaster = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+            for (int i = 0; i<HQMaster.length(); i++) {
+                JSONObject jsonObject = HQMaster.optJSONObject(i);
+                if(jsonObject.optString("Code").equalsIgnoreCase(hqCode)) {
+                    return new OneBuildModelClass.SessionList.SubClass(jsonObject.optString("name"), hqCode);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new OneBuildModelClass.SessionList.SubClass();
+    }
+
     private void filter(String text) {
         ArrayList<TpDeviationModelList> filteredNames = new ArrayList<>();
         for (TpDeviationModelList s : tpDeviationModelLists) {
@@ -274,7 +290,11 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     try {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
-                        prepareSessionData(jsonArray);
+                        if(SharedPref.getOneBuild(TpDeviationApprovalActivity.this).equalsIgnoreCase("0")){
+                            prepareSessionDataOneBuild(jsonArray);
+                        }else {
+                            prepareSessionData(jsonArray);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -406,6 +426,122 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         }
     }
 
+
+    private void prepareSessionDataOneBuild(JSONArray jsonArray) {
+        if(jsonArray.length() > 0) {
+            JSONObject jsonObject = jsonArray.optJSONObject(0);
+            OneBuildModelClass.SessionList sessionList = prepareSessionListForAdapterOneBuild();
+            sessionList.setHeadquarters(getHQDataOneBuild(jsonObject.optString("HQCodes")));
+
+            OneBuildModelClass.SessionList.WorkType workType = new OneBuildModelClass.SessionList.WorkType(jsonObject.optString("FWFlg"), jsonObject.optString("WTName"), "", jsonObject.optString("WTCode"));
+            sessionList.setWorkType(workType);
+
+            List<OneBuildModelClass.SessionList.SubClass> clusterList = prepareListOneBuild(jsonObject.optString("ClusterCode"), jsonObject.optString("ClusterName"));
+            List<OneBuildModelClass.SessionList.SubClass> jwList = prepareListOneBuild(jsonObject.optString("JWCodes"), jsonObject.optString("JWNames"));
+            List<OneBuildModelClass.SessionList.SubClass> doctorList = prepareListOneBuild(jsonObject.optString("Dr_Code"), jsonObject.optString("Dr_Name"));
+            List<OneBuildModelClass.SessionList.SubClass> chemistList = prepareListOneBuild(jsonObject.optString("Chem_Code"), jsonObject.optString("Chem_Name"));
+            List<OneBuildModelClass.SessionList.SubClass> stockistList = prepareListOneBuild(jsonObject.optString("Stockist_Code"), jsonObject.optString("Stockist_Name"));
+            List<OneBuildModelClass.SessionList.SubClass> hqs = prepareListOneBuild(jsonObject.optString("HQCodes"), jsonObject.optString("HQNames"));
+
+            //Multi hqs
+           /* ArrayList<MultiHQHeaderModelClass> clusters = prepareList(hqs, jsonObject.optString("ClusterCode"), jsonObject.optString("ClusterName"));
+            ArrayList<MultiHQHeaderModelClass> JCs = prepareList(hqs, jsonObject.optString("JWCodes"), jsonObject.optString("JWNames"));
+            ArrayList<MultiHQHeaderModelClass> listedDrs = prepareList(hqs, jsonObject.optString("Dr_Code"), jsonObject.optString("Dr_Name"));
+            ArrayList<MultiHQHeaderModelClass> chemists = prepareList(hqs, jsonObject.optString("Chem_Code"), jsonObject.optString("Chem_Name"));
+            ArrayList<MultiHQHeaderModelClass> stockiests = prepareList(hqs, jsonObject.optString("Stockist_Code"), jsonObject.optString("Stockist_Name"));
+            ArrayList<MultiHQHeaderModelClass> unListedDrs = new ArrayList<>();
+            ArrayList<MultiHQHeaderModelClass> cips = new ArrayList<>();
+            ArrayList<MultiHQHeaderModelClass> hospitals = new ArrayList<>();
+*/
+            sessionList.setTerritories(clusterList);
+            sessionList.setJointWorks(jwList);
+            sessionList.setDoctors(doctorList);
+            sessionList.setChemists(chemistList);
+            sessionList.setStockists(stockistList);
+//            sessionList.setHeadquarters(hqs);
+//            sessionList.setHeadquarters(hqs);
+           /* sessionList.setTerritories(clusters);
+            sessionList.setJCs(JCs);
+            sessionList.setListedDrs(listedDrs);
+            sessionList.setChemists(chemists);
+            sessionList.setStockiests(stockiests);
+            sessionList.setUnlistedDoctors(unListedDrs);*/
+
+            ArrayList<OneBuildModelClass.SessionList> sessionLists = new ArrayList<>();
+            sessionLists.add(sessionList);
+            //commented before not you
+//            ModelClass modelClass = new ModelClass(jsonObject.optString("Day"), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_19, jsonObject.optString("TPDt")), jsonObject.optString("tpday"), jsonObject.optString("Tour_Month"), jsonObject.optString("Tour_Year"), false, sessionLists);
+
+            if(!jsonObject.optString("HQCodes2").isEmpty()) {
+                sessionList = prepareSessionListForAdapterOneBuild();
+                sessionList.setHeadquarters(getHQDataOneBuild(jsonObject.optString("HQCodes2")));
+
+                workType = new OneBuildModelClass.SessionList.WorkType(jsonObject.optString("FWFlg2"), jsonObject.optString("WTName2"), "", jsonObject.optString("WTCode2"));
+                sessionList.setWorkType(workType);
+
+                clusterList = prepareListOneBuild(jsonObject.optString("ClusterCode2"), jsonObject.optString("ClusterName2"));
+                jwList = prepareListOneBuild(jsonObject.optString("JWCodes2"), jsonObject.optString("JWNames2"));
+                doctorList = prepareListOneBuild(jsonObject.optString("Dr_two_code"), jsonObject.optString("Dr_two_name"));
+                chemistList = prepareListOneBuild(jsonObject.optString("Chem_two_code"), jsonObject.optString("Chem_two_name"));
+                stockistList = prepareListOneBuild(jsonObject.optString("Stockist_two_code"), jsonObject.optString("Stockist_two_name"));
+                hqs = prepareListOneBuild(jsonObject.optString("HQCodes2"), jsonObject.optString("HQNames2"));
+               /* clusters = prepareList(hqs, jsonObject.optString("ClusterCode2"), jsonObject.optString("ClusterName2"));
+                JCs = prepareList(hqs, jsonObject.optString("JWCodes2"), jsonObject.optString("JWNames2"));
+                listedDrs = prepareList(hqs, jsonObject.optString("Dr_two_code"), jsonObject.optString("Dr_two_name"));
+                chemists = prepareList(hqs, jsonObject.optString("Chem_two_code"), jsonObject.optString("Chem_two_name"));
+                stockiests = prepareList(hqs, jsonObject.optString("Stockist_two_code"), jsonObject.optString("Stockist_two_name"));*/
+                sessionList.setTerritories(clusterList);
+                sessionList.setJointWorks(jwList);
+                sessionList.setDoctors(doctorList);
+                sessionList.setChemists(chemistList);
+                sessionList.setStockists(stockistList);
+       /*         sessionList.setHQs(hqs);
+                sessionList.setClusters(clusters);
+                sessionList.setJCs(JCs);
+                sessionList.setListedDrs(listedDrs);
+                sessionList.setChemists(chemists);
+                sessionList.setStockiests(stockiests);
+*/
+                sessionLists.add(sessionList);
+            }
+            if(!jsonObject.optString("HQCodes3").isEmpty()) {
+                sessionList = prepareSessionListForAdapterOneBuild();
+                sessionList.setHeadquarters(getHQDataOneBuild(jsonObject.optString("HQCodes3")));
+
+                workType = new OneBuildModelClass.SessionList.WorkType(jsonObject.optString("FWFlg3"), jsonObject.optString("WTName3"), "", jsonObject.optString("WTCode3"));
+                sessionList.setWorkType(workType);
+
+                clusterList = prepareListOneBuild(jsonObject.optString("ClusterCode3"), jsonObject.optString("ClusterName3"));
+                jwList = prepareListOneBuild(jsonObject.optString("JWCodes3"), jsonObject.optString("JWNames3"));
+                doctorList = prepareListOneBuild(jsonObject.optString("Dr_three_code"), jsonObject.optString("Dr_three_name"));
+                chemistList = prepareListOneBuild(jsonObject.optString("Chem_three_code"), jsonObject.optString("Chem_three_name"));
+                stockistList = prepareListOneBuild(jsonObject.optString("Stockist_three_code"), jsonObject.optString("Stockist_three_name"));
+                hqs = prepareListOneBuild(jsonObject.optString("HQCodes2"), jsonObject.optString("HQNames2"));
+               /* clusters = prepareList(hqs, jsonObject.optString("ClusterCode3"), jsonObject.optString("ClusterName3"));
+                JCs = prepareList(hqs, jsonObject.optString("JWCodes3"), jsonObject.optString("JWNames3"));
+                listedDrs = prepareList(hqs, jsonObject.optString("Dr_three_code"), jsonObject.optString("Dr_three_name"));
+                chemists = prepareList(hqs, jsonObject.optString("Chem_three_code"), jsonObject.optString("Chem_three_name"));
+                stockiests = prepareList(hqs, jsonObject.optString("Stockist_Code"), jsonObject.optString("Stockist_three_name"));*/
+                sessionList.setTerritories(clusterList);
+                sessionList.setJointWorks(jwList);
+                sessionList.setDoctors(doctorList);
+                sessionList.setChemists(chemistList);
+                sessionList.setStockists(stockistList);
+              /*  sessionList.setHQs(hqs);
+                sessionList.setClusters(clusters);
+                sessionList.setJCs(JCs);
+                sessionList.setListedDrs(listedDrs);
+                sessionList.setChemists(chemists);
+                sessionList.setStockiests(stockiests);*/
+
+                sessionLists.add(sessionList);
+            }
+
+            OneBuildModelClass oneBuildModelClass = new OneBuildModelClass(jsonObject.optString("Day"), TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_19, jsonObject.optString("TPDt")), jsonObject.optString("tpday"), jsonObject.optString("Tour_Month"), jsonObject.optString("Tour_Year"), false, sessionLists);
+            populateSessionViewAdapterOneBuild(oneBuildModelClass);
+        }
+    }
+
     public void populateSessionViewAdapter(ModelClass modelClass) {
         tpDeviationApprovalBinding.tpDeviationApprovalNavigation.addEditViewTxt.setText(modelClass.getDate());
         tpDeviationApprovalBinding.tpDeviationApprovalDrawer.openDrawer(GravityCompat.END);
@@ -418,7 +554,20 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         tpDeviationApprovalBinding.tpDeviationApprovalNavigation.editLayout.setVisibility(View.GONE);
     }
 
-    private List<ModelClass.SessionList.SubClass> prepareList(String codes, String names) {
+    public void populateSessionViewAdapterOneBuild(OneBuildModelClass oneBuildModelClass) {
+        tpDeviationApprovalBinding.tpDeviationApprovalNavigation.addEditViewTxt.setText(oneBuildModelClass.getDate());
+        tpDeviationApprovalBinding.tpDeviationApprovalDrawer.openDrawer(GravityCompat.END);
+        SessionViewAdapter sessionViewAdapter = new SessionViewAdapter(oneBuildModelClass, TpDeviationApprovalActivity.this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(TpDeviationApprovalActivity.this);
+        tpDeviationApprovalBinding.tpDeviationApprovalNavigation.tpSessionRecView.setLayoutManager(layoutManager);
+        tpDeviationApprovalBinding.tpDeviationApprovalNavigation.tpSessionRecView.setAdapter(sessionViewAdapter);
+        tpDeviationApprovalBinding.tpDeviationApprovalNavigation.addSaveLayout.setVisibility(View.GONE);
+        tpDeviationApprovalBinding.tpDeviationApprovalNavigation.clrSaveBtnLayout.setVisibility(View.GONE);
+        tpDeviationApprovalBinding.tpDeviationApprovalNavigation.editLayout.setVisibility(View.GONE);
+    }
+
+
+        private List<ModelClass.SessionList.SubClass> prepareList(String codes, String names) {
         List<ModelClass.SessionList.SubClass> list = new ArrayList<>();
         try {
             String[] codeArray = CommonUtilsMethods.removeLastComma(codes).split(",");
@@ -426,6 +575,22 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
             for (int index = 0; index<codeArray.length; index++) {
                 if(!(codeArray[index].isEmpty() || nameArray[index].isEmpty())) {
                     list.add(new ModelClass.SessionList.SubClass(nameArray[index], codeArray[index]));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    private List<OneBuildModelClass.SessionList.SubClass> prepareListOneBuild(String codes, String names) {
+        List<OneBuildModelClass.SessionList.SubClass> list = new ArrayList<>();
+        try {
+            String[] codeArray = CommonUtilsMethods.removeLastComma(codes).split(",");
+            String[] nameArray = CommonUtilsMethods.removeLastComma(names).split(",");
+            for (int index = 0; index<codeArray.length; index++) {
+                if(!(codeArray[index].isEmpty() || nameArray[index].isEmpty())) {
+                    list.add(new OneBuildModelClass.SessionList.SubClass(nameArray[index], codeArray[index]));
                 }
             }
         } catch (Exception e) {

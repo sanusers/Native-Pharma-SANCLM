@@ -73,6 +73,7 @@ import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQHeaderModelClass;
 import saneforce.sanzen.activity.tourPlan.model.MultiHQItemModelClass;
+import saneforce.sanzen.activity.tourPlan.model.OneBuildModelClass;
 import saneforce.sanzen.commonClasses.CheckInOutManager;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -4075,7 +4076,138 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.cardPlan2.setVisibility(View.GONE);
                     binding.llDeviation.setVisibility(View.GONE);
                 }
-            } else if (tpDataObj != null && HomeDashBoard.selectedDate != null) {
+            } else if (SharedPref.getOneBuild(context).equalsIgnoreCase("0") && tpDataObj != null && HomeDashBoard.selectedDate != null) {
+                SharedPref.setTpDcrDeviatedDate(requireContext(), "");
+                Type type = new TypeToken<OneBuildModelClass>() {
+                }.getType();
+                OneBuildModelClass oneBuildModelClass = new Gson().fromJson(String.valueOf(tpDataObj), type);
+                StringBuilder clusterName = new StringBuilder(), clusterCode = new StringBuilder(), listedDr = new StringBuilder();
+                if(oneBuildModelClass.getSessionList() != null && !oneBuildModelClass.getSessionList().isEmpty()) {
+                    if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                        for (OneBuildModelClass.SessionList.SubClass subClass : oneBuildModelClass.getSessionList().get(0).getDoctors()) {
+                            listedDr.append(subClass.getCode());
+                            listedDr.append(",");
+                        }
+                        for (OneBuildModelClass.SessionList.SubClass subClass : oneBuildModelClass.getSessionList().get(0).getTerritories()) {
+                            clusterCode.append(subClass.getCode());
+                            clusterCode.append(",");
+                            clusterName.append(subClass.getName());
+                            clusterName.append(",");
+                        }
+                    } /*else {
+                        for (MultiHQHeaderModelClass header : oneBuildModelClass.getSessionList().get(0).getDoctors()) {
+                            for (MultiHQItemModelClass data: header.getItemsList()) {
+                                listedDr.append(data.getCode());
+                                listedDr.append(",");
+                            }
+                            listedDr.append("$");
+                        }
+                        for (MultiHQHeaderModelClass header : oneBuildModelClass.getSessionList().get(0).getTerritories()) {
+                            for (MultiHQItemModelClass data: header.getItemsList()) {
+                                clusterCode.append(data.getCode());
+                                clusterCode.append(",");
+                                clusterName.append(data.getName());
+                                clusterName.append(",");
+                            }
+                            clusterCode.append("$");
+                            clusterName.append("$");
+                        }
+                    }*/
+                    JSONObject obj = new JSONObject();
+                    JSONObject obj2 = new JSONObject();
+                    obj.put("SFCode", SharedPref.getSfCode(requireContext()));
+                    JSONObject TPDtFisrstSeasonObject = new JSONObject();
+                    TPDtFisrstSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
+                    obj.put("TPDt", TPDtFisrstSeasonObject);
+                    obj.put("WT", oneBuildModelClass.getSessionList().get(0).getWorkType().getCode());
+                    obj.put("WTNm", oneBuildModelClass.getSessionList().get(0).getWorkType().getName());
+                    obj.put("FWFlg", oneBuildModelClass.getSessionList().get(0).getWorkType().getFWFlg());
+                    obj.put("SFMem", oneBuildModelClass.getSessionList().get(0).getHeadquarters().getCode());
+                    obj.put("HQNm", oneBuildModelClass.getSessionList().get(0).getHeadquarters().getName());
+                    obj.put("Pl", clusterCode.toString());
+                    obj.put("PlNm", clusterName.toString());
+                    obj.put("Rem", "");
+                    obj.put("TpVwFlg", "0");
+                    obj.put("TP_Doctor", listedDr.toString());
+                    obj.put("TP_cluster", clusterCode.toString());
+                    obj.put("TP_worktype", oneBuildModelClass.getSessionList().get(0).getWorkType().getCode());
+                    if(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && (!stpOfflineDataDao.isNotApproved() && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length()>0)) {
+                        obj.put("Others_Code", oneBuildModelClass.getSTP_Code());
+                        obj.put("Others_Name", oneBuildModelClass.getSTP_Name());
+                    } else {
+                        obj.put("Others_Code", "");
+                        obj.put("Others_Name", "");
+                    }
+                    obj.put("isFromTP", true);
+
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray.put(obj);
+
+                    if (oneBuildModelClass.getSessionList().size() > 1) {
+                        listedDr = new StringBuilder();
+                        clusterCode = new StringBuilder();
+                        clusterName = new StringBuilder();
+                        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                            for (OneBuildModelClass.SessionList.SubClass subClass : oneBuildModelClass.getSessionList().get(1).getDoctors()) {
+                                listedDr.append(subClass.getCode());
+                                listedDr.append(",");
+                            }
+                            for (OneBuildModelClass.SessionList.SubClass subClass : oneBuildModelClass.getSessionList().get(1).getTerritories()) {
+                                clusterCode.append(subClass.getCode());
+                                clusterCode.append(",");
+                                clusterName.append(subClass.getName());
+                                clusterName.append(",");
+                            }
+                        } /*else {
+                            for (MultiHQHeaderModelClass header : oneBuildModelClass.getSessionList().get(1).getDoctors()) {
+                                for (MultiHQItemModelClass data: header.getItemsList()) {
+                                    listedDr.append(data.getCode());
+                                    listedDr.append(",");
+                                }
+                                listedDr.append("$");
+                            }
+                            for (MultiHQHeaderModelClass header : oneBuildModelClass.getSessionList().get(1).getTerritories()) {
+                                for (MultiHQItemModelClass data: header.getItemsList()) {
+                                    clusterCode.append(data.getCode());
+                                    clusterCode.append(",");
+                                    clusterName.append(data.getName());
+                                    clusterName.append(",");
+                                }
+                                clusterCode.append("$");
+                                clusterName.append("$");
+                            }
+                        }*/
+                        obj2.put("SFCode", SharedPref.getSfCode(requireContext()));
+                        JSONObject TPDtSecondSeasonObject = new JSONObject();
+                        TPDtSecondSeasonObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
+                        obj2.put("TPDt", TPDtSecondSeasonObject);
+                        obj2.put("WT", oneBuildModelClass.getSessionList().get(1).getWorkType().getCode());
+                        obj2.put("WTNm", oneBuildModelClass.getSessionList().get(1).getWorkType().getName());
+                        obj2.put("FWFlg", oneBuildModelClass.getSessionList().get(1).getWorkType().getFWFlg());
+                        obj2.put("SFMem", oneBuildModelClass.getSessionList().get(1).getHeadquarters().getCode());
+                        obj2.put("HQNm", oneBuildModelClass.getSessionList().get(1).getHeadquarters().getName());
+                        obj2.put("Pl", clusterCode.toString());
+                        obj2.put("PlNm", clusterName.toString());
+                        obj2.put("Rem", "");
+                        obj2.put("TpVwFlg", "0");
+                        obj2.put("TP_Doctor", listedDr.toString());
+                        obj2.put("TP_cluster", clusterCode.toString());
+                        obj2.put("TP_worktype", oneBuildModelClass.getSessionList().get(1).getWorkType().getCode());
+                        if(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && (!stpOfflineDataDao.isNotApproved() && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length()>0)) {
+                            obj.put("Others_Code", oneBuildModelClass.getSTP_Code());
+                            obj.put("Others_Name", oneBuildModelClass.getSTP_Name());
+                        } else {
+                            obj.put("Others_Code", "");
+                            obj.put("Others_Name", "");
+                        }
+                        obj.put("isFromTP", true);
+                        jsonArray.put(obj2);
+                    }
+                    isFromTP = true;
+                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, jsonArray.toString(), 2));
+                    setUpWorkPlan();
+                }
+            }else if (tpDataObj != null && HomeDashBoard.selectedDate != null) {
                 SharedPref.setTpDcrDeviatedDate(requireContext(), "");
                 Type type = new TypeToken<ModelClass>() {
                 }.getType();

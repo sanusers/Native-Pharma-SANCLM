@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.tourPlan.session;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -216,8 +214,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getChemists().clear();
                     inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setChemists(subClassListOneBuild);
                 } else if (holder.stockiestLayout.getVisibility() == View.VISIBLE) {
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getStockLists().clear();
-                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setStockLists(subClassListOneBuild);
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getStockists().clear();
+                    inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setStockists(subClassListOneBuild);
                 } else if (holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
                     inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).getUnlistedDoctors().clear();
                     inputDataArrayOneBuild.getSessionList().get(holder.getAbsoluteAdapterPosition()).setUnlistedDoctors(subClassListOneBuild);
@@ -376,7 +374,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.jcModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getJointWorks());
             holder.listedDrModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getDoctors());
             holder.chemistModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getChemists());
-            holder.stockListModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getStockLists());
+            holder.stockListModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getStockists());
             holder.unListedDrModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getUnlistedDoctors());
             holder.cipModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getCip());
             holder.hospitalModelArrayOneBuild = new ArrayList<>(holder.sessionDataOneBuild.getHospitals());
