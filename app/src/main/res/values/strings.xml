@@ -204,7 +204,7 @@
     <string name="wt_already_selected">Work Type already has  been selected for session  </string>
     <string name="hq_already_selected">HQ  already has  been selected for session  </string>
     <string name="complete_session">Complete Session </string>
-    <string name="select_hq_in_session">Select Head Quarters in session </string>
+    <string name="select_hq_in_session">Select HeadQuarters in session </string>
     <string name="select_clusters_in_session">Select Clusters in session </string>
     <string name="select_cluster">Select Cluster</string>
     <string name="select_prd_name">Select Product Name</string>
@@ -453,7 +453,7 @@
     <string name="submit">Submit</string>
     <string name="no_pending_dates_to_select">No pending dates to select</string>
     <string name="continuee">CONTINUE</string>
-    <string name="head_quarters_syncing">Head Quarters Syncing...</string>
+    <string name="head_quarters_syncing">HeadQuarters Syncing...</string>
     <string name="date_summary">Date Summary</string>
     <string name="check_for_update">Check For Update</string>
     <string name="downloading_update">Downloading Update</string>
@@ -607,8 +607,7 @@
     <string name="select_customer_type">Select Customer Type</string>
     <string name="customer">Customer</string>
     <string name="select_customer">Select Customer</string>
-    <string name="select_head_quarter">Select Head Quarter</string>
-    <string name="head_quarter">Head Quarter</string>
+    <string name="select_head_quarter">Select HeadQuarter</string>
     <string name="no_address_found">No Address Found - No Internet Connection</string>
     <string name="no_address_found2">No Address Found - Poor Internet Connection</string>
     <string name="No_Tagging">No Tagging</string>

@@ -263,19 +263,20 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             lat = gpsTrack.getLatitude();
             lng = gpsTrack.getLongitude();
 
-
             if (SharedPref.getSfType(this).equalsIgnoreCase("1")) {
                 TodayPlanSfCode = SharedPref.getSfCode(this);
                 TodayPlanSfName = SharedPref.getSfName(this);
             } else {
-                TodayPlanSfCode = SharedPref.getHqCode(this);
-                TodayPlanSfName = SharedPref.getHqName(this);
-                if (TodayPlanSfCode.equalsIgnoreCase("null") || TodayPlanSfCode.isEmpty()) {
-                    JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-                    for (int i = 0; i < 1; i++) {
-                        JSONObject jsonHQList = jsonArray1.getJSONObject(0);
-                        TodayPlanSfCode = jsonHQList.getString("id");
-                        TodayPlanSfName = jsonHQList.getString("name");
+                if (TodayPlanSfCode == null || TodayPlanSfCode.isEmpty()) {
+                    TodayPlanSfCode = SharedPref.getHqCode(this);
+                    TodayPlanSfName = SharedPref.getHqName(this);
+                    if (TodayPlanSfCode.equalsIgnoreCase("null") || TodayPlanSfCode.isEmpty()) {
+                        JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+                        for (int i = 0; i < 1; i++) {
+                            JSONObject jsonHQList = jsonArray1.getJSONObject(0);
+                            TodayPlanSfCode = jsonHQList.getString("id");
+                            TodayPlanSfName = jsonHQList.getString("name");
+                        }
                     }
                 }
             }

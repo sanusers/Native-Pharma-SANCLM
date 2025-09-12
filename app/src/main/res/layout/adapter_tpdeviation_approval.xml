@@ -178,7 +178,7 @@
                 android:layout_marginTop="@dimen/_4sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:paddingVertical="@dimen/_2sdp"
-                android:text="@string/head_quarter"
+                android:text="@string/headquarter"
                 android:textColor="@color/light_grey_2"
                 android:textSize="@dimen/_6ssp" />
 

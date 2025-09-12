@@ -726,15 +726,15 @@
             </com.google.android.material.navigation.NavigationView>
         </androidx.drawerlayout.widget.DrawerLayout>
 
-        <VideoView
-            android:id="@+id/videoView"
-            android:layout_width="300dp"
-            android:layout_height="200dp"
-            android:layout_marginHorizontal="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_50sdp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:visibility="gone" />
+<!--        <VideoView-->
+<!--            android:id="@+id/videoView"-->
+<!--            android:layout_width="300dp"-->
+<!--            android:layout_height="200dp"-->
+<!--            android:layout_marginHorizontal="@dimen/_5sdp"-->
+<!--            android:layout_marginTop="@dimen/_50sdp"-->
+<!--            android:layout_alignParentTop="true"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:visibility="gone" />-->
 
         <RelativeLayout
             android:id="@+id/floatingPlayer"
@@ -747,14 +747,14 @@
             android:layout_marginBottom="@dimen/_50sdp"
             android:layout_marginTop="@dimen/_50sdp"
             android:elevation="8dp"
-            android:visibility="visible">
+            android:visibility="gone">
 
-            <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-                android:id="@+id/youtubePlayerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"/>
+<!--            <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView-->
+<!--                android:id="@+id/youtubePlayerView"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_alignParentTop="true"-->
+<!--                android:layout_alignParentStart="true"/>-->
 
             <View
                 android:id="@+id/dragOverlay"

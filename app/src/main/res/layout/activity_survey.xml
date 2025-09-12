@@ -358,7 +358,7 @@
                                         android:layout_marginStart="@dimen/_6sdp"
                                         android:fontFamily="@font/satoshi_medium"
                                         android:padding="@dimen/_3sdp"
-                                        android:text="@string/head_quarter"
+                                        android:text="@string/headquarter"
                                         android:textColor="@color/bg_txt_color"
                                         android:textSize="@dimen/_6ssp"
                                         android:textStyle="bold" />
