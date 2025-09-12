@@ -589,12 +589,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                 } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
                                     if (FW_meetup_mandatory.equals("0")) {
                                         if (drNeed.equals("0")) {
-                                          /*  if (modelClass1.getDoctors().size() == 0) {
-                                                isEmpty = true;
-                                                position = i;
-                                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
-                                                break;
-                                            }*/
                                             if ((modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) && (Integer.parseInt(maxDrCount) > 0)) {
                                                 isEmpty = true;
                                                 position = i;
@@ -3208,6 +3202,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             Gson gson = new Gson();
 
                             jbonj = gson.fromJson(jsonObject.toString(), JsonObject.class);
+                            System.out.println(jbonj.toString());
                         }
 
 

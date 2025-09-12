@@ -1223,7 +1223,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         dcrModelArray.clear();
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC, "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC, "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
-        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false); /*MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);*/
         if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1") || SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
             myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
         } else {
@@ -3068,7 +3068,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     }
 
     private void SaveTpLocalFullOne(ReceiveModel receiveModel, ArrayList<OneBuildModelClass> modelClasses, String day, String
-                                            monthName, String date, String dayName, String monthNo, String year) {
+            monthName, String date, String dayName, String monthNo, String year) {
         SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0");
 
         OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
