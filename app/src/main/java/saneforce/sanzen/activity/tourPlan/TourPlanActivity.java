@@ -1957,9 +1957,7 @@ public class TourPlanActivity extends AppCompatActivity {
         populateSummaryAdapter(arrayList);
     }
 
-    public void populateCalenderAdapterOneBuild
-            (ArrayList<OneBuildModelClass> arrayListOneBuild) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
+    public void populateCalenderAdapterOneBuild(ArrayList<OneBuildModelClass> arrayListOneBuild) {
 
         binding.monthYear.setText(monthYearFromDate(localDate));
 
@@ -2211,8 +2209,7 @@ public class TourPlanActivity extends AppCompatActivity {
         }
     }
 
-    public void populateSessionViewAdapterOneBuild(OneBuildModelClass
-                                                           oneBuildModelClass) {
+    public void populateSessionViewAdapterOneBuild(OneBuildModelClass oneBuildModelClass) {
         SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         binding.tpDrawer.openDrawer(GravityCompat.END);
         sessionViewAdapter = new SessionViewAdapter(oneBuildModelClass, TourPlanActivity.this);
@@ -2260,8 +2257,7 @@ public class TourPlanActivity extends AppCompatActivity {
         }
     }
 
-    public void populateSummaryAdapterOneBuild
-            (ArrayList<OneBuildModelClass> arrayListOneBuild) {
+    public void populateSummaryAdapterOneBuild(ArrayList<OneBuildModelClass> arrayListOneBuild) {
         SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         try {
             ArrayList<OneBuildModelClass> oneBuildModelClasses = new ArrayList<>();
@@ -2381,7 +2377,6 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void changeApprovalBtnStateOneBuild(ArrayList<OneBuildModelClass> arrayList) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         boolean wholeMonthTpCompleted = false, isDataAvailable = false;
         for (int i = 0; i < arrayList.size(); i++) { // to enable/disable the send to approval button
             if (!arrayList.get(i).getDayNo().isEmpty()) {
@@ -4901,17 +4896,20 @@ public class TourPlanActivity extends AppCompatActivity {
                                         dummy.add(modelClass.getDayNo());
                                         switch (isClickedName) {
                                             case "prev":
+//                                                get3MonthRemoteTPDataOneBuild(isClickedName);
                                                 changeApprovalBtnStateOneBuild(dayWiseArrayPrevMonthOneBuild);
                                                 break;
                                             case "current":
+//                                                get3MonthRemoteTPDataOneBuild(isClickedName);
                                                 changeApprovalBtnStateOneBuild(dayWiseArrayCurrentMonthOneBuild);
                                                 break;
                                             case "next":
+//                                                get3MonthRemoteTPDataOneBuild(isClickedName);
                                                 changeApprovalBtnStateOneBuild(dayWiseArrayNextMonthOneBuild);
                                                 break;
                                         }
-                                        get3MonthRemoteTPDataOneBuild(isClickedName);
-                                        get3MonthRemoteTPDataOneBuild(isClickedName);
+                                       /* get3MonthRemoteTPDataOneBuild(isClickedName);
+                                        get3MonthRemoteTPDataOneBuild(isClickedName);*/
                                         break;
                                     }
                                 }

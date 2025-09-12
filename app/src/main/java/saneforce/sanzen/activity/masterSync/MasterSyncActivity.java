@@ -246,8 +246,11 @@ public class MasterSyncActivity extends AppCompatActivity {
                 mgrInitialSync = true;
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
                     /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
-//                    sync(Constants.DOCTOR_MAS, "gettodaydcr", dcrModelArray, 2);
+                if(SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+                    sync(Constants.DOCTOR_MAS, "gettodaydcr", dcrModelArray, 2);
+                }else {
                     sync(Constants.DOCTOR_MAS, "gettodaydcrmultihq", dcrModelArray, 2);
+                }
                     // to get all the HQ list initially only for MGR
 // to get all the HQ list initially only for MGR
                 } else {
@@ -1223,11 +1226,15 @@ public class MasterSyncActivity extends AppCompatActivity {
         dcrModelArray.clear();
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC, "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC, "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
-        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false); /*MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);*/
-        if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1") || SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
+        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+        if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("1") && SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
             myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
         } else {
-            myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcrmultihq", Constants.WORK_PLAN, myDayPlanStatus, false);
+            if(SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("2") && SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")){
+                myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcr", Constants.WORK_PLAN, myDayPlanStatus, false);
+            }else {
+                myDayPlanModel = new MasterSyncItemModel(Constants.WORK_PLAN, Constants.DOCTOR_MAS, "gettodaydcrmultihq", Constants.WORK_PLAN, myDayPlanStatus, false);
+            }
         }
 
         //   MasterSyncItemModel EventCallSync = new MasterSyncItemModel("Status", -1, "AdditionalDcr", "gettodycalls", Constants.CALENDER_EVENT_STATUS, calenderEventStaus, false);
