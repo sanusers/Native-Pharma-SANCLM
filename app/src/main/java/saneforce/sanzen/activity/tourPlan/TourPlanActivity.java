@@ -2258,7 +2258,7 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void populateSummaryAdapterOneBuild(ArrayList<OneBuildModelClass> arrayListOneBuild) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
+
         try {
             ArrayList<OneBuildModelClass> oneBuildModelClasses = new ArrayList<>();
             for (OneBuildModelClass oneBuildModelClass : arrayListOneBuild) {
@@ -4866,7 +4866,7 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void sendTpForApprovalOneBuild(JsonObject jsonObject, ArrayList<OneBuildModelClass> oneBuildModelClassArrayList, String date, String month, Boolean statusOffline, String isClickedName) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
+
         localDate = localDate;
         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getBaseWebUrl(TourPlanActivity.this));
         Log.v("tpApproval", "--json--" + jsonObject.toString());
@@ -4908,13 +4908,15 @@ public class TourPlanActivity extends AppCompatActivity {
                                                 changeApprovalBtnStateOneBuild(dayWiseArrayNextMonthOneBuild);
                                                 break;
                                         }
-                                       /* get3MonthRemoteTPDataOneBuild(isClickedName);
-                                        get3MonthRemoteTPDataOneBuild(isClickedName);*/
+//                                        get3MonthRemoteTPDataOneBuild(isClickedName);
+                                        /*get3MonthRemoteTPDataOneBuild(isClickedName);*/
                                         break;
                                     }
                                 }
-                            }
 
+
+                            }
+                            get3MonthRemoteTPDataOneBuild(isClickedName);
                         }
 
 

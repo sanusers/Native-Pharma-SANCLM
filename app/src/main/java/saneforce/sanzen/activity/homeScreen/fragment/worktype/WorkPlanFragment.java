@@ -4155,7 +4155,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         listedDr = new StringBuilder();
                         clusterCode = new StringBuilder();
                         clusterName = new StringBuilder();
-                        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                        if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                             for (OneBuildModelClass.SessionList.SubClass subClass : oneBuildModelClass.getSessionList().get(1).getDoctors()) {
                                 listedDr.append(subClass.getCode());
                                 listedDr.append(",");

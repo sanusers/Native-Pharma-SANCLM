@@ -539,7 +539,11 @@ public class OutboxFragment extends Fragment {
                 SignModelClass signModelClass = signModelClasses.get(i);
                 if (signModelClass.getSynced() == 0){
                     isCallAvailable = true;
-                    CallSendSignImage(ParentPos, signModelClass, ChildPos, i,signModelClass.getJson_values(),signModelClass.getFilePath(),String.valueOf(signModelClass.getId()), modelClass);
+                    if(SharedPref.getS3BucketNeed(requireContext()).equalsIgnoreCase("0")){
+                        CallSendSignImageS3(ParentPos, signModelClass, ChildPos, i,signModelClass.getJson_values(),signModelClass.getFilePath(),String.valueOf(signModelClass.getId()), modelClass);
+                    }else {
+                        CallSendSignImage(ParentPos, signModelClass, ChildPos, i, signModelClass.getJson_values(), signModelClass.getFilePath(), String.valueOf(signModelClass.getId()), modelClass);
+                    }
                     break;
                 }
             }
@@ -802,7 +806,7 @@ public class OutboxFragment extends Fragment {
         }
     }
 
-    private void CallSendSignImage(int parentPos, SignModelClass signModelClass, int childPos, int CurrentPos,
+    private void CallSendSignImageS3(int parentPos, SignModelClass signModelClass, int childPos, int CurrentPos,
                                    String jsonValues, String filePath, String id, GroupModelClass modelClass) {
         try {
             util.getS3Client(context);
@@ -905,6 +909,46 @@ public class OutboxFragment extends Fragment {
             notifyedmethod();
         }
 
+    }
+
+    private void CallSendSignImage(int parentPos, SignModelClass signModelClass, int childPos, int CurrentPos,
+                                   String jsonValues, String filePath, String id, GroupModelClass modelClass) {
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
+        MultipartBody.Part img = convertImg("sign_path", filePath);
+        HashMap<String, RequestBody> values = field(jsonValues);
+        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
+        saveImgDcr.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        JSONObject json = new JSONObject(response.body().toString());
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Sign Has Been Updated")) {
+                            DeleteCacheFileSign(filePath, id, CurrentPos, parentPos, childPos, modelClass);
+                        } else {
+                            signModelClass.setSynced(1);
+                            signModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                            callOfflineSignDataDao.updateSignStatus(id, Constants.DUPLICATE_CALL, 1);
+                            CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
+                        }
+                    } catch (Exception e) {
+                        Log.v("SendOutboxCall", "-error---" + e);
+                        signModelClass.setSynced(1);
+                        signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        callOfflineSignDataDao.updateSignStatus(id, Constants.DUPLICATE_CALL, 1);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                signModelClass.setSynced(1);
+                signModelClass.setSync_status(Constants.CALL_FAILED);
+                callOfflineSignDataDao.updateSignStatus(id, Constants.DUPLICATE_CALL, 1);
+                CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
+            }
+        });
     }
 
     @SuppressLint("NotifyDataSetChanged")

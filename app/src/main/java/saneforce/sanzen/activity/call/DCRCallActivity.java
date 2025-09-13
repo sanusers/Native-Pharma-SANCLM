@@ -3007,6 +3007,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
                 jsonSaveDcr.put("sign_path", callSignCaptureImage.get(0).getFilepath());
                 jsonSaveDcr.put("SignImage", callSignCaptureImage.get(0).getImg_Name());
+//                jsonSaveDcr.put("sign_Img", callSignCaptureImage.get(0).getImg_Name());
                 Log.d("TAG", "CreateJsonFileCall: " + jsonSaveDcr);
 
 

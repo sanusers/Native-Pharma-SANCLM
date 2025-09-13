@@ -30,7 +30,6 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
     SummaryInterface summaryInterface;
     SummaryInterfaceOneBuild summaryInterfaceOneBuild;
     SummaryIconAdapter summaryIconAdapter;
-//    private int OneBuildSetup = 0;
 
     public SummaryAdapter() {
     }

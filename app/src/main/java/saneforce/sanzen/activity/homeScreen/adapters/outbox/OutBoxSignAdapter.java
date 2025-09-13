@@ -96,10 +96,10 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
         File imgFile = new File(signModelClasses.get(position).getFilePath());
 
         if (imgFile.exists()) {
-                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                holder.imgView.setImageBitmap(myBitmap);
-        }else{
-            Log.d("imgFile", "signImg: "+"image file doesn't exists in external file storage");
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            holder.imgView.setImageBitmap(myBitmap);
+        } else {
+            Log.d("imgFile", "signImg: " + "image file doesn't exists in external file storage");
         }
 
         holder.imgView.setOnClickListener(v -> {
@@ -115,9 +115,18 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
 
             popup.setOnMenuItemClickListener(menuItem -> {
                 if (menuItem.getItemId() == R.id.menuSync) {
-                    CallSignImageApi(id,signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
+                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
+                        CallSignImageApiS3(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
+                    }else{
+                        CallSignImageApi();
+                    }
+
                     if (UtilityClass.isNetworkAvailable(context)) {
-                        CallSignImageApi(id,signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
+                        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+                            CallSignImageApiS3(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
+                        }else{
+                            CallSignImageApi();
+                        }
                     } else {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                     }
@@ -127,7 +136,9 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
             popup.show();
         });
     }
-    private void CallSignImageApi(String id,SignModelClass signModelClass, String filePath, String jsonValues) {
+
+    private void CallSignImageApi(){}
+    private void CallSignImageApiS3(String id, SignModelClass signModelClass, String filePath, String jsonValues) {
         try {
             util.getS3Client(context);
             String bucketName = "san-edet";
@@ -165,8 +176,8 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
 
                                 Log.e("S3 Upload", "Upload Failed");
                                 InsertImageSign(signModelClass.getFilePath(), context);
-                            signModelClass.setSynced(1);
-                            signModelClass.setSync_status(Constants.CALL_FAILED);
+                                signModelClass.setSynced(1);
+                                signModelClass.setSync_status(Constants.CALL_FAILED);
                                 try {
                                     callOfflineSignDataDao.updateSignStatus(String.valueOf(id), Constants.CALL_FAILED, 1);
                                 } catch (Exception e) {
@@ -192,18 +203,19 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
                     });
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.v("img_tagOSA", e.toString());
             signModelClass.setSynced(1);
             signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
             callOfflineSignDataDao.updateSignStatus(id, Constants.EXCEPTION_ERROR, 1);
         }
     }
+
     private void InsertImageSign(final String ImageUrl, Context context) {
         File imageFile = new File(ImageUrl);
         Log.d("AWS_s3", "fileToUpload" + "--" + imageFile);
         String fileName = new File(ImageUrl).getName();
-        new AWSBucketsSign(context,fileName,imageFile,"");
+        new AWSBucketsSign(context, fileName, imageFile, "");
     }
 
 

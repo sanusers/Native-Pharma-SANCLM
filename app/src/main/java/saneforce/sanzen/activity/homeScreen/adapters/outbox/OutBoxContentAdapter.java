@@ -603,6 +603,9 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             for(int i = 0; i < childListModelClasses.get(position).getSignModelClasses().size();i++){
                 SignModelClass signModelClass = childListModelClasses.get(position).getSignModelClasses().get(i);
                 if(signModelClass.getSynced() == 0){
+                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
+                        CallSendSignImageS3(position,i,signModelClass,signModelClass.getJson_values(),signModelClass.getFilePath(), String.valueOf(signModelClass.getId()));
+                    }
                     CallSendSignImage(position,i,signModelClass,signModelClass.getJson_values(),signModelClass.getFilePath(), String.valueOf(signModelClass.getId()));
                 }
                 break;
@@ -791,7 +794,7 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
         CallAPIListImage(position);
     }
 
-    private void CallSendSignImage(int position,int i ,SignModelClass signModelClass, String jsonValues, String filePath, String id) {
+    private void CallSendSignImageS3(int position,int i ,SignModelClass signModelClass, String jsonValues, String filePath, String id) {
         try {
             util.getS3Client(context);
             String bucketName = "san-edet";
@@ -881,6 +884,51 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
             }
         }
     }
+
+    private void CallSendSignImage(int position,int i ,SignModelClass signModelClass, String jsonValues, String filePath, String id) {
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
+        MultipartBody.Part img = convertImg("sign_path", filePath);
+        HashMap<String, RequestBody> values = field(jsonValues);
+
+        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
+
+        saveImgDcr.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        JSONObject json = new JSONObject(response.body().toString());
+                        Log.v("SendOutboxCall", "-imageRes---" + json);
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
+                            DeleteCacheFileSign(filePath, id,i, position);
+                        } else {
+                            signModelClass.setSynced(1);
+                            signModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                            callOfflineSignDataDao.updateSignStatus(id, Constants.DUPLICATE_CALL, 1);
+                            CallApiSignImage(position);
+                        }
+                        if (!childListModelClasses.get(position).getSignModelClasses().isEmpty()) {
+                            RefreshAdapter();
+                        }
+                    } catch (Exception e) {
+                        Log.v("SendOutboxCall", "-error-ec--" + e);
+                        signModelClass.setSynced(1);
+                        signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        callOfflineSignDataDao.updateSignStatus(id, Constants.DUPLICATE_CALL, 1);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                signModelClass.setSynced(1);
+                signModelClass.setSync_status(Constants.CALL_FAILED);
+                callOfflineSignDataDao.updateSignStatus(id, Constants.DUPLICATE_CALL, 1);
+            }
+        });
+    }
+
     private void InsertImageSign(final String ImageUrl, Context context) {
         File imageFile = new File(ImageUrl);
         Log.d("AWS_s3", "fileToUpload" + "--" + imageFile);

@@ -383,6 +383,9 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 SignModelClass signModelClass = groupModelClass.getChildItems().get(childPos).getSignModelClasses().get(i);
                 if(signModelClass.getSynced()==0){
                     isCallAvailable = true;
+                    if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
+                        CallSendSignImageS3(groupModelClass,signModelClass,childPos,i,signModelClass.getJson_values(),signModelClass.getFilePath(),String.valueOf(signModelClass.getId()));
+                    }
                     CallSendSignImage(groupModelClass,signModelClass,childPos,i,signModelClass.getJson_values(),signModelClass.getFilePath(),String.valueOf(signModelClass.getId()));
                     break;
                 }
@@ -843,7 +846,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     }
 
 
-    public void CallSendSignImage(GroupModelClass groupModelClass,SignModelClass signModelClass,int childPos,int i,String jsonValues,String filePath,String id){
+    public void CallSendSignImageS3(GroupModelClass groupModelClass,SignModelClass signModelClass,int childPos,int i,String jsonValues,String filePath,String id){
         try {
             util.getS3Client(context);
             String bucketName = "san-edet";
@@ -936,6 +939,48 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             }
         }
     }
+
+    private void CallSendSignImage(GroupModelClass groupModelClass,SignModelClass signModelClass,int childPos,int i,String jsonValues,String filePath,String id){
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
+        MultipartBody.Part img = convertImg("sign_path", filePath);
+        HashMap<String, RequestBody> values = field(jsonValues);
+        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
+
+        saveImgDcr.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        JSONObject json = new JSONObject(response.body().toString());
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
+                            DeleteCacheFileSign(groupModelClass,filePath, id,i, childPos );
+                        } else {
+                            signModelClass.setSynced(1);
+                            signModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                            callOfflineSignDataDao.updateSignStatus(id, Constants.CALL_FAILED, 1);
+                            CallAPIListImage(groupModelClass, childPos);
+                        }
+                    } catch (Exception e) {
+                        Log.v("SendOutboxCall", "-error---" + e);
+                        signModelClass.setSynced(1);
+                        signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        callOfflineSignDataDao.updateSignStatus(id, Constants.CALL_FAILED, 1);
+                        CallApiSignImage(groupModelClass, childPos);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                signModelClass.setSynced(1);
+                signModelClass.setSync_status(Constants.CALL_FAILED);
+                callOfflineSignDataDao.updateSignStatus(id, Constants.CALL_FAILED, 1);
+                CallApiSignImage(groupModelClass, childPos);
+            }
+        });
+    }
+
 
     private void InsertImageSign(final String ImageUrl, Context context) {
         File imageFile = new File(ImageUrl);

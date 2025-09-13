@@ -5,7 +5,9 @@ import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Path;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +18,11 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,6 +37,7 @@ import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.FragmentSignatureBinding;
 import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.storage.SharedPref;
 
 public class SignatureFragment1 extends Fragment {
     public SignatureCanvas signatureCanvas;
@@ -115,7 +123,11 @@ public class SignatureFragment1 extends Fragment {
             case "edit_online":
                 if ((!imageName.isEmpty() || !filePath.isEmpty())) {
                     if (UtilityClass.isNetworkAvailable(context)) {
-                        loadImageFromS3(imageName);
+                        if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+                            loadImageFromS3(imageName);
+                        }else{
+                            loadImageFromGlide(imageName);
+                        }
                     }
                 }else{
                     Log.d("edit_online signFrag", "onResume: "+"imageName or filePAth is empty");
@@ -196,45 +208,6 @@ public class SignatureFragment1 extends Fragment {
         }
     }
 
-/*
-    public void getSignatureBitmap() {
-        if (signatureCanvas != null) {
-            String newFilePath = signatureCanvas.saveSignature();
-            if (newFilePath != null && !newFilePath.isEmpty()) {
-                Bitmap newSign = BitmapFactory.decodeFile(newFilePath);
-
-                if (!callSignCaptureImage.isEmpty()) {
-                    String originalFilePath = callSignCaptureImage.get(0).getFilepath();
-
-
-                    if (originalFilePath != null && !originalFilePath.isEmpty() && !originalFilePath.equals(newFilePath)) {
-                        File originalFile = new File(originalFilePath);
-                        if (originalFile.exists()) {
-//                            delete = originalFile.delete();
-                            Log.d("dao", "getSignatureBitmap: "+originalFilePath);
-                            callOfflineSignDataDao.deleteOfflineSignImage(originalFilePath);
-                            if (originalFile.delete()) {
-                                Log.d("SignatureFlow", "Original (loaded from local) signature deleted: " + originalFilePath);
-                            } else {
-                                Log.e("SignatureFlow", "Failed to delete original (loaded from local) signature: " + originalFilePath);
-                            }
-                        }
-                    }
-                }
-                callSignCaptureImage.clear();
-                callSignCaptureImage.add(0, new CallSignCaptureImageList(id, signatureCanvas.imageName, newFilePath, newSign,true));
-                Log.d("SignatureFlow", "Modified signature saved at: " + newFilePath + ", list size: " + callSignCaptureImage.size());
-
-            } else {
-                Log.d("SignatureFlow", "Modified signature save failed or returned empty path.");
-            }
-        }else{
-            Log.d("SignatureFlow", "Canvas is NULL");
-        }
-    }
-*/
-
-
     public void loadImageFromS3(String fileName) {
         if (!fileName.equalsIgnoreCase("null")) {
             File file = new File(context.getFilesDir(), fileName);
@@ -262,6 +235,46 @@ public class SignatureFragment1 extends Fragment {
             loadImageFromLocal();
         }
     }
+
+    public void loadImageFromGlide(String fileName) {
+        if (fileName != null && !fileName.equalsIgnoreCase("null")) {
+            File file = new File(context.getFilesDir(), fileName);
+
+            String imageUrl = SharedPref.getTagImageUrl(context) + "photos/" + fileName;
+
+            Glide.with(context)
+                    .asBitmap()
+                    .load(imageUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL) // cache original & resized
+                    .skipMemoryCache(false) // allow memory caching
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
+                            if (bitmap != null) {
+                                Log.d("GlideImageLoad", "Image successfully loaded from Glide: " + fileName);
+                                try (FileOutputStream fos = new FileOutputStream(file)) {
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
+                                    Log.d("GlideImageLoad", "Image stored locally at: " + file.getAbsolutePath());
+                                } catch (Exception e) {
+                                    Log.e("GlideImageLoad", "Error saving image locally: " + e.getMessage());
+                                }
+                                signatureCanvas.setBackgroundBitmap(bitmap); // 🎯 same as your S3 method
+                            } else {
+                                Log.e("GlideImageLoad", "Failed to load image via Glide: " + fileName + ", bitmap is null.");
+                            }
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                            // Optional: handle placeholder cleanup if needed
+                        }
+                    });
+        } else {
+            loadImageFromLocal();
+        }
+    }
+
+
 
     public void loadImageFromLocal() {
         if (!filePath.isEmpty() && !imageName.isEmpty()) {
