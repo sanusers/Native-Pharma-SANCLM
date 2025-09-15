@@ -137,17 +137,46 @@ public class SessionMultiHQItemAdapter extends RecyclerView.Adapter<RecyclerView
                 text2.setText("");
             }
 
+//            itemView.setOnClickListener(view -> {
+//                int position = holder.getAbsoluteAdapterPosition();
+//                if (position == RecyclerView.NO_POSITION) return;
+//
+//                int independentPos = -1;
+//                for (int i = 0; i < displayList.size(); i++) {
+//                    if ((displayList.get(i) instanceof MultiHQItemModelClass) && ((MultiHQItemModelClass) displayList.get(i)).getName().equalsIgnoreCase(Constants.INDEPENDENT)) {
+//                        independentPos = i;
+//                        break;
+//                    }
+//                }
+//
+//                boolean isNowChecked = !item.isChecked();
+//                item.setChecked(isNowChecked);
+//                checkBox.setChecked(isNowChecked);
+//                notifyItemChanged(position);
+//
+//                if (isNowChecked) {
+//                    if (item.getName().equalsIgnoreCase(Constants.INDEPENDENT)) {
+//                        for (int i = 0; i < displayList.size(); i++) {
+//                            if (i != position && (displayList.get(i) instanceof MultiHQItemModelClass) && (((MultiHQItemModelClass) displayList.get(i)).isChecked())) {
+//                                ((MultiHQItemModelClass) displayList.get(i)).setChecked(false);
+//                                notifyItemChanged(i); // update only changed rows
+//                            }
+//                        }
+//                    } else if (independentPos != -1 && (displayList.get(independentPos) instanceof MultiHQItemModelClass) && (((MultiHQItemModelClass) displayList.get(independentPos)).isChecked())) {
+//                        ((MultiHQItemModelClass) displayList.get(independentPos)).setChecked(false);
+//                        notifyItemChanged(independentPos);
+//                    }
+//                } else {
+////                    checkBox.setChecked(false);
+////                    itemSelectListener.onItemUnSelected(item.getHqCode(), item);
+//                }
+//                itemSelectListener.onItemClicked(item.getHqCode(), item);
+//
+//            });
+
             itemView.setOnClickListener(view -> {
                 int position = holder.getAbsoluteAdapterPosition();
                 if (position == RecyclerView.NO_POSITION) return;
-
-                int independentPos = -1;
-                for (int i = 0; i < displayList.size(); i++) {
-                    if ((displayList.get(i) instanceof MultiHQItemModelClass) && ((MultiHQItemModelClass) displayList.get(i)).getName().equalsIgnoreCase(Constants.INDEPENDENT)) {
-                        independentPos = i;
-                        break;
-                    }
-                }
 
                 boolean isNowChecked = !item.isChecked();
                 item.setChecked(isNowChecked);
@@ -155,24 +184,40 @@ public class SessionMultiHQItemAdapter extends RecyclerView.Adapter<RecyclerView
                 notifyItemChanged(position);
 
                 if (isNowChecked) {
-                    if (item.getName().equalsIgnoreCase(Constants.INDEPENDENT)) {
-                        for (int i = 0; i < displayList.size(); i++) {
-                            if (i != position && (displayList.get(i) instanceof MultiHQItemModelClass) && (((MultiHQItemModelClass) displayList.get(i)).isChecked())) {
-                                ((MultiHQItemModelClass) displayList.get(i)).setChecked(false);
-                                notifyItemChanged(i); // update only changed rows
+                    // Find the parent of this item
+                    MultiHQHeaderModelClass parent = null;
+                    for (MultiHQHeaderModelClass header : originalList) {
+                        if (header.getItemsList().contains(item)) {
+                            parent = header;
+                            break;
+                        }
+                    }
+
+                    if (parent != null) {
+                        if (item.getName().equalsIgnoreCase(Constants.INDEPENDENT)) {
+                            // If Independent is checked, uncheck all others under this header
+                            for (MultiHQItemModelClass child : parent.getItemsList()) {
+                                if (!child.equals(item) && child.isChecked()) {
+                                    child.setChecked(false);
+                                    notifyItemChanged(displayList.indexOf(child));
+                                }
+                            }
+                        } else {
+                            // If another item is checked, uncheck Independent under this header
+                            for (MultiHQItemModelClass child : parent.getItemsList()) {
+                                if (child.getName().equalsIgnoreCase(Constants.INDEPENDENT) && child.isChecked()) {
+                                    child.setChecked(false);
+                                    notifyItemChanged(displayList.indexOf(child));
+                                    break;
+                                }
                             }
                         }
-                    } else if (independentPos != -1 && (displayList.get(independentPos) instanceof MultiHQItemModelClass) && (((MultiHQItemModelClass) displayList.get(independentPos)).isChecked())) {
-                        ((MultiHQItemModelClass) displayList.get(independentPos)).setChecked(false);
-                        notifyItemChanged(independentPos);
                     }
-                } else {
-//                    checkBox.setChecked(false);
-//                    itemSelectListener.onItemUnSelected(item.getHqCode(), item);
                 }
-                itemSelectListener.onItemClicked(item.getHqCode(), item);
 
+                itemSelectListener.onItemClicked(item.getHqCode(), item);
             });
+
         }
     }
 

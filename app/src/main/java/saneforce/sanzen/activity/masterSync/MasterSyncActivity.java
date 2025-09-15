@@ -1265,7 +1265,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 MasterSyncItemModel tpSetup = new MasterSyncItemModel(Constants.TP_SETUP, Constants.SETUP, "gettpsetup", Constants.TP_SETUP, tpSetupStatus, false);
                 MasterSyncItemModel tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN, Constants.TOUR_PLAN, "getall_tp", Constants.TOUR_PLAN, tourPLanStatus, false);
                 if (SharedPref.getSfType(MasterSyncActivity.this).equalsIgnoreCase("2")) {
-                    tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN, Constants.TOUR_PLAN, "getall_multitp", Constants.TOUR_PLAN, tourPLanStatus, false);
+                    tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN, Constants.TOUR_PLAN, "getall_multitpnew", Constants.TOUR_PLAN, tourPLanStatus, false);
                 }
                 tpModelArray.add(tpSetup);
                 tpModelArray.add(tPlan);
@@ -1626,7 +1626,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                     break;
                 }
                 case "gettp_onebuild": {
-
                     if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
                         jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                         jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
@@ -1911,7 +1910,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                     SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                                 }
                             } else {
-                                if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_multitp"))) {
+                                if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_multitpnew"))) {
                                     SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                                 }
                             }
@@ -1964,7 +1963,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                             }
                         } else {
-                            if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_multitp"))) {
+                            if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_multitpnew"))) {
                                 SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                             }
                         }

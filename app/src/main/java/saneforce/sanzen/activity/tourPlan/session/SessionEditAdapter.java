@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.tourPlan.session;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -1178,7 +1176,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             holder.selectedHq += holder.sessionData.getHQs().get(i).getCode();
                         }
                     }
-
+                    holder.hqArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray());
                     prepareInputData(holder.hqModelArray, holder.hqArray);
 
                     holder.selectedHQCode.clear();
@@ -1493,7 +1491,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                         }
                         holder.sessionItemAdapterArray = filteredArray;
-                        populateSessionItemAdapter(holder, false, true);
+                        populateSessionItemAdapter(holder, false, true, false);
                         holder.fieldSelected = true;
                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_TYPE);
                     } else {
@@ -1536,7 +1534,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     holder.workDayArray = workDayArray;
                                 }
                                 holder.sessionItemAdapterArray = holder.workDayArray;
-                                populateSessionItemAdapter(holder, false, false);
+                                populateSessionItemAdapter(holder, false, false, false);
                                 holder.fieldSelected = true;
                                 onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.WORK_DAY);
                             } else {
@@ -1568,7 +1566,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 }
                                 holder.fieldSelected = true;
                                 holder.sessionItemAdapterArray = holder.hqArray;
-                                populateSessionItemAdapter(holder, true, true);
+                                populateSessionItemAdapter(holder, true, true, true);
                                 onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.SUBORDINATE);
                             } else {
                                 holder.fieldSelected = false;
@@ -1587,7 +1585,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 }
                                 holder.fieldSelected = true;
                                 holder.sessionItemAdapterArray = holder.hqArray;
-                                populateSessionItemAdapter(holder, false, true);
+                                populateSessionItemAdapter(holder, false, true, false);
                                 onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.SUBORDINATE);
                             } else {
                                 holder.fieldSelected = false;
@@ -1642,7 +1640,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                         }
                                         holder.fieldSelected = true;
                                         holder.sessionItemAdapterArray = holder.clusterArray;
-                                        populateSessionItemAdapter(holder, true, true);
+                                        populateSessionItemAdapter(holder, true, true, false);
                                         onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CLUSTER);
                                     } else {
                                         holder.fieldSelected = false;
@@ -1699,7 +1697,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 }
                                 holder.fieldSelected = true;
                                 holder.sessionItemAdapterArray = holder.jointCallArray;
-                                populateSessionItemAdapter(holder, true, true);
+                                populateSessionItemAdapter(holder, true, true, false);
                                 onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.JOINT_WORK);
                             } else {
                                 holder.fieldSelected = false;
@@ -1759,7 +1757,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     }
                                     holder.fieldSelected = true;
                                     holder.sessionItemAdapterArray = filterJsonArray(holder, holder.listedDrArray);
-                                    populateSessionItemAdapter(holder, true, true);
+                                    populateSessionItemAdapter(holder, true, true, false);
 //                                    onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR);
                                     onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.DOCTOR_MAS);
                                 } else {
@@ -1820,7 +1818,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                     }
                                     holder.fieldSelected = true;
                                     holder.sessionItemAdapterArray = filterJsonArray(holder, holder.chemistArray);
-                                    populateSessionItemAdapter(holder, true, true);
+                                    populateSessionItemAdapter(holder, true, true, false);
 //                                    onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST);
                                     onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CHEMIST_MAS);
                                 } else {
@@ -1879,7 +1877,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 }
                                 holder.fieldSelected = true;
                                 holder.sessionItemAdapterArray = holder.stockiestArray;
-                                populateSessionItemAdapter(holder, true, true);
+                                populateSessionItemAdapter(holder, true, true, false);
 //                                onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST);
                                 onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.STOCKIEST_MAS);
                             } else {
@@ -1917,7 +1915,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = filterJsonArray(holder, holder.unListedDrArray);
-                            populateSessionItemAdapter(holder, true, true);
+                            populateSessionItemAdapter(holder, true, true, false);
 //                            onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.UNLISTED_DOCTOR);
                             onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.UNLISTED_DOCTOR_MAS);
                         } else {
@@ -1954,7 +1952,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = filterJsonArray(holder, holder.cipArray);
-                            populateSessionItemAdapter(holder, true, true);
+                            populateSessionItemAdapter(holder, true, true, false);
                             onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.CIP);
                         } else {
                             holder.fieldSelected = false;
@@ -1989,7 +1987,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             }
                             holder.fieldSelected = true;
                             holder.sessionItemAdapterArray = filterJsonArray(holder, holder.hospArray);
-                            populateSessionItemAdapter(holder, true, true);
+                            populateSessionItemAdapter(holder, true, true, false);
                             onEdit(holder.getAbsoluteAdapterPosition(), false, Constants.HOSPITAL);
                         } else {
                             holder.fieldSelected = false;
@@ -2722,6 +2720,23 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             if (synccount == 6) {
                                 holder.progress_hq.setVisibility(View.GONE);
                             }
+
+                            if (SharedPref.getSfType(context).equalsIgnoreCase("2")) {
+                                holder.mgrClusterArray = prepareModelList(holder.selectedHq, Constants.CLUSTER);
+                                holder.mgrJointCallArray = prepareModelList(holder.selectedHq, Constants.JOINT_WORK);
+//            holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR);
+//            holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST);
+//            holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST);
+                                holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR_MAS);
+                                holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST_MAS);
+                                holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST_MAS);
+
+                                prepareMGRInputData(holder.clustersModelArray, holder.mgrClusterArray);
+                                prepareMGRInputData(holder.jcsModelArray, holder.mgrJointCallArray);
+                                prepareMGRInputData(holder.listedDrsModelArray, holder.mgrListedDrArray);
+                                prepareMGRInputData(holder.chemistsModelArray, holder.mgrChemistArray);
+                                prepareMGRInputData(holder.stockistsModelArray, holder.mgrStockiestArray);
+                            }
                         }
 
                         @Override
@@ -2790,7 +2805,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
     }
 
-    public void populateSessionItemAdapter(MyViewHolder holder, boolean checkBoxNeed, boolean isSortNeeded) {
+    public void populateSessionItemAdapter(MyViewHolder holder, boolean checkBoxNeed, boolean isSortNeeded, boolean isHQ) {
         if (isSortNeeded) {
             Collections.sort(holder.sessionItemAdapterArray, new Comparator<EditModelClass>() {
                 @Override
@@ -2802,7 +2817,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             });
         }
 
-        sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, checkBoxNeed, new SessionItemInterface() {
+        sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, checkBoxNeed, isHQ, new SessionItemInterface() {
             @Override
             public void itemClicked(ArrayList<EditModelClass> jsonArray, EditModelClass jsonObject) {
                 if (holder.workTypeLayout.getVisibility() == View.VISIBLE) {
@@ -3038,7 +3053,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
         }
-        sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, checkBoxNeed, new SessionItemInterface() {
+        sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, checkBoxNeed, false, new SessionItemInterface() {
 
             @Override
             public void itemClicked(ArrayList<EditModelClass> jsonArray, EditModelClass jsonObject) {
@@ -3496,9 +3511,15 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
             holder.sessionItemAdapterArray.get(i).setChecked(false);
         }
+        for (int i = 0; i < holder.mgrSessionItemAdapterArray.size(); i++) {
+            for (int j = 0; j <holder.mgrSessionItemAdapterArray.get(i).getItemsList().size(); j++) {
+                holder.mgrSessionItemAdapterArray.get(i).getItemsList().get(j).setChecked(false);
+            }
+        }
         labelTxt.setText("Select");
         countTxt.setVisibility(View.GONE);
         sessionItemAdapter.notifyDataSetChanged();
+        sessionMultiHQItemAdapter.notifyDataSetChanged();
     }
 
     public void saveCheckedItem(MyViewHolder holder) {
@@ -3507,6 +3528,21 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
                 if (holder.sessionItemAdapterArray.get(i).isChecked()) {
                     holder.selectedHQCode.add(holder.sessionItemAdapterArray.get(i).getCode());
+                }
+            }
+            holder.selectedClusterCodeMap.clear();
+            for (int i = 0; i < holder.mgrSessionItemAdapterArray.size(); i++) {
+                MultiHQHeaderModelClass multiHQHeaderModelClass = holder.mgrSessionItemAdapterArray.get(i);
+                ArrayList<MultiHQItemModelClass> dataList = multiHQHeaderModelClass.getItemsList();
+                for (int j = 0; j < dataList.size(); j++) {
+                    if (dataList.get(j).isChecked()) {
+                        ArrayList<String> clusterCodes = new ArrayList<>();
+                        if (holder.selectedClusterCodeMap.containsKey(multiHQHeaderModelClass.getCode())) {
+                            clusterCodes = holder.selectedClusterCodeMap.get(multiHQHeaderModelClass.getCode());
+                        }
+                        clusterCodes.add(dataList.get(j).getCode());
+                        holder.selectedClusterCodeMap.put(multiHQHeaderModelClass.getCode(), clusterCodes);
+                    }
                 }
             }
 //            clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR, holder);

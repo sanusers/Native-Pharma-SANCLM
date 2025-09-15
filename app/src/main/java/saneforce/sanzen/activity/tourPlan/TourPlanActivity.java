@@ -2041,36 +2041,36 @@ public class TourPlanActivity extends AppCompatActivity {
 
             @Override
             public void hqChanged(ModelClass arrayList, int position, boolean changed) {
-                if (changed) {
-                    ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(arrayList.getSessionList().get(position).getWorkType());
-                    ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(arrayList.getSessionList().get(position).getHQ());
-                    ArrayList<ModelClass.SessionList.SubClass> hqArray = new ArrayList<>(arrayList.getSessionList().get(position).getHQs());
-                    ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
-                    ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
-                    ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
-                    ArrayList<ModelClass.SessionList.SubClass> chemistArray = new ArrayList<>();
-                    ArrayList<ModelClass.SessionList.SubClass> stockArray = new ArrayList<>();
-                    ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
-                    ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
-                    ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
-
-                    ArrayList<MultiHQHeaderModelClass> clustersArray = new ArrayList<>();
-                    ArrayList<MultiHQHeaderModelClass> jcsArray = new ArrayList<>();
-                    ArrayList<MultiHQHeaderModelClass> drsArray = new ArrayList<>();
-                    ArrayList<MultiHQHeaderModelClass> chemistsArray = new ArrayList<>();
-                    ArrayList<MultiHQHeaderModelClass> stocksArray = new ArrayList<>();
-                    ArrayList<MultiHQHeaderModelClass> unListedDrsArray = new ArrayList<>();
-                    ArrayList<MultiHQHeaderModelClass> cipsArray = new ArrayList<>();
-                    ArrayList<MultiHQHeaderModelClass> hospsArray = new ArrayList<>();
-
-                    ModelClass.SessionList modelClass = new ModelClass.SessionList("", true, "", workType, hq, hqArray, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clustersArray, jcsArray, drsArray, chemistsArray, stocksArray, unListedDrsArray, cipsArray, hospsArray);
-                    arrayList.getSessionList().remove(position);
-                    arrayList.getSessionList().add(modelClass);
-                }
-                for (int i = 0; i < arrayList.getSessionList().size(); i++) {
-                    arrayList.getSessionList().get(i).setVisible(true);
-                    arrayList.getSessionList().get(i).setLayoutVisible("");
-                }
+//                if (changed) {
+//                    ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(arrayList.getSessionList().get(position).getWorkType());
+//                    ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(arrayList.getSessionList().get(position).getHQ());
+//                    ArrayList<ModelClass.SessionList.SubClass> hqArray = new ArrayList<>(arrayList.getSessionList().get(position).getHQs());
+//                    ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
+//                    ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
+//                    ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
+//                    ArrayList<ModelClass.SessionList.SubClass> chemistArray = new ArrayList<>();
+//                    ArrayList<ModelClass.SessionList.SubClass> stockArray = new ArrayList<>();
+//                    ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
+//                    ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
+//                    ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
+//
+//                    ArrayList<MultiHQHeaderModelClass> clustersArray = new ArrayList<>();
+//                    ArrayList<MultiHQHeaderModelClass> jcsArray = new ArrayList<>();
+//                    ArrayList<MultiHQHeaderModelClass> drsArray = new ArrayList<>();
+//                    ArrayList<MultiHQHeaderModelClass> chemistsArray = new ArrayList<>();
+//                    ArrayList<MultiHQHeaderModelClass> stocksArray = new ArrayList<>();
+//                    ArrayList<MultiHQHeaderModelClass> unListedDrsArray = new ArrayList<>();
+//                    ArrayList<MultiHQHeaderModelClass> cipsArray = new ArrayList<>();
+//                    ArrayList<MultiHQHeaderModelClass> hospsArray = new ArrayList<>();
+//
+//                    ModelClass.SessionList modelClass = new ModelClass.SessionList("", true, "", workType, hq, hqArray, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clustersArray, jcsArray, drsArray, chemistsArray, stocksArray, unListedDrsArray, cipsArray, hospsArray);
+//                    arrayList.getSessionList().remove(position);
+//                    arrayList.getSessionList().add(modelClass);
+//                }
+//                for (int i = 0; i < arrayList.getSessionList().size(); i++) {
+//                    arrayList.getSessionList().get(i).setVisible(true);
+//                    arrayList.getSessionList().get(i).setLayoutVisible("");
+//                }
                 populateSessionEditAdapter(arrayList);
                 scrollToPosition(position, false);
             }
