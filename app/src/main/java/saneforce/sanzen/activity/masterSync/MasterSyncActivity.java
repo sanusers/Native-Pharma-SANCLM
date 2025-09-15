@@ -1811,17 +1811,13 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                 SaveTourPlan(jsonArray.getJSONObject(0));
                                                 SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
                                             }
-                                        } else if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
-                                            if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
-                                                if (jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")) {
-                                                    SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
-                                                } else {
-                                                    SaveTourPlanOne(jsonArray.getJSONObject(0));
-                                                    SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
-                                                }
+                                        } else if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0") && (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild"))) {
+                                            if (jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")) {
+                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
+                                            } else {
+                                                SaveTourPlanOne(jsonArray.getJSONObject(0));
+                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this, true);
                                             }
-//                                            }
-
                                         } else if (masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr") || masterOf.equalsIgnoreCase(Constants.DOCTOR_MAS) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcrmultihq")) {
                                             if (mgrInitialSync) {
                                                 setHq(jsonArray);

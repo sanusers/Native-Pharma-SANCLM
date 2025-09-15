@@ -3282,18 +3282,29 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             try {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
-                JSONObject rootObject = new JSONObject();
-                rootObject.put("Sf_Code", SharedPref.getSfCode(requireContext()));
-                rootObject.put("flg", "0");
-                rootObject.put("tbname", "dcr");
-                rootObject.put("reason", "");
-                JSONObject dtObject = new JSONObject();
-                dtObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
-                dtObject.put("timezone_type", 3);
-                dtObject.put("timezone", "Asia/Kolkata");
-                rootObject.put("dt", dtObject);
-                jsonArray.put(rootObject);
-                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 2));
+                boolean isDateFound = false;
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject dateObj = jsonArray.optJSONObject(i);
+                    String date = dateObj.optJSONObject("dt").optString("date");
+                    if (date.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()))){
+                        isDateFound = true;
+                        break;
+                    }
+                }
+                if(!isDateFound) {
+                    JSONObject rootObject = new JSONObject();
+                    rootObject.put("Sf_Code", SharedPref.getSfCode(requireContext()));
+                    rootObject.put("flg", "0");
+                    rootObject.put("tbname", "dcr");
+                    rootObject.put("reason", "");
+                    JSONObject dtObject = new JSONObject();
+                    dtObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
+                    dtObject.put("timezone_type", 3);
+                    dtObject.put("timezone", "Asia/Kolkata");
+                    rootObject.put("dt", dtObject);
+                    jsonArray.put(rootObject);
+                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 2));
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
