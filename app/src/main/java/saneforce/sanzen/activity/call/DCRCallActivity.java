@@ -3512,29 +3512,29 @@ public class DCRCallActivity extends AppCompatActivity {
 //                }
 //            }
 
-            String prdCodes = CallActivityCustDetails.get(0).getMappedSlides();
-            String[] priorityCodes = prdCodes.split(",");
+//            String prdCodes = CallActivityCustDetails.get(0).getMappedSlides();
+//            String[] priorityCodes = prdCodes.split(",");
             Map<String, String> codeToPriorityMap = new LinkedHashMap<>();
             Map<String, String> codeToPriorityRCPAMap = new LinkedHashMap<>();
-
-            Set<String> jsonCodes = new HashSet<>();
-            Set<String> jsonCodesRCPA = new HashSet<>();
-            for (int i = 0; i<jsonArray.length(); i++) {
-                jsonCodes.add(jsonArray.optJSONObject(i).optString("Code"));
-                if(!jsonArray.optJSONObject(i).optString("Product_Mode").equalsIgnoreCase("Sample")) {
-                    jsonCodesRCPA.add(jsonArray.optJSONObject(i).optString("Code"));
-                }
-            }
-
-            int labelCount = 1, labelCountRCPA = 1;
-            for (String code : priorityCodes) {
-                if(jsonCodes.contains(code)) {
-                    codeToPriorityMap.put(code, "P" + labelCount++);
-                }
-                if(jsonCodesRCPA.contains(code)) {
-                    codeToPriorityRCPAMap.put(code, "P" + labelCountRCPA++);
-                }
-            }
+//
+//            Set<String> jsonCodes = new HashSet<>();
+//            Set<String> jsonCodesRCPA = new HashSet<>();
+//            for (int i = 0; i<jsonArray.length(); i++) {
+//                jsonCodes.add(jsonArray.optJSONObject(i).optString("Code"));
+//                if(!jsonArray.optJSONObject(i).optString("Product_Mode").equalsIgnoreCase("Sample")) {
+//                    jsonCodesRCPA.add(jsonArray.optJSONObject(i).optString("Code"));
+//                }
+//            }
+//
+//            int labelCount = 1, labelCountRCPA = 1;
+//            for (String code : priorityCodes) {
+//                if(jsonCodes.contains(code)) {
+//                    codeToPriorityMap.put(code, "P" + labelCount++);
+//                }
+//                if(jsonCodesRCPA.contains(code)) {
+//                    codeToPriorityRCPAMap.put(code, "P" + labelCountRCPA++);
+//                }
+//            }
 
             for (int i = 0; i<jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.optJSONObject(i);
