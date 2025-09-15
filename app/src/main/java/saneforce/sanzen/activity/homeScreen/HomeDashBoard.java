@@ -382,7 +382,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         });
 
         // Show binding.floatingPlayer player initially
-        binding.floatingPlayer.setVisibility(View.GONE);
+//        binding.floatingPlayer.setVisibility(View.VISIBLE);
     }
 
     private void playVideo(String url) {

@@ -24,7 +24,8 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     ArrayList<EditModelClass> arrayList = new ArrayList<>();
     ArrayList<EditModelClass> arrayForFilter = new ArrayList<>();
     ArrayList<EditModelClass> supportModelArray = new ArrayList<>();
-    private boolean checkBoxVisibility = false;
+    private boolean checkBoxVisibility = false, isHQ = false;
+    private int selectedHQCount = 0;
     private ValueFilter valueFilter;
     SessionItemInterface sessionItemInterface;
 
@@ -32,11 +33,18 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     public SessionItemAdapter() {
     }
 
-    public SessionItemAdapter(ArrayList<EditModelClass> arrayList, boolean checkBoxVisibility, SessionItemInterface sessionItemInterface) {
+    public SessionItemAdapter(ArrayList<EditModelClass> arrayList, boolean checkBoxVisibility, boolean isHQ, SessionItemInterface sessionItemInterface) {
         this.arrayList = arrayList;
         this.arrayForFilter = arrayList;
+        this.isHQ = isHQ;
         this.checkBoxVisibility = checkBoxVisibility;
         this.sessionItemInterface = sessionItemInterface;
+        selectedHQCount = 0;
+        for (EditModelClass hq : arrayList) {
+            if (hq.isChecked()){
+                selectedHQCount++;
+            }
+        }
     }
 
     @NonNull
@@ -61,7 +69,6 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("onClickListener--->");
                 int position = holder.getAbsoluteAdapterPosition();
                 if (position == RecyclerView.NO_POSITION) return;
 
@@ -72,6 +79,11 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                     if (arrayList.get(i).getName().equalsIgnoreCase(Constants.INDEPENDENT)) {
                         independentPos = i;
                         break;
+                    }
+                }
+                if (isHQ) {
+                    if (clickedItem.isChecked()) {
+
                     }
                 }
 
@@ -92,7 +104,6 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                         notifyItemChanged(independentPos);
                     }
                 }
-                System.out.println("onClickListene1r--->"+arrayList.size());
 
                 sessionItemInterface.itemClicked(arrayList, clickedItem);
             }
