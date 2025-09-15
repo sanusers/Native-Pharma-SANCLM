@@ -97,7 +97,7 @@ CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
                 }
             }
         });
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+      /*  holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int position = holder.getAbsoluteAdapterPosition();
@@ -105,6 +105,22 @@ CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
 
                 if (!selectedDay.equals("")) {
                     onDayClickInterface.onDayClicked(position, selectedDay, new ModelClass());
+                }
+            }
+        });*/
+        holder.itemView.setOnClickListener(view -> {
+
+            String selectedDay = arrayList.get(position);
+
+            if (!selectedDay.equals("")) {
+                if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+                    if (onDayClickedOneBuild != null) {
+                        onDayClickedOneBuild.onDayClickedOneBuild(position, selectedDay, new OneBuildModelClass());
+                    }
+                } else {
+                    if (onDayClickInterface != null) {
+                        onDayClickInterface.onDayClicked(position, selectedDay, new ModelClass());
+                    }
                 }
             }
         });

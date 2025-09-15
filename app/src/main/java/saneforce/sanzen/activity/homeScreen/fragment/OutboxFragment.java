@@ -911,9 +911,8 @@ public class OutboxFragment extends Fragment {
 
     }
 
-    private void CallSendSignImage(int parentPos, SignModelClass signModelClass, int childPos, int CurrentPos,
-                                   String jsonValues, String filePath, String id, GroupModelClass modelClass) {
-        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
+    private void CallSendSignImage(int parentPos, SignModelClass signModelClass, int childPos, int CurrentPos, String jsonValues, String filePath, String id, GroupModelClass modelClass) {
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getTagApiImageUrl(requireContext()));
         MultipartBody.Part img = convertImg("sign_path", filePath);
         HashMap<String, RequestBody> values = field(jsonValues);
         Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
@@ -945,11 +944,12 @@ public class OutboxFragment extends Fragment {
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 signModelClass.setSynced(1);
                 signModelClass.setSync_status(Constants.CALL_FAILED);
-                callOfflineSignDataDao.updateSignStatus(id, Constants.DUPLICATE_CALL, 1);
+                callOfflineSignDataDao.updateSignStatus(id, Constants.CALL_FAILED, 1);
                 CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
             }
         });
     }
+
 
     @SuppressLint("NotifyDataSetChanged")
     private void DeleteCacheFileSign(String filePath, String id, int currentPos, int parentPos, int childPos, GroupModelClass modelClass) {

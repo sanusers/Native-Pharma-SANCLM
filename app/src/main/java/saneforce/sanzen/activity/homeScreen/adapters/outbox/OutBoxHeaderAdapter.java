@@ -954,7 +954,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                         assert response.body() != null;
                         JSONObject json = new JSONObject(response.body().toString());
                         if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
-                            DeleteCacheFileSign(groupModelClass,filePath, id,i, childPos );
+                            DeleteCacheFileSign(groupModelClass, groupModelClass.getChildItems().get(childPos).getSignModelClasses().get(i).getFilePath(), id, i, childPos);
                         } else {
                             signModelClass.setSynced(1);
                             signModelClass.setSync_status(Constants.DUPLICATE_CALL);

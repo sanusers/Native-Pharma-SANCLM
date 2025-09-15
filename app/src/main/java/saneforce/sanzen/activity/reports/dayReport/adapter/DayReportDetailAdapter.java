@@ -50,6 +50,7 @@ import saneforce.sanzen.activity.reports.dayReport.MapViewActivity;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportDetailModel;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportRcpaModelClass;
 import saneforce.sanzen.activity.reports.dayReport.model.EventCaptureModelClass;
+import saneforce.sanzen.activity.reports.dayReport.model.SignatureModelClass;
 import saneforce.sanzen.activity.reports.dayReport.model.SlideRatingDetalisModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -75,6 +76,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     ArrayList productPromoted = new ArrayList();
     private ValueFilter valueFilter;
     ArrayList<EventCaptureModelClass> EventCaptureData = new ArrayList<>();
+    ArrayList<SignatureModelClass> SignatureData = new ArrayList<>();
     ArrayList<DayReportRcpaModelClass> rcpaList = new ArrayList<>();
     String rcpadataid = "", Slededataid;
     ApiInterface apiInterface;
@@ -442,6 +444,9 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         holder.EventLayout.setOnClickListener(view -> {
             EvetCapureAPICall(position);
         });
+        holder.SignLayout.setOnClickListener(view ->{
+            SignatureAPICall(position);
+        });
 
         holder.rcpaLayoutitle.setOnClickListener(view -> {
             rcpaList.clear();
@@ -565,7 +570,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         TextView name, visitTime, modifiedTime, cluster, pob, feedback, jointWork, nextVisit, checkInTime, checkInAddress, textInputName;
         TextView checkOutTime, checkOutAddress, overAllRemark, viewMoreTxt, textPromoted, textProduct, textSamples, textRxQty, textInput, textProductName, clusterText, textRCPAName;
         ImageView nameIcon, viewMoreArrow, rcpa_arrow, slide_arrow;
-        LinearLayout viewMore, checkInOutLayout, EventLayout, rcpaLayout, rcpaLayoutitle, slideDetailsLayout, SlidercpaLayoutitle, jointWorkLayout, checkInMarker, checkOutMarker;
+        LinearLayout viewMore, checkInOutLayout, EventLayout,SignLayout, rcpaLayout, rcpaLayoutitle, slideDetailsLayout, SlidercpaLayoutitle, jointWorkLayout, checkInMarker, checkOutMarker;
         RelativeLayout rlNextVisit, pobLayOut, feedBackLayout;
         ConstraintLayout PrdLayout, InpLayout, expandLayout;
         CardView slideLayout;
@@ -593,6 +598,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             rlNextVisit = itemView.findViewById(R.id.rl_nextVisit);
             viewNextVisit = itemView.findViewById(R.id.view_ll2);
             EventLayout = itemView.findViewById(R.id.eventcaptureLayout);
+            SignLayout = itemView.findViewById(R.id.signatureLayout);
             rcpaLayout = itemView.findViewById(R.id.rcpaLayout);
             rcpaLayoutitle = itemView.findViewById(R.id.rcpaLayoutitle);
             rcpa_arrow = itemView.findViewById(R.id.rcpa_arrow);
@@ -734,6 +740,89 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         AlertDialog dialog1 = dialog.create();
         dialog1.show();
     }
+
+    public void SignatureAPICall(int position){
+        progressDialog = CommonUtilsMethods.createProgressDialog(context);
+        if (UtilityClass.isNetworkAvailable(context)) {
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
+                if (status) {
+                    try {
+                        apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+                        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
+                        jsonObject.put("tableName", "getsign_rpt");
+                        jsonObject.put("dcr_cd", acdCode);
+                        jsonObject.put("dcrdetail_cd", arrayList.get(position).getTrans_Detail_Slno());
+                        jsonObject.put("sfcode", SharedPref.getSfCode(context));
+                        jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+                        jsonObject.put("Rsf", ReportingSfCode);
+
+                        Log.d("paramObject",jsonObject.toString());
+                        Map<String, String> mapString = new HashMap<>();
+                        mapString.put("axn", "get/reports");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                        call.enqueue(new Callback<JsonElement>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                Log.e("test", "res : " + response.body());
+                                progressDialog.dismiss();
+                                try {
+                                    if (response.body() != null && response.isSuccessful()) {
+                                        JSONArray jsonArray = new JSONArray();
+                                        if (response.body().isJsonArray()) {
+                                            jsonArray = new JSONArray(response.body().getAsJsonArray().toString());
+                                            Type typeToken = new TypeToken<ArrayList<SignatureModelClass>>() {
+                                            }.getType();
+                                            SignatureData = new Gson().fromJson(String.valueOf(jsonArray), typeToken);
+
+                                            if(SignatureData.size()>0){
+                                                setSignatureData(SignatureData);
+                                            }else {
+                                                commonUtilsMethods.showToastMessage(context, " Signature Not Available");
+                                            }
+
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                progressDialog.dismiss();
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    progressDialog.dismiss();
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                }
+            });
+            networkStatusTask.execute();
+        } else {
+            progressDialog.dismiss();
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+        }
+
+    }
+
+    public void setSignatureData(ArrayList<SignatureModelClass> List){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.dayreport_eventcapture_image_layout, null);
+        dialog.setView(view);
+        RecyclerView recyclerView=view.findViewById(R.id.recyelerview);
+        SignatureAdapter signadapter =  new SignatureAdapter(context,List);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(signadapter);
+        AlertDialog dialog1=dialog.create();
+        dialog1.show();
+
+    }
+
+
 
     public void Rcpagetdata(RecyclerView recyclerView, LinearLayout layout, int position) {
         progressDialog = CommonUtilsMethods.createProgressDialog(context);

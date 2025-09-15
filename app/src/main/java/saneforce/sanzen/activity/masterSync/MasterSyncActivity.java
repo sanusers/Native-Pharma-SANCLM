@@ -935,7 +935,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                 } else {
                     binding.syncFailedImageTP.setVisibility(View.GONE);
                 }
-            } else if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
+            } else if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0") &&
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettp_onebuild") ||
 //                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_multitpnew") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
@@ -1064,7 +1065,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_details")) {
                 binding.syncFailedImageTP.setVisibility(View.VISIBLE);
             }
-            if (masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
+            if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0") &&
+                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettpsetup") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("gettp_onebuild") ||
 //                    masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getall_multitpnew") ||
                     masterSyncItemModel.getRemoteTableName().equalsIgnoreCase("getstp_setup") ||
@@ -1885,23 +1887,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                             }
                         } else {
                             if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
-                      /*          NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
-                                    @SuppressLint("NotifyDataSetChanged")
-                                    @Override
-                                    public void isNetworkAvailable(Boolean status) {
-                                        if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0")) {
-                                            if (Boolean.parseBoolean(monthYearFromDate(localDate.minusMonths(1)))) {
-                                                getDraftSaveOneBuild1("prev", TourPlanActivity.dayWiseArrayPrevMonthOneBuild, status);
-                                            } else if (Boolean.parseBoolean(monthYearFromDate(localDate))) {
-                                                getDraftSaveOneBuild1("current", TourPlanActivity.dayWiseArrayCurrentMonthOneBuild, status);
-                                            } else if (Boolean.parseBoolean(monthYearFromDate(localDate.plusMonths(1)))) {
-                                                getDraftSaveOneBuild1("next", TourPlanActivity.dayWiseArrayNextMonthOneBuild, status);
-                                            }
-                                        }
-                                    }
-                                });
-                                networkStatusTask.execute();*/
-
                                 if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettp_onebuild")) {
                                     SharedPref.setTpSyncStaus(MasterSyncActivity.this, false);
                                 }
@@ -2418,8 +2403,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         return Array;
     }
 
-    private ArrayList<OneBuildModelClass.SessionList.SubClass> addExtraDataOneBuild(String
-                                                                                            Name, String Code) {
+    private ArrayList<OneBuildModelClass.SessionList.SubClass> addExtraDataOneBuild(String Name, String Code) {
         String[] arrName = Name.split(",");
         String[] arrCode = Code.split(",");
         ArrayList<String> dummyName = new ArrayList<>(Arrays.asList(arrName));
@@ -2858,9 +2842,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
     }
 
-    private void SaveTpLocalFull(ReceiveModel
-                                         receiveModel, ArrayList<ModelClass> modelClasses, String day, String monthName, String
-                                         date, String dayName, String monthNo, String year) {
+    private void SaveTpLocalFull(ReceiveModel receiveModel, ArrayList<ModelClass> modelClasses, String day, String monthName, String date, String dayName, String monthNo, String year) {
         ModelClass.SessionList sessionList = new ModelClass.SessionList();
         ModelClass.SessionList sessionList2 = new ModelClass.SessionList();
         ModelClass.SessionList sessionList3 = new ModelClass.SessionList();
@@ -3074,9 +3056,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         saveTpLocal(modelClasses, day, monthName, "0");
     }
 
-    private void SaveTpLocalFullOne(ReceiveModel receiveModel, ArrayList<OneBuildModelClass> modelClasses, String day, String
-            monthName, String date, String dayName, String monthNo, String year) {
-        SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0");
+    private void SaveTpLocalFullOne(ReceiveModel receiveModel, ArrayList<OneBuildModelClass> modelClasses, String day, String monthName, String date, String dayName, String monthNo, String year) {
 
         OneBuildModelClass.SessionList sessionList = new OneBuildModelClass.SessionList();
         OneBuildModelClass.SessionList sessionList2 = new OneBuildModelClass.SessionList();

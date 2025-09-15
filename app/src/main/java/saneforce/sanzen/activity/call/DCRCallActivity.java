@@ -2996,8 +2996,8 @@ public class DCRCallActivity extends AppCompatActivity {
                 Log.d("Json", "CreateJsonFileCall: " + "json is not null");
                 jsonImage = CommonUtilsMethods.CommonObjectParameter(DCRCallActivity.this);
                 try {
-                    jsonImage.put("table name", "signImg");
-                    jsonImage.put("Sf code", SfCode);
+                    jsonImage.put("tableName", "uploadsign");
+                    jsonImage.put("sfcode", SfCode);
                     jsonImage.put("division_code", DivCode);
                     jsonImage.put("Rsf", TodayPlanSfCode);
                     Log.d("TAG", "CreateJsonFileCall: " + jsonImage);
@@ -3006,7 +3006,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     ignored.printStackTrace();
                 }
                 jsonSaveDcr.put("sign_path", callSignCaptureImage.get(0).getFilepath());
-                jsonSaveDcr.put("SignImage", callSignCaptureImage.get(0).getImg_Name());
+                jsonSaveDcr.put("sign_Img", callSignCaptureImage.get(0).getImg_Name());
 //                jsonSaveDcr.put("sign_Img", callSignCaptureImage.get(0).getImg_Name());
                 Log.d("TAG", "CreateJsonFileCall: " + jsonSaveDcr);
 
