@@ -1291,7 +1291,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }else {
                         if(binding.flSession1.getVisibility() == View.GONE) {
                             disableSession1();
-                        } else if (binding.flSession2.getVisibility() == View.GONE) {
+                        } else if (binding.flSession2.getVisibility() == View.GONE && DayPlanCount.equalsIgnoreCase("2")) {
                             disableSession2();
                         }
                         if (binding.llDeviation.getVisibility() == View.VISIBLE && binding.switchButton.isChecked()) {
@@ -1375,7 +1375,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
                         break;
                     }
-                    if (dayStatus == null) dayStatus = "";
+                    if (dayStatus == null || dayStatus.isEmpty()) dayStatus = "0";
                     if (DayPlanCount.equalsIgnoreCase("1") || (DayPlanCount.equalsIgnoreCase("2") && binding.flSession2.getVisibility() == View.VISIBLE)) {
                         if (dayStatus.equalsIgnoreCase("2") || dayStatus.equalsIgnoreCase("3") || (binding.switchButton.isChecked())
                                 || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1"))
@@ -1418,7 +1418,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
                         break;
                     }
-                    if (dayStatus == null) dayStatus = "";
+                    if (dayStatus == null || dayStatus.isEmpty()) dayStatus = "0";
                     if (binding.flSession1.getVisibility() == View.VISIBLE) {
                         if (dayStatus.equalsIgnoreCase("2") || dayStatus.equalsIgnoreCase("3") || (binding.switchButton.isChecked())
                                 || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1"))
@@ -2875,7 +2875,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 String date = jsonObject.getJSONObject("dt").getString("date").substring(0, 10);
                 if (date.equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
                     jsonArray.remove(index);
-                    break;
+//                    break;
                 }
             }
             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 2));
@@ -3523,10 +3523,18 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             String[] HQNames = mHQName1.split(",");
             String[] HQCodes = mHQCode1.split(",");
             String[] clusterSplit = mTowncode1.split("\\$");
-            if(EditSession.equals("2")) {
+            if(EditSession.equals("1")) {
+                HQNames = mHQName1.split(",");
+                HQCodes = mHQCode1.split(",");
+                clusterSplit = mTowncode1.split("\\$");
+            }else if(EditSession.equals("2")) {
                 HQNames = mHQName2.split(",");
                 HQCodes = mHQCode2.split(",");
                 clusterSplit = mTowncode2.split("\\$");
+            }else if(DayPlanCount.equals("1")) {
+                HQNames = mHQName1.split(",");
+                HQCodes = mHQCode1.split(",");
+                clusterSplit = mTowncode1.split("\\$");
             }else if(DayPlanCount.equals("2")) {
                 HQNames = mHQName2.split(",");
                 HQCodes = mHQCode2.split(",");
@@ -4904,7 +4912,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
         binding.rlheadquates1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
         if (mFwFlg1.equalsIgnoreCase("F")) {
-
             binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
         } else {
             binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
@@ -4918,6 +4925,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
         binding.txtSave.setEnabled(false);
         binding.flSession1.setVisibility(View.VISIBLE);
+        EditSession = "";
     }
 
     private void disableSession2() {
@@ -4940,6 +4948,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.txtSave.setEnabled(false);
         binding.llDelete.setVisibility(View.GONE);
         binding.flSession2.setVisibility(View.VISIBLE);
+        EditSession = "";
     }
 
     private void enableUpdate() {
