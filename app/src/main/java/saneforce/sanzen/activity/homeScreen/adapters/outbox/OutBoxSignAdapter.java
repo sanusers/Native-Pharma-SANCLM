@@ -2,6 +2,8 @@ package saneforce.sanzen.activity.homeScreen.adapters.outbox;
 
 //import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.imageName;
 
+import static saneforce.sanzen.activity.call.fragments.signature.SignatureFragment1.filePath;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -30,6 +32,9 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHand
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,6 +44,9 @@ import java.util.Objects;
 import id.zelory.compressor.Compressor;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
@@ -47,6 +55,8 @@ import saneforce.sanzen.activity.homeScreen.modelClass.SignModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
+import saneforce.sanzen.network.ApiInterface;
+import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallOfflineSignTableDetails.CallOfflineSignDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
@@ -118,14 +128,14 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
                     if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")){
                         CallSignImageApiS3(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
                     }else{
-                        CallSignImageApi();
+                        CallSignImageApi(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
                     }
 
                     if (UtilityClass.isNetworkAvailable(context)) {
                         if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                             CallSignImageApiS3(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
                         }else{
-                            CallSignImageApi();
+                            CallSignImageApi(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
                         }
                     } else {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
@@ -137,7 +147,46 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
         });
     }
 
-    private void CallSignImageApi(){}
+    private void CallSignImageApi(String id, SignModelClass signModelClass, String filePath, String jsonValues){
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
+        MultipartBody.Part img = convertImg("SignImg", filePath);
+        HashMap<String, RequestBody> values = field(jsonValues);
+        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
+        saveImgDcr.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        JSONObject json = new JSONObject(response.body().toString());
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Sign Has Been Updated")) {
+//                            DeleteCacheFileSign(filePath, id, CurrentPos, parentPos, childPos, modelClass);
+                        } else {
+                            signModelClass.setSynced(1);
+                            signModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                            callOfflineSignDataDao.updateSignStatus(id, Constants.DUPLICATE_CALL, 1);
+//                            CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
+                        }
+                    } catch (Exception e) {
+                        Log.v("SendOutboxCall", "-error---" + e);
+                        signModelClass.setSynced(1);
+                        signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        callOfflineSignDataDao.updateSignStatus(id, Constants.DUPLICATE_CALL, 1);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                signModelClass.setSynced(1);
+                signModelClass.setSync_status(Constants.CALL_FAILED);
+                callOfflineSignDataDao.updateSignStatus(id, Constants.CALL_FAILED, 1);
+//                CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
+            }
+        });
+    }
+
+
     private void CallSignImageApiS3(String id, SignModelClass signModelClass, String filePath, String jsonValues) {
         try {
             util.getS3Client(context);
@@ -167,7 +216,7 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
                         @Override
                         public void onStateChanged(int id, TransferState state) {
                             if (state == TransferState.COMPLETED) {
-                                Log.d("TAG", "ecModelClass: " + signModelClass.getFilePath());
+                                Log.d("TAG", "signModelClass: " + signModelClass.getFilePath());
                                 InsertImageSign(signModelClass.getFilePath(), context);
                                 Log.d("S3 Upload", "Upload Successful: " + s3Key);
 

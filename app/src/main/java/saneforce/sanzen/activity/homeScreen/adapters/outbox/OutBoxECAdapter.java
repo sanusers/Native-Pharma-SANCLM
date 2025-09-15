@@ -131,7 +131,8 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                             CallImageApiS3(ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
                         }else{
                             CallImageApi();
-                        }                    } else {
+                        }
+                    } else {
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
                     }
                 } else if (menuItem.getItemId() == R.id.menuDelete) {

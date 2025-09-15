@@ -887,7 +887,7 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
 
     private void CallSendSignImage(int position,int i ,SignModelClass signModelClass, String jsonValues, String filePath, String id) {
         ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
-        MultipartBody.Part img = convertImg("sign_path", filePath);
+        MultipartBody.Part img = convertImg("SignImg", filePath);
         HashMap<String, RequestBody> values = field(jsonValues);
 
         Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
@@ -945,7 +945,7 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
                 System.out.println("file not Deleted :" + filePath);
             }
         }
-        callOfflineSignDataDao.deleteOfflineSignId(id);
+        callOfflineSignDataDao.deleteOfflineSignImage(filePath);
         childListModelClasses.get(position).getSignModelClasses().remove(i);
         CallApiSignImage(position);
     }

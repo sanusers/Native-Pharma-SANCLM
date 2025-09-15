@@ -942,7 +942,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
 
     private void CallSendSignImage(GroupModelClass groupModelClass,SignModelClass signModelClass,int childPos,int i,String jsonValues,String filePath,String id){
         ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
-        MultipartBody.Part img = convertImg("sign_path", filePath);
+        MultipartBody.Part img = convertImg("SignImg", filePath);
         HashMap<String, RequestBody> values = field(jsonValues);
         Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
 
@@ -999,7 +999,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 System.out.println("file not Deleted :" + filePath);
             }
         }
-        callOfflineSignDataDao.deleteOfflineSignId(id);
+        callOfflineSignDataDao.deleteOfflineSignImage(filePath);
         try{
             groupModelClass.getChildItems().get(childPos).getSignModelClasses().remove(i);
         } catch (Exception e) {
