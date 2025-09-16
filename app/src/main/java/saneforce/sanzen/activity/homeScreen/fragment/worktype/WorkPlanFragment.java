@@ -2876,6 +2876,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 String date = jsonObject.getJSONObject("dt").getString("date").substring(0, 10);
                 if (date.equalsIgnoreCase(HomeDashBoard.selectedDate.toString())) {
                     jsonArray.remove(index);
+                    index--;
 //                    break;
                 }
             }

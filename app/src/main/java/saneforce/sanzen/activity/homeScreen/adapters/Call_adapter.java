@@ -387,8 +387,26 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         JSONObject jsonObject = new JSONObject(response.body().toString());
                         Log.v("editCall", jsonObject.toString());
                         Intent intent = new Intent(context, DCRCallActivity.class);
+                        JSONArray callData = jsonObject.optJSONArray("DCRDetail");
+                        String selectedHQ = "", mProds = "";
+                        if (callData != null) {
+                            JSONObject dcrDetail = callData.optJSONObject(0);
+                            if (dcrDetail != null) {
+                                selectedHQ = dcrDetail.optString("DataSF");
+                                JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHQ).getMasterSyncDataJsonArray();
+                                for (int i = 0; i < drMas.length(); i++) {
+                                    JSONObject drObj = drMas.optJSONObject(i);
+                                    if (drObj.optString("Code").equalsIgnoreCase(docCode)) {
+                                        mProds = drObj.optString("MProd");
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                         CallActivityCustDetails = new ArrayList<>();
-                        CallActivityCustDetails.add(0, new CustList(docName.substring(0, docName.lastIndexOf(" ---")).trim(), docCode, type, transSlno, aDetSLNo, "", jsonObject.toString()));
+                        CustList custList = new CustList(docName.substring(0, docName.lastIndexOf(" ---")).trim(), docCode, type, transSlno, aDetSLNo, "", jsonObject.toString());
+                        custList.setMappedSlides(mProds);
+                        CallActivityCustDetails.add(0, custList);
                         intent.putExtra(Constants.DETAILING_REQUIRED, "false");
                         intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_online");
                         intent.putExtra("remainder_save", "0");
