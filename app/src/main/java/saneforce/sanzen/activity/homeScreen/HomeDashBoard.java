@@ -1615,7 +1615,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     private void goToNearMeActivity() {
         if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
-            if (!WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F") && !WorkPlanFragment.mFwFlg2.equalsIgnoreCase("F")) {
+            if (!WorkPlanFragment.mFwFlg1.equalsIgnoreCase("F") && !WorkPlanFragment.mFwFlg2.equalsIgnoreCase("F") || WorkPlanFragment.binding.txtSave.isEnabled()) {
 //            if (SharedPref.getHqCode(HomeDashBoard.this).equalsIgnoreCase("null") || SharedPref.getHqCode(HomeDashBoard.this).isEmpty()) {
                 commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.kindly_submit_field_work));
             } else if (WorkPlanFragment.deviation.equalsIgnoreCase("1") && SharedPref.getTpdcrMgrappr(HomeDashBoard.this).equalsIgnoreCase("0") && SharedPref.getTpdcrDeviationApprStatus(HomeDashBoard.this).equalsIgnoreCase("3")) {

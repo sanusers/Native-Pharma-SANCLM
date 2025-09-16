@@ -747,7 +747,7 @@ public class ListedDoctorFragment extends Fragment {
                     jsonObject = jsonArray.getJSONObject(i);
                     try {
                         if (SharedPref.getGeotagNeed(context).equalsIgnoreCase("1") && HomeDashBoard.selectedDate.isEqual(LocalDate.now())) {
-                            if (!jsonObject.getString("lat").isEmpty() && !jsonObject.getString("long").isEmpty()) {
+                            if (!jsonObject.optString("lat").isEmpty() && !jsonObject.optString("long").isEmpty()) {
                                 if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
                                     Log.v("DrCall", "111");
                                     float[] distance = new float[2];
@@ -786,6 +786,7 @@ public class ListedDoctorFragment extends Fragment {
 
                     } catch (Exception e) {
                         Log.v("DrCall", "dr--error-1-" + e);
+                        e.printStackTrace();
                     }
                 }
 
@@ -895,6 +896,7 @@ public class ListedDoctorFragment extends Fragment {
                 }
             } catch (Exception e) {
                 Log.v("DrCall", "-dr--error-2-" + e);
+                e.printStackTrace();
             }
             Log.v("call", "-dr--size--" + custListArrayList.size());
         }

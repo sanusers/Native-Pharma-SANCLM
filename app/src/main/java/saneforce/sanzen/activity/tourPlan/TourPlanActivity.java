@@ -2335,7 +2335,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 break;
         }
 
-        binding.tpSendToApproval.setEnabled(wholeMonthTpCompleted && (status.equals("0") || status.equals("-1") || status.equals("1") || status.equals("2")));
+        binding.tpSendToApproval.setEnabled(wholeMonthTpCompleted && (status.equals("0") || status.equals("-1") || status.equals("") || status.equals("2")));
 
         switch (status) {
             case "":
@@ -4908,8 +4908,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                                 changeApprovalBtnStateOneBuild(dayWiseArrayNextMonthOneBuild);
                                                 break;
                                         }
-//                                        get3MonthRemoteTPDataOneBuild(isClickedName);
-                                        /*get3MonthRemoteTPDataOneBuild(isClickedName);*/
+                                        get3MonthRemoteTPDataOneBuild(isClickedName);
+                                        get3MonthRemoteTPDataOneBuild(isClickedName);
                                         break;
                                     }
                                 }

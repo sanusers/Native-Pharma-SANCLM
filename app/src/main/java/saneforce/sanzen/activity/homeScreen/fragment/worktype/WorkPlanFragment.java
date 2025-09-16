@@ -4733,7 +4733,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 CallFinalSubmitAPI();
             }
         } else {
-            if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+            if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && jsonCheck != null ) {
 //            if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
                 SharedPref.setCheckTodayCheckInOut(requireContext(), "");
                 SharedPref.setDayCheckInData(requireContext(), "");
