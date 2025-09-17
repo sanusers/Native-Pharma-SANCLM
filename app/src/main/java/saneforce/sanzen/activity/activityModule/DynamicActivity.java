@@ -3084,10 +3084,10 @@ public class DynamicActivity extends AppCompatActivity {
     private void getHQData(String hqCode) {
         try {
             Log.d("DynamicActivity", "showHQ: " + hqCode);
-            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR + hqCode),
-                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST + hqCode),
-                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST + hqCode),
-                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR + hqCode),
+            boolean docAvailability = masterDataDao.isDataAvailable(Constants.DOCTOR_MAS + hqCode),
+                    chemAvailability = masterDataDao.isDataAvailable(Constants.CHEMIST_MAS + hqCode),
+                    stkAvailability = masterDataDao.isDataAvailable(Constants.STOCKIEST_MAS + hqCode),
+                    ulDocAvailability = masterDataDao.isDataAvailable(Constants.UNLISTED_DOCTOR_MAS + hqCode),
 //                        hosAvailability = masterDataDao.isDataAvailable(Constants.HOSPITAL + hqCode),
 //                        cipAvailability = masterDataDao.isDataAvailable(Constants.CIP + hqCode),
                     clusterAvailability = masterDataDao.isDataAvailable(Constants.CLUSTER + hqCode);
@@ -3111,13 +3111,13 @@ public class DynamicActivity extends AppCompatActivity {
         SharedPref.setSyncHQ(DynamicActivity.this, SynqList);
         syncProgressDialog.show();
         List<MasterSyncItemModel> list = new ArrayList<>();
-        list.add(new MasterSyncItemModel("Doctor", "Doctor", "getdoctors", Constants.DOCTOR + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Chemist", "Doctor", "getchemist", Constants.CHEMIST + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Stockiest", "Doctor", "getstockist", Constants.STOCKIEST + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Unlisted Doctor", "Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Doctor", Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Chemist", Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Stockiest", Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Unlisted Doctor", Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, 0, false));
 //        list.add(new MasterSyncItemModel("Hospital", 0, "Doctor", "gethospital", Constants.HOSPITAL + hqCode, 0, false));
 //        list.add(new MasterSyncItemModel("CIP", 0, "Doctor", "getcip", Constants.CIP + hqCode, 0, false));
-        list.add(new MasterSyncItemModel("Cluster", "Doctor", "getterritory", Constants.CLUSTER + hqCode, 0, false));
+        list.add(new MasterSyncItemModel("Cluster", Constants.DOCTOR_MAS, "getterritory", Constants.CLUSTER + hqCode, 0, false));
         list.add(new MasterSyncItemModel("Joint Work", Constants.SUBORDINATE, "getjointwork", Constants.JOINT_WORK + hqCode, 0, false));
 
         for (int i = 0; i < list.size(); i++) {
