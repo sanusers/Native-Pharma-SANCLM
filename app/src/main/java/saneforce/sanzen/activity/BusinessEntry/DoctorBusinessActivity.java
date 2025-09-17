@@ -952,7 +952,7 @@ public class DoctorBusinessActivity extends AppCompatActivity {
 
     private void SetupAdapter() {
         try {
-            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + selectedhq ).getMasterSyncDataJsonArray();
+            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedhq ).getMasterSyncDataJsonArray();
             if (jsonArray.length() == 0) {
                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_data_found)  + "  " +  context.getString(R.string.do_master_sync) );
             }
@@ -1075,11 +1075,11 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                     jsonObject.getString("SpecialtyCode"),
                     jsonObject.getString("Town_Name"),
                     jsonObject.getString("Town_Code"),
-                    jsonObject.getString("GEOTagCnt"),
-                    jsonObject.getString("MaxGeoMap"),
+//                    jsonObject.getString("GEOTagCnt"),
+//                    jsonObject.getString("MaxGeoMap"),
                     String.valueOf(index),
-                    jsonObject.getString("Lat"),
-                    jsonObject.getString("Long"),
+//                    jsonObject.getString("Lat"),
+//                    jsonObject.getString("Long"),
                     jsonObject.getString("HosAddr"),
                     jsonObject.getString("DOB"),
                     jsonObject.getString("DOW"),
