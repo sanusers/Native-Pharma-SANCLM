@@ -406,11 +406,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                             rlHQ.setVisibility(View.VISIBLE);
                         }
-                        if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && (!stpOfflineDataDao.isNotApproved() && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length()>0)) {
+                        if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") && (!stpOfflineDataDao.isNotApproved() && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length() > 0)) {
                             binding.txtworkday2.setText("");
                             binding.txtCluster2.setText("");
                             binding.rlworkday2.setVisibility(View.VISIBLE);
-                        }else {
+                            binding.rlcluster2.setEnabled(false);
+                            binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+                        } else {
 //                            workDayCode = "";
 //                            workDayName = "";
                             binding.rlworkday2.setVisibility(View.GONE);
@@ -1288,6 +1290,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 binding.txtCluster2.setHint("Select" + SharedPref.getWrkAreaName(requireContext()));
                             }
                             getLocalData();
+                            binding.txtworkday2.setText("");
                         }
                     }else {
                         if(binding.flSession1.getVisibility() == View.GONE) {
