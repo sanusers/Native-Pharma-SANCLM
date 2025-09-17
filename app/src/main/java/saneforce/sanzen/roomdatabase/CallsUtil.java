@@ -4,9 +4,12 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import saneforce.sanzen.activity.homeScreen.modelClass.ChildListModelClass;
 import saneforce.sanzen.activity.homeScreen.modelClass.GroupModelClass;
@@ -133,7 +136,7 @@ public class CallsUtil {
     }
 
     public Set<String> getOutboxDates() {
-        Set<String> dates = new HashSet<>();
+        Set<String> dates = new TreeSet<>();
         dates.addAll(callOfflineDataDao.getAllCallOfflineDates());
         dates.addAll(callOfflineECDataDao.getAllCallOfflineECDates());
         dates.addAll(callOfflineWorkTypeDataDao.getAllCallOfflineWTDates());
@@ -154,7 +157,6 @@ public class CallsUtil {
             for (String date : dates) {
                 groupNamesList = new ArrayList<>();
                 groupNamesList.add(new ChildListModelClass("Checking In/Out", 0, false, true, offlineCheckInOutDataDao.getCheckInOutTime(date), "", ""));
-//                groupNamesList.add(new ChildListModelClass("Quiz", 7, false, quizOfflineDataDao.getQuizModelClass(date)));
                 groupNamesList.add(new ChildListModelClass("Work Plan - " + Arrays.toString(callOfflineWorkTypeDataDao.getListOfflineWTNames(date).toArray()).replace("[", "").replace("]", ""), 1, false, callOfflineWorkTypeDataDao.getWorkPlanModelClass(date)));
                 groupNamesList.add(new ChildListModelClass("Calls", 2, false, true, getOutBoxCallsList(date), ""));
                 groupNamesList.add(new ChildListModelClass("Event Captured", 3, false, true, callOfflineECDataDao.getEcList(date)));
