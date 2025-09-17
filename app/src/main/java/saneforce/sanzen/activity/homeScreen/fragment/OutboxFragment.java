@@ -469,7 +469,12 @@ public class OutboxFragment extends Fragment {
 
             @Override
             public void onFailure() {
-                callback.onFailure();
+
+                if (child.getChildId() == 3 || child.getChildId() == 4 || child.getChildId() == 6) {
+                    processApisForDate(dateGroup, apiIndex + 1, callback);
+                } else {
+                    callback.onFailure();
+                }
             }
         });
     }
@@ -814,12 +819,137 @@ public class OutboxFragment extends Fragment {
         }
         SignModelClass signModelClass = callsSignList.get(index);
 
+        if (signModelClass.getSynced() == 0) {
+            if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
+//                CallSendAPIImageS3(ParentPos, ecModelClass, ChildPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()), modelClass);
+            } else {
+                CallSendAPISignImage(child, index, signModelClass, callback);
+            }
+        } else {
+            signatureSubmitAPI(child, index + 1, callback);
+        }
+    }
+
+    private void CallSendAPISignImage(ChildListModelClass child, int index, SignModelClass signModelClass, ApiCallback callback) {
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getTagApiImageUrl(requireContext()));
+        MultipartBody.Part img = convertImg("SignImg", signModelClass.getFilePath());
+        HashMap<String, RequestBody> values = field(signModelClass.getJson_values());
+        Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
+        saveImgDcr.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        JSONObject json = new JSONObject(response.body().toString());
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Sign Has Been Updated")) {
+                            try {
+                                File fileDelete = new File(signModelClass.getFilePath());
+                                if (fileDelete.exists()) {
+                                    if (fileDelete.delete()) {
+                                        Log.i("file Deleted :", "onResponse: " + signModelClass.getFilePath());
+                                    } else {
+                                        Log.e("file Deleted :", "onResponse: " + signModelClass.getFilePath());
+                                    }
+                                }
+                                callOfflineSignDataDao.deleteOfflineSignImage(signModelClass.getFilePath());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            child.getSignModelClasses().remove(signModelClass);
+                            notifyedmethod();
+                            signatureSubmitAPI(child, index, callback);
+                        } else {
+                            signModelClass.setSynced(1);
+                            signModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                            callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.DUPLICATE_CALL, 1);
+                            callback.onFailure();
+                        }
+                    } catch (Exception e) {
+                        Log.v("SendOutboxCall", "-error---" + e);
+                        e.printStackTrace();
+                        signModelClass.setSynced(1);
+                        signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.DUPLICATE_CALL, 1);
+                        callback.onFailure();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                t.printStackTrace();
+                signModelClass.setSynced(1);
+                signModelClass.setSync_status(Constants.CALL_FAILED);
+                callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.CALL_FAILED, 1);
+                callback.onFailure();
+            }
+        });
     }
 
     private void activitySubmitAPI(ChildListModelClass child, int index, ApiCallback callback) {
+        try {
+            ArrayList<ActivityModelClass> activityList = child.getActivityModelClasses();
+            if (activityList == null || activityList.isEmpty() || index >= activityList.size()) {
+                callback.onSuccess();
+                return;
+            }
+            ActivityModelClass activityModelClass = activityList.get(index);
+
+            if (activityModelClass.getSyncStatus().equalsIgnoreCase(Constants.WAITING_FOR_SYNC) || activityModelClass.getSyncStatus().equalsIgnoreCase(Constants.CALL_FAILED)) {
+                Map<String, String> mapString = new HashMap<>();
+                mapString.put("axn", "save/activity");
+                Call<JsonElement> activitySaveDcr = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, activityModelClass.getJsonData());
+                activitySaveDcr.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        if (response.isSuccessful()) {
+                            try {
+                                JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
+                                if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
+                                    activityOfflineDataDao.deleteOfflineActivity(activityModelClass.getId());
+                                    activityList.remove(activityModelClass);
+                                    notifyedmethod();
+                                    callback.onSuccess();
+                                } else {
+                                    callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
+                                    activityModelClass.setSyncStatus(Constants.FAILED);
+                                    activityModelClass.setSyncCount(5);
+                                    notifyedmethod();
+                                    callback.onFailure();
+                                }
+                            } catch (Exception e) {
+                                callsUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.EXCEPTION_ERROR);
+                                activityModelClass.setSyncStatus(Constants.EXCEPTION_ERROR);
+                                activityModelClass.setSyncCount(5);
+                                Log.v("SendOutboxCall", "---" + e);
+                                e.printStackTrace();
+                                notifyedmethod();
+                                callback.onFailure();
+                            }
+                        }
+                    }
+
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        callsUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
+                        activityModelClass.setSyncStatus(Constants.FAILED);
+                        activityModelClass.setSyncCount(activityModelClass.getSyncCount() + 1);
+                        notifyedmethod();
+                        callback.onFailure();
+                    }
+                });
+
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+            callback.onFailure();
+        }
     }
 
     private void activityUploadSubmitAPI(ChildListModelClass child, int index, ApiCallback callback) {
+        callback.onSuccess();
     }
 
     private void daySubmitAPI(ChildListModelClass child, ApiCallback callback) {
