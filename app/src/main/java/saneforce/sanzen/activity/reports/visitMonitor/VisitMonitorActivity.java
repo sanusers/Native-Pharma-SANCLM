@@ -2,6 +2,7 @@ package saneforce.sanzen.activity.reports.visitMonitor;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -35,6 +36,8 @@ import saneforce.sanzen.activity.reports.visitMonitor.adapter.VisitStatsAdapter;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.visitMonitor.model.ChemistStatsModel;
 import saneforce.sanzen.activity.reports.visitMonitor.model.DoctorStatsModel;
+import saneforce.sanzen.activity.reports.visitMonitor.model.StockiestStatsModel;
+import saneforce.sanzen.activity.reports.visitMonitor.model.UnlistedStatsModel;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityVisitMonitorBinding;
@@ -437,21 +440,21 @@ public class VisitMonitorActivity extends AppCompatActivity {
             //total visits
 
 
-            int visitedDoctorsCurrentMonth = currentMonthStats.visitedDoctors.size();
-            int visitedDoctorsPreviousMonth = previousMonthStats.visitedDoctors.size();
-            int visitedDoctorsPre_PrevMonth = prePreviousMonthStats.visitedDoctors.size();
+            int visitedDoctorsCurrentMonth = currentMonthStats.uniqueDoctors.size();
+            int visitedDoctorsPreviousMonth = previousMonthStats.uniqueDoctors.size();
+            int visitedDoctorsPre_PrevMonth = prePreviousMonthStats.uniqueDoctors.size();
 
-            int visitedChemistCurrentMonth = currentMonthStats.visitedChemists.size();
-            int visitedChemistPreviousMonth = previousMonthStats.visitedChemists.size();
-            int visitedChemistPre_PrevMonth = prePreviousMonthStats.visitedChemists.size();
+            int visitedChemistCurrentMonth = currentMonthStats.uniqueChemists.size();
+            int visitedChemistPreviousMonth = previousMonthStats.uniqueChemists.size();
+            int visitedChemistPre_PrevMonth = prePreviousMonthStats.uniqueChemists.size();
 
-            int visitedStockiestCurrentMonth = currentMonthStats.visitedStockiest.size();
-            int visitedStockiestPreviousMonth = previousMonthStats.visitedStockiest.size();
-            int visitedStockiestPre_PrevMonth = previousMonthStats.visitedStockiest.size();
+            int visitedStockiestCurrentMonth = currentMonthStats.uniqueStockiest.size();
+            int visitedStockiestPreviousMonth = previousMonthStats.uniqueStockiest.size();
+            int visitedStockiestPre_PrevMonth = previousMonthStats.uniqueStockiest.size();
 
-            int visitedUnlistedCurrentMonth = currentMonthStats.visitedUnlisted.size();
-            int visitedUnlistedPreviousMonth = currentMonthStats.visitedUnlisted.size();
-            int visitedUnlistedPre_PrevMonth = currentMonthStats.visitedUnlisted.size();
+            int visitedUnlistedCurrentMonth = currentMonthStats.uniqueUnlisted.size();
+            int visitedUnlistedPreviousMonth = currentMonthStats.uniqueUnlisted.size();
+            int visitedUnlistedPre_PrevMonth = currentMonthStats.uniqueUnlisted.size();
 
             String doctorData = masterDataDao.getDataByKey(Constants.DOCTOR_MAS + SharedPref.getHqCode(this));
             JSONArray doctorArray = new JSONArray(doctorData);
@@ -612,9 +615,9 @@ public class VisitMonitorActivity extends AppCompatActivity {
 
             callCvgPrePrevMonthUnlisted = (double) visitedDoctorsPre_PrevMonth / fwDaysPrePreviousMonth * 100;
             @SuppressLint("DefaultLocale") String formattedCallCvgPre_PreviousUnlisted = String.format("%.1f", callCvgPrePrevMonthUnlisted);
-            List<String> monthData = new ArrayList<>();
+
             //Doctor
-            List<VisitStatsModel> dataList = new ArrayList<>();
+            List<VisitStatsModel> dataListDoc = new ArrayList<>();
             VisitStatsModel currentMonthDrStats = new VisitStatsModel(
                     String.valueOf(totalDoctors),
                     String.valueOf(uniqueDoctorsCurrentMonth),
@@ -656,10 +659,11 @@ public class VisitMonitorActivity extends AppCompatActivity {
             );
 
             //Chemist
+            List<VisitStatsModel> dataListChm = new ArrayList<>();
             VisitStatsModel currentMonthCheStats = new VisitStatsModel(
                     String.valueOf(totalChemist),
                     String.valueOf(uniqueChemistCurrentMonth),
-                    String.valueOf(currentMonthMissed),
+                    String.valueOf(currentMonthMissedChe),
                     String.valueOf(fwDaysCurrentMonth),
                     formattedCallAvgCurrentChe,
                     formattedCallCvgCurrentChe
@@ -669,7 +673,7 @@ public class VisitMonitorActivity extends AppCompatActivity {
             VisitStatsModel previousMonthCheStats = new VisitStatsModel(
                     String.valueOf(totalChemist),
                     String.valueOf(uniqueChemistPreviousMonth),
-                    String.valueOf(previousMonthMissed),
+                    String.valueOf(previousMonthMissedChe),
                     String.valueOf(fwDaysPreviousMonth),
                     formattedCallAvgPreviousChe,
                     formattedCallCvgPreviousChe
@@ -679,18 +683,18 @@ public class VisitMonitorActivity extends AppCompatActivity {
             VisitStatsModel prePreviousMonthCheStats = new VisitStatsModel(
                     String.valueOf(totalChemist),
                     String.valueOf(uniqueChemistPre_PrevMonth),
-                    String.valueOf(prePreviousMonthMissed),
+                    String.valueOf(prePreviousMonthMissedChe),
                     String.valueOf(fwDaysPrePreviousMonth),
                     formattedCallAvgPre_PreviousChe,
                     formattedCallCvgPre_PreviousChe
             );
 
             //Stk
-
+            List<VisitStatsModel> dataListStk = new ArrayList<>();
             VisitStatsModel currentMonthStkStats = new VisitStatsModel(
                     String.valueOf(totalStk),
                     String.valueOf(uniqueStockiestCurrentMonth),
-                    String.valueOf(currentMonthMissed),
+                    String.valueOf(currentMonthMissedStk),
                     String.valueOf(fwDaysCurrentMonth),
                     formattedCallAvgCurrentStk,
                     formattedCallCvgCurrentStk
@@ -700,7 +704,7 @@ public class VisitMonitorActivity extends AppCompatActivity {
             VisitStatsModel previousMonthStkStats = new VisitStatsModel(
                     String.valueOf(totalStk),
                     String.valueOf(uniqueStockiestPreviousMonth),
-                    String.valueOf(previousMonthMissed),
+                    String.valueOf(previousMonthMissedStk),
                     String.valueOf(fwDaysPreviousMonth),
                     formattedCallAvgPreviousStk,
                     formattedCallCvgPreviousStk
@@ -710,17 +714,18 @@ public class VisitMonitorActivity extends AppCompatActivity {
             VisitStatsModel prePreviousMonthStkStats = new VisitStatsModel(
                     String.valueOf(totalStk),
                     String.valueOf(uniqueStockiestPre_PrevMonth),
-                    String.valueOf(prePreviousMonthMissed),
+                    String.valueOf(prePreviousMonthMissedStk),
                     String.valueOf(fwDaysPrePreviousMonth),
                     formattedCallAvgPre_PreviousStk,
                     formattedCallCvgPre_PreviousStk
             );
 
             //unlisted
+            List<VisitStatsModel> dataListUnlisted = new ArrayList<>();
             VisitStatsModel currentMonthUnlistedStats = new VisitStatsModel(
                     String.valueOf(totalUnlisted),
                     String.valueOf(uniqueUnlistedCurrentMonth),
-                    String.valueOf(currentMonthMissed),
+                    String.valueOf(currentMonthMissedUnlisted),
                     String.valueOf(fwDaysCurrentMonth),
                     formattedCallAvgCurrentUnlisted,
                     formattedCallCvgCurrentUnlisted
@@ -730,7 +735,7 @@ public class VisitMonitorActivity extends AppCompatActivity {
             VisitStatsModel previousMonthUnlistedStats = new VisitStatsModel(
                     String.valueOf(totalUnlisted),
                     String.valueOf(uniqueUnlistedPreviousMonth),
-                    String.valueOf(previousMonthMissed),
+                    String.valueOf(previousMonthMissedUnlisted),
                     String.valueOf(fwDaysPreviousMonth),
                     formattedCallAvgPreviousUnlisted,
                     formattedCallCvgPreviousUnlisted
@@ -740,46 +745,44 @@ public class VisitMonitorActivity extends AppCompatActivity {
             VisitStatsModel prePreviousMonthUnlistedStats = new VisitStatsModel(
                     String.valueOf(totalUnlisted),
                     String.valueOf(uniqueUnlistedPre_PrevMonth),
-                    String.valueOf(prePreviousMonthMissed),
+                    String.valueOf(prePreviousMonthMissedUnlisted),
                     String.valueOf(fwDaysPrePreviousMonth),
                     formattedCallAvgPre_PreviousUnlisted,
                     formattedCallCvgPre_PreviousUnlisted
             );
             //Dr
-            dataList.add(currentMonthDrStats);
-            dataList.add(previousMonthDrStats);
-            dataList.add(prePreviousMonthDrStats);
+            dataListDoc.add(currentMonthDrStats);
+            dataListDoc.add(previousMonthDrStats);
+            dataListDoc.add(prePreviousMonthDrStats);
             //Che
-            dataList.add(currentMonthCheStats);
-            dataList.add(previousMonthCheStats);
-            dataList.add(prePreviousMonthCheStats);
+            dataListChm.add(currentMonthCheStats);
+            dataListChm.add(previousMonthCheStats);
+            dataListChm.add(prePreviousMonthCheStats);
             //stk
-            dataList.add(currentMonthStkStats);
-            dataList.add(previousMonthStkStats);
-            dataList.add(prePreviousMonthStkStats);
+            dataListStk.add(currentMonthStkStats);
+            dataListStk.add(previousMonthStkStats);
+            dataListStk.add(prePreviousMonthStkStats);
             //unlisted
-            dataList.add(currentMonthUnlistedStats);
-            dataList.add(previousMonthUnlistedStats);
-            dataList.add(prePreviousMonthUnlistedStats);
-            // Example monthData
+            dataListUnlisted.add(currentMonthUnlistedStats);
+            dataListUnlisted.add(previousMonthUnlistedStats);
+            dataListUnlisted.add(prePreviousMonthUnlistedStats);
 
 
-            ReportPagerAdapter adapter = new ReportPagerAdapter(
-                    this,
-                    monthData,
-                  /*  dataList.subList(0, 3),
-                    dataList.subList(3, 6),
-                    dataList.subList(6, 9),
-                    dataList.subList(9, 12)*/
-                    new ArrayList<>(),
-                    new ArrayList<>(),
-                    new ArrayList<>(),
-                    new ArrayList<>()
+            RecyclerView recyclerView = findViewById(R.id.recyclerView);
+            Log.w("DEBUG", "RecyclerView object = " + recyclerView);
+
+            VisitStatsAdapter adapter = new VisitStatsAdapter(
+                    VisitMonitorActivity.this, // FragmentActivity
+//                    monthData,
+                    dataListDoc,
+                    dataListChm,
+                    dataListStk,
+                    dataListUnlisted
             );
+            Log.w("DEBUG", "Adapter created = " + adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(adapter);
 
-            ViewPager2 viewPager = findViewById(R.id.viewPager);
-            viewPager.setAdapter(adapter);
-            viewPager.setOffscreenPageLimit(4);
         } catch (Exception e) {
             e.printStackTrace();
         }

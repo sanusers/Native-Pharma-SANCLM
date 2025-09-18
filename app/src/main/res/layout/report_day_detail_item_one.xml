@@ -1193,59 +1193,6 @@
 
                 </LinearLayout>
 
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardeventLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_3sdp"
-                    android:layout_marginVertical="@dimen/_1sdp"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:divider="@android:color/transparent"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardCornerRadius="@dimen/_1sdp"
-                    app:cardElevation="@dimen/_1sdp"
-                    app:cardPreventCornerOverlap="true"
-                    app:cardUseCompatPadding="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rcpaLayout">
-
-
-                    <LinearLayout
-                        android:id="@+id/eventcaptureLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/_2sdp"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_5sdp"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:id="@+id/eventcapture"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/satoshi_medium"
-                            android:text="Event Capture"
-                            android:textColor="@color/text_dark"
-                            android:textSize="@dimen/_5sdp"
-                            tools:ignore="SpUsage" />
-
-                        <ImageView
-                            android:layout_width="@dimen/_7sdp"
-                            android:layout_height="@dimen/_7sdp"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="@dimen/_5sdp"
-                            android:src="@drawable/arrow_down" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardsignLayout"
                     android:layout_width="0dp"
@@ -1295,6 +1242,58 @@
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardeventLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_3sdp"
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:divider="@android:color/transparent"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_1sdp"
+                    app:cardElevation="@dimen/_1sdp"
+                    app:cardPreventCornerOverlap="true"
+                    app:cardUseCompatPadding="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rcpaLayout">
+
+
+                    <LinearLayout
+                        android:id="@+id/eventcaptureLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_2sdp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_5sdp"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:id="@+id/eventcapture"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:text="Event Capture"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
+                            tools:ignore="SpUsage" />
+
+                        <ImageView
+                            android:layout_width="@dimen/_7sdp"
+                            android:layout_height="@dimen/_7sdp"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:src="@drawable/arrow_down" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
 
 
 
@@ -1307,7 +1306,7 @@
                     app:layout_constraintBottom_toTopOf="@id/rlOthers"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/cardeventLayout" />
+                    app:layout_constraintTop_toBottomOf="@id/cardsignLayout" />
 
                 <RelativeLayout
                     android:id="@+id/rlOthers"

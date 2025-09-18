@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/doctor_card"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_138sdp"
+    android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
     android:layout_marginTop="16dp"
     android:layout_marginEnd="16dp"
@@ -12,7 +12,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <LinearLayout
             android:id="@+id/linear1"
             android:layout_width="match_parent"
@@ -49,21 +48,21 @@
 <!--                android:text="Hq "-->
 <!--                android:textColor="@color/red_60" />-->
 
-            <View
+          <!--  <View
                 android:layout_width="5dp"
                 android:layout_height="2dp"
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="@dimen/_2sdp"
-                android:background="@color/red_60" />
+                android:background="@color/red_60" />-->
 
-            <TextView
+       <!--     <TextView
                 android:id="@+id/yearTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/satoshi_bold"
                 android:gravity="center"
                 android:text="2025 "
-                android:textColor="@color/red_60" />
+                android:textColor="@color/red_60" />-->
 
             <View
                 android:id="@+id/divider"
@@ -76,7 +75,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/doctorImg"
+            android:id="@+id/custImg"
             android:layout_width="52dp"
             android:layout_height="@dimen/_25sdp"
             android:layout_marginStart="@dimen/_10sdp"
@@ -86,17 +85,17 @@
             app:layout_constraintTop_toBottomOf="@id/linear1" />
 
         <TextView
-            android:id="@+id/doctorVisitTxt"
+            android:id="@+id/custTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_5sdp"
             android:layout_marginTop="@dimen/_9sdp"
             android:fontFamily="@font/satoshi_bold"
-            android:text="Doctor Visit"
+            android:text="Visit"
             android:textColor="@color/black"
             android:textSize="@dimen/_6sdp"
-            app:layout_constraintStart_toEndOf="@id/doctorImg"
-            app:layout_constraintTop_toTopOf="@id/doctorImg" />
+            app:layout_constraintStart_toEndOf="@id/custImg"
+            app:layout_constraintTop_toTopOf="@id/custImg" />
 
 <!--        <TextView-->
 <!--            android:id="@+id/dateTxt"-->
@@ -120,7 +119,7 @@
             android:columnCount="3"
             android:rowCount="2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/doctorImg">
+            app:layout_constraintTop_toBottomOf="@id/custImg">
 
 
             <LinearLayout
@@ -134,15 +133,15 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/totalDr"
+                    android:id="@+id/totalCust"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/_5sdp"
-                    android:text="Total Doctor" />
+                    android:text="Total Customer" />
 
                 <TextView
-                    android:id="@+id/totalDrCnt"
+                    android:id="@+id/totalCustCnt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -333,7 +332,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/in_chart_visit"
                 app:layout_constraintTop_toTopOf="parent"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
