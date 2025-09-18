@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.reports.visitMonitor;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
@@ -54,6 +56,7 @@ import saneforce.sanzen.databinding.FragmentDoctorVisitReportBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class DoctorFragment extends Fragment {
 
@@ -68,44 +71,54 @@ public class DoctorFragment extends Fragment {
     private static final String ARG_POSITION = "position";
 
     private List<String> monthData;
-    private  List<VisitStatsModel> dataList;
+    private  List<VisitStatsModel> dataListDoc;
     int position;
 
+    public DoctorFragment(List<VisitStatsModel> dataListDoc) {
+        this.dataListDoc = dataListDoc;
+    }
 
-    public static DoctorFragment newInstance(List<String> monthData, List<VisitStatsModel> statsData) {
-        DoctorFragment fragment = new DoctorFragment();
+    public static DoctorFragment newInstance(List<VisitStatsModel> statsData,int position) {
+
+        DoctorFragment fragment = new DoctorFragment(statsData);
         Bundle args = new Bundle();
-        args.putStringArrayList(ARG_MONTH_DATA, new ArrayList<>(monthData));
-        args.putInt(ARG_POSITION, 0);
+        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
+
+        /*DoctorFragment fragment = new DoctorFragment(statsData);
+        return fragment;*/
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+//            position = getArguments().getInt(ARG_POSITION, position);
+                position = getArguments().getInt(ARG_POSITION, 2);
+        }
     }
 
     @SuppressLint("SetTextI18n")
     @Nullable
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.adapter_doctor_visit_report, container, false);
 
-        TextView doctorVst = v.findViewById(R.id.doctorVisitTxt);
-        TextView totalDrTxt = v.findViewById(R.id.totalDr);
+        TextView doctorVst = v.findViewById(R.id.custTxt);
+        TextView totalDrTxt = v.findViewById(R.id.totalCust);
         TextView monthTxt = v.findViewById(R.id.monthTxt);
         TextView yearTxt = v.findViewById(R.id.yearTxt);
-        TextView totalDrCnt = v.findViewById(R.id.totalDrCnt);
+        TextView totalDrCnt = v.findViewById(R.id.totalCustCnt);
         TextView visitedCnt = v.findViewById(R.id.visitedCnt);
         TextView missedCnt = v.findViewById(R.id.missedCnt);
         TextView FWDaysCnt = v.findViewById(R.id.FWDaysCnt);
         TextView callAvgCnt = v.findViewById(R.id.callAvgCnt);
         TextView callCvgCnt = v.findViewById(R.id.callCvgCnt);
 
-        // Assign the charts to the member variables
-        barChart  = v.findViewById(R.id.in_chart_visit);
+
+        barChart  = v.findViewById(R.id.barChartVisit);
         pieChart  = v.findViewById(R.id.pieChart_visit);
+        pieChart.setVisibility(View.VISIBLE);
 
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
@@ -115,14 +128,81 @@ public class DoctorFragment extends Fragment {
             monthTxt.setText(monthData.get(0));
             yearTxt.setText(monthData.get(1));
         }
+        monthTxt.setText(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_23));
         doctorVst.setText(SharedPref.getDrCap(requireContext())+" "+"Visit");
         totalDrTxt.setText("Total"+" "+SharedPref.getDrCap(requireContext()));
-        // Dummy data for example purposes;
+        if (dataListDoc != null && !dataListDoc.isEmpty()) {
+            switch (position){
+                case 0:
+                    VisitStatsModel model = dataListDoc.get(0);
+                    totalDrCnt.setText(model.getTotalCustomers());
+                    visitedCnt.setText(model.getVisitedCustomers());
+                    missedCnt.setText(model.getMissedCustomers());
+                    FWDaysCnt.setText(model.getFwDays());
+                    callAvgCnt.setText(model.getCallAvg());
+                    callCvgCnt.setText(model.getCoverage() + "%");
 
-        if (dataList != null && !dataList.isEmpty()) {
-            VisitStatsModel model = dataList.get(position);
+                    setupBarChart(
+                            Integer.parseInt(model.getTotalCustomers()),
+                            Integer.parseInt(model.getVisitedCustomers()),
+                            Integer.parseInt(model.getMissedCustomers()),
+                            Double.parseDouble(model.getCallAvg())
+                    );
+                    setupPieChart(
+                            model.getOneVisitCount(),
+                            model.getTwoVisitCount(),
+                            model.getThreeVisitCount(),
+                            model.getThreePlusVisitCount()
+                    );
+                    break;
+                case 1:
+                    VisitStatsModel model1 = dataListDoc.get(1);
+                    totalDrCnt.setText(model1.getTotalCustomers());
+                    visitedCnt.setText(model1.getVisitedCustomers());
+                    missedCnt.setText(model1.getMissedCustomers());
+                    FWDaysCnt.setText(model1.getFwDays());
+                    callAvgCnt.setText(model1.getCallAvg());
+                    callCvgCnt.setText(model1.getCoverage() + "%");
 
-            // Set the TextViews with the data from the VisitStatsModel object
+                    setupBarChart(
+                            Integer.parseInt(model1.getTotalCustomers()),
+                            Integer.parseInt(model1.getVisitedCustomers()),
+                            Integer.parseInt(model1.getMissedCustomers()),
+                            Double.parseDouble(model1.getCallAvg())
+                    );
+                    setupPieChart(
+                            model1.getOneVisitCount(),
+                            model1.getTwoVisitCount(),
+                            model1.getThreeVisitCount(),
+                            model1.getThreePlusVisitCount()
+                    );
+                    break;
+                case 2:
+                    VisitStatsModel model2 = dataListDoc.get(2);
+                    totalDrCnt.setText(model2.getTotalCustomers());
+                    visitedCnt.setText(model2.getVisitedCustomers());
+                    missedCnt.setText(model2.getMissedCustomers());
+                    FWDaysCnt.setText(model2.getFwDays());
+                    callAvgCnt.setText(model2.getCallAvg());
+                    callCvgCnt.setText(model2.getCoverage() + "%");
+
+                    setupBarChart(
+                            Integer.parseInt(model2.getTotalCustomers()),
+                            Integer.parseInt(model2.getVisitedCustomers()),
+                            Integer.parseInt(model2.getMissedCustomers()),
+                            Double.parseDouble(model2.getCallAvg())
+                    );
+                    setupPieChart(
+                            model2.getOneVisitCount(),
+                            model2.getTwoVisitCount(),
+                            model2.getThreeVisitCount(),
+                            model2.getThreePlusVisitCount()
+                    );
+                    break;
+
+            }
+
+            /*VisitStatsModel model = dataListDoc.get(position);
             totalDrCnt.setText(model.getTotalCustomers());
             visitedCnt.setText(model.getVisitedCustomers());
             missedCnt.setText(model.getMissedCustomers());
@@ -130,7 +210,6 @@ public class DoctorFragment extends Fragment {
             callAvgCnt.setText(model.getCallAvg());
             callCvgCnt.setText(model.getCoverage() + "%");
 
-            // Call the setup methods for the charts using the data from the model
             setupBarChart(
                     Integer.parseInt(model.getTotalCustomers()),
                     Integer.parseInt(model.getVisitedCustomers()),
@@ -142,7 +221,7 @@ public class DoctorFragment extends Fragment {
                     model.getTwoVisitCount(),
                     model.getThreeVisitCount(),
                     model.getThreePlusVisitCount()
-            );
+            );*/
         }
 
         return v;
@@ -163,7 +242,14 @@ public class DoctorFragment extends Fragment {
         entries.add(new BarEntry(3f, (float) callAvg));
 
         BarDataSet set = new BarDataSet(entries, "Visit Data");
-        set.setColors(ColorTemplate.COLORFUL_COLORS);
+        set.setDrawValues(false);
+        int[] colors = new int[] {
+                requireContext().getResources().getColor(R.color.indigo),
+                requireContext().getResources().getColor(R.color.green_60),
+                requireContext().getResources().getColor(R.color.pink_45),
+                requireContext().getResources().getColor(R.color.blue_60)
+        };
+        set.setColors(colors);
         BarData data = new BarData(set);
         data.setBarWidth(0.5f);
 
@@ -182,9 +268,8 @@ public class DoctorFragment extends Fragment {
         barChart.invalidate();
     }
 
-    // New method to handle the Pie Chart setup
     private void setupPieChart(int oneVisit, int twoVisit, int threeVisit, int threePlusVisit) {
-        pieChart.setCenterText("Visit Analysis");
+        pieChart.setCenterText("Visits");
         pieChart.setCenterTextSize(15f);
         pieChart.setCenterTextColor(requireContext().getResources().getColor(R.color.black));
         pieChart.setUsePercentValues(false);
