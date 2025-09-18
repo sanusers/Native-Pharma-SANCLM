@@ -238,7 +238,8 @@
                             <View
                                 android:id="@+id/view_dummy"
                                 android:layout_width="match_parent"
-                                android:layout_height="3dp"
+                                android:layout_height="1dp"
+                                android:layout_marginHorizontal="@dimen/_5sdp"
                                 android:background="#9e9ea5"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/tablelayout"

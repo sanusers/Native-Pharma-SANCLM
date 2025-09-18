@@ -159,7 +159,7 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
                     try {
                         assert response.body() != null;
                         JSONObject json = new JSONObject(response.body().toString());
-                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Sign Has Been Updated")) {
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Profile Has Been Updated")) {
 //                            DeleteCacheFileSign(filePath, id, CurrentPos, parentPos, childPos, modelClass);
                         } else {
                             signModelClass.setSynced(1);

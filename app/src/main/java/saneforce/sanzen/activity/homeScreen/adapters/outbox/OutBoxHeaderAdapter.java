@@ -222,11 +222,11 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
 
             @Override
             public void onFailure() {
-                if (child.getChildId() == 3 || child.getChildId() == 4 || child.getChildId() == 6) {
-                    processApisForDate(dateGroup, apiIndex + 1, callback);
-                } else {
+//                if (child.getChildId() == 3 || child.getChildId() == 4 || child.getChildId() == 6) {
+//                    processApisForDate(dateGroup, apiIndex + 1, callback);
+//                } else {
                     callback.onFailure();
-                }
+//                }
             }
         });
     }
@@ -471,7 +471,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 public void onFailure(Call<JsonElement> call, Throwable throwable) {
                     Log.v("CallsResponse", "" + throwable.getMessage().toString());
                     callsUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), attempt + 1, Constants.CALL_FAILED, 1);
-                    outBoxCallList.setStatus(Constants.DUPLICATE_CALL);
+                    outBoxCallList.setStatus(Constants.CALL_FAILED);
                     outBoxCallList.setSyncCount(attempt + 1);
                     UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), Constants.CALL_FAILED, 1);
                     notifyDataSetChanged();
@@ -769,7 +769,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                     try {
                         assert response.body() != null;
                         JSONObject json = new JSONObject(response.body().toString());
-                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Sign Has Been Updated")) {
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Profile Has Been Updated")) {
                             try {
                                 File fileDelete = new File(signModelClass.getFilePath());
                                 if (fileDelete.exists()) {
@@ -985,6 +985,8 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                     callback.onFailure();
                 }
             });
+        } else {
+            callback.onSuccess();
         }
     }
 

@@ -469,11 +469,11 @@ public class OutboxFragment extends Fragment {
 
             @Override
             public void onFailure() {
-                if (child.getChildId() == 3 || child.getChildId() == 4 || child.getChildId() == 6) {
-                    processApisForDate(dateGroup, apiIndex + 1, callback);
-                } else {
+//                if (child.getChildId() == 3 || child.getChildId() == 4 || child.getChildId() == 6) {
+//                    processApisForDate(dateGroup, apiIndex + 1, callback);
+//                } else {
                     callback.onFailure();
-                }
+//                }
             }
         });
     }
@@ -645,6 +645,7 @@ public class OutboxFragment extends Fragment {
                 offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
                 workPlanModelClass.setSyncStatus(1);
                 notifyedmethod();
+                t.printStackTrace();
                 callback.onFailure();
             }
         });
@@ -718,7 +719,7 @@ public class OutboxFragment extends Fragment {
                 public void onFailure(Call<JsonElement> call, Throwable throwable) {
                     Log.v("CallsResponse", "" + throwable.getMessage().toString());
                     callsUtil.updateOfflineUpdateStatusEC(outBoxCallList.getDates(), outBoxCallList.getCusCode(), attempt + 1, Constants.CALL_FAILED, 1);
-                    outBoxCallList.setStatus(Constants.DUPLICATE_CALL);
+                    outBoxCallList.setStatus(Constants.CALL_FAILED);
                     outBoxCallList.setSyncCount(attempt + 1);
                     UpdateEcData(outBoxCallList.getDates(), outBoxCallList.getCusCode(), outBoxCallList.getCusName(), Constants.CALL_FAILED, 1);
                     notifyedmethod();
@@ -1016,7 +1017,7 @@ public class OutboxFragment extends Fragment {
                     try {
                         assert response.body() != null;
                         JSONObject json = new JSONObject(response.body().toString());
-                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Sign Has Been Updated")) {
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Profile Has Been Updated")) {
                             try {
                                 File fileDelete = new File(signModelClass.getFilePath());
                                 if (fileDelete.exists()) {
@@ -1232,6 +1233,8 @@ public class OutboxFragment extends Fragment {
                     callback.onFailure();
                 }
             });
+        } else {
+            callback.onSuccess();
         }
     }
 
@@ -1728,7 +1731,7 @@ public class OutboxFragment extends Fragment {
                     try {
                         assert response.body() != null;
                         JSONObject json = new JSONObject(response.body().toString());
-                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Sign Has Been Updated")) {
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Profile Has Been Updated")) {
                             DeleteCacheFileSign(filePath, id, CurrentPos, parentPos, childPos, modelClass);
                         } else {
                             signModelClass.setSynced(1);

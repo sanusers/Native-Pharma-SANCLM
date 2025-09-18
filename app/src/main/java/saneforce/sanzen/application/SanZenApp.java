@@ -1,15 +1,22 @@
 package saneforce.sanzen.application;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -25,44 +32,113 @@ public class SanZenApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        // Set up a custom UncaughtExceptionHandler
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            private final Thread.UncaughtExceptionHandler defaultUEH =
-                    Thread.getDefaultUncaughtExceptionHandler();
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(@NonNull Activity activity, Bundle savedInstanceState) {
+//                if (activity.getWindow() != null) {
+//                    activity.getWindow().setFlags(
+//                            WindowManager.LayoutParams.FLAG_SECURE,
+//                            WindowManager.LayoutParams.FLAG_SECURE
+//                    );
+////                activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API 30+
+//                        final WindowInsetsController insetsController = activity.getWindow().getInsetsController();
+//                        if (insetsController != null) {
+//                            insetsController.hide(WindowInsets.Type.navigationBars() | WindowInsets.Type.statusBars());
+//                            insetsController.setSystemBarsBehavior(
+//                                    WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+//                            );
+//                        }
+//                    } else {
+//                        // Legacy for API < 30
+//                        activity.getWindow().getDecorView().setSystemUiVisibility(
+//                                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//                                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//                                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                        );
+//                    }
+//                }
+            }
 
             @Override
-            public void uncaughtException(@NonNull Thread thread, @NonNull Throwable throwable) {
-                try {
-                    Log.e(TAG, "App crashed!", throwable);
-
-                    // Get the latest log file
-                    File logFile = getLatestLogFile(getApplicationContext());
-
-                    if (logFile != null) {
-                        // Send the log file (you'll need to implement this method)
-//                        sendCrashLog(logFile, throwable);
-                        StringWriter sw = new StringWriter();
-                        PrintWriter pw = new PrintWriter(sw);
-                        throwable.printStackTrace(pw);
-                        String stackTrace = sw.toString();
-
-//                        new EmailSender().sendCrashLog(getApplicationContext(), logFile, stackTrace);
-                    }
-
-                } catch (Exception e) {
-                    Log.e(TAG, "Error while handling uncaught exception", e);
-                } finally {
-                    // Let the default exception handler finish processing
-                    if (defaultUEH != null) {
-                        defaultUEH.uncaughtException(thread, throwable);
+            public void onActivityPostCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+//                ActivityLifecycleCallbacks.super.onActivityPostCreated(activity, savedInstanceState);
+                if (activity.getWindow() != null) {
+//                    activity.getWindow().setFlags(
+//                            WindowManager.LayoutParams.FLAG_SECURE,
+//                            WindowManager.LayoutParams.FLAG_SECURE
+//                    );
+//                activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API 30+
+                        final WindowInsetsController insetsController = activity.getWindow().getInsetsController();
+                        if (insetsController != null) {
+                            insetsController.hide(WindowInsets.Type.navigationBars() | WindowInsets.Type.statusBars());
+                            insetsController.setSystemBarsBehavior(
+                                    WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                            );
+                        }
                     } else {
-                        // If default handler is null, which should not happen, force termination
-                        System.exit(1);
+                        // Legacy for API < 30
+                        activity.getWindow().getDecorView().setSystemUiVisibility(
+                                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        );
                     }
                 }
             }
+
+            @Override public void onActivityStarted(@NonNull Activity activity) {}
+            @Override public void onActivityResumed(@NonNull Activity activity) {}
+            @Override public void onActivityPaused(@NonNull Activity activity) {}
+            @Override public void onActivityStopped(@NonNull Activity activity) {}
+            @Override public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {}
+            @Override public void onActivityDestroyed(@NonNull Activity activity) {}
         });
+
+        // Set up a custom UncaughtExceptionHandler
+//        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+//            private final Thread.UncaughtExceptionHandler defaultUEH =
+//                    Thread.getDefaultUncaughtExceptionHandler();
+//
+//            @Override
+//            public void uncaughtException(@NonNull Thread thread, @NonNull Throwable throwable) {
+//                try {
+//                    Log.e(TAG, "App crashed!", throwable);
+//
+//                    // Get the latest log file
+//                    File logFile = getLatestLogFile(getApplicationContext());
+//
+//                    if (logFile != null) {
+//                        // Send the log file (you'll need to implement this method)
+////                        sendCrashLog(logFile, throwable);
+//                        StringWriter sw = new StringWriter();
+//                        PrintWriter pw = new PrintWriter(sw);
+//                        throwable.printStackTrace(pw);
+//                        String stackTrace = sw.toString();
+//
+////                        new EmailSender().sendCrashLog(getApplicationContext(), logFile, stackTrace);
+//                    }
+//
+//                } catch (Exception e) {
+//                    Log.e(TAG, "Error while handling uncaught exception", e);
+//                } finally {
+//                    // Let the default exception handler finish processing
+//                    if (defaultUEH != null) {
+//                        defaultUEH.uncaughtException(thread, throwable);
+//                    } else {
+//                        // If default handler is null, which should not happen, force termination
+//                        System.exit(1);
+//                    }
+//                }
+//            }
+//        });
     }
 
     // Helper method to get the latest log file (assuming your naming convention)

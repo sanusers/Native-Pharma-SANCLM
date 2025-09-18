@@ -64,7 +64,7 @@ import saneforce.sanzen.storage.SharedPref;
                 }
             });
         }else{
-            String url = SharedPref.getTagImageUrl(context) +SignatureData.get(position).getSignImg();
+            String url = SharedPref.getTagImageUrl(context) + "signs/" +SignatureData.get(position).getSignImg();
 
             Log.e("Inmge",url);
             Picasso.get()

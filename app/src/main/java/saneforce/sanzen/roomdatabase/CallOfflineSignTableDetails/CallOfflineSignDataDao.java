@@ -44,6 +44,9 @@ public interface CallOfflineSignDataDao {
     @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_SIGN_TABLE`)")
     boolean isSignDataAvailable();
 
+    @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_SIGN_TABLE` WHERE `CALL_SYNC_STATUS_SIGN` = 0)")
+    boolean isNonSyncSignDataAvailable();
+
     @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_SIGN_TABLE` WHERE `CALL_CUS_CODE_SIGN` = :customerCode AND `CALL_DATE_SIGN` = :date)")
     boolean isSignDataAvailable(String date,String customerCode);
 

@@ -87,6 +87,7 @@ import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataTable;
+import saneforce.sanzen.roomdatabase.CallsUtil;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
@@ -161,6 +162,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private Handler handler;
     private Runnable runnable;
     private int limit = 1;
+    private CallsUtil callsUtil;
 
     @Override
     public void onResume() {
@@ -198,6 +200,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding = WorkplanFragmentBinding.inflate(inflater);
         View view = binding.getRoot();
         Log.d("ACTIVITY_STATUS", "oncreateview");
+        callsUtil = new CallsUtil(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
@@ -2055,7 +2058,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if(UtilityClass.isNetworkAvailable(requireContext())) {
+            if(UtilityClass.isNetworkAvailable(requireContext()) && !callsUtil.isOutBoxNonSyncDataAvailable()) {
                 progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
                 CallCheckInAPI(saveWorkPlan);
             }else {
@@ -2363,7 +2366,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                setUpWorkPlan();
 //                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.work_plan_updated_successfully));
 //            }else {
-            if(UtilityClass.isNetworkAvailable(requireContext())) {
+            if(UtilityClass.isNetworkAvailable(requireContext()) && !callsUtil.isOutBoxNonSyncDataAvailable()) {
                 workPlanSubmit("Save");
             }else {
                 SaveWTLocal(sessionType);
@@ -2568,8 +2571,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             OutboxFragment.SetupOutBoxAdapter(requireActivity(), requireContext());
             SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.save_wt_locally));
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -4724,7 +4727,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (UtilityClass.isNetworkAvailable(requireContext())) {
+        if (UtilityClass.isNetworkAvailable(requireContext()) && !callsUtil.isOutBoxNonSyncDataAvailable()) {
             progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
             tpDataObj = null;
             if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && CheckInOutManager.isCheckInAvailable(requireContext())) {

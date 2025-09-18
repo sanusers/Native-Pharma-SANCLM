@@ -157,7 +157,7 @@ public class DCRCallActivity extends AppCompatActivity {
     CommonSharedPreference commonSharedPreference;
     ProgressDialog progressDialog = null;
     GPSTrack gpsTrack;
-    private JSONObject checkInOutJsonObject = new JSONObject(), checkOutJsonObject, jsonSaveDcr, jsonImage;
+    private JSONObject checkInOutJsonObject = new JSONObject(), checkOutJsonObject, jsonSaveDcr, jsonImage, jsonSign;
     String GeoChk, capPrd, capInp, capActivity, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, InputNeed, ProductNeed, AdditionalCallNeed, ActivityNeed/*, SignNeed, SignMandatory*/;
     double lat, lng;
     ApiInterface api_interface;
@@ -545,7 +545,7 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             if(SignatureFragment1.callSignCaptureImage != null){
                 for (int i = 0; i< SignatureFragment1.callSignCaptureImage.size();i++){
-                    callOfflineSignDataDao.saveOfflineSign(SignatureFragment1.callSignCaptureImage.get(i).getImg_Name() ,SignatureFragment1.callSignCaptureImage.get(i).getFilepath(),jsonImage.toString(),Constants.WAITING_FOR_SYNC,0,HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)),CallActivityCustDetails.get(i).getCode(),CallActivityCustDetails.get(i).getName());
+                    callOfflineSignDataDao.saveOfflineSign(SignatureFragment1.callSignCaptureImage.get(i).getImg_Name() ,SignatureFragment1.callSignCaptureImage.get(i).getFilepath(),jsonSign.toString(),Constants.WAITING_FOR_SYNC,0,HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)),CallActivityCustDetails.get(i).getCode(),CallActivityCustDetails.get(i).getName());
                 }
             }
             UpdateInputStock();
@@ -2994,13 +2994,13 @@ public class DCRCallActivity extends AppCompatActivity {
 
             if (!callSignCaptureImage.isEmpty()) {
                 Log.d("Json", "CreateJsonFileCall: " + "json is not null");
-                jsonImage = CommonUtilsMethods.CommonObjectParameter(DCRCallActivity.this);
+                jsonSign = CommonUtilsMethods.CommonObjectParameter(DCRCallActivity.this);
                 try {
-                    jsonImage.put("tableName", "uploadsign");
-                    jsonImage.put("sfcode", SfCode);
-                    jsonImage.put("division_code", DivCode);
-                    jsonImage.put("Rsf", TodayPlanSfCode);
-                    Log.d("TAG", "CreateJsonFileCall: " + jsonImage);
+                    jsonSign.put("tableName", "uploadsign");
+                    jsonSign.put("sfcode", SfCode);
+                    jsonSign.put("division_code", DivCode);
+                    jsonSign.put("Rsf", TodayPlanSfCode);
+                    Log.d("TAG", "CreateJsonFileCall: " + jsonSign);
 
                 } catch (Exception ignored) {
                     ignored.printStackTrace();

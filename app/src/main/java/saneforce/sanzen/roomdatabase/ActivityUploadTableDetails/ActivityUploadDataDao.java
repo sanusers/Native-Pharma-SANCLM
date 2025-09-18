@@ -33,6 +33,9 @@ public interface ActivityUploadDataDao {
     @Query("SELECT COUNT(1) > 0 FROM ACTIVITY_UPLOAD_TABLE")
     boolean isActivityUploadAvailable();
 
+    @Query("SELECT COUNT(1) > 0 FROM ACTIVITY_UPLOAD_TABLE WHERE `SYNC_STATUS` != 'Duplicate Call'")
+    boolean isNonSyncActivityUploadAvailable();
+
     @Query("SELECT COUNT(1) > 0 FROM ACTIVITY_UPLOAD_TABLE WHERE `ACTIVITY_DATE` = :date")
     boolean isAvailableActivityOnDate(String date);
 

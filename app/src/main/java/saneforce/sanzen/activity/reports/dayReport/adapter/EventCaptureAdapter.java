@@ -84,6 +84,7 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
             Picasso.get()
                     .load(url)
                     .into(holder.imageView);
+            holder.progressBar.setVisibility(View.GONE);
         }
     }
 

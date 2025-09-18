@@ -135,6 +135,11 @@ public class CallsUtil {
 //                || quizOfflineDataDao.isQuizAvailable();
     }
 
+    public boolean isOutBoxNonSyncDataAvailable() {
+        return callOfflineECDataDao.isNonSyncAvailableEc() || callOfflineSignDataDao.isNonSyncSignDataAvailable() || offlineCheckInOutDataDao.isNonSyncAvailableCheckInOut() || offlineDaySubmitDao.isNonSyncAvailableDaySubmit() || callOfflineDataDao.isNonSyncAvailableCall() || callOfflineWorkTypeDataDao.isNonSyncAvailableWT() || activityOfflineDataDao.isNonSyncActivityAvailable() || activityUploadDataDao.isNonSyncActivityUploadAvailable();
+//                || quizOfflineDataDao.isQuizAvailable();
+    }
+
     public Set<String> getOutboxDates() {
         Set<String> dates = new TreeSet<>();
         dates.addAll(callOfflineDataDao.getAllCallOfflineDates());

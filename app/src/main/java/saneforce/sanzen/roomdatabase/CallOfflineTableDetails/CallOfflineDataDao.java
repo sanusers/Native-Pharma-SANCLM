@@ -32,6 +32,9 @@ public interface CallOfflineDataDao {
     @Query("SELECT COUNT(1) > 0 FROM CALL_OFFLINE_TABLE")
     boolean isAvailableCall();
 
+    @Query("SELECT COUNT(1) > 0 FROM CALL_OFFLINE_TABLE WHERE `CALL_SYNC_STATUS` != 'Duplicate Call'")
+    boolean isNonSyncAvailableCall();
+
     @Query("SELECT COUNT(1) > 0 FROM CALL_OFFLINE_TABLE WHERE `CALL_DATE` = :date")
     boolean isAvailableCallOnDate(String date);
 
