@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import saneforce.sanzen.AWS.AWSBuckets;
+import saneforce.sanzen.AWS.AWSBucketsSign;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.reports.dayReport.model.SignatureModelClass;
@@ -49,7 +50,7 @@ import saneforce.sanzen.storage.SharedPref;
             File file = new File(context.getFilesDir(), fileName);
             Log.d("TAG", "onBindViewHolder: " + file.getAbsolutePath());
 
-            new AWSBuckets(context, fileName, file, 0, "", new S3DownloadFiles() {
+            new AWSBucketsSign(context, fileName, file, 0, "", new S3DownloadFiles() {
                 @Override
                 public void fileDataAdd(int pos, Bitmap bitmap) {
                     if (bitmap != null) {
