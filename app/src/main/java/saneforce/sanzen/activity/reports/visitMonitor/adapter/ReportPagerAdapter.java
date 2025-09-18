@@ -8,27 +8,25 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import java.util.List;
 
 import saneforce.sanzen.activity.reports.visitMonitor.ChemistVisitFragment;
-import saneforce.sanzen.activity.reports.visitMonitor.DoctorVisitFragment;
+import saneforce.sanzen.activity.reports.visitMonitor.DoctorFragment;
 import saneforce.sanzen.activity.reports.visitMonitor.StockiestVisitFragment;
 import saneforce.sanzen.activity.reports.visitMonitor.UnlistedVisitFragment;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 
 public class ReportPagerAdapter extends FragmentStateAdapter {
 
-    private final List<String> monthData;
+//    private final List<String> monthData;
     private final List<VisitStatsModel> doctorStats;
     private final List<VisitStatsModel> chemistStats;
     private final List<VisitStatsModel> stockiestStats;
     private final List<VisitStatsModel> unlistedStats;
 
     public ReportPagerAdapter(@NonNull FragmentActivity activity,
-                              List<String> monthData,
                               List<VisitStatsModel> doctorStats,
                               List<VisitStatsModel> chemistStats,
                               List<VisitStatsModel> stockiestStats,
                               List<VisitStatsModel> unlistedStats) {
         super(activity);
-        this.monthData = monthData;
         this.doctorStats = doctorStats;
         this.chemistStats = chemistStats;
         this.stockiestStats = stockiestStats;
@@ -39,26 +37,16 @@ public class ReportPagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         switch (position) {
-            /*case 0:
-                return  DoctorVisitFragment.newInstance(monthData, doctorStats);
-            case 1:
-                return ChemistVisitFragment.newInstance(monthData, chemistStats);
-            case 2:
-                return StockiestVisitFragment.newInstance(monthData, stockiestStats);
-            case 3:
-                return UnlistedVisitFragment.newInstance(monthData, unlistedStats);
-            default:
-                return DoctorVisitFragment.newInstance(monthData, doctorStats);*/
             case 0:
-                return  DoctorVisitFragment.newInstance(monthData);
+                return  DoctorFragment.newInstance(doctorStats,position);
             case 1:
-                return  ChemistVisitFragment.newInstance(monthData);
+                return  ChemistVisitFragment.newInstance(chemistStats);
             case 2:
-                return  StockiestVisitFragment.newInstance(monthData);
+                return  StockiestVisitFragment.newInstance(stockiestStats);
             case 3:
-                return UnlistedVisitFragment.newInstance(monthData);
+                return UnlistedVisitFragment.newInstance(unlistedStats);
             default:
-                return DoctorVisitFragment.newInstance(monthData);
+                return DoctorFragment.newInstance(doctorStats,position);
 
         }
     }

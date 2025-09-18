@@ -6,12 +6,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,7 +36,6 @@ import java.util.Set;
 import saneforce.sanzen.R;
 
 import saneforce.sanzen.activity.reports.visitMonitor.adapter.UnlistedDoctorStatsAdapter;
-import saneforce.sanzen.activity.reports.visitMonitor.model.ChemistStatsModel;
 import saneforce.sanzen.activity.reports.visitMonitor.model.UnlistedStatsModel;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -35,6 +43,7 @@ import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class UnlistedVisitFragment extends Fragment {
 
@@ -43,13 +52,18 @@ public class UnlistedVisitFragment extends Fragment {
     private MasterDataDao masterDataDao;
 
     private static final String ARG_MONTH_DATA = "monthData";
+    private BarChart barChart;
     private List<String> monthData;
+    private  List<VisitStatsModel> dataListUnlist;
+    int position;
 
-    public static UnlistedVisitFragment newInstance(List<String> monthData/*, List<VisitStatsModel> unlistedStats*/) {
-        UnlistedVisitFragment fragment = new UnlistedVisitFragment();
+    public UnlistedVisitFragment(List<VisitStatsModel> dataListUnlist) {
+        this.dataListUnlist = dataListUnlist;
+    }
+
+    public static UnlistedVisitFragment newInstance( List<VisitStatsModel> unlistedStats) {
+        UnlistedVisitFragment fragment = new UnlistedVisitFragment(unlistedStats);
         Bundle args = new Bundle();
-        args.putStringArrayList("monthData", new ArrayList<>(monthData));
-//        args.putParcelableArrayList("doctorStats", new ArrayList<>(unlistedStats));
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,17 +80,62 @@ public class UnlistedVisitFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_unlisteddr_visit_report, container, false);
-        RecyclerView recyclerView = v.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        View v = inflater.inflate(R.layout.adapter_doctor_visit_report, container, false);
+
+        TextView unListVst = v.findViewById(R.id.custTxt);
+        TextView totalUnlistTxt = v.findViewById(R.id.totalCust);
+        TextView monthTxt = v.findViewById(R.id.monthTxt);
+        TextView yearTxt = v.findViewById(R.id.yearTxt);
+        TextView totalUnlistCnt = v.findViewById(R.id.totalCustCnt);
+        TextView visitedCnt = v.findViewById(R.id.visitedCnt);
+        TextView missedCnt = v.findViewById(R.id.missedCnt);
+        TextView FWDaysCnt = v.findViewById(R.id.FWDaysCnt);
+        TextView callAvgCnt = v.findViewById(R.id.callAvgCnt);
+        TextView callCvgCnt = v.findViewById(R.id.callCvgCnt);
+        ImageView unlistedImage = v.findViewById(R.id.custImg);
+
+        barChart  = v.findViewById(R.id.barChartVisit);
+        monthTxt.setText(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_23));
+
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
-        callFilter(recyclerView);
+
+        if (monthData != null && monthData.size() >= 2) {
+            monthTxt.setText(monthData.get(0));
+            yearTxt.setText(monthData.get(1));
+        }
+        unListVst.setText(SharedPref.getUNLcap(requireContext())+" "+"Visit");
+        totalUnlistTxt.setText("Total"+" "+SharedPref.getUNLcap(requireContext()));
+        unlistedImage.setImageDrawable(getResources().getDrawable(R.drawable.map_unlistdr_img));
+
+        if (dataListUnlist != null && !dataListUnlist.isEmpty()) {
+            VisitStatsModel model = dataListUnlist.get(position);
+
+            totalUnlistCnt.setText(model.getTotalCustomers());
+            visitedCnt.setText(model.getVisitedCustomers());
+            missedCnt.setText(model.getMissedCustomers());
+            FWDaysCnt.setText(model.getFwDays());
+            callAvgCnt.setText(model.getCallAvg());
+            callCvgCnt.setText(model.getCoverage() + "%");
+
+            setupBarChart(
+                    Integer.parseInt(model.getTotalCustomers()),
+                    Integer.parseInt(model.getVisitedCustomers()),
+                    Integer.parseInt(model.getMissedCustomers()),
+                    Double.parseDouble(model.getCallAvg())
+            );
+       /*     setupPieChart(
+                    (int) model.getOneVisitCount(),
+                    (int) model.getTwoVisitCount(),
+                    (int) model.getThreeVisitCount(),
+                    (int) model.getThreePlusVisitCount()
+            );*/
+        }
 
         return v;
     }
-    public void callFilter(RecyclerView recyclerView) {
+   /* public void callFilter(RecyclerView recyclerView) {
         try {
             JSONArray jsonArray_call = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
             JSONArray jsonArray_date = new JSONArray(masterDataDao.getDataByKey(Constants.DATE_SYNC));
@@ -272,6 +331,46 @@ public class UnlistedVisitFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }*/
+
+    private void setupBarChart(int total, int visited, int missed, double callAvg) {
+        List<BarEntry> entries = new ArrayList<>();
+        ArrayList<String> xVals = new ArrayList<>();
+        xVals.add(getString(R.string.total));
+        xVals.add(getString(R.string.visit));
+        xVals.add(getString(R.string.miss));
+        xVals.add(getString(R.string.avg));
+
+        entries.add(new BarEntry(0f, total));
+        entries.add(new BarEntry(1f, visited));
+        entries.add(new BarEntry(2f, missed));
+        entries.add(new BarEntry(3f, (float) callAvg));
+
+        BarDataSet set = new BarDataSet(entries, "Visit Data");
+        set.setDrawValues(false);
+        int[] colors = new int[] {
+                requireContext().getResources().getColor(R.color.indigo),
+                requireContext().getResources().getColor(R.color.green_60),
+                requireContext().getResources().getColor(R.color.pink_45),
+                requireContext().getResources().getColor(R.color.blue_60)
+        };
+        set.setColors(colors);
+        BarData data = new BarData(set);
+        data.setBarWidth(0.5f);
+
+        barChart.setData(data);
+        barChart.getDescription().setEnabled(false);
+        barChart.getLegend().setEnabled(false);
+        barChart.setFitBars(true);
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setDrawGridLines(false);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setLabelCount(xVals.size());
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(xVals));
+
+        barChart.animateY(1000);
+        barChart.invalidate();
     }
 
 }
