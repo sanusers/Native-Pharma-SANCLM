@@ -73,4 +73,5 @@ public class MasterDataTable {
         }
         return jsonArray;
     }
+
 }

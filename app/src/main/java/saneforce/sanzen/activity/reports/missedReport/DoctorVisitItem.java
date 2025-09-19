@@ -26,6 +26,7 @@ public class DoctorVisitItem {
     public String getName() {
         return name;
     }
+
     public String getcode() {
         return code;
     }

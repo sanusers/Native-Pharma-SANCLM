@@ -143,7 +143,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     boolean isDataAvailable;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB db;
-    private static Context context;
+    public static Context context;
     private MasterDataDao masterDataDao;
     private ActivityDetailsDataDao activityDetailsDataDao;
     private TourPlanOfflineDataDao tourPlanOfflineDataDao;
@@ -3461,7 +3461,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     isSingleWelcomeSlideDownloadingStatus = false;
                     commonUtilsMethods.showToastMessage(this, "Slide Updated ");
                 } else {
-                    commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
+                    commonUtilsMethods.showToastMessage(this, "   Welcome Slides Downloading Completed ");
                 }
 
                 if (navigateFrom.equalsIgnoreCase("Login")) {

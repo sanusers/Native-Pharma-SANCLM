@@ -56,7 +56,7 @@ public class DoctorVisitAdapter extends RecyclerView.Adapter<DoctorVisitAdapter.
             // Your click action here
         });
     }
-//        holder.textDoctor.setText(item.getName());
+    //        holder.textDoctor.setText(item.getName());
 //        holder.textPlace.setText(item.getTerritory());
 //        holder.qualification.setText(item.getQualification());
 //        holder.category.setText(item.getCategory());

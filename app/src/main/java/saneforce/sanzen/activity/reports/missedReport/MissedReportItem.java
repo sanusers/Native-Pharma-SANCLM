@@ -36,6 +36,7 @@ public class MissedReportItem {
     public String getMissed() {
         return missed;
     }
+
     public String getSfCode(){
         return sfCode;
     }

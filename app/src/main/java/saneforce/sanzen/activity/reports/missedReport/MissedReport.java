@@ -54,6 +54,7 @@ import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivityMissedReportBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
+import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MissedReportTableDetails.DoctorVisitDao;
 import saneforce.sanzen.roomdatabase.MissedReportTableDetails.DoctorVisitTable;
 import saneforce.sanzen.roomdatabase.MissedReportTableDetails.MissedDao;
@@ -65,14 +66,19 @@ import saneforce.sanzen.utility.TimeUtils;
 public class MissedReport extends AppCompatActivity {
     public static String JoiningDate, JoiningMonth, JoiningYear;
     public String currentmonth, currentYear;
+    private MasterDataDao masterDataDao;
     private String date = "";
+    private RoomDB db;
+    private AlertDialog hqDialog;
+    private AlertDialog monthDialog;
+    private String selectedDate = "";
+    private String selectedHqId = "";
     private ActivityResultLauncher<Intent> launcher;
     private ActivityMissedReportBinding binding;
     MissedReportAdapter adapter;
     final List<MissedReportItem> reportList = new ArrayList<>();
 
     private FrameLayout blockingOverlay;
-
     private void hideSystemBars() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API 30+
             final WindowInsetsController insetsController = getWindow().getInsetsController();
@@ -92,11 +98,17 @@ public class MissedReport extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMissedReportBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        db = RoomDB.getDatabase(this);
+        masterDataDao = db.masterDataDao();
+
 
         if (SharedPref.getSfType(this).equals("2")) {
             binding.headquarters.setVisibility(View.VISIBLE);
-
             binding.headquarters.setOnClickListener(v -> {
+                if (selectedDate == null || selectedDate.isEmpty()) {
+                    Toast.makeText(MissedReport.this, "Please select month", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 showHeadquartersPicker();
             });
         } else {
@@ -104,18 +116,27 @@ public class MissedReport extends AppCompatActivity {
         }
 
 
+
         blockingOverlay = findViewById(R.id.blocking_overlay);
         blockingOverlay.setVisibility(View.GONE);
         getJoiningDate();
         adapter = new MissedReportAdapter(this, reportList, (item, position) -> {
 //            getData(date, item.getSfCode());
-            fetchAndLoadData(date, item.getSfCode()
-            );
+            fetchAndLoadData(date, item.getSfCode());
         });
         binding.recyclerMissedReports.setAdapter(adapter);
-
         binding.recyclerMissedReports.setVisibility(View.GONE);
         binding.outboxEmtyImage.setVisibility(View.VISIBLE);
+
+
+        if (SharedPref.getSfType(this).equals("1")) {
+            binding.emptyMessage.setText("Please Select Month");
+
+        } else if (SharedPref.getSfType(this).equals("2")) {
+            binding.emptyMessage.setText("Please Select Month & Headquarters");
+        } else {
+            binding.emptyMessage.setText("");
+        }
 
         currentmonth = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_8);
         currentYear = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_26);
@@ -190,28 +211,34 @@ public class MissedReport extends AppCompatActivity {
     }
 
     private void showHeadquartersPicker() {
+        if (hqDialog != null && hqDialog.isShowing()) {
+            return;
+        }
         try {
-            RoomDB db = RoomDB.getDatabase(this);
-            MissedDao missedDao = db.missedDao();
-
-            String jsonString = missedDao.getMissedValues(Constants.SUBORDINATE);
-
-            if (jsonString == null || jsonString.isEmpty()) {
-                Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            JSONArray jsonArray = new JSONArray(jsonString);
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();//object to add
             ArrayList<String> list = new ArrayList<>();
 
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                list.add(jsonObject.getString("name"));
+            // added lines
+            JSONObject  object= new JSONObject();
+            object.put("name", SharedPref.getSfName(this));
+            object.put("id", SharedPref.getSfCode(this));
+            jsonArray.put(object);
+            list.add(object.optString("name", " "));
+
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    //list.add(jsonObject.getString("name"));
+                    String name = jsonObject.getString("name");
+                    if (!name.equalsIgnoreCase(SharedPref.getSfName(this))) {
+                        list.add(name);
+                    }
+                }//sfname sharedpref
             }
 
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(MissedReport.this);
             LayoutInflater inflater = MissedReport.this.getLayoutInflater();
-            View dialogView = inflater.inflate(R.layout.dialog_listview, null);
+            View dialogView = inflater.inflate(R.layout.dialog_headquarters_picker, null);
             alertDialog.setView(dialogView);
             TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
             ListView listView = dialogView.findViewById(R.id.listView);
@@ -220,7 +247,9 @@ public class MissedReport extends AppCompatActivity {
             headerTxt.setText(getResources().getText(R.string.select_hq));
             ArrayAdapter<String> adapter = new ArrayAdapter<>(MissedReport.this, android.R.layout.simple_list_item_1, list);
             listView.setAdapter(adapter);
-            AlertDialog dialog = alertDialog.create();
+            hqDialog = alertDialog.create();
+
+//            AlertDialog dialog = alertDialog.create();
 
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
@@ -238,29 +267,51 @@ public class MissedReport extends AppCompatActivity {
             listView.setOnItemClickListener((adapterView, view1, position, l) -> {
                 String selectedHq = listView.getItemAtPosition(position).toString();
                 binding.headquarters.setText(selectedHq);
+
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
-                            String date = jsonObject.getString("id");
-                            getData(date);  // Your API call method with selected HQ id
+                        if (jsonObject.optString("name").equalsIgnoreCase(selectedHq)) {
+                            selectedHqId = jsonObject.optString("id", "");
+
+                            if (!selectedDate.isEmpty() && !selectedHqId.isEmpty()) {
+                                tryFetchReport();
+                            }
                             break;
                         }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    binding.emptyMessage.setVisibility(View.GONE);
                 }
-                dialog.dismiss();
+                hqDialog.dismiss();
             });
 
-            alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
 
-            dialog.show();
+            alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
+            hqDialog.show();
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
         UtilityClass.hideKeyboard(MissedReport.this);
+    }
+
+    private void tryFetchReport() {
+        if (selectedDate == null || selectedDate.isEmpty()) {
+            Log.d("MissedReport", "Date not selected → skipping API call");
+            return;
+        }
+        if (SharedPref.getSfType(this).equals("1")) {
+            fetchAndLoadMonthlyData(selectedDate,SharedPref.getSfcode(this));
+        } else if (SharedPref.getSfType(this).equals("2")) {
+            if (selectedHqId != null && !selectedHqId.isEmpty()) {
+                fetchAndLoadMonthlyData(selectedDate,selectedHqId);
+            } else {
+                Log.d("MissedReport", "HQ not selected → skipping API call");
+            }
+        }
     }
 
 
@@ -280,6 +331,9 @@ public class MissedReport extends AppCompatActivity {
     }
 
     public void showMonthYearPicker(TextView monthYearTextView) {
+        if (monthDialog != null && monthDialog.isShowing()) {
+            return;
+        }
         LayoutInflater inflater = LayoutInflater.from(this);
         View dialogView = inflater.inflate(R.layout.activity_month_year, null);
         ImageView crossImage = dialogView.findViewById(R.id.crossImage);
@@ -294,10 +348,11 @@ public class MissedReport extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
-        AlertDialog dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(false);
-        crossImage.setOnClickListener(v -> dialog.dismiss());
-        dialog.show();
+        monthDialog = builder.create();
+//        AlertDialog dialog = builder.create();
+        monthDialog.setCanceledOnTouchOutside(false);
+        crossImage.setOnClickListener(v -> monthDialog.dismiss());
+        monthDialog.show();
 
         // When item is clicked, set to TextView and close dialog
         monthYearListView.setOnItemClickListener((parent, view, position, id) -> {
@@ -305,22 +360,32 @@ public class MissedReport extends AppCompatActivity {
 
             monthYearTextView.setText(selected);
             try {
+//                added lines
+                reportList.clear();
+                adapter. notifyDataSetChanged();;
+                binding.recyclerMissedReports.setVisibility(View.GONE);
+                hqDialog = null; // reset HQ dialog reference
+                binding.headquarters.setText("Select HeadQuarters");
                 // Input format: "MMMM yyyy" (August 2025)
                 SimpleDateFormat inputFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
                 // Output format: "yyyy-MM-dd" (2025-08-01) - set day as 01 by default
                 SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 date = outputFormat.format(inputFormat.parse(selected));
+                selectedDate=date;
+
                 binding.outboxEmtyImage.setVisibility(View.GONE);
                 binding.recyclerMissedReports.setVisibility(View.VISIBLE);
+                binding.emptyMessage.setVisibility(View.GONE);
+
+                if (SharedPref.getSfType(this).equals("1")) {
+                    tryFetchReport();
+                }
 //                binding.boxCombined.setVisibility(View.VISIBLE);
-                fetchAndLoadMonthlyData(date);
             } catch (ParseException e) {
                 e.printStackTrace();
-
             }
 
-
-            dialog.dismiss();
+            monthDialog.dismiss();
         });
     }
 
@@ -359,11 +424,12 @@ public class MissedReport extends AppCompatActivity {
             blockingOverlay.setVisibility(View.GONE);
         }
     }
-    public void fetchAndLoadMonthlyData(String date) {
+
+    public void fetchAndLoadMonthlyData(String date,String sfcode) {
         RoomDB.databaseWriteExecutor.execute(() -> {
             RoomDB db = RoomDB.getDatabase(MissedReport.this);
             MissedDao missedDao = db.missedDao();
-            String storedJson = missedDao.getMissedValues(date);
+            String storedJson = missedDao.getMissedValues(sfcode,date);
 
             runOnUiThread(() -> {
                 if (storedJson != null && !storedJson.isEmpty()) {
@@ -390,13 +456,13 @@ public class MissedReport extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    getData(date);
+                    getReportData(date,sfcode);
                 }
             });
         });
     }
 
-    public void getData(String date) {
+    public void getReportData(String date ,String sfcode) {
         showLoadingOverlay();
         if (UtilityClass.isNetworkAvailable(this)) {
             NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
@@ -404,7 +470,7 @@ public class MissedReport extends AppCompatActivity {
                     try {
                         ApiInterface apiInterface = RetrofitClient.getRetrofit(MissedReport.this, SharedPref.getCallApiUrl(MissedReport.this));
                         JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
-                        jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                        jsonObject.put("sfcode", sfcode);
                         jsonObject.put("division_code", SharedPref.getDivisionCode(this));
                         jsonObject.put("Rsf", SharedPref.getHqCode(this));
                         jsonObject.put("rptDt", date);
@@ -433,41 +499,54 @@ public class MissedReport extends AppCompatActivity {
                                                 RoomDB.databaseWriteExecutor.execute(() -> {
                                                     RoomDB db = RoomDB.getDatabase(MissedReport.this);
                                                     MissedDao missedDao = db.missedDao();
-                                                    missedDao.saveMissedJson(date, jsonString);
+                                                    missedDao.saveMissedJson(date,sfcode,jsonString);
 
-                                                    String storedJson = missedDao.getMissedValues(date); // retrieve
+                                                    if (jsonString != null && !jsonString.equals("[]")) {
 
-                                                    try {
-                                                        JSONArray storedArray = new JSONArray(storedJson);
+                                                        missedDao.saveMissedJson(date, sfcode, jsonString);
 
-                                                        reportList.clear();
-                                                        for (int i = 0; i < storedArray.length(); i++) {
-                                                            JSONObject obj = storedArray.optJSONObject(i);
-                                                            String name = obj.optString("Name");
-                                                            String hq = obj.optString("Cluster");
-                                                            String totalDoctor = obj.optString("Dcnt", "0");
-                                                            String visited = obj.optString("Dmet", "0");
-                                                            String missed = obj.optString("Dmis", "0");
-                                                            String sfCode = obj.optString("sf_code");
+                                                        String storedJson = missedDao.getMissedValues(sfcode,date); // retrieve
 
-                                                            MissedReportItem missedReportItem = new MissedReportItem(name, hq, totalDoctor, visited, missed, sfCode);
-                                                            reportList.add(missedReportItem);
+                                                        try {
+                                                            JSONArray storedArray = new JSONArray(storedJson);
+
+                                                            reportList.clear();
+                                                            for (int i = 0; i < storedArray.length(); i++) {
+                                                                JSONObject obj = storedArray.optJSONObject(i);
+                                                                String name = obj.optString("Name");
+                                                                String hq = obj.optString("Cluster");
+                                                                String totalDoctor = obj.optString("Dcnt", "0");
+                                                                String visited = obj.optString("Dmet", "0");
+                                                                String missed = obj.optString("Dmis", "0");
+                                                                String sfCode = obj.optString("sf_code");
+
+                                                                MissedReportItem missedReportItem = new MissedReportItem(name, hq, totalDoctor, visited, missed, sfCode);
+                                                                reportList.add(missedReportItem);
+                                                            }
+
+                                                            runOnUiThread(() -> {
+                                                                adapter.updateData(reportList);
+                                                                binding.recyclerMissedReports.setVisibility(View.VISIBLE);
+                                                            });
+
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
                                                         }
-
-                                                        runOnUiThread(() -> {
-                                                            adapter.
-                                                                    updateData(reportList);
-                                                            binding.recyclerMissedReports.setVisibility(View.VISIBLE);
-                                                        });
-
-                                                    } catch (JSONException e) {
-                                                        e.printStackTrace();
                                                     }
+                                                });
+                                            }
+                                            //added lines
+                                            else {
+                                                runOnUiThread(() -> {
+                                                    reportList.clear();
+                                                    adapter.updateData(reportList);
+                                                    binding.recyclerMissedReports.setVisibility(View.GONE);
                                                 });
                                             }
                                         }
                                     }
-                                } catch (JSONException e) {
+                                }
+                                catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -536,7 +615,7 @@ public class MissedReport extends AppCompatActivity {
 //                                                    startActivity(intent);
                                                     RoomDB db = RoomDB.getDatabase(MissedReport.this);  // context = MissedReport.this or your Activity context
                                                     DoctorVisitDao visitDao = db.doctorVisitDao();
-                                                     visitDao.saveVisitJson(sfcode, date,jsonArray.toString());
+                                                    visitDao.saveVisitJson(sfcode, date,jsonArray.toString());
                                                     intent.putExtra("sfcode", sfcode);
                                                     intent.putExtra("date",date);
                                                     startActivity(intent);

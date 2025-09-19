@@ -52,27 +52,32 @@
                 android:layout_width="@dimen/pie_chart_w"
                 android:layout_height="@dimen/pie_chart_h"
                 android:layout_gravity="center">
-
-                <ProgressBar
+                <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/pBar_prev"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:indeterminate="false"
-                    android:max="100"
-                    android:background="@drawable/progress_drawable"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/progress_overlay" />
+                    android:layout_width="@dimen/_70sdp"
+                    android:layout_height="@dimen/_70sdp"
+                    android:layout_gravity="center"/>
 
-                <TextView
-                    android:id="@+id/pbar_percentageprev"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="0%"
-                    android:textColor="#000000"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/satoshi_bold"/>
+                <!--                <ProgressBar-->
+<!--                    android:id="@+id/pBar_prev"-->
+<!--                    style="?android:attr/progressBarStyleHorizontal"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:indeterminate="false"-->
+<!--                    android:max="100"-->
+<!--                    android:background="@drawable/progress_drawable"-->
+<!--                    android:progress="0"-->
+<!--                    android:progressDrawable="@drawable/progress_overlay" />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/pbar_percentageprev"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:gravity="center"-->
+<!--                    android:text="0%"-->
+<!--                    android:textColor="#000000"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:fontFamily="@font/satoshi_bold"/>-->
             </FrameLayout>
 
 
@@ -98,7 +103,8 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:id="@+id/visitedcheck_prev"
-                        android:background="@drawable/square_grey_border"
+                        android:backgroundTint="@color/green_60"
+                        android:background="@drawable/bg_green_border"
                         android:layout_marginEnd="6dp" />
 
                     <!-- Label -->
@@ -125,7 +131,8 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:id="@+id/missedcheck_prev"
-                        android:background="@drawable/square_grey_border"
+                        android:backgroundTint="@color/mildRed"
+                        android:background="@drawable/draktheme_"
                         android:layout_marginEnd="6dp" />
 
                     <!-- Label -->
@@ -246,445 +253,445 @@
             android:layout_marginBottom="15dp"
             android:background="@color/bg_grey_2" />
         <!-- Chemist Card -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:visibility="visible"
-            android:id="@+id/chemist_missed_previous"
-            android:orientation="vertical">
+<!--        <LinearLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="5dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:background="@color/white"-->
+<!--            android:visibility="visible"-->
+<!--            android:id="@+id/chemist_missed_previous"-->
+<!--            android:orientation="vertical">-->
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+<!--            <RelativeLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="5dp">-->
 
-                <ImageView
-                    android:id="@+id/img_chmcust_prev"
-                    android:layout_width="@dimen/_18sdp"
-                    android:layout_height="@dimen/_18sdp"
-                    android:layout_margin="@dimen/_4sdp"
-                    android:src="@drawable/map_chemist_img" />
+<!--                <ImageView-->
+<!--                    android:id="@+id/img_chmcust_prev"-->
+<!--                    android:layout_width="@dimen/_18sdp"-->
+<!--                    android:layout_height="@dimen/_18sdp"-->
+<!--                    android:layout_margin="@dimen/_4sdp"-->
+<!--                    android:src="@drawable/map_chemist_img" />-->
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:layout_toRightOf="@+id/img_chmcust_prev"
-                    android:fontFamily="@font/satoshi_bold"
-                    android:padding="@dimen/_2sdp"
-                    android:singleLine="true"
-                    android:text="Chemist"
-                    android:textColor="@color/dark_purple"
-                    android:textSize="@dimen/_7ssp" />
-            </RelativeLayout>
-            <FrameLayout
-                android:layout_width="@dimen/pie_chart_w"
-                android:layout_height="@dimen/pie_chart_h"
-                android:layout_gravity="center">
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:layout_toRightOf="@+id/img_chmcust_prev"-->
+<!--                    android:fontFamily="@font/satoshi_bold"-->
+<!--                    android:padding="@dimen/_2sdp"-->
+<!--                    android:singleLine="true"-->
+<!--                    android:text="Chemist"-->
+<!--                    android:textColor="@color/dark_purple"-->
+<!--                    android:textSize="@dimen/_7ssp" />-->
+<!--            </RelativeLayout>-->
+<!--            <FrameLayout-->
+<!--                android:layout_width="@dimen/pie_chart_w"-->
+<!--                android:layout_height="@dimen/pie_chart_h"-->
+<!--                android:layout_gravity="center">-->
 
-                <ProgressBar
-                    android:id="@+id/pBarchm_prev"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:indeterminate="false"
-                    android:max="100"
-                    android:background="@drawable/progress_drawable"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/progress_overlay" />
+<!--                <ProgressBar-->
+<!--                    android:id="@+id/pBarchm_prev"-->
+<!--                    style="?android:attr/progressBarStyleHorizontal"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:indeterminate="false"-->
+<!--                    android:max="100"-->
+<!--                    android:background="@drawable/progress_drawable"-->
+<!--                    android:progress="0"-->
+<!--                    android:progressDrawable="@drawable/progress_overlay" />-->
 
-                <TextView
-                    android:id="@+id/pbar_chmpercentageprev"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="0%"
-                    android:textColor="#000000"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/satoshi_bold"/>
-            </FrameLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/pbar_chmpercentageprev"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:gravity="center"-->
+<!--                    android:text="0%"-->
+<!--                    android:textColor="#000000"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:fontFamily="@font/satoshi_bold"/>-->
+<!--            </FrameLayout>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:weightSum="2"
-                android:padding="4dp">
-                <!-- Visited -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:layout_marginLeft="15dp"
-                    android:orientation="horizontal">
-                    <!-- Colored Box -->
-                    <View
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:id="@+id/check_box_chmvisted_prev"
-                        android:background="@drawable/square_grey_border"
-                        android:layout_marginEnd="6dp" />
-                    <!-- Label -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:singleLine="true"
-                        android:text="Visited"
-                        android:textColor="@color/dark_purple"
-                        android:textSize="@dimen/_6ssp" />
-                </LinearLayout>
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:gravity="center"-->
+<!--                android:weightSum="2"-->
+<!--                android:padding="4dp">-->
+<!--                &lt;!&ndash; Visited &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_marginLeft="15dp"-->
+<!--                    android:orientation="horizontal">-->
+<!--                    &lt;!&ndash; Colored Box &ndash;&gt;-->
+<!--                    <View-->
+<!--                        android:layout_width="16dp"-->
+<!--                        android:layout_height="16dp"-->
+<!--                        android:id="@+id/check_box_chmvisted_prev"-->
+<!--                        android:background="@drawable/square_grey_border"-->
+<!--                        android:layout_marginEnd="6dp" />-->
+<!--                    &lt;!&ndash; Label &ndash;&gt;-->
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="@font/satoshi_bold"-->
+<!--                        android:singleLine="true"-->
+<!--                        android:text="Visited"-->
+<!--                        android:textColor="@color/dark_purple"-->
+<!--                        android:textSize="@dimen/_6ssp" />-->
+<!--                </LinearLayout>-->
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-                    <!-- Colored Box -->
-                    <View
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:id="@+id/check_box_chmmissed_prev"
-                        android:background="@drawable/square_grey_border"
-                        android:layout_marginEnd="6dp" />
-                    <!-- Label -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:singleLine="true"
-                        android:text="Missed"
-                        android:textColor="@color/dark_purple"
-                        android:textSize="@dimen/_6ssp" />
-                </LinearLayout>
-            </LinearLayout>
+<!--                <LinearLayout-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:orientation="horizontal">-->
+<!--                    &lt;!&ndash; Colored Box &ndash;&gt;-->
+<!--                    <View-->
+<!--                        android:layout_width="16dp"-->
+<!--                        android:layout_height="16dp"-->
+<!--                        android:id="@+id/check_box_chmmissed_prev"-->
+<!--                        android:background="@drawable/square_grey_border"-->
+<!--                        android:layout_marginEnd="6dp" />-->
+<!--                    &lt;!&ndash; Label &ndash;&gt;-->
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="@font/satoshi_bold"-->
+<!--                        android:singleLine="true"-->
+<!--                        android:text="Missed"-->
+<!--                        android:textColor="@color/dark_purple"-->
+<!--                        android:textSize="@dimen/_6ssp" />-->
+<!--                </LinearLayout>-->
+<!--            </LinearLayout>-->
 
-            <GridLayout
-                android:id="@+id/chmstatsGrid_prev"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:layout_marginEnd="@dimen/_5sdp"
-                android:background="@drawable/border_spinner_uneditable"
-                android:columnCount="3">
+<!--            <GridLayout-->
+<!--                android:id="@+id/chmstatsGrid_prev"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="@dimen/_5sdp"-->
+<!--                android:layout_marginTop="@dimen/_5sdp"-->
+<!--                android:layout_marginEnd="@dimen/_5sdp"-->
+<!--                android:background="@drawable/border_spinner_uneditable"-->
+<!--                android:columnCount="3">-->
 
-                <!-- Total -->
-                <LinearLayout
-                    android:id="@+id/chmgrid1_prev"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@color/white"
-                    android:orientation="vertical"
-                    android:padding="6dp">
+<!--                &lt;!&ndash; Total &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/chmgrid1_prev"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_columnWeight="1"-->
+<!--                    android:layout_margin="2dp"-->
+<!--                    android:background="@color/white"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:padding="6dp">-->
 
-                    <TextView
-                        android:id="@+id/totalchm_prev"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="Total Chemist" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/totalchm_prev"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:text="Total Chemist" />-->
 
-                    <TextView
-                        android:id="@+id/totalchmCnt_prev"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:text="20"
-                        android:layout_marginTop="3dp"
-                        android:textColor="@color/black" />
-                </LinearLayout>
+<!--                    <TextView-->
+<!--                        android:id="@+id/totalchmCnt_prev"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:fontFamily="@font/satoshi_bold"-->
+<!--                        android:text="20"-->
+<!--                        android:layout_marginTop="3dp"-->
+<!--                        android:textColor="@color/black" />-->
+<!--                </LinearLayout>-->
 
-                <!-- Visited -->
-                <LinearLayout
-                    android:id="@+id/chmgrid2_prev"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@color/white"
-                    android:orientation="vertical"
-                    android:padding="6dp">
+<!--                &lt;!&ndash; Visited &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/chmgrid2_prev"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_columnWeight="1"-->
+<!--                    android:layout_margin="2dp"-->
+<!--                    android:background="@color/white"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:padding="6dp">-->
 
-                    <TextView
-                        android:id="@+id/chmvisited_prev"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="Visited" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/chmvisited_prev"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:text="Visited" />-->
 
-                    <TextView
-                        android:id="@+id/chmvisitedCnt_prev"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:text="20"
-                        android:layout_marginTop="3dp"
-                        android:textColor="@color/black" />
-                </LinearLayout>
+<!--                    <TextView-->
+<!--                        android:id="@+id/chmvisitedCnt_prev"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:fontFamily="@font/satoshi_bold"-->
+<!--                        android:text="20"-->
+<!--                        android:layout_marginTop="3dp"-->
+<!--                        android:textColor="@color/black" />-->
+<!--                </LinearLayout>-->
 
-                <!-- Missed -->
-                <LinearLayout
-                    android:id="@+id/chmgrid3_prev"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@color/white"
-                    android:orientation="vertical"
-                    android:padding="6dp">
+<!--                &lt;!&ndash; Missed &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/chmgrid3_prev"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_columnWeight="1"-->
+<!--                    android:layout_margin="2dp"-->
+<!--                    android:background="@color/white"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:padding="6dp">-->
 
-                    <TextView
-                        android:id="@+id/chmmissed_prev"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="Missed" />
-                    <TextView
-                        android:id="@+id/chmmissedCnt_prev"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:text="20"
-                        android:layout_marginTop="3dp"
-                        android:textColor="@color/black" />
-                </LinearLayout>
-            </GridLayout>
-        </LinearLayout>
+<!--                    <TextView-->
+<!--                        android:id="@+id/chmmissed_prev"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:text="Missed" />-->
+<!--                    <TextView-->
+<!--                        android:id="@+id/chmmissedCnt_prev"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:fontFamily="@font/satoshi_bold"-->
+<!--                        android:text="20"-->
+<!--                        android:layout_marginTop="3dp"-->
+<!--                        android:textColor="@color/black" />-->
+<!--                </LinearLayout>-->
+<!--            </GridLayout>-->
+<!--        </LinearLayout>-->
         <!-- Stockist Card -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="#fff"
-            android:visibility="gone"
-            android:id="@+id/stk_missed_previous"
-            android:orientation="vertical">
+<!--        <LinearLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_margin="5dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:background="#fff"-->
+<!--            android:visibility="gone"-->
+<!--            android:id="@+id/stk_missed_previous"-->
+<!--            android:orientation="vertical">-->
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+<!--            <RelativeLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="5dp">-->
 
-                <ImageView
-                    android:id="@+id/img_stkcust_prev"
-                    android:layout_width="@dimen/_18sdp"
-                    android:layout_height="@dimen/_18sdp"
-                    android:layout_margin="@dimen/_4sdp"
-                    android:src="@drawable/map_stockist_img" />
+<!--                <ImageView-->
+<!--                    android:id="@+id/img_stkcust_prev"-->
+<!--                    android:layout_width="@dimen/_18sdp"-->
+<!--                    android:layout_height="@dimen/_18sdp"-->
+<!--                    android:layout_margin="@dimen/_4sdp"-->
+<!--                    android:src="@drawable/map_stockist_img" />-->
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:layout_toRightOf="@+id/img_stkcust_prev"
-                    android:fontFamily="@font/satoshi_bold"
-                    android:padding="@dimen/_2sdp"
-                    android:singleLine="true"
-                    android:text="Stockist"
-                    android:textColor="@color/dark_purple"
-                    android:textSize="@dimen/_7ssp" />
-            </RelativeLayout>
-            <FrameLayout
-                android:layout_width="@dimen/pie_chart_w"
-                android:layout_height="@dimen/pie_chart_h"
-                android:layout_gravity="center">
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:layout_toRightOf="@+id/img_stkcust_prev"-->
+<!--                    android:fontFamily="@font/satoshi_bold"-->
+<!--                    android:padding="@dimen/_2sdp"-->
+<!--                    android:singleLine="true"-->
+<!--                    android:text="Stockist"-->
+<!--                    android:textColor="@color/dark_purple"-->
+<!--                    android:textSize="@dimen/_7ssp" />-->
+<!--            </RelativeLayout>-->
+<!--            <FrameLayout-->
+<!--                android:layout_width="@dimen/pie_chart_w"-->
+<!--                android:layout_height="@dimen/pie_chart_h"-->
+<!--                android:layout_gravity="center">-->
 
-                <ProgressBar
-                    android:id="@+id/pBarstk_prev"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:indeterminate="false"
-                    android:max="100"
-                    android:background="@drawable/progress_drawable"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/progress_overlay" />
+<!--                <ProgressBar-->
+<!--                    android:id="@+id/pBarstk_prev"-->
+<!--                    style="?android:attr/progressBarStyleHorizontal"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:indeterminate="false"-->
+<!--                    android:max="100"-->
+<!--                    android:background="@drawable/progress_drawable"-->
+<!--                    android:progress="0"-->
+<!--                    android:progressDrawable="@drawable/progress_overlay" />-->
 
-                <TextView
-                    android:id="@+id/pbar_stkpercentageprev"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="0%"
-                    android:textColor="#000000"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/satoshi_bold"/>
-            </FrameLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:weightSum="2"
-                android:padding="4dp">
+<!--                <TextView-->
+<!--                    android:id="@+id/pbar_stkpercentageprev"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:gravity="center"-->
+<!--                    android:text="0%"-->
+<!--                    android:textColor="#000000"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:fontFamily="@font/satoshi_bold"/>-->
+<!--            </FrameLayout>-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:gravity="center"-->
+<!--                android:weightSum="2"-->
+<!--                android:padding="4dp">-->
 
-                <!-- Visited -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:layout_marginLeft="15dp"
-                    android:orientation="horizontal">
+<!--                &lt;!&ndash; Visited &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_marginLeft="15dp"-->
+<!--                    android:orientation="horizontal">-->
 
-                    <!-- Colored Box -->
-                    <View
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:id="@+id/stkvisitedcheck_prev"
-                        android:background="@drawable/square_grey_border"
-                        android:layout_marginEnd="6dp" />
+<!--                    &lt;!&ndash; Colored Box &ndash;&gt;-->
+<!--                    <View-->
+<!--                        android:layout_width="16dp"-->
+<!--                        android:layout_height="16dp"-->
+<!--                        android:id="@+id/stkvisitedcheck_prev"-->
+<!--                        android:background="@drawable/square_grey_border"-->
+<!--                        android:layout_marginEnd="6dp" />-->
 
-                    <!-- Label -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:singleLine="true"
-                        android:text="Visited"
-                        android:textColor="@color/dark_purple"
-                        android:textSize="@dimen/_6ssp" />
-                </LinearLayout>
+<!--                    &lt;!&ndash; Label &ndash;&gt;-->
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="@font/satoshi_bold"-->
+<!--                        android:singleLine="true"-->
+<!--                        android:text="Visited"-->
+<!--                        android:textColor="@color/dark_purple"-->
+<!--                        android:textSize="@dimen/_6ssp" />-->
+<!--                </LinearLayout>-->
 
-                <!-- Missed -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+<!--                &lt;!&ndash; Missed &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:orientation="horizontal">-->
 
-                    <!-- Colored Box -->
-                    <View
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:id="@+id/stkmissedcheck_prev"
-                        android:background="@drawable/square_grey_border"
-                        android:layout_marginEnd="6dp" />
+<!--                    &lt;!&ndash; Colored Box &ndash;&gt;-->
+<!--                    <View-->
+<!--                        android:layout_width="16dp"-->
+<!--                        android:layout_height="16dp"-->
+<!--                        android:id="@+id/stkmissedcheck_prev"-->
+<!--                        android:background="@drawable/square_grey_border"-->
+<!--                        android:layout_marginEnd="6dp" />-->
 
-                    <!-- Label -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:singleLine="true"
-                        android:text="Missed"
-                        android:textColor="@color/dark_purple"
-                        android:textSize="@dimen/_6ssp" />
-                </LinearLayout>
-            </LinearLayout>
+<!--                    &lt;!&ndash; Label &ndash;&gt;-->
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="@font/satoshi_bold"-->
+<!--                        android:singleLine="true"-->
+<!--                        android:text="Missed"-->
+<!--                        android:textColor="@color/dark_purple"-->
+<!--                        android:textSize="@dimen/_6ssp" />-->
+<!--                </LinearLayout>-->
+<!--            </LinearLayout>-->
 
-            <GridLayout
-                android:id="@+id/stkstatsGrid_prev"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:layout_marginEnd="@dimen/_5sdp"
-                android:background="@drawable/border_spinner_uneditable"
-                android:columnCount="3">
+<!--            <GridLayout-->
+<!--                android:id="@+id/stkstatsGrid_prev"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="@dimen/_5sdp"-->
+<!--                android:layout_marginTop="@dimen/_5sdp"-->
+<!--                android:layout_marginEnd="@dimen/_5sdp"-->
+<!--                android:background="@drawable/border_spinner_uneditable"-->
+<!--                android:columnCount="3">-->
 
-                <!-- Total -->
-                <LinearLayout
-                    android:id="@+id/stkgrid1_prev"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@color/white"
-                    android:orientation="vertical"
-                    android:padding="6dp">
+<!--                &lt;!&ndash; Total &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/stkgrid1_prev"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_columnWeight="1"-->
+<!--                    android:layout_margin="2dp"-->
+<!--                    android:background="@color/white"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:padding="6dp">-->
 
-                    <TextView
-                        android:id="@+id/totalstk_prev"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="Total Stockist" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/totalstk_prev"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:text="Total Stockist" />-->
 
-                    <TextView
-                        android:id="@+id/totalstkCnt_prev"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:text="20"
-                        android:layout_marginTop="3dp"
-                        android:textColor="@color/black" />
-                </LinearLayout>
+<!--                    <TextView-->
+<!--                        android:id="@+id/totalstkCnt_prev"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:fontFamily="@font/satoshi_bold"-->
+<!--                        android:text="20"-->
+<!--                        android:layout_marginTop="3dp"-->
+<!--                        android:textColor="@color/black" />-->
+<!--                </LinearLayout>-->
 
-                <!-- Visited -->
-                <LinearLayout
-                    android:id="@+id/stkgrid2_prev"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@color/white"
-                    android:orientation="vertical"
-                    android:padding="6dp">
+<!--                &lt;!&ndash; Visited &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/stkgrid2_prev"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_columnWeight="1"-->
+<!--                    android:layout_margin="2dp"-->
+<!--                    android:background="@color/white"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:padding="6dp">-->
 
-                    <TextView
-                        android:id="@+id/stkvisited_prev"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="Visited" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/stkvisited_prev"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:text="Visited" />-->
 
-                    <TextView
-                        android:id="@+id/stkvisitedCnt_prev"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:text="20"
-                        android:layout_marginTop="3dp"
-                        android:textColor="@color/black" />
-                </LinearLayout>
+<!--                    <TextView-->
+<!--                        android:id="@+id/stkvisitedCnt_prev"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:fontFamily="@font/satoshi_bold"-->
+<!--                        android:text="20"-->
+<!--                        android:layout_marginTop="3dp"-->
+<!--                        android:textColor="@color/black" />-->
+<!--                </LinearLayout>-->
 
-                <!-- Missed -->
-                <LinearLayout
-                    android:id="@+id/stkgrid3_prev"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@color/white"
-                    android:orientation="vertical"
-                    android:padding="6dp">
+<!--                &lt;!&ndash; Missed &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/stkgrid3_prev"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_columnWeight="1"-->
+<!--                    android:layout_margin="2dp"-->
+<!--                    android:background="@color/white"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:padding="6dp">-->
 
-                    <TextView
-                        android:id="@+id/stkmissed_prev"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="Missed" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/stkmissed_prev"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:text="Missed" />-->
 
-                    <TextView
-                        android:id="@+id/stkmissedCnt_prev"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:text="20"
-                        android:layout_marginTop="3dp"
-                        android:textColor="@color/black" />
-                </LinearLayout>
-            </GridLayout>
-        </LinearLayout>
+<!--                    <TextView-->
+<!--                        android:id="@+id/stkmissedCnt_prev"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:fontFamily="@font/satoshi_bold"-->
+<!--                        android:text="20"-->
+<!--                        android:layout_marginTop="3dp"-->
+<!--                        android:textColor="@color/black" />-->
+<!--                </LinearLayout>-->
+<!--            </GridLayout>-->
+<!--        </LinearLayout>-->
         <!-- Unlst Card -->
         <LinearLayout
             android:layout_width="0dp"

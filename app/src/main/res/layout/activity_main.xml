@@ -743,7 +743,7 @@
 <!--                                                            android:layout_alignParentStart="true"-->
 <!--                                                            android:layout_alignParentTop="true">-->
 
-<!--                                                                <androidx.cardview.widget.CardView-->
+<!--                                                                <androidx.cardview.widget.ListReport-->
 <!--                                                                    android:layout_weight=".75"-->
 <!--                                                                    android:layout_width="0dp"-->
 <!--                                                                    android:layout_height="wrap_content"-->
@@ -755,7 +755,7 @@
 <!--                                                                            android:orientation="horizontal"-->
 <!--                                                                            android:background="@color/pink_15">-->
 
-<!--                                                                                <androidx.cardview.widget.CardView-->
+<!--                                                                                <androidx.cardview.widget.ListReport-->
 <!--                                                                                    android:layout_width="@dimen/_2sdp"-->
 <!--                                                                                    android:layout_height="match_parent"-->
 <!--                                                                                    app:cardCornerRadius="@dimen/_2sdp"-->
@@ -774,7 +774,7 @@
 
 <!--                                                                        </LinearLayout>-->
 
-<!--                                                                </androidx.cardview.widget.CardView>-->
+<!--                                                                </androidx.cardview.widget.ListReport>-->
 
 <!--                                                        </LinearLayout>-->
 

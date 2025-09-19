@@ -113,8 +113,8 @@
                                         android:layout_width="15dp"
                                         android:layout_height="15dp"
                                         android:layout_marginEnd="6dp"
-                                        android:backgroundTint="#E5E7E9"
-                                        android:background="@drawable/gray_border" />
+                                        android:backgroundTint="@color/green_60"
+                                        android:background="@drawable/bg_green_border" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -133,8 +133,8 @@
                                         android:layout_width="15dp"
                                         android:layout_height="15dp"
                                         android:layout_marginEnd="6dp"
-                                        android:backgroundTint="@color/green_60"
-                                        android:background="@drawable/bg_green_border" />
+                                        android:backgroundTint="@color/mildRed"
+                                        android:background="@drawable/draktheme_" />
 
                                     <TextView
                                         android:layout_width="wrap_content"

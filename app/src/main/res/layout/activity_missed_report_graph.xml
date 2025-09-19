@@ -44,145 +44,207 @@
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
+    <LinearLayout
+        android:id="@+id/switch_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="17dp"
+        android:background="@drawable/bg_white_border_purple"
+        android:backgroundTint="@color/light_grey_1"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
+
+        <TextView
+            android:id="@+id/self"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/_2sdp"
+            android:background="@drawable/bg_darkpurple_sharp_bottom_end"
+            android:gravity="center"
+            android:text="As on Calls"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/live"
+            android:layout_width="107dp"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/_2sdp"
+            android:gravity="center"
+            android:text="Approved Calls"
+            android:textColor="@color/dark_purple" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/note"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginHorizontal="@dimen/_6sdp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/switch_txt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/switch_txt"
+        app:layout_constraintTop_toTopOf="@+id/switch_txt">
+
+        <TextView
+            android:id="@+id/tv_note"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_light_pink_2"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/_10sdp"
+            android:text="Sync to get Live Data!"
+            android:textColor="@color/pink"
+            android:textSize="@dimen/_6ssp" />
+
+        <View
+            android:id="@+id/view_one"
+            android:layout_width="@dimen/_2sdp"
+            android:layout_height="match_parent"
+            android:background="@drawable/view_pink_border" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <!-- Row under toolbar (calendar + search) -->
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:id="@+id/searchRow"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:padding="8dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/my_toolbar">-->
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:id="@+id/searchRow"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:padding="8dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/my_toolbar">-->
 
-<!--        &lt;!&ndash; Calendar &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/calender"-->
-<!--            android:layout_width="@dimen/_170sdp"-->
-<!--            android:layout_height="@dimen/_20sdp"-->
-<!--            android:layout_marginStart="3dp"-->
-<!--            android:background="@drawable/black_stroke"-->
-<!--            android:fontFamily="@font/satoshi_medium"-->
-<!--            android:gravity="start|center_vertical"-->
-<!--            android:paddingStart="10dp"-->
-<!--            android:textColor="@color/text_dark"-->
-<!--            android:textSize="@dimen/_6sdp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toStartOf="@id/cl_search_sort"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            tools:ignore="SpUsage" />-->
+    <!--        &lt;!&ndash; Calendar &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/calender"-->
+    <!--            android:layout_width="@dimen/_170sdp"-->
+    <!--            android:layout_height="@dimen/_20sdp"-->
+    <!--            android:layout_marginStart="3dp"-->
+    <!--            android:background="@drawable/black_stroke"-->
+    <!--            android:fontFamily="@font/satoshi_medium"-->
+    <!--            android:gravity="start|center_vertical"-->
+    <!--            android:paddingStart="10dp"-->
+    <!--            android:textColor="@color/text_dark"-->
+    <!--            android:textSize="@dimen/_6sdp"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toStartOf="@id/cl_search_sort"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent"-->
+    <!--            tools:ignore="SpUsage" />-->
 
-<!--        <ImageView-->
-<!--            android:layout_width="50dp"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:background="@color/text_dark"-->
-<!--            android:padding="@dimen/_4sdp"-->
-<!--            android:src="@drawable/calendar_img"-->
-<!--            app:layout_constraintBottom_toBottomOf="@id/calender"-->
-<!--            app:layout_constraintEnd_toEndOf="@id/calender"-->
-<!--            app:layout_constraintTop_toTopOf="@id/calender"-->
-<!--            app:tint="@color/white" />-->
+    <!--        <ImageView-->
+    <!--            android:layout_width="50dp"-->
+    <!--            android:layout_height="0dp"-->
+    <!--            android:background="@color/text_dark"-->
+    <!--            android:padding="@dimen/_4sdp"-->
+    <!--            android:src="@drawable/calendar_img"-->
+    <!--            app:layout_constraintBottom_toBottomOf="@id/calender"-->
+    <!--            app:layout_constraintEnd_toEndOf="@id/calender"-->
+    <!--            app:layout_constraintTop_toTopOf="@id/calender"-->
+    <!--            app:tint="@color/white" />-->
 
-<!--        &lt;!&ndash; Search + Sort &ndash;&gt;-->
-<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--            android:id="@+id/cl_search_sort"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:visibility="visible"-->
-<!--            app:layout_constraintBottom_toBottomOf="@id/calender"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toEndOf="@id/calender"-->
-<!--            app:layout_constraintTop_toTopOf="@id/calender">-->
+    <!--        &lt;!&ndash; Search + Sort &ndash;&gt;-->
+    <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--            android:id="@+id/cl_search_sort"-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="0dp"-->
+    <!--            android:visibility="visible"-->
+    <!--            app:layout_constraintBottom_toBottomOf="@id/calender"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintStart_toEndOf="@id/calender"-->
+    <!--            app:layout_constraintTop_toTopOf="@id/calender">-->
 
-<!--            <EditText-->
-<!--                android:id="@+id/searchET"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:background="@drawable/edittext_stroke"-->
-<!--                android:fontFamily="@font/satoshi_medium"-->
-<!--                android:hint="Search"-->
-<!--                android:imeOptions="actionDone"-->
-<!--                android:maxLines="1"-->
-<!--                android:paddingStart="36dp"-->
-<!--                android:paddingEnd="24dp"-->
-<!--                android:singleLine="true"-->
-<!--                android:textColor="@color/text_dark_65"-->
-<!--                android:textColorHint="@color/text_dark_65"-->
-<!--                android:textSize="@dimen/_6sdp"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toStartOf="@id/sortIcon"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                tools:ignore="SpUsage" />-->
+    <!--            <EditText-->
+    <!--                android:id="@+id/searchET"-->
+    <!--                android:layout_width="0dp"-->
+    <!--                android:layout_height="0dp"-->
+    <!--                android:layout_marginStart="20dp"-->
+    <!--                android:background="@drawable/edittext_stroke"-->
+    <!--                android:fontFamily="@font/satoshi_medium"-->
+    <!--                android:hint="Search"-->
+    <!--                android:imeOptions="actionDone"-->
+    <!--                android:maxLines="1"-->
+    <!--                android:paddingStart="36dp"-->
+    <!--                android:paddingEnd="24dp"-->
+    <!--                android:singleLine="true"-->
+    <!--                android:textColor="@color/text_dark_65"-->
+    <!--                android:textColorHint="@color/text_dark_65"-->
+    <!--                android:textSize="@dimen/_6sdp"-->
+    <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--                app:layout_constraintEnd_toStartOf="@id/sortIcon"-->
+    <!--                app:layout_constraintStart_toStartOf="parent"-->
+    <!--                app:layout_constraintTop_toTopOf="parent"-->
+    <!--                tools:ignore="SpUsage" />-->
 
-<!--            <View-->
-<!--                android:id="@+id/searchBkn"-->
-<!--                android:layout_width="@dimen/_8sdp"-->
-<!--                android:layout_height="@dimen/_8sdp"-->
-<!--                android:layout_marginStart="8dp"-->
-<!--                android:background="@drawable/edittext_stroke"-->
-<!--                app:layout_constraintBottom_toBottomOf="@id/searchET"-->
-<!--                app:layout_constraintStart_toStartOf="@id/searchET"-->
-<!--                app:layout_constraintTop_toTopOf="@id/searchET" />-->
+    <!--            <View-->
+    <!--                android:id="@+id/searchBkn"-->
+    <!--                android:layout_width="@dimen/_8sdp"-->
+    <!--                android:layout_height="@dimen/_8sdp"-->
+    <!--                android:layout_marginStart="8dp"-->
+    <!--                android:background="@drawable/edittext_stroke"-->
+    <!--                app:layout_constraintBottom_toBottomOf="@id/searchET"-->
+    <!--                app:layout_constraintStart_toStartOf="@id/searchET"-->
+    <!--                app:layout_constraintTop_toTopOf="@id/searchET" />-->
 
-<!--            <ImageView-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:src="@drawable/search_icon_gray"-->
-<!--                app:layout_constraintBottom_toBottomOf="@id/searchBkn"-->
-<!--                app:layout_constraintEnd_toEndOf="@id/searchBkn"-->
-<!--                app:layout_constraintStart_toStartOf="@id/searchBkn"-->
-<!--                app:layout_constraintTop_toTopOf="@id/searchBkn" />-->
+    <!--            <ImageView-->
+    <!--                android:layout_width="0dp"-->
+    <!--                android:layout_height="0dp"-->
+    <!--                android:src="@drawable/search_icon_gray"-->
+    <!--                app:layout_constraintBottom_toBottomOf="@id/searchBkn"-->
+    <!--                app:layout_constraintEnd_toEndOf="@id/searchBkn"-->
+    <!--                app:layout_constraintStart_toStartOf="@id/searchBkn"-->
+    <!--                app:layout_constraintTop_toTopOf="@id/searchBkn" />-->
 
-<!--            <ImageView-->
-<!--                android:id="@+id/searchClearIcon"-->
-<!--                android:layout_width="@dimen/_8sdp"-->
-<!--                android:layout_height="@dimen/_8sdp"-->
-<!--                android:layout_marginEnd="12dp"-->
-<!--                android:scaleType="centerInside"-->
-<!--                android:src="@drawable/img_close"-->
-<!--                app:layout_constraintBottom_toBottomOf="@id/searchET"-->
-<!--                app:layout_constraintEnd_toEndOf="@id/searchET"-->
-<!--                app:layout_constraintTop_toTopOf="@id/searchET" />-->
+    <!--            <ImageView-->
+    <!--                android:id="@+id/searchClearIcon"-->
+    <!--                android:layout_width="@dimen/_8sdp"-->
+    <!--                android:layout_height="@dimen/_8sdp"-->
+    <!--                android:layout_marginEnd="12dp"-->
+    <!--                android:scaleType="centerInside"-->
+    <!--                android:src="@drawable/img_close"-->
+    <!--                app:layout_constraintBottom_toBottomOf="@id/searchET"-->
+    <!--                app:layout_constraintEnd_toEndOf="@id/searchET"-->
+    <!--                app:layout_constraintTop_toTopOf="@id/searchET" />-->
 
-<!--            <View-->
-<!--                android:id="@+id/sortIcon"-->
-<!--                android:layout_width="@dimen/_22sdp"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:layout_marginStart="10dp"-->
-<!--                android:layout_marginEnd="12dp"-->
-<!--                android:background="@drawable/black_stroke"-->
-<!--                android:backgroundTint="@color/text_dark"-->
-<!--                app:layout_constraintBottom_toBottomOf="@id/searchET"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toEndOf="@id/searchET"-->
-<!--                app:layout_constraintTop_toTopOf="@id/searchET" />-->
+    <!--            <View-->
+    <!--                android:id="@+id/sortIcon"-->
+    <!--                android:layout_width="@dimen/_22sdp"-->
+    <!--                android:layout_height="0dp"-->
+    <!--                android:layout_marginStart="10dp"-->
+    <!--                android:layout_marginEnd="12dp"-->
+    <!--                android:background="@drawable/black_stroke"-->
+    <!--                android:backgroundTint="@color/text_dark"-->
+    <!--                app:layout_constraintBottom_toBottomOf="@id/searchET"-->
+    <!--                app:layout_constraintEnd_toEndOf="parent"-->
+    <!--                app:layout_constraintStart_toEndOf="@id/searchET"-->
+    <!--                app:layout_constraintTop_toTopOf="@id/searchET" />-->
 
-<!--            <ImageView-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:padding="@dimen/_6sdp"-->
-<!--                android:src="@drawable/report_sort_icon"-->
-<!--                app:layout_constraintBottom_toBottomOf="@id/sortIcon"-->
-<!--                app:layout_constraintEnd_toEndOf="@id/sortIcon"-->
-<!--                app:layout_constraintStart_toStartOf="@id/sortIcon"-->
-<!--                app:layout_constraintTop_toTopOf="@id/sortIcon"-->
-<!--                app:tint="@color/white" />-->
-<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+    <!--            <ImageView-->
+    <!--                android:layout_width="0dp"-->
+    <!--                android:layout_height="0dp"-->
+    <!--                android:padding="@dimen/_6sdp"-->
+    <!--                android:src="@drawable/report_sort_icon"-->
+    <!--                app:layout_constraintBottom_toBottomOf="@id/sortIcon"-->
+    <!--                app:layout_constraintEnd_toEndOf="@id/sortIcon"-->
+    <!--                app:layout_constraintStart_toStartOf="@id/sortIcon"-->
+    <!--                app:layout_constraintTop_toTopOf="@id/sortIcon"-->
+    <!--                app:tint="@color/white" />-->
+    <!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
     <!-- Scrollable content -->
 
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_30sdp"
         android:fillViewport="true"
         android:padding="8dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/my_toolbar">
         <!-- Content layout BELOW toolbar -->
 
         <RelativeLayout
@@ -197,97 +259,114 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/bg_grey"
                 android:orientation="vertical">
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:background="@color/bg_grey"
                     android:padding="@dimen/_1sdp">
-                    <!-- Name TextView -->
-                    <TextView
-                        android:id="@+id/name"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:padding="@dimen/_5sdp"
-                        android:text="Wasim Jaffer Ahmeed - HQ - designation"
-                        android:textColor="@color/txt_sample"
-                        android:textSize="@dimen/_6sdp"
-                        android:gravity="center"
-                        android:background="@color/white"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/monthYear"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintHorizontal_weight="1"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"/>
 
-                    <!-- Month-Year TextView -->
+                    <LinearLayout
+                        android:id="@+id/headerName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_5sdp"
+                        app:layout_constraintEnd_toStartOf="@+id/monthYear"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/Name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/satoshi_bold"
+                            android:textColor="@color/red_60"
+                            tools:text="Name" />
+
+                    </LinearLayout>
+
+                    <!-- Month-Year (Right side) -->
                     <TextView
                         android:id="@+id/monthYear"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="39dp"
                         android:background="@color/white"
                         android:fontFamily="@font/satoshi_bold"
-                        android:padding="@dimen/_5sdp"
+                        android:gravity="center"
+                        android:paddingHorizontal="@dimen/_8sdp"
                         android:text="Sep 2025"
                         android:textColor="@color/txt_sample"
                         android:textSize="@dimen/_6sdp"
-                        app:layout_constraintBottom_toBottomOf="@id/name"
+                        app:layout_constraintBottom_toBottomOf="@id/headerName"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@id/headerName" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- RecyclerView added here -->
+
 
                 <ViewFlipper
                     android:id="@+id/viewFlipper"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
                     <include layout="@layout/layout_drchm_missed_current" />
+
+
                     <include layout="@layout/layout_stkunlst_missed_current" />
                 </ViewFlipper>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/bg_grey"
                     android:layout_marginTop="5dp"
-                    android:padding="@dimen/_1sdp">
-                        <!-- Name TextView -->
-                        <TextView
-                            android:id="@+id/nameprev"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/satoshi_bold"
-                            android:padding="@dimen/_5sdp"
-                            android:text="Wasim Jaffer Ahmeed - HQ - designation"
-                            android:textColor="@color/txt_sample"
-                            android:textSize="@dimen/_6sdp"
-                            android:gravity="center"
-                            android:background="@color/white"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/monthYearprev"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintHorizontal_weight="1"
-                            app:layout_constraintHorizontal_chainStyle="spread_inside"/>
+                    android:background="@color/bg_grey"
+                    android:padding="@dimen/_1sdp"
+                    android:visibility="gone">
+                    <!-- Name TextView -->
+                    <TextView
+                        android:id="@+id/nameprev"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:gravity="center"
+                        android:padding="@dimen/_5sdp"
+                        android:text="Wasim Jaffer Ahmeed - HQ - designation"
+                        android:textColor="@color/txt_sample"
+                        android:textSize="@dimen/_6sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/monthYearprev"
+                        app:layout_constraintHorizontal_chainStyle="spread_inside"
+                        app:layout_constraintHorizontal_weight="1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <!-- Month-Year TextView -->
-                        <TextView
-                            android:id="@+id/monthYearprev"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/satoshi_bold"
-                            android:padding="@dimen/_5sdp"
-                            android:text="Aug 2025"
-                            android:background="@color/white"
-                            android:textColor="@color/txt_sample"
-                            android:textSize="@dimen/_6sdp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="@id/nameprev"
-                            app:layout_constraintBottom_toBottomOf="@id/nameprev"/>
+                    <!-- Month-Year TextView -->
+                    <TextView
+                        android:id="@+id/monthYearprev"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:padding="@dimen/_5sdp"
+                        android:text="Aug 2025"
+                        android:textColor="@color/txt_sample"
+                        android:textSize="@dimen/_6sdp"
+                        app:layout_constraintBottom_toBottomOf="@id/nameprev"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/nameprev" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -295,49 +374,54 @@
                     android:id="@+id/viewFlipper2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone">
+
                     <include layout="@layout/layout_drchm_missed_previous" />
+
                     <include layout="@layout/layout_stkunlst_missed_previous" />
                 </ViewFlipper>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/bg_grey"
                     android:layout_marginTop="5dp"
-                    android:padding="@dimen/_1sdp">
+                    android:background="@color/bg_grey"
+                    android:padding="@dimen/_1sdp"
+                    android:visibility="gone">
                     <!-- Name TextView -->
                     <TextView
                         android:id="@+id/nameprev1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:background="@color/white"
                         android:fontFamily="@font/satoshi_bold"
+                        android:gravity="center"
                         android:padding="@dimen/_5sdp"
                         android:text="Wasim Jaffer Ahmeed - HQ - designation"
                         android:textColor="@color/txt_sample"
                         android:textSize="@dimen/_6sdp"
-                        android:gravity="center"
-                        android:background="@color/white"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/monthYearprev1"
-                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/monthYearprev1"
+                        app:layout_constraintHorizontal_chainStyle="spread_inside"
                         app:layout_constraintHorizontal_weight="1"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"/>
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <!-- Month-Year TextView -->
                     <TextView
                         android:id="@+id/monthYearprev1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@color/white"
                         android:fontFamily="@font/satoshi_bold"
                         android:padding="@dimen/_5sdp"
                         android:text="July 2025"
-                        android:background="@color/white"
                         android:textColor="@color/txt_sample"
                         android:textSize="@dimen/_6sdp"
+                        app:layout_constraintBottom_toBottomOf="@id/nameprev1"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/nameprev1"
-                        app:layout_constraintBottom_toBottomOf="@id/nameprev1"/>
+                        app:layout_constraintTop_toTopOf="@id/nameprev1" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -345,8 +429,11 @@
                     android:id="@+id/viewFlipper3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone">
+
                     <include layout="@layout/layout_drchm_missed_previous2" />
+
                     <include layout="@layout/layout_stkunlst_missed_previous2" />
                 </ViewFlipper>
             </LinearLayout>

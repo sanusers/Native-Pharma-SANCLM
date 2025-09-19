@@ -15,36 +15,37 @@ public interface MissedDao {
     @Update
     void updateMissed(MissedTable missedTable);
 
-    @Query("SELECT * FROM missed_table WHERE `key` = :key")
-    MissedTable getMissedByKey(String key);
+    @Query("SELECT * FROM missed_table WHERE sfcode = :sfcode AND ID = :key")
+    MissedTable getMissedByKey(String sfcode , String key);
 
-    @Query("SELECT `values` FROM missed_table WHERE `key` = :key")
-    String getMissedValues(String key);
+    @Query("SELECT `values` FROM missed_table WHERE  sfcode = :sfcode AND ID = :key")
+    String getMissedValues(String sfcode , String key);
 
     @Query("DELETE FROM missed_table")
     void deleteAll();
 
-    @Query("UPDATE missed_table SET `values` = :values WHERE `key` = :key")
-    int updateMissedValues(String key, String values);
+    @Query("UPDATE missed_table SET `values` = :values WHERE  sfcode = :sfcode AND ID = :key")
+    int updateMissedValues(String sfcode ,String key, String values);
 
-    @Query("SELECT EXISTS(SELECT 1 FROM missed_table WHERE `key` = :key)")
-    boolean isMissedDataAvailable(String key);
-
-
-    default MissedTable getOrCreate(String key) {
-        MissedTable data = getMissedByKey(key);
-        if (data == null) data = new MissedTable(key, null);
-        return data;
-    }
+    @Query("SELECT EXISTS(SELECT 1 FROM missed_table WHERE  sfcode = :sfcode AND ID = :key) ")
+    boolean isMissedDataAvailable(String sfcode ,String key);
 
 
-    default void saveMissedJson(String key, String json) {
-        MissedTable data = getMissedByKey(key);
+
+//    default MissedTable getOrCreate(String key) {
+//        MissedTable data = getMissedByKey(key);
+//        if (data == null) data = new MissedTable(key, null);
+//        return data;
+//    }
+
+
+    default void saveMissedJson(String key, String sfcode, String json) {
+        MissedTable data = getMissedByKey(sfcode,key);
         if (data != null) {
             data.setValues(json);
             updateMissed(data);
         } else {
-            insertMissed(new MissedTable(key, json));
+            insertMissed(new MissedTable(key,sfcode, json));
         }
     }
 }
