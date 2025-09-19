@@ -59,7 +59,7 @@
                         android:fontFamily="@font/satoshi_medium"
                         android:format12Hour="dd-MM-yyyy hh:mm a"
                         android:format24Hour="dd-MM-yyyy HH:mm"
-                        android:text="01-01-2025 10:00 AM"
+                        tools:text="01-01-2025 10:00 AM"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_5ssp"
                         android:textStyle="bold" />

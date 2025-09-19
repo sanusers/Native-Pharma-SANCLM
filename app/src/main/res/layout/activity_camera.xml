@@ -21,8 +21,8 @@
         android:id="@+id/captured_image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@drawable/ic_camera"
         android:scaleType="fitXY"
+        android:src="@drawable/ic_camera"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/options"
@@ -63,18 +63,65 @@
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/img_divider"
                 android:layout_width="1dp"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/data"
+                android:layout_alignBottom="@id/data"
                 android:layout_centerVertical="true"
+                android:layout_marginVertical="@dimen/_2sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
                 android:layout_toEndOf="@id/location_img"
                 android:background="@color/gray_med" />
 
             <LinearLayout
+                android:id="@+id/data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/img_divider"
                 android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/customer_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/ll_customer_data"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/customer_caption"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:text="Name : "
+                                android:textAlignment="center"
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/customer_date"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:text="@string/address"
+                                android:textAlignment="textStart"
+                                android:textColor="@color/black" />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:id="@+id/customer_divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="@dimen/_3sdp"
+                        android:background="@color/gray_med" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/address_layout"

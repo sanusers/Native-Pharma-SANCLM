@@ -70,7 +70,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     private String date, time;
     private String address;
     private final String TAG = "Camera Activity";
-    private String filePath, cameraMode, from;
+    private String filePath, cameraMode, from, customerData, customerCaption;
     private boolean lTagEnabled = false;
     private int permissionRequestCount = 0;
 
@@ -134,6 +134,15 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
             lTagEnabled = extras.getBoolean("L_FLAG", false);
             cameraMode = extras.getString("CAMERA_MODE", "BACK");
             from = extras.getString("FROM");
+            if (from != null && from.equalsIgnoreCase("JWOthersFragment")){
+                customerData = extras.getString("CUSTOMER_DATA");
+                customerCaption = extras.getString("CUSTOMER_CAPTION");
+                activityCameraBinding.customerLayout.setVisibility(View.VISIBLE);
+                activityCameraBinding.customerCaption.setText(customerCaption);
+                activityCameraBinding.customerDate.setText(customerData);
+            } else {
+                activityCameraBinding.customerLayout.setVisibility(View.GONE);
+            }
         }
 
         if(cameraMode != null) {

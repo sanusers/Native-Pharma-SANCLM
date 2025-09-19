@@ -62,6 +62,7 @@ import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.activity.camera.CameraActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.MapsActivity;
+import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentJwothersBinding;
@@ -211,8 +212,8 @@ public class JWOthersFragment extends Fragment {
                             }
                         }
 
-                    } catch (Exception ignored) {
-                        Log.v("Testing","issue" + ignored.getMessage());
+                    } catch (Exception e) {
+                        Log.v("Testing","issue" + e.getMessage());
                     }
 
 
@@ -239,7 +240,7 @@ public class JWOthersFragment extends Fragment {
 
         jwOthersBinding.btnAddImgCapture.setOnClickListener(view -> {
             if (callCaptureImageLists.size() < 2) {
-                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
+                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
                         != PackageManager.PERMISSION_GRANTED )
                         {
                     requestMultiplePermissionsLauncher.launch(new String[]{
@@ -358,6 +359,74 @@ public class JWOthersFragment extends Fragment {
         intent.putExtra("FROM", "JWOthersFragment");
         intent.putExtra("L_FLAG", SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0"));
         intent.putExtra("CAMERA_MODE", "BACK");
+        try {
+            CustList custList = DCRCallActivity.CallActivityCustDetails.get(0);
+            StringBuilder customerData = new StringBuilder();
+            customerData.append(custList.getName());
+            if(custList.getQualification() != null && !custList.getQualification().isEmpty()) {
+                customerData.append(" - ");
+                customerData.append(custList.getQualification());
+            }
+            if(custList.getSpecialist() != null && !custList.getSpecialist().isEmpty()) {
+                customerData.append(" - ");
+                customerData.append(custList.getSpecialist());
+            }
+            if(custList.getclass() != null && !custList.getclass().isEmpty()) {
+                customerData.append(" - ");
+                customerData.append(custList.getclass());
+            }
+            if(custList.getCategory() != null && !custList.getCategory().isEmpty()) {
+                customerData.append(" - ");
+                customerData.append(custList.getCategory());
+            }
+            if(custList.getTown_name() != null && !custList.getTown_name().isEmpty()) {
+                customerData.append(" - ");
+                customerData.append(custList.getTown_name());
+            }
+            intent.putExtra("CUSTOMER_DATA", customerData.toString());
+            String caption = "";
+            switch (custList.getType()) {
+                case "1" :
+                    caption = SharedPref.getDrCap(requireContext());
+                    if (caption.isEmpty()) {
+                        caption = "Listed Doctor";
+                    }
+                    break;
+                case "2" :
+                    caption = SharedPref.getChmCap(requireContext());
+                    if (caption.isEmpty()) {
+                        caption = "Chemist";
+                    }
+                    break;
+                case "3" :
+                    caption = SharedPref.getStkCap(requireContext());
+                    if (caption.isEmpty()) {
+                        caption = "Stockist";
+                    }
+                    break;
+                case "4" :
+                    caption = SharedPref.getUNLcap(requireContext());
+                    if (caption.isEmpty()) {
+                        caption = "UnListed Doctor";
+                    }
+                    break;
+                case "5" :
+                    caption = SharedPref.getCipCaption(requireContext());
+                    if (caption.isEmpty()) {
+                        caption = "CIP";
+                    }
+                    break;
+                case "6" :
+                    caption = SharedPref.getHospCaption(requireContext());
+                    if (caption.isEmpty()) {
+                        caption = "Hospital";
+                    }
+                    break;
+            }
+            intent.putExtra("CUSTOMER_CAPTION", caption + " : ");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         someActivityResultLauncher.launch(intent);
     }
 
