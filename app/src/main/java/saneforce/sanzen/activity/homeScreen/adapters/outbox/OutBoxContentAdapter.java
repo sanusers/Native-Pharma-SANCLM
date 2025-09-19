@@ -224,7 +224,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 if(contentList.isExpanded() && !contentList.getSignModelClasses().isEmpty()){
                     SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses(), contentList.getSignModelClasses(),contentList.getActivityModelClasses(), contentList.getActivityUploadModelClasses());
                 }else{
-                    holder.constraintMain.setVisibility(View.GONE);
+                    holder.constraintRv.setVisibility(View.GONE);
                     holder.img_expand_child.setImageResource(R.drawable.down_arrow);
                 }
                 break;
@@ -339,7 +339,6 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 mLayoutManager = new LinearLayoutManager(context);
                 rvOutboxList.setLayoutManager(mLayoutManager);
                 rvOutboxList.setAdapter(outBoxSignAdapter);
-
                 break;
             case 5:
                 outBoxActivityAdapter = new OutBoxActivityAdapter(activity, context, activityModelClasses, apiInterface);
