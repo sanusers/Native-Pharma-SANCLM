@@ -142,8 +142,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         db = RoomDB.getDatabase(getActivity());
         callTableDao = db.callTableDao();
         masterDataDao = db.masterDataDao();
-        previousDate = dateFormat.format(new Date());
-        handler.post(updateClock);
+//        previousDate = dateFormat.format(new Date());
+//        handler.post(updateClock);
         return v;
     }
 
@@ -924,7 +924,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
     public void onDestroyView() {
         super.onDestroyView();
-        handler.removeCallbacks(updateClock);
+//        handler.removeCallbacks(updateClock);
     }
 
     void setScreenDesign() {

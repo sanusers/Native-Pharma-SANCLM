@@ -191,7 +191,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
 
                     context.startActivity(intent);
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
-
                     Dialog dialog = new Dialog(context);
                     dialog.setContentView(R.layout.dcr_cancel_alert);
                     dialog.setCancelable(false);
@@ -201,10 +200,10 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                     TextView btn_no=dialog.findViewById(R.id.btn_no);
                     TextView titte=dialog.findViewById(R.id.ed_alert_msg);
                     titte.setText(R.string.are_you_sure_to_delete);
-                        btn_yes.setOnClickListener(view -> {
-                            if (UtilityClass.isNetworkAvailable(context)) {
-                                dialog.dismiss();
-                            }else{
+                    btn_yes.setOnClickListener(view -> {
+                        if (UtilityClass.isNetworkAvailable(context) && !status.equalsIgnoreCase(Constants.DUPLICATE_CALL)) {
+                            dialog.dismiss();
+                        } else {
                             dialog.dismiss();
                             UpdateInputSample(outBoxCallLists.get(position).getJsonData());
                             if (callOfflineECDataDao.isAvailableEc(outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getCusCode())) {
@@ -278,7 +277,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                             }
                             removeAt(position);
                         }
-                        });
+                    });
 
                     btn_no.setOnClickListener(view -> {
                         dialog.dismiss();

@@ -42,12 +42,13 @@
             android:textColor="@color/text_dark"
             android:textSize="@dimen/_6ssp"
             android:textStyle="bold"
+            android:visibility="gone"
             android:format12Hour="dd-MM-yyyy hh:mm a"
             android:format24Hour="dd-MM-yyyy HH:mm"
             tools:text="01-01-2025 10:00 AM"/>
 
         <LinearLayout
-            android:visibility="invisible"
+            android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"

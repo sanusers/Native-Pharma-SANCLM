@@ -223,9 +223,60 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private String videoUrl = "";
     YouTubePlayer youTubePlayer;
     boolean isPlaying = true;
-
+    private String previousDate = "";
     float dX, dY;
     int lastAction;
+
+    private final Handler handler = new Handler();
+    private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.getDefault());
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(TimeUtils.FORMAT_4, Locale.getDefault());
+    private final Runnable updateClock = new Runnable() {
+        @Override
+        public void run() {
+            String currentTime = sdf.format(new Date());
+            binding.clock.setText(currentTime);
+            handler.postDelayed(this, 1000);
+            try {
+//                String checkInData = SharedPref.getDayCheckInData(HomeDashBoard.this);
+//                if(SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0") && !checkInData.isEmpty() && HomeDashBoard.selectedDate != null) {
+//                    JSONObject checkInObj = new JSONObject(checkInData);
+////                    SharedPref.setCheckInSkipDate(requireContext(), "");
+//                    String currentDate = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5),
+//                            previousDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, (LocalDate.now().minusDays(1)).toString()),
+//                            homeDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_5, HomeDashBoard.selectedDate.toString()),
+//                            checkInDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_5, checkInObj.optString("DateTime"));
+//                    if(checkInDate.equalsIgnoreCase(previousDate) && homeDate.equalsIgnoreCase(previousDate) && !SharedPref.getCheckInSkipDate(requireContext()).equalsIgnoreCase(currentDate) && !SharedPref.getCheckTodayCheckInOut(requireContext()).isEmpty()) {
+//                        SharedPref.setCheckInSkipDate(requireContext(), currentDate);
+//                        Log.d("Clock", "run: log out");
+//                        SharedPref.saveLoginState(requireContext(), false);
+//                        Intent intent = new Intent(requireActivity(), LoginActivity.class);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        startActivity(intent);
+//                        requireActivity().finishAffinity();
+//                    }
+//                }
+                String currentDate = dateFormat.format(new Date());
+                try {
+                    if(!previousDate.equals(currentDate)) {
+                        if(masterDataDao != null) {
+                            JSONArray workPlanArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_PLAN).getMasterSyncDataJsonArray();
+                            if(workPlanArray.toString().equals("[]")) {
+                                checkAndSetEntryDate(HomeDashBoard.this, true);
+                                if(HomeDashBoard.homeDashBoardActivity != null && !HomeDashBoard.homeDashBoardActivity.isFinishing() && !HomeDashBoard.homeDashBoardActivity.isDestroyed()) {
+                                    HomeDashBoard.homeDashBoardActivity.setUpCalendar();
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                previousDate = currentDate;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -544,6 +595,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         homeDashBoardActivity = this;
+        previousDate = dateFormat.format(new Date());
+        handler.post(updateClock);
         Log.d("ACTIVITY_STATUS", "OnCreate");
         binding = ActivityHomeDashBoardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -2306,6 +2359,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        handler.removeCallbacks(updateClock);
         slidesDao.Changestatus("0", "1");
 
         if (notificationPopupWindow != null && notificationPopupWindow.isShowing()) {
