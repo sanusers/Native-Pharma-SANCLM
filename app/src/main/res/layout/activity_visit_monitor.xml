@@ -61,10 +61,11 @@
         android:background="@drawable/bg_white_border_purple"
         android:backgroundTint="@color/light_grey_1"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toStartOf="@+id/search_cust"
+        app:layout_constraintEnd_toStartOf="@+id/note"
         app:layout_constraintHorizontal_bias="0.014"
+        app:layout_constraintTop_toBottomOf="@+id/appBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBar">
+        app:layout_constraintBottom_toTopOf="@+id/fragment_container">
 
 
         <TextView
@@ -95,7 +96,7 @@
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/search_cust"
-        android:layout_width="1004dp"
+        android:layout_width="0dp"
         android:layout_height="46dp"
         android:layout_margin="@dimen/_6sdp"
         android:layout_marginHorizontal="@dimen/_10sdp"
@@ -110,8 +111,10 @@
         android:textColor="@color/black"
         android:textColorHint="@color/light_grey"
         android:textSize="@dimen/_6ssp"
+        app:layout_constraintStart_toEndOf="@+id/switch_txt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBar"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_container"
         app:layout_constraintVertical_bias="0.044"
         android:visibility="gone"/>
 
@@ -156,101 +159,111 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/headerName"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:background="@color/white"
-        android:gravity="center"
-        android:orientation="horizontal"
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/_5sdp"
-        android:layout_marginStart="@dimen/_5sdp"
-        android:layout_marginEnd="@dimen/_5sdp"
-
+        app:layout_constraintTop_toBottomOf="@+id/switch_txt"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/note">
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <TextView
-            android:id="@+id/headerCustName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/satoshi_bold"
-
-            android:text="Mr Name "
-            android:textColor="@color/red_60" />
-
-        <View
-            android:layout_width="5dp"
-            android:layout_height="2dp"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="@dimen/_2sdp"
-            android:background="@color/red_60" />
-
-        <TextView
-            android:id="@+id/headerCustHq"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/satoshi_bold"
-            android:text="Hq "
-            android:textColor="@color/red_60" />
-
-        <View
-            android:layout_width="5dp"
-            android:layout_height="2dp"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="@dimen/_2sdp"
-            android:background="@color/red_60" />
-
-        <TextView
-            android:id="@+id/headerCustDesig"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/satoshi_bold"
-            android:text="2025 "
-            android:textColor="@color/red_60" />
-
-        <View
-            android:id="@+id/divider"
+    <!--
+        <LinearLayout
+            android:id="@+id/headerName"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/gray_20"
+            android:layout_height="40dp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/headerTxt" />
+            app:layout_constraintTop_toBottomOf="@id/note">
+
+            <TextView
+                android:id="@+id/headerCustName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_bold"
+
+                android:text="Mr Name "
+                android:textColor="@color/red_60" />
+
+            <View
+                android:layout_width="5dp"
+                android:layout_height="2dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/_2sdp"
+                android:background="@color/red_60" />
+
+            <TextView
+                android:id="@+id/headerCustHq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_bold"
+                android:text="Hq "
+                android:textColor="@color/red_60" />
+
+            <View
+                android:layout_width="5dp"
+                android:layout_height="2dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/_2sdp"
+                android:background="@color/red_60" />
+
+            <TextView
+                android:id="@+id/headerCustDesig"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_bold"
+                android:text="2025 "
+                android:textColor="@color/red_60" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/gray_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/headerTxt" />
 
 
-    </LinearLayout>
+        </LinearLayout>
 
 
 
-    <FrameLayout
-        android:id="@+id/doctor_fragment_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/_6sdp"
-        android:layout_marginEnd="@dimen/_6sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
-        app:layout_constraintTop_toBottomOf="@+id/headerName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" >
-        <!--<Spinner
-            android:id="@+id/month_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp" />-->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <FrameLayout
+            android:id="@+id/doctor_fragment_container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            app:layout_constraintTop_toBottomOf="@+id/headerName"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" >
+            &lt;!&ndash;<Spinner
+                android:id="@+id/month_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp" />&ndash;&gt;
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
 
-        </androidx.recyclerview.widget.RecyclerView>
+            </androidx.recyclerview.widget.RecyclerView>
 
-    </FrameLayout>
+        </FrameLayout>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

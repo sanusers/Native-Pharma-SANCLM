@@ -634,6 +634,7 @@
     <string name="_0">0</string>
     <string name="requested_date">Requested Date</string>
     <string name="visit">Visit</string>
+    <string name="visited">Visited</string>
     <string name="Dr">Doctor</string>
     <string name="miss">Missed</string>
     <string name="fwd">FWD</string>

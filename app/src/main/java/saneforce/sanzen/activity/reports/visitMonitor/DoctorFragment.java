@@ -38,25 +38,16 @@ import java.sql.SQLOutput;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Locale;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.reports.visitMonitor.adapter.VisitStatsAdapter;
-import saneforce.sanzen.activity.reports.visitMonitor.model.DoctorStatsModel;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.databinding.FragmentDoctorVisitReportBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
-import saneforce.sanzen.utility.TimeUtils;
 
 public class DoctorFragment extends Fragment {
 
@@ -70,15 +61,15 @@ public class DoctorFragment extends Fragment {
     private static final String ARG_STATS_DATA = "statsData";
     private static final String ARG_POSITION = "position";
 
-    private List<String> monthData;
-    private  List<VisitStatsModel> dataListDoc;
+
+    private List<VisitStatsModel> dataListDoc;
     int position;
 
     public DoctorFragment(List<VisitStatsModel> dataListDoc) {
         this.dataListDoc = dataListDoc;
     }
 
-    public static DoctorFragment newInstance(List<VisitStatsModel> statsData,int position) {
+    public static DoctorFragment newInstance(List<VisitStatsModel> statsData, int position) {
 
         DoctorFragment fragment = new DoctorFragment(statsData);
         Bundle args = new Bundle();
@@ -95,7 +86,7 @@ public class DoctorFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
 //            position = getArguments().getInt(ARG_POSITION, position);
-                position = getArguments().getInt(ARG_POSITION, 2);
+            position = getArguments().getInt(ARG_POSITION, 0);
         }
     }
 
@@ -107,7 +98,6 @@ public class DoctorFragment extends Fragment {
         TextView doctorVst = v.findViewById(R.id.custTxt);
         TextView totalDrTxt = v.findViewById(R.id.totalCust);
         TextView monthTxt = v.findViewById(R.id.monthTxt);
-        TextView yearTxt = v.findViewById(R.id.yearTxt);
         TextView totalDrCnt = v.findViewById(R.id.totalCustCnt);
         TextView visitedCnt = v.findViewById(R.id.visitedCnt);
         TextView missedCnt = v.findViewById(R.id.missedCnt);
@@ -116,93 +106,50 @@ public class DoctorFragment extends Fragment {
         TextView callCvgCnt = v.findViewById(R.id.callCvgCnt);
 
 
-        barChart  = v.findViewById(R.id.barChartVisit);
-        pieChart  = v.findViewById(R.id.pieChart_visit);
+        barChart = v.findViewById(R.id.barChartVisit);
+        pieChart = v.findViewById(R.id.pieChart_visit);
         pieChart.setVisibility(View.VISIBLE);
 
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
 
-        if (monthData != null && monthData.size() >= 2) {
-            monthTxt.setText(monthData.get(0));
-            yearTxt.setText(monthData.get(1));
+        switch (position) {
+            case 0:
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.MONTH, 0);
+                Date currentMonthDate = calendar.getTime();
+                String currentMonth = new SimpleDateFormat("MMMM", Locale.getDefault()).format(currentMonthDate);
+                String currentYear = new SimpleDateFormat("yyyy", Locale.getDefault()).format(currentMonthDate);
+                String formattedDate = currentMonth + " " + currentYear;
+                monthTxt.setText(formattedDate);
+                break;
+            case 1:
+                Calendar calendar1 = Calendar.getInstance();
+                calendar1.add(Calendar.MONTH, -1);
+                Date previousMonthDate = calendar1.getTime();
+                String previousMonth = new SimpleDateFormat("MMMM", Locale.getDefault()).format(previousMonthDate);
+                String currentYear1 = new SimpleDateFormat("yyyy", Locale.getDefault()).format(previousMonthDate);
+                String formattedDate1 = previousMonth + " " + currentYear1;
+                monthTxt.setText(formattedDate1);
+                break;
+            case 2:
+                Calendar calendar2 = Calendar.getInstance();
+                calendar2.add(Calendar.MONTH, -2);
+                Date prePreviousMonthDate = calendar2.getTime();
+                String prePreviousMonth = new SimpleDateFormat("MMMM", Locale.getDefault()).format(prePreviousMonthDate);
+                String currentYear2 = new SimpleDateFormat("yyyy", Locale.getDefault()).format(prePreviousMonthDate);
+                String formattedDate2 = prePreviousMonth + " " + currentYear2;
+                monthTxt.setText(formattedDate2);
+                break;
         }
-        monthTxt.setText(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_23));
-        doctorVst.setText(SharedPref.getDrCap(requireContext())+" "+"Visit");
-        totalDrTxt.setText("Total"+" "+SharedPref.getDrCap(requireContext()));
+
+
+        doctorVst.setText(SharedPref.getDrCap(requireContext()));
+        totalDrTxt.setText("Total" + " " + SharedPref.getDrCap(requireContext()));
         if (dataListDoc != null && !dataListDoc.isEmpty()) {
-            switch (position){
-                case 0:
-                    VisitStatsModel model = dataListDoc.get(0);
-                    totalDrCnt.setText(model.getTotalCustomers());
-                    visitedCnt.setText(model.getVisitedCustomers());
-                    missedCnt.setText(model.getMissedCustomers());
-                    FWDaysCnt.setText(model.getFwDays());
-                    callAvgCnt.setText(model.getCallAvg());
-                    callCvgCnt.setText(model.getCoverage() + "%");
 
-                    setupBarChart(
-                            Integer.parseInt(model.getTotalCustomers()),
-                            Integer.parseInt(model.getVisitedCustomers()),
-                            Integer.parseInt(model.getMissedCustomers()),
-                            Double.parseDouble(model.getCallAvg())
-                    );
-                    setupPieChart(
-                            model.getOneVisitCount(),
-                            model.getTwoVisitCount(),
-                            model.getThreeVisitCount(),
-                            model.getThreePlusVisitCount()
-                    );
-                    break;
-                case 1:
-                    VisitStatsModel model1 = dataListDoc.get(1);
-                    totalDrCnt.setText(model1.getTotalCustomers());
-                    visitedCnt.setText(model1.getVisitedCustomers());
-                    missedCnt.setText(model1.getMissedCustomers());
-                    FWDaysCnt.setText(model1.getFwDays());
-                    callAvgCnt.setText(model1.getCallAvg());
-                    callCvgCnt.setText(model1.getCoverage() + "%");
-
-                    setupBarChart(
-                            Integer.parseInt(model1.getTotalCustomers()),
-                            Integer.parseInt(model1.getVisitedCustomers()),
-                            Integer.parseInt(model1.getMissedCustomers()),
-                            Double.parseDouble(model1.getCallAvg())
-                    );
-                    setupPieChart(
-                            model1.getOneVisitCount(),
-                            model1.getTwoVisitCount(),
-                            model1.getThreeVisitCount(),
-                            model1.getThreePlusVisitCount()
-                    );
-                    break;
-                case 2:
-                    VisitStatsModel model2 = dataListDoc.get(2);
-                    totalDrCnt.setText(model2.getTotalCustomers());
-                    visitedCnt.setText(model2.getVisitedCustomers());
-                    missedCnt.setText(model2.getMissedCustomers());
-                    FWDaysCnt.setText(model2.getFwDays());
-                    callAvgCnt.setText(model2.getCallAvg());
-                    callCvgCnt.setText(model2.getCoverage() + "%");
-
-                    setupBarChart(
-                            Integer.parseInt(model2.getTotalCustomers()),
-                            Integer.parseInt(model2.getVisitedCustomers()),
-                            Integer.parseInt(model2.getMissedCustomers()),
-                            Double.parseDouble(model2.getCallAvg())
-                    );
-                    setupPieChart(
-                            model2.getOneVisitCount(),
-                            model2.getTwoVisitCount(),
-                            model2.getThreeVisitCount(),
-                            model2.getThreePlusVisitCount()
-                    );
-                    break;
-
-            }
-
-            /*VisitStatsModel model = dataListDoc.get(position);
+            VisitStatsModel model = dataListDoc.get(position);
             totalDrCnt.setText(model.getTotalCustomers());
             visitedCnt.setText(model.getVisitedCustomers());
             missedCnt.setText(model.getMissedCustomers());
@@ -221,7 +168,7 @@ public class DoctorFragment extends Fragment {
                     model.getTwoVisitCount(),
                     model.getThreeVisitCount(),
                     model.getThreePlusVisitCount()
-            );*/
+            );
         }
 
         return v;
@@ -243,7 +190,7 @@ public class DoctorFragment extends Fragment {
 
         BarDataSet set = new BarDataSet(entries, "Visit Data");
         set.setDrawValues(false);
-        int[] colors = new int[] {
+        int[] colors = new int[]{
                 requireContext().getResources().getColor(R.color.indigo),
                 requireContext().getResources().getColor(R.color.green_60),
                 requireContext().getResources().getColor(R.color.pink_45),
@@ -279,9 +226,9 @@ public class DoctorFragment extends Fragment {
         pieChart.setDrawHoleEnabled(true);
         pieChart.setHoleColor(requireContext().getResources().getColor(R.color.white));
         pieChart.setTransparentCircleColor(requireContext().getResources().getColor(R.color.white));
-        pieChart.setTransparentCircleAlpha(110);
+        pieChart.setTransparentCircleAlpha(100);
         pieChart.setHoleRadius(63f);
-        pieChart.setTransparentCircleRadius(61f);
+        pieChart.setTransparentCircleRadius(20f);
         pieChart.setRotationAngle(0);
         pieChart.setRotationEnabled(true);
         pieChart.setHighlightPerTapEnabled(true);
@@ -311,7 +258,7 @@ public class DoctorFragment extends Fragment {
         Legend l = pieChart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setDrawInside(false);
         l.setXEntrySpace(7f);
         l.setYEntrySpace(0f);

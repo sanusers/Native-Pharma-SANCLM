@@ -240,7 +240,7 @@ public class SignatureFragment1 extends Fragment {
         if (fileName != null && !fileName.equalsIgnoreCase("null")) {
             File file = new File(context.getFilesDir(), fileName);
 
-            String imageUrl = SharedPref.getTagImageUrl(context) + "photos/" + fileName;
+            String imageUrl = SharedPref.getTagImageUrl(context) + "Sign/" + fileName;
 
             Glide.with(context)
                     .asBitmap()
@@ -258,7 +258,7 @@ public class SignatureFragment1 extends Fragment {
                                 } catch (Exception e) {
                                     Log.e("GlideImageLoad", "Error saving image locally: " + e.getMessage());
                                 }
-                                signatureCanvas.setBackgroundBitmap(bitmap); // 🎯 same as your S3 method
+                                signatureCanvas.setBackgroundBitmap(bitmap); //  same as your S3 method
                             } else {
                                 Log.e("GlideImageLoad", "Failed to load image via Glide: " + fileName + ", bitmap is null.");
                             }

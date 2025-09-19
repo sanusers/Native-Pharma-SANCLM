@@ -3,97 +3,60 @@ package saneforce.sanzen.activity.reports.visitMonitor;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import saneforce.sanzen.activity.reports.visitMonitor.adapter.VisitStatsAdapter;
+
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.reports.visitMonitor.adapter.VisitStatsAdapter;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.databinding.ActivityVisitMonitorBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 
-public class VisitMonitorActivity extends AppCompatActivity {
+public class AsOnCallsFragment extends Fragment {
+
     private RoomDB roomDB;
-    private MasterDataDao masterDataDao;
-    ActivityVisitMonitorBinding binding;
-    String selectedTab, AsOnCalls,ApprovedCalls;
+    MasterDataDao masterDataDao;
 
+    private RecyclerView recyclerView;
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_as_on_calls, container, false);
+        TextView name = v.findViewById(R.id.headerCustName);
+        TextView hq = v.findViewById(R.id.headerCustHq);
+        TextView desig = v.findViewById(R.id.headerCustDesig);
 
-        binding = ActivityVisitMonitorBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        LinearLayout backArrow = binding.backArrow;
+        name.setText(SharedPref.getSfName(requireContext()));
+        hq.setText(SharedPref.getHqName(requireContext()));
+        desig.setText(SharedPref.getDesig(requireContext()));
 
-        roomDB = RoomDB.getDatabase(this);
+        recyclerView = v.findViewById(R.id.recyclerView);
+        roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
 
-        loadFragment(new AsOnCallsFragment());
-
-        binding.note.findViewById(R.id.note);
-        binding.searchCust.findViewById(R.id.search_cust);
-
-        backArrow.setOnClickListener(view -> {
-            getOnBackPressedDispatcher().onBackPressed();
-        });
-
-
-        binding.self.setOnClickListener(view -> {
-            selectedTab = "As on Calls";
-            binding.searchCust.setVisibility(View.GONE);
-            binding.note.setVisibility(View.VISIBLE);
-            updateReportUi();
-            loadFragment(new AsOnCallsFragment());
-        });
-
-        binding.live.setOnClickListener(view -> {
-            selectedTab = "Approved Calls";
-            binding.searchCust.setVisibility(View.VISIBLE);
-            binding.note.setVisibility(View.GONE);
-            updateReportUi();
-        });
-    }
-
-    private void loadFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
-    }
-
-    public void updateReportUi(){
-        binding.self.setBackground(null);
-        binding.live.setBackground(null);
-
-        binding.self.setTextColor(getColor(R.color.dark_purple));
-        binding.live.setTextColor(getColor(R.color.dark_purple));
-
-        switch (selectedTab){
-            case "As on Calls":
-                binding.self.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
-                binding.self.setTextColor(getColor(R.color.white));
-                break;
-            case "Approved Calls":
-                binding.live.setBackground(AppCompatResources.getDrawable(this, R.drawable.bg_light_purple));
-                binding.live.setTextColor(getColor(R.color.white));
-                break;
-        }
+        custFilter();
+        return v;
 
     }
-   /* public void custFilter() {
+
+    public void custFilter() {
         VisitFilter visitFilter = new VisitFilter(masterDataDao);
 
         Map<String, VisitFilter.MonthlyStats> monthlyData = visitFilter.callFilter();
@@ -141,19 +104,19 @@ public class VisitMonitorActivity extends AppCompatActivity {
             int visitedUnlistedPreviousMonth = currentMonthStats.uniqueUnlisted.size();
             int visitedUnlistedPre_PrevMonth = currentMonthStats.uniqueUnlisted.size();
 
-            String doctorData = masterDataDao.getDataByKey(Constants.DOCTOR_MAS + SharedPref.getHqCode(this));
+            String doctorData = masterDataDao.getDataByKey(Constants.DOCTOR_MAS + SharedPref.getHqCode(requireContext()));
             JSONArray doctorArray = new JSONArray(doctorData);
             int totalDoctors = doctorArray.length();
 
-            String chemistData = masterDataDao.getDataByKey(Constants.CHEMIST_MAS + SharedPref.getHqCode(this));
+            String chemistData = masterDataDao.getDataByKey(Constants.CHEMIST_MAS + SharedPref.getHqCode(requireContext()));
             JSONArray chemistArray = new JSONArray(chemistData);
             int totalChemist = chemistArray.length();
 
-            String stkData = masterDataDao.getDataByKey(Constants.STOCKIEST_MAS + SharedPref.getHqCode(this));
+            String stkData = masterDataDao.getDataByKey(Constants.STOCKIEST_MAS + SharedPref.getHqCode(requireContext()));
             JSONArray stkArray = new JSONArray(stkData);
             int totalStk = stkArray.length();
 
-            String unlistedData = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR_MAS + SharedPref.getHqCode(this));
+            String unlistedData = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR_MAS + SharedPref.getHqCode(requireContext()));
             JSONArray unlistedArray = new JSONArray(unlistedData);
             int totalUnlisted = unlistedArray.length();
 
@@ -453,23 +416,23 @@ public class VisitMonitorActivity extends AppCompatActivity {
             dataListUnlisted.add(prePreviousMonthUnlistedStats);
 
 
-            RecyclerView recyclerView = findViewById(R.id.recyclerView);
+//            RecyclerView recyclerView = findViewById(R.id.recyclerView);
+
             Log.w("DEBUG", "RecyclerView object = " + recyclerView);
 
             VisitStatsAdapter adapter = new VisitStatsAdapter(
-                    monthlyData.size(),VisitMonitorActivity.this, // FragmentActivity
+                    monthlyData.size(),AsOnCallsFragment.super.getActivity(), // FragmentActivity
                     dataListDoc,
                     dataListChm,
                     dataListStk,
-                    dataListUnlisted,this
+                    dataListUnlisted,requireContext()
             );
             Log.w("DEBUG", "Adapter created = " + adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
             recyclerView.setAdapter(adapter);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }*/
-
+    }
 }

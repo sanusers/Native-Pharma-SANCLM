@@ -36,12 +36,8 @@ import java.util.Locale;
 import java.util.Set;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.reports.visitMonitor.adapter.ChemistStatsAdapter;
-import saneforce.sanzen.activity.reports.visitMonitor.model.ChemistStatsModel;
-import saneforce.sanzen.activity.reports.visitMonitor.model.DoctorStatsModel;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
@@ -54,6 +50,7 @@ public class ChemistVisitFragment extends Fragment {
     private MasterDataDao masterDataDao;
 
     private static final String ARG_MONTH_DATA = "monthData";
+    private static final String ARG_POSITION = "position";
     private List<String> monthData;
     private BarChart barChart;
     private  List<VisitStatsModel> dataListChm;
@@ -65,9 +62,10 @@ public class ChemistVisitFragment extends Fragment {
         this.dataListChm = dataListChm;
     }
 
-    public static ChemistVisitFragment newInstance( List<VisitStatsModel> chemistStats) {
+    public static ChemistVisitFragment newInstance( List<VisitStatsModel> chemistStats, int position) {
        ChemistVisitFragment fragment = new ChemistVisitFragment(chemistStats);
         Bundle args = new Bundle();
+        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,6 +75,7 @@ public class ChemistVisitFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             this.monthData = getArguments().getStringArrayList(ARG_MONTH_DATA);
+            position = getArguments().getInt(ARG_POSITION, 0);
         }
     }
 
@@ -89,7 +88,6 @@ public class ChemistVisitFragment extends Fragment {
         TextView chemistVst = v.findViewById(R.id.custTxt);
         TextView totalChmTxt = v.findViewById(R.id.totalCust);
         TextView monthTxt = v.findViewById(R.id.monthTxt);
-        TextView yearTxt = v.findViewById(R.id.yearTxt);
         TextView totalChmCnt = v.findViewById(R.id.totalCustCnt);
         TextView visitedCnt = v.findViewById(R.id.visitedCnt);
         TextView missedCnt = v.findViewById(R.id.missedCnt);
@@ -104,15 +102,37 @@ public class ChemistVisitFragment extends Fragment {
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
 
-
-
-
-        if (monthData != null && monthData.size() >= 2) {
-            monthTxt.setText(monthData.get(0));
-            yearTxt.setText(monthData.get(1));
+        switch (position) {
+            case 0:
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.MONTH, 0);
+                Date currentMonthDate = calendar.getTime();
+                String currentMonth = new SimpleDateFormat("MMMM", Locale.getDefault()).format(currentMonthDate);
+                String currentYear = new SimpleDateFormat("yyyy", Locale.getDefault()).format(currentMonthDate);
+                String formattedDate = currentMonth + " " + currentYear;
+                monthTxt.setText(formattedDate);
+                break;
+            case 1:
+                Calendar calendar1 = Calendar.getInstance();
+                calendar1.add(Calendar.MONTH, -1);
+                Date previousMonthDate = calendar1.getTime();
+                String previousMonth = new SimpleDateFormat("MMMM", Locale.getDefault()).format(previousMonthDate);
+                String currentYear1 = new SimpleDateFormat("yyyy", Locale.getDefault()).format(previousMonthDate);
+                String formattedDate1 = previousMonth + " " + currentYear1;
+                monthTxt.setText(formattedDate1);
+                break;
+            case 2:
+                Calendar calendar2 = Calendar.getInstance();
+                calendar2.add(Calendar.MONTH, -2);
+                Date prePreviousMonthDate = calendar2.getTime();
+                String prePreviousMonth = new SimpleDateFormat("MMMM", Locale.getDefault()).format(prePreviousMonthDate);
+                String currentYear2 = new SimpleDateFormat("yyyy", Locale.getDefault()).format(prePreviousMonthDate);
+                String formattedDate2 = prePreviousMonth + " " + currentYear2;
+                monthTxt.setText(formattedDate2);
+                break;
         }
-        monthTxt.setText(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_23));
-        chemistVst.setText(SharedPref.getChmCap(requireContext())+" "+"Visit");
+
+        chemistVst.setText(SharedPref.getChmCap(requireContext()));
         totalChmTxt.setText("Total"+" "+SharedPref.getChmCap(requireContext()));
 
         ChemistImage.setImageDrawable(getResources().getDrawable(R.drawable.chemist_img));
@@ -145,202 +165,6 @@ public class ChemistVisitFragment extends Fragment {
         return v;
     }
 
-/*    public void callFilter(RecyclerView recyclerView) {
-        try {
-            JSONArray jsonArray_call = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
-            JSONArray jsonArray_date = new JSONArray(masterDataDao.getDataByKey(Constants.DATE_SYNC));
-
-            Set<String> rejectedDates = new HashSet<>();
-            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-            for (int i = 0; i < jsonArray_date.length(); i++) {
-                JSONObject dateObj = jsonArray_date.getJSONObject(i);
-                String flg = dateObj.optString("flg", "");
-                if ("0".equals(flg)) {
-                    continue;
-                }
-                String fullDate = dateObj.getJSONObject("dt").getString("date");
-                Date parsedDate = inputFormat.parse(fullDate);
-                String formattedDate = outputFormat.format(parsedDate);
-                rejectedDates.add(formattedDate);
-            }
-
-            JSONArray filteredCalls = new JSONArray();
-            List<JSONObject> filteredCallList = new ArrayList<>();
-
-            for (int i = 0; i < jsonArray_call.length(); i++) {
-                JSONObject callObj = jsonArray_call.getJSONObject(i);
-                String callDate = callObj.getString("Dcr_dt");
-                if (!rejectedDates.contains(callDate)) {
-                    filteredCalls.put(callObj);
-                    filteredCallList.add(callObj);
-                }
-            }
-
-            List<JSONObject> currentMonthFilteredList = new ArrayList<>();
-            List<JSONObject> previousMonthFilteredList = new ArrayList<>();
-            List<JSONObject> pre_PreviousMonthFilteredList = new ArrayList<>();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-
-            Calendar now = Calendar.getInstance();
-            int currentMonth = now.get(Calendar.MONTH);
-            int currentYear = now.get(Calendar.YEAR);
-
-            // Previous month
-            Calendar prevCal = (Calendar) now.clone();
-            prevCal.add(Calendar.MONTH, -1);
-            int previousMonth = prevCal.get(Calendar.MONTH);
-            int previousYear = prevCal.get(Calendar.YEAR);
-
-            // Pre-Previous month
-            Calendar prePrevCal = (Calendar) now.clone();
-            prePrevCal.add(Calendar.MONTH, -2);
-            int prePreviousMonth = prePrevCal.get(Calendar.MONTH);
-            int prePreviousYear = prePrevCal.get(Calendar.YEAR);
-
-            for (JSONObject callObj : filteredCallList) {
-                String callDateStr = callObj.optString("Dcr_dt", "");
-                if (!callDateStr.isEmpty()) {
-                    Date callDate = sdf.parse(callDateStr);
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(callDate);
-
-                    int callMonth = cal.get(Calendar.MONTH);
-                    int callYear = cal.get(Calendar.YEAR);
-
-                    if (callMonth == currentMonth && callYear == currentYear) {
-                        currentMonthFilteredList.add(callObj);
-                    } else if (callMonth == previousMonth && callYear == previousYear) {
-                        previousMonthFilteredList.add(callObj);
-                    } else if (callMonth == prePreviousMonth && callYear == prePreviousYear) {
-                        pre_PreviousMonthFilteredList.add(callObj);
-                    }
-                }
-            }
-
-            Set<String> currentMonthChemists = new HashSet<>();
-            Set<String> previousMonthChemists = new HashSet<>();
-            Set<String> prePreviousMonthChemists = new HashSet<>();
-
-            Set<String> currentMonthFWDays = new HashSet<>();
-            Set<String> previousMonthFWDays = new HashSet<>();
-            Set<String> prePreviousMonthFWDays = new HashSet<>();
-
-            for (JSONObject callObj : currentMonthFilteredList) {
-                String chemistId = callObj.optString("CustCode", "");
-                String custType = callObj.optString("CustType", "");
-                if (!chemistId.isEmpty() && custType.equalsIgnoreCase("2")) {
-                    currentMonthChemists.add(chemistId);
-                    currentMonthChemists.size();
-                }
-
-                String FW_Code = callObj.optString("CustType");
-                String FW_Indi = callObj.optString("FW_Indicator");
-                String callDateStr = callObj.optString("Dcr_dt", "");
-                if (FW_Code.equalsIgnoreCase("0") && FW_Indi.equalsIgnoreCase("F")) {
-                    currentMonthFWDays.add(callDateStr);
-                    currentMonthFWDays.size();
-                }
-            }
-
-            for (JSONObject callObj : previousMonthFilteredList) {
-                String chemistId = callObj.optString("CustCode", "");
-                String custType = callObj.optString("CustType", "");
-                if (!chemistId.isEmpty() && custType.equalsIgnoreCase("2")) {
-                    previousMonthChemists.add(chemistId);
-                    previousMonthChemists.size();
-                } else {
-                    Log.d("TAG", "callFilter: " + "previousMonthChemist month is 0");
-                }
-
-                for (JSONObject callObj1 : currentMonthFilteredList) {
-                    String FW_Code = callObj1.optString("CustType");
-                    String FW_Indi = callObj1.optString("FW_Indicator");
-                    String callDateStr = callObj.optString("Dcr_dt", "");
-                    if (FW_Code.equalsIgnoreCase("0") && FW_Indi.equalsIgnoreCase("F")) {
-                        previousMonthFWDays.add(callDateStr);
-                        previousMonthFWDays.size();
-                    }
-                }
-            }
-
-            for (JSONObject callObj : pre_PreviousMonthFilteredList) {
-                String chemistId = callObj.optString("CustCode", "");
-                String custType = callObj.optString("CustType", "");
-                if (!chemistId.isEmpty() && custType.equalsIgnoreCase("2")) {
-                    prePreviousMonthChemists.add(chemistId);
-                    prePreviousMonthChemists.size();
-                }
-
-                for (JSONObject callObj1 : pre_PreviousMonthFilteredList) {
-                    String FW_Code = callObj1.optString("CustType");
-                    String FW_Indi = callObj1.optString("FW_Indicator");
-                    String callDateStr = callObj.optString("Dcr_dt", "");
-                    if (FW_Code.equalsIgnoreCase("0") && FW_Indi.equalsIgnoreCase("F")) {
-                        prePreviousMonthFWDays.add(callDateStr);
-                        prePreviousMonthFWDays.size();
-                    }
-                }
-            }
-
-            String ChemistData = masterDataDao.getDataByKey(Constants.CHEMIST_MAS + SharedPref.getHqCode(requireContext()));
-            JSONArray chemistArray = new JSONArray(ChemistData);
-            int totalChemists = chemistArray.length();
-
-            int currentMonthMissed = totalChemists - currentMonthChemists.size();
-            int previousMonthMissed = totalChemists - previousMonthChemists.size();
-            int prePreviousMonthMissed = totalChemists - prePreviousMonthChemists.size();
-
-            double currentMonthCallAvg = (double) currentMonthFilteredList.size() / currentMonthFWDays.size();
-            double previousMonthCallAvg = (double) previousMonthFilteredList.size() / previousMonthFWDays.size();
-            double pre_PreviousMonthCallAvg = (double) pre_PreviousMonthFilteredList.size() / prePreviousMonthFWDays.size();
-
-            double currentMonthCvg = (double) currentMonthChemists.size() / totalChemists * 100;
-            double previousMonthCvg = (double) previousMonthChemists.size() / totalChemists * 100;
-            double prePreviousMonthCvg = (double) prePreviousMonthChemists.size() / totalChemists * 100;
-
-            List<ChemistStatsModel> dataList = new ArrayList<>();
-            ChemistStatsModel currentMonthStats = new ChemistStatsModel(
-                    String.valueOf(totalChemists),
-                    String.valueOf(currentMonthChemists.size()),
-                    String.valueOf(currentMonthMissed),
-                    String.valueOf(currentMonthFWDays.size()),
-                    String.valueOf(Math.round(currentMonthCallAvg)),
-                    String.valueOf(Math.round(currentMonthCvg))
-
-            );
-
-            ChemistStatsModel previousMonthStats = new ChemistStatsModel(
-                    String.valueOf(totalChemists),
-                    String.valueOf(previousMonthChemists.size()),
-                    String.valueOf(previousMonthMissed),
-                    String.valueOf(previousMonthFWDays.size()),
-                    String.valueOf(Math.round(previousMonthCallAvg)),
-                    String.valueOf(Math.round(previousMonthCvg))
-
-            );
-
-            ChemistStatsModel prePreviousMonthStats = new ChemistStatsModel(
-                    String.valueOf(totalChemists),
-                    String.valueOf(prePreviousMonthChemists.size()),
-                    String.valueOf(prePreviousMonthMissed),
-                    String.valueOf(prePreviousMonthFWDays.size()),
-                    String.valueOf(Math.round(pre_PreviousMonthCallAvg)),
-                    String.valueOf(Math.round(prePreviousMonthCvg))
-            );
-
-            dataList.add(currentMonthStats);
-            dataList.add(previousMonthStats);
-            dataList.add(prePreviousMonthStats);
-            ChemistStatsAdapter adapter = new ChemistStatsAdapter(dataList);
-            recyclerView.setAdapter(adapter);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
 
     private void setupBarChart(int total, int visited, int missed, double callAvg) {
         List<BarEntry> entries = new ArrayList<>();
@@ -365,7 +189,7 @@ public class ChemistVisitFragment extends Fragment {
         };
         set.setColors(colors);
         BarData data = new BarData(set);
-        data.setBarWidth(0.5f);
+        data.setBarWidth(0.2f);
 
         barChart.setData(data);
         barChart.getDescription().setEnabled(false);

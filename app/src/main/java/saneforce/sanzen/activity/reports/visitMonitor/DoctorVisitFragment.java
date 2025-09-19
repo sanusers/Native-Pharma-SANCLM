@@ -1,3 +1,4 @@
+/*
 package saneforce.sanzen.activity.reports.visitMonitor;
 
 import android.annotation.SuppressLint;
@@ -74,7 +75,8 @@ public class DoctorVisitFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_doctor_visit_report, container, false);
-      /*  headerTxt = v.findViewById(R.id.headerTxt);
+      */
+/*  headerTxt = v.findViewById(R.id.headerTxt);
         headerTxt1 = v.findViewById(R.id.headerTxt1);
         headerTxt2 = v.findViewById(R.id.headerTxt2);
         doctorVisitTxt = v.findViewById(R.id.doctorVisitTxt);
@@ -101,7 +103,8 @@ public class DoctorVisitFragment extends Fragment {
         headerTxt1.setText(SharedPref.getHqName(requireContext()));
         headerTxt2.setText(SharedPref.getDesig(requireContext()));
         doctorVisitTxt.setText(String.format(SharedPref.getDrCap(requireContext())) + " " + "Visit");
-        totalDr.setText(String.format(getString(R.string.total))+" " + SharedPref.getDrCap(requireContext()));*/
+        totalDr.setText(String.format(getString(R.string.total))+" " + SharedPref.getDrCap(requireContext()));*//*
+
 
 
         RecyclerView recyclerView = v.findViewById(R.id.recyclerView);
@@ -110,10 +113,12 @@ public class DoctorVisitFragment extends Fragment {
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         callFilter(recyclerView);
-        /*VisitMonitorActivity activity = (VisitMonitorActivity) getActivity();
+        */
+/*VisitMonitorActivity activity = (VisitMonitorActivity) getActivity();
         if (activity != null) {
             activity.custFilter();
-        }*/
+        }*//*
+
         return v;
     }
 
@@ -361,7 +366,8 @@ public class DoctorVisitFragment extends Fragment {
             e.printStackTrace();
         }
 
-   /* public void barReport(DoctorStatsAdapter.DoctorStatsViewHolder holder, VisitStatsModel model) {
+   */
+/* public void barReport(DoctorStatsAdapter.DoctorStatsViewHolder holder, VisitStatsModel model) {
         Context context = holder.itemView.getContext();
         List<BarEntry> entries = new ArrayList<>();
         ArrayList<String> xVals = new ArrayList<>();
@@ -463,9 +469,11 @@ public class DoctorVisitFragment extends Fragment {
 
         chart.animateY(1400);
         chart.invalidate();
-    }*/
+    }*//*
+
 
     }
 }
 
 
+*/

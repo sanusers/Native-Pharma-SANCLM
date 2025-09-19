@@ -20,17 +20,19 @@ public class ReportPagerAdapter extends FragmentStateAdapter {
     private final List<VisitStatsModel> chemistStats;
     private final List<VisitStatsModel> stockiestStats;
     private final List<VisitStatsModel> unlistedStats;
+    int month;
 
     public ReportPagerAdapter(@NonNull FragmentActivity activity,
                               List<VisitStatsModel> doctorStats,
                               List<VisitStatsModel> chemistStats,
                               List<VisitStatsModel> stockiestStats,
-                              List<VisitStatsModel> unlistedStats) {
+                              List<VisitStatsModel> unlistedStats,int month) {
         super(activity);
         this.doctorStats = doctorStats;
         this.chemistStats = chemistStats;
         this.stockiestStats = stockiestStats;
         this.unlistedStats = unlistedStats;
+        this.month = month;
     }
 
     @NonNull
@@ -38,15 +40,15 @@ public class ReportPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return  DoctorFragment.newInstance(doctorStats,position);
+                return  DoctorFragment.newInstance(doctorStats,month);
             case 1:
-                return  ChemistVisitFragment.newInstance(chemistStats);
+                return  ChemistVisitFragment.newInstance(chemistStats,month);
             case 2:
-                return  StockiestVisitFragment.newInstance(stockiestStats);
+                return  StockiestVisitFragment.newInstance(stockiestStats,month);
             case 3:
-                return UnlistedVisitFragment.newInstance(unlistedStats);
+                return UnlistedVisitFragment.newInstance(unlistedStats,month);
             default:
-                return DoctorFragment.newInstance(doctorStats,position);
+                return DoctorFragment.newInstance(doctorStats,month);
 
         }
     }

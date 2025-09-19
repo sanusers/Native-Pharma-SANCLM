@@ -1,3 +1,4 @@
+/*
 package saneforce.sanzen.activity.reports.visitMonitor.adapter;
 
 import android.content.Context;
@@ -135,3 +136,4 @@ public class StockiestStatsAdapter extends RecyclerView.Adapter<StockiestStatsAd
     }
 
 }
+*/

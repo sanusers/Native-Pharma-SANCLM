@@ -4,9 +4,9 @@
     android:id="@+id/doctor_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
+    android:layout_marginStart="@dimen/_2sdp"
     android:layout_marginTop="16dp"
-    android:layout_marginEnd="16dp"
+    android:layout_marginEnd="@dimen/_2sdp"
     app:cardCornerRadius="6dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -336,7 +336,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
+      <!--  <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/_2sdp"
             android:orientation="horizontal"
@@ -375,7 +375,7 @@
                 android:layout_marginStart="@dimen/_5sdp"
                 android:background="@color/gray_med"
                 android:visibility="visible"/>
-        </LinearLayout>
+        </LinearLayout>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

@@ -29,20 +29,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Locale;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.reports.visitMonitor.adapter.StockiestStatsAdapter;
-import saneforce.sanzen.activity.reports.visitMonitor.model.StockiestStatsModel;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
-import saneforce.sanzen.utility.TimeUtils;
 
 public class StockiestVisitFragment extends Fragment {
 
@@ -51,6 +46,7 @@ public class StockiestVisitFragment extends Fragment {
     private MasterDataDao masterDataDao;
 
     private static final String ARG_MONTH_DATA = "monthData";
+    private static final String ARG_POSITION = "position";
     private List<String> monthData;
     private BarChart barChart;
     private  List<VisitStatsModel> dataListStk;
@@ -61,9 +57,10 @@ public class StockiestVisitFragment extends Fragment {
         this.dataListStk = dataListStk;
     }
 
-    public static StockiestVisitFragment newInstance(List<VisitStatsModel> stockiestStats) {
+    public static StockiestVisitFragment newInstance(List<VisitStatsModel> stockiestStats,int position) {
         StockiestVisitFragment fragment = new StockiestVisitFragment(stockiestStats);
         Bundle args = new Bundle();
+        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -73,6 +70,7 @@ public class StockiestVisitFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             this.monthData = getArguments().getStringArrayList(ARG_MONTH_DATA);
+            position = getArguments().getInt(ARG_POSITION, 0);
         }
     }
 
@@ -84,7 +82,6 @@ public class StockiestVisitFragment extends Fragment {
         TextView stkVst = v.findViewById(R.id.custTxt);
         TextView totalStkTxt = v.findViewById(R.id.totalCust);
         TextView monthTxt = v.findViewById(R.id.monthTxt);
-        TextView yearTxt = v.findViewById(R.id.yearTxt);
         TextView totalStkCnt = v.findViewById(R.id.totalCustCnt);
         TextView visitedCnt = v.findViewById(R.id.visitedCnt);
         TextView missedCnt = v.findViewById(R.id.missedCnt);
@@ -98,12 +95,37 @@ public class StockiestVisitFragment extends Fragment {
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
 
-        if (monthData != null && monthData.size() >= 2) {
-            monthTxt.setText(monthData.get(0));
-            yearTxt.setText(monthData.get(1));
+        switch (position) {
+            case 0:
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.MONTH, 0);
+                Date currentMonthDate = calendar.getTime();
+                String currentMonth = new SimpleDateFormat("MMMM", Locale.getDefault()).format(currentMonthDate);
+                String currentYear = new SimpleDateFormat("yyyy", Locale.getDefault()).format(currentMonthDate);
+                String formattedDate = currentMonth + " " + currentYear;
+                monthTxt.setText(formattedDate);
+                break;
+            case 1:
+                Calendar calendar1 = Calendar.getInstance();
+                calendar1.add(Calendar.MONTH, -1);
+                Date previousMonthDate = calendar1.getTime();
+                String previousMonth = new SimpleDateFormat("MMMM", Locale.getDefault()).format(previousMonthDate);
+                String currentYear1 = new SimpleDateFormat("yyyy", Locale.getDefault()).format(previousMonthDate);
+                String formattedDate1 = previousMonth + " " + currentYear1;
+                monthTxt.setText(formattedDate1);
+                break;
+            case 2:
+                Calendar calendar2 = Calendar.getInstance();
+                calendar2.add(Calendar.MONTH, -2);
+                Date prePreviousMonthDate = calendar2.getTime();
+                String prePreviousMonth = new SimpleDateFormat("MMMM", Locale.getDefault()).format(prePreviousMonthDate);
+                String currentYear2 = new SimpleDateFormat("yyyy", Locale.getDefault()).format(prePreviousMonthDate);
+                String formattedDate2 = prePreviousMonth + " " + currentYear2;
+                monthTxt.setText(formattedDate2);
+                break;
         }
-        monthTxt.setText(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_23));
-        stkVst.setText(SharedPref.getStkCap(requireContext())+" "+"Visit");
+
+        stkVst.setText(SharedPref.getStkCap(requireContext()));
         totalStkTxt.setText("Total"+" "+SharedPref.getStkCap(requireContext()));
         stockiestImage.setImageDrawable(getResources().getDrawable(R.drawable.map_stockist_img));
 
@@ -157,7 +179,7 @@ public class StockiestVisitFragment extends Fragment {
         };
         set.setColors(colors);
         BarData data = new BarData(set);
-        data.setBarWidth(0.5f);
+        data.setBarWidth(0.2f);
 
         barChart.setData(data);
         barChart.getDescription().setEnabled(false);
