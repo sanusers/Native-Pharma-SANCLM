@@ -611,7 +611,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         if (modelClass1.getDoctors().size() == 0) {
                                             isEmpty = true;
                                             position = i;
-                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
                                             break;
                                         } else if (modelClass1.getDoctors().size() > Integer.parseInt(maxDrCount)) {
                                             isEmpty = true;
@@ -723,7 +723,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0") && modelClass1.getListedDrs().isEmpty() && modelClass1.getChemists().isEmpty() && modelClass1.getStockiests().isEmpty() && modelClass1.getUnListedDrs().isEmpty() && modelClass1.getCips().isEmpty() && modelClass1.getHospitals().isEmpty())) {
                                         isEmpty = true;
                                         position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + (i + 1));
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + " " + (i + 1));
                                         break;
                                     }
                                 }
@@ -762,7 +762,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0") && modelClass1.getListedDrs().isEmpty() && modelClass1.getChemists().isEmpty() && modelClass1.getStockiests().isEmpty() && modelClass1.getUnListedDrs().isEmpty() && modelClass1.getCips().isEmpty() && modelClass1.getHospitals().isEmpty())) {
                                         isEmpty = true;
                                         position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + (i + 1));
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + " " + (i + 1));
                                         break;
                                     }
                                 }
@@ -819,7 +819,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     if (oneBuildModelClass.getDoctors().size() == 0) {
                                         isEmpty = true;
                                         position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + (i + 1));
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " " + SharedPref.getDrCap(TourPlanActivity.this) + " " + getString(R.string.in_session) + " " + (i + 1));
                                         break;
                                     } else if (oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) {
                                         isEmpty = true;
@@ -843,7 +843,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 if (oneBuildModelClass.getDoctors().isEmpty()) {
                                     isEmpty = true;
                                     position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + (i + 1));
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + " " + (i + 1));
                                     break;
                                 } else if (oneBuildModelClass.getDoctors().size() > Integer.parseInt(maxDrCount)) { //Selected Dr count should not be more than maxDrCount setup limit
                                     isEmpty = true;
@@ -1047,7 +1047,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0") && modelClass.getListedDrs().isEmpty() && modelClass.getChemists().isEmpty() && modelClass.getStockiests().isEmpty() && modelClass.getUnListedDrs().isEmpty() && modelClass.getCips().isEmpty() && modelClass.getHospitals().isEmpty())) {
                                     isEmpty = true;
                                     position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + (i + 1));
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + " " + (i + 1));
                                     break;
                                 }
                             }
@@ -1088,7 +1088,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     || (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0") && modelClass.getListedDrs().isEmpty() && modelClass.getChemists().isEmpty() && modelClass.getStockiests().isEmpty() && modelClass.getUnListedDrs().isEmpty() && modelClass.getCips().isEmpty() && modelClass.getHospitals().isEmpty())) {
                                 isEmpty = true;
                                 position = i;
-                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + (i + 1));
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any) + " " + masters + " " + getString(R.string.in_session) + " " + (i + 1));
                                 break;
                             }
                         }
@@ -4614,7 +4614,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                             WTCode3 = sessionList.getWorkType().getCode();
                                             WTName3 = sessionList.getWorkType().getName();
                                             FWFlg3 = sessionList.getWorkType().getFWFlg();
-
                                             if (SharedPref.getSfType(TourPlanActivity.this).equalsIgnoreCase("1")) {
                                                 HQCodes3 = sessionList.getHQ().getCode();
                                                 HQNames3 = sessionList.getHQ().getName();

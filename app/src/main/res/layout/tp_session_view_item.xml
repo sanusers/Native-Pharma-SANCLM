@@ -141,7 +141,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="start"
-                    android:text="Head Quarters"
+                    android:text="Headquarters"
                     android:textColor="@color/text_dark_65"
                     android:textSize="@dimen/_6sdp"
                     android:textStyle="bold"

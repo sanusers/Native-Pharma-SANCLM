@@ -1,5 +1,6 @@
 package saneforce.sanzen.activity.tourPlan.session;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.tourPlan.model.EditModelClass;
+import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.storage.SharedPref;
 
@@ -28,17 +30,21 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     private int selectedHQCount = 0;
     private ValueFilter valueFilter;
     SessionItemInterface sessionItemInterface;
-
+    private Context context;
+    private CommonUtilsMethods commonUtilsMethods;
     private int independentPosition = -1;
+
     public SessionItemAdapter() {
     }
 
-    public SessionItemAdapter(ArrayList<EditModelClass> arrayList, boolean checkBoxVisibility, boolean isHQ, SessionItemInterface sessionItemInterface) {
+    public SessionItemAdapter(Context context, ArrayList<EditModelClass> arrayList, boolean checkBoxVisibility, boolean isHQ, SessionItemInterface sessionItemInterface) {
+        this.context =context;
         this.arrayList = arrayList;
         this.arrayForFilter = arrayList;
         this.isHQ = isHQ;
         this.checkBoxVisibility = checkBoxVisibility;
         this.sessionItemInterface = sessionItemInterface;
+        commonUtilsMethods = new CommonUtilsMethods(context);
         selectedHQCount = 0;
         for (EditModelClass hq : arrayList) {
             if (hq.isChecked()){
@@ -81,11 +87,6 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                         break;
                     }
                 }
-                if (isHQ) {
-                    if (clickedItem.isChecked()) {
-
-                    }
-                }
 
                 boolean isNowChecked = !clickedItem.isChecked();
                 clickedItem.setChecked(isNowChecked);
@@ -102,6 +103,19 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                     } else if (independentPos != -1 && arrayList.get(independentPos).isChecked()) {
                         arrayList.get(independentPos).setChecked(false);
                         notifyItemChanged(independentPos);
+                    }
+                }
+                if (isHQ) {
+                    if (isNowChecked) {
+                        selectedHQCount++;
+                        if (selectedHQCount > 5) {
+                            commonUtilsMethods.showToastMessage(context, "Cannot select more than 5 " + context.getString(R.string.headquarter));
+                            selectedHQCount--;
+                            clickedItem.setChecked(false);
+                            notifyItemChanged(position);
+                        }
+                    } else {
+                        selectedHQCount--;
                     }
                 }
 

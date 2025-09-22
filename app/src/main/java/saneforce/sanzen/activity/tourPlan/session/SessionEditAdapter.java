@@ -268,9 +268,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
     }
 
-    public void setSelectedCountMGR(MyViewHolder
-                                            holder, ArrayList<MultiHQHeaderModelClass> arrayList, boolean selectState, TextView
-                                            selectedNameTxtView, TextView countTxt) {
+    public void setSelectedCountMGR(MyViewHolder holder, ArrayList<MultiHQHeaderModelClass> arrayList, boolean selectState, TextView selectedNameTxtView, TextView countTxt) {
         if (!selectState) {
             int count = 0;
             for (int i = 0; i < arrayList.size(); i++) {
@@ -2816,8 +2814,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
         }
-
-        sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, checkBoxNeed, isHQ, new SessionItemInterface() {
+        sessionItemAdapter = new SessionItemAdapter(context, holder.sessionItemAdapterArray, checkBoxNeed, isHQ, new SessionItemInterface() {
             @Override
             public void itemClicked(ArrayList<EditModelClass> jsonArray, EditModelClass jsonObject) {
                 if (holder.workTypeLayout.getVisibility() == View.VISIBLE) {
@@ -3053,8 +3050,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             });
         }
-        sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, checkBoxNeed, false, new SessionItemInterface() {
-
+        sessionItemAdapter = new SessionItemAdapter(context, holder.sessionItemAdapterArray, checkBoxNeed, false, new SessionItemInterface() {
             @Override
             public void itemClicked(ArrayList<EditModelClass> jsonArray, EditModelClass jsonObject) {
                 if (holder.workTypeLayout.getVisibility() == View.VISIBLE) {
@@ -3875,8 +3871,10 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     }
                 }
             }
-            dataHeader.setItemsList(resultDataItemList);
-            resultDataHeaderList.add(dataHeader);
+            if (!resultDataItemList.isEmpty()) {
+                dataHeader.setItemsList(resultDataItemList);
+                resultDataHeaderList.add(dataHeader);
+            }
         }
 
         if (text.length() == 0) {
