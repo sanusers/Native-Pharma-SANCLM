@@ -23,7 +23,6 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerAdapter
     private final FragmentActivity fragmentActivity;
     int position;
 
-    @Override
     public InnerAdapter(FragmentActivity fragmentActivity,
                              List<InnerAdapter> doctorStats,
                              List<InnerAdapter> chemistStats,

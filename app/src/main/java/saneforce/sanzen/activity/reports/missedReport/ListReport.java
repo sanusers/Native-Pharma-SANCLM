@@ -22,4 +22,4 @@ public class ListReport { private String type; // "Doctor", "Chemist", "Stockist
     public int getMissed() { return missed; }
     public List<GraphReport> getInnerList() { return innerList; }
 }
-}
+

@@ -94,6 +94,47 @@
 
     </LinearLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cal_lay"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginHorizontal="@dimen/_6sdp"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/switch_txt"
+        app:layout_constraintEnd_toEndOf="@id/search_cust"
+        app:layout_constraintBottom_toBottomOf="@id/switch_txt"
+        app:layout_constraintTop_toTopOf="@id/switch_txt">
+
+        <TextView
+            android:id="@+id/calender"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:background="@drawable/black_stroke"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start|center_vertical"
+            android:paddingStart="@dimen/_9sdp"
+            android:text="Select Month"
+            android:textColor="@color/text_dark"
+            android:textSize="@dimen/_7sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="MissingConstraints,SpUsage" />
+
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="0dp"
+            android:background="@color/text_dark"
+            android:padding="@dimen/_4sdp"
+            android:src="@drawable/calendar_img"
+            app:layout_constraintBottom_toBottomOf="@+id/calender"
+            app:layout_constraintEnd_toEndOf="@+id/calender"
+            app:layout_constraintTop_toTopOf="@+id/calender"
+            app:tint="@color/white" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/search_cust"
         android:layout_width="0dp"
@@ -111,19 +152,19 @@
         android:textColor="@color/black"
         android:textColorHint="@color/light_grey"
         android:textSize="@dimen/_6ssp"
-        app:layout_constraintStart_toEndOf="@+id/switch_txt"
+        app:layout_constraintStart_toEndOf="@+id/cal_lay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBar"
         app:layout_constraintBottom_toTopOf="@+id/fragment_container"
         app:layout_constraintVertical_bias="0.044"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/note"
         android:layout_width="0dp"
         android:layout_height="@dimen/_20sdp"
         android:layout_marginHorizontal="@dimen/_6sdp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/switch_txt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/switch_txt"

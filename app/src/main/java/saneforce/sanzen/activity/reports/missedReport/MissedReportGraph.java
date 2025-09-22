@@ -94,12 +94,12 @@ public class MissedReportGraph extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerDoctorMissedReports);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        OuterAdapter outerAdapter = new OuterAdapter(); // empty adapter
+      /*  OuterAdapter outerAdapter = new OuterAdapter(); // empty adapter
         recyclerView.setAdapter(outerAdapter);
 
 // Optionally populate later
         List<ListReport> data = new ArrayList<>();
-        outerAdapter.setData(data);
+        outerAdapter.setData(data);*/
 
         //login name - cluster
         TextView headerTv = findViewById(R.id.Name);
@@ -1262,7 +1262,7 @@ public class MissedReportGraph extends AppCompatActivity {
             // Example monthData
 
 
-            InnerAdapter adapter = new InnerAdapter( MissedReportGraph.this,
+       /*     InnerAdapter adapter = new InnerAdapter( MissedReportGraph.this,
                     dataListDoc,
                     dataListChm,
                     dataListStk,
@@ -1270,7 +1270,7 @@ public class MissedReportGraph extends AppCompatActivity {
             );
             Log.w("DEBUG", "Adapter created = " + adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.setAdapter(adapter);
+            recyclerView.setAdapter(adapter);*/
 
         } catch (Exception e) {
             e.printStackTrace();
