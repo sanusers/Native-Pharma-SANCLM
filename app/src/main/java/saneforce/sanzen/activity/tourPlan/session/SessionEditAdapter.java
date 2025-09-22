@@ -3527,8 +3527,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
             }
             holder.selectedClusterCodeMap.clear();
-            for (int i = 0; i < holder.mgrSessionItemAdapterArray.size(); i++) {
-                MultiHQHeaderModelClass multiHQHeaderModelClass = holder.mgrSessionItemAdapterArray.get(i);
+            for (int i = 0; i < holder.mgrClusterArray.size(); i++) {
+                MultiHQHeaderModelClass multiHQHeaderModelClass = holder.mgrClusterArray.get(i);
                 ArrayList<MultiHQItemModelClass> dataList = multiHQHeaderModelClass.getItemsList();
                 for (int j = 0; j < dataList.size(); j++) {
                     if (dataList.get(j).isChecked()) {
