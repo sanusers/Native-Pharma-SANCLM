@@ -1,6 +1,5 @@
 package saneforce.sanzen.activity.myresource.Categoryview;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,75 +16,50 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import saneforce.sanzen.activity.myresource.callstatusview.callstatus_model;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityCateDoctorviewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
+
 public class Cate_Doctorview extends Fragment {
-
-    ArrayList<callstatus_model> cate_list = new ArrayList<>();
+    ArrayList<CategoryModel> cate_list = new ArrayList<>();
     ActivityCateDoctorviewBinding bindingDoccate;
-
-    Category_adapter cate_adapt;
-
-
+    CategoryAdapter cate_adapt;
     RoomDB roomDB;
     MasterDataDao masterDataDao;
-    @SuppressLint("ObsoleteSdkInt")
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         bindingDoccate = ActivityCateDoctorviewBinding.inflate(getLayoutInflater());
         View v = bindingDoccate.getRoot();
-
-
-
-        roomDB= RoomDB.getDatabase(requireContext());
-        masterDataDao=roomDB.masterDataDao();
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
         Doctview();
-
         return v;
     }
 
     public void Doctview() {
         try {
             JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CATEGORY));
-
-
             String docval = "";
             if (jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (!docval.equals(jsonObject.getString("Code"))) {
                         docval = jsonObject.getString("Code");
-
-//                        "Name":"A",
-//                                "Doc_Cat_Name":"A",
-
                         String Name = (jsonObject.getString("Name"));
                         String Doc_Cat_Name = (jsonObject.getString("Doc_Cat_Name"));
-
-//                                                cate_list.add(new callstatus_model("", "", "", "", "", "",
-//                                "", "", "", "", "", "", "", "", ""));
-//
-
-
-//                     ----------------
-                        cate_list.add(new callstatus_model(Doc_Cat_Name, Name, "", "", "", "",
-                                "", "", "", "", "", "", "", "", "","",""));
-
-
+                        String noOfVisits = (jsonObject.getString("No_of_visit"));
+                        cate_list.add(new CategoryModel(Name, Doc_Cat_Name, noOfVisits));
                     }
                 }
                 Log.d("jsonArray123", String.valueOf(cate_list.size()));
-                cate_adapt = new Category_adapter(getActivity(), cate_list);
+                cate_adapt = new CategoryAdapter(getActivity(), cate_list);
                 LinearLayoutManager manager = new LinearLayoutManager(getActivity());
                 manager.setOrientation(LinearLayoutManager.VERTICAL);
                 bindingDoccate.viewList.setLayoutManager(manager);
                 bindingDoccate.viewList.setAdapter(cate_adapt);
                 cate_adapt.notifyDataSetChanged();
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }

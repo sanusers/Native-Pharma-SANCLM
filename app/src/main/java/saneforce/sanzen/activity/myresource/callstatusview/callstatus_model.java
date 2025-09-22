@@ -137,21 +137,6 @@ public class callstatus_model {
     public void setAMSLNo(String AMSLNo) {
         this.AMSLNo = AMSLNo;
     }
-    //        "CustCode":"",
-//    "CustType":"0",
-//    "FW_Indicator":"N",
-//    "Dcr_dt":"2024-01-01",
-//    "month_name":"January",
-//    "Mnth":1,
-//    "Yr":2024,
-//    "CustName":"",
-//    "town_code":"",
-//    "town_name":"",
-//    "Dcr_flag":1,
-//    "SF_Code":"MGR0941",
-//    "Trans_SlNo":"DP3-697",
-//    "AMSLNo":""
-
 
     public String getMnth() {
         return Mnth;

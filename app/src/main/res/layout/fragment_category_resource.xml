@@ -94,8 +94,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view_dummy" />
 
-
-
         <ListView
             android:id="@+id/select_list_view"
             android:layout_width="0dp"

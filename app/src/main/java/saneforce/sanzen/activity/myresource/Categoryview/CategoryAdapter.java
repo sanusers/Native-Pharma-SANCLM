@@ -12,14 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.myresource.callstatusview.callstatus_model;
+import saneforce.sanzen.storage.SharedPref;
 
-
-public class Category_adapter extends   RecyclerView.Adapter<Category_adapter.ViewHolder> {
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
     Context context;
-    ArrayList<callstatus_model> listeduser;
+    ArrayList<CategoryModel> listeduser;
 
-    public Category_adapter(Context context, ArrayList<callstatus_model> listeduser) {
+    public CategoryAdapter(Context context, ArrayList<CategoryModel> listeduser) {
         this.context = context;
         this.listeduser = listeduser;
     }
@@ -33,12 +32,14 @@ public class Category_adapter extends   RecyclerView.Adapter<Category_adapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final callstatus_model app_adapt = listeduser.get(position);
+        final CategoryModel categoryModel = listeduser.get(position);
         String count = String.valueOf((position + 1));
-        holder.count.setText(count +")");
-        holder.Category.setText(app_adapt.getCustType());
-        holder.Doc_name.setText(app_adapt.getCustCode());
-
+        holder.tvCount.setText(count + ")");
+        holder.tvCategory.setText(categoryModel.getName());
+        holder.tvCategoryName.setText(categoryModel.getCategoryName());
+        if (categoryModel.getNoOfVisits() != null && !categoryModel.getNoOfVisits().isEmpty() && SharedPref.getVstNd(context).equalsIgnoreCase("0")) {
+            holder.tvNoOfVisits.setText(categoryModel.getNoOfVisits() + " visit");
+        }
     }
 
     @Override
@@ -47,17 +48,14 @@ public class Category_adapter extends   RecyclerView.Adapter<Category_adapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView count,Doc_name,Category;
-
-//        LinearLayout cs_line;
+        TextView tvCount, tvCategoryName, tvCategory, tvNoOfVisits;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            count = (itemView).findViewById(R.id.count);
-            Doc_name = (itemView).findViewById(R.id.Doc_name);
-            Category = (itemView).findViewById(R.id.Category);
-
-
+            tvCount = (itemView).findViewById(R.id.count);
+            tvCategoryName = (itemView).findViewById(R.id.Doc_name);
+            tvCategory = (itemView).findViewById(R.id.Category);
+            tvNoOfVisits = (itemView).findViewById(R.id.category_visit);
         }
     }
 }

@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
-import saneforce.sanzen.activity.myresource.Categoryview.Category_adapter;
-import saneforce.sanzen.activity.myresource.callstatusview.callstatus_model;
+
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityCateDoctorviewBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;

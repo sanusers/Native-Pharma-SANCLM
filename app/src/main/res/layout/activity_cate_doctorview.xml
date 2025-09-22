@@ -6,23 +6,18 @@
     android:layout_height="match_parent"
     tools:ignore="Orientation">
 
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/view_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
-
-
-    </androidx.recyclerview.widget.RecyclerView>
+        tools:listitem="@layout/category_view"
+        android:visibility="visible"/>
 
     <LinearLayout
         android:id="@+id/NO_data"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-
         android:orientation="vertical"
         android:weightSum="2"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -42,18 +37,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_weight="1"
             android:fontFamily="@font/satoshi_medium"
             android:gravity="center"
             android:text="NO DATA"
-            android:visibility="gone"
             android:textColor="@color/dark_purple"
-            android:textSize="@dimen/_7ssp" />
+            android:textSize="@dimen/_7ssp"
+            android:visibility="gone" />
     </LinearLayout>
-
-
-
-
 
 </LinearLayout>
