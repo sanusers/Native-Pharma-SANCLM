@@ -1252,6 +1252,7 @@
                             android:textSize="@dimen/_6ssp"
                             app:layout_constraintBottom_toTopOf="@id/constraint_tag_ic"
                             app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -1305,7 +1306,6 @@
                                         android:textColor="@color/dark_purple"
                                         android:textSize="@dimen/_6sdp"
                                         android:textStyle="bold" />
-                                    >
 
                                     <TextView
                                         android:layout_width="0dp"
@@ -1359,9 +1359,44 @@
                         android:layout_marginVertical="@dimen/_2sdp"
                         android:background="@color/background"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintBottom_toTopOf="@id/constraint_extra"
+                        app:layout_constraintBottom_toTopOf="@id/sign"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/constraint_main_capImg" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/sign"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/view_dummy_ic"
+                        app:layout_constraintBottom_toTopOf="@+id/constraint_extra">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:paddingVertical="@dimen/_5sdp"
+                            android:text="Signature"
+                            android:textColor="@color/light_grey_2"
+                            android:textSize="@dimen/_6ssp"
+                            tools:ignore="MissingConstraints">
+
+                        </TextView>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <View
+                        android:id="@+id/view_dummy1_ic"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_1sdp"
+                        android:background="@color/background"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/constraint_extra"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/sign" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/constraint_extra"

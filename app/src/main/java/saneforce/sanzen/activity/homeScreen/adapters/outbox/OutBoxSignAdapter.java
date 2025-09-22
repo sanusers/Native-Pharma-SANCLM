@@ -160,12 +160,10 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
                         assert response.body() != null;
                         JSONObject json = new JSONObject(response.body().toString());
                         if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Profile Has Been Updated")) {
-//                            DeleteCacheFileSign(filePath, id, CurrentPos, parentPos, childPos, modelClass);
                         } else {
                             signModelClass.setSynced(1);
                             signModelClass.setSync_status(Constants.DUPLICATE_CALL);
                             callOfflineSignDataDao.updateSignStatus(id, Constants.DUPLICATE_CALL, 1);
-//                            CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
                         }
                     } catch (Exception e) {
                         Log.v("SendOutboxCall", "-error---" + e);
@@ -181,7 +179,6 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
                 signModelClass.setSynced(1);
                 signModelClass.setSync_status(Constants.CALL_FAILED);
                 callOfflineSignDataDao.updateSignStatus(id, Constants.CALL_FAILED, 1);
-//                CallOfflineSignImg(parentPos, childPos, listDates.get(parentPos).getChildItems().get(childPos).getSignModelClasses(), modelClass);
             }
         });
     }

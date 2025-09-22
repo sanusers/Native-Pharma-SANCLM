@@ -55,6 +55,7 @@ public class VisitMonitorActivity extends AppCompatActivity {
             selectedTab = "As on Calls";
             binding.searchCust.setVisibility(View.GONE);
             binding.note.setVisibility(View.VISIBLE);
+            binding.calendarLyt.setVisibility(View.GONE);
             updateReportUi();
             loadFragment(new AsOnCallsFragment());
         });
@@ -63,6 +64,7 @@ public class VisitMonitorActivity extends AppCompatActivity {
             selectedTab = "Approved Calls";
             binding.searchCust.setVisibility(View.VISIBLE);
             binding.note.setVisibility(View.GONE);
+            binding.calendarLyt.setVisibility(View.VISIBLE);
             updateReportUi();
         });
     }
