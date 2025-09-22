@@ -3753,6 +3753,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 }
                                 mHQName1 = hqName.toString();
                                 mTownname1 = clusterName.toString();
+                            }else{
+                                mHQName1 = findHQName(mHQCode1);
                             }
                         }else {
 //                                for (JSONObject hqJsonObject : HQList) {
@@ -4450,10 +4452,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 api_interface = RetrofitClient.getRetrofit(getActivity(), SharedPref.getCallApiUrl(requireContext()));
 
                 JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(requireContext());
-                if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")  || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                     jsonObject.put("tableName", "gettodaydcr");
                 }else {
-                    if(!SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+                    if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                         jsonObject.put("tableName", "gettodaydcrmultihq");
                     }
                 }
