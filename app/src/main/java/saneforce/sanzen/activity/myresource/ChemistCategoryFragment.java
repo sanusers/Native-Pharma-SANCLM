@@ -34,8 +34,7 @@ import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 
 public class ChemistCategoryFragment extends Fragment {
-    @SuppressLint("StaticFieldLeak")
-    public static FragmentChemistcategoryResourceBinding selectchmcatSideBinding;
+    public FragmentChemistcategoryResourceBinding selectchmcatSideBinding;
     public static String categoryName = "", categoryCode = "";
     int sel_categorycode=0;
     JSONArray jsonArray;

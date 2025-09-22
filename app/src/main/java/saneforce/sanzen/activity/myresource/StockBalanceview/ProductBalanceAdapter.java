@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.myresource.Categoryview.Category_adapter;
-import saneforce.sanzen.activity.myresource.callstatusview.callstatus_model;
 
 public class ProductBalanceAdapter  extends   RecyclerView.Adapter<ProductBalanceAdapter.ViewHolder> {
     Context context;

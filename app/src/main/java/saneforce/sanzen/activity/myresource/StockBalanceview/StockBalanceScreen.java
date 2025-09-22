@@ -1,35 +1,19 @@
 package saneforce.sanzen.activity.myresource.StockBalanceview;
 
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.badge.BadgeDrawable;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-import saneforce.sanzen.R;
 import saneforce.sanzen.activity.forms.weekoff.forms_viewpager;
-import saneforce.sanzen.activity.myresource.Categoryview.Cate_Chemistview;
-import saneforce.sanzen.activity.myresource.Categoryview.Cate_Doctorview;
-import saneforce.sanzen.activity.myresource.Categoryview.Category_adapter;
-import saneforce.sanzen.activity.myresource.callstatusview.callstatus_model;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.ActivityStockbalanceviewBinding;
-import saneforce.sanzen.databinding.ActivityUnlistedadditionBinding;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
