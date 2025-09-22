@@ -4,6 +4,7 @@ import static saneforce.sanzen.activity.approvals.dcr.detailView.DcrDetailViewAc
 import static saneforce.sanzen.activity.approvals.dcr.detailView.DcrDetailViewActivity.dcrDetailViewBinding;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Build;
@@ -46,8 +47,10 @@ import saneforce.sanzen.activity.call.pojo.input.SaveCallInputList;
 import saneforce.sanzen.activity.call.pojo.product.SaveCallProductList;
 import saneforce.sanzen.activity.reports.dayReport.adapter.DayReportSlideDetailsAdapter;
 import saneforce.sanzen.activity.reports.dayReport.adapter.ReoportRcpaAdapter;
+import saneforce.sanzen.activity.reports.dayReport.adapter.SignatureAdapter;
 import saneforce.sanzen.activity.reports.dayReport.model.DayReportRcpaModelClass;
 import saneforce.sanzen.activity.reports.dayReport.model.EventCaptureModelClass;
+import saneforce.sanzen.activity.reports.dayReport.model.SignatureModelClass;
 import saneforce.sanzen.activity.reports.dayReport.model.SlideRatingDetalisModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -66,6 +69,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
     ArrayList<SaveCallInputList> InputListNew;
     ProductAdapter productAdapter;
     ArrayList<EventCaptureModelClass> EventCaptureData = new ArrayList<>();
+    ArrayList<SignatureModelClass> SignatureData = new ArrayList<>();
     ArrayList<DayReportRcpaModelClass> rcpaList = new ArrayList<>();
     InputAdapter inputAdapter;
     CommonUtilsMethods commonUtilsMethods;
@@ -181,6 +185,10 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
 
 
 
+        });
+
+        dcrDetailViewBinding.sign.setOnClickListener(view -> {
+            SignatureAPICall();
         });
         dcrDetailViewBinding.constraintMainRcpa.setOnClickListener(view -> {
 
@@ -328,6 +336,88 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
          dcrDetailViewBinding.rvEventListview.setLayoutManager(new LinearLayoutManager(context));
          dcrDetailViewBinding.rvEventListview.setAdapter(adapter);
 
+
+    }
+
+
+    public void SignatureAPICall(){
+        progressDialog = CommonUtilsMethods.createProgressDialog(context);
+        if (UtilityClass.isNetworkAvailable(context)) {
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
+                if (status) {
+                    try {
+                        apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+                        JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(context);
+                        jsonObject.put("tableName", "getsign_rpt");
+                        jsonObject.put("dcr_cd",  DcrDetailViewActivity.dcr_id);
+                        jsonObject.put("dcrdetail_cd",DcrDetailViewActivity.Details_id);
+                        jsonObject.put("sfcode", SharedPref.getSfCode(context));
+                        jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+                        jsonObject.put("Rsf", DcrApprovalActivity.SelectedSfCode);
+
+                        Log.d("paramObject",jsonObject.toString());
+                        Map<String, String> mapString = new HashMap<>();
+                        mapString.put("axn", "get/reports");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                        call.enqueue(new Callback<JsonElement>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                Log.e("test", "res : " + response.body());
+                                progressDialog.dismiss();
+                                try {
+                                    if (response.body() != null && response.isSuccessful()) {
+                                        JSONArray jsonArray = new JSONArray();
+                                        if (response.body().isJsonArray()) {
+                                            jsonArray = new JSONArray(response.body().getAsJsonArray().toString());
+                                            Type typeToken = new TypeToken<ArrayList<SignatureModelClass>>() {
+                                            }.getType();
+                                            SignatureData = new Gson().fromJson(String.valueOf(jsonArray), typeToken);
+
+                                            if(SignatureData.size()>0){
+                                                setSignatureData(SignatureData);
+                                            }else {
+                                                commonUtilsMethods.showToastMessage(context, " Signature Not Available");
+                                            }
+
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                progressDialog.dismiss();
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    progressDialog.dismiss();
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                }
+            });
+            networkStatusTask.execute();
+        } else {
+            progressDialog.dismiss();
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+        }
+
+    }
+
+    public void setSignatureData(ArrayList<SignatureModelClass> List){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.dayreport_eventcapture_image_layout, null);
+        dialog.setView(view);
+        RecyclerView recyclerView=view.findViewById(R.id.recyelerview);
+        SignatureAdapter signadapter =  new SignatureAdapter(context,List);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(signadapter);
+        AlertDialog dialog1=dialog.create();
+        dialog1.show();
 
     }
 

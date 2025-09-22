@@ -1311,8 +1311,7 @@ public class TourPlanActivity extends AppCompatActivity {
         return new ModelClass.SessionList("", true, "", workType, hq, hqArray, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray, clustersArray, jcsArray, drsArray, chemistsArray, stocksArray, unListedDrsArray, cipsArray, hospsArray);
     }
 
-    private OneBuildModelClass.SessionList prepareSessionListForAdapterEmptyOneBuild
-            () {
+    private OneBuildModelClass.SessionList prepareSessionListForAdapterEmptyOneBuild() {
         SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         OneBuildModelClass.SessionList.WorkType workType = new OneBuildModelClass.SessionList.WorkType("", "", "", "");
         OneBuildModelClass.SessionList.SubClass headquarters = new OneBuildModelClass.SessionList.SubClass("", "");

@@ -1233,12 +1233,12 @@
                             android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
 
-                        <ImageView
+                 <!--       <ImageView
                             android:layout_width="@dimen/_7sdp"
                             android:layout_height="@dimen/_7sdp"
                             android:layout_gravity="center"
                             android:layout_marginStart="@dimen/_5sdp"
-                            android:src="@drawable/arrow_down" />
+                            android:src="@drawable/arrow_down" />-->
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>

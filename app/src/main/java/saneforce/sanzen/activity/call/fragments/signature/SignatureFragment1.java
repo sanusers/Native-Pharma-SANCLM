@@ -220,6 +220,7 @@ public class SignatureFragment1 extends Fragment {
                         try (FileOutputStream fos = new FileOutputStream(file)) {
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
                             Log.d("S3ImageLoad", "Image stored locally at: " + file.getAbsolutePath());
+                            callSignCaptureImage.add(0,new CallSignCaptureImageList("",fileName));
                         } catch (Exception e) {
                             Log.e("S3ImageLoad", "Error saving image locally: " + e.getMessage());
                         }
@@ -240,7 +241,7 @@ public class SignatureFragment1 extends Fragment {
         if (fileName != null && !fileName.equalsIgnoreCase("null")) {
             File file = new File(context.getFilesDir(), fileName);
 
-            String imageUrl = SharedPref.getTagImageUrl(context) + "Sign/" + fileName;
+            String imageUrl = SharedPref.getTagImageUrl(context) + "Signs/" + fileName;
 
             Glide.with(context)
                     .asBitmap()

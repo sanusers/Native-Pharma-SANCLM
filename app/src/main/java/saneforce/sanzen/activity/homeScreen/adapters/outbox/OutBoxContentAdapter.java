@@ -899,7 +899,7 @@ private void CallSendAPIImageS3(int position,int i,EcModelClass ecModelClass,Str
                         assert response.body() != null;
                         JSONObject json = new JSONObject(response.body().toString());
                         Log.v("SendOutboxCall", "-imageRes---" + json);
-                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
+                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Profile Has Been Updated")) {
                             DeleteCacheFileSign(filePath, id,i, position);
                         } else {
                             signModelClass.setSynced(1);

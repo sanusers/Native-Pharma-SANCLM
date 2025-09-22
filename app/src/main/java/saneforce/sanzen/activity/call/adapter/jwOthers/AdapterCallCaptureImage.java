@@ -4,6 +4,7 @@ import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
 import static saneforce.sanzen.commonClasses.CommonAlertBox.dialog;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -51,6 +53,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
     ArrayList<CallCaptureImageList> callCaptureImageLists;
     private RoomDB roomDB;
     private CallOfflineECDataDao callOfflineECDataDao;
+    ProgressDialog progressBar;
 
     public AdapterCallCaptureImage(Context context, ArrayList<CallCaptureImageList> callCaptureImageLists) {
         this.context = context;
@@ -187,26 +190,31 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
 
         holder.img_view.setOnClickListener(v -> {
+            progressBar = CommonUtilsMethods.createProgressDialog(context);
+            progressBar.show();
             if(SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                 switch (isFromActivity) {
                     case "new":
                         showImage(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view());
+                        progressBar.dismiss();
                         break;
                     case "edit_local":
                         showImageLocal(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath());
+                        progressBar.dismiss();
                         break;
                     case "edit_online":
                         if (UtilityClass.isNetworkAvailable(context)) {
-//                        if(!callCaptureImageList.isShowPreview()) {
-//                            callCaptureImageList.setShowPreview(true);
-//                            notifyItemChanged(position);
-//                        }
-                            if (callCaptureImageList.isNewlyAdded())
+                            if (callCaptureImageList.isNewlyAdded()) {
                                 showImage(callCaptureImageList.getImg_view());
-                            else
+                                progressBar.dismiss();
+                            }
+                            else {
                                 ShowImageEditS3(callCaptureImageList.getSystemImgName(), holder, position);
-                        } else
+                            }
+                        } else {
+                            progressBar.dismiss();
                             new CommonUtilsMethods(context).showToastMessage(context, "No network available!");
+                        }
                         break;
                 }
             }else{
@@ -284,13 +292,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
     }
 
     private void ShowImageEditS3(String systemImageName,@NonNull ViewHolder holder , int position){
-        SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0");
         CallCaptureImageList callCaptureImageList = callCaptureImageLists.get(position);
-        Dialog builder = new Dialog(context);
-        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        builder.setCancelable(true);
-        Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-      ;
         String fileName = callCaptureImageList.getSystemImgName();
         File file = new File(context.getExternalFilesDir("JWOthersImages"),fileName);
         Log.d("TAG_acci", "onBindViewHolder: " + file.getAbsolutePath());
@@ -302,6 +304,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     holder.img_view.setImageBitmap(bitmap);
                     holder.img_view.setVisibility(View.VISIBLE);
                     showImage(bitmap);
+                    progressBar.dismiss();
                 } else {
                     Log.d("bitmap image", "Failed to load image, bitmap is null.");
                     holder.img_view.setVisibility(View.GONE);

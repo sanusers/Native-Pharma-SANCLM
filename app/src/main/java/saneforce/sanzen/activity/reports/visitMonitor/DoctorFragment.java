@@ -225,7 +225,7 @@ public class DoctorFragment extends Fragment {
         pieChart.setDragDecelerationFrictionCoef(0.95f);
         pieChart.setDrawHoleEnabled(true);
         pieChart.setHoleColor(requireContext().getResources().getColor(R.color.white));
-//        pieChart.setTransparentCircleColor(requireContext().getResources().getColor(R.color.gray_med));
+        pieChart.setTransparentCircleColor(requireContext().getResources().getColor(R.color.gray_med));
         pieChart.setTransparentCircleAlpha(100);
         pieChart.setHoleRadius(63f);
         pieChart.setTransparentCircleRadius(20f);
