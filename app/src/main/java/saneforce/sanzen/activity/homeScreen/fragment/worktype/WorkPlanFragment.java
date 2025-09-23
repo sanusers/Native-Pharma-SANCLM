@@ -3936,13 +3936,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                                    String[] hqSplit = mHQCode2.split(",");
 //                                    StringBuilder hqName = new StringBuilder();
 //                                    for (String hq : hqSplit) {
-////                                        for (JSONObject hqJsonObject : HQList) {
-////                                            if((hq).equalsIgnoreCase(hqJsonObject.getString("id"))) {
+//                                        for (JSONObject hqJsonObject : HQList) {
+//                                            if((hq).equalsIgnoreCase(hqJsonObject.getString("id"))) {
 //                                                hqName.append(findHQName(hq));
 //                                                hqName.append(",");
-////                                                break;
-////                                            }
-////                                        }
+//                                                break;
+//                                            }
+//                                        }
 //                                    }
 //                                    mHQName2 = hqName.toString();
                                 if(!SecondSeasonDayPlanObject.optString("TP_Hq").isEmpty()) {
@@ -3965,6 +3965,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     }
                                     mHQName2 = hqName.toString();
                                     mTownname2 = clusterName.toString();
+                                }else{
+                                    mHQName2 = findHQName(mHQCode2);
                                 }
                             }else {
 //                                    for (JSONObject hqJsonObject : HQList) {
@@ -4112,7 +4114,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.cardPlan2.setVisibility(View.GONE);
                     binding.llDeviation.setVisibility(View.GONE);
                 }
-            } else if (SharedPref.getOneBuild(context).equalsIgnoreCase("0") && tpDataObj != null && HomeDashBoard.selectedDate != null) {
+            } else if (SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0") && tpDataObj != null && HomeDashBoard.selectedDate != null) {
                 SharedPref.setTpDcrDeviatedDate(requireContext(), "");
                 Type type = new TypeToken<OneBuildModelClass>() {
                 }.getType();

@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.tourPlan.session;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -532,9 +534,11 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
 
     @Override
     public int getItemCount () {
-        if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) return inputDataModelOneBuild.getSessionList().size();
-        else return inputDataModel.getSessionList().size();
+        if (SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
+            return inputDataModelOneBuild.getSessionList().size();
+        } else{ return inputDataModel.getSessionList().size();}
     }
+
 
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {

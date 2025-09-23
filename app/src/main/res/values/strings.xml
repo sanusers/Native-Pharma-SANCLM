@@ -640,4 +640,5 @@
     <string name="fwd">FWD</string>
     <string name="avg">Average</string>
     <string name="cvg">Coverage</string>
+    <string name="draft_save"> Tour Plan Data Saved Successfully</string>
 </resources>

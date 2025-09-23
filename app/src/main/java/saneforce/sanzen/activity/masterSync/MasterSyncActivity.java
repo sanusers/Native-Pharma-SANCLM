@@ -1592,43 +1592,6 @@ public class MasterSyncActivity extends AppCompatActivity {
     public void sync(String masterOf, String remoteTableName, ArrayList<MasterSyncItemModel> masterSyncItemModels, int position) {
 
         try {
-         /*   if (SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0") && remoteTableName.equalsIgnoreCase("gettp_oneBuild")) {
-                TourPlanOfflineDataTable tpData = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
-                if(tpData != null){
-
-                        String monthYearPrev = monthYearFromDate(localDate.minusMonths(1));
-                        String monthYearCurr = monthYearFromDate(localDate);
-                        String monthYearNext = monthYearFromDate(localDate.plusMonths(1));
-
-                        if (monthYearPrev != null && !monthYearPrev.isEmpty() && !TourPlanActivity.dayWiseArrayPrevMonthOneBuild.isEmpty()) {
-                            getDraftSaveOneBuild1("prev", TourPlanActivity.dayWiseArrayPrevMonthOneBuild, true);
-                        } else if (monthYearCurr != null && !monthYearCurr.isEmpty() && !TourPlanActivity.dayWiseArrayCurrentMonthOneBuild.isEmpty()) {
-                            getDraftSaveOneBuild1("current", TourPlanActivity.dayWiseArrayCurrentMonthOneBuild, true);
-                        } else if (monthYearNext != null && !monthYearNext.isEmpty() && !TourPlanActivity.dayWiseArrayNextMonthOneBuild.isEmpty()) {
-                            getDraftSaveOneBuild1("next", TourPlanActivity.dayWiseArrayNextMonthOneBuild, true);
-                        }
-
-
-                }else{
-                    MasterSyncItemModel tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN, Constants.TOUR_PLAN, "gettp_onebuild", Constants.TOUR_PLAN, tourPLanStatus, false);
-                    tpModelArray.add(tPlan);
-                }
-            }*/
-
-            /*if(SharedPref.getOneBuild(MasterSyncActivity.this).equalsIgnoreCase("0") && remoteTableName.equalsIgnoreCase("gettp_onebuild")){
-                JSONArray monthYearCurr = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
-                JSONArray monthYearPrev = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate.minusMonths(1)))).getTpDataJSONArray();
-                JSONArray monthYearNext = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate.plusMonths(1)))).getTpDataJSONArray();
-
-                    if (monthYearPrev != null && !TourPlanActivity.dayWiseArrayPrevMonthOneBuild.isEmpty()) {
-                        getDraftSaveOneBuild1("prev", TourPlanActivity.dayWiseArrayPrevMonthOneBuild, true);
-                    } else if (monthYearCurr != null  && !TourPlanActivity.dayWiseArrayCurrentMonthOneBuild.isEmpty()) {
-                        getDraftSaveOneBuild1("current", TourPlanActivity.dayWiseArrayCurrentMonthOneBuild, true);
-                    } else if (monthYearNext != null && !TourPlanActivity.dayWiseArrayNextMonthOneBuild.isEmpty()) {
-                        getDraftSaveOneBuild1("next", TourPlanActivity.dayWiseArrayNextMonthOneBuild, true);
-                    }
-
-            }*/
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
             JSONObject jsonObject = CommonUtilsMethods.CommonObjectParameter(this);
             jsonObject.put("tableName", remoteTableName);
@@ -2475,8 +2438,8 @@ public class MasterSyncActivity extends AppCompatActivity {
         uiInitialization1();
         try {
             localDate = LocalDate.now();
-            if (jsonObject1.has("prev")) {
-                JSONArray previousArray = new JSONArray(jsonObject1.getJSONArray("prev").toString());
+            if (jsonObject1.has("previous")) {
+                JSONArray previousArray = new JSONArray(jsonObject1.getJSONArray("previous").toString());
                 SaveLocalOnlineTableOne(localDate.minusMonths(1), previousArray);
             }
 
@@ -3484,7 +3447,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
             int id = 0;
             switch (isClickedName) {
-                case "prev":
+                case "previous":
                     id = SharedPref.getTpIdPreviousMonth(MasterSyncActivity.this);
                     break;
                 case "current":
@@ -3951,7 +3914,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                     JSONObject innerJsonObject = new JSONObject(innerJsonString);
                                     if (innerJsonObject.has("Data")) {
                                         switch (isClickedName) {
-                                            case "prev":
+                                            case "previous":
                                                 int retrievedIdPm = innerJsonObject.getInt("Data");
                                                 SharedPref.saveTpId(MasterSyncActivity.this, retrievedIdPm);
                                                 Log.d("ret_Id", "onResponse: " + retrievedIdPm);

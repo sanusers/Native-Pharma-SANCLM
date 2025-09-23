@@ -148,6 +148,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 cipNeed = jsonArray.getJSONObject(i).getString("Cip_Need");
                 hospNeed = jsonArray.getJSONObject(i).getString("HospNeed");
                 FW_meetup_mandatory = jsonArray.getJSONObject(i).getString("FW_meetup_mandatory");
+                holidayEditable = jsonArray.getJSONObject(i).getString("Holiday_Editable");
+                weeklyOffEditable = jsonArray.getJSONObject(i).getString("Weeklyoff_Editable");
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -442,6 +444,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         }
                     }
             }
+
+
+
             if (SharedPref.getWrkAreaName(context).isEmpty() || SharedPref.getWrkAreaName(context).equalsIgnoreCase(null)) {
                 holder.textCluster.setText("Cluster");
             } else {
@@ -1162,10 +1167,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     if (hqName.length() > 0) {
                         holder.hqField.setText(hqName);
                     }
-//                holder.selectedHq = hqcode.toString();
-
-//                holder.hqField.setText(holder.sessionData.getHQ().getName());
-//                holder.selectedHq = holder.sessionData.getHQs().toString();
                     for (int i = 0; i < holder.sessionData.getHQs().size(); i++) {
                         if (holder.selectedHq.isEmpty()) {
                             holder.selectedHq = holder.sessionData.getHQs().get(i).getCode();
@@ -2719,7 +2720,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 holder.progress_hq.setVisibility(View.GONE);
                             }
 
-                            if (SharedPref.getSfType(context).equalsIgnoreCase("2")) {
+                            if (SharedPref.getSfType(context).equalsIgnoreCase("2") && !SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
                                 holder.mgrClusterArray = prepareModelList(holder.selectedHq, Constants.CLUSTER);
                                 holder.mgrJointCallArray = prepareModelList(holder.selectedHq, Constants.JOINT_WORK);
 //            holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR);
@@ -2756,7 +2757,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
     }
 
-    public void prepareInputData(ArrayList<ModelClass.SessionList.SubClass> modelClass, ArrayList<EditModelClass> arrayList) {
+    public void  prepareInputData(ArrayList<ModelClass.SessionList.SubClass> modelClass, ArrayList<EditModelClass> arrayList) {
         if (modelClass.size() > 0) {
             for (int i = 0; i < modelClass.size(); i++) {
                 for (int j = 0; j < arrayList.size(); j++) {
@@ -2768,8 +2769,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
     }
 
-    public void prepareInputDataOneBuild
-            (ArrayList<OneBuildModelClass.SessionList.SubClass> oneBuildModelClass, ArrayList<EditModelClass> arrayList) {
+    public void prepareInputDataOneBuild(ArrayList<OneBuildModelClass.SessionList.SubClass> oneBuildModelClass, ArrayList<EditModelClass> arrayList) {
         if (oneBuildModelClass.size() > 0) {
             for (int i = 0; i < oneBuildModelClass.size(); i++) {
                 for (int j = 0; j < arrayList.size(); j++) {
@@ -3980,6 +3980,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         ArrayList<MultiHQHeaderModelClass> unListedDrsModelArray;
         ArrayList<MultiHQHeaderModelClass> cipsModelArray;
         ArrayList<MultiHQHeaderModelClass> hospitalsModelArray;
+
+        ArrayList<OneBuildModelClass.SessionList.SubClass> hqModelArrayOneBuild;
         ArrayList<OneBuildModelClass.SessionList.SubClass> clusterModelArrayOneBuild;
         ArrayList<OneBuildModelClass.SessionList.SubClass> jcModelArrayOneBuild;
         ArrayList<OneBuildModelClass.SessionList.SubClass> listedDrModelArrayOneBuild;
