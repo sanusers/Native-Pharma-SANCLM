@@ -986,7 +986,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }else {
                         if(binding.flSession1.getVisibility() == View.GONE) {
                             disableSession1();
-                        }else if(binding.flSession2.getVisibility() == View.GONE) {
+                        }else if(binding.flSession2.getVisibility() == View.GONE && DayPlanCount.equalsIgnoreCase("2")) {
                             disableSession2();
                         }
                         if(binding.llDeviation.getVisibility() == View.VISIBLE && binding.switchButton.isChecked()) {
@@ -1070,7 +1070,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
                         break;
                     }
-                    if(dayStatus == null) dayStatus = "";
+                    if(dayStatus == null || dayStatus.isEmpty()) dayStatus = "0";
                     if(DayPlanCount.equalsIgnoreCase("1") || (DayPlanCount.equalsIgnoreCase("2") && binding.flSession2.getVisibility() == View.VISIBLE)) {
                         if(dayStatus.equalsIgnoreCase("2") || dayStatus.equalsIgnoreCase("3") || (binding.switchButton.isChecked())
                                 || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1"))
@@ -1111,7 +1111,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
                         break;
                     }
-                    if(dayStatus == null) dayStatus = "";
+                    if (dayStatus == null || dayStatus.isEmpty()) dayStatus = "0";
                     if(binding.flSession1.getVisibility() == View.VISIBLE) {
                         if(dayStatus.equalsIgnoreCase("2") || dayStatus.equalsIgnoreCase("3") || (binding.switchButton.isChecked())
                                 || (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1"))
@@ -2853,6 +2853,36 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonArray.put(jsonObject);
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.CALL_SYNC, jsonArray.toString(), 2));
             }
+
+            try {
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
+                boolean isDateFound = false;
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject dateObj = jsonArray.optJSONObject(i);
+                    String date = dateObj.optJSONObject("dt").optString("date");
+                    if (date.equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()))){
+                        isDateFound = true;
+                        break;
+                    }
+                }
+                if(!isDateFound) {
+                    JSONObject rootObject = new JSONObject();
+                    rootObject.put("Sf_Code", SharedPref.getSfCode(requireContext()));
+                    rootObject.put("flg", "0");
+                    rootObject.put("tbname", "dcr");
+                    rootObject.put("reason", "");
+                    JSONObject dtObject = new JSONObject();
+                    dtObject.put("date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_1, HomeDashBoard.selectedDate.toString()));
+                    dtObject.put("timezone_type", 3);
+                    dtObject.put("timezone", "Asia/Kolkata");
+                    rootObject.put("dt", dtObject);
+                    jsonArray.put(rootObject);
+                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 2));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             SharedPref.setDayPlanStartedDate(requireContext(), HomeDashBoard.selectedDate.toString());
             if((TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0")
                     || (STPNeed.equalsIgnoreCase("0") && STPBasedMTP.equalsIgnoreCase("0") && STPBasedDCR.equalsIgnoreCase("0") && TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && (!stpOfflineDataDao.isNotApproved() && masterDataDao.getMasterDataTableOrNew(Constants.STANDARD_TOUR_PLAN).getMasterSyncDataJsonArray().length()>0)))
