@@ -329,6 +329,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 syncMyDayPlan(false);
                 SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
             } else {
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 1));
                 setUpWorkPlan();
             }
         } else {
@@ -1622,8 +1623,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     }
                                 }
                             }else {
-                                binding.deviationLock.setVisibility(View.VISIBLE);
-                                binding.rlWorkPlanMain.setVisibility(View.GONE);
+                                binding.deviationLock.setVisibility(View.GONE);       // Temp change from visible to gone
+                                binding.rlWorkPlanMain.setVisibility(View.VISIBLE);   // Temp change from gone to visible
                                 previousWTCode1 = "";
                                 previousWTCode2 = "";
 //                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));

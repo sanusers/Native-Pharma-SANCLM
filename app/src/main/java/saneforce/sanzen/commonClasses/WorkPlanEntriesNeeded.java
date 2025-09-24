@@ -556,9 +556,7 @@ public class WorkPlanEntriesNeeded {
                 }
                 Log.v("TAG 3", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }
-            if((!isTodayPresent &&
-                    (!(HWDates.contains(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)) && (SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1") || SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1"))))
-            ) || (isTodayNotFinished)) {
+            if((!isTodayPresent && (!(HWDates.contains(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)) && (SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1") || SharedPref.getWeekoffAutoPostNeed(context).equalsIgnoreCase("1"))))) || (isTodayNotFinished)) {
                 datesNeeded.add(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
                 Log.v("TAG 4", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }

@@ -1105,7 +1105,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 //            if (SharedPref.getGeotagNeed(this).equalsIgnoreCase("1")) {
 //                MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
             MasterSyncItemModel dr_mas = new MasterSyncItemModel(SharedPref.getDrCap(this), Constants.DOCTOR_MAS, "getdoctors_master", Constants.DOCTOR_MAS + hqCode, doctorStatus, false);
-            MasterSyncItemModel geo = new MasterSyncItemModel(Constants.DOCTOR_GEO, Constants.DOCTOR_MAS, "getdoctors_geo", Constants.DOCTOR_GEO + hqCode, doctorGeoStatus, false);
+            MasterSyncItemModel geo = new MasterSyncItemModel(SharedPref.getDrCap(this)+" Geo", Constants.DOCTOR_MAS, "getdoctors_geo", Constants.DOCTOR_GEO + hqCode, doctorGeoStatus, false);
             MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, Constants.DOCTOR_MAS, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
             MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, Constants.DOCTOR_MAS, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
             MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getcategorys", Constants.CATEGORY, categoryStatus, false);
@@ -1145,7 +1145,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
 //            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this),  Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
             MasterSyncItemModel cheMas = new MasterSyncItemModel(SharedPref.getChmCap(this), Constants.DOCTOR_MAS, "getchemist_master", Constants.CHEMIST_MAS + hqCode, chemistStatus, false);
-            MasterSyncItemModel cheGeo = new MasterSyncItemModel(Constants.CHEMIST_GEO, Constants.DOCTOR_MAS, "getchemist_geo", Constants.CHEMIST_GEO + hqCode, chemistGeoStatus, false);
+            MasterSyncItemModel cheGeo = new MasterSyncItemModel(SharedPref.getChmCap(this)+" Geo", Constants.DOCTOR_MAS, "getchemist_geo", Constants.CHEMIST_GEO + hqCode, chemistGeoStatus, false);
             MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, Constants.DOCTOR_MAS, "getchem_categorys", Constants.CATEGORY_CHEMIST, chemistCategoryStatus, false);
 //            chemistModelArray.add(cheModel);
             chemistModelArray.add(cheMas);
@@ -1158,7 +1158,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (SharedPref.getStkNeed(this).equalsIgnoreCase("0")) {
 //            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this),Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, stockiestStatus, false);
             MasterSyncItemModel stock_mas = new MasterSyncItemModel(SharedPref.getStkCap(this), Constants.DOCTOR_MAS, "getstockist_master", Constants.STOCKIEST_MAS + hqCode, stockiestStatus, false);
-            MasterSyncItemModel stock_geo = new MasterSyncItemModel(Constants.STOCKIEST_GEO, Constants.DOCTOR_MAS, "getstockist_geo", Constants.STOCKIEST_GEO + hqCode, stockiestGeoStatus, false);
+            MasterSyncItemModel stock_geo = new MasterSyncItemModel(SharedPref.getStkCap(this)+" Geo", Constants.DOCTOR_MAS, "getstockist_geo", Constants.STOCKIEST_GEO + hqCode, stockiestGeoStatus, false);
 //            stockiestModelArray.add(stockModel);
             stockiestModelArray.add(stock_mas);
             stockiestModelArray.add(stock_geo);
@@ -1169,7 +1169,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (SharedPref.getUnlNeed(this).equalsIgnoreCase("0")) {
 //            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this),  Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, unlistedDrStatus, false);
             MasterSyncItemModel unList_mas = new MasterSyncItemModel(SharedPref.getUNLcap(this), Constants.DOCTOR_MAS, "getunlisteddr_master", Constants.UNLISTED_DOCTOR_MAS + hqCode, unlistedDrStatus, false);
-            MasterSyncItemModel unList_geo = new MasterSyncItemModel(Constants.UNLISTED_DOCTOR_GEO, Constants.DOCTOR_MAS, "getunlisteddr_geo", Constants.UNLISTED_DOCTOR_GEO + hqCode, unlistedDrGeoStatus, false);
+            MasterSyncItemModel unList_geo = new MasterSyncItemModel(SharedPref.getUNLcap(this)+" Geo", Constants.DOCTOR_MAS, "getunlisteddr_geo", Constants.UNLISTED_DOCTOR_GEO + hqCode, unlistedDrGeoStatus, false);
 
 //            unlistedDrModelArray.add(unListModel);
             unlistedDrModelArray.add(unList_mas);
