@@ -72,6 +72,9 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
                 if(!tpDetailedModels.get(position).getDrName().isEmpty()) {
                     str = tpDetailedModels.get(position).getDrName().split(",");
                     holder.tv_dr_count.setText(String.valueOf(str.length));
+                    if (str.length == 0) {
+                        holder.tv_drList.setText("");
+                    }
                 }
             }
 
@@ -82,6 +85,9 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
                 if(!tpDetailedModels.get(position).getChemistName().isEmpty()) {
                     str = tpDetailedModels.get(position).getChemistName().split(",");
                     holder.tv_chemist_count.setText(String.valueOf(str.length));
+                    if (str.length == 0) {
+                        holder.tv_chemistList.setText("");
+                    }
                 }
             }
 
@@ -92,6 +98,9 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
                 if(!tpDetailedModels.get(position).getStockiestName().isEmpty()) {
                     str = tpDetailedModels.get(position).getStockiestName().split(",");
                     holder.tv_stockiest_count.setText(String.valueOf(str.length));
+                    if (str.length == 0) {
+                        holder.tv_stockiestList.setText("");
+                    }
                 }
             }
 
@@ -101,6 +110,9 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
                 if(!tpDetailedModels.get(position).getJwName().isEmpty()) {
                     str = tpDetailedModels.get(position).getJwName().split(",");
                     holder.tv_jw_count.setText(String.valueOf(str.length));
+                    if (str.length == 0) {
+                        holder.tv_jwList.setText("");
+                    }
                 }
             }
 
@@ -135,6 +147,9 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
                     holder.constraint_jw.setVisibility(View.VISIBLE);
                     str = tpDetailedModels.get(position).getJwName().split(",");
                     holder.tv_jw_count.setText(String.valueOf(str.length));
+                    if (str.length == 0) {
+                        holder.tv_jwList.setText("");
+                    }
                 }else {
                     holder.constraint_jw.setVisibility(View.GONE);
                 }

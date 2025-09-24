@@ -3519,28 +3519,37 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     }
 
     public void saveCheckedItem(MyViewHolder holder) {
-        if (holder.hqLayout.getVisibility() == View.VISIBLE) {
-            holder.selectedHQCode.clear();
-            for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
-                if (holder.sessionItemAdapterArray.get(i).isChecked()) {
-                    holder.selectedHQCode.add(holder.sessionItemAdapterArray.get(i).getCode());
-                }
-            }
-            holder.selectedClusterCodeMap.clear();
-            for (int i = 0; i < holder.mgrClusterArray.size(); i++) {
-                MultiHQHeaderModelClass multiHQHeaderModelClass = holder.mgrClusterArray.get(i);
-                ArrayList<MultiHQItemModelClass> dataList = multiHQHeaderModelClass.getItemsList();
-                for (int j = 0; j < dataList.size(); j++) {
-                    if (dataList.get(j).isChecked()) {
-                        ArrayList<String> clusterCodes = new ArrayList<>();
-                        if (holder.selectedClusterCodeMap.containsKey(multiHQHeaderModelClass.getCode())) {
-                            clusterCodes = holder.selectedClusterCodeMap.get(multiHQHeaderModelClass.getCode());
-                        }
-                        clusterCodes.add(dataList.get(j).getCode());
-                        holder.selectedClusterCodeMap.put(multiHQHeaderModelClass.getCode(), clusterCodes);
+        try {
+            if (holder.hqLayout.getVisibility() == View.VISIBLE) {
+                holder.selectedHQCode.clear();
+                for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
+                    if (holder.sessionItemAdapterArray.get(i).isChecked()) {
+                        holder.selectedHQCode.add(holder.sessionItemAdapterArray.get(i).getCode());
                     }
                 }
-            }
+                holder.selectedClusterCodeMap.clear();
+                for (int i = 0; i < holder.mgrClusterArray.size(); i++) {
+                    MultiHQHeaderModelClass multiHQHeaderModelClass = holder.mgrClusterArray.get(i);
+                    if (holder.selectedHQCode.contains(multiHQHeaderModelClass.getCode())) {
+                        ArrayList<MultiHQItemModelClass> dataList = multiHQHeaderModelClass.getItemsList();
+                        for (int j = 0; j < dataList.size(); j++) {
+                            if (dataList.get(j).isChecked()) {
+                                ArrayList<String> clusterCodes = new ArrayList<>();
+                                if (holder.selectedClusterCodeMap.containsKey(multiHQHeaderModelClass.getCode())) {
+                                    clusterCodes = holder.selectedClusterCodeMap.get(multiHQHeaderModelClass.getCode());
+                                }
+                                clusterCodes.add(dataList.get(j).getCode());
+                                holder.selectedClusterCodeMap.put(multiHQHeaderModelClass.getCode(), clusterCodes);
+                            } else {
+                                dataList.remove(dataList.get(j));
+                                j--;
+                            }
+                        }
+                    } else {
+                        holder.mgrClusterArray.remove(multiHQHeaderModelClass);
+                        i--;
+                    }
+                }
 //            clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR, holder);
 //            clusterChanged(holder.selectedClusterCode, holder.chemistArray, holder.chemistField, Constants.CHEMIST, holder);
 //            clusterChanged(holder.selectedClusterCode, holder.stockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
@@ -3555,72 +3564,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 //            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrCipArray, holder.cipField, Constants.CIP, holder);
 //            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrHospArray, holder.hospField, Constants.HOSPITAL, holder);
 
-            clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR_MAS, holder);
-            clusterChanged(holder.selectedClusterCode, holder.chemistArray, holder.chemistField, Constants.CHEMIST_MAS, holder);
-            clusterChanged(holder.selectedClusterCode, holder.stockiestArray, holder.stockiestField, Constants.STOCKIEST_MAS, holder);
-            clusterChanged(holder.selectedClusterCode, holder.unListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR_MAS, holder);
-            clusterChanged(holder.selectedClusterCode, holder.cipArray, holder.cipField, Constants.CIP, holder);
-            clusterChanged(holder.selectedClusterCode, holder.hospArray, holder.hospField, Constants.HOSPITAL, holder);
-
-            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrListedDrArray, holder.drField, Constants.DOCTOR_MAS, holder);
-            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrChemistArray, holder.chemistField, Constants.CHEMIST_MAS, holder);
-            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrStockiestArray, holder.stockiestField, Constants.STOCKIEST_MAS, holder);
-            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrUnListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR_MAS, holder);
-            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrCipArray, holder.cipField, Constants.CIP, holder);
-            mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrHospArray, holder.hospField, Constants.HOSPITAL, holder);
-
-            setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.hqField, holder.hqCount);
-            inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setLayoutVisible("");
-            sessionInterface.hqChanged(inputDataArray, holder.getLayoutPosition(), true);
-        } else if (holder.clusterLayout.getVisibility() == View.VISIBLE) {
-            if (isMGR) {
-                holder.selectedClusterCodeMap.clear();
-                for (int i = 0; i < holder.mgrSessionItemAdapterArray.size(); i++) {
-                    MultiHQHeaderModelClass multiHQHeaderModelClass = holder.mgrSessionItemAdapterArray.get(i);
-                    ArrayList<MultiHQItemModelClass> dataList = multiHQHeaderModelClass.getItemsList();
-                    for (int j = 0; j < dataList.size(); j++) {
-                        if (dataList.get(j).isChecked()) {
-                            ArrayList<String> clusterCodes = new ArrayList<>();
-                            if (holder.selectedClusterCodeMap.containsKey(multiHQHeaderModelClass.getCode())) {
-                                clusterCodes = holder.selectedClusterCodeMap.get(multiHQHeaderModelClass.getCode());
-                            }
-                            clusterCodes.add(dataList.get(j).getCode());
-                            holder.selectedClusterCodeMap.put(multiHQHeaderModelClass.getCode(), clusterCodes);
-                        }
-                    }
-                }
-
-//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrListedDrArray, holder.drField, Constants.DOCTOR, holder);
-//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrChemistArray, holder.chemistField, Constants.CHEMIST, holder);
-//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrStockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
-//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrUnListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
-//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrCipArray, holder.cipField, Constants.CIP, holder);
-//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrHospArray, holder.hospField, Constants.HOSPITAL, holder);
-
-                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrListedDrArray, holder.drField, Constants.DOCTOR_MAS, holder);
-                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrChemistArray, holder.chemistField, Constants.CHEMIST_MAS, holder);
-                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrStockiestArray, holder.stockiestField, Constants.STOCKIEST_MAS, holder);
-                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrUnListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR_MAS, holder);
-                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrCipArray, holder.cipField, Constants.CIP, holder);
-                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrHospArray, holder.hospField, Constants.HOSPITAL, holder);
-
-                setSelectedCountMGR(holder, holder.mgrSessionItemAdapterArray, true, holder.clusterField, holder.clusterCount);
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setLayoutVisible("");
-                sessionInterface.clusterChanged(inputDataArray, holder.getLayoutPosition());
-            } else {
-                holder.selectedClusterCode.clear();
-                for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
-                    if (holder.sessionItemAdapterArray.get(i).isChecked()) {
-                        holder.selectedClusterCode.add(holder.sessionItemAdapterArray.get(i).getCode());
-                    }
-                }
-
-//                clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR, holder);
-//                clusterChanged(holder.selectedClusterCode, holder.chemistArray, holder.chemistField, Constants.CHEMIST, holder);
-//                clusterChanged(holder.selectedClusterCode, holder.stockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
-//                clusterChanged(holder.selectedClusterCode, holder.unListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
-//                clusterChanged(holder.selectedClusterCode, holder.cipArray, holder.cipField, Constants.CIP, holder);
-//                clusterChanged(holder.selectedClusterCode, holder.hospArray, holder.hospField, Constants.HOSPITAL, holder);
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getClusters().clear();
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setClusters(holder.mgrClusterArray);
 
                 clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR_MAS, holder);
                 clusterChanged(holder.selectedClusterCode, holder.chemistArray, holder.chemistField, Constants.CHEMIST_MAS, holder);
@@ -3629,53 +3574,122 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 clusterChanged(holder.selectedClusterCode, holder.cipArray, holder.cipField, Constants.CIP, holder);
                 clusterChanged(holder.selectedClusterCode, holder.hospArray, holder.hospField, Constants.HOSPITAL, holder);
 
-                setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.clusterField, holder.clusterCount);
-                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setLayoutVisible("");
-                sessionInterface.clusterChanged(inputDataArray, holder.getLayoutPosition());
-            }
-        } else if (holder.jcLayout.getVisibility() == View.VISIBLE) {
-            if (isMGR) {
-                setSelectedCountMGR(holder, holder.mgrSessionItemAdapterArray, true, holder.jcField, holder.jcCount);
-                changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
-            } else {
-                setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.jcField, holder.jcCount);
-                changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
-            }
-        } else if (holder.drLayout.getVisibility() == View.VISIBLE) {
-            if (isMGR) {
-                setSelectedCountMGR(holder, holder.mgrSessionItemAdapterArray, true, holder.drField, holder.drCount);
-                changeUIState(holder, holder.drLayout, holder.drArrow, true);
-            } else {
-                setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.drField, holder.drCount);
-                changeUIState(holder, holder.drLayout, holder.drArrow, true);
-            }
-        } else if (holder.chemistLayout.getVisibility() == View.VISIBLE) {
-            if (isMGR) {
-                setSelectedCountMGR(holder, holder.mgrSessionItemAdapterArray, true, holder.chemistField, holder.chemistCount);
-                changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
-            } else {
-                setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.chemistField, holder.chemistCount);
-                changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
-            }
-        } else if (holder.stockiestLayout.getVisibility() == View.VISIBLE) {
-            if (isMGR) {
-                setSelectedCountMGR(holder, holder.mgrSessionItemAdapterArray, true, holder.stockiestField, holder.stockiestCount);
-                changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, true);
-            } else {
-                setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.stockiestField, holder.stockiestCount);
-                changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, true);
-            }
-        } else if (holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
-            setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.unListedDrField, holder.unListedDrCount);
-            changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, true);
-        } else if (holder.cipLayout.getVisibility() == View.VISIBLE) {
-            setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.cipField, holder.cipCount);
-            changeUIState(holder, holder.cipLayout, holder.cipArrow, true);
-        } else if (holder.hospLayout.getVisibility() == View.VISIBLE) {
-            setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.hospField, holder.hospCount);
-            changeUIState(holder, holder.hospLayout, holder.hospArrow, true);
-        }
+                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrListedDrArray, holder.drField, Constants.DOCTOR_MAS, holder);
+                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrChemistArray, holder.chemistField, Constants.CHEMIST_MAS, holder);
+                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrStockiestArray, holder.stockiestField, Constants.STOCKIEST_MAS, holder);
+                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrUnListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR_MAS, holder);
+                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrCipArray, holder.cipField, Constants.CIP, holder);
+                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrHospArray, holder.hospField, Constants.HOSPITAL, holder);
 
+                setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.hqField, holder.hqCount);
+                inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setLayoutVisible("");
+                sessionInterface.hqChanged(inputDataArray, holder.getLayoutPosition(), true);
+            } else if (holder.clusterLayout.getVisibility() == View.VISIBLE) {
+                if (isMGR) {
+                    holder.selectedClusterCodeMap.clear();
+                    for (int i = 0; i < holder.mgrSessionItemAdapterArray.size(); i++) {
+                        MultiHQHeaderModelClass multiHQHeaderModelClass = holder.mgrSessionItemAdapterArray.get(i);
+                        ArrayList<MultiHQItemModelClass> dataList = multiHQHeaderModelClass.getItemsList();
+                        for (int j = 0; j < dataList.size(); j++) {
+                            if (dataList.get(j).isChecked()) {
+                                ArrayList<String> clusterCodes = new ArrayList<>();
+                                if (holder.selectedClusterCodeMap.containsKey(multiHQHeaderModelClass.getCode())) {
+                                    clusterCodes = holder.selectedClusterCodeMap.get(multiHQHeaderModelClass.getCode());
+                                }
+                                clusterCodes.add(dataList.get(j).getCode());
+                                holder.selectedClusterCodeMap.put(multiHQHeaderModelClass.getCode(), clusterCodes);
+                            }
+                        }
+                    }
+
+//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrListedDrArray, holder.drField, Constants.DOCTOR, holder);
+//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrChemistArray, holder.chemistField, Constants.CHEMIST, holder);
+//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrStockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
+//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrUnListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
+//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrCipArray, holder.cipField, Constants.CIP, holder);
+//                mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrHospArray, holder.hospField, Constants.HOSPITAL, holder);
+
+                    mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrListedDrArray, holder.drField, Constants.DOCTOR_MAS, holder);
+                    mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrChemistArray, holder.chemistField, Constants.CHEMIST_MAS, holder);
+                    mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrStockiestArray, holder.stockiestField, Constants.STOCKIEST_MAS, holder);
+                    mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrUnListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR_MAS, holder);
+                    mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrCipArray, holder.cipField, Constants.CIP, holder);
+                    mgrClusterChanged(holder.selectedClusterCodeMap, holder.mgrHospArray, holder.hospField, Constants.HOSPITAL, holder);
+
+                    setSelectedCountMGR(holder, holder.mgrSessionItemAdapterArray, true, holder.clusterField, holder.clusterCount);
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setLayoutVisible("");
+                    sessionInterface.clusterChanged(inputDataArray, holder.getLayoutPosition());
+                } else {
+                    holder.selectedClusterCode.clear();
+                    for (int i = 0; i < holder.sessionItemAdapterArray.size(); i++) {
+                        if (holder.sessionItemAdapterArray.get(i).isChecked()) {
+                            holder.selectedClusterCode.add(holder.sessionItemAdapterArray.get(i).getCode());
+                        }
+                    }
+
+//                clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR, holder);
+//                clusterChanged(holder.selectedClusterCode, holder.chemistArray, holder.chemistField, Constants.CHEMIST, holder);
+//                clusterChanged(holder.selectedClusterCode, holder.stockiestArray, holder.stockiestField, Constants.STOCKIEST, holder);
+//                clusterChanged(holder.selectedClusterCode, holder.unListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR, holder);
+//                clusterChanged(holder.selectedClusterCode, holder.cipArray, holder.cipField, Constants.CIP, holder);
+//                clusterChanged(holder.selectedClusterCode, holder.hospArray, holder.hospField, Constants.HOSPITAL, holder);
+
+                    clusterChanged(holder.selectedClusterCode, holder.listedDrArray, holder.drField, Constants.DOCTOR_MAS, holder);
+                    clusterChanged(holder.selectedClusterCode, holder.chemistArray, holder.chemistField, Constants.CHEMIST_MAS, holder);
+                    clusterChanged(holder.selectedClusterCode, holder.stockiestArray, holder.stockiestField, Constants.STOCKIEST_MAS, holder);
+                    clusterChanged(holder.selectedClusterCode, holder.unListedDrArray, holder.unListedDrField, Constants.UNLISTED_DOCTOR_MAS, holder);
+                    clusterChanged(holder.selectedClusterCode, holder.cipArray, holder.cipField, Constants.CIP, holder);
+                    clusterChanged(holder.selectedClusterCode, holder.hospArray, holder.hospField, Constants.HOSPITAL, holder);
+
+                    setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.clusterField, holder.clusterCount);
+                    inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setLayoutVisible("");
+                    sessionInterface.clusterChanged(inputDataArray, holder.getLayoutPosition());
+                }
+            } else if (holder.jcLayout.getVisibility() == View.VISIBLE) {
+                if (isMGR) {
+                    setSelectedCountMGR(holder, holder.mgrSessionItemAdapterArray, true, holder.jcField, holder.jcCount);
+                    changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
+                } else {
+                    setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.jcField, holder.jcCount);
+                    changeUIState(holder, holder.jcLayout, holder.jcArrow, true);
+                }
+            } else if (holder.drLayout.getVisibility() == View.VISIBLE) {
+                if (isMGR) {
+                    setSelectedCountMGR(holder, holder.mgrSessionItemAdapterArray, true, holder.drField, holder.drCount);
+                    changeUIState(holder, holder.drLayout, holder.drArrow, true);
+                } else {
+                    setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.drField, holder.drCount);
+                    changeUIState(holder, holder.drLayout, holder.drArrow, true);
+                }
+            } else if (holder.chemistLayout.getVisibility() == View.VISIBLE) {
+                if (isMGR) {
+                    setSelectedCountMGR(holder, holder.mgrSessionItemAdapterArray, true, holder.chemistField, holder.chemistCount);
+                    changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
+                } else {
+                    setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.chemistField, holder.chemistCount);
+                    changeUIState(holder, holder.chemistLayout, holder.chemistArrow, true);
+                }
+            } else if (holder.stockiestLayout.getVisibility() == View.VISIBLE) {
+                if (isMGR) {
+                    setSelectedCountMGR(holder, holder.mgrSessionItemAdapterArray, true, holder.stockiestField, holder.stockiestCount);
+                    changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, true);
+                } else {
+                    setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.stockiestField, holder.stockiestCount);
+                    changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, true);
+                }
+            } else if (holder.unListedDrLayout.getVisibility() == View.VISIBLE) {
+                setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.unListedDrField, holder.unListedDrCount);
+                changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, true);
+            } else if (holder.cipLayout.getVisibility() == View.VISIBLE) {
+                setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.cipField, holder.cipCount);
+                changeUIState(holder, holder.cipLayout, holder.cipArrow, true);
+            } else if (holder.hospLayout.getVisibility() == View.VISIBLE) {
+                setSelectedCount(holder, holder.sessionItemAdapterArray, true, holder.hospField, holder.hospCount);
+                changeUIState(holder, holder.hospLayout, holder.hospArrow, true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         onEdit(holder.getAbsoluteAdapterPosition(), true, "");
     }
 

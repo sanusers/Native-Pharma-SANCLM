@@ -196,7 +196,6 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         });
     }
 
-
     private void stopSync() {
         System.out.println("❌ Sync stopped due to API failure.");
         if (callSyncCount > 0) {

@@ -48,6 +48,7 @@ import saneforce.sanzen.activity.approvals.tp.adapter.TpApprovalAdapter;
 import saneforce.sanzen.activity.approvals.tp.adapter.TpApprovalDetailedAdapter;
 import saneforce.sanzen.activity.approvals.tp.pojo.TpDetailedModel;
 import saneforce.sanzen.activity.approvals.tp.pojo.TpModelList;
+import saneforce.sanzen.activity.tourPlan.TourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
@@ -470,7 +471,11 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         }else {
             try {
                 jsonTp = CommonUtilsMethods.CommonObjectParameter(TpApprovalActivity.this);
-                jsonTp.put("tableName", "gettpdetail");
+                if (SharedPref.getSfType(TpApprovalActivity.this).equalsIgnoreCase("1")) {
+                    jsonTp.put("tableName", "gettpdetail");
+                } else {
+                    jsonTp.put("tableName", "gettpmultihqdetailnew");
+                }
                 jsonTp.put("sfcode", SelectedSfCode);
                 jsonTp.put("Month", SelectedMonth);
                 jsonTp.put("Year", SelectedYear);

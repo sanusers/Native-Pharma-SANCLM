@@ -1391,7 +1391,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         } else {
                             if (binding.llDeviation.getVisibility() == View.VISIBLE) {
                                 commonUtilsMethods.showToastMessage(requireContext(), "Deviate to edit WorkPlan");
-                            }else if(dayStatus.equalsIgnoreCase("0") && mFwFlg1.equalsIgnoreCase("F")) {
+                            }else if(dayStatus.equalsIgnoreCase("0") && mFwFlg1.equalsIgnoreCase("F") && !(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
                                 dialogFWEditConfirmation("1", mWTName1);
                             }else {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need));
@@ -1434,7 +1434,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         } else {
                             if (binding.llDeviation.getVisibility() == View.VISIBLE) {
                                 commonUtilsMethods.showToastMessage(requireContext(), "Deviate to edit WorkPlan");
-                            }else if(dayStatus.equalsIgnoreCase("0") && mFwFlg2.equalsIgnoreCase("F")) {
+                            }else if(dayStatus.equalsIgnoreCase("0") && mFwFlg2.equalsIgnoreCase("F") && !(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
                                 dialogFWEditConfirmation("2", mWTName2);
                             }else {
                                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need));
@@ -3753,7 +3753,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 }
                                 mHQName1 = hqName.toString();
                                 mTownname1 = clusterName.toString();
-                            }else{
+                            }else if (mHQName1.isEmpty()){
                                 mHQName1 = findHQName(mHQCode1);
                             }
                         }else {
@@ -3965,7 +3965,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     }
                                     mHQName2 = hqName.toString();
                                     mTownname2 = clusterName.toString();
-                                }else{
+                                }else if (mHQName2.isEmpty()){
                                     mHQName2 = findHQName(mHQCode2);
                                 }
                             }else {

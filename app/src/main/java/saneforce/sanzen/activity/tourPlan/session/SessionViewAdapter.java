@@ -333,6 +333,8 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
                 }
                 if (clusterName.length() > 0) {
                     holder.clusterTV.setText(clusterName);
+                } else {
+                    holder.clusterLayout.setVisibility(View.GONE);
                 }
             } else {
                 holder.clusterLayout.setVisibility(View.GONE);
@@ -368,6 +370,8 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             }
             if (jcName.length() > 0) {
                 holder.jcTV.setText(jcName);
+            } else {
+                holder.jcLayout.setVisibility(View.GONE);
             }
         } else {
             holder.jcLayout.setVisibility(View.GONE);
@@ -403,6 +407,8 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
                 }
                 if (drName.length() > 0) {
                     holder.drTV.setText(drName);
+                } else {
+                    holder.drLayout.setVisibility(View.GONE);
                 }
             } else {
                 holder.drLayout.setVisibility(View.GONE);
@@ -438,6 +444,8 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
                 }
                 if (chemistName.length() > 0) {
                     holder.chemistTV.setText(chemistName);
+                } else {
+                    holder.chemistLayout.setVisibility(View.GONE);
                 }
             } else {
                 holder.chemistLayout.setVisibility(View.GONE);
@@ -473,6 +481,8 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
                 }
                 if (stockiestName.length() > 0) {
                     holder.stockiestTV.setText(stockiestName);
+                } else {
+                    holder.stockiestLayout.setVisibility(View.GONE);
                 }
             } else {
                 holder.stockiestLayout.setVisibility(View.GONE);
