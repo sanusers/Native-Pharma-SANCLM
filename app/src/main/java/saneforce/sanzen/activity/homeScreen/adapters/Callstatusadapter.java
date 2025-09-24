@@ -176,7 +176,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
             holder.relativeLayout.setBackgroundResource(R.drawable.calender_background_d);
         }
 
-        if (HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()))) {
+        if (HomeDashBoard.selectedDate != null && TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, HomeDashBoard.selectedDate.toString()).equalsIgnoreCase(String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear())) && !HomeDashBoard.binding.textDate.getText().toString().isEmpty()) {
             holder.relativeLayout.setBackgroundColor(Color.parseColor("#282A3C"));
             holder.dayTextView.setTextColor(context.getColor(R.color.white));
             holder.slashImageView.setVisibility(View.GONE);
