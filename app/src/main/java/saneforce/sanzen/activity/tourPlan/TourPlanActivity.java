@@ -361,7 +361,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             binding.progressBar.setVisibility(View.VISIBLE);
                             LocalDate localDate1 = LocalDate.now();
                             if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
-                                getDraftSaveOneBuild("prev", dayWiseArrayPrevMonthOneBuild, isFrom, status);
+                                getDraftSaveOneBuild("previous", dayWiseArrayPrevMonthOneBuild, isFrom, status);
                             } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
                                 getDraftSaveOneBuild("current", dayWiseArrayCurrentMonthOneBuild, isFrom, status);
                             } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
@@ -390,7 +390,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                             LocalDate localDate1 = LocalDate.now();
                             if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
-                                get3MonthRemoteTPData("prev");
+                                get3MonthRemoteTPData("previous");
                             } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
                                 get3MonthRemoteTPData("current");
                             } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
@@ -929,7 +929,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         binding.progressBar.setVisibility(View.VISIBLE);
                         LocalDate localDate1 = LocalDate.now();
                         if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
-                            getDraftSaveOneBuild("prev", dayWiseArrayPrevMonthOneBuild, isFrom, status);
+                            getDraftSaveOneBuild("previous", dayWiseArrayPrevMonthOneBuild, isFrom, status);
                         } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
                             getDraftSaveOneBuild("current", dayWiseArrayCurrentMonthOneBuild, isFrom, status);
                         } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
@@ -2085,9 +2085,7 @@ public class TourPlanActivity extends AppCompatActivity {
         binding.tpNavigation.editLayout.setVisibility(View.GONE);
     }
 
-    public void populateSessionEditAdapterOneBuild(OneBuildModelClass
-                                                           arrayListOneBuild) {
-        SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
+    public void populateSessionEditAdapterOneBuild(OneBuildModelClass arrayListOneBuild) {
 
         binding.tpDrawer.openDrawer(GravityCompat.END);
         sessionEditAdapter = new SessionEditAdapter(TourPlanActivity.this, arrayListOneBuild, new SessionInterfaceOneBuild() {
@@ -2217,10 +2215,14 @@ public class TourPlanActivity extends AppCompatActivity {
         if (oneBuildModelClass.getSessionList().get(0).getWorkType().getName().equalsIgnoreCase("Weekly Off")) {
             if (weeklyOffEditable.equals("0")) {
                 binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
+            }else{
+                binding.tpNavigation.editLayout.setVisibility(View.GONE);
             }
         } else if (oneBuildModelClass.getSessionList().get(0).getWorkType().getName().equalsIgnoreCase("Holiday")) {
             if (holidayEditable.equals("0")) {
                 binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
+            }else{
+                binding.tpNavigation.editLayout.setVisibility(View.GONE);
             }
         } else {
             binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
@@ -2591,7 +2593,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     dayWiseArrayNextMonth = prepareModelClassForMonth(localDate.plusMonths(1));
 
                                     switch (isClickedName) {
-                                        case "prev":
+                                        case "previous":
                                             localDate = localDate.minusMonths(1);
                                             populateCalendarAdapter(dayWiseArrayPrevMonth);
                                             break;
@@ -2674,7 +2676,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     dayWiseArrayNextMonthOneBuild = prepareModelClassForMonthOneBuild(localDate.plusMonths(1));
 
                                     switch (isClickedName) {
-                                        case "prev":
+                                        case "previous":
                                             localDate = localDate.minusMonths(1);
                                             populateCalenderAdapterOneBuild(dayWiseArrayPrevMonthOneBuild);
                                             break;
@@ -2726,7 +2728,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 try {
                     int id = 0;
                     switch (isClickedName) {
-                        case "prev":
+                        case "previous":
                             id = SharedPref.getTpIdPreviousMonth(TourPlanActivity.this);
                             break;
                         case "current":
@@ -3208,7 +3210,15 @@ public class TourPlanActivity extends AppCompatActivity {
                                 Log.v("tpGetPlan", "----" + response.body());
                                 try {
                                     JSONObject json = new JSONObject(response.body().toString());
-                                    if (response.body() != null && !response.body().isJsonNull() && !json.has("Tour plan doesnot exists")) {
+                                    Log.d("TAG", "onResponse: "+json);
+                                    JSONObject outer = new JSONObject(response.body().toString());
+                                    String dString = outer.getString("d");
+                                    JSONObject inner = new JSONObject(dString);
+                                    boolean status = inner.getBoolean("Status");
+                                    status = true;
+                                    /*int data = inner.getInt("Data");*/
+                                    String message = inner.optString("Message", "");
+                                    if (response.body() != null && !response.body().isJsonNull() && status) {
                                         try {
                                             //JsonObject jsonObject = new JsonObject(response.body().toString());
                                             JSONObject jsonObject = new JSONObject(response.body().toString());
@@ -3223,7 +3233,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                                         JSONObject innerJsonObject = new JSONObject(innerJsonString);
                                                         if (innerJsonObject.has("Data")) {
                                                             switch (isClickedName) {
-                                                                case "prev":
+                                                                case "previous":
                                                                     int retrievedIdPm = innerJsonObject.getInt("Data");
                                                                     SharedPref.saveTpId(TourPlanActivity.this, retrievedIdPm);
                                                                     Log.d("ret_Id", "onResponse: " + retrievedIdPm);
@@ -3333,8 +3343,7 @@ public class TourPlanActivity extends AppCompatActivity {
         }
     }
 
-    private void SaveTourPlanWholeMonthOneBuild(JSONObject jsonObject, String
-            isClickedName) {
+    private void SaveTourPlanWholeMonthOneBuild(JSONObject jsonObject, String isClickedName) {
         SharedPref.getOneBuild(TourPlanActivity.this).equalsIgnoreCase("0");
         try {
             localDate = LocalDate.now();
@@ -3719,7 +3728,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
     private void SaveTpData(ArrayList<OneBuildModelClass> oneBuildModelClasses) {
         if (!dayWiseArrayPrevMonthOneBuild.isEmpty()) {
-            Log.v("ggggg", "prev");
+            Log.v("ggggg", "previous");
             dayWiseArrayPrevMonthOneBuild = oneBuildModelClasses;
 //                saveTpLocalOneBuild(dayWiseArrayPrevMonthOneBuild, day, monthName, status);
         } else if (!dayWiseArrayCurrentMonthOneBuild.isEmpty()) {
@@ -4268,6 +4277,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
                                             binding.rejectedReasonTxt.setText(reason);
                                             binding.tpSendToApproval.setEnabled(true);
+                                            binding.tpNavigation.sessionEdit.setEnabled(true);
                                             System.out.println("status 2");
                                             break;
                                         }
@@ -4425,7 +4435,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.send_approved_successfully));
 
                                             switch (isClickedName) {
-                                                case "prev":
+                                                case "previous":
                                                     changeApprovalBtnStateOneBuild(dayWiseArrayPrevMonthOneBuild);
                                                     break;
                                                 case "current":
@@ -4918,7 +4928,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         if (!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
                                             dummy.add(modelClass.getDayNo());
                                             switch (isClickedName) {
-                                                case "prev":
+                                                case "previous":
                                                     changeApprovalBtnStateOneBuild(dayWiseArrayPrevMonthOneBuild);
                                                     break;
                                                 case "current":

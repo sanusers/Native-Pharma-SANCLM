@@ -2490,12 +2490,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.hqModelArray = new ArrayList<>();
         holder.clusterArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + hqCode).getMasterSyncDataJsonArray());
         holder.jointCallArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + hqCode).getMasterSyncDataJsonArray());
-//        holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + hqCode).getMasterSyncDataJsonArray());
-//        holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + hqCode).getMasterSyncDataJsonArray());
-//        holder.stockiestArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + hqCode).getMasterSyncDataJsonArray());
-//        holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + hqCode).getMasterSyncDataJsonArray());
-//        holder.cipArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CIP + hqCode).getMasterSyncDataJsonArray());
-//        holder.hospArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + hqCode).getMasterSyncDataJsonArray());
         holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + hqCode).getMasterSyncDataJsonArray());
         holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST_MAS + hqCode).getMasterSyncDataJsonArray());
         holder.stockiestArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST_MAS + hqCode).getMasterSyncDataJsonArray());
@@ -2506,9 +2500,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         if (SharedPref.getSfType(context).equalsIgnoreCase("2")) {
             holder.mgrClusterArray = prepareModelList(holder.selectedHq, Constants.CLUSTER);
             holder.mgrJointCallArray = prepareModelList(holder.selectedHq, Constants.JOINT_WORK);
-//            holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR);
-//            holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST);
-//            holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST);
             holder.mgrListedDrArray = prepareModelList(holder.selectedHq, Constants.DOCTOR_MAS);
             holder.mgrChemistArray = prepareModelList(holder.selectedHq, Constants.CHEMIST_MAS);
             holder.mgrStockiestArray = prepareModelList(holder.selectedHq, Constants.STOCKIEST_MAS);
