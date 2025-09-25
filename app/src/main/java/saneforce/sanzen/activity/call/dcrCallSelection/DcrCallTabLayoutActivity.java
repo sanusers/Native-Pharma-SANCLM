@@ -270,7 +270,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 if (TodayPlanSfCode == null || TodayPlanSfCode.isEmpty()) {
                     TodayPlanSfCode = SharedPref.getHqCode(this);
                     TodayPlanSfName = SharedPref.getHqName(this);
-                    if (TodayPlanSfCode.equalsIgnoreCase("null") || TodayPlanSfCode.isEmpty()) {
+                    if (TodayPlanSfCode == null || TodayPlanSfCode.isEmpty()) {
                         JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                         for (int i = 0; i < 1; i++) {
                             JSONObject jsonHQList = jsonArray1.getJSONObject(0);
@@ -292,10 +292,10 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
 
     private void prepareClusterList() {
         try {
-            if(WorkPlanFragment.mHQCode1 != null && WorkPlanFragment.mHQCode1.equalsIgnoreCase(TodayPlanSfCode) && WorkPlanFragment.mTowncode1 != null && !WorkPlanFragment.mTowncode1.isEmpty()){
+            if(WorkPlanFragment.mHQCode1 != null && WorkPlanFragment.mHQCode1.contains(TodayPlanSfCode) && WorkPlanFragment.mTowncode1 != null && !WorkPlanFragment.mTowncode1.isEmpty()){
                 SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode1);
                 SharedPref.setTodayDayPlanClusterName(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTownname1);
-            } else if(WorkPlanFragment.mHQCode2 != null && WorkPlanFragment.mHQCode2.equalsIgnoreCase(TodayPlanSfCode) && WorkPlanFragment.mTowncode2 != null && !WorkPlanFragment.mTowncode2.isEmpty()){
+            } else if(WorkPlanFragment.mHQCode2 != null && WorkPlanFragment.mHQCode2.contains(TodayPlanSfCode) && WorkPlanFragment.mTowncode2 != null && !WorkPlanFragment.mTowncode2.isEmpty()){
                 SharedPref.setTodayDayPlanClusterCode(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTowncode2);
                 SharedPref.setTodayDayPlanClusterName(DcrCallTabLayoutActivity.this, WorkPlanFragment.mTownname2);
             }

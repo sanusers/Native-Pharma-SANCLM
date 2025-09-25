@@ -640,7 +640,9 @@ public class ChemistAddition extends AppCompatActivity {
                                     JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                                     if(jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                                         Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
-                                        if(SharedPref.getSfType(ChemistAddition.this).equalsIgnoreCase("2")) {
+                                        if(SharedPref.getSfType(ChemistAddition.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(ChemistAddition.this).equalsIgnoreCase("0")) {
+                                            SfCode = SharedPref.getHq(ChemistAddition.this);
+                                        }else if(SharedPref.getSfType(ChemistAddition.this).equalsIgnoreCase("2")) {
                                             SfCode = SharedPref.getHqCode(ChemistAddition.this);
                                         }else {
                                             SfCode = SharedPref.getSfCode(ChemistAddition.this);

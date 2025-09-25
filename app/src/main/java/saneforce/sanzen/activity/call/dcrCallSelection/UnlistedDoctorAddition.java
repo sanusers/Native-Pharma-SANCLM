@@ -656,7 +656,9 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                                     JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                                     if(jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                                         Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
-                                        if(SharedPref.getSfType(UnlistedDoctorAddition.this).equalsIgnoreCase("2")) {
+                                        if(SharedPref.getSfType(UnlistedDoctorAddition.this).equalsIgnoreCase("2") && !SharedPref.getOneBuild(UnlistedDoctorAddition.this).equalsIgnoreCase("0")) {
+                                            SfCode = SharedPref.getHq(UnlistedDoctorAddition.this);
+                                        }else if(SharedPref.getSfType(UnlistedDoctorAddition.this).equalsIgnoreCase("2")) {
                                             SfCode = SharedPref.getHqCode(UnlistedDoctorAddition.this);
                                         }else {
                                             SfCode = SharedPref.getSfCode(UnlistedDoctorAddition.this);

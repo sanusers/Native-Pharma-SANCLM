@@ -43,6 +43,7 @@ public class MultiHQAdapter extends RecyclerView.Adapter<MultiHQAdapter.ViewHold
         this.commonUtilsMethods = new CommonUtilsMethods(context);
         for (Multicheckclass_clust hqs : itemList) {
             if (hqs.isChecked()) {
+                multiHQSelectListener.onHQSelected(hqs);
                 selectedHQCount++;
             }
         }

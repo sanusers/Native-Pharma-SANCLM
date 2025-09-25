@@ -398,24 +398,23 @@ public class ChemistFragment extends Fragment {
                 Log.v("CheCall", "-che--error--" + e);
                 e.printStackTrace();
             }
+        }
 
-            Log.v("CheCall", "-che--size--" + cusListArrayList.size());
-
-            FilltercustArraList.clear();
-            FilltercustArraList.addAll(cusListArrayList);
-            if (FilltercustArraList.isEmpty()) {
-                noChemist.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getChmCap(requireContext()), getString(R.string.found)));
-                noChemist.setVisibility(View.VISIBLE);
-                rv_list.setVisibility(View.GONE);
-            } else {
-                noChemist.setVisibility(View.GONE);
-                rv_list.setVisibility(View.VISIBLE);
-                adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, SharedPref.getChmSrtNd(requireContext()), "2");
-                rv_list.setItemAnimator(new DefaultItemAnimator());
-                rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
-                rv_list.setAdapter(adapterDCRCallSelection);
-                Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
-            }
+        Log.v("CheCall", "-che--size--" + cusListArrayList.size());
+        FilltercustArraList.clear();
+        FilltercustArraList.addAll(cusListArrayList);
+        if (FilltercustArraList.isEmpty()) {
+            noChemist.setText(String.format("%s %s %s", getString(R.string.no), SharedPref.getChmCap(requireContext()), getString(R.string.found)));
+            noChemist.setVisibility(View.VISIBLE);
+            rv_list.setVisibility(View.GONE);
+        } else {
+            noChemist.setVisibility(View.GONE);
+            rv_list.setVisibility(View.VISIBLE);
+            adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), FilltercustArraList, SharedPref.getChmSrtNd(requireContext()), "2");
+            rv_list.setItemAnimator(new DefaultItemAnimator());
+            rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
+            rv_list.setAdapter(adapterDCRCallSelection);
+            Collections.sort(FilltercustArraList, Comparator.comparing(CustList::isClusterAvailable));
         }
     }
 
