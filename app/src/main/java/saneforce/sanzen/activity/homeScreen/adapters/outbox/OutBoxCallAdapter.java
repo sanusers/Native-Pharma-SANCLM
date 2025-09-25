@@ -182,8 +182,27 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 } else if (menuItem.getItemId() == R.id.menuEdit) {
                     Intent intent = new Intent(context, DCRCallActivity.class);
                     DCRCallActivity.clickedLocalDate = outBoxCallLists.get(position).getDates();
+                    String selectedHQ = "", mProds = "";
+                    try {
+                        JSONObject dcrDetail = new JSONObject(outBoxCallLists.get(position).getJsonData());
+                        if (dcrDetail != null) {
+                            selectedHQ = dcrDetail.optString("Rsf");
+                            JSONArray drMas = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedHQ).getMasterSyncDataJsonArray();
+                            for (int i = 0; i < drMas.length(); i++) {
+                                JSONObject drObj = drMas.optJSONObject(i);
+                                if (drObj.optString("Code").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode())) {
+                                    mProds = drObj.optString("MProd");
+                                    break;
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     CallActivityCustDetails = new ArrayList<>();
-                    CallActivityCustDetails.add(0, new CustList(outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getCusCode(), type, "", "", "", outBoxCallLists.get(position).getJsonData()));
+                    CustList custList = new CustList(outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getCusCode(), type, "", "", "", outBoxCallLists.get(position).getJsonData());
+                    custList.setMappedSlides(mProds);
+                    CallActivityCustDetails.add(0, custList);
                     intent.putExtra(Constants.DETAILING_REQUIRED, "false");
                     intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_local");
                     intent.putExtra("remainder_save", "0");

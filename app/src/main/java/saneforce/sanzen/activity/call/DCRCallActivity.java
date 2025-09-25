@@ -3533,6 +3533,7 @@ public class DCRCallActivity extends AppCompatActivity {
 //            }
 
             String prdCodes = CallActivityCustDetails.get(0).getMappedSlides();
+            if (prdCodes == null) prdCodes = "";
             String[] priorityCodes = prdCodes.split(",");
             Map<String, String> codeToPriorityMap = new LinkedHashMap<>();
             Map<String, String> codeToPriorityRCPAMap = new LinkedHashMap<>();
